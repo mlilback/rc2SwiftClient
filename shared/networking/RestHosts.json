@@ -1,0 +1,8 @@
+{
+	"hosts": [
+		{"name": "Rc2", "host":"rc2.stat.wvu.edu", "port":8443, "secure":true},
+		{"name": "Barney", "host":"barney.stat.wvu.edu", "port":8443, "secure":true},
+		{"name": "localhost", "host":"localhost", "port":8088, "secure":false},
+		{"name": "rc2dev", "host":"192.168.212.128", "port":8088, "secure":false}
+	]
+}
