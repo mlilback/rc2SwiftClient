@@ -39,14 +39,25 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func attemptLogin(controller: LoginViewController) {
-		NSApp.stopModal()
-		loginController!.loginAttemptComplete(nil)
+		RestServer.sharedInstance.selectHost(controller.selectedHost!)
+		RestServer.sharedInstance.login(controller.loginName!, password: controller.password!) { (success, results, error) -> Void in
+			if success {
+				NSApp.stopModal()
+				self.loginController!.loginAttemptComplete(nil)
+				//TODO: create session window
+			} else {
+				self.loginController!.loginAttemptComplete(error!.localizedDescription)
+			}
+		}
 	}
 	
 	func showLoginWindow() {
-		loginController!.hosts = RestServer.sharedInstance.restHosts
-		loginController!.completionHandler = attemptLogin
-		NSApp!.runModalForWindow((loginWindowController?.window)!)
+		//will be nil when running unit tests
+		if loginController != nil {
+			loginController!.hosts = RestServer.sharedInstance.restHosts
+			loginController!.completionHandler = attemptLogin
+			NSApp!.runModalForWindow((loginWindowController?.window)!)
+		}
 	}
 }
 

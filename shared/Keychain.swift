@@ -11,7 +11,7 @@ private let SecClass: String! = kSecClass as String
 private let SecAttrService: String! = kSecAttrService as String
 private let SecAttrGeneric: String! = kSecAttrGeneric as String
 private let SecAttrAccount: String! = kSecAttrAccount as String
-
+private let SecValueData: String! = kSecValueData as String
 public class Keychain {
 	let service: String
 	
@@ -40,8 +40,17 @@ public class Keychain {
 			return
 		}
 		var query = setupQuery(key)
-		query[kSecValueData as String] = value!.dataUsingEncoding(NSUTF8StringEncoding)
-		let status = SecItemAdd(query, nil)
+		var status : OSStatus = noErr
+		if let existing = getString(key) {
+			guard existing != value else {
+				return
+			}
+			let values: [String:AnyObject] = [SecValueData: (value?.dataUsingEncoding(NSUTF8StringEncoding))!]
+			status = SecItemUpdate(query, values)
+		} else {
+			query[SecValueData] = value!.dataUsingEncoding(NSUTF8StringEncoding)
+			status = SecItemAdd(query, nil)
+		}
 		if status != errSecSuccess {
 			throw NSError(domain: NSOSStatusErrorDomain, code: Int(status), userInfo: nil)
 		}

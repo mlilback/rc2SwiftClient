@@ -27,7 +27,7 @@ import SwiftyJSON
 	private(set) public var hosts : [NSDictionary]
 	private(set) public var selectedHost : NSDictionary
 	private(set) public var loginSession : LoginSession?
-	private var baseUrl : NSURL
+	private var baseUrl : NSURL?
 
 	var restHosts : [String] {
 		get {
@@ -64,7 +64,6 @@ import SwiftyJSON
 		assert(theHosts.count > 0, "invalid hosts data")
 		hosts = theHosts as! [NSDictionary]
 		selectedHost = hosts.first!
-		self.baseUrl = NSURL() //dummy place holder
 		super.init()
 		if let previousHostName = NSUserDefaults.standardUserDefaults().stringForKey(self.kServerHostKey) {
 			selectHost(previousHostName)
@@ -117,9 +116,15 @@ import SwiftyJSON
 	}
 	
 	public func login(login:String, password:String, handler:Rc2RestCompletionHandler) {
+		assert(baseUrl != nil, "baseUrl not specified")
 		let req = request("login", method:"POST", jsonDict: ["login":login, "password":password])
 		let task = urlSession.dataTaskWithRequest(req) {
 			(data, response, error) -> Void in
+			guard error == nil else {
+				let error = self.createError(404, description: (error?.localizedDescription)!)
+				dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
+				return
+			}
 			let json = JSON(data:data!)
 			let httpResponse = response as! NSHTTPURLResponse
 			switch(httpResponse.statusCode) {
