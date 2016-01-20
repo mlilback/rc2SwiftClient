@@ -13,6 +13,7 @@ let log = XCGLogger.defaultInstance()
 class MacAppDelegate: NSObject, NSApplicationDelegate {
 	var loginWindowController: NSWindowController?
 	var loginController: LoginViewController?
+	var sessionWindowController: NSWindowController?
 	
 	func applicationWillFinishLaunching(notification: NSNotification) {
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
@@ -44,11 +45,17 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			if success {
 				NSApp.stopModal()
 				self.loginController!.loginAttemptComplete(nil)
-				//TODO: create session window
+				self.showSessionWindow()
 			} else {
 				self.loginController!.loginAttemptComplete(error!.localizedDescription)
 			}
 		}
+	}
+	
+	func showSessionWindow() {
+		let sboard = NSStoryboard(name: "MacSessionView", bundle: nil)
+		sessionWindowController = sboard.instantiateControllerWithIdentifier("sessionWindow") as? NSWindowController
+		sessionWindowController?.window?.makeKeyAndOrderFront(self)
 	}
 	
 	func showLoginWindow() {

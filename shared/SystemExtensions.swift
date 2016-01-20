@@ -26,15 +26,18 @@ extension Color {
 		if hcode.hasPrefix("#") {
 			hcode = hcode.substringFromIndex(hcode.characters.startIndex.advancedBy(1))
 		}
-		var hexValue: UInt32 = 0
-		guard NSScanner(string:hcode).scanHexInt(&hexValue) else {
-			throw ColorInputError.InvalidHexString
-		}
-		let divisor = CGFloat(255)
-		let red = CGFloat((hexValue & 0xFF0000) >> 24) / divisor
-		let blue = CGFloat((hexValue & 0x00FF00) >> 16) / divisor
-		let green = CGFloat((hexValue & 0x0000FF) >> 8) / divisor
-		self.init(red:red, green:green, blue:blue, alpha:alpha)
+		let redHex = hex.substringToIndex(hex.startIndex.advancedBy(2))
+		let greenHex = hex.substringWithRange(Range<String.Index>(start: hex.startIndex.advancedBy(2), end: hex.startIndex.advancedBy(4)))
+		let blueHex = hex.substringWithRange(Range<String.Index>(start: hex.startIndex.advancedBy(4), end: hex.startIndex.advancedBy(6)))
+		var redInt: CUnsignedInt = 0
+		var greenInt: CUnsignedInt = 0
+		var blueInt: CUnsignedInt = 0
+		NSScanner(string: redHex).scanHexInt(&redInt)
+		NSScanner(string: greenHex).scanHexInt(&greenInt)
+		NSScanner(string: blueHex).scanHexInt(&blueInt)
+		let divisor: CGFloat = 255.0
+		
+		self.init(red:CGFloat(redInt) / divisor, green:CGFloat(greenInt) / divisor, blue:CGFloat(blueInt) / divisor, alpha:alpha)
 	}
 }
 
