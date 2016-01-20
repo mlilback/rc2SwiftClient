@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		083305D31C4FC78C00E27F66 /* NSToolbarItem+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D21C4FC78C00E27F66 /* NSToolbarItem+Validate.swift */; };
+		083305D51C4FE0E900E27F66 /* ToolbarValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D41C4FE0E900E27F66 /* ToolbarValidationTests.swift */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66E1C4B0AF400153414 /* LoginViewController.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
@@ -71,6 +73,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		083305D21C4FC78C00E27F66 /* NSToolbarItem+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSToolbarItem+Validate.swift"; sourceTree = "<group>"; };
+		083305D41C4FE0E900E27F66 /* ToolbarValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarValidationTests.swift; sourceTree = "<group>"; };
 		088CE6691C4B0AF400153414 /* MacClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppDelegate.swift; sourceTree = "<group>"; };
 		088CE66E1C4B0AF400153414 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -131,6 +135,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		083305D11C4FC76C00E27F66 /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				083305D21C4FC78C00E27F66 /* NSToolbarItem+Validate.swift */,
+			);
+			path = extensions;
+			sourceTree = "<group>";
+		};
 		088CE6601C4B0AF400153414 = {
 			isa = PBXGroup;
 			children = (
@@ -160,6 +172,7 @@
 				088CE6721C4B0AF400153414 /* Main.storyboard */,
 				088CE6BF1C4DAFAB00153414 /* workspaces */,
 				08F448F31C4E244500C64706 /* session */,
+				083305D11C4FC76C00E27F66 /* extensions */,
 				088CE6751C4B0AF400153414 /* Info.plist */,
 			);
 			path = MacClient;
@@ -171,6 +184,7 @@
 				088CE67E1C4B0AF500153414 /* MacClientTests.swift */,
 				088CE6801C4B0AF500153414 /* Info.plist */,
 				088CE6BB1C4C508000153414 /* KeychainTests.swift */,
+				083305D41C4FE0E900E27F66 /* ToolbarValidationTests.swift */,
 			);
 			path = MacClientTests;
 			sourceTree = "<group>";
@@ -363,6 +377,7 @@
 				08F448FC1C4E244500C64706 /* MacSessionOutputController.swift in Sources */,
 				088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */,
 				08F448F91C4E244500C64706 /* MacSessionController.swift in Sources */,
+				083305D31C4FC78C00E27F66 /* NSToolbarItem+Validate.swift in Sources */,
 				088CE6AE1C4B605D00153414 /* Session.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
 				088CE6BE1C4DAFA500153414 /* WorkspacesViewController.swift in Sources */,
@@ -380,6 +395,7 @@
 			files = (
 				088CE67F1C4B0AF500153414 /* MacClientTests.swift in Sources */,
 				088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */,
+				083305D51C4FE0E900E27F66 /* ToolbarValidationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
