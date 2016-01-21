@@ -8,7 +8,7 @@
 
 import Cocoa
 
-@objc public class MaacSplitter : NSView {
+@objc public class MacSplitter : NSView {
 	override public func awakeFromNib() {
 		wantsLayer = true
 		let tarea = NSTrackingArea(rect: bounds, options: [.CursorUpdate, .InVisibleRect, .ActiveInKeyWindow], owner: self, userInfo: nil)

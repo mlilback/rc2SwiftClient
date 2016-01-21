@@ -11,6 +11,7 @@
 		083305D51C4FE0E900E27F66 /* ToolbarValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D41C4FE0E900E27F66 /* ToolbarValidationTests.swift */; };
 		083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */; };
 		083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D81C501B7300E27F66 /* MainWindowController.swift */; };
+		083305DB1C50284600E27F66 /* MacSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DA1C50284600E27F66 /* MacSessionView.swift */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66E1C4B0AF400153414 /* LoginViewController.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
@@ -79,6 +80,7 @@
 		083305D41C4FE0E900E27F66 /* ToolbarValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarValidationTests.swift; sourceTree = "<group>"; };
 		083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarItemHandler.swift; sourceTree = "<group>"; };
 		083305D81C501B7300E27F66 /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
+		083305DA1C50284600E27F66 /* MacSessionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionView.swift; sourceTree = "<group>"; };
 		088CE6691C4B0AF400153414 /* MacClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppDelegate.swift; sourceTree = "<group>"; };
 		088CE66E1C4B0AF400153414 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 			isa = PBXGroup;
 			children = (
 				08F448F41C4E244500C64706 /* MacSessionController.swift */,
+				083305DA1C50284600E27F66 /* MacSessionView.swift */,
 				08F448F51C4E244500C64706 /* MacSessionEditorController.swift */,
 				08F448F61C4E244500C64706 /* MacSessionMultiController.swift */,
 				08F448F71C4E244500C64706 /* MacSessionOutputController.swift */,
@@ -370,6 +373,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				083305DB1C50284600E27F66 /* MacSessionView.swift in Sources */,
 				088CE6AF1C4B605D00153414 /* WebSocketSource.swift in Sources */,
 				088CE6B01C4B605D00153414 /* SystemExtensions.swift in Sources */,
 				088CE6A41C4B605D00153414 /* ColorEnums.swift in Sources */,

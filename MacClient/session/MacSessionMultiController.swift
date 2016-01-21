@@ -6,31 +6,17 @@
 
 import Cocoa
 
-class MacSessionMultiController: NSViewController, ToolbarItemHandler {
+class MacSessionMultiController: NSViewController {
 	let LastSelectionKey = "LastSelectionKey"
 	
 	@IBOutlet var tabView: NSTabView?
-	var segmentItem: NSToolbarItem?
-	var segmentControl: NSSegmentedControl?
-	
-	func handlesToolbarItem(item: NSToolbarItem) -> Bool {
-		if item.itemIdentifier == "leftView" {
-			segmentItem = item
-			segmentControl = item.view as! NSSegmentedControl?
-			segmentControl?.target = self
-			segmentControl?.action = "tabSwitcherClicked:"
-			let lastSelection = NSUserDefaults.standardUserDefaults().integerForKey(LastSelectionKey)
-			segmentControl?.selectedSegment = lastSelection
-			tabView?.selectTabViewItemAtIndex(lastSelection)
-			return true
-		}
-		return false
+
+	var selectedTabIndex: Int {
+		get { return (tabView?.indexOfTabViewItem((tabView?.selectedTabViewItem)!))! }
 	}
 	
-	dynamic func tabSwitcherClicked(sender:AnyObject?) {
-		let index = (segmentControl?.selectedSegment)!
+	func selectTabAtIndex(index: Int) {
 		tabView?.selectTabViewItemAtIndex(index)
-		NSUserDefaults.standardUserDefaults().setInteger(index, forKey: LastSelectionKey)
 	}
 }
 
