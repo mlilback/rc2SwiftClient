@@ -6,6 +6,6 @@
 
 import Cocoa
 
-class MacSessionEditorController: NSViewController {
+class MacSessionEditorController: AbstractSessionViewController {
 }
 

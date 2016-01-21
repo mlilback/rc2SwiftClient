@@ -68,6 +68,10 @@ import SwiftyJSON
 		if let previousHostName = NSUserDefaults.standardUserDefaults().stringForKey(self.kServerHostKey) {
 			selectHost(previousHostName)
 		}
+		NSNotificationCenter.defaultCenter().addObserverForName(SelectedSessionChangedNotification, object: nil, queue: nil) { (note) -> Void in
+			let wspace = note.object as! Box<Workspace>
+			self.createSession(wspace.unbox)
+		}
 	}
 	
 	private func createError(code:Int, description:String) -> NSError {

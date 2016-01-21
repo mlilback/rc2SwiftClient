@@ -20,6 +20,12 @@ protocol Rc2SessionDelegate : class {
 }
 
 public class Session : NSObject {
+	///for kvo monitoring of the current session, since KVO only works on objects, not classes
+	class Manager: NSObject {
+		dynamic var currentSession: Session?
+	}
+	static var manager: Manager = Manager()
+	
 	let workspace : Workspace
 	let wsSource : WebSocketSource
 	weak var delegate : Rc2SessionDelegate?

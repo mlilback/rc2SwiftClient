@@ -6,6 +6,6 @@
 
 import Cocoa
 
-class MacSessionOutputController: NSViewController {
+class MacSessionOutputController: AbstractSessionViewController {
 }
 

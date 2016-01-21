@@ -300,7 +300,7 @@
         <!--file view controller-->
         <scene sceneID="6UQ-Z5-mlY">
             <objects>
-                <viewController id="XJm-U6-51C" userLabel="file view controller" sceneMemberID="viewController">
+                <viewController id="XJm-U6-51C" userLabel="file view controller" customClass="FileViewContrfoller" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="Yck-bc-8ar">
                         <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -384,6 +384,10 @@
                                                     </prototypeCellViews>
                                                 </tableColumn>
                                             </tableColumns>
+                                            <connections>
+                                                <outlet property="dataSource" destination="XJm-U6-51C" id="vbe-bE-Vei"/>
+                                                <outlet property="delegate" destination="XJm-U6-51C" id="vBb-kl-GIR"/>
+                                            </connections>
                                         </tableView>
                                     </subviews>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -449,7 +453,7 @@
         <!--variables view controller-->
         <scene sceneID="AJm-u8-LUo">
             <objects>
-                <viewController id="1Ce-Bb-cCN" userLabel="variables view controller" sceneMemberID="viewController">
+                <viewController id="1Ce-Bb-cCN" userLabel="variables view controller" customClass="VariableViewContrfoller" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="ePu-VH-UTN">
                         <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -587,7 +591,7 @@
         <!--user view controller-->
         <scene sceneID="H5P-eh-gMY">
             <objects>
-                <viewController id="lJM-BU-ZVt" userLabel="user view controller" sceneMemberID="viewController">
+                <viewController id="lJM-BU-ZVt" userLabel="user view controller" customClass="UsersViewContrfoller" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="GGz-OC-pcD">
                         <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>

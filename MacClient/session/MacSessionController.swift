@@ -5,8 +5,9 @@
 //
 
 import Cocoa
+import SwiftyJSON
 
-public class MacSessionController: NSViewController, ToolbarItemHandler {
+public class MacSessionController: AbstractSessionViewController, ToolbarItemHandler, Rc2SessionDelegate {
 	var sessionView: MacSessionView?
 	var outputController: MacSessionOutputController?
 	var editController: MacSessionEditorController?
@@ -27,12 +28,12 @@ public class MacSessionController: NSViewController, ToolbarItemHandler {
 				leftController = (aController as! MacSessionMultiController)
 			}
 		}
-		NSNotificationCenter.defaultCenter().addObserverForName(SelectedSessionChangedNotification, object: nil, queue: nil) { (note) -> Void in
-			let wspace = note.object as! Box<Workspace>
-			print("got workspace: \(wspace.unbox.name)")
-		}
 	}
-
+	
+	override func sessionChanged() {
+		sessionOptional?.delegate = self
+	}
+	
 	func handlesToolbarItem(item: NSToolbarItem) -> Bool {
 		if item.itemIdentifier == "leftView" {
 			segmentItem = item
@@ -63,5 +64,21 @@ public class MacSessionController: NSViewController, ToolbarItemHandler {
 		}
 	}
 	
+	func sessionOpened() {
+		
+	}
+	
+	func sessionClosed() {
+		
+	}
+	
+	func sessionMessageReceived(msg:JSON) {
+		
+	}
+	
+	func loadHelpItems(topic:String, items:[HelpItem]) {
+		
+	}
+
 }
 

@@ -14,6 +14,12 @@
 		083305DB1C50284600E27F66 /* MacSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DA1C50284600E27F66 /* MacSessionView.swift */; };
 		083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */; };
 		083305E01C51571500E27F66 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 083305DE1C51571500E27F66 /* Localizable.strings */; };
+		083305E21C517F8900E27F66 /* FileViewContrfoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E11C517F8900E27F66 /* FileViewContrfoller.swift */; };
+		083305E41C517FC000E27F66 /* VariableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E31C517FC000E27F66 /* VariableViewController.swift */; };
+		083305E61C517FE300E27F66 /* UsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E51C517FE300E27F66 /* UsersViewController.swift */; };
+		083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E71C51812300E27F66 /* AbstractSessionViewController.swift */; };
+		083305EA1C5188F700E27F66 /* KeyValueObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E91C5188F700E27F66 /* KeyValueObserver.swift */; };
+		083305EC1C518CF300E27F66 /* KeyValueObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305EB1C518CF300E27F66 /* KeyValueObserverTests.swift */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66E1C4B0AF400153414 /* LoginViewController.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
@@ -85,6 +91,12 @@
 		083305DA1C50284600E27F66 /* MacSessionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionView.swift; sourceTree = "<group>"; };
 		083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecursiveFlatMap.swift; sourceTree = "<group>"; };
 		083305DF1C51571500E27F66 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		083305E11C517F8900E27F66 /* FileViewContrfoller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileViewContrfoller.swift; sourceTree = "<group>"; };
+		083305E31C517FC000E27F66 /* VariableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableViewController.swift; sourceTree = "<group>"; };
+		083305E51C517FE300E27F66 /* UsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersViewController.swift; sourceTree = "<group>"; };
+		083305E71C51812300E27F66 /* AbstractSessionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractSessionViewController.swift; sourceTree = "<group>"; };
+		083305E91C5188F700E27F66 /* KeyValueObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyValueObserver.swift; sourceTree = "<group>"; };
+		083305EB1C518CF300E27F66 /* KeyValueObserverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyValueObserverTests.swift; sourceTree = "<group>"; };
 		088CE6691C4B0AF400153414 /* MacClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppDelegate.swift; sourceTree = "<group>"; };
 		088CE66E1C4B0AF400153414 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -198,6 +210,7 @@
 				088CE6801C4B0AF500153414 /* Info.plist */,
 				088CE6BB1C4C508000153414 /* KeychainTests.swift */,
 				083305D41C4FE0E900E27F66 /* ToolbarValidationTests.swift */,
+				083305EB1C518CF300E27F66 /* KeyValueObserverTests.swift */,
 			);
 			path = MacClientTests;
 			sourceTree = "<group>";
@@ -223,6 +236,7 @@
 				088CE6A31C4B605D00153414 /* SystemExtensions.swift */,
 				088CE6B71C4C44A800153414 /* Keychain.swift */,
 				083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */,
+				083305E91C5188F700E27F66 /* KeyValueObserver.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -263,12 +277,16 @@
 		08F448F31C4E244500C64706 /* session */ = {
 			isa = PBXGroup;
 			children = (
+				083305E71C51812300E27F66 /* AbstractSessionViewController.swift */,
 				08F448F41C4E244500C64706 /* MacSessionController.swift */,
 				083305DA1C50284600E27F66 /* MacSessionView.swift */,
 				08F448F51C4E244500C64706 /* MacSessionEditorController.swift */,
 				08F448F61C4E244500C64706 /* MacSessionMultiController.swift */,
 				08F448F71C4E244500C64706 /* MacSessionOutputController.swift */,
 				08F448FF1C4EBEF100C64706 /* MacSplitter.swift */,
+				083305E11C517F8900E27F66 /* FileViewContrfoller.swift */,
+				083305E31C517FC000E27F66 /* VariableViewController.swift */,
+				083305E51C517FE300E27F66 /* UsersViewController.swift */,
 				08F448F81C4E244500C64706 /* MacSessionView.storyboard */,
 			);
 			path = session;
@@ -384,6 +402,7 @@
 				088CE6AF1C4B605D00153414 /* WebSocketSource.swift in Sources */,
 				088CE6B01C4B605D00153414 /* SystemExtensions.swift in Sources */,
 				088CE6A41C4B605D00153414 /* ColorEnums.swift in Sources */,
+				083305E41C517FC000E27F66 /* VariableViewController.swift in Sources */,
 				088CE6AA1C4B605D00153414 /* Workspace.swift in Sources */,
 				088CE6A51C4B605D00153414 /* File.swift in Sources */,
 				08F448FB1C4E244500C64706 /* MacSessionMultiController.swift in Sources */,
@@ -392,14 +411,18 @@
 				088CE6A81C4B605D00153414 /* LoginSession.swift in Sources */,
 				08F448FA1C4E244500C64706 /* MacSessionEditorController.swift in Sources */,
 				08F448FC1C4E244500C64706 /* MacSessionOutputController.swift in Sources */,
+				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
 				088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */,
 				083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */,
 				08F448F91C4E244500C64706 /* MacSessionController.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
+				083305E61C517FE300E27F66 /* UsersViewController.swift in Sources */,
 				083305D31C4FC78C00E27F66 /* NSToolbarItem+Validate.swift in Sources */,
+				083305E21C517F8900E27F66 /* FileViewContrfoller.swift in Sources */,
 				088CE6AE1C4B605D00153414 /* Session.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
 				088CE6BE1C4DAFA500153414 /* WorkspacesViewController.swift in Sources */,
+				083305EA1C5188F700E27F66 /* KeyValueObserver.swift in Sources */,
 				088CE6AC1C4B605D00153414 /* RestServer.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,
 				083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */,
@@ -416,6 +439,7 @@
 				088CE67F1C4B0AF500153414 /* MacClientTests.swift in Sources */,
 				088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */,
 				083305D51C4FE0E900E27F66 /* ToolbarValidationTests.swift in Sources */,
+				083305EC1C518CF300E27F66 /* KeyValueObserverTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
