@@ -8,3 +8,4 @@ import Foundation
 
 let Rc2ErrorDomain = "Rc2ErrorDomain"
 let RestLoginChangedNotification = "RestLoginChangedNotification"
+let SelectedSessionChangedNotification = "SelectedSessionChangedNotification"

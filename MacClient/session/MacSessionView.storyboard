@@ -250,8 +250,8 @@
             <objects>
                 <tabViewController selectedTabViewItemIndex="1" tabStyle="unspecified" id="FZf-DS-tw6" sceneMemberID="viewController">
                     <tabViewItems>
-                        <tabViewItem id="0jC-aP-f4b"/>
-                        <tabViewItem id="e00-51-ABq"/>
+                        <tabViewItem identifier="workspaceSelect" id="0jC-aP-f4b"/>
+                        <tabViewItem identifier="session" id="e00-51-ABq"/>
                     </tabViewItems>
                     <viewControllerTransitionOptions key="transitionOptions" slideLeft="YES" allowUserInteraction="YES"/>
                     <tabView key="tabView" type="noTabsNoBorder" id="UA5-O6-EVk">

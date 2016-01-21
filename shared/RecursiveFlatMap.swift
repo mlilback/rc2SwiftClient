@@ -19,3 +19,18 @@ func recursiveFlatMap<T, TResult>(root: T, transform: (T) -> TResult?, children:
 	result += children(root).flatMap( { recursiveFlatMap($0, transform: transform, children: children) })
 	return result
 }
+
+///breadth-first
+func  firstRecursiveDescendent<T>(root: T, @noescape children:(T) -> [T], @noescape filter:(T) -> Bool) -> T?
+{
+	if filter(root) { return root }
+	for aChild in children(root) {
+		if filter(aChild) { return aChild }
+	}
+	for aChild in children(root) {
+		if let childValue = firstRecursiveDescendent(aChild, children: children, filter: filter) {
+			return childValue
+		}
+	}
+	return nil
+}

@@ -31,6 +31,8 @@ import Cocoa
 	}
 	
 	@IBAction func selectWorkspace(sender:AnyObject?) {
+		let wspace = RestServer.sharedInstance.loginSession!.workspaceWithName(selectedWorkspace!)!
+		NSNotificationCenter.defaultCenter().postNotificationName(SelectedSessionChangedNotification, object: Box(wspace))
 		actionCallback?(controller: self, workspaceName: selectedWorkspace!)
 	}
 	

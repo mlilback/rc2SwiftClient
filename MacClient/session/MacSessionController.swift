@@ -27,6 +27,10 @@ public class MacSessionController: NSViewController, ToolbarItemHandler {
 				leftController = (aController as! MacSessionMultiController)
 			}
 		}
+		NSNotificationCenter.defaultCenter().addObserverForName(SelectedSessionChangedNotification, object: nil, queue: nil) { (note) -> Void in
+			let wspace = note.object as! Box<Workspace>
+			print("got workspace: \(wspace.unbox.name)")
+		}
 	}
 
 	func handlesToolbarItem(item: NSToolbarItem) -> Bool {

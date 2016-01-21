@@ -20,6 +20,13 @@ enum ColorInputError : ErrorType {
 	typealias Image = UIImage
 #endif
 
+public final class Box<T> {
+	let unbox: T
+	init(_ value:T) {
+		self.unbox = value
+	}
+}
+
 extension Color {
 	public convenience init(hex:String, alpha:CGFloat = 1.0) throws {
 		var hcode = hex

@@ -19,6 +19,13 @@ public struct LoginSession: CustomStringConvertible {
 		currentUser = User(json: json["user"])
 		workspaces = Workspace.workspacesFromJsonArray(json["workspaces"])
 	}
+	
+	func workspaceWithName(name:String) -> Workspace? {
+		if let found = workspaces.indexOf({$0.name == name}) {
+			return workspaces[found]
+		}
+		return nil
+	}
 
 	public var description : String {
 		return "<LoginSession: \(currentUser.login)@\(host) (\(currentUser.userId))";

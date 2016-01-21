@@ -13,6 +13,7 @@
 		083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D81C501B7300E27F66 /* MainWindowController.swift */; };
 		083305DB1C50284600E27F66 /* MacSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DA1C50284600E27F66 /* MacSessionView.swift */; };
 		083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */; };
+		083305E01C51571500E27F66 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 083305DE1C51571500E27F66 /* Localizable.strings */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66E1C4B0AF400153414 /* LoginViewController.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
@@ -83,6 +84,7 @@
 		083305D81C501B7300E27F66 /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		083305DA1C50284600E27F66 /* MacSessionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionView.swift; sourceTree = "<group>"; };
 		083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecursiveFlatMap.swift; sourceTree = "<group>"; };
+		083305DF1C51571500E27F66 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		088CE6691C4B0AF400153414 /* MacClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppDelegate.swift; sourceTree = "<group>"; };
 		088CE66E1C4B0AF400153414 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 				083305D11C4FC76C00E27F66 /* extensions */,
 				088CE6751C4B0AF400153414 /* Info.plist */,
 				083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */,
+				083305DE1C51571500E27F66 /* Localizable.strings */,
 			);
 			path = MacClient;
 			sourceTree = "<group>";
@@ -355,6 +358,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */,
+				083305E01C51571500E27F66 /* Localizable.strings in Resources */,
 				08F448FD1C4E244500C64706 /* MacSessionView.storyboard in Resources */,
 				088CE6AB1C4B605D00153414 /* RestHosts.json in Resources */,
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
@@ -426,6 +430,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		083305DE1C51571500E27F66 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				083305DF1C51571500E27F66 /* Base */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		088CE6721C4B0AF400153414 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
