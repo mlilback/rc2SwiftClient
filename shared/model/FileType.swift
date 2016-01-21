@@ -14,7 +14,7 @@ import Foundation
 public struct FileType : Equatable {
 	
 	static var allFileTypes:[FileType] = {
-		let fpath = NSBundle().pathForResource("FileTypes", ofType: "plist")
+		let fpath = NSBundle(forClass: Session.self).pathForResource("FileTypes", ofType: "plist")
 		let dict = NSDictionary(contentsOfFile: fpath!)
 		let rawTypes = dict!["FileTypes"] as! NSArray
 		return rawTypes.map({ FileType(dictionary: $0 as! NSDictionary) })

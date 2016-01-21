@@ -11,7 +11,7 @@ import Starscream
 public protocol WebSocketSource : class {
 	var delegate : WebSocketDelegate? { get set }
 	func connect()
-	func disconnect(forceTimeout: Int)
+	func disconnect(forceTimeout forceTimeout: NSTimeInterval?)
 	func writeString(str:String)
 	func writeData(data:NSData)
 	func writePing(data:NSData)

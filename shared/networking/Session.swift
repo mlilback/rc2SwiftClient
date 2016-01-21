@@ -56,7 +56,7 @@ public class Session : NSObject {
 	}
 	
 	func close() {
-		self.wsSource.disconnect(2)
+		self.wsSource.disconnect(forceTimeout: 2)
 	}
 	
 	//MARK: public reuest methods
