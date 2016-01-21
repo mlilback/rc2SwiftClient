@@ -7,13 +7,16 @@
 import Cocoa
 
 class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolbarDelegate {
-//	override func windowDidLoad() {
-//		assignHandlers(contentViewController!, items: (window?.toolbar?.items)!)
-//	}
+	@IBOutlet var rootTabController: NSTabViewController?
+	private var toolbarSetupScheduled = false
 	
 	func toolbarWillAddItem(notification: NSNotification) {
-		dispatch_async(dispatch_get_main_queue()) { () -> Void in
-			self.assignHandlers(self.contentViewController!, items: (self.window?.toolbar?.items)!)
+		//schedule assigning handlers after toolbar items are loaded
+		if !toolbarSetupScheduled {
+			dispatch_async(dispatch_get_main_queue()) { () -> Void in
+				self.assignHandlers(self.contentViewController!, items: (self.window?.toolbar?.items)!)
+			}
+			toolbarSetupScheduled = true
 		}
 	}
 }

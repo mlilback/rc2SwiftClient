@@ -17,23 +17,13 @@ protocol ToolbarDelegatingOwner : class {
 
 extension ToolbarDelegatingOwner {
 	func assignHandlers(rootController: NSViewController, items:[NSToolbarItem]) {
-		//find every ToolbarItemHandler in window
-		var handlers: [ToolbarItemHandler] = [ToolbarItemHandler]()
-		handlersForController(rootController, matches: &handlers)
+		//find every ToolbarItemHandler in rootController
+		let handlers = recursiveFlatMap(rootController, transform: {(T) in T as? ToolbarItemHandler }, children: { (T) in T.childViewControllers })
 		//loop through toolbar items looking for the first handler that handles the item
 		for anItem in items {
 			for aHandler in handlers {
 				if aHandler.handlesToolbarItem(anItem) { break; }
 			}
-		}
-	}
-	
-	private func handlersForController(parent: NSViewController, inout matches: [ToolbarItemHandler]) {
-		for aController in parent.childViewControllers {
-			if aController is ToolbarItemHandler {
-				matches.append(aController as! ToolbarItemHandler)
-			}
-			handlersForController(aController, matches: &matches)
 		}
 	}
 }

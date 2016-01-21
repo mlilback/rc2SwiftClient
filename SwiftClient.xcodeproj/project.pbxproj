@@ -12,6 +12,7 @@
 		083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */; };
 		083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D81C501B7300E27F66 /* MainWindowController.swift */; };
 		083305DB1C50284600E27F66 /* MacSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DA1C50284600E27F66 /* MacSessionView.swift */; };
+		083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66E1C4B0AF400153414 /* LoginViewController.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
@@ -81,6 +82,7 @@
 		083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarItemHandler.swift; sourceTree = "<group>"; };
 		083305D81C501B7300E27F66 /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		083305DA1C50284600E27F66 /* MacSessionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionView.swift; sourceTree = "<group>"; };
+		083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecursiveFlatMap.swift; sourceTree = "<group>"; };
 		088CE6691C4B0AF400153414 /* MacClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppDelegate.swift; sourceTree = "<group>"; };
 		088CE66E1C4B0AF400153414 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -176,12 +178,12 @@
 				088CE66E1C4B0AF400153414 /* LoginViewController.swift */,
 				088CE6701C4B0AF400153414 /* Assets.xcassets */,
 				088CE6721C4B0AF400153414 /* Main.storyboard */,
+				083305D81C501B7300E27F66 /* MainWindowController.swift */,
 				088CE6BF1C4DAFAB00153414 /* workspaces */,
 				08F448F31C4E244500C64706 /* session */,
 				083305D11C4FC76C00E27F66 /* extensions */,
 				088CE6751C4B0AF400153414 /* Info.plist */,
 				083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */,
-				083305D81C501B7300E27F66 /* MainWindowController.swift */,
 			);
 			path = MacClient;
 			sourceTree = "<group>";
@@ -217,6 +219,7 @@
 				088CE6951C4B605D00153414 /* ColorEnums.swift */,
 				088CE6A31C4B605D00153414 /* SystemExtensions.swift */,
 				088CE6B71C4C44A800153414 /* Keychain.swift */,
+				083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -395,6 +398,7 @@
 				088CE6BE1C4DAFA500153414 /* WorkspacesViewController.swift in Sources */,
 				088CE6AC1C4B605D00153414 /* RestServer.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,
+				083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */,
 				088CE6A91C4B605D00153414 /* User.swift in Sources */,
 				088CE6AD1C4B605D00153414 /* ServerResponse.swift in Sources */,
 				088CE6B81C4C44A800153414 /* Keychain.swift in Sources */,
