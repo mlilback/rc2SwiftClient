@@ -6,17 +6,15 @@
 
 import Cocoa
 
-class MacSessionMultiController: NSViewController {
+class MacSessionMultiController: NSTabViewController {
 	let LastSelectionKey = "LastSelectionKey"
 	
-	@IBOutlet var tabView: NSTabView?
-
 	var selectedTabIndex: Int {
-		get { return (tabView?.indexOfTabViewItem((tabView?.selectedTabViewItem)!))! }
+		get { return tabView.indexOfTabViewItem((tabView.selectedTabViewItem)!) }
 	}
 	
 	func selectTabAtIndex(index: Int) {
-		tabView?.selectTabViewItemAtIndex(index)
+		tabView.selectTabViewItemAtIndex(index)
 	}
 }
 
