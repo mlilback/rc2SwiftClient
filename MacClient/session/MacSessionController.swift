@@ -7,7 +7,7 @@
 import Cocoa
 import SwiftyJSON
 
-public class MacSessionController: AbstractSessionViewController, ToolbarItemHandler, Rc2SessionDelegate {
+public class MacSessionController: AbstractSessionViewController, ToolbarItemHandler, SessionDelegate {
 	var sessionView: MacSessionView?
 	var outputController: MacSessionOutputController?
 	var editController: MacSessionEditorController?

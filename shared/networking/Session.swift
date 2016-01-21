@@ -12,7 +12,7 @@ import XCGLogger
 	import AppKit
 #endif
 
-protocol Rc2SessionDelegate : class {
+protocol SessionDelegate : class {
 	func sessionOpened()
 	func sessionClosed()
 	func sessionMessageReceived(msg:JSON)
@@ -28,7 +28,7 @@ public class Session : NSObject {
 	
 	let workspace : Workspace
 	let wsSource : WebSocketSource
-	weak var delegate : Rc2SessionDelegate?
+	weak var delegate : SessionDelegate?
 	var variablesVisible : Bool = false {
 		didSet {
 			if variablesVisible && variablesVisible != oldValue {
@@ -42,7 +42,7 @@ public class Session : NSObject {
 	
 	private(set) var connectionOpen:Bool = false
 	
-	init(_ wspace:Workspace, delegate:Rc2SessionDelegate?=nil, source:WebSocketSource)
+	init(_ wspace:Workspace, delegate:SessionDelegate?=nil, source:WebSocketSource)
 	{
 		workspace = wspace
 		self.delegate = delegate
