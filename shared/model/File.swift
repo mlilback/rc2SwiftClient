@@ -7,7 +7,7 @@
 import Foundation
 import SwiftyJSON
 
-public struct File: CustomStringConvertible, Equatable {
+public class File: CustomStringConvertible, Equatable {
 	let fileId : Int32
 	let name : String
 	let version : Int32
@@ -28,7 +28,7 @@ public struct File: CustomStringConvertible, Equatable {
 		return array
 	}
 
-	init (jsonData:AnyObject) {
+	convenience init (jsonData:AnyObject) {
 		let json = JSON(jsonData)
 		self.init(json: json)
 	}

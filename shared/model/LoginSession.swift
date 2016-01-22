@@ -7,7 +7,7 @@
 import Foundation
 import SwiftyJSON
 
-public struct LoginSession: CustomStringConvertible {
+public class LoginSession: CustomStringConvertible {
 	let host : String;
 	let authToken : String;
 	let currentUser : User;

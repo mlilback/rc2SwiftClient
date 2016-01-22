@@ -7,7 +7,7 @@
 import Foundation
 import SwiftyJSON
 
-public struct Workspace: CustomStringConvertible, Equatable {
+public class Workspace: CustomStringConvertible, Equatable {
 	let wspaceId : Int32
 	let userId : Int32
 	let name : String
@@ -28,7 +28,7 @@ public struct Workspace: CustomStringConvertible, Equatable {
 		return wspaces
 	}
 	
-	init (jsonData:AnyObject) {
+	convenience init (jsonData:AnyObject) {
 		let json = JSON(jsonData)
 		self.init(json: json)
 	}

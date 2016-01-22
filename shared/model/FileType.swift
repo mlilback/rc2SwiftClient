@@ -11,7 +11,7 @@ import Foundation
 	import UIKit
 #endif
 
-public struct FileType : Equatable {
+public class FileType : Equatable {
 	
 	static var allFileTypes:[FileType] = {
 		let fpath = NSBundle(forClass: Session.self).pathForResource("FileTypes", ofType: "plist")

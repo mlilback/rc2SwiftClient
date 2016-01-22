@@ -7,7 +7,7 @@
 import Foundation
 import SwiftyJSON
 
-public struct User: CustomStringConvertible, Equatable {
+public class User: CustomStringConvertible, Equatable {
 	let userId : Int32;
 	let login : String;
 	let version : Int32;
@@ -16,7 +16,7 @@ public struct User: CustomStringConvertible, Equatable {
 	let email: String;
 	let admin: Bool;
 	
-	init (jsonData:AnyObject) {
+	convenience init (jsonData:AnyObject) {
 		let json = JSON(jsonData)
 		self.init(json: json)
 	}
