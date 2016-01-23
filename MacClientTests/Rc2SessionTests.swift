@@ -9,7 +9,6 @@
 import XCTest
 @testable import MacClient
 import Starscream
-import SwiftyJSON
 
 class Rc2SessionTests: XCTestCase {
 	static let wspaceJson = "[{\"id\":1, \"userId\":1, \"version\":1, \"name\":\"foofy\", \"files\":[]}]"

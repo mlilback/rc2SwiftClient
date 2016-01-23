@@ -28,24 +28,16 @@
 		083305FB1C519B8500E27F66 /* Rc2FileTypeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305F61C519B8500E27F66 /* Rc2FileTypeTest.swift */; };
 		083305FC1C519B8500E27F66 /* Rc2SessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305F71C519B8500E27F66 /* Rc2SessionTests.swift */; };
 		083305FD1C519B8500E27F66 /* RestServerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305F81C519B8500E27F66 /* RestServerTest.swift */; };
-		083305FF1C519C9900E27F66 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 083305FE1C519C9900E27F66 /* Mockingjay.framework */; };
-		083306001C519CAE00E27F66 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 083305FE1C519C9900E27F66 /* Mockingjay.framework */; };
-		083306011C519CAE00E27F66 /* Mockingjay.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 083305FE1C519C9900E27F66 /* Mockingjay.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		083306031C51A03100E27F66 /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 083306021C51A03100E27F66 /* URITemplate.framework */; };
-		083306041C51A04900E27F66 /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 083306021C51A03100E27F66 /* URITemplate.framework */; };
-		083306051C51A04900E27F66 /* URITemplate.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 083306021C51A03100E27F66 /* URITemplate.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 083306061C51A0B200E27F66 /* CommonDefaults.plist */; };
+		0833061E1C541BB700E27F66 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0833061D1C541BB700E27F66 /* SwiftyJSON.swift */; };
+		086BC99F1C5422C0006ABAE0 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */; };
+		086BC9A11C542309006ABAE0 /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		086BC9A41C5423D0006ABAE0 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9A31C5423D0006ABAE0 /* Mockingjay.framework */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66E1C4B0AF400153414 /* LoginViewController.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
 		088CE6741C4B0AF400153414 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6721C4B0AF400153414 /* Main.storyboard */; };
 		088CE67F1C4B0AF500153414 /* MacClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE67E1C4B0AF500153414 /* MacClientTests.swift */; };
-		088CE68C1C4B136800153414 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 088CE6891C4B136700153414 /* Starscream.framework */; };
-		088CE68D1C4B136800153414 /* Starscream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 088CE6891C4B136700153414 /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		088CE68E1C4B136800153414 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 088CE68A1C4B136800153414 /* SwiftyJSON.framework */; };
-		088CE68F1C4B136800153414 /* SwiftyJSON.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 088CE68A1C4B136800153414 /* SwiftyJSON.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		088CE6901C4B136800153414 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 088CE68B1C4B136800153414 /* XCGLogger.framework */; };
-		088CE6911C4B136800153414 /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 088CE68B1C4B136800153414 /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		088CE6A41C4B605D00153414 /* ColorEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6951C4B605D00153414 /* ColorEnums.swift */; };
 		088CE6A51C4B605D00153414 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6971C4B605D00153414 /* File.swift */; };
 		088CE6A61C4B605D00153414 /* FileType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6981C4B605D00153414 /* FileType.swift */; };
@@ -64,6 +56,8 @@
 		088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 088CE6B91C4C44BD00153414 /* Security.framework */; };
 		088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6BB1C4C508000153414 /* KeychainTests.swift */; };
 		088CE6BE1C4DAFA500153414 /* WorkspacesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6BD1C4DAFA500153414 /* WorkspacesViewController.swift */; };
+		08DDE79D1C541EF900F3C0BC /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08DDE79C1C541EF900F3C0BC /* Starscream.framework */; };
+		08DDE79F1C541F1100F3C0BC /* Starscream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08DDE79C1C541EF900F3C0BC /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08F448F91C4E244500C64706 /* MacSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F41C4E244500C64706 /* MacSessionController.swift */; };
 		08F448FA1C4E244500C64706 /* MacSessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* MacSessionEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* MacSessionMultiController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* MacSessionMultiController.swift */; };
@@ -89,11 +83,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				083306011C519CAE00E27F66 /* Mockingjay.framework in Embed Frameworks */,
-				088CE68F1C4B136800153414 /* SwiftyJSON.framework in Embed Frameworks */,
-				088CE68D1C4B136800153414 /* Starscream.framework in Embed Frameworks */,
-				088CE6911C4B136800153414 /* XCGLogger.framework in Embed Frameworks */,
-				083306051C51A04900E27F66 /* URITemplate.framework in Embed Frameworks */,
+				08DDE79F1C541F1100F3C0BC /* Starscream.framework in Embed Frameworks */,
+				086BC9A11C542309006ABAE0 /* XCGLogger.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -123,9 +114,10 @@
 		083305F61C519B8500E27F66 /* Rc2FileTypeTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2FileTypeTest.swift; sourceTree = "<group>"; };
 		083305F71C519B8500E27F66 /* Rc2SessionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2SessionTests.swift; sourceTree = "<group>"; };
 		083305F81C519B8500E27F66 /* RestServerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestServerTest.swift; sourceTree = "<group>"; };
-		083305FE1C519C9900E27F66 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Build/Mac/Mockingjay.framework; sourceTree = "<group>"; };
-		083306021C51A03100E27F66 /* URITemplate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = URITemplate.framework; path = Carthage/Build/Mac/URITemplate.framework; sourceTree = "<group>"; };
 		083306061C51A0B200E27F66 /* CommonDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CommonDefaults.plist; sourceTree = "<group>"; };
+		0833061D1C541BB700E27F66 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = submodules/SwiftyJSON/Source/SwiftyJSON.swift; sourceTree = SOURCE_ROOT; };
+		086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = XCGLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		086BC9A31C5423D0006ABAE0 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = "../../../Library/Developer/Xcode/DerivedData/SwiftClient-flhxnafpxhvxevacsbyttnqkhmkv/Build/Products/Debug/Mockingjay.framework"; sourceTree = "<group>"; };
 		088CE6691C4B0AF400153414 /* MacClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppDelegate.swift; sourceTree = "<group>"; };
 		088CE66E1C4B0AF400153414 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -135,9 +127,6 @@
 		088CE67A1C4B0AF500153414 /* MacClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE67E1C4B0AF500153414 /* MacClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacClientTests.swift; sourceTree = "<group>"; };
 		088CE6801C4B0AF500153414 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		088CE6891C4B136700153414 /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/Mac/Starscream.framework; sourceTree = "<group>"; };
-		088CE68A1C4B136800153414 /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/Mac/SwiftyJSON.framework; sourceTree = "<group>"; };
-		088CE68B1C4B136800153414 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCGLogger.framework; path = Carthage/Build/Mac/XCGLogger.framework; sourceTree = "<group>"; };
 		088CE6951C4B605D00153414 /* ColorEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorEnums.swift; sourceTree = "<group>"; };
 		088CE6971C4B605D00153414 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		088CE6981C4B605D00153414 /* FileType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileType.swift; sourceTree = "<group>"; };
@@ -156,6 +145,7 @@
 		088CE6B91C4C44BD00153414 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		088CE6BB1C4C508000153414 /* KeychainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
 		088CE6BD1C4DAFA500153414 /* WorkspacesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspacesViewController.swift; sourceTree = "<group>"; };
+		08DDE79C1C541EF900F3C0BC /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Starscream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08F448F41C4E244500C64706 /* MacSessionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionController.swift; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* MacSessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionEditorController.swift; sourceTree = "<group>"; };
 		08F448F61C4E244500C64706 /* MacSessionMultiController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionMultiController.swift; sourceTree = "<group>"; };
@@ -170,11 +160,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
-				083306041C51A04900E27F66 /* URITemplate.framework in Frameworks */,
-				083306001C519CAE00E27F66 /* Mockingjay.framework in Frameworks */,
-				088CE68E1C4B136800153414 /* SwiftyJSON.framework in Frameworks */,
-				088CE68C1C4B136800153414 /* Starscream.framework in Frameworks */,
-				088CE6901C4B136800153414 /* XCGLogger.framework in Frameworks */,
+				08DDE79D1C541EF900F3C0BC /* Starscream.framework in Frameworks */,
+				086BC99F1C5422C0006ABAE0 /* XCGLogger.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,8 +169,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				083305FF1C519C9900E27F66 /* Mockingjay.framework in Frameworks */,
-				083306031C51A03100E27F66 /* URITemplate.framework in Frameworks */,
+				086BC9A41C5423D0006ABAE0 /* Mockingjay.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,11 +184,21 @@
 			path = extensions;
 			sourceTree = "<group>";
 		};
+		0833061F1C541BBC00E27F66 /* 3rdParty */ = {
+			isa = PBXGroup;
+			children = (
+				0833061D1C541BB700E27F66 /* SwiftyJSON.swift */,
+			);
+			name = 3rdParty;
+			path = shared;
+			sourceTree = "<group>";
+		};
 		088CE6601C4B0AF400153414 = {
 			isa = PBXGroup;
 			children = (
 				088CE66B1C4B0AF400153414 /* MacClient */,
 				088CE6941C4B605D00153414 /* shared */,
+				0833061F1C541BBC00E27F66 /* 3rdParty */,
 				088CE6931C4B144800153414 /* Frameworks */,
 				088CE67D1C4B0AF500153414 /* MacClientTests */,
 				088CE66A1C4B0AF400153414 /* Products */,
@@ -261,12 +257,10 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				083306021C51A03100E27F66 /* URITemplate.framework */,
-				083305FE1C519C9900E27F66 /* Mockingjay.framework */,
+				086BC9A31C5423D0006ABAE0 /* Mockingjay.framework */,
+				086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */,
+				08DDE79C1C541EF900F3C0BC /* Starscream.framework */,
 				088CE6B91C4C44BD00153414 /* Security.framework */,
-				088CE6891C4B136700153414 /* Starscream.framework */,
-				088CE68A1C4B136800153414 /* SwiftyJSON.framework */,
-				088CE68B1C4B136800153414 /* XCGLogger.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -458,6 +452,7 @@
 				088CE6A61C4B605D00153414 /* FileType.swift in Sources */,
 				088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */,
 				088CE6A81C4B605D00153414 /* LoginSession.swift in Sources */,
+				0833061E1C541BB700E27F66 /* SwiftyJSON.swift in Sources */,
 				08F448FA1C4E244500C64706 /* MacSessionEditorController.swift in Sources */,
 				08F448FC1C4E244500C64706 /* MacSessionOutputController.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,

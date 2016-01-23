@@ -4,4 +4,13 @@
    <FileRef
       location = "container:SwiftClient.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:submodules/XCGLogger/XCGLogger/Library/XCGLogger.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:submodules/starscream/Starscream.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:submodules/Mockingjay/Mockingjay.xcodeproj">
+   </FileRef>
 </Workspace>
