@@ -7,7 +7,7 @@
 import Cocoa
 import SwiftyJSON
 
-public class MacSessionController: AbstractSessionViewController, ToolbarItemHandler, SessionDelegate {
+class MacSessionController: AbstractSessionViewController, ToolbarItemHandler, SessionDelegate {
 	var sessionView: MacSessionView?
 	var outputController: MacSessionOutputController?
 	var editController: MacSessionEditorController?
@@ -15,7 +15,7 @@ public class MacSessionController: AbstractSessionViewController, ToolbarItemHan
 	var segmentItem: NSToolbarItem?
 	var segmentControl: NSSegmentedControl?
 	
-	override public func viewDidLoad() {
+	override func viewDidLoad() {
 		super.viewDidLoad()
 		sessionView = view as? MacSessionView
 		//create refs to our child controllers
@@ -65,7 +65,7 @@ public class MacSessionController: AbstractSessionViewController, ToolbarItemHan
 	}
 	
 	func sessionOpened() {
-		
+		print("opned")
 	}
 	
 	func sessionClosed() {

@@ -6,22 +6,17 @@
 
 import Cocoa
 
-public class AbstractSessionViewController : NSViewController {
+class AbstractSessionViewController: NSViewController {
 	dynamic var sessionOptional: Session?
 	///convience accessor so don't have to constantly unwrap optional
 	var session: Session { get { return sessionOptional! } }
-	private var sessionContext: KVOContext?
 	
-	override public func viewDidLoad() {
+	override func viewDidLoad() {
 		super.viewDidLoad()
-		sessionContext = Session.manager.addKeyValueObserver("currentSession", options: [.New]) { (source, keyPath, change) -> Void in
-			self.sessionOptional = Session.manager.currentSession
+		NSNotificationCenter.defaultCenter().addObserverForName(CurrentSessionChangedNotification, object: nil, queue: nil) {
+			self.sessionOptional = $0.object as! Session?
 			self.sessionChanged()
 		}
-	}
-	
-	deinit {
-		sessionContext = nil //unregisters kvo observer
 	}
 	
 	///for subclasses

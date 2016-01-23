@@ -142,7 +142,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="215" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="iih-RD-RqJ" userLabel="editor view" customClass="MacSessionEditView">
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="iih-RD-RqJ" userLabel="editor view">
                                 <rect key="frame" x="0.0" y="0.0" width="215" height="513"/>
                                 <subviews>
                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTm-hy-NW5">
@@ -353,7 +353,7 @@
                                                                 <outlet property="textField" destination="cdI-61-Trg" id="wg1-qM-zbb"/>
                                                             </connections>
                                                         </tableCellView>
-                                                        <tableCellView identifier="file" id="dxY-YX-Pua" customClass="RCMSessionFileCellView">
+                                                        <tableCellView identifier="file" id="dxY-YX-Pua" customClass="SessionCellView" customModule="MacClient" customModuleProvider="target">
                                                             <rect key="frame" x="1" y="26" width="144" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
@@ -445,6 +445,9 @@
                             <constraint firstItem="txX-n8-tjU" firstAttribute="top" secondItem="Yck-bc-8ar" secondAttribute="top" constant="8" id="uNs-ug-QQY"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="tableView" destination="wvl-Kg-cyW" id="fQP-a0-yDO"/>
+                    </connections>
                 </viewController>
                 <customObject id="fP0-JA-Iqc" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -906,7 +909,7 @@ DQ
                     </connections>
                 </arrayController>
             </objects>
-            <point key="canvasLocation" x="-631" y="-452.5"/>
+            <point key="canvasLocation" x="-599" y="-436.5"/>
         </scene>
     </scenes>
     <resources>

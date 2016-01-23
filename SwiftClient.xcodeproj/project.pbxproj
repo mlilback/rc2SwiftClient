@@ -29,7 +29,6 @@
 		083305FC1C519B8500E27F66 /* Rc2SessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305F71C519B8500E27F66 /* Rc2SessionTests.swift */; };
 		083305FD1C519B8500E27F66 /* RestServerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305F81C519B8500E27F66 /* RestServerTest.swift */; };
 		083305FF1C519C9900E27F66 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 083305FE1C519C9900E27F66 /* Mockingjay.framework */; };
-		083306001C519CAE00E27F66 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 083305FE1C519C9900E27F66 /* Mockingjay.framework */; };
 		083306011C519CAE00E27F66 /* Mockingjay.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 083305FE1C519C9900E27F66 /* Mockingjay.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		083306031C51A03100E27F66 /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 083306021C51A03100E27F66 /* URITemplate.framework */; };
 		083306041C51A04900E27F66 /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 083306021C51A03100E27F66 /* URITemplate.framework */; };
@@ -171,7 +170,6 @@
 			files = (
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				083306041C51A04900E27F66 /* URITemplate.framework in Frameworks */,
-				083306001C519CAE00E27F66 /* Mockingjay.framework in Frameworks */,
 				088CE68E1C4B136800153414 /* SwiftyJSON.framework in Frameworks */,
 				088CE68C1C4B136800153414 /* Starscream.framework in Frameworks */,
 				088CE6901C4B136800153414 /* XCGLogger.framework in Frameworks */,

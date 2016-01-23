@@ -68,7 +68,7 @@ import SwiftyJSON
 		if let previousHostName = NSUserDefaults.standardUserDefaults().stringForKey(self.kServerHostKey) {
 			selectHost(previousHostName)
 		}
-		NSNotificationCenter.defaultCenter().addObserverForName(SelectedSessionChangedNotification, object: nil, queue: nil) { (note) -> Void in
+		NSNotificationCenter.defaultCenter().addObserverForName(SelectedWorkspaceChangedNotification, object: nil, queue: nil) { (note) -> Void in
 			let wspace = note.object as! Box<Workspace>
 			self.createSession(wspace.unbox)
 		}
@@ -103,12 +103,14 @@ import SwiftyJSON
 	
 	public func createSession(wspace:Workspace) -> Session {
 		let ws = WebSocket(url: createWebsocketUrl(wspace.wspaceId))
+		ws.headers["Rc-2Auth"] = loginSession!.authToken
 		let session = Session(wspace, source:ws)
+		session.open()
 		return session
 	}
 	
 	func createWebsocketUrl(wspaceId:Int32) -> NSURL {
-		let build = NSBundle(forClass: RestServer.self).infoDictionary!["CFBundleVersion"]
+		let build = NSBundle(forClass: RestServer.self).infoDictionary!["CFBundleVersion"]!
 		#if os(OSX)
 			let client = "osx"
 		#else

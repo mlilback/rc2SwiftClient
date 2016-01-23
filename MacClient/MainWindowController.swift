@@ -17,10 +17,12 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 			filter: { $0 is NSTabViewController })  as? NSTabViewController
 		showWorkspaceSelectTab()
 		let workspacesVC = firstRecursiveDescendent(rootTabController!, children: {$0.childViewControllers}, filter: {$0 is WorkspacesViewController}) as! WorkspacesViewController
-		workspacesVC.actionCallback = { (controller:WorkspacesViewController, workspaceName:String) in
-			self.showSessionTab()
-			self.window!.title = String.localizedStringWithFormat(NSLocalizedString("WindowTitleFormat", comment: ""), workspaceName)
-		}
+		dispatch_async(dispatch_get_main_queue(), {
+			workspacesVC.actionCallback = { (controller:WorkspacesViewController, workspaceName:String) in
+				self.showSessionTab()
+				self.window!.title = String.localizedStringWithFormat(NSLocalizedString("WindowTitleFormat", comment: ""), workspaceName)
+			}
+		})
 	}
 	
 	func showWorkspaceSelectTab() {
@@ -28,7 +30,8 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 	}
 	
 	func showSessionTab() {
-		rootTabController?.selectedTabViewItemIndex = (rootTabController?.tabView.indexOfTabViewItemWithIdentifier("session"))!
+		let sessionIndex = (rootTabController?.tabView.indexOfTabViewItemWithIdentifier("session"))!
+		dispatch_async(dispatch_get_main_queue(), { self.rootTabController?.selectedTabViewItemIndex = sessionIndex })
 	}
 	
 	func toolbarWillAddItem(notification: NSNotification) {

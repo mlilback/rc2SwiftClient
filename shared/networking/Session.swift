@@ -20,9 +20,11 @@ protocol SessionDelegate : class {
 }
 
 public class Session : NSObject {
-	///for kvo monitoring of the current session, since KVO only works on objects, not classes
+	///tried kvo, forced to use notifications
 	class Manager: NSObject {
-		dynamic var currentSession: Session?
+		dynamic var currentSession: Session? {
+			didSet { NSNotificationCenter.defaultCenter().postNotificationName(CurrentSessionChangedNotification, object: currentSession) }
+		}
 	}
 	static var manager: Manager = Manager()
 	
