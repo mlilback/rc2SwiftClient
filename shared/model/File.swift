@@ -14,6 +14,7 @@ public class File: CustomStringConvertible, Equatable {
 	let fileSize : Int32
 	let dateCreated : NSDate
 	let lastModified : NSDate
+	let fileType: FileType
 	
 	static func filesFromJsonArray(jsonArray : AnyObject) -> [File] {
 		let array = JSON(jsonArray)
@@ -40,6 +41,13 @@ public class File: CustomStringConvertible, Equatable {
 		fileSize = json["fileSize"].int32Value
 		dateCreated = NSDate(timeIntervalSince1970: json["dateCreated"].doubleValue/1000.0)
 		lastModified = NSDate(timeIntervalSince1970: json["lastModified"].doubleValue/1000.0)
+		if let ft = FileType.fileTypeWithExtension((name as NSString).pathExtension) {
+			self.fileType = ft
+		} else {
+			assertionFailure("invalid file type")
+			//compiler won't let the property not be set, even though we're exiting the program
+			self.fileType = FileType.allFileTypes.first!
+		}
 	}
 	
 	public var description : String {
