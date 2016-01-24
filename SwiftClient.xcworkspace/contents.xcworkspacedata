@@ -8,9 +8,9 @@
       location = "group:submodules/XCGLogger/XCGLogger/Library/XCGLogger.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:submodules/starscream/Starscream.xcodeproj">
+      location = "group:submodules/Mockingjay/Mockingjay.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:submodules/Mockingjay/Mockingjay.xcodeproj">
+      location = "group:submodules/SwiftWebSocket/SwiftWebSocket.xcodeproj">
    </FileRef>
 </Workspace>

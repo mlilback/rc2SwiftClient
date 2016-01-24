@@ -1,7 +1,3 @@
-[submodule "submodules/starscream"]
-	path = submodules/starscream
-	url = https://github.com/daltoniam/Starscream
-	branch = 398d9c
 [submodule "submodules/SwiftyJSON"]
 	path = submodules/SwiftyJSON
 	url = https://github.com/SwiftyJSON/SwiftyJSON.git
@@ -11,3 +7,6 @@
 [submodule "submodules/XCGLogger"]
 	path = submodules/XCGLogger
 	url = https://github.com/DaveWoodCom/XCGLogger.git
+[submodule "submodules/SwiftWebSocket"]
+	path = submodules/SwiftWebSocket
+	url = https://github.com/tidwall/SwiftWebSocket.git

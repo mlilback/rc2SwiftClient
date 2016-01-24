@@ -8,14 +8,12 @@ This version is a complete rewrite in Swift, though where possible it is a prett
 
 The OSX client requires 10.11 El Capitan. Development is being done with Xcode 7.2.
 
-[Carthage](https://github.com/Carthage/Carthage) is used as a dependency manager. Other dependencies include:
+Due to a bug in clang that causes crashes with [Carthage](https://github.com/Carthage/Carthage) dependency management is done via git submodules. Dependencies include:
 
-* [Starscream](https://github.com/daltoniam/Starscream/issues) for websocket support
+* [SwiftWebSocket](https://github.com/tidwall/SwiftWebSocket) for websocket support
 
 * [XCGLogger](https://github.com/DaveWoodCom/XCGLogger) for logging.
 
 * [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) for simplified JSON parsing.
 
-## Building
-
-For some reason, carthage was getting an error building the iOS version of Starscream. Therefore, it is better to use `carthage update --platform Mac` to prep opening in Xcode.
+* [Mockingjay](https://github.com/kylef/Mockingjay) for networking unit tests.

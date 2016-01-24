@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import Starscream
+import SwiftWebSocket
 import SwiftyJSON
 
 @objc public class RestServer : NSObject {
@@ -28,6 +28,7 @@ import SwiftyJSON
 	private(set) public var selectedHost : NSDictionary
 	private(set) public var loginSession : LoginSession?
 	private var baseUrl : NSURL?
+	private var userAgent: String
 
 	var restHosts : [String] {
 		get {
@@ -47,7 +48,7 @@ import SwiftyJSON
 	
 	//private init so instance is unique
 	override init() {
-		var userAgent = "Rc2 iOSClient"
+		userAgent = "Rc2 iOSClient"
 		#if os(OSX)
 			userAgent = "Rc2 MacClient"
 		#endif
@@ -102,10 +103,12 @@ import SwiftyJSON
 	}
 	
 	public func createSession(wspace:Workspace) -> Session {
-		let ws = WebSocket(url: createWebsocketUrl(wspace.wspaceId))
-		ws.headers["Rc2-Auth"] = loginSession!.authToken
+		let request = NSMutableURLRequest(URL: createWebsocketUrl(wspace.wspaceId))
+		request.addValue(loginSession!.authToken, forHTTPHeaderField: "Rc2-Auth")
+		request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
+		let ws = WebSocket()
 		let session = Session(wspace, source:ws)
-		session.open()
+		session.open(request)
 		return session
 	}
 	

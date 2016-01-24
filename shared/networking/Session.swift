@@ -16,6 +16,7 @@ protocol SessionDelegate : class {
 	func sessionOpened()
 	func sessionClosed()
 	func sessionMessageReceived(msg:JSON)
+	func sessionErrorReceived(error:ErrorType)
 	func loadHelpItems(topic:String, items:[HelpItem])
 }
 
@@ -50,15 +51,29 @@ public class Session : NSObject {
 		self.delegate = delegate
 		self.wsSource = source
 		super.init()
-		self.wsSource.delegate = self
+		wsSource.event.open = {
+			self.connectionOpen = true
+			self.delegate?.sessionOpened()
+		}
+		wsSource.event.close = { (code, reason, clear) in
+			self.connectionOpen = false
+			self.delegate?.sessionClosed()
+		}
+		wsSource.event.message = { message in
+			log.info("got message: \(message as? String)")
+			self.delegate?.sessionMessageReceived(JSON.parse(message as! String))
+		}
+		wsSource.event.error = { error in
+			self.delegate?.sessionErrorReceived(error)
+		}
 	}
 	
-	func open() {
-		self.wsSource.connect()
+	func open(request:NSURLRequest) {
+		self.wsSource.open(request: request, subProtocols: [])
 	}
 	
 	func close() {
-		self.wsSource.disconnect(forceTimeout: 2)
+		self.wsSource.close(1000, reason: "") //default values that can't be specified in a protocol
 	}
 	
 	//MARK: public reuest methods
@@ -118,7 +133,7 @@ public class Session : NSObject {
 		do {
 			let json = try NSJSONSerialization.dataWithJSONObject(message, options: [])
 			let jsonStr = NSString(data: json, encoding: NSUTF8StringEncoding)
-			self.wsSource.writeString(jsonStr as! String)
+			self.wsSource.send(jsonStr as! String)
 		} catch let err as NSError {
 			log.error("error sending json message on websocket:\(err)")
 			return false
@@ -139,23 +154,5 @@ private extension Session {
 			return
 		}
 		self.delegate?.loadHelpItems(topic, items: items)
-	}
-}
-
-//MARK: WebSocketDelegate implementation
-extension Session : WebSocketDelegate {
-	public func websocketDidConnect(socket: WebSocket) {
-		connectionOpen = true
-		self.delegate?.sessionOpened()
-	}
-	public func websocketDidDisconnect(socket: WebSocket, error: NSError?) {
-		connectionOpen = false
-		self.delegate?.sessionClosed()
-	}
-	public func websocketDidReceiveMessage(socket: WebSocket, text: String) {
-		self.delegate?.sessionMessageReceived(JSON.parse(text))
-	}
-	public func websocketDidReceiveData(socket: WebSocket, data: NSData) {
-		
 	}
 }

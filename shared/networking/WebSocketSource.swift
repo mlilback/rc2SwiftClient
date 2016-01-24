@@ -5,16 +5,14 @@
 //
 
 import Foundation
-import Starscream
+import SwiftWebSocket
 
 //wrapper protocol around starscream's WebSocket class to allow DI and mocking
 public protocol WebSocketSource : class {
-	var delegate : WebSocketDelegate? { get set }
-	func connect()
-	func disconnect(forceTimeout forceTimeout: NSTimeInterval?)
-	func writeString(str:String)
-	func writeData(data:NSData)
-	func writePing(data:NSData)
+	var event: WebSocketEvents { get set }
+	func open(request request: NSURLRequest, subProtocols : [String])
+	func close(code : Int, reason : String)
+	func send(message : Any)
 }
 
 //declare Starscream's WebSocket as conforming to WebSocketSource

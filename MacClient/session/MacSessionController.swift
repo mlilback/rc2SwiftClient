@@ -76,6 +76,10 @@ class MacSessionController: AbstractSessionViewController, ToolbarItemHandler, S
 		
 	}
 	
+	func sessionErrorReceived(error: ErrorType) {
+		log.warning("error from websocket \(error)")
+	}
+	
 	func loadHelpItems(topic:String, items:[HelpItem]) {
 		
 	}
