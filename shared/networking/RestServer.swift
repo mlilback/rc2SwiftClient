@@ -103,7 +103,7 @@ import SwiftyJSON
 	
 	public func createSession(wspace:Workspace) -> Session {
 		let ws = WebSocket(url: createWebsocketUrl(wspace.wspaceId))
-		ws.headers["Rc-2Auth"] = loginSession!.authToken
+		ws.headers["Rc2-Auth"] = loginSession!.authToken
 		let session = Session(wspace, source:ws)
 		session.open()
 		return session
