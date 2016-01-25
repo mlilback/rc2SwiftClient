@@ -16,4 +16,6 @@ Due to a bug in clang that causes crashes with [Carthage](https://github.com/Car
 
 * [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) for simplified JSON parsing.
 
+* [Swinject](https://github.com/Swinject/Swinject) for dependency injection into objects loaded from a storyboard (since container seques don't call prepareForSeque)
+
 * [Mockingjay](https://github.com/kylef/Mockingjay) for networking unit tests.

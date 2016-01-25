@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		083174041C5571D300071408 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174031C5571D300071408 /* RootViewController.swift */; };
 		083305D31C4FC78C00E27F66 /* NSToolbarItem+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D21C4FC78C00E27F66 /* NSToolbarItem+Validate.swift */; };
 		083305D51C4FE0E900E27F66 /* ToolbarValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D41C4FE0E900E27F66 /* ToolbarValidationTests.swift */; };
 		083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */; };
@@ -34,6 +35,9 @@
 		086BC9A11C542309006ABAE0 /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		086BC9A41C5423D0006ABAE0 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9A31C5423D0006ABAE0 /* Mockingjay.framework */; };
 		086BC9AA1C54B9C7006ABAE0 /* SwiftWebSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9A91C54B9C7006ABAE0 /* SwiftWebSocket.framework */; };
+		086BC9AD1C552AA0006ABAE0 /* SpinLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */; };
+		086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086BC9AE1C552D43006ABAE0 /* AppStatus.swift */; };
+		086BC9B31C556A2E006ABAE0 /* Swinject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9B21C556A2E006ABAE0 /* Swinject.framework */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66E1C4B0AF400153414 /* LoginViewController.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
@@ -90,6 +94,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		083174031C5571D300071408 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		083305D21C4FC78C00E27F66 /* NSToolbarItem+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSToolbarItem+Validate.swift"; sourceTree = "<group>"; };
 		083305D41C4FE0E900E27F66 /* ToolbarValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarValidationTests.swift; sourceTree = "<group>"; };
 		083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarItemHandler.swift; sourceTree = "<group>"; };
@@ -117,6 +122,9 @@
 		086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = XCGLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		086BC9A31C5423D0006ABAE0 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Mockingjay.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		086BC9A91C54B9C7006ABAE0 /* SwiftWebSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SwiftWebSocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpinLock.swift; sourceTree = "<group>"; };
+		086BC9AE1C552D43006ABAE0 /* AppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStatus.swift; sourceTree = "<group>"; };
+		086BC9B21C556A2E006ABAE0 /* Swinject.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Swinject.framework; path = submodules/Swinject/build/Debug/Swinject.framework; sourceTree = "<group>"; };
 		088CE6691C4B0AF400153414 /* MacClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppDelegate.swift; sourceTree = "<group>"; };
 		088CE66E1C4B0AF400153414 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -143,7 +151,7 @@
 		088CE6B71C4C44A800153414 /* Keychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		088CE6B91C4C44BD00153414 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		088CE6BB1C4C508000153414 /* KeychainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
-		088CE6BD1C4DAFA500153414 /* WorkspacesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspacesViewController.swift; sourceTree = "<group>"; };
+		088CE6BD1C4DAFA500153414 /* WorkspacesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WorkspacesViewController.swift; path = workspaces/WorkspacesViewController.swift; sourceTree = "<group>"; };
 		08F448F41C4E244500C64706 /* MacSessionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionController.swift; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* MacSessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionEditorController.swift; sourceTree = "<group>"; };
 		08F448F61C4E244500C64706 /* MacSessionMultiController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionMultiController.swift; sourceTree = "<group>"; };
@@ -157,6 +165,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				086BC9B31C556A2E006ABAE0 /* Swinject.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				086BC9AA1C54B9C7006ABAE0 /* SwiftWebSocket.framework in Frameworks */,
 				086BC99F1C5422C0006ABAE0 /* XCGLogger.framework in Frameworks */,
@@ -220,7 +229,7 @@
 				088CE6701C4B0AF400153414 /* Assets.xcassets */,
 				088CE6721C4B0AF400153414 /* Main.storyboard */,
 				083305D81C501B7300E27F66 /* MainWindowController.swift */,
-				088CE6BF1C4DAFAB00153414 /* workspaces */,
+				088CE6BD1C4DAFA500153414 /* WorkspacesViewController.swift */,
 				08F448F31C4E244500C64706 /* session */,
 				083305D11C4FC76C00E27F66 /* extensions */,
 				088CE6751C4B0AF400153414 /* Info.plist */,
@@ -255,6 +264,7 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				086BC9B21C556A2E006ABAE0 /* Swinject.framework */,
 				086BC9A91C54B9C7006ABAE0 /* SwiftWebSocket.framework */,
 				086BC9A31C5423D0006ABAE0 /* Mockingjay.framework */,
 				086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */,
@@ -274,6 +284,8 @@
 				088CE6B71C4C44A800153414 /* Keychain.swift */,
 				083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */,
 				083305E91C5188F700E27F66 /* KeyValueObserver.swift */,
+				086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */,
+				086BC9AE1C552D43006ABAE0 /* AppStatus.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -303,18 +315,11 @@
 			path = networking;
 			sourceTree = "<group>";
 		};
-		088CE6BF1C4DAFAB00153414 /* workspaces */ = {
-			isa = PBXGroup;
-			children = (
-				088CE6BD1C4DAFA500153414 /* WorkspacesViewController.swift */,
-			);
-			path = workspaces;
-			sourceTree = "<group>";
-		};
 		08F448F31C4E244500C64706 /* session */ = {
 			isa = PBXGroup;
 			children = (
 				083305E71C51812300E27F66 /* AbstractSessionViewController.swift */,
+				083174031C5571D300071408 /* RootViewController.swift */,
 				08F448F41C4E244500C64706 /* MacSessionController.swift */,
 				083305DA1C50284600E27F66 /* MacSessionView.swift */,
 				08F448F51C4E244500C64706 /* MacSessionEditorController.swift */,
@@ -445,9 +450,11 @@
 				088CE6A41C4B605D00153414 /* ColorEnums.swift in Sources */,
 				083305E41C517FC000E27F66 /* VariableViewController.swift in Sources */,
 				088CE6AA1C4B605D00153414 /* Workspace.swift in Sources */,
+				086BC9AD1C552AA0006ABAE0 /* SpinLock.swift in Sources */,
 				088CE6A51C4B605D00153414 /* File.swift in Sources */,
 				08F448FB1C4E244500C64706 /* MacSessionMultiController.swift in Sources */,
 				088CE6A61C4B605D00153414 /* FileType.swift in Sources */,
+				083174041C5571D300071408 /* RootViewController.swift in Sources */,
 				088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */,
 				088CE6A81C4B605D00153414 /* LoginSession.swift in Sources */,
 				0833061E1C541BB700E27F66 /* SwiftyJSON.swift in Sources */,
@@ -471,6 +478,7 @@
 				088CE6A91C4B605D00153414 /* User.swift in Sources */,
 				088CE6AD1C4B605D00153414 /* ServerResponse.swift in Sources */,
 				088CE6B81C4C44A800153414 /* Keychain.swift in Sources */,
+				086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -610,6 +618,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)/submodules/Swinject/build/Debug",
 				);
 				INFOPLIST_FILE = MacClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -629,6 +638,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)/submodules/Swinject/build/Debug",
 				);
 				INFOPLIST_FILE = MacClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";

@@ -34,6 +34,11 @@ class FileViewContrfoller: AbstractSessionViewController, NSTableViewDataSource,
 //		tableView.reloadData()
 //	}
 	
+	override func awakeFromNib() {
+		super.awakeFromNib()
+		log.warning("status \(appStatus)")
+	}
+	
 	override func sessionChanged() {
 		loadData()
 		tableView.reloadData()
@@ -79,6 +84,13 @@ class FileViewContrfoller: AbstractSessionViewController, NSTableViewDataSource,
 			fview.editComplete = { self.delegate?.renameFile($0.file!, to: $0.nameField.stringValue) }
 			return fview
 		}
+	}
+	
+	func tableView(tableView: NSTableView, isGroupRow row: Int) -> Bool {
+		return rowData[row].sectionName != nil
+	}
+	
+	func tableViewSelectionDidChange(notification: NSNotification) {
 	}
 }
 

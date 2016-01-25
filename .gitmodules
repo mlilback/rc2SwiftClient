@@ -10,3 +10,6 @@
 [submodule "submodules/SwiftWebSocket"]
 	path = submodules/SwiftWebSocket
 	url = https://github.com/tidwall/SwiftWebSocket.git
+[submodule "submodules/Swinject"]
+	path = submodules/Swinject
+	url = https://github.com/Swinject/Swinject.git

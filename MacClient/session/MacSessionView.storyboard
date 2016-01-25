@@ -58,13 +58,86 @@
                         </toolbar>
                         <contentBorderThickness minY="24"/>
                     </window>
-                    <connections>
-                        <segue destination="dEf-uW-xcq" kind="relationship" relationship="window.shadowedContentViewController" id="IK0-93-41e"/>
-                    </connections>
                 </windowController>
                 <customObject id="TXX-KR-SY6" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-454" y="-1886.5"/>
+        </scene>
+        <!--root view controller-->
+        <scene sceneID="dmn-fv-Adu">
+            <objects>
+                <viewController storyboardIdentifier="rootController" id="dEf-uW-xcq" userLabel="root view controller" customClass="RootViewController" customModule="MacClient" sceneMemberID="viewController">
+                    <view key="view" id="yiQ-ic-8e8">
+                        <rect key="frame" x="0.0" y="0.0" width="868" height="513"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <containerView translatesAutoresizingMaskIntoConstraints="NO" id="xvS-2e-0OL">
+                                <rect key="frame" x="0.0" y="24" width="868" height="489"/>
+                                <connections>
+                                    <segue destination="FZf-DS-tw6" kind="embed" id="igk-CI-Txa"/>
+                                </connections>
+                            </containerView>
+                            <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="gz8-1d-AUa">
+                                <rect key="frame" x="8" y="4" width="16" height="16"/>
+                                <connections>
+                                    <binding destination="dEf-uW-xcq" name="animate" keyPath="busy" id="ktr-Xs-xd5"/>
+                                </connections>
+                            </progressIndicator>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2CB-hF-pev">
+                                <rect key="frame" x="30" y="2" width="400" height="18"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="QUq-NJ-lpU">
+                                    <font key="font" metaFont="system" size="14"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <connections>
+                                    <binding destination="dEf-uW-xcq" name="value" keyPath="statusMessage" id="U4o-qS-g8J"/>
+                                </connections>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="2CB-hF-pev" secondAttribute="bottom" constant="2" id="HrX-cx-VoU"/>
+                            <constraint firstAttribute="bottom" secondItem="xvS-2e-0OL" secondAttribute="bottom" constant="24" id="Lc8-3f-kiU"/>
+                            <constraint firstAttribute="bottom" secondItem="gz8-1d-AUa" secondAttribute="bottom" constant="4" id="Pf8-1G-iAG"/>
+                            <constraint firstItem="xvS-2e-0OL" firstAttribute="top" secondItem="yiQ-ic-8e8" secondAttribute="top" id="aps-TY-XyL"/>
+                            <constraint firstItem="gz8-1d-AUa" firstAttribute="leading" secondItem="yiQ-ic-8e8" secondAttribute="leading" constant="8" id="gTS-P8-qIR"/>
+                            <constraint firstAttribute="trailing" secondItem="xvS-2e-0OL" secondAttribute="trailing" id="jd9-vG-X3v"/>
+                            <constraint firstItem="2CB-hF-pev" firstAttribute="leading" secondItem="gz8-1d-AUa" secondAttribute="trailing" constant="8" id="qIq-Y9-JI0"/>
+                            <constraint firstItem="xvS-2e-0OL" firstAttribute="leading" secondItem="yiQ-ic-8e8" secondAttribute="leading" id="tVi-ag-gOx"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="progressView" destination="gz8-1d-AUa" id="pCC-h9-xPR"/>
+                        <outlet property="statusField" destination="2CB-hF-pev" id="FcQ-RL-dLO"/>
+                    </connections>
+                </viewController>
+                <customObject id="pm9-B3-NOw" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-454" y="-1140.5"/>
+        </scene>
+        <!--root tab controller-->
+        <scene sceneID="GRC-BE-da1">
+            <objects>
+                <tabViewController selectedTabViewItemIndex="1" tabStyle="unspecified" id="FZf-DS-tw6" userLabel="root tab controller" sceneMemberID="viewController">
+                    <tabViewItems>
+                        <tabViewItem identifier="workspaceSelect" id="0jC-aP-f4b"/>
+                        <tabViewItem identifier="session" id="e00-51-ABq"/>
+                    </tabViewItems>
+                    <viewControllerTransitionOptions key="transitionOptions" slideLeft="YES" allowUserInteraction="YES"/>
+                    <tabView key="tabView" type="noTabsNoBorder" id="UA5-O6-EVk">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <font key="font" metaFont="message"/>
+                        <tabViewItems/>
+                    </tabView>
+                    <connections>
+                        <segue destination="Qrx-Nw-UgA" kind="relationship" relationship="tabItems" id="8JO-kS-zky"/>
+                        <segue destination="MuR-Kz-ani" kind="relationship" relationship="tabItems" id="q1O-or-Xob"/>
+                    </connections>
+                </tabViewController>
+                <customObject id="Jfi-XK-6hf" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="300" y="-1055"/>
         </scene>
         <!--session View Controller-->
         <scene sceneID="6YN-RG-fmV">
@@ -221,57 +294,6 @@
             </objects>
             <point key="canvasLocation" x="1295.5" y="325.5"/>
         </scene>
-        <!--root view controller-->
-        <scene sceneID="dmn-fv-Adu">
-            <objects>
-                <viewController id="dEf-uW-xcq" userLabel="root view controller" sceneMemberID="viewController">
-                    <view key="view" id="yiQ-ic-8e8">
-                        <rect key="frame" x="0.0" y="0.0" width="868" height="513"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <subviews>
-                            <containerView translatesAutoresizingMaskIntoConstraints="NO" id="xvS-2e-0OL">
-                                <rect key="frame" x="0.0" y="24" width="868" height="489"/>
-                                <connections>
-                                    <segue destination="FZf-DS-tw6" kind="embed" id="igk-CI-Txa"/>
-                                </connections>
-                            </containerView>
-                        </subviews>
-                        <constraints>
-                            <constraint firstAttribute="bottom" secondItem="xvS-2e-0OL" secondAttribute="bottom" constant="24" id="Lc8-3f-kiU"/>
-                            <constraint firstItem="xvS-2e-0OL" firstAttribute="top" secondItem="yiQ-ic-8e8" secondAttribute="top" id="aps-TY-XyL"/>
-                            <constraint firstAttribute="trailing" secondItem="xvS-2e-0OL" secondAttribute="trailing" id="jd9-vG-X3v"/>
-                            <constraint firstItem="xvS-2e-0OL" firstAttribute="leading" secondItem="yiQ-ic-8e8" secondAttribute="leading" id="tVi-ag-gOx"/>
-                        </constraints>
-                    </view>
-                </viewController>
-                <customObject id="pm9-B3-NOw" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-454" y="-1140.5"/>
-        </scene>
-        <!--root tab controller-->
-        <scene sceneID="GRC-BE-da1">
-            <objects>
-                <tabViewController selectedTabViewItemIndex="1" tabStyle="unspecified" id="FZf-DS-tw6" userLabel="root tab controller" sceneMemberID="viewController">
-                    <tabViewItems>
-                        <tabViewItem identifier="workspaceSelect" id="0jC-aP-f4b"/>
-                        <tabViewItem identifier="session" id="e00-51-ABq"/>
-                    </tabViewItems>
-                    <viewControllerTransitionOptions key="transitionOptions" slideLeft="YES" allowUserInteraction="YES"/>
-                    <tabView key="tabView" type="noTabsNoBorder" id="UA5-O6-EVk">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <font key="font" metaFont="message"/>
-                        <tabViewItems/>
-                    </tabView>
-                    <connections>
-                        <segue destination="Qrx-Nw-UgA" kind="relationship" relationship="tabItems" id="8JO-kS-zky"/>
-                        <segue destination="MuR-Kz-ani" kind="relationship" relationship="tabItems" id="q1O-or-Xob"/>
-                    </connections>
-                </tabViewController>
-                <customObject id="Jfi-XK-6hf" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="300" y="-1055"/>
-        </scene>
         <!--left tab controller-->
         <scene sceneID="Zy7-r2-fPT">
             <objects>
@@ -312,7 +334,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="wvl-Kg-cyW">
-                                            <rect key="frame" x="0.0" y="0.0" width="199" height="466"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="147" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="6"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -464,7 +486,7 @@
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lcj-AZ-fvh">
                                 <rect key="frame" x="8" y="38" width="201" height="467"/>
                                 <clipView key="contentView" id="gnO-zr-QuJ">
-                                    <rect key="frame" x="1" y="23" width="199" height="443"/>
+                                    <rect key="frame" x="1" y="0.0" width="199" height="466"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" typeSelect="NO" autosaveName="sessionVariablesTable" rowSizeStyle="automatic" headerView="Jjn-3C-Hze" viewBased="YES" id="6xa-i9-qGY">
@@ -606,7 +628,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="21" rowSizeStyle="automatic" viewBased="YES" id="7kC-qK-KLK">
-                                            <rect key="frame" x="0.0" y="0.0" width="199" height="467"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="199" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -865,7 +887,7 @@ DQ
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
                                             <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="yy1-j0-irk">
-                                                <rect key="frame" x="1" y="156" width="238" height="16"/>
+                                                <rect key="frame" x="1" y="-15" width="0.0" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="zO2-o2-Moe">

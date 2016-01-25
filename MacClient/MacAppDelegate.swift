@@ -6,14 +6,15 @@
 
 import Cocoa
 import XCGLogger
+import Swinject
 
 let log = XCGLogger.defaultInstance()
 
 @NSApplicationMain
-class MacAppDelegate: NSObject, NSApplicationDelegate {
+class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	var loginWindowController: NSWindowController?
 	var loginController: LoginViewController?
-	var sessionWindowController: NSWindowController?
+	var sessionWindowController: MainWindowController?
 	
 	func applicationWillFinishLaunching(notification: NSNotification) {
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
@@ -53,9 +54,13 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func showSessionWindow() {
-		let sboard = NSStoryboard(name: "MacSessionView", bundle: nil)
-		sessionWindowController = sboard.instantiateControllerWithIdentifier("sessionWindow") as? NSWindowController
+		let sboard = SwinjectStoryboard.create(name: "MacSessionView", bundle: nil)
+		sessionWindowController = sboard.instantiateControllerWithIdentifier("sessionWindow") as? MainWindowController
 		sessionWindowController?.window?.makeKeyAndOrderFront(self)
+		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window
+		let root = sboard.instantiateControllerWithIdentifier("rootController") as? RootViewController
+		sessionWindowController?.contentViewController = root
+		sessionWindowController?.setupChildren()
 	}
 	
 	func showLoginWindow() {
@@ -66,5 +71,40 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			NSApp!.runModalForWindow((loginWindowController?.window)!)
 		}
 	}
+	
+	//MARK: AppStatus implementation
+	private var _busy: Bool = false
+	private var _status: NSString = ""
+	private var lock: Spinlock = Spinlock()
+	
+	dynamic var busy: Bool {
+		get { return lock.around({ return self._busy }) }
+	}
+	
+	dynamic var statusMessage: NSString {
+		get { return lock.around({ return self._status}) }
+	}
+
+	func updateStatus(busy:Bool, message:String) {
+		lock.around({
+			self._status = message
+			self._busy = busy
+		})
+		NSNotificationCenter.defaultCenter().postNotificationName(AppStatusChangedNotification, object: self)
+	}
 }
 
+extension SwinjectStoryboard {
+	class func setup() {
+		defaultContainer.registerForStoryboard(RootViewController.self) { r, c in
+			c.appStatus = r.resolve(AppStatus.self, name:"root")
+			print("resolved rv \(c.appStatus)")
+		}
+		defaultContainer.registerForStoryboard(FileViewContrfoller.self) { r, c in
+			c.appStatus = r.resolve(AppStatus.self, name:"file")
+			print("resolved fv \(c.appStatus)")
+		}
+		defaultContainer.register(AppStatus.self, name:"file") { _ in NSApp.delegate as! AppStatus }
+		defaultContainer.register(AppStatus.self, name:"root") { _ in NSApp.delegate as! AppStatus }
+	}
+}

@@ -8,10 +8,10 @@ import Cocoa
 
 class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolbarDelegate {
 	@IBOutlet var rootTabController: NSTabViewController?
+	
 	private var toolbarSetupScheduled = false
 	
-	override func windowDidLoad() {
-		super.windowDidLoad()
+	func setupChildren() {
 		rootTabController = firstRecursiveDescendent(contentViewController!,
 			children: { $0.childViewControllers },
 			filter: { $0 is NSTabViewController })  as? NSTabViewController

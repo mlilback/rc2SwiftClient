@@ -8,6 +8,9 @@
       location = "group:submodules/XCGLogger/XCGLogger/Library/XCGLogger.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:submodules/Swinject/Swinject.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:submodules/Mockingjay/Mockingjay.xcodeproj">
    </FileRef>
    <FileRef

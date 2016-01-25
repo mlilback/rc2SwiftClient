@@ -52,8 +52,11 @@ public class Session : NSObject {
 		self.wsSource = source
 		super.init()
 		wsSource.event.open = {
-			self.connectionOpen = true
-			self.delegate?.sessionOpened()
+			dispatch_async(dispatch_get_main_queue()) {
+				self.connectionOpen = true
+				Session.manager.currentSession = self
+				self.delegate?.sessionOpened()
+			}
 		}
 		wsSource.event.close = { (code, reason, clear) in
 			self.connectionOpen = false
