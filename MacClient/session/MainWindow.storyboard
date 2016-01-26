@@ -121,7 +121,7 @@
                 <tabViewController selectedTabViewItemIndex="1" tabStyle="unspecified" id="FZf-DS-tw6" userLabel="root tab controller" sceneMemberID="viewController">
                     <tabViewItems>
                         <tabViewItem identifier="workspaceSelect" id="0jC-aP-f4b"/>
-                        <tabViewItem identifier="session" id="e00-51-ABq"/>
+                        <tabViewItem identifier="session" id="5eH-VO-K9W"/>
                     </tabViewItems>
                     <viewControllerTransitionOptions key="transitionOptions" slideLeft="YES" allowUserInteraction="YES"/>
                     <tabView key="tabView" type="noTabsNoBorder" id="UA5-O6-EVk">
@@ -132,80 +132,35 @@
                     </tabView>
                     <connections>
                         <segue destination="Qrx-Nw-UgA" kind="relationship" relationship="tabItems" id="8JO-kS-zky"/>
-                        <segue destination="MuR-Kz-ani" kind="relationship" relationship="tabItems" id="q1O-or-Xob"/>
+                        <segue destination="tyw-Uw-ocM" kind="relationship" relationship="tabItems" id="cLw-A9-uSI"/>
                     </connections>
                 </tabViewController>
                 <customObject id="Jfi-XK-6hf" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="300" y="-1055"/>
         </scene>
-        <!--session View Controller-->
-        <scene sceneID="6YN-RG-fmV">
+        <!--Session Split Controller-->
+        <scene sceneID="Cj6-zd-p5E">
             <objects>
-                <viewController storyboardIdentifier="sessionController" id="MuR-Kz-ani" userLabel="session View Controller" customClass="MacSessionController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="s08-zV-c7v" customClass="MacSessionView" customModule="MacClient" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="868" height="513"/>
+                <splitViewController id="tyw-Uw-ocM" customClass="SessionSplitController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <splitViewItems>
+                        <splitViewItem canCollapse="YES" holdingPriority="750" behavior="sidebar" id="fFt-4i-BaU"/>
+                        <splitViewItem id="htB-CP-af2"/>
+                        <splitViewItem id="nv2-EF-v8s"/>
+                    </splitViewItems>
+                    <splitView key="splitView" dividerStyle="thin" vertical="YES" id="o6q-cZ-nGO">
+                        <rect key="frame" x="-223" y="0.0" width="948" height="524"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <subviews>
-                            <containerView identifier="editor" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xZD-dg-Hiz" userLabel="editor Container">
-                                <rect key="frame" x="214" y="0.0" width="215" height="513"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="902" constant="215" identifier="editorWidth" id="YHV-r5-65N"/>
-                                </constraints>
-                                <connections>
-                                    <segue destination="thj-QN-rY1" kind="embed" id="mjC-mv-CfV"/>
-                                </connections>
-                            </containerView>
-                            <customView ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kO3-7K-4Vw" userLabel="split bar view" customClass="MacSplitter" customModule="MacClient" customModuleProvider="target">
-                                <rect key="frame" x="863" y="0.0" width="5" height="513"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="5" id="S1g-P2-HWu"/>
-                                </constraints>
-                            </customView>
-                            <containerView translatesAutoresizingMaskIntoConstraints="NO" id="anZ-tc-zg0" userLabel="left Container">
-                                <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="209" id="XHj-uC-wUv"/>
-                                </constraints>
-                                <connections>
-                                    <segue destination="IeT-2r-pnl" kind="embed" id="c7W-nG-SWp"/>
-                                </connections>
-                            </containerView>
-                            <containerView ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3pN-8Z-uXN" userLabel="output Container">
-                                <rect key="frame" x="433" y="0.0" width="435" height="513"/>
-                                <connections>
-                                    <segue destination="cmA-J2-3x3" kind="embed" id="XNQ-Df-dww"/>
-                                </connections>
-                            </containerView>
-                        </subviews>
-                        <constraints>
-                            <constraint firstItem="anZ-tc-zg0" firstAttribute="leading" secondItem="s08-zV-c7v" secondAttribute="leading" id="0Nc-7V-lL4"/>
-                            <constraint firstAttribute="bottom" secondItem="3pN-8Z-uXN" secondAttribute="bottom" id="1jv-oN-9z3"/>
-                            <constraint firstAttribute="bottom" secondItem="anZ-tc-zg0" secondAttribute="bottom" id="AvV-dr-qml"/>
-                            <constraint firstItem="3pN-8Z-uXN" firstAttribute="leading" secondItem="kO3-7K-4Vw" secondAttribute="trailing" id="FUR-XT-E6p"/>
-                            <constraint firstItem="kO3-7K-4Vw" firstAttribute="leading" secondItem="xZD-dg-Hiz" secondAttribute="trailing" id="QG4-zr-kcX"/>
-                            <constraint firstItem="xZD-dg-Hiz" firstAttribute="top" secondItem="s08-zV-c7v" secondAttribute="top" id="TbR-S1-amS"/>
-                            <constraint firstAttribute="bottom" secondItem="xZD-dg-Hiz" secondAttribute="bottom" id="XCb-Gz-St9"/>
-                            <constraint firstAttribute="trailing" secondItem="3pN-8Z-uXN" secondAttribute="trailing" id="bHd-11-GBm"/>
-                            <constraint firstItem="xZD-dg-Hiz" firstAttribute="leading" secondItem="anZ-tc-zg0" secondAttribute="trailing" constant="5" id="hfH-YM-4nf"/>
-                            <constraint firstItem="kO3-7K-4Vw" firstAttribute="top" secondItem="s08-zV-c7v" secondAttribute="top" id="iD4-4Z-7tS"/>
-                            <constraint firstAttribute="bottom" secondItem="kO3-7K-4Vw" secondAttribute="bottom" id="n5T-4N-4qC"/>
-                            <constraint firstItem="3pN-8Z-uXN" firstAttribute="top" secondItem="s08-zV-c7v" secondAttribute="top" id="uwO-25-265"/>
-                            <constraint firstItem="anZ-tc-zg0" firstAttribute="top" secondItem="s08-zV-c7v" secondAttribute="top" id="ybK-2J-N99"/>
-                        </constraints>
-                        <connections>
-                            <outlet property="editorView" destination="xZD-dg-Hiz" id="aQU-EN-iX9"/>
-                            <outlet property="editorWidthConstraint" destination="YHV-r5-65N" id="3WI-vj-tRo"/>
-                            <outlet property="leftView" destination="anZ-tc-zg0" id="jaO-nM-5zS"/>
-                            <outlet property="leftXConstraint" destination="0Nc-7V-lL4" id="uEJ-Dc-r3F"/>
-                            <outlet property="outputView" destination="3pN-8Z-uXN" id="nsv-ga-r6o"/>
-                            <outlet property="splitterView" destination="kO3-7K-4Vw" id="Vf1-jB-4zR"/>
-                        </connections>
-                    </view>
-                </viewController>
-                <customObject id="W40-zu-DgB" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                    </splitView>
+                    <connections>
+                        <segue destination="IeT-2r-pnl" kind="relationship" relationship="splitItems" id="mZq-jk-6o6"/>
+                        <segue destination="thj-QN-rY1" kind="relationship" relationship="splitItems" id="jbk-9g-Vac"/>
+                        <segue destination="cmA-J2-3x3" kind="relationship" relationship="splitItems" id="hW2-pe-aV4"/>
+                    </connections>
+                </splitViewController>
+                <customObject id="fHO-Hm-Bln" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="891" y="-486.5"/>
+            <point key="canvasLocation" x="840" y="-484"/>
         </scene>
         <!--editor controller-->
         <scene sceneID="kwF-Xt-rNN">
@@ -269,7 +224,7 @@
                                     </textField>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="width" priority="802" constant="215" id="61x-8S-FR6"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="802" constant="215" id="61x-8S-FR6"/>
                                     <constraint firstItem="ucc-Ba-B6V" firstAttribute="centerY" secondItem="7nG-Py-cN7" secondAttribute="centerY" id="9wD-wz-MtS"/>
                                     <constraint firstItem="aTm-hy-NW5" firstAttribute="trailing" secondItem="7nG-Py-cN7" secondAttribute="trailing" id="LhX-Zr-dx5"/>
                                     <constraint firstItem="aTm-hy-NW5" firstAttribute="centerX" secondItem="iih-RD-RqJ" secondAttribute="centerX" id="PRl-k3-nix"/>
@@ -381,9 +336,6 @@
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KQT-lU-PCw">
                                                                     <rect key="frame" x="4" y="0.0" width="139" height="17"/>
-                                                                    <constraints>
-                                                                        <constraint firstAttribute="width" constant="135" id="orZ-Yz-oAo"/>
-                                                                    </constraints>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="JWm-rr-kKp">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -397,6 +349,7 @@
                                                             <constraints>
                                                                 <constraint firstAttribute="trailing" secondItem="KQT-lU-PCw" secondAttribute="trailing" constant="3" id="BFA-gj-QsS"/>
                                                                 <constraint firstItem="KQT-lU-PCw" firstAttribute="centerY" secondItem="dxY-YX-Pua" secondAttribute="centerY" id="UCR-tb-KL1"/>
+                                                                <constraint firstItem="KQT-lU-PCw" firstAttribute="leading" secondItem="dxY-YX-Pua" secondAttribute="leading" constant="6" id="prZ-e5-cFN"/>
                                                             </constraints>
                                                             <connections>
                                                                 <outlet property="nameField" destination="KQT-lU-PCw" id="U7i-LV-qM3"/>
@@ -709,7 +662,7 @@
                                     </subviews>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </clipView>
-                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="uWh-mL-l1H">
+                                <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="uWh-mL-l1H">
                                     <rect key="frame" x="1" y="452" width="199" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -886,8 +839,8 @@ DQ
                                                 </subviews>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
-                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="yy1-j0-irk">
-                                                <rect key="frame" x="1" y="-15" width="0.0" height="16"/>
+                                            <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="yy1-j0-irk">
+                                                <rect key="frame" x="1" y="156" width="238" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="zO2-o2-Moe">
