@@ -31,3 +31,9 @@ class AbstractSessionViewController: NSViewController {
 	func appStatusChanged() {
 	}
 }
+
+func firstChildViewController<T>(rootController:NSViewController) -> T? {
+	return firstRecursiveDescendent(rootController,
+		children: { return $0.childViewControllers },
+		filter: { return $0 is T }) as? T
+}

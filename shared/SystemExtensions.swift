@@ -27,6 +27,13 @@ public final class Box<T> {
 	}
 }
 
+public final class ObjcBox<T>: NSObject {
+	let unbox: T
+	init(_ value:T) {
+		self.unbox = value
+	}
+}
+
 extension Color {
 	public convenience init(hex:String, alpha:CGFloat = 1.0) throws {
 		var hcode = hex

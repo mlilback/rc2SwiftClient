@@ -6,10 +6,13 @@
 
 import Cocoa
 
-class MacSessionOutputController: AbstractSessionViewController {
+///ViewController whose view contains the text view showing the results, and the text field for entering short queries
+class MacSessionOutputController: AbstractSessionViewController, SessionOutputHandler {
 	//MARK: properties
+	@IBOutlet var resultsView: ResultsView?
 	@IBOutlet var consoleTextField: ConsoleTextField?
 	@IBOutlet var historyButton: NSButton?
+	var outputFont: NSFont = NSFont(name: "Menlo", size: 14)!
 	let cmdHistory: CommandHistory
 	dynamic var consoleInputText = "" { didSet { canExecute = consoleInputText.characters.count > 0 } }
 	dynamic var canExecute = false
@@ -35,6 +38,14 @@ class MacSessionOutputController: AbstractSessionViewController {
 		cmdHistory.addToCommandHistory(consoleInputText)
 	}
 	
+	//MARK: SessionOutputHandler
+	func appendFormattedString(string:NSAttributedString) {
+		let mutStr = string.mutableCopy() as! NSMutableAttributedString
+		mutStr.addAttributes(["NSFont":outputFont], range: NSMakeRange(0, string.length))
+		resultsView!.textStorage?.appendAttributedString(mutStr)
+		resultsView!.scrollToEndOfDocument(nil)
+	}
+
 	//MARK: command history
 	@IBAction func historyClicked(sender:AnyObject?) {
 		cmdHistory.adjustCommandHistoryMenu()

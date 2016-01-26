@@ -69,7 +69,7 @@ public func ==(a:HelpItem, b:HelpItem) -> Bool {
 	return a.title == b.title && a.url == b.url
 }
 
-public struct SessionImage: Equatable {
+public class SessionImage: NSObject {
 	let id:Int
 	let batchId:Int
 	let name:String

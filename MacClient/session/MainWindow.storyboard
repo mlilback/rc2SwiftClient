@@ -735,7 +735,7 @@
                                     <rect key="frame" x="1" y="1" width="433" height="473"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textView editable="NO" importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="R7r-5U-fzT">
+                                        <textView editable="NO" importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="R7r-5U-fzT" customClass="ResultsView" customModule="Rc_" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="433" height="473"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -838,6 +838,7 @@
                     <connections>
                         <outlet property="consoleTextField" destination="Y6X-8g-t8y" id="vSi-tw-9r1"/>
                         <outlet property="historyButton" destination="MNp-sz-EOS" id="mi2-Q6-SPZ"/>
+                        <outlet property="resultsView" destination="R7r-5U-fzT" id="DCd-VP-D9L"/>
                     </connections>
                 </viewController>
                 <customObject id="ziC-jg-V0t" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

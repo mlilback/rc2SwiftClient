@@ -13,7 +13,7 @@ import XCGLogger
 protocol SessionDelegate : class {
 	func sessionOpened()
 	func sessionClosed()
-	func sessionMessageReceived(msg:JSON)
+	func sessionMessageReceived(response:ServerResponse)
 	func sessionErrorReceived(error:ErrorType)
 	func loadHelpItems(topic:String, items:[HelpItem])
 }
@@ -62,7 +62,10 @@ public class Session : NSObject {
 		}
 		wsSource.event.message = { message in
 			log.info("got message: \(message as? String)")
-			self.delegate?.sessionMessageReceived(JSON.parse(message as! String))
+			let jsonMessage = JSON.parse(message as! String)
+			if let response = ServerResponse.parseResponse(jsonMessage) {
+				self.delegate?.sessionMessageReceived(response)
+			}
 		}
 		wsSource.event.error = { error in
 			self.delegate?.sessionErrorReceived(error)
@@ -147,13 +150,5 @@ public class Session : NSObject {
 private extension Session {
 	func requestVariables() {
 		sendMessage(["cmd":"watchVariables", "watch":variablesVisible])
-	}
-	
-	func handleHelpResults(rsp:ServerResponse) {
-		guard case let .Help(topic, items) = rsp else {
-			assertionFailure("argument was not a help response")
-			return
-		}
-		self.delegate?.loadHelpItems(topic, items: items)
 	}
 }
