@@ -18,6 +18,7 @@ class AbstractSessionViewController: NSViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		NSNotificationCenter.defaultCenter().addObserverForName(CurrentSessionChangedNotification, object: nil, queue: nil) {
+			[unowned self] in 
 			self.sessionOptional = $0.object as! Session?
 			self.sessionChanged()
 		}

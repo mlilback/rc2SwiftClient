@@ -13,6 +13,7 @@
 		0831740A1C56DB2B00071408 /* Swinject.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9B21C556A2E006ABAE0 /* Swinject.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0831740B1C56DCAA00071408 /* SwiftWebSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9A91C54B9C7006ABAE0 /* SwiftWebSocket.framework */; };
 		0831740C1C56DCAA00071408 /* SwiftWebSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9A91C54B9C7006ABAE0 /* SwiftWebSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0831740D1C577A2500071408 /* ConsoleTextField.swift */; };
 		083305D31C4FC78C00E27F66 /* NSToolbarItem+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D21C4FC78C00E27F66 /* NSToolbarItem+Validate.swift */; };
 		083305D51C4FE0E900E27F66 /* ToolbarValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D41C4FE0E900E27F66 /* ToolbarValidationTests.swift */; };
 		083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */; };
@@ -101,6 +102,7 @@
 /* Begin PBXFileReference section */
 		083174031C5571D300071408 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		083174051C56BE7B00071408 /* SessionSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionSplitController.swift; sourceTree = "<group>"; };
+		0831740D1C577A2500071408 /* ConsoleTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleTextField.swift; sourceTree = "<group>"; };
 		083305D21C4FC78C00E27F66 /* NSToolbarItem+Validate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSToolbarItem+Validate.swift"; sourceTree = "<group>"; };
 		083305D41C4FE0E900E27F66 /* ToolbarValidationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarValidationTests.swift; sourceTree = "<group>"; };
 		083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarItemHandler.swift; sourceTree = "<group>"; };
@@ -233,10 +235,10 @@
 				088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */,
 				088CE66E1C4B0AF400153414 /* LoginViewController.swift */,
 				088CE6701C4B0AF400153414 /* Assets.xcassets */,
-				088CE6721C4B0AF400153414 /* Main.storyboard */,
-				08F448F81C4E244500C64706 /* MainWindow.storyboard */,
 				083305D81C501B7300E27F66 /* MainWindowController.swift */,
 				088CE6BD1C4DAFA500153414 /* WorkspacesViewController.swift */,
+				088CE6721C4B0AF400153414 /* Main.storyboard */,
+				08F448F81C4E244500C64706 /* MainWindow.storyboard */,
 				08F448F31C4E244500C64706 /* session */,
 				083305D11C4FC76C00E27F66 /* extensions */,
 				088CE6751C4B0AF400153414 /* Info.plist */,
@@ -335,6 +337,7 @@
 				083305E31C517FC000E27F66 /* VariableViewController.swift */,
 				083305E51C517FE300E27F66 /* UsersViewController.swift */,
 				083174051C56BE7B00071408 /* SessionSplitController.swift */,
+				0831740D1C577A2500071408 /* ConsoleTextField.swift */,
 			);
 			path = session;
 			sourceTree = "<group>";
@@ -461,6 +464,7 @@
 				083174041C5571D300071408 /* RootViewController.swift in Sources */,
 				088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */,
 				088CE6A81C4B605D00153414 /* LoginSession.swift in Sources */,
+				0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */,
 				0833061E1C541BB700E27F66 /* SwiftyJSON.swift in Sources */,
 				08F448FA1C4E244500C64706 /* MacSessionEditorController.swift in Sources */,
 				08F448FC1C4E244500C64706 /* MacSessionOutputController.swift in Sources */,

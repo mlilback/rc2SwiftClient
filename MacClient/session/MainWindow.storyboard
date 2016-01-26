@@ -770,8 +770,12 @@
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
+                                        <accessibility description="History Menu"/>
+                                        <connections>
+                                            <action selector="historyClicked:" target="cmA-J2-3x3" id="Dsh-zi-is1"/>
+                                        </connections>
                                     </button>
-                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="Y6X-8g-t8y">
+                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="Y6X-8g-t8y" customClass="ConsoleTextField" customModule="Rc_" customModuleProvider="target">
                                         <rect key="frame" x="30" y="0.0" width="304" height="22"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="563" constant="50" id="Xik-b7-zR2"/>
@@ -781,13 +785,24 @@
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
+                                        <accessibility description="Simple Query"/>
+                                        <connections>
+                                            <binding destination="cmA-J2-3x3" name="value" keyPath="consoleInputText" id="H7V-im-Tv6">
+                                                <dictionary key="options">
+                                                    <bool key="NSContinuouslyUpdatesValue" value="YES"/>
+                                                </dictionary>
+                                            </binding>
+                                        </connections>
                                     </textField>
-                                    <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ogZ-Ni-wlf">
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ogZ-Ni-wlf">
                                         <rect key="frame" x="336" y="-7" width="89" height="32"/>
                                         <buttonCell key="cell" type="push" title="Execute" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dh4-dU-GOd">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
+                                        <connections>
+                                            <binding destination="cmA-J2-3x3" name="enabled" keyPath="canExecute" id="MZc-oa-4bR"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -818,6 +833,10 @@
                             <constraint firstItem="77W-4U-1WA" firstAttribute="top" secondItem="sbQ-OJ-NsG" secondAttribute="top" id="imE-8d-5JR"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="consoleTextField" destination="Y6X-8g-t8y" id="vSi-tw-9r1"/>
+                        <outlet property="historyButton" destination="MNp-sz-EOS" id="mi2-Q6-SPZ"/>
+                    </connections>
                 </viewController>
                 <customObject id="ziC-jg-V0t" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
