@@ -787,6 +787,7 @@
                                         </textFieldCell>
                                         <accessibility description="Simple Query"/>
                                         <connections>
+                                            <action selector="executeQuery:" target="cmA-J2-3x3" id="rBR-jN-T47"/>
                                             <binding destination="cmA-J2-3x3" name="value" keyPath="consoleInputText" id="H7V-im-Tv6">
                                                 <dictionary key="options">
                                                     <bool key="NSContinuouslyUpdatesValue" value="YES"/>
@@ -801,6 +802,7 @@
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
+                                            <action selector="executeQuery:" target="cmA-J2-3x3" id="P38-Bo-LOJ"/>
                                             <binding destination="cmA-J2-3x3" name="enabled" keyPath="canExecute" id="MZc-oa-4bR"/>
                                         </connections>
                                     </button>
