@@ -130,7 +130,7 @@
 		086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpinLock.swift; sourceTree = "<group>"; };
 		086BC9AE1C552D43006ABAE0 /* AppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStatus.swift; sourceTree = "<group>"; };
 		086BC9B21C556A2E006ABAE0 /* Swinject.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Swinject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		088CE6691C4B0AF400153414 /* MacClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		088CE6691C4B0AF400153414 /* Rc².app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Rc².app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppDelegate.swift; sourceTree = "<group>"; };
 		088CE66E1C4B0AF400153414 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		088CE6701C4B0AF400153414 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -221,7 +221,7 @@
 		088CE66A1C4B0AF400153414 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				088CE6691C4B0AF400153414 /* MacClient.app */,
+				088CE6691C4B0AF400153414 /* Rc².app */,
 				088CE67A1C4B0AF500153414 /* MacClientTests.xctest */,
 			);
 			name = Products;
@@ -357,7 +357,7 @@
 			);
 			name = MacClient;
 			productName = MacClient;
-			productReference = 088CE6691C4B0AF400153414 /* MacClient.app */;
+			productReference = 088CE6691C4B0AF400153414 /* Rc².app */;
 			productType = "com.apple.product-type.application";
 		};
 		088CE6791C4B0AF500153414 /* MacClientTests */ = {
@@ -623,7 +623,7 @@
 				INFOPLIST_FILE = MacClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Rc²";
 				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
@@ -639,7 +639,7 @@
 				INFOPLIST_FILE = MacClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Rc²";
 				PROVISIONING_PROFILE = "";
 			};
 			name = Release;

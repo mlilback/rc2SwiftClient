@@ -7,6 +7,7 @@
 import Cocoa
 
 let LastSelectedSessionTabIndex = "LastSelectedSessionTabIndex"
+let SidebarFixedWidth: CGFloat = 209
 
 class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	var segmentItem: NSToolbarItem?
@@ -15,8 +16,8 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		let splitItem = splitViewItems[0]
-		splitItem.minimumThickness = 209
-		splitItem.maximumThickness = 209
+		splitItem.minimumThickness = SidebarFixedWidth
+		splitItem.maximumThickness = SidebarFixedWidth
 	}
 	
 	func handlesToolbarItem(item: NSToolbarItem) -> Bool {
