@@ -5,7 +5,6 @@
 //
 
 import Foundation
-import SwiftyJSON
 
 public class File: CustomStringConvertible, Equatable {
 	let fileId : Int32

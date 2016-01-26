@@ -5,8 +5,6 @@
 //
 
 import Foundation
-import Starscream
-import SwiftyJSON
 import XCGLogger
 #if os(OSX)
 	import AppKit

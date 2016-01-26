@@ -6,7 +6,6 @@
 
 import Foundation
 import SwiftWebSocket
-import SwiftyJSON
 
 @objc public class RestServer : NSObject {
 

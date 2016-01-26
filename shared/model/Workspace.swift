@@ -5,7 +5,6 @@
 //
 
 import Foundation
-import SwiftyJSON
 
 public class Workspace: CustomStringConvertible, Equatable {
 	let wspaceId : Int32
