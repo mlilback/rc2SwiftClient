@@ -4,7 +4,11 @@
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
-import Cocoa
+#if os(OSX)
+	import Cocoa
+#else
+	import UIKit
+#endif
 
 protocol ResponseHandlerDelegate {
 	func loadHelpItems(topic:String, items:[HelpItem])

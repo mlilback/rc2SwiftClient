@@ -13,3 +13,9 @@
 [submodule "submodules/Swinject"]
 	path = submodules/Swinject
 	url = https://github.com/Swinject/Swinject.git
+[submodule "submodules/BrightFutures"]
+	path = submodules/BrightFutures
+	url = https://github.com/Thomvis/BrightFutures.git
+[submodule "submodules/Result"]
+	path = submodules/Result
+	url = https://github.com/antitypical/Result.git

@@ -6,6 +6,13 @@
 
 import Foundation
 import SwiftWebSocket
+import BrightFutures
+import Result
+
+public enum RestError: Int, ErrorType {
+	case FileNotFound = 0
+	case FailedToSaveFile
+}
 
 @objc public class RestServer : NSObject {
 
@@ -216,6 +223,46 @@ import SwiftWebSocket
 		}
 		task.resume()
 	}
+	
+	///parameter destination: the directory to save the image in, overwriting any existing file
+	public func downloadImage(wspace:Workspace, imageId:Int, destination:NSURL, handler:Rc2RestCompletionHandler) {
+		let req = request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET", jsonDict:[:])
+		let (task, f) = urlSession.downloadWithPromise(req)
+		task.resume()
+		f.onSuccess(Queue.main.context) { (dloadUrl, response) in
+			let fm = NSFileManager()
+			let fileUrl = NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: destination)
+			do {
+				if fileUrl.checkResourceIsReachableAndReturnError(nil) {
+					try fm.removeItemAtURL(fileUrl)
+				}
+				try fm.moveItemAtURL(dloadUrl!, toURL: fileUrl)
+				handler(success: true, results: fileUrl, error: nil)
+			} catch let err as NSError {
+				let error = self.createError(RestError.FailedToSaveFile.rawValue, description: err.localizedDescription)
+				handler(success: false, results: nil, error: error)
+			}
+		}.onFailure(Queue.main.context) { (error) in
+			handler(success:false, results:nil, error:error)
+		}
+	}
 
 }
 
+extension NSURLSession {
+	func downloadWithPromise(request: NSURLRequest) -> (NSURLSessionDownloadTask, Future<(NSURL?, NSURLResponse?), NSError>) {
+		let p = Promise<(NSURL?, NSURLResponse?), NSError>()
+		let task = self.downloadTaskWithRequest(request, completionHandler:self.downloadCompletionHandler(promise:p))
+		return (task, p.future)
+	}
+	
+	func downloadCompletionHandler(promise p: Promise<(NSURL?, NSURLResponse?), NSError>) ->  (NSURL?, NSURLResponse?, NSError?) -> Void {
+		return { (data, response, error) -> () in
+			if let error = error {
+				p.failure(error)
+			} else {
+				p.success(data, response)
+			}
+		}
+	}
+}

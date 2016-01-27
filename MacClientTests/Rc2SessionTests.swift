@@ -8,7 +8,7 @@
 
 import XCTest
 @testable import MacClient
-import Starscream
+import SwiftWebSocket
 
 class Rc2SessionTests: XCTestCase {
 	static let wspaceJson = "[{\"id\":1, \"userId\":1, \"version\":1, \"name\":\"foofy\", \"files\":[]}]"
@@ -40,7 +40,8 @@ class Rc2SessionTests: XCTestCase {
 		XCTAssertFalse(session!.connectionOpen)
 		let openEx = expectationWithDescription("open session")
 		delegate.expectation = openEx
-		session!.open()
+		let request = NSURLRequest(URL: NSURL(string: "http://www.google.com")!)
+		session!.open(request)
 		waitForExpectationsWithTimeout(3) { (error) -> Void in
 		}
 		XCTAssertTrue(session!.connectionOpen)
@@ -152,10 +153,10 @@ class Rc2SessionTests: XCTestCase {
 		weak var delegate : WebSocketDelegate?
 		
 		func connect() {
-			session?.websocketDidConnect(socket)
+			session?.handleWebsocketOpen()
 		}
 		func disconnect(forceTimeout forceTimeout: NSTimeInterval?) {
-			session?.websocketDidDisconnect(socket, error: nil)
+			session?.handleWebsocketClose(0, reason:"", wasClear:true)
 		}
 		func writeString(str: String) {
 			stringsWritten.append(str)
@@ -167,8 +168,5 @@ class Rc2SessionTests: XCTestCase {
 	}
 	
 	class DummyWebSocket : WebSocket {
-		init() {
-			super.init(url: NSURL(fileURLWithPath: "/dev/null"))
-		}
 	}
 }

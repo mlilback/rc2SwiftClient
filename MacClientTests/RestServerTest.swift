@@ -37,6 +37,35 @@ class RestServerTest: XCTestCase {
 		self.waitForExpectationsWithTimeout(2) { (err) -> Void in }
 	}
 	
+	func dummyWorkspace() -> Workspace {
+		let path : String = NSBundle(forClass: RestServerTest.self).pathForResource("createWorkspace", ofType: "json")!
+		let wspaceData = NSData(contentsOfFile: path)
+		let wspaceJson = JSON(data: wspaceData!)
+		let wspace = Workspace(json: wspaceJson)
+		return wspace
+	}
+	
+	func testDownloadImage() {
+		let path : String = NSBundle(forClass: RestServerTest.self).pathForResource("loginResults", ofType: "json")!
+		let resultData = NSData(contentsOfFile: path)
+		let headers = ["Content-Type":"image/png"];
+		stub(http(.GET, uri: "/workspaces/1/images/1"), builder:http(200, headers:headers, data:resultData))
+		let imgExp = expectationWithDescription("imageDload")
+		let wspace = dummyWorkspace()
+		var rSuccess = false
+		var rResults:Any?
+		let destUrl = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: false)
+		server?.downloadImage(wspace, imageId:1, destination: destUrl) { (success, results, error) in
+			rSuccess = success
+			rResults = results
+			imgExp.fulfill()
+		}
+		self.waitForExpectationsWithTimeout(2){ (error) in }
+		XCTAssertTrue(rSuccess)
+		let returnedData = NSData(contentsOfURL: rResults as! NSURL)
+		XCTAssertEqual(returnedData, resultData)
+	}
+	
 	func testLoginData()
 	{
 		doLogin()
@@ -48,9 +77,9 @@ class RestServerTest: XCTestCase {
 	func testCreateWebsocketUrl() {
 		server!.selectHost("localhost")
 		let url = server!.createWebsocketUrl(2)
-		let build = NSBundle(forClass: RestServer.self).infoDictionary!["CFBundleVersion"]
+		let build = NSBundle(forClass: RestServer.self).infoDictionary!["CFBundleVersion"]!
 		let queryStr = "client=osx&build=\(build)"
-		XCTAssertEqual(url.query, queryStr)
+		XCTAssertEqual(url.query!, queryStr)
 		XCTAssertEqual(url.host, "localhost")
 		XCTAssertEqual(url.scheme, "ws")
 		XCTAssertEqual(url.path, "/ws/2")
@@ -58,10 +87,8 @@ class RestServerTest: XCTestCase {
 	}
 	
 	func testCreateSession() {
-		let path : String = NSBundle(forClass: RestServerTest.self).pathForResource("createWorkspace", ofType: "json")!
-		let wspaceData = NSData(contentsOfFile: path)
-		let wspaceJson = JSON(data: wspaceData!)
-		let wspace = Workspace(json: wspaceJson)
+		doLogin()
+		let wspace = dummyWorkspace()
 		let session = server!.createSession(wspace)
 		XCTAssertEqual(session.workspace, wspace)
 	}

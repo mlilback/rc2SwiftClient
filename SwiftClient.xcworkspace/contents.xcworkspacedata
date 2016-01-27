@@ -11,6 +11,12 @@
       location = "group:submodules/Swinject/Swinject.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:submodules/Result/Result.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:submodules/BrightFutures/BrightFutures.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:submodules/Mockingjay/Mockingjay.xcodeproj">
    </FileRef>
    <FileRef

@@ -12,12 +12,12 @@ enum ColorInputError : ErrorType {
 
 #if os(OSX)
 	import AppKit
-	typealias Color = NSColor
-	typealias Image = NSImage
+	public typealias Color = NSColor
+	public typealias Image = NSImage
 #else
 	import UIKit
-	typealias Color = UIColor
-	typealias Image = UIImage
+	public typealias Color = UIColor
+	public typealias Image = UIImage
 #endif
 
 public final class Box<T> {
