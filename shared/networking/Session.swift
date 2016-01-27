@@ -121,14 +121,10 @@ public class Session : NSObject {
 	}
 	
 	//MARK: other public methods
-	func attrDictForColor(key:OutputColors) -> [String:AnyObject] {
-		return [NSBackgroundColorAttributeName: outputColors[key]!]
-	}
-	
-	func noHelpFoundString(topic:String) -> NSAttributedString {
-		return NSAttributedString(string: "No help available for '\(topic)'\n", attributes: attrDictForColor(.Help))
-	}
-	
+//	func noHelpFoundString(topic:String) -> NSAttributedString {
+//		return NSAttributedString(string: "No help available for '\(topic)'\n", attributes: attrDictForColor(.Help))
+//	}
+//	
 	//MARK: private methods
 	func sendMessage(message:Dictionary<String,AnyObject>) -> Bool {
 		guard NSJSONSerialization.isValidJSONObject(message) else {
