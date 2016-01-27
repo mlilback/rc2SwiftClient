@@ -16,11 +16,14 @@ enum ImageCacheError: ErrorType {
 }
 
 class ImageCache {
+	///to allow dependency injection
+	var fileManager:NSFileManager
+	
 	lazy var cacheUrl: NSURL =
 		{
 			var result: NSURL?
 			do {
-				let fm = NSFileManager()
+				let fm = self.fileManager
 				let baseDir = try fm.URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
 				let imgDirUrl = NSURL(fileURLWithPath: "Rc2/images", isDirectory: true, relativeToURL: baseDir)
 				imgDirUrl.checkResourceIsReachableAndReturnError(nil) //throws instead of returning error
@@ -31,6 +34,10 @@ class ImageCache {
 			}
 			return result!
 		}()
+	
+	init(_ fm:NSFileManager=NSFileManager()) {
+		fileManager = fm
+	}
 	
 	func imageWithId(imageId:Int) -> Future<Image, ImageCacheError> {
 		let promise = Promise<Image, ImageCacheError>()
