@@ -33,7 +33,7 @@ public class Session : NSObject {
 	var variablesVisible : Bool = false {
 		didSet {
 			if variablesVisible && variablesVisible != oldValue {
-				requestVariables()
+				sendMessage(["cmd":"watchVariables", "watch":variablesVisible])
 			}
 		}
 	}
@@ -48,6 +48,7 @@ public class Session : NSObject {
 		workspace = wspace
 		self.delegate = delegate
 		self.wsSource = source
+
 		super.init()
 		wsSource.event.open = {
 			dispatch_async(dispatch_get_main_queue()) {
@@ -80,7 +81,7 @@ public class Session : NSObject {
 		self.wsSource.close(1000, reason: "") //default values that can't be specified in a protocol
 	}
 	
-	//MARK: public reuest methods
+	//MARK: public request methods
 	func executeScript(var script: String) {
 		//don't send empty scripts
 		guard script.characters.count > 0 else {
@@ -120,13 +121,12 @@ public class Session : NSObject {
 	}
 	
 	//MARK: other public methods
-	func outputColorForKey(key:OutputColors) -> Color {
-		let dict = NSUserDefaults.standardUserDefaults().dictionaryForKey("OutputColors") as! Dictionary<String,String>
-		return try! Color(hex: dict[key.rawValue]!)
+	func attrDictForColor(key:OutputColors) -> [String:AnyObject] {
+		return [NSBackgroundColorAttributeName: outputColors[key]!]
 	}
 	
 	func noHelpFoundString(topic:String) -> NSAttributedString {
-		return NSAttributedString(string: "No help available for '\(topic)'\n", attributes: [NSForegroundColorAttributeName:outputColorForKey(.Help)])
+		return NSAttributedString(string: "No help available for '\(topic)'\n", attributes: attrDictForColor(.Help))
 	}
 	
 	//MARK: private methods
@@ -146,9 +146,3 @@ public class Session : NSObject {
 	}
 }
 
-//MARK: private methods
-private extension Session {
-	func requestVariables() {
-		sendMessage(["cmd":"watchVariables", "watch":variablesVisible])
-	}
-}

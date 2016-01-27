@@ -20,10 +20,18 @@ class ResponseHandler {
 
 	private let baseImageUrl:NSURL
 	private let delegate:ResponseHandlerDelegate
-	
+	private var outputColors: [OutputColors:PlatformColor]
+	private let imageCache: ImageCache
+
 	required init(imageDirectory:NSURL, delegate:ResponseHandlerDelegate) {
 		self.delegate = delegate
 		self.baseImageUrl = imageDirectory
+		let oldDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("OutputColors") as! Dictionary<String,String>
+		outputColors = oldDict.reduce([OutputColors:PlatformColor]()) { (var dict, pair) in
+			dict[OutputColors(rawValue: pair.0)!] = PlatformColor.colorWithHexString(pair.1)
+			return dict
+		}
+		
 	}
 
 	func handleResponse(response:ServerResponse) -> ResponseOutput {
@@ -45,15 +53,11 @@ class ResponseHandler {
 	}
 
 	private func formatQueryEcho(query:String, queryId:Int, fileId:Int) -> ResponseOutput {
-		let outStr = NSMutableAttributedString()
-		outStr.mutableString.appendFormat("%@\n", query)
-		return (outStr, nil)
+		return NSAttributedString(string: "\(query)\n", attributes: [NSBackgroundColorAttributeName:outputColors[.Input]!])
 	}
 	
 	private func formatResults(text:String, queryId:Int, fileId:Int) -> ResponseOutput {
-		let outStr = NSMutableAttributedString()
-		outStr.mutableString.appendFormat("%@\n", text)
-		return (outStr, nil)
+		return NSAttributedString(string:"\(text)\n")
 	}
 
 	private func formatExecComplete(queryId:Int, batchId:Int, images:[SessionImage]) -> ResponseOutput {
@@ -62,8 +66,7 @@ class ResponseHandler {
 	}
 
 	private func formatError(error:String, queryId:Int) -> ResponseOutput {
-		let outStr = NSMutableAttributedString()
-		return (outStr, nil)
+		return NSAttributedString(string: "\(error)\n", attributes: [NSBackgroundColorAttributeName:outputColors[.Error]!])
 	}
 }
 

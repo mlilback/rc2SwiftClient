@@ -12,12 +12,12 @@ enum ColorInputError : ErrorType {
 
 #if os(OSX)
 	import AppKit
-	public typealias Color = NSColor
-	public typealias Image = NSImage
+	public typealias PlatformColor = NSColor
+	public typealias PlatformImage = NSImage
 #else
 	import UIKit
-	public typealias Color = UIColor
-	public typealias Image = UIImage
+	public typealias PlatformColor = UIColor
+	public typealias PlatformImage = UIImage
 #endif
 
 public final class Box<T> {
@@ -34,7 +34,14 @@ public final class ObjcBox<T>: NSObject {
 	}
 }
 
-extension Color {
+extension PlatformColor {
+	public static func colorWithHexString(hex:String, alpha:CGFloat = 1.0) -> PlatformColor? {
+		do {
+			return try PlatformColor(hex:hex, alpha:alpha)
+		} catch _ {
+			return nil
+		}
+	}
 	public convenience init(hex:String, alpha:CGFloat = 1.0) throws {
 		var hcode = hex
 		if hcode.hasPrefix("#") {
