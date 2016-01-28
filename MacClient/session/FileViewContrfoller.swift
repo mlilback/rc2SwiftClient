@@ -34,11 +34,6 @@ class FileViewContrfoller: AbstractSessionViewController, NSTableViewDataSource,
 //		tableView.reloadData()
 //	}
 	
-	override func awakeFromNib() {
-		super.awakeFromNib()
-		log.warning("status \(appStatus)")
-	}
-	
 	override func sessionChanged() {
 		loadData()
 		tableView.reloadData()

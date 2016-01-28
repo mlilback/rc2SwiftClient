@@ -100,11 +100,9 @@ extension SwinjectStoryboard {
 	class func setup() {
 		defaultContainer.registerForStoryboard(RootViewController.self) { r, c in
 			c.appStatus = r.resolve(AppStatus.self, name:"root")
-			print("resolved rv \(c.appStatus)")
 		}
 		defaultContainer.registerForStoryboard(FileViewContrfoller.self) { r, c in
 			c.appStatus = r.resolve(AppStatus.self, name:"file")
-			print("resolved fv \(c.appStatus)")
 		}
 		defaultContainer.register(AppStatus.self, name:"file") { _ in NSApp.delegate as! AppStatus }
 		defaultContainer.register(AppStatus.self, name:"root") { _ in NSApp.delegate as! AppStatus }
