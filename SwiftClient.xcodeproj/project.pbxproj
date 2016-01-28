@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		083174041C5571D300071408 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174031C5571D300071408 /* RootViewController.swift */; };
 		083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174051C56BE7B00071408 /* SessionSplitController.swift */; };
-		083174091C56DB2B00071408 /* Swinject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9B21C556A2E006ABAE0 /* Swinject.framework */; };
 		0831740A1C56DB2B00071408 /* Swinject.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9B21C556A2E006ABAE0 /* Swinject.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0831740B1C56DCAA00071408 /* SwiftWebSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9A91C54B9C7006ABAE0 /* SwiftWebSocket.framework */; };
 		0831740C1C56DCAA00071408 /* SwiftWebSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9A91C54B9C7006ABAE0 /* SwiftWebSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -19,10 +18,8 @@
 		083174141C5828B400071408 /* ResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174131C5828B400071408 /* ResultsView.swift */; };
 		083174161C587F7F00071408 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174151C587F7F00071408 /* ImageCache.swift */; };
 		083174181C5888F200071408 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 083174171C5888F200071408 /* BrightFutures.framework */; };
-		083174191C5888FB00071408 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 083174171C5888F200071408 /* BrightFutures.framework */; };
 		0831741A1C5888FB00071408 /* BrightFutures.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 083174171C5888F200071408 /* BrightFutures.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0831741C1C588B1E00071408 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0831741B1C588B1E00071408 /* Result.framework */; };
-		0831741F1C588B8C00071408 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0831741B1C588B1E00071408 /* Result.framework */; };
 		083174201C588B8C00071408 /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0831741B1C588B1E00071408 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		083305D31C4FC78C00E27F66 /* NSToolbarItem+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D21C4FC78C00E27F66 /* NSToolbarItem+Validate.swift */; };
 		083305D51C4FE0E900E27F66 /* ToolbarValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D41C4FE0E900E27F66 /* ToolbarValidationTests.swift */; };
@@ -48,7 +45,6 @@
 		086BC99F1C5422C0006ABAE0 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */; };
 		086BC9A11C542309006ABAE0 /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		086BC9A41C5423D0006ABAE0 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9A31C5423D0006ABAE0 /* Mockingjay.framework */; };
-		086BC9AA1C54B9C7006ABAE0 /* SwiftWebSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9A91C54B9C7006ABAE0 /* SwiftWebSocket.framework */; };
 		086BC9AD1C552AA0006ABAE0 /* SpinLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */; };
 		086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086BC9AE1C552D43006ABAE0 /* AppStatus.swift */; };
 		086BC9B31C556A2E006ABAE0 /* Swinject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9B21C556A2E006ABAE0 /* Swinject.framework */; };
@@ -77,6 +73,8 @@
 		089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */; };
 		08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */; };
 		08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */; };
+		08CB55421C5A8756002CB7EE /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08CB55411C5A8756002CB7EE /* CryptoSwift.framework */; };
+		08CB55441C5A875F002CB7EE /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08CB55411C5A8756002CB7EE /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08F448FA1C4E244500C64706 /* MacSessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* MacSessionEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* MacSessionMultiController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* MacSessionMultiController.swift */; };
 		08F448FC1C4E244500C64706 /* MacSessionOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F71C4E244500C64706 /* MacSessionOutputController.swift */; };
@@ -108,6 +106,7 @@
 				086BC9A11C542309006ABAE0 /* XCGLogger.framework in Embed Frameworks */,
 				0831741A1C5888FB00071408 /* BrightFutures.framework in Embed Frameworks */,
 				083174201C588B8C00071408 /* Result.framework in Embed Frameworks */,
+				08CB55441C5A875F002CB7EE /* CryptoSwift.framework in Embed Frameworks */,
 				0831740A1C56DB2B00071408 /* Swinject.framework in Embed Frameworks */,
 				0831740C1C56DCAA00071408 /* SwiftWebSocket.framework in Embed Frameworks */,
 			);
@@ -184,6 +183,7 @@
 		089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSStoryboard+TypeSaftey.swift"; sourceTree = "<group>"; };
 		08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManager.swift; sourceTree = "<group>"; };
 		08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManagerTests.swift; sourceTree = "<group>"; };
+		08CB55411C5A8756002CB7EE /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CryptoSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08F448F51C4E244500C64706 /* MacSessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionEditorController.swift; sourceTree = "<group>"; };
 		08F448F61C4E244500C64706 /* MacSessionMultiController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionMultiController.swift; sourceTree = "<group>"; };
 		08F448F71C4E244500C64706 /* MacSessionOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionOutputController.swift; sourceTree = "<group>"; };
@@ -199,15 +199,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08CB55421C5A8756002CB7EE /* CryptoSwift.framework in Frameworks */,
 				0831741C1C588B1E00071408 /* Result.framework in Frameworks */,
 				083174181C5888F200071408 /* BrightFutures.framework in Frameworks */,
-				083174191C5888FB00071408 /* BrightFutures.framework in Frameworks */,
 				086BC9B31C556A2E006ABAE0 /* Swinject.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				0831740B1C56DCAA00071408 /* SwiftWebSocket.framework in Frameworks */,
-				086BC9AA1C54B9C7006ABAE0 /* SwiftWebSocket.framework in Frameworks */,
-				0831741F1C588B8C00071408 /* Result.framework in Frameworks */,
-				083174091C56DB2B00071408 /* Swinject.framework in Frameworks */,
 				086BC99F1C5422C0006ABAE0 /* XCGLogger.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -310,6 +307,7 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				08CB55411C5A8756002CB7EE /* CryptoSwift.framework */,
 				08FDB19C1C5919BC006FCD1A /* BrightFutures.framework */,
 				0831741B1C588B1E00071408 /* Result.framework */,
 				083174171C5888F200071408 /* BrightFutures.framework */,

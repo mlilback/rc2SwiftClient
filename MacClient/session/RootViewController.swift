@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import CryptoSwift
 
 class RootViewController: AbstractSessionViewController, SessionDelegate, ResponseHandlerDelegate {
 	@IBOutlet var progressView: NSProgressIndicator?
@@ -17,6 +18,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	var outputHandler: SessionOutputHandler?
 	var variableHandler: SessionVariableHandler?
 	var responseHandler: ResponseHandler?
+	var savedStateHash: NSData?
 	
 	override func viewWillAppear() {
 		super.viewWillAppear()
@@ -33,7 +35,9 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 			log.error("got error creating image cache direcctory:\(error)")
 			assertionFailure("failed to create response handler")
 		}
+		//save our state on quit and sleep
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "appWillTerminate", name: NSApplicationWillTerminateNotification, object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:  "saveSessionState", name: NSWorkspaceWillSleepNotification, object:nil)
 	}
 	
 	override func sessionChanged() {
@@ -64,14 +68,19 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		saveSessionState()
 	}
 	
-	private func saveSessionState() {
+	func saveSessionState() {
 		//save data related to this session
 		var dict = [String:AnyObject]()
 		dict["outputController"] = outputHandler?.saveSessionState()
 		do {
 			let data = NSKeyedArchiver.archivedDataWithRootObject(dict)
-			let furl = try stateFileUrl()
-			data.writeToURL(furl, atomically: true)
+			//only write to disk if has changed
+			let hash = data.sha256()
+			if hash != savedStateHash {
+				let furl = try stateFileUrl()
+				data.writeToURL(furl, atomically: true)
+				savedStateHash = hash
+			}
 		} catch let err {
 			log.error("Error saving session state:\(err)")
 		}
@@ -86,6 +95,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 					if let ostate = dict["outputController"] as! [String : AnyObject]? {
 						outputHandler?.restoreSessionState(ostate)
 					}
+					savedStateHash = data?.sha256()
 				}
 			}
 		} catch let err {

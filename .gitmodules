@@ -19,3 +19,6 @@
 [submodule "submodules/Result"]
 	path = submodules/Result
 	url = https://github.com/antitypical/Result.git
+[submodule "submodules/CryptoSwift"]
+	path = submodules/CryptoSwift
+	url = https://github.com/krzyzanowskim/CryptoSwift.git
