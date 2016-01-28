@@ -14,7 +14,7 @@ class ColorEnumTests: XCTestCase {
 		let defurl = NSBundle(forClass: Session.self).URLForResource("CommonDefaults", withExtension: "plist")
 		let cdict = NSDictionary(contentsOfURL: defurl!)?.objectForKey("OutputColors") as! Dictionary<String,String>
 		OutputColors.allValues.forEach({
-			XCTAssertNotNil(try! Color(hex:(cdict[$0.rawValue])!))
+			XCTAssertNotNil(try! PlatformColor(hex:(cdict[$0.rawValue])!))
 		})
 	}
 
@@ -22,7 +22,7 @@ class ColorEnumTests: XCTestCase {
 		let defurl = NSBundle(forClass: Session.self).URLForResource("CommonDefaults", withExtension: "plist")
 		let cdict = NSDictionary(contentsOfURL: defurl!)?.objectForKey("SyntaxColors") as! Dictionary<String,String>
 		SyntaxColors.allValues.forEach({
-			XCTAssertNotNil(try! Color(hex:(cdict[$0.rawValue])!))
+			XCTAssertNotNil(try! PlatformColor(hex:(cdict[$0.rawValue])!))
 		})
 	}
 }

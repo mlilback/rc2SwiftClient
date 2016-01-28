@@ -75,6 +75,8 @@
 		088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6BB1C4C508000153414 /* KeychainTests.swift */; };
 		088CE6BE1C4DAFA500153414 /* WorkspacesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6BD1C4DAFA500153414 /* WorkspacesViewController.swift */; };
 		089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */; };
+		08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */; };
+		08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */; };
 		08F448FA1C4E244500C64706 /* MacSessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* MacSessionEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* MacSessionMultiController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* MacSessionMultiController.swift */; };
 		08F448FC1C4E244500C64706 /* MacSessionOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F71C4E244500C64706 /* MacSessionOutputController.swift */; };
@@ -180,6 +182,8 @@
 		088CE6BB1C4C508000153414 /* KeychainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
 		088CE6BD1C4DAFA500153414 /* WorkspacesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WorkspacesViewController.swift; path = workspaces/WorkspacesViewController.swift; sourceTree = "<group>"; };
 		089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSStoryboard+TypeSaftey.swift"; sourceTree = "<group>"; };
+		08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManager.swift; sourceTree = "<group>"; };
+		08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManagerTests.swift; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* MacSessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionEditorController.swift; sourceTree = "<group>"; };
 		08F448F61C4E244500C64706 /* MacSessionMultiController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionMultiController.swift; sourceTree = "<group>"; };
 		08F448F71C4E244500C64706 /* MacSessionOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionOutputController.swift; sourceTree = "<group>"; };
@@ -298,6 +302,7 @@
 				083305EF1C519B4B00E27F66 /* ServerResponseTests.swift */,
 				08FDB1981C591409006FCD1A /* ImageCacheTests.swift */,
 				08FDB19A1C5917C3006FCD1A /* graph.png */,
+				08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */,
 			);
 			path = MacClientTests;
 			sourceTree = "<group>";
@@ -331,6 +336,7 @@
 				086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */,
 				086BC9AE1C552D43006ABAE0 /* AppStatus.swift */,
 				083174151C587F7F00071408 /* ImageCache.swift */,
+				08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -506,6 +512,7 @@
 				088CE6A81C4B605D00153414 /* LoginSession.swift in Sources */,
 				0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */,
 				0833061E1C541BB700E27F66 /* SwiftyJSON.swift in Sources */,
+				08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */,
 				08F448FA1C4E244500C64706 /* MacSessionEditorController.swift in Sources */,
 				08F448FC1C4E244500C64706 /* MacSessionOutputController.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
@@ -545,6 +552,7 @@
 				083305FD1C519B8500E27F66 /* RestServerTest.swift in Sources */,
 				088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */,
 				083305D51C4FE0E900E27F66 /* ToolbarValidationTests.swift in Sources */,
+				08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */,
 				083305EC1C518CF300E27F66 /* KeyValueObserverTests.swift in Sources */,
 				083305F01C519B4B00E27F66 /* ColorEnumTests.swift in Sources */,
 			);
