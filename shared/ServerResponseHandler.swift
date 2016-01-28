@@ -13,11 +13,10 @@
 protocol ResponseHandlerDelegate {
 	func loadHelpItems(topic:String, items:[HelpItem])
 	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String,JSON>)
+	func attributedStringWithImage(image:SessionImage) -> NSAttributedString
 }
 
 class ResponseHandler {
-	typealias ResponseOutput = (string:NSAttributedString, images:[NSURL]?)?
-
 	private let baseImageUrl:NSURL
 	private let delegate:ResponseHandlerDelegate
 	private var outputColors: [OutputColors:PlatformColor]
@@ -34,7 +33,7 @@ class ResponseHandler {
 		}
 	}
 
-	func handleResponse(response:ServerResponse) -> ResponseOutput {
+	func handleResponse(response:ServerResponse) -> NSAttributedString? {
 		switch(response) {
 			case .EchoQuery(let queryId, let fileId, let query):
 				return formatQueryEcho(query, queryId:queryId, fileId:fileId)
@@ -52,24 +51,30 @@ class ResponseHandler {
 		return nil
 	}
 
-	private func formatQueryEcho(query:String, queryId:Int, fileId:Int) -> ResponseOutput {
+	private func formatQueryEcho(query:String, queryId:Int, fileId:Int) -> NSAttributedString? {
 		let formString = "\(query)\n"
-		return (NSAttributedString(string: formString, attributes: [NSBackgroundColorAttributeName:outputColors[.Input]!]), nil)
+		return NSAttributedString(string: formString, attributes: [NSBackgroundColorAttributeName:outputColors[.Input]!])
 	}
 	
-	private func formatResults(text:String, queryId:Int, fileId:Int) -> ResponseOutput {
+	private func formatResults(text:String, queryId:Int, fileId:Int) -> NSAttributedString? {
 		let formString = "\(text)\n"
-		let astr:NSAttributedString = NSAttributedString(string: formString)
-		return (astr, nil)
+		return NSAttributedString(string: formString)
 	}
 
-	private func formatExecComplete(queryId:Int, batchId:Int, images:[SessionImage]) -> ResponseOutput {
-		let outStr = NSMutableAttributedString()
-		return (outStr, nil)
+	private func formatExecComplete(queryId:Int, batchId:Int, images:[SessionImage]) -> NSAttributedString? {
+		guard images.count > 0 else { return nil }
+		imageCache.cacheImagesFromServer(images)
+		let mstr = NSMutableAttributedString()
+		for image in images {
+			let aStr = delegate.attributedStringWithImage(image)
+			mstr.appendAttributedString(aStr)
+		}
+		mstr.appendAttributedString(NSAttributedString(string: "\n"))
+		return mstr
 	}
 
-	private func formatError(error:String, queryId:Int) -> ResponseOutput {
-		return (NSAttributedString(string: "\(error)\n", attributes: [NSBackgroundColorAttributeName:outputColors[.Error]!]), nil)
+	private func formatError(error:String, queryId:Int) -> NSAttributedString? {
+		return NSAttributedString(string: "\(error)\n", attributes: [NSBackgroundColorAttributeName:outputColors[.Error]!])
 	}
 }
 

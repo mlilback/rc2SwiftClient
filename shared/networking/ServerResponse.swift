@@ -69,12 +69,16 @@ public func ==(a:HelpItem, b:HelpItem) -> Bool {
 	return a.title == b.title && a.url == b.url
 }
 
-public class SessionImage: NSObject {
+public class SessionImage: NSObject, NSSecureCoding {
 	let id:Int
 	let batchId:Int
-	let name:String
-	let dateCreated:NSDate
-	let imageData:NSData
+	let name:String!
+	let imageData:NSData?
+	let dateCreated:NSDate!
+	
+	public static func supportsSecureCoding() -> Bool {
+		return true
+	}
 	
 	private static var dateFormatter:NSDateFormatter = {
 		let formatter = NSDateFormatter()
@@ -90,9 +94,26 @@ public class SessionImage: NSObject {
 		self.dateCreated = SessionImage.dateFormatter.dateFromString(jsonObj["dateCreated"].stringValue)!
 		self.imageData = NSData(base64EncodedString: jsonObj["imageData"].stringValue, options: [])!
 	}
+	
+	public required init?(coder decoder:NSCoder) {
+		self.id = decoder.decodeIntegerForKey("imageId")
+		self.batchId = decoder.decodeIntegerForKey("batchId")
+		self.name = decoder.decodeObjectOfClass(NSString.self, forKey: "name") as String?
+		self.dateCreated = decoder.decodeObjectOfClass(NSDate.self, forKey: "dateCreated") as NSDate?
+		self.imageData = nil
+		super.init()
+		if (name.isEmpty || dateCreated == nil) { return nil }
+	}
+	
+	public func encodeWithCoder(coder: NSCoder) {
+		coder.encodeInteger(self.id, forKey: "imageId")
+		coder.encodeInteger(self.batchId, forKey: "batchId")
+		coder.encodeObject(self.name, forKey: "name")
+		coder.encodeObject(self.dateCreated, forKey: "dateCreated")
+	}
 }
 
 public func ==(a:SessionImage, b:SessionImage) -> Bool {
-	return a.id == b.id
+	return a.id == b.id && a.name == b.name && a.batchId == b.batchId && a.dateCreated == b.dateCreated
 }
 

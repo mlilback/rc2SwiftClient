@@ -33,10 +33,12 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 			log.error("got error creating image cache direcctory:\(error)")
 			assertionFailure("failed to create response handler")
 		}
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "appWillTerminate", name: NSApplicationWillTerminateNotification, object: nil)
 	}
 	
 	override func sessionChanged() {
 		session.delegate = self
+		restoreSessionState()
 	}
 	
 	func startTimer() {
@@ -49,6 +51,48 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		statusMessage = ""
 	}
 
+	func stateFileUrl() throws -> NSURL {
+		let appSupportUrl = try NSFileManager.defaultManager().URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
+		let dataDirUrl = NSURL(string: "Rc2/sessions/", relativeToURL: appSupportUrl)?.absoluteURL
+		try NSFileManager.defaultManager().createDirectoryAtURL(dataDirUrl!, withIntermediateDirectories: true, attributes: nil)
+		let fname = "\(RestServer.sharedInstance.loginSession!.host)--\(session.workspace.userId)--\(session.workspace.wspaceId).plist"
+		let furl = NSURL(string:fname, relativeToURL: dataDirUrl)?.absoluteURL
+		return furl!
+	}
+	
+	func appWillTerminate() {
+		saveSessionState()
+	}
+	
+	private func saveSessionState() {
+		//save data related to this session
+		var dict = [String:AnyObject]()
+		dict["outputController"] = outputHandler?.saveSessionState()
+		do {
+			let data = NSKeyedArchiver.archivedDataWithRootObject(dict)
+			let furl = try stateFileUrl()
+			data.writeToURL(furl, atomically: true)
+		} catch let err {
+			log.error("Error saving session state:\(err)")
+		}
+	}
+	
+	private func restoreSessionState() {
+		do {
+			let furl = try stateFileUrl()
+			if furl.checkResourceIsReachableAndReturnError(nil) {
+				let data = NSData(contentsOfURL: furl)
+				if let dict = NSKeyedUnarchiver.unarchiveObjectWithData(data!) as! [String:AnyObject]? {
+					if let ostate = dict["outputController"] as! [String : AnyObject]? {
+						outputHandler?.restoreSessionState(ostate)
+					}
+				}
+			}
+		} catch let err {
+			log.error("error restoring session state:\(err)")
+		}
+	}
+	
 	//TODO: need to add overlay view that blocks all interaction while busy
 	override func appStatusChanged() {
 		NSNotificationCenter.defaultCenter().addObserverForName(AppStatusChangedNotification, object: nil, queue: nil) { (note) -> Void in
@@ -76,6 +120,20 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		variableHandler!.handleVariableMessage(socketId, delta: delta, single: single, variables: newDict)
 	}
 
+	func attributedStringWithImage(image:SessionImage) -> NSAttributedString {
+		let data = NSKeyedArchiver.archivedDataWithRootObject(image)
+		let file = NSFileWrapper(regularFileWithContents: data)
+		file.filename = image.name
+		file.preferredFilename = image.name
+		let attachment = NSTextAttachment(fileWrapper: file)
+		let cell = NSTextAttachmentCell(imageCell: NSImage(named: "graph"))
+		cell.image?.size = NSMakeSize(48, 48)
+		attachment.attachmentCell = cell
+		let str = NSMutableAttributedString(attributedString: NSAttributedString(attachment: attachment))
+		str.addAttribute(NSToolTipAttributeName, value: image.name, range: NSMakeRange(0,1))
+		return str
+	}
+	
 	//MARK: SessionDelegate
 	func sessionOpened() {
 		
@@ -86,9 +144,8 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 	
 	func sessionMessageReceived(response:ServerResponse) {
-		if let output = responseHandler?.handleResponse(response) {
-			outputHandler?.appendFormattedString(output.string)
-			//TODO: do something with the images array?
+		if let astr = responseHandler?.handleResponse(response) {
+			outputHandler?.appendFormattedString(astr)
 		}
 	}
 	
@@ -108,4 +165,6 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 
 @objc protocol SessionOutputHandler {
 	func appendFormattedString(string:NSAttributedString)
+	func saveSessionState() -> AnyObject
+	func restoreSessionState(state:[String:AnyObject])
 }

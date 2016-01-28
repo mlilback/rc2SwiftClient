@@ -6,6 +6,11 @@
 
 import Cocoa
 
+enum SessionStateKey: String {
+	case History = "history"
+	case Results = "results"
+}
+
 ///ViewController whose view contains the text view showing the results, and the text field for entering short queries
 class MacSessionOutputController: AbstractSessionViewController, SessionOutputHandler {
 	//MARK: properties
@@ -29,6 +34,7 @@ class MacSessionOutputController: AbstractSessionViewController, SessionOutputHa
 		consoleTextField?.adjustContextualMenu = { (editor:NSText, theMenu:NSMenu) in
 			return theMenu
 		}
+		resultsView?.textContainerInset = NSMakeSize(4, 4)
 	}
 	
 	//MARK: actions
@@ -41,11 +47,28 @@ class MacSessionOutputController: AbstractSessionViewController, SessionOutputHa
 	//MARK: SessionOutputHandler
 	func appendFormattedString(string:NSAttributedString) {
 		let mutStr = string.mutableCopy() as! NSMutableAttributedString
-		mutStr.addAttributes(["NSFont":outputFont], range: NSMakeRange(0, string.length))
+		mutStr.addAttributes([NSFontAttributeName:outputFont], range: NSMakeRange(0, string.length))
 		resultsView!.textStorage?.appendAttributedString(mutStr)
 		resultsView!.scrollToEndOfDocument(nil)
 	}
+	
+	func saveSessionState() -> AnyObject {
+		var dict = [String:AnyObject]()
+		dict[SessionStateKey.History.rawValue] = cmdHistory.commands
+		dict[SessionStateKey.Results.rawValue] = resultsView?.RTFDFromRange(NSMakeRange(0, (resultsView?.textStorage?.length)!))
+		return dict
+	}
 
+	func restoreSessionState(state:[String:AnyObject]) {
+		if state[SessionStateKey.History.rawValue] is NSArray {
+			cmdHistory.commands = state[SessionStateKey.History.rawValue] as! [String]
+		}
+		if state[SessionStateKey.Results.rawValue] is NSData {
+			let data = state[SessionStateKey.Results.rawValue] as! NSData
+			resultsView!.replaceCharactersInRange(NSMakeRange(0, (resultsView?.textStorage!.length)!), withRTFD:data)
+		}
+	}
+	
 	//MARK: command history
 	@IBAction func historyClicked(sender:AnyObject?) {
 		cmdHistory.adjustCommandHistoryMenu()

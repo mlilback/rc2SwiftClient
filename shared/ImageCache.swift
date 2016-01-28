@@ -62,9 +62,9 @@ class ImageCache {
 	func cacheImageFromServer(img:SessionImage) {
 		//cache to disk
 		let destUrl = NSURL(fileURLWithPath: "\(img.id).png", isDirectory: false, relativeToURL: cacheUrl)
-		img.imageData.writeToURL(destUrl, atomically: true)
+		img.imageData!.writeToURL(destUrl, atomically: true)
 		//cache in memory
-		let pdata = NSPurgeableData(data: img.imageData)
+		let pdata = NSPurgeableData(data: img.imageData!)
 		cache.setObject(pdata, forKey: img.id)
 	}
 	

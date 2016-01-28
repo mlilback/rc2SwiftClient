@@ -19,7 +19,7 @@ class ServerResponseTests: XCTestCase {
 		super.tearDown()
 	}
 
-	func testSessionImage() {
+	func testSessionImageFromJSON() {
 		let path : String = NSBundle(forClass: self.dynamicType).pathForResource("resultsWithImages", ofType: "json")!
 		let resultData = NSData(contentsOfFile: path)
 		let srcJson = JSON(data:resultData!)
@@ -30,8 +30,15 @@ class ServerResponseTests: XCTestCase {
 				XCTAssertEqual(imgs.count, 3)
 				XCTAssertEqual(bid, 1)
 				XCTAssertEqual(qid, 1001)
+				sessionImageCodingTest(imgs[0])
 			default:
 				XCTFail("parseResponse returned wrong ServerResponse type")
 		}
+	}
+	
+	func sessionImageCodingTest(image:SessionImage) {
+		let data = NSKeyedArchiver.archivedDataWithRootObject(image)
+		let obj = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! SessionImage
+		XCTAssertEqual(image, obj)
 	}
 }

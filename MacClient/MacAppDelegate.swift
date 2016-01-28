@@ -18,6 +18,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	
 	func applicationWillFinishLaunching(notification: NSNotification) {
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
+		let cdUrl = NSBundle.mainBundle().URLForResource("CommonDefaults", withExtension: "plist")
+		NSUserDefaults.standardUserDefaults().registerDefaults(NSDictionary(contentsOfURL: cdUrl!)! as! [String : AnyObject])
 	}
 
 	func applicationDidFinishLaunching(aNotification: NSNotification) {
