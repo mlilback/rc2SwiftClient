@@ -10,7 +10,7 @@
         <!--Window Controller-->
         <scene sceneID="weH-Ct-LUI">
             <objects>
-                <windowController storyboardIdentifier="sessionWindow" id="wlW-TF-z7z" customClass="MainWindowController" customModule="Rc_" customModuleProvider="target" sceneMemberID="viewController">
+                <windowController storyboardIdentifier="sessionWindow" id="wlW-TF-z7z" customClass="MainWindowController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <window key="window" title="Rc²" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="txX-uo-IFz">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -67,7 +67,7 @@
         <!--root view controller-->
         <scene sceneID="dmn-fv-Adu">
             <objects>
-                <viewController storyboardIdentifier="rootController" id="dEf-uW-xcq" userLabel="root view controller" customClass="RootViewController" customModule="Rc_" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="rootController" id="dEf-uW-xcq" userLabel="root view controller" customClass="RootViewController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="yiQ-ic-8e8">
                         <rect key="frame" x="0.0" y="0.0" width="868" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -146,9 +146,9 @@
         <!--Session Split Controller-->
         <scene sceneID="Cj6-zd-p5E">
             <objects>
-                <splitViewController id="tyw-Uw-ocM" customClass="SessionSplitController" customModule="Rc_" customModuleProvider="target" sceneMemberID="viewController">
+                <splitViewController id="tyw-Uw-ocM" customClass="SessionSplitController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
-                        <splitViewItem canCollapse="YES" holdingPriority="750" behavior="sidebar" id="fFt-4i-BaU"/>
+                        <splitViewItem canCollapse="YES" holdingPriority="260" behavior="sidebar" id="fFt-4i-BaU"/>
                         <splitViewItem id="htB-CP-af2"/>
                         <splitViewItem id="nv2-EF-v8s"/>
                     </splitViewItems>
@@ -169,7 +169,7 @@
         <!--editor controller-->
         <scene sceneID="kwF-Xt-rNN">
             <objects>
-                <viewController storyboardIdentifier="editorController" id="thj-QN-rY1" userLabel="editor controller" customClass="MacSessionEditorController" customModule="Rc_" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="editorController" id="thj-QN-rY1" userLabel="editor controller" customClass="MacSessionEditorController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="kb3-PH-361">
                         <rect key="frame" x="0.0" y="0.0" width="300" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -183,7 +183,7 @@
                                             <rect key="frame" x="1" y="1" width="298" height="473"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <textView importsGraphics="NO" richText="NO" findStyle="panel" allowsUndo="YES" usesFontPanel="YES" verticallyResizable="YES" smartInsertDelete="YES" id="avy-g3-Ese">
+                                                <textView importsGraphics="NO" richText="NO" findStyle="panel" allowsUndo="YES" usesFontPanel="YES" verticallyResizable="YES" smartInsertDelete="YES" id="avy-g3-Ese" customClass="SessionEditor" customModule="MacClient" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="0.0" width="298" height="473"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -231,7 +231,7 @@
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="70" id="Ob3-qv-EWd"/>
                                                 </constraints>
-                                                <buttonCell key="cell" type="push" title="Execute" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="FrN-I9-lrY">
+                                                <buttonCell key="cell" type="push" title="Run" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="FrN-I9-lrY">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
@@ -269,6 +269,10 @@
                             <constraint firstAttribute="bottom" secondItem="iih-RD-RqJ" secondAttribute="bottom" id="rTW-0c-99w"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="editor" destination="avy-g3-Ese" id="vv5-Ia-mp9"/>
+                        <outlet property="view" destination="kb3-PH-361" id="cBI-wl-Sug"/>
+                    </connections>
                 </viewController>
                 <customObject id="V7c-BG-bfH" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -277,7 +281,7 @@
         <!--left tab controller-->
         <scene sceneID="Zy7-r2-fPT">
             <objects>
-                <tabViewController selectedTabViewItemIndex="0" tabStyle="unspecified" id="IeT-2r-pnl" userLabel="left tab controller" customClass="MacSessionMultiController" customModule="Rc_" customModuleProvider="target" sceneMemberID="viewController">
+                <tabViewController selectedTabViewItemIndex="0" tabStyle="unspecified" id="IeT-2r-pnl" userLabel="left tab controller" customClass="MacSessionMultiController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <tabViewItems>
                         <tabViewItem identifier="fileTab" id="CTV-YU-27t"/>
                         <tabViewItem identifier="variableTab" id="Wcq-lB-PA7"/>
@@ -302,7 +306,7 @@
         <!--file view controller-->
         <scene sceneID="6UQ-Z5-mlY">
             <objects>
-                <viewController id="XJm-U6-51C" userLabel="file view controller" customClass="FileViewContrfoller" customModule="Rc_" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="XJm-U6-51C" userLabel="file view controller" customClass="FileViewContrfoller" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="Yck-bc-8ar">
                         <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -314,7 +318,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="wvl-Kg-cyW">
-                                            <rect key="frame" x="0.0" y="0.0" width="207" height="474"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="147" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="6"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -355,7 +359,7 @@
                                                                 <outlet property="textField" destination="cdI-61-Trg" id="wg1-qM-zbb"/>
                                                             </connections>
                                                         </tableCellView>
-                                                        <tableCellView identifier="file" id="dxY-YX-Pua" customClass="SessionCellView" customModule="Rc_" customModuleProvider="target">
+                                                        <tableCellView identifier="file" id="dxY-YX-Pua" customClass="SessionCellView" customModule="MacClient" customModuleProvider="target">
                                                             <rect key="frame" x="1" y="26" width="144" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
@@ -468,7 +472,7 @@
         <!--variables view controller-->
         <scene sceneID="AJm-u8-LUo">
             <objects>
-                <viewController id="1Ce-Bb-cCN" userLabel="variables view controller" customClass="VariableViewContrfoller" customModule="Rc_" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="1Ce-Bb-cCN" userLabel="variables view controller" customClass="VariableViewContrfoller" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="ePu-VH-UTN">
                         <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -565,7 +569,7 @@
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Os8-yB-Zan">
-                                    <rect key="frame" x="1" y="450" width="199" height="16"/>
+                                    <rect key="frame" x="1" y="458" width="207" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="KSL-u0-2lr">
@@ -606,7 +610,7 @@
         <!--user view controller-->
         <scene sceneID="H5P-eh-gMY">
             <objects>
-                <viewController id="lJM-BU-ZVt" userLabel="user view controller" customClass="UsersViewContrfoller" customModule="Rc_" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="lJM-BU-ZVt" userLabel="user view controller" customClass="UsersViewContrfoller" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="GGz-OC-pcD">
                         <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -618,7 +622,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="21" rowSizeStyle="automatic" viewBased="YES" id="7kC-qK-KLK">
-                                            <rect key="frame" x="0.0" y="0.0" width="207" height="475"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="207" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -700,7 +704,7 @@
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="uWh-mL-l1H">
-                                    <rect key="frame" x="1" y="452" width="199" height="16"/>
+                                    <rect key="frame" x="1" y="460" width="207" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="Boj-X1-04l">
@@ -724,7 +728,7 @@
         <!--output controller-->
         <scene sceneID="ECV-EI-33P">
             <objects>
-                <viewController storyboardIdentifier="outputConttoller" id="cmA-J2-3x3" userLabel="output controller" customClass="MacSessionOutputController" customModule="Rc_" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="outputConttoller" id="cmA-J2-3x3" userLabel="output controller" customClass="MacSessionOutputController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="sbQ-OJ-NsG">
                         <rect key="frame" x="0.0" y="0.0" width="435" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -735,7 +739,7 @@
                                     <rect key="frame" x="1" y="1" width="433" height="473"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textView editable="NO" importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="R7r-5U-fzT" customClass="ResultsView" customModule="Rc_" customModuleProvider="target">
+                                        <textView editable="NO" importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="R7r-5U-fzT" customClass="ResultsView" customModule="MacClient" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="433" height="473"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -775,7 +779,7 @@
                                             <action selector="historyClicked:" target="cmA-J2-3x3" id="Dsh-zi-is1"/>
                                         </connections>
                                     </button>
-                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="Y6X-8g-t8y" customClass="ConsoleTextField" customModule="Rc_" customModuleProvider="target">
+                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="Y6X-8g-t8y" customClass="ConsoleTextField" customModule="MacClient" customModuleProvider="target">
                                         <rect key="frame" x="30" y="0.0" width="304" height="22"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="563" constant="50" id="Xik-b7-zR2"/>
@@ -848,7 +852,7 @@
         <!--Workspaces View Controller-->
         <scene sceneID="FZH-15-YFf">
             <objects>
-                <viewController id="Qrx-Nw-UgA" userLabel="Workspaces View Controller" customClass="WorkspacesViewController" customModule="Rc_" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Qrx-Nw-UgA" userLabel="Workspaces View Controller" customClass="WorkspacesViewController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="nbo-vy-Ovc">
                         <rect key="frame" x="0.0" y="0.0" width="868" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>

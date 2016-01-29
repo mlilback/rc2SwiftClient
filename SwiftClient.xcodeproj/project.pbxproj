@@ -75,6 +75,9 @@
 		08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */; };
 		08CB55421C5A8756002CB7EE /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08CB55411C5A8756002CB7EE /* CryptoSwift.framework */; };
 		08CB55441C5A875F002CB7EE /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08CB55411C5A8756002CB7EE /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08CB554C1C5A9910002CB7EE /* BasicImageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08CB554B1C5A9910002CB7EE /* BasicImageController.xib */; };
+		08CB554E1C5AA24D002CB7EE /* BasicImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB554D1C5AA24D002CB7EE /* BasicImageController.swift */; };
+		08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB554F1C5AC727002CB7EE /* SessionEditor.swift */; };
 		08F448FA1C4E244500C64706 /* MacSessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* MacSessionEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* MacSessionMultiController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* MacSessionMultiController.swift */; };
 		08F448FC1C4E244500C64706 /* MacSessionOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F71C4E244500C64706 /* MacSessionOutputController.swift */; };
@@ -184,6 +187,9 @@
 		08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManager.swift; sourceTree = "<group>"; };
 		08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManagerTests.swift; sourceTree = "<group>"; };
 		08CB55411C5A8756002CB7EE /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CryptoSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		08CB554B1C5A9910002CB7EE /* BasicImageController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BasicImageController.xib; sourceTree = "<group>"; };
+		08CB554D1C5AA24D002CB7EE /* BasicImageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicImageController.swift; sourceTree = "<group>"; };
+		08CB554F1C5AC727002CB7EE /* SessionEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditor.swift; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* MacSessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionEditorController.swift; sourceTree = "<group>"; };
 		08F448F61C4E244500C64706 /* MacSessionMultiController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionMultiController.swift; sourceTree = "<group>"; };
 		08F448F71C4E244500C64706 /* MacSessionOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionOutputController.swift; sourceTree = "<group>"; };
@@ -377,10 +383,13 @@
 				083305E31C517FC000E27F66 /* VariableViewController.swift */,
 				083305E51C517FE300E27F66 /* UsersViewController.swift */,
 				083174051C56BE7B00071408 /* SessionSplitController.swift */,
+				08CB554F1C5AC727002CB7EE /* SessionEditor.swift */,
 				08F448FF1C4EBEF100C64706 /* MacSplitter.swift */,
 				0831740D1C577A2500071408 /* ConsoleTextField.swift */,
 				083174131C5828B400071408 /* ResultsView.swift */,
 				0831740F1C57B2E200071408 /* CommandHistory.swift */,
+				08CB554D1C5AA24D002CB7EE /* BasicImageController.swift */,
+				08CB554B1C5A9910002CB7EE /* BasicImageController.xib */,
 			);
 			path = session;
 			sourceTree = "<group>";
@@ -470,6 +479,7 @@
 			files = (
 				088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */,
 				083305E01C51571500E27F66 /* Localizable.strings in Resources */,
+				08CB554C1C5A9910002CB7EE /* BasicImageController.xib in Resources */,
 				08F448FD1C4E244500C64706 /* MainWindow.storyboard in Resources */,
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
 				088CE6AB1C4B605D00153414 /* RestHosts.json in Resources */,
@@ -518,7 +528,9 @@
 				083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
 				083305E61C517FE300E27F66 /* UsersViewController.swift in Sources */,
+				08CB554E1C5AA24D002CB7EE /* BasicImageController.swift in Sources */,
 				083305D31C4FC78C00E27F66 /* NSToolbarItem+Validate.swift in Sources */,
+				08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */,
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
 				083305E21C517F8900E27F66 /* FileViewContrfoller.swift in Sources */,
 				088CE6AE1C4B605D00153414 /* Session.swift in Sources */,

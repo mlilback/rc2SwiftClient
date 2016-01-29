@@ -164,10 +164,6 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 }
 
-@objc protocol SessionEditor {
-	
-}
-
 @objc protocol SessionVariableHandler {
 	///parameter variables: key is a string, value is an ObjcBox of a JSON value
 	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String,AnyObject>)

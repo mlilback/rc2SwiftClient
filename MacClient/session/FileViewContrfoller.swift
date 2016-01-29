@@ -28,6 +28,11 @@ class FileViewContrfoller: AbstractSessionViewController, NSTableViewDataSource,
 	var rowData:[FileRowData] = [FileRowData]()
 	var delegate:FileViewControllerDelegate?
 	
+	var selectedFile:File? {
+		guard tableView.selectedRow >= 0 else { return nil }
+		return rowData[tableView.selectedRow].file
+	}
+	
 //	override func viewDidLoad() {
 //		super.viewDidLoad()
 //		loadData()
@@ -86,6 +91,7 @@ class FileViewContrfoller: AbstractSessionViewController, NSTableViewDataSource,
 	}
 	
 	func tableViewSelectionDidChange(notification: NSNotification) {
+		NSNotificationCenter.defaultCenter().postNotificationName( SessionFileSelectionChangedNotification, object: selectedFile)
 	}
 }
 

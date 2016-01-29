@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
+        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="BasicImageController" customModule="MacClient" customModuleProvider="target">
+            <connections>
+                <outlet property="imageView" destination="GjS-qu-q5R" id="2k3-B2-osb"/>
+                <outlet property="labelField" destination="UPe-Al-Ymw" id="Ko5-vj-aez"/>
+                <outlet property="nagivateButton" destination="DyC-ee-ku0" id="kK0-Ar-XtZ"/>
+                <outlet property="shareButton" destination="cV4-wP-FJ9" id="Ow3-uL-rw7"/>
+                <outlet property="view" destination="c22-O7-iKe" id="DOT-eE-Nxr"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="c22-O7-iKe">
+            <rect key="frame" x="0.0" y="0.0" width="513" height="492"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <stackView distribution="fill" orientation="horizontal" alignment="bottom" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IjF-aw-L4A">
+                    <rect key="frame" x="20" y="451" width="473" height="21"/>
+                    <subviews>
+                        <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DyC-ee-ku0">
+                            <rect key="frame" x="-2" y="-2" width="71" height="24"/>
+                            <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="oaD-lP-2zh">
+                                <font key="font" metaFont="system"/>
+                                <segments>
+                                    <segment toolTip="Back" image="NSGoLeftTemplate" width="32"/>
+                                    <segment toolTip="Forward" image="NSGoRightTemplate" width="32" tag="1"/>
+                                </segments>
+                            </segmentedCell>
+                            <accessibility description="Navigate"/>
+                            <connections>
+                                <action selector="navigateClicked:" target="-2" id="GLa-K8-OcV"/>
+                            </connections>
+                        </segmentedControl>
+                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="UPe-Al-Ymw">
+                            <rect key="frame" x="73" y="0.0" width="360" height="18"/>
+                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="tdX-8h-WYw">
+                                <font key="font" metaFont="system" size="14"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cV4-wP-FJ9">
+                            <rect key="frame" x="437" y="-2" width="38" height="24"/>
+                            <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="hR1-Jb-xE2">
+                                <font key="font" metaFont="system"/>
+                                <segments>
+                                    <segment toolTip="Share" image="NSShareTemplate" width="32"/>
+                                </segments>
+                            </segmentedCell>
+                            <accessibility description="Share"/>
+                            <connections>
+                                <action selector="shareClicked:" target="-2" id="imc-os-Fa6"/>
+                            </connections>
+                        </segmentedControl>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="xmh-l0-ke1"/>
+                    </constraints>
+                    <visibilityPriorities>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
+                        <integer value="1000"/>
+                    </visibilityPriorities>
+                    <customSpacing>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
+                        <real value="3.4028234663852886e+38"/>
+                    </customSpacing>
+                </stackView>
+                <imageView translatesAutoresizingMaskIntoConstraints="NO" id="GjS-qu-q5R">
+                    <rect key="frame" x="20" y="20" width="473" height="423"/>
+                    <constraints>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="400" id="H4u-Lo-5cR"/>
+                    </constraints>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="TIz-7v-J1S"/>
+                </imageView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="GjS-qu-q5R" firstAttribute="trailing" secondItem="IjF-aw-L4A" secondAttribute="trailing" id="2Xn-sY-ffU"/>
+                <constraint firstItem="GjS-qu-q5R" firstAttribute="leading" secondItem="IjF-aw-L4A" secondAttribute="leading" id="8Tz-ja-17A"/>
+                <constraint firstItem="IjF-aw-L4A" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="20" symbolic="YES" id="A0s-kT-RLP"/>
+                <constraint firstItem="IjF-aw-L4A" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="20" symbolic="YES" id="AIr-2F-GdQ"/>
+                <constraint firstAttribute="bottom" secondItem="GjS-qu-q5R" secondAttribute="bottom" constant="20" symbolic="YES" id="Apz-xH-lMT"/>
+                <constraint firstAttribute="trailing" secondItem="IjF-aw-L4A" secondAttribute="trailing" constant="20" symbolic="YES" id="atd-wD-LGe"/>
+                <constraint firstItem="GjS-qu-q5R" firstAttribute="top" secondItem="IjF-aw-L4A" secondAttribute="bottom" constant="8" symbolic="YES" id="vEv-C9-1Yq"/>
+            </constraints>
+            <point key="canvasLocation" x="441.5" y="327"/>
+        </customView>
+    </objects>
+    <resources>
+        <image name="NSGoLeftTemplate" width="9" height="12"/>
+        <image name="NSGoRightTemplate" width="9" height="12"/>
+        <image name="NSShareTemplate" width="11" height="16"/>
+    </resources>
+</document>

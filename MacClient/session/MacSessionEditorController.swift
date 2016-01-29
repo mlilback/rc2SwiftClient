@@ -7,5 +7,21 @@
 import Cocoa
 
 class MacSessionEditorController: AbstractSessionViewController {
+	@IBOutlet var editor: SessionEditor?
+	
+	override func viewDidLoad() {
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "fileSelectionChanged:", name: SessionFileSelectionChangedNotification, object: nil)
+	}
+	
+	func fileSelectionChanged(note:NSNotification) {
+		if let theFile = note.object as! File? {
+			theFile.name
+		} else {
+			//disable editor
+			editor?.editable = false
+			editor?.textStorage?.deleteCharactersInRange(NSMakeRange(0, (editor?.textStorage!.length)!))
+		}
+		
+	}
 }
 
