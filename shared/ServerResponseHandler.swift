@@ -14,18 +14,15 @@ protocol ResponseHandlerDelegate {
 	func loadHelpItems(topic:String, items:[HelpItem])
 	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String,JSON>)
 	func attributedStringWithImage(image:SessionImage) -> NSAttributedString
+	func cacheImages(images:[SessionImage])
 }
 
 class ResponseHandler {
-	private let baseImageUrl:NSURL
 	private let delegate:ResponseHandlerDelegate
 	private var outputColors: [OutputColors:PlatformColor]
-	private let imageCache: ImageCache
 
-	required init(imageDirectory:NSURL, delegate:ResponseHandlerDelegate) {
+	required init(delegate:ResponseHandlerDelegate) {
 		self.delegate = delegate
-		self.baseImageUrl = imageDirectory
-		self.imageCache = ImageCache()
 		let oldDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("OutputColors") as! Dictionary<String,String>
 		outputColors = oldDict.reduce([OutputColors:PlatformColor]()) { (var dict, pair) in
 			dict[OutputColors(rawValue: pair.0)!] = PlatformColor.colorWithHexString(pair.1)
@@ -63,7 +60,7 @@ class ResponseHandler {
 
 	private func formatExecComplete(queryId:Int, batchId:Int, images:[SessionImage]) -> NSAttributedString? {
 		guard images.count > 0 else { return nil }
-		imageCache.cacheImagesFromServer(images)
+		delegate.cacheImages(images)
 		let mstr = NSMutableAttributedString()
 		for image in images {
 			let aStr = delegate.attributedStringWithImage(image)

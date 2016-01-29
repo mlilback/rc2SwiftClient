@@ -69,7 +69,7 @@ public func ==(a:HelpItem, b:HelpItem) -> Bool {
 	return a.title == b.title && a.url == b.url
 }
 
-public class SessionImage: NSObject, NSSecureCoding {
+public class SessionImage: NSObject, NSSecureCoding, NSCopying {
 	let id:Int
 	let batchId:Int
 	let name:String!
@@ -110,6 +110,15 @@ public class SessionImage: NSObject, NSSecureCoding {
 		coder.encodeInteger(self.batchId, forKey: "batchId")
 		coder.encodeObject(self.name, forKey: "name")
 		coder.encodeObject(self.dateCreated, forKey: "dateCreated")
+	}
+	
+	private func toJSON() -> JSON {
+		let dict = ["id":id, "batchId":batchId, "name":name, dateCreated:SessionImage.dateFormatter.stringFromDate(dateCreated)]
+		return JSON(dict)
+	}
+	
+	public func copyWithZone(zone: NSZone) -> AnyObject {
+		return SessionImage(toJSON())
 	}
 }
 

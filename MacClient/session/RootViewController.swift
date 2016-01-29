@@ -19,22 +19,14 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	var variableHandler: SessionVariableHandler?
 	var responseHandler: ResponseHandler?
 	var savedStateHash: NSData?
+	var imgCache: ImageCache = ImageCache()
 	
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		editor = firstChildViewController(self)
 		outputHandler = firstChildViewController(self)
 		variableHandler = firstChildViewController(self)
-		do {
-			let fm = NSFileManager()
-			let cacheUrl = try fm.URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-			let imgDirUrl = NSURL(fileURLWithPath: "Rc2/images", isDirectory: true, relativeToURL: cacheUrl)
-			imgDirUrl.checkResourceIsReachableAndReturnError(nil) //throws instead of returning error
-			responseHandler = ResponseHandler(imageDirectory: imgDirUrl, delegate: self)
-		} catch let error {
-			log.error("got error creating image cache direcctory:\(error)")
-			assertionFailure("failed to create response handler")
-		}
+		responseHandler = ResponseHandler(delegate: self)
 		//save our state on quit and sleep
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "appWillTerminate", name: NSApplicationWillTerminateNotification, object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:  "saveSessionState", name: NSWorkspaceWillSleepNotification, object:nil)
@@ -72,6 +64,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		//save data related to this session
 		var dict = [String:AnyObject]()
 		dict["outputController"] = outputHandler?.saveSessionState()
+		dict["imageCache"] = imgCache
 		do {
 			let data = NSKeyedArchiver.archivedDataWithRootObject(dict)
 			//only write to disk if has changed
@@ -94,6 +87,9 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 				if let dict = NSKeyedUnarchiver.unarchiveObjectWithData(data!) as! [String:AnyObject]? {
 					if let ostate = dict["outputController"] as! [String : AnyObject]? {
 						outputHandler?.restoreSessionState(ostate)
+					}
+					if let ic = dict["imageCache"] as! ImageCache? {
+						imgCache = ic
 					}
 					savedStateHash = data?.sha256()
 				}
@@ -144,6 +140,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		return str
 	}
 	
+	func cacheImages(images:[SessionImage]) {
+		imgCache.cacheImagesFromServer(images)
+	}
+
 	//MARK: SessionDelegate
 	func sessionOpened() {
 		

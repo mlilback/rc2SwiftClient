@@ -15,11 +15,12 @@ enum ImageCacheError: ErrorType {
 	case NoSuchImage
 }
 
-class ImageCache {
+public class ImageCache :NSObject, NSSecureCoding {
 	///to allow dependency injection
 	var fileManager:NSFileManager
 	
 	private var cache: NSCache
+	private var metaCache: [Int:SessionImage]
 	
 	lazy var cacheUrl: NSURL =
 		{
@@ -37,9 +38,22 @@ class ImageCache {
 			return result!
 		}()
 	
+	public static func supportsSecureCoding() -> Bool { return true }
+	
 	init(_ fm:NSFileManager=NSFileManager()) {
 		fileManager = fm
 		cache = NSCache()
+		metaCache = [:]
+	}
+	
+	public required init?(coder decoder:NSCoder) {
+		fileManager = NSFileManager()
+		cache = NSCache()
+		metaCache = decoder.decodeObjectOfClasses([NSArray.self, SessionImage.self, NSNumber.self], forKey: "metaCache") as! [Int:SessionImage]
+	}
+	
+	public func encodeWithCoder(coder: NSCoder) {
+		coder.encodeObject(metaCache, forKey: "metaCache")
 	}
 	
 	func imageWithId(imageId:Int) -> PlatformImage? {
@@ -66,12 +80,28 @@ class ImageCache {
 		//cache in memory
 		let pdata = NSPurgeableData(data: img.imageData!)
 		cache.setObject(pdata, forKey: img.id)
+		metaCache[img.id] = (img.copy() as! SessionImage)
 	}
 	
 	func cacheImagesFromServer(images:[SessionImage]) {
 		for anImage in images {
 			cacheImageFromServer(anImage)
 		}
+	}
+	
+	func sessionImagesForBatch(batchId:Int) -> [SessionImage] {
+		var matches:[SessionImage] = []
+		for anImage in metaCache.values {
+			if anImage.batchId == batchId {
+				matches.append(anImage)
+			}
+		}
+		return matches
+	}
+	
+	func clearCache() {
+		cache.removeAllObjects()
+		metaCache.removeAll()
 	}
 	
 	func imageWithId(imageId:Int) -> Future<PlatformImage, ImageCacheError> {
