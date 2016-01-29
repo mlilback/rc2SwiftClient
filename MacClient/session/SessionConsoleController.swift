@@ -12,7 +12,7 @@ enum SessionStateKey: String {
 }
 
 ///ViewController whose view contains the text view showing the results, and the text field for entering short queries
-class MacSessionOutputController: AbstractSessionViewController, SessionOutputHandler {
+class SessionConsoleController: AbstractSessionViewController, SessionOutputHandler {
 	//MARK: properties
 	@IBOutlet var resultsView: ResultsView?
 	@IBOutlet var consoleTextField: ConsoleTextField?

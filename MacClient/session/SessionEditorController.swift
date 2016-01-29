@@ -6,7 +6,7 @@
 
 import Cocoa
 
-class MacSessionEditorController: AbstractSessionViewController {
+class SessionEditorController: AbstractSessionViewController {
 	@IBOutlet var editor: SessionEditor?
 	
 	override func viewDidLoad() {

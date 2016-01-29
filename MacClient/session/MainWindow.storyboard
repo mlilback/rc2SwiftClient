@@ -169,7 +169,7 @@
         <!--editor controller-->
         <scene sceneID="kwF-Xt-rNN">
             <objects>
-                <viewController storyboardIdentifier="editorController" id="thj-QN-rY1" userLabel="editor controller" customClass="MacSessionEditorController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="editorController" id="thj-QN-rY1" userLabel="editor controller" customClass="SessionEditorController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="kb3-PH-361">
                         <rect key="frame" x="0.0" y="0.0" width="300" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -728,7 +728,7 @@
         <!--output controller-->
         <scene sceneID="ECV-EI-33P">
             <objects>
-                <viewController storyboardIdentifier="outputConttoller" id="cmA-J2-3x3" userLabel="output controller" customClass="MacSessionOutputController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="outputConttoller" id="cmA-J2-3x3" userLabel="output controller" customClass="SessionConsoleController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="sbQ-OJ-NsG">
                         <rect key="frame" x="0.0" y="0.0" width="435" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
