@@ -95,6 +95,14 @@ public class SessionImage: NSObject, NSSecureCoding, NSCopying {
 		self.imageData = NSData(base64EncodedString: jsonObj["imageData"].stringValue, options: [])!
 	}
 	
+	private init(imgId:Int, batchId:Int, name:String, date:NSDate) {
+		self.id = imgId
+		self.batchId = batchId
+		self.name = name
+		self.dateCreated = date
+		self.imageData = nil
+	}
+	
 	public required init?(coder decoder:NSCoder) {
 		self.id = decoder.decodeIntegerForKey("imageId")
 		self.batchId = decoder.decodeIntegerForKey("batchId")
@@ -112,13 +120,8 @@ public class SessionImage: NSObject, NSSecureCoding, NSCopying {
 		coder.encodeObject(self.dateCreated, forKey: "dateCreated")
 	}
 	
-	private func toJSON() -> JSON {
-		let dict = ["id":id, "batchId":batchId, "name":name, dateCreated:SessionImage.dateFormatter.stringFromDate(dateCreated)]
-		return JSON(dict)
-	}
-	
 	public func copyWithZone(zone: NSZone) -> AnyObject {
-		return SessionImage(toJSON())
+		return SessionImage(imgId: id, batchId: batchId, name:name, date: dateCreated)
 	}
 }
 

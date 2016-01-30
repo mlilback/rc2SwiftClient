@@ -78,6 +78,8 @@
 		08CB554C1C5A9910002CB7EE /* BasicImageController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08CB554B1C5A9910002CB7EE /* BasicImageController.xib */; };
 		08CB554E1C5AA24D002CB7EE /* BasicImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB554D1C5AA24D002CB7EE /* BasicImageController.swift */; };
 		08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB554F1C5AC727002CB7EE /* SessionEditor.swift */; };
+		08CB55521C5C06B2002CB7EE /* OutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB55511C5C06B2002CB7EE /* OutputController.swift */; };
+		08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB55531C5C096E002CB7EE /* ImageOutputController.swift */; };
 		08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* SessionEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* MacSessionMultiController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* MacSessionMultiController.swift */; };
 		08F448FC1C4E244500C64706 /* SessionConsoleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F71C4E244500C64706 /* SessionConsoleController.swift */; };
@@ -190,6 +192,8 @@
 		08CB554B1C5A9910002CB7EE /* BasicImageController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BasicImageController.xib; sourceTree = "<group>"; };
 		08CB554D1C5AA24D002CB7EE /* BasicImageController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicImageController.swift; sourceTree = "<group>"; };
 		08CB554F1C5AC727002CB7EE /* SessionEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditor.swift; sourceTree = "<group>"; };
+		08CB55511C5C06B2002CB7EE /* OutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputController.swift; sourceTree = "<group>"; };
+		08CB55531C5C096E002CB7EE /* ImageOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageOutputController.swift; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* SessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditorController.swift; sourceTree = "<group>"; };
 		08F448F61C4E244500C64706 /* MacSessionMultiController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionMultiController.swift; sourceTree = "<group>"; };
 		08F448F71C4E244500C64706 /* SessionConsoleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionConsoleController.swift; sourceTree = "<group>"; };
@@ -378,7 +382,6 @@
 				083174031C5571D300071408 /* RootViewController.swift */,
 				08F448F51C4E244500C64706 /* SessionEditorController.swift */,
 				08F448F61C4E244500C64706 /* MacSessionMultiController.swift */,
-				08F448F71C4E244500C64706 /* SessionConsoleController.swift */,
 				083305E11C517F8900E27F66 /* FileViewContrfoller.swift */,
 				083305E31C517FC000E27F66 /* VariableViewController.swift */,
 				083305E51C517FE300E27F66 /* UsersViewController.swift */,
@@ -389,7 +392,10 @@
 				083174131C5828B400071408 /* ResultsView.swift */,
 				0831740F1C57B2E200071408 /* CommandHistory.swift */,
 				08CB554D1C5AA24D002CB7EE /* BasicImageController.swift */,
+				08F448F71C4E244500C64706 /* SessionConsoleController.swift */,
 				08CB554B1C5A9910002CB7EE /* BasicImageController.xib */,
+				08CB55511C5C06B2002CB7EE /* OutputController.swift */,
+				08CB55531C5C096E002CB7EE /* ImageOutputController.swift */,
 			);
 			path = session;
 			sourceTree = "<group>";
@@ -519,11 +525,13 @@
 				088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */,
 				088CE6A81C4B605D00153414 /* LoginSession.swift in Sources */,
 				0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */,
+				08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */,
 				0833061E1C541BB700E27F66 /* SwiftyJSON.swift in Sources */,
 				08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */,
 				08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */,
 				08F448FC1C4E244500C64706 /* SessionConsoleController.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
+				08CB55521C5C06B2002CB7EE /* OutputController.swift in Sources */,
 				088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */,
 				083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,

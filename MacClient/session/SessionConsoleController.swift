@@ -12,7 +12,7 @@ enum SessionStateKey: String {
 }
 
 ///ViewController whose view contains the text view showing the results, and the text field for entering short queries
-class SessionConsoleController: AbstractSessionViewController, SessionOutputHandler {
+class SessionConsoleController: AbstractSessionViewController, NSTextViewDelegate, NSTextFieldDelegate {
 	//MARK: properties
 	@IBOutlet var resultsView: ResultsView?
 	@IBOutlet var consoleTextField: ConsoleTextField?
@@ -21,6 +21,7 @@ class SessionConsoleController: AbstractSessionViewController, SessionOutputHand
 	let cmdHistory: CommandHistory
 	dynamic var consoleInputText = "" { didSet { canExecute = consoleInputText.characters.count > 0 } }
 	dynamic var canExecute = false
+	var viewFileOrImage: ((fileWrapper: NSFileWrapper) -> ())?
 	
 	required init?(coder: NSCoder) {
 		cmdHistory = CommandHistory(target:nil, selector:Selector("displayHistoryItem:"))
@@ -42,6 +43,7 @@ class SessionConsoleController: AbstractSessionViewController, SessionOutputHand
 		guard consoleInputText.characters.count > 0 else { return }
 		session.executeScript(consoleInputText)
 		cmdHistory.addToCommandHistory(consoleInputText)
+		consoleTextField?.stringValue = ""
 	}
 	
 	//MARK: SessionOutputHandler
@@ -55,7 +57,7 @@ class SessionConsoleController: AbstractSessionViewController, SessionOutputHand
 	func saveSessionState() -> AnyObject {
 		var dict = [String:AnyObject]()
 		dict[SessionStateKey.History.rawValue] = cmdHistory.commands
-		dict[SessionStateKey.Results.rawValue] = resultsView?.RTFDFromRange(NSMakeRange(0, (resultsView?.textStorage?.length)!))
+		dict[SessionStateKey.Results.rawValue] = resultsView?.textStorage?.RTFDFromRange(NSMakeRange(0, (resultsView?.textStorage?.length)!), documentAttributes: [NSDocumentTypeDocumentAttribute:NSRTFDTextDocumentType])
 		return dict
 	}
 
@@ -65,7 +67,23 @@ class SessionConsoleController: AbstractSessionViewController, SessionOutputHand
 		}
 		if state[SessionStateKey.Results.rawValue] is NSData {
 			let data = state[SessionStateKey.Results.rawValue] as! NSData
-			resultsView!.replaceCharactersInRange(NSMakeRange(0, (resultsView?.textStorage!.length)!), withRTFD:data)
+			let ts = resultsView!.textStorage!
+			resultsView!.replaceCharactersInRange(NSMakeRange(0, ts.length), withRTFD:data)
+			resultsView!.textStorage?.enumerateAttribute(NSAttachmentAttributeName, inRange: NSMakeRange(0, ts.length), options: [], usingBlock:
+			{ (value, range, stop) -> Void in
+				guard let attach = value as? NSTextAttachment else { return }
+				let fw = attach.fileWrapper
+				let fname = (fw?.filename!)!
+				if fname.hasPrefix("img") {
+					let cell = NSTextAttachmentCell(imageCell: NSImage(named: "graph"))
+					cell.image?.size = NSMakeSize(48, 48)
+					ts.removeAttribute(NSAttachmentAttributeName, range: range)
+					attach.attachmentCell = cell
+					ts.addAttribute(NSAttachmentAttributeName, value: attach, range: range)
+				} else if fname.hasPrefix("file") {
+					//TODO: set cell for a file attachment
+				}
+			})
 		}
 	}
 	
@@ -82,6 +100,23 @@ class SessionConsoleController: AbstractSessionViewController, SessionOutputHand
 		consoleInputText = mi.representedObject as! String
 		canExecute = consoleInputText.characters.count > 0
 		view.window?.makeFirstResponder(consoleTextField)
+	}
+	
+	//MARK: textfield delegate
+	func control(control: NSControl, textView: NSTextView, doCommandBySelector commandSelector: Selector) -> Bool {
+		if commandSelector == "insertNewline:" {
+			executeQuery(control)
+			return true
+		}
+		return false
+	}
+	
+	//MARK: textview delegate
+	func textView(textView: NSTextView, clickedOnCell cell: NSTextAttachmentCellProtocol, inRect cellFrame: NSRect, atIndex charIndex: Int)
+	{
+		let attach = cell.attachment
+		guard let fw = attach?.fileWrapper else { return }
+		viewFileOrImage?(fileWrapper: fw)
 	}
 }
 

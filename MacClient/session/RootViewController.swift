@@ -14,17 +14,18 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	dynamic var busy: Bool = false
 	dynamic var statusMessage: String = ""
 	
-	var editor: SessionEditor?
-	var outputHandler: SessionOutputHandler?
-	var variableHandler: SessionVariableHandler?
+	weak var editor: SessionEditorController?
+	weak var outputHandler: SessionOutputHandler?
+	weak var variableHandler: SessionVariableHandler?
 	var responseHandler: ResponseHandler?
 	var savedStateHash: NSData?
-	var imgCache: ImageCache = ImageCache()
+	var imgCache: ImageCache = ImageCache() { didSet { outputHandler?.imageCache = imgCache } }
 	
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		editor = firstChildViewController(self)
 		outputHandler = firstChildViewController(self)
+		outputHandler?.imageCache = imgCache
 		variableHandler = firstChildViewController(self)
 		responseHandler = ResponseHandler(delegate: self)
 		//save our state on quit and sleep
@@ -170,6 +171,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 }
 
 @objc protocol SessionOutputHandler {
+	var imageCache: ImageCache? { get set }
 	func appendFormattedString(string:NSAttributedString)
 	func saveSessionState() -> AnyObject
 	func restoreSessionState(state:[String:AnyObject])

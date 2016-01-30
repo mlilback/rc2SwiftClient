@@ -62,7 +62,7 @@ public class Session : NSObject {
 			self.delegate?.sessionClosed()
 		}
 		wsSource.event.message = { message in
-			log.info("got message: \(message as? String)")
+//			log.info("got message: \(message as? String)")
 			let jsonMessage = JSON.parse(message as! String)
 			if let response = ServerResponse.parseResponse(jsonMessage) {
 				self.delegate?.sessionMessageReceived(response)
