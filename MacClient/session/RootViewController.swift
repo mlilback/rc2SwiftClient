@@ -35,6 +35,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	
 	override func sessionChanged() {
 		session.delegate = self
+		imgCache.workspace = session.workspace
 		restoreSessionState()
 	}
 	
@@ -58,7 +59,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 	
 	func appWillTerminate() {
-		saveSessionState()
+		//can't save w/o a session (didn't leave workspace tab)
+		if sessionOptional != nil {
+			saveSessionState()
+		}
 	}
 	
 	func saveSessionState() {

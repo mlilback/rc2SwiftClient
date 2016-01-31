@@ -6,23 +6,72 @@
 
 import Cocoa
 
-class OutputController: NSTabViewController, SessionOutputHandler {
+class OutputController: NSTabViewController, SessionOutputHandler, ToolbarItemHandler {
 	var consoleController: SessionConsoleController?
+	var imageController: ImageOutputController?
 	var imageCache: ImageCache?
+	var consoleToolbarControl: NSSegmentedControl?
+	var tabSwitchContext: KVOContext?
+	
+	deinit {
+		tabSwitchContext = nil
+	}
 	
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		selectedTabViewItemIndex = 0
 		consoleController = firstChildViewController(self)
 		consoleController?.viewFileOrImage = displayFileOrImage
+		imageController = firstChildViewController(self)
+		imageController?.imageCache = imageCache
+	}
+	
+	override func viewDidAppear() {
+		super.viewDidAppear()
+		if let myView = tabView as? OutputTopView {
+			myView.windowSetCall = {
+				self.hookupToToolbarItems(self, window: myView.window!)
+			}
+		}
+	}
+	
+	func handlesToolbarItem(item: NSToolbarItem) -> Bool {
+		if item.itemIdentifier == "console" {
+			consoleToolbarControl = item.view as! NSSegmentedControl?
+			consoleToolbarControl?.target = self
+			consoleToolbarControl?.action = "consoleButtonClicked:"
+			if let myItem = item as? OutputConsoleToolbarItem {
+				myItem.tabController = self
+			}
+			return true
+		}
+		return false
+	}
+
+	func consoleButtonClicked(sender:AnyObject?) {
+		selectedTabViewItemIndex = 0
 	}
 	
 	func displayFileOrImage(fileWrapper: NSFileWrapper) {
 		log.info("told to display file \(fileWrapper.filename)")
+		if fileWrapper.filename?.hasPrefix("img") != nil,
+			let fdata = fileWrapper.regularFileContents,
+			let targetImg = NSKeyedUnarchiver.unarchiveObjectWithData(fdata) as? SessionImage,
+			let images = imageCache?.sessionImagesForBatch(targetImg.batchId),
+			let index = images.indexOf({$0.id == targetImg.id})
+		{
+			imageController?.displayImageAtIndex(index, images:images)
+			selectedTabViewItemIndex = 1
+			tabView.window?.toolbar?.validateVisibleItems()
+		}
 	}
 
 	func appendFormattedString(string:NSAttributedString) {
 		consoleController?.appendFormattedString(string)
+		//switch back to console view
+		if selectedTabViewItemIndex != 0 {
+			selectedTabViewItemIndex = 0
+		}
 	}
 	
 	func saveSessionState() -> AnyObject {
@@ -38,3 +87,18 @@ class OutputController: NSTabViewController, SessionOutputHandler {
 	}
 }
 
+class OutputTopView : NSTabView {
+	var windowSetCall: (() -> Void)?
+	override func viewDidMoveToWindow() {
+		if self.window != nil {
+			windowSetCall?()
+		}
+	}
+}
+
+class OutputConsoleToolbarItem : NSToolbarItem {
+	weak var tabController: NSTabViewController?
+	override func validate() {
+		enabled = tabController?.selectedTabViewItemIndex > 0
+	}
+}

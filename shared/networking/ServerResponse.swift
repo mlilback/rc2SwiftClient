@@ -126,6 +126,6 @@ public class SessionImage: NSObject, NSSecureCoding, NSCopying {
 }
 
 public func ==(a:SessionImage, b:SessionImage) -> Bool {
-	return a.id == b.id && a.name == b.name && a.batchId == b.batchId && a.dateCreated == b.dateCreated
+	return a.id == b.id 
 }
 

@@ -13,11 +13,13 @@ import BrightFutures
 
 enum ImageCacheError: ErrorType {
 	case NoSuchImage
+	case FailedToLoadFromNetwork
 }
 
 public class ImageCache :NSObject, NSSecureCoding {
 	///to allow dependency injection
 	var fileManager:NSFileManager
+	var workspace: Workspace?
 	
 	private var cache: NSCache
 	private var metaCache: [Int:SessionImage]
@@ -28,7 +30,8 @@ public class ImageCache :NSObject, NSSecureCoding {
 			do {
 				let fm = self.fileManager
 				let baseDir = try fm.URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-				let imgDirUrl = NSURL(fileURLWithPath: "Rc2/images", isDirectory: true, relativeToURL: baseDir)
+				let imgDirUrl = NSURL(fileURLWithPath: "Rc2/images/", isDirectory: true, relativeToURL: baseDir).absoluteURL
+				try fm.createDirectoryAtURL(imgDirUrl, withIntermediateDirectories:true, attributes:nil)
 				imgDirUrl.checkResourceIsReachableAndReturnError(nil) //throws instead of returning error
 				result = imgDirUrl
 			} catch let error {
@@ -106,13 +109,23 @@ public class ImageCache :NSObject, NSSecureCoding {
 	
 	func imageWithId(imageId:Int) -> Future<PlatformImage, ImageCacheError> {
 		let promise = Promise<PlatformImage, ImageCacheError>()
+		let fileUrl = NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: self.cacheUrl)
 		Queue.global.async {
-			let fileUrl = NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: self.cacheUrl)
 			if fileUrl.checkResourceIsReachableAndReturnError(nil) {
 				promise.success(PlatformImage(contentsOfURL: fileUrl)!)
+				return
+			}
+			//need to fetch from server
+			RestServer.sharedInstance.downloadImage(self.workspace!, imageId: imageId, destination: fileUrl).onSuccess
+			{ _ in
+				if let pimg = PlatformImage(contentsOfURL: fileUrl) {
+					return promise.success(pimg)
+				}
+				return promise.failure(.FailedToLoadFromNetwork)
+			}.onFailure() { err in
+				promise.failure(.FailedToLoadFromNetwork)
 			}
 		}
-		//need to fetch from server
 		return promise.future
 	}
 }

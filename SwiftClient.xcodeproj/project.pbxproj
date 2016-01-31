@@ -21,7 +21,6 @@
 		0831741A1C5888FB00071408 /* BrightFutures.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 083174171C5888F200071408 /* BrightFutures.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0831741C1C588B1E00071408 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0831741B1C588B1E00071408 /* Result.framework */; };
 		083174201C588B8C00071408 /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0831741B1C588B1E00071408 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		083305D31C4FC78C00E27F66 /* NSToolbarItem+Validate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D21C4FC78C00E27F66 /* NSToolbarItem+Validate.swift */; };
 		083305D51C4FE0E900E27F66 /* ToolbarValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D41C4FE0E900E27F66 /* ToolbarValidationTests.swift */; };
 		083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */; };
 		083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D81C501B7300E27F66 /* MainWindowController.swift */; };
@@ -388,14 +387,14 @@
 				083174051C56BE7B00071408 /* SessionSplitController.swift */,
 				08CB554F1C5AC727002CB7EE /* SessionEditor.swift */,
 				08F448FF1C4EBEF100C64706 /* MacSplitter.swift */,
+				08CB55511C5C06B2002CB7EE /* OutputController.swift */,
 				0831740D1C577A2500071408 /* ConsoleTextField.swift */,
 				083174131C5828B400071408 /* ResultsView.swift */,
 				0831740F1C57B2E200071408 /* CommandHistory.swift */,
-				08CB554D1C5AA24D002CB7EE /* BasicImageController.swift */,
 				08F448F71C4E244500C64706 /* SessionConsoleController.swift */,
-				08CB554B1C5A9910002CB7EE /* BasicImageController.xib */,
-				08CB55511C5C06B2002CB7EE /* OutputController.swift */,
 				08CB55531C5C096E002CB7EE /* ImageOutputController.swift */,
+				08CB554D1C5AA24D002CB7EE /* BasicImageController.swift */,
+				08CB554B1C5A9910002CB7EE /* BasicImageController.xib */,
 			);
 			path = session;
 			sourceTree = "<group>";
@@ -537,7 +536,6 @@
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
 				083305E61C517FE300E27F66 /* UsersViewController.swift in Sources */,
 				08CB554E1C5AA24D002CB7EE /* BasicImageController.swift in Sources */,
-				083305D31C4FC78C00E27F66 /* NSToolbarItem+Validate.swift in Sources */,
 				08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */,
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
 				083305E21C517F8900E27F66 /* FileViewContrfoller.swift in Sources */,

@@ -48,10 +48,42 @@
                                 <toolbarItem implicitItemIdentifier="NSToolbarPrintItem" id="gUI-Ky-TwO"/>
                                 <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="CMk-yO-S4X"/>
                                 <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="GLn-8a-km5"/>
+                                <toolbarItem implicitItemIdentifier="A4724AD7-7F00-4909-B3B7-52F0D2624460" explicitItemIdentifier="console" label="Console" paletteLabel="Console" id="T7n-bG-27O" customClass="OutputConsoleToolbarItem" customModule="MacClient" customModuleProvider="target">
+                                    <nil key="toolTip"/>
+                                    <size key="minSize" width="34" height="24"/>
+                                    <size key="maxSize" width="34" height="25"/>
+                                    <segmentedControl key="view" toolTip="Switch to Console" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" id="Oh9-nF-Enk">
+                                        <rect key="frame" x="8" y="14" width="34" height="25"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="6rM-9Z-z3m">
+                                            <font key="font" metaFont="system" size="14"/>
+                                            <segments>
+                                                <segment image="console" width="32"/>
+                                            </segments>
+                                        </segmentedCell>
+                                        <accessibility description="console"/>
+                                    </segmentedControl>
+                                </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="74033426-B622-4D2F-830E-7EA905B8AD0B" explicitItemIdentifier="search" label="Search" paletteLabel="Search" tag="1" id="FiF-Gk-sHu">
+                                    <nil key="toolTip"/>
+                                    <size key="minSize" width="32" height="22"/>
+                                    <size key="maxSize" width="96" height="22"/>
+                                    <searchField key="view" wantsLayer="YES" verticalHuggingPriority="750" tag="1" id="faM-N6-PFz">
+                                        <rect key="frame" x="0.0" y="14" width="96" height="22"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="40e-6x-qvk">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </searchFieldCell>
+                                    </searchField>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="ckH-aZ-Qh0"/>
                                 <toolbarItem reference="GLn-8a-km5"/>
+                                <toolbarItem reference="T7n-bG-27O"/>
+                                <toolbarItem reference="FiF-Gk-sHu"/>
                             </defaultToolbarItems>
                             <connections>
                                 <outlet property="delegate" destination="wlW-TF-z7z" id="fHW-1K-2RD"/>
@@ -68,7 +100,7 @@
         <scene sceneID="dmn-fv-Adu">
             <objects>
                 <viewController storyboardIdentifier="rootController" id="dEf-uW-xcq" userLabel="root view controller" customClass="RootViewController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="yiQ-ic-8e8">
+                    <view key="view" wantsLayer="YES" id="yiQ-ic-8e8">
                         <rect key="frame" x="0.0" y="0.0" width="868" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -174,7 +206,7 @@
                         <tabViewItem id="efd-Px-WGZ"/>
                         <tabViewItem id="JN4-SP-GSb"/>
                     </tabViewItems>
-                    <tabView key="tabView" type="noTabsNoBorder" id="yzp-ro-Qov">
+                    <tabView key="tabView" type="noTabsNoBorder" id="yzp-ro-Qov" customClass="OutputTopView" customModule="MacClient" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <font key="font" metaFont="message"/>
@@ -563,7 +595,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="varValueView" id="94a-pr-67p">
-                                                            <rect key="frame" x="85" y="1" width="121" height="17"/>
+                                                            <rect key="frame" x="83.701400247360809" y="1" width="121" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Aa4-kM-Kx6">
@@ -726,7 +758,7 @@
                                     </subviews>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </clipView>
-                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="uWh-mL-l1H">
+                                <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="uWh-mL-l1H">
                                     <rect key="frame" x="1" y="460" width="207" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -756,7 +788,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="435" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="77W-4U-1WA">
+                            <scrollView misplaced="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="77W-4U-1WA">
                                 <rect key="frame" x="0.0" y="38" width="436" height="476"/>
                                 <clipView key="contentView" id="n15-ti-4jq">
                                     <rect key="frame" x="1" y="1" width="434" height="474"/>
@@ -787,10 +819,10 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
-                            <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yCP-oo-1VS">
-                                <rect key="frame" x="8" y="8" width="420" height="22"/>
+                            <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yCP-oo-1VS">
+                                <rect key="frame" x="8" y="8" width="419" height="22"/>
                                 <subviews>
-                                    <button horizontalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MNp-sz-EOS" userLabel="history button">
+                                    <button horizontalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MNp-sz-EOS" userLabel="history button">
                                         <rect key="frame" x="0.0" y="0.0" width="22" height="22"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="22" id="2mm-ip-IEK"/>
@@ -805,8 +837,8 @@
                                             <action selector="historyClicked:" target="cmA-J2-3x3" id="Dsh-zi-is1"/>
                                         </connections>
                                     </button>
-                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="500" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y6X-8g-t8y" customClass="ConsoleTextField" customModule="MacClient" customModuleProvider="target">
-                                        <rect key="frame" x="30" y="0.0" width="305" height="22"/>
+                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="Y6X-8g-t8y" customClass="ConsoleTextField" customModule="MacClient" customModuleProvider="target">
+                                        <rect key="frame" x="30" y="0.0" width="304" height="22"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="563" constant="50" id="Xik-b7-zR2"/>
                                         </constraints>
@@ -826,7 +858,7 @@
                                         </connections>
                                     </textField>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ogZ-Ni-wlf">
-                                        <rect key="frame" x="337" y="-7" width="89" height="32"/>
+                                        <rect key="frame" x="336" y="-7" width="89" height="32"/>
                                         <buttonCell key="cell" type="push" title="Execute" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dh4-dU-GOd">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -1008,7 +1040,7 @@ DQ
                                                 </subviews>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
-                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="yy1-j0-irk">
+                                            <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="yy1-j0-irk">
                                                 <rect key="frame" x="1" y="156" width="238" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -1055,18 +1087,6 @@ DQ
             </objects>
             <point key="canvasLocation" x="-599" y="-436.5"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="JuO-wJ-s32">
-            <objects>
-                <viewController id="qD5-lc-hyF" sceneMemberID="viewController">
-                    <view key="view" id="DkJ-fH-eru">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </view>
-                </viewController>
-                <customObject id="ndx-UF-8ww" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-        </scene>
         <!--Page Controller-->
         <scene sceneID="2L5-5D-oBv">
             <objects>
@@ -1085,6 +1105,7 @@ DQ
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSAddTemplate" width="11" height="11"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
+        <image name="console" width="20" height="20"/>
         <image name="files" width="20" height="20"/>
         <image name="hand-green" width="16" height="16"/>
         <image name="hand-grey" width="16" height="16"/>

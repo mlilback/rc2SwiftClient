@@ -90,7 +90,7 @@ public enum RestError: Int, ErrorType {
 		let request = NSMutableURLRequest(URL: url!)
 		request.HTTPMethod = method
 		if loginSession != nil {
-			request.addValue(loginSession!.authToken, forHTTPHeaderField:"Rc-2Auth")
+			request.addValue(loginSession!.authToken, forHTTPHeaderField:"Rc2-Auth")
 		}
 		if (jsonDict.count > 0) {
 			request.addValue("application/json", forHTTPHeaderField:"Content-Type")
@@ -247,6 +247,34 @@ public enum RestError: Int, ErrorType {
 		}
 	}
 
+	///parameter destination: the directory to save the image in, overwriting any existing file
+	public func downloadImage(wspace:Workspace, imageId:Int, destination:NSURL) -> Future<NSURL?,RestError>  {
+		let p = Promise<NSURL?, RestError>()
+		let req = request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET", jsonDict:[:])
+		req.addValue("image/png", forHTTPHeaderField: "Accept")
+		let task = urlSession.downloadTaskWithRequest(req) { (dloadUrl, response, error) -> Void in
+			let hresponse = response as? NSHTTPURLResponse
+			if error == nil && hresponse?.statusCode == 200 {
+				let fm = NSFileManager()
+				let fileUrl = NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: destination)
+				do {
+					if fileUrl.checkResourceIsReachableAndReturnError(nil) {
+						try fm.removeItemAtURL(fileUrl)
+					}
+					try fm.moveItemAtURL(dloadUrl!, toURL: fileUrl)
+					p.success(fileUrl)
+				} catch let err as NSError {
+					log.warning("got error downloading image \(imageId): \(err)")
+					p.failure(RestError.FailedToSaveFile)
+				}
+			} else {
+				p.failure(RestError.FailedToSaveFile)
+			}
+		}
+		task.resume()
+		return p.future
+	}
+	
 }
 
 extension NSURLSession {
