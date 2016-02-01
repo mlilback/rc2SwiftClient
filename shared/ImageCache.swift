@@ -107,6 +107,11 @@ public class ImageCache :NSObject, NSSecureCoding {
 		metaCache.removeAll()
 	}
 	
+	///imageWithId: should have been called at some point to make sure the image is cached
+	func urlForCachedImage(imageId:Int) -> NSURL {
+		return NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: self.cacheUrl).absoluteURL
+	}
+	
 	func imageWithId(imageId:Int) -> Future<PlatformImage, ImageCacheError> {
 		let promise = Promise<PlatformImage, ImageCacheError>()
 		let fileUrl = NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: self.cacheUrl)

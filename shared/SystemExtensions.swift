@@ -71,6 +71,34 @@ extension PlatformColor {
 	}
 }
 
+extension NSFileManager {
+	func copyURLToTemporaryLocation(url:NSURL) throws -> NSURL {
+		let tmpDir = NSURL(fileURLWithPath:NSTemporaryDirectory()).URLByAppendingPathComponent("Rc2", isDirectory: true)
+		_ = try? createDirectoryAtURL(tmpDir, withIntermediateDirectories: true, attributes: nil)
+		let destUrl = NSURL(fileURLWithPath: url.lastPathComponent!, relativeToURL: tmpDir)
+		_ = try? removeItemAtURL(destUrl)
+		try copyItemAtURL(url, toURL: destUrl)
+		return destUrl
+	}
+}
+
+extension NSURL {
+	func localizedName() -> String {
+		var appName: String = (self.URLByDeletingPathExtension?.lastPathComponent!)!
+		var appNameObj: AnyObject?
+		do {
+			try getResourceValue(&appNameObj, forKey: NSURLLocalizedNameKey)
+			appName = appNameObj as! String
+			//remove any extension
+			if let dotIndex = appName.characters.indexOf(".") {
+				appName = appName.substringToIndex(dotIndex)
+			}
+			return appName
+		} catch _ {} //don't care if it failed
+		return lastPathComponent!
+	}
+}
+
 extension NSRange {
 	func toStringRange(str:String) -> Range<String.Index>? {
 		let fromIdx = str.utf16.startIndex.advancedBy(self.location)

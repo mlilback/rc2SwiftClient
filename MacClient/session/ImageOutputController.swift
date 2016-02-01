@@ -5,15 +5,14 @@
 //
 
 import Cocoa
+import CoreServices
 
 //TODO: if splitter resizes us, the pagecontroller view does not adjust its frame
-//TODO: move stack view to bottom
+//TODO: figure out how to support async image loading
 class DisplayableImage: NSObject {
 	let imageId:Int
 	let name:String
 	var image:NSImage?
-	var canGoForward:Bool = true
-	var canGoBackward:Bool = true
 	
 	init(imageId:Int, name:String) {
 		self.imageId = imageId
@@ -25,7 +24,7 @@ class DisplayableImage: NSObject {
 	}
 }
 
-class ImageOutputController: NSViewController, NSPageControllerDelegate {
+class ImageOutputController: NSViewController, NSPageControllerDelegate, NSSharingServicePickerDelegate {
 	@IBOutlet var imageView: NSImageView?
 	@IBOutlet var labelField: NSTextField?
 	@IBOutlet var shareButton: NSSegmentedControl?
@@ -35,6 +34,7 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate {
 	var batchImages: [DisplayableImage] = []
 	var firstIndex: Int = 0
 	var imageCache: ImageCache?
+	var myShareServices: [NSSharingService] = []
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -42,6 +42,7 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate {
 		pageController?.delegate = self
 		pageController?.transitionStyle = .StackBook
 		pageController?.view = imageView!
+		shareButton?.sendActionOn(Int(NSEventMask.LeftMouseDownMask.rawValue))
 	}
 	
 	override func viewWillAppear() {
@@ -75,6 +76,34 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate {
 		default:
 			break
 		}
+	}
+	
+	@IBAction func shareImage(sender:AnyObject?) {
+		let dimg = batchImages[(pageController?.selectedIndex)!]
+		let imgUrl = imageCache?.urlForCachedImage(dimg.imageId)
+		myShareServices.removeAll()
+		let wspace = NSWorkspace()
+		if let appUrl = wspace.URLForApplicationToOpenURL(imgUrl!) {
+			let appIcon = wspace.iconForFile(appUrl.path!)
+			let appName = appUrl.localizedName()
+			myShareServices.append(NSSharingService(title: "Open in \(appName)", image: appIcon, alternateImage: nil, handler: {
+					var urlToUse = imgUrl!
+					do {
+						try urlToUse = NSFileManager().copyURLToTemporaryLocation(imgUrl!)
+					} catch let err as NSError {
+						log.error("error copying to tmp:\(err)")
+					}
+					wspace.openFile((urlToUse.path)!, withApplication: appUrl.path)
+				}))
+		}
+		let picker = NSSharingServicePicker(items: [dimg.image!])
+		picker.delegate = self
+		picker.showRelativeToRect((shareButton?.bounds)!, ofView: shareButton!, preferredEdge: .MaxY)
+	}
+	
+	func sharingServicePicker(sharingServicePicker: NSSharingServicePicker, sharingServicesForItems items: [AnyObject], proposedSharingServices proposedServices: [NSSharingService]) -> [NSSharingService]
+	{
+		return myShareServices + proposedServices
 	}
 	
 	func pageController(pageController: NSPageController, didTransitionToObject object: AnyObject) {
