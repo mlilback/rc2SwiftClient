@@ -44,10 +44,24 @@ class OutputController: NSTabViewController, SessionOutputHandler, ToolbarItemHa
 				myItem.tabController = self
 			}
 			return true
+		} else if item.itemIdentifier == "clear" {
+			item.target = self
+			item.action = "clearConsole:"
+			if let myItem = item as? ClearConsoleToolbarItem {
+				myItem.textView = consoleController?.resultsView
+				myItem.tabController = self
+				
+			}
+			return true
 		}
 		return false
 	}
 
+	func clearConsole(sender:AnyObject?) {
+		consoleController?.clearConsole(sender)
+		imageCache?.clearCache()
+	}
+	
 	func consoleButtonClicked(sender:AnyObject?) {
 		selectedTabViewItemIndex = 0
 	}
@@ -93,6 +107,14 @@ class OutputTopView : NSTabView {
 		if self.window != nil {
 			windowSetCall?()
 		}
+	}
+}
+
+class ClearConsoleToolbarItem: NSToolbarItem {
+	var textView: NSTextView?
+	weak var tabController: NSTabViewController?
+	override func validate() {
+		enabled = textView?.textStorage?.length > 0 && tabController?.selectedTabViewItemIndex == 0
 	}
 }
 

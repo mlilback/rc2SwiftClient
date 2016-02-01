@@ -12,7 +12,8 @@ enum SessionStateKey: String {
 }
 
 ///ViewController whose view contains the text view showing the results, and the text field for entering short queries
-class SessionConsoleController: AbstractSessionViewController, NSTextViewDelegate, NSTextFieldDelegate {
+class SessionConsoleController: AbstractSessionViewController, NSTextViewDelegate, NSTextFieldDelegate 
+{
 	//MARK: properties
 	@IBOutlet var resultsView: ResultsView?
 	@IBOutlet var consoleTextField: ConsoleTextField?
@@ -100,6 +101,10 @@ class SessionConsoleController: AbstractSessionViewController, NSTextViewDelegat
 		consoleInputText = mi.representedObject as! String
 		canExecute = consoleInputText.characters.count > 0
 		view.window?.makeFirstResponder(consoleTextField)
+	}
+	
+	@IBAction func clearConsole(sender:AnyObject?) {
+		resultsView?.textStorage?.deleteCharactersInRange(NSMakeRange(0, (resultsView?.textStorage?.length)!))
 	}
 	
 	//MARK: textfield delegate

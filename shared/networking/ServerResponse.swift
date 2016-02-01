@@ -18,7 +18,10 @@ public enum ServerResponse : Equatable {
 		switch(jsonObj["msg"].stringValue) {
 			case "results":
 				if jsonObj["images"] != nil {
-					let images = jsonObj["images"].arrayValue.map({ return SessionImage($0) })
+					//we override batchId because it is per-session, we need it unique across sessions
+					let batchId = max(NSUserDefaults.standardUserDefaults().integerForKey("NextBatchIdKey"), 1)
+					let images = jsonObj["images"].arrayValue.map({ return SessionImage($0, batchId:batchId) })
+					NSUserDefaults.standardUserDefaults().setInteger(batchId+1, forKey: "NextBatchIdKey")
 					return ServerResponse.ExecComplete(queryId: jsonObj["queryId"].intValue, batchId: jsonObj["imageBatchId"].intValue, images: images)
 			} else {
 					return ServerResponse.Results(queryId: jsonObj["queryId"].intValue, fileId: jsonObj["fileId"].intValue, text: jsonObj["string"].stringValue)
@@ -87,9 +90,9 @@ public class SessionImage: NSObject, NSSecureCoding, NSCopying {
 		return formatter
 	}()
 	
-	init(_ jsonObj:JSON) {
+	init(_ jsonObj:JSON, batchId:Int = 0) {
 		self.id = jsonObj["id"].intValue
-		self.batchId = jsonObj["batchId"].intValue
+		self.batchId = batchId == 0 ? jsonObj["batchId"].intValue : batchId
 		self.name = jsonObj["name"].stringValue
 		self.dateCreated = SessionImage.dateFormatter.dateFromString(jsonObj["dateCreated"].stringValue)!
 		self.imageData = NSData(base64EncodedString: jsonObj["imageData"].stringValue, options: [])!

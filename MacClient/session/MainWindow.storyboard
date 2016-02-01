@@ -78,10 +78,27 @@
                                         </searchFieldCell>
                                     </searchField>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="334E0D12-33E6-4F0F-9904-D75C6D9961A3" explicitItemIdentifier="clear" label="Clear" paletteLabel="Clear Console" id="hsh-zb-F7R" customClass="ClearConsoleToolbarItem" customModule="MacClient" customModuleProvider="target">
+                                    <nil key="toolTip"/>
+                                    <size key="minSize" width="34" height="24"/>
+                                    <size key="maxSize" width="34" height="25"/>
+                                    <segmentedControl key="view" toolTip="Clear Console" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" id="nJX-vw-Gi9">
+                                        <rect key="frame" x="24" y="14" width="34" height="25"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="5gd-S1-9rJ">
+                                            <font key="font" metaFont="system" size="14"/>
+                                            <segments>
+                                                <segment image="clear" width="32"/>
+                                            </segments>
+                                        </segmentedCell>
+                                        <accessibility description="cclear"/>
+                                    </segmentedControl>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="ckH-aZ-Qh0"/>
                                 <toolbarItem reference="GLn-8a-km5"/>
+                                <toolbarItem reference="hsh-zb-F7R"/>
                                 <toolbarItem reference="T7n-bG-27O"/>
                                 <toolbarItem reference="FiF-Gk-sHu"/>
                             </defaultToolbarItems>
@@ -204,7 +221,7 @@
                 <tabViewController storyboardIdentifier="output" tabStyle="unspecified" id="qFx-32-GX3" userLabel="output controller" customClass="OutputController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <tabViewItems>
                         <tabViewItem id="efd-Px-WGZ"/>
-                        <tabViewItem id="JN4-SP-GSb"/>
+                        <tabViewItem id="j2a-HV-n5N"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="yzp-ro-Qov" customClass="OutputTopView" customModule="MacClient" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -214,7 +231,7 @@
                     </tabView>
                     <connections>
                         <segue destination="cmA-J2-3x3" kind="relationship" relationship="tabItems" id="ZGF-RH-jDc"/>
-                        <segue destination="c39-Kd-I9L" kind="relationship" relationship="tabItems" id="6KS-hT-gnv"/>
+                        <segue destination="cag-VX-0j2" kind="relationship" relationship="tabItems" id="hwK-qM-BN7"/>
                     </connections>
                 </tabViewController>
                 <customObject id="aWp-lc-ahp" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -758,7 +775,7 @@
                                     </subviews>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </clipView>
-                                <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="uWh-mL-l1H">
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="uWh-mL-l1H">
                                     <rect key="frame" x="1" y="460" width="207" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -907,32 +924,90 @@
             </objects>
             <point key="canvasLocation" x="1566" y="-41"/>
         </scene>
-        <!--image output controller-->
-        <scene sceneID="hPU-5h-OPH">
+        <!--image Controller-->
+        <scene sceneID="Guo-sO-Vgq">
             <objects>
-                <viewController storyboardIdentifier="imageOutput" id="c39-Kd-I9L" userLabel="image output controller" customClass="ImageOutputController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="yiI-oo-H65">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="513"/>
+                <viewController id="cag-VX-0j2" userLabel="image Controller" customClass="ImageOutputController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="KUd-VP-W3w">
+                        <rect key="frame" x="0.0" y="0.0" width="513" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <containerView translatesAutoresizingMaskIntoConstraints="NO" id="Pd4-LW-brV">
-                                <rect key="frame" x="0.0" y="0.0" width="450" height="513"/>
-                                <connections>
-                                    <segue destination="sgv-1X-yIS" kind="embed" id="Tb5-uB-6LO"/>
-                                </connections>
-                            </containerView>
+                            <stackView distribution="fill" orientation="horizontal" alignment="bottom" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CJw-iA-83I">
+                                <rect key="frame" x="20" y="472" width="473" height="21"/>
+                                <subviews>
+                                    <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oGJ-LH-kvq">
+                                        <rect key="frame" x="-2" y="-2" width="71" height="24"/>
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="3kN-Kj-M1l">
+                                            <font key="font" metaFont="system"/>
+                                            <segments>
+                                                <segment toolTip="Back" image="NSGoLeftTemplate" width="32"/>
+                                                <segment toolTip="Forward" image="NSGoRightTemplate" width="32" tag="1"/>
+                                            </segments>
+                                        </segmentedCell>
+                                        <accessibility description="Navigate"/>
+                                        <connections>
+                                            <action selector="navigateClicked:" target="cag-VX-0j2" id="FGf-Nh-mNo"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yDu-X6-HrR">
+                                        <rect key="frame" x="73" y="0.0" width="360" height="18"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="eer-R1-ODD">
+                                            <font key="font" metaFont="system" size="14"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tFy-qc-1rE">
+                                        <rect key="frame" x="437" y="-2" width="38" height="24"/>
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="BZo-na-Yrl">
+                                            <font key="font" metaFont="system"/>
+                                            <segments>
+                                                <segment toolTip="Share" image="NSShareTemplate" width="32"/>
+                                            </segments>
+                                        </segmentedCell>
+                                        <accessibility description="Share"/>
+                                    </segmentedControl>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="3tS-pF-2MC"/>
+                                </constraints>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                            <imageView focusRingType="none" horizontalHuggingPriority="249" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="I7j-Nd-lJp">
+                                <rect key="frame" x="20" y="20" width="473" height="444"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" focusRingType="none" alignment="left" imageScaling="proportionallyDown" id="lcX-6G-KMf"/>
+                            </imageView>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="Pd4-LW-brV" secondAttribute="bottom" id="8yA-Mf-nQZ"/>
-                            <constraint firstItem="Pd4-LW-brV" firstAttribute="leading" secondItem="yiI-oo-H65" secondAttribute="leading" id="U0T-08-efk"/>
-                            <constraint firstAttribute="trailing" secondItem="Pd4-LW-brV" secondAttribute="trailing" id="UZV-ep-XfZ"/>
-                            <constraint firstItem="Pd4-LW-brV" firstAttribute="top" secondItem="yiI-oo-H65" secondAttribute="top" id="VtM-R7-RV9"/>
+                            <constraint firstItem="CJw-iA-83I" firstAttribute="leading" secondItem="KUd-VP-W3w" secondAttribute="leading" constant="20" id="5my-C8-Vb9"/>
+                            <constraint firstItem="I7j-Nd-lJp" firstAttribute="top" secondItem="CJw-iA-83I" secondAttribute="bottom" constant="8" id="9iU-Uf-WgZ"/>
+                            <constraint firstAttribute="trailing" secondItem="CJw-iA-83I" secondAttribute="trailing" constant="20" id="NvF-vu-h16"/>
+                            <constraint firstAttribute="bottom" secondItem="I7j-Nd-lJp" secondAttribute="bottom" constant="20" symbolic="YES" id="PXh-rY-LhL"/>
+                            <constraint firstItem="CJw-iA-83I" firstAttribute="top" secondItem="KUd-VP-W3w" secondAttribute="top" constant="20" id="YHc-8S-4eI"/>
+                            <constraint firstAttribute="trailing" secondItem="I7j-Nd-lJp" secondAttribute="trailing" constant="20" symbolic="YES" id="i6C-4s-S0p"/>
+                            <constraint firstItem="I7j-Nd-lJp" firstAttribute="leading" secondItem="KUd-VP-W3w" secondAttribute="leading" constant="20" symbolic="YES" id="qkd-qt-hgB"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="imageView" destination="I7j-Nd-lJp" id="4fR-ar-kub"/>
+                        <outlet property="labelField" destination="yDu-X6-HrR" id="hoL-jk-7d4"/>
+                        <outlet property="navigateButton" destination="oGJ-LH-kvq" id="am5-2x-sqT"/>
+                        <outlet property="shareButton" destination="oGJ-LH-kvq" id="mdC-P2-ozJ"/>
+                        <outlet property="sourceItemView" destination="I7j-Nd-lJp" id="Xj0-u1-h44"/>
+                    </connections>
                 </viewController>
-                <customObject id="hIu-y4-bD2" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <customObject id="W1T-z3-tEv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2081" y="-41.5"/>
+            <point key="canvasLocation" x="2096.5" y="-41.5"/>
         </scene>
         <!--Workspaces View Controller-->
         <scene sceneID="FZH-15-YFf">
@@ -1040,8 +1115,8 @@ DQ
                                                 </subviews>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
-                                            <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="yy1-j0-irk">
-                                                <rect key="frame" x="1" y="156" width="238" height="16"/>
+                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="yy1-j0-irk">
+                                                <rect key="frame" x="1" y="-15" width="0.0" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="zO2-o2-Moe">
@@ -1087,24 +1162,15 @@ DQ
             </objects>
             <point key="canvasLocation" x="-599" y="-436.5"/>
         </scene>
-        <!--Page Controller-->
-        <scene sceneID="2L5-5D-oBv">
-            <objects>
-                <viewController storyboardIdentifier="imagePage" id="sgv-1X-yIS" customClass="NSPageController" sceneMemberID="viewController">
-                    <view key="view" id="Qfs-PO-g7D">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="513"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </view>
-                </viewController>
-                <customObject id="mwy-x5-YgJ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2672" y="-41.5"/>
-        </scene>
     </scenes>
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSAddTemplate" width="11" height="11"/>
+        <image name="NSGoLeftTemplate" width="9" height="12"/>
+        <image name="NSGoRightTemplate" width="9" height="12"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
+        <image name="NSShareTemplate" width="11" height="16"/>
+        <image name="clear" width="16" height="16"/>
         <image name="console" width="20" height="20"/>
         <image name="files" width="20" height="20"/>
         <image name="hand-green" width="16" height="16"/>
