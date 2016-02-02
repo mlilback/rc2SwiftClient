@@ -89,7 +89,7 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 			myShareServices.append(NSSharingService(title: "Open in \(appName)", image: appIcon, alternateImage: nil, handler: {
 					var urlToUse = imgUrl!
 					do {
-						try urlToUse = NSFileManager().copyURLToTemporaryLocation(imgUrl!)
+						try urlToUse = NSFileManager.defaultManager().copyURLToTemporaryLocation(imgUrl!)
 					} catch let err as NSError {
 						log.error("error copying to tmp:\(err)")
 					}

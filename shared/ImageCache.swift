@@ -50,7 +50,7 @@ public class ImageCache :NSObject, NSSecureCoding {
 	}
 	
 	public required init?(coder decoder:NSCoder) {
-		fileManager = NSFileManager()
+		fileManager = NSFileManager.defaultManager()
 		cache = NSCache()
 		metaCache = decoder.decodeObjectOfClasses([NSArray.self, SessionImage.self, NSNumber.self], forKey: "metaCache") as! [Int:SessionImage]
 	}

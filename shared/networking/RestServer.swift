@@ -230,7 +230,7 @@ public enum RestError: Int, ErrorType {
 		let (task, f) = urlSession.downloadWithPromise(req)
 		task.resume()
 		f.onSuccess(Queue.main.context) { (dloadUrl, response) in
-			let fm = NSFileManager()
+			let fm = NSFileManager.defaultManager()
 			let fileUrl = NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: destination)
 			do {
 				if fileUrl.checkResourceIsReachableAndReturnError(nil) {
