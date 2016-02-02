@@ -118,7 +118,13 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 	
 	//MARK: ResponseHandlerDelegate
+	//TODO: implement loadHelpItems
 	func loadHelpItems(topic:String, items:[HelpItem]) {
+		
+	}
+	
+	//TODO: implement handleFileUpdate
+	func handleFileUpdate(file:File, change:FileChangeType) {
 		
 	}
 	
@@ -164,6 +170,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		}
 	}
 	
+	//TODO: impelment sessionReceivedError
 	func sessionErrorReceived(error:ErrorType) {
 		
 	}

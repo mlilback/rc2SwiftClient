@@ -10,8 +10,13 @@
 	import UIKit
 #endif
 
+enum FileChangeType : String {
+	case Update, Insert, Delete
+}
+
 protocol ResponseHandlerDelegate {
 	func loadHelpItems(topic:String, items:[HelpItem])
+	func handleFileUpdate(file:File, change:FileChangeType)
 	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String,JSON>)
 	func attributedStringWithImage(image:SessionImage) -> NSAttributedString
 	func cacheImages(images:[SessionImage])
@@ -42,6 +47,8 @@ class ResponseHandler {
 				return formatError(error, queryId: queryId)
 			case .ExecComplete(let queryId, let batchId, let images):
 				return formatExecComplete(queryId, batchId: batchId, images: images)
+			case .FileChanged(let changeType, let file):
+				delegate.handleFileUpdate(file, change: FileChangeType.init(rawValue: changeType)!)
 			case .Variable(let socketId, let delta, let single, let variables):
 				delegate.handleVariableMessage(socketId, delta: delta, single: single, variables: variables)
 		}

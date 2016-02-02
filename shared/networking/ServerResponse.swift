@@ -10,6 +10,7 @@ public enum ServerResponse : Equatable {
 	case Error(queryId:Int, error:String)
 	case EchoQuery(queryId:Int, fileId:Int, query:String)
 	case ExecComplete(queryId:Int, batchId:Int, images:[SessionImage])
+	case FileChanged(changeType:String, file:File)
 	case Help(topic:String, paths:[HelpItem])
 	case Results(queryId:Int, fileId:Int, text:String)
 	case Variable(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String, JSON>)
@@ -30,6 +31,8 @@ public enum ServerResponse : Equatable {
 				return ServerResponse.Error(queryId: jsonObj["queryId"].intValue, error: jsonObj["error"].stringValue)
 			case "echo":
 				return ServerResponse.EchoQuery(queryId: jsonObj["queryId"].intValue, fileId: jsonObj["fileId"].intValue, query: jsonObj["query"].stringValue)
+			case "filechanged":
+				return ServerResponse.FileChanged(changeType: jsonObj["type"].stringValue, file: File(json: jsonObj["file"]))
 			case "help":
 				return ServerResponse.Help(topic: jsonObj["topic"].stringValue, paths: jsonObj["paths"].arrayValue.map({ return HelpItem(dict: $0.dictionaryValue) }))
 			case "variables":
