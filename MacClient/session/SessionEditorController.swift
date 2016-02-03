@@ -13,6 +13,12 @@ class SessionEditorController: AbstractSessionViewController {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "fileSelectionChanged:", name: SessionFileSelectionChangedNotification, object: nil)
 	}
 	
+	@IBAction override func performTextFinderAction(sender: AnyObject?) {
+		let menuItem = NSMenuItem(title: "foo", action: Selector("performFindPanelAction:"), keyEquivalent: "")
+		menuItem.tag = Int(NSFindPanelAction.ShowFindPanel.rawValue)
+		editor?.performFindPanelAction(menuItem)
+	}
+	
 	func fileSelectionChanged(note:NSNotification) {
 		if let theFile = note.object as! File? {
 			theFile.name

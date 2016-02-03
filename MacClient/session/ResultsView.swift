@@ -7,5 +7,9 @@
 import Cocoa
 
 class ResultsView : NSTextView {
-	
+	override func awakeFromNib() {
+		super.awakeFromNib()
+		usesFindBar = true
+	}
+
 }

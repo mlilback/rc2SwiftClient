@@ -87,6 +87,10 @@ class OutputController: NSTabViewController, SessionOutputHandler, ToolbarItemHa
 			selectedTabViewItemIndex = 0
 		}
 	}
+
+	func outputResponder() -> NSResponder {
+		return consoleController!
+	}
 	
 	func saveSessionState() -> AnyObject {
 		var dict = [String:AnyObject]()

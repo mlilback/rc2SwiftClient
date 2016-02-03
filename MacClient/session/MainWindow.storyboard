@@ -64,28 +64,14 @@
                                         <accessibility description="console"/>
                                     </segmentedControl>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="74033426-B622-4D2F-830E-7EA905B8AD0B" explicitItemIdentifier="search" label="Search" paletteLabel="Search" tag="1" id="FiF-Gk-sHu">
-                                    <nil key="toolTip"/>
-                                    <size key="minSize" width="32" height="22"/>
-                                    <size key="maxSize" width="96" height="22"/>
-                                    <searchField key="view" wantsLayer="YES" verticalHuggingPriority="750" tag="1" id="faM-N6-PFz">
-                                        <rect key="frame" x="0.0" y="14" width="96" height="22"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="40e-6x-qvk">
-                                            <font key="font" metaFont="system"/>
-                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                        </searchFieldCell>
-                                    </searchField>
-                                </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="334E0D12-33E6-4F0F-9904-D75C6D9961A3" explicitItemIdentifier="clear" label="Clear" paletteLabel="Clear Console" id="hsh-zb-F7R" customClass="ClearConsoleToolbarItem" customModule="MacClient" customModuleProvider="target">
+                                <toolbarItem implicitItemIdentifier="9AB083D9-F13B-424F-89B1-0F1C554532F3" explicitItemIdentifier="clear" label="Clear" paletteLabel="Clear Console" id="Xx9-Ee-v6R" customClass="ClearConsoleToolbarItem" customModule="MacClient" customModuleProvider="target">
                                     <nil key="toolTip"/>
                                     <size key="minSize" width="34" height="24"/>
                                     <size key="maxSize" width="34" height="25"/>
-                                    <segmentedControl key="view" toolTip="Clear Console" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" id="nJX-vw-Gi9">
+                                    <segmentedControl key="view" toolTip="Clear Console" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" id="MKp-vi-mcw">
                                         <rect key="frame" x="24" y="14" width="34" height="25"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="5gd-S1-9rJ">
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="jme-Bj-8ql">
                                             <font key="font" metaFont="system" size="14"/>
                                             <segments>
                                                 <segment image="clear" width="32"/>
@@ -94,13 +80,28 @@
                                         <accessibility description="cclear"/>
                                     </segmentedControl>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="334E0D12-33E6-4F0F-9904-D75C6D9961A3" explicitItemIdentifier="search" label="Search" paletteLabel="Search" id="hsh-zb-F7R" customClass="SearchToolbarItem" customModule="MacClient" customModuleProvider="target">
+                                    <nil key="toolTip"/>
+                                    <size key="minSize" width="34" height="24"/>
+                                    <size key="maxSize" width="34" height="25"/>
+                                    <segmentedControl key="view" toolTip="Search" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" id="nJX-vw-Gi9">
+                                        <rect key="frame" x="5" y="14" width="34" height="25"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="5gd-S1-9rJ">
+                                            <font key="font" metaFont="system" size="14"/>
+                                            <segments>
+                                                <segment image="search" width="32"/>
+                                            </segments>
+                                        </segmentedCell>
+                                        <accessibility description="search"/>
+                                    </segmentedControl>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="ckH-aZ-Qh0"/>
                                 <toolbarItem reference="GLn-8a-km5"/>
                                 <toolbarItem reference="hsh-zb-F7R"/>
                                 <toolbarItem reference="T7n-bG-27O"/>
-                                <toolbarItem reference="FiF-Gk-sHu"/>
                             </defaultToolbarItems>
                             <connections>
                                 <outlet property="delegate" destination="wlW-TF-z7z" id="fHW-1K-2RD"/>
@@ -985,18 +986,27 @@
                                 </customSpacing>
                             </stackView>
                             <imageView focusRingType="none" horizontalHuggingPriority="249" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="I7j-Nd-lJp">
-                                <rect key="frame" x="20" y="38" width="473" height="455"/>
+                                <rect key="frame" x="20" y="51" width="473" height="442"/>
                                 <imageCell key="cell" refusesFirstResponder="YES" focusRingType="none" alignment="left" imageScaling="proportionallyDown" id="lcX-6G-KMf"/>
                             </imageView>
+                            <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="50G-Ve-ajM">
+                                <rect key="frame" x="0.0" y="40" width="513" height="5"/>
+                                <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <font key="titleFont" metaFont="system"/>
+                            </box>
                         </subviews>
                         <constraints>
                             <constraint firstItem="CJw-iA-83I" firstAttribute="leading" secondItem="KUd-VP-W3w" secondAttribute="leading" constant="20" id="5my-C8-Vb9"/>
-                            <constraint firstItem="CJw-iA-83I" firstAttribute="top" secondItem="I7j-Nd-lJp" secondAttribute="bottom" constant="8" id="6JK-kx-oqG"/>
+                            <constraint firstItem="CJw-iA-83I" firstAttribute="top" secondItem="I7j-Nd-lJp" secondAttribute="bottom" constant="21" id="6JK-kx-oqG"/>
+                            <constraint firstItem="50G-Ve-ajM" firstAttribute="leading" secondItem="KUd-VP-W3w" secondAttribute="leading" id="CQN-Hl-hF5"/>
                             <constraint firstItem="I7j-Nd-lJp" firstAttribute="top" secondItem="KUd-VP-W3w" secondAttribute="top" constant="20" symbolic="YES" id="FIP-wc-iVz"/>
                             <constraint firstAttribute="trailing" secondItem="CJw-iA-83I" secondAttribute="trailing" constant="20" id="NvF-vu-h16"/>
+                            <constraint firstAttribute="trailing" secondItem="50G-Ve-ajM" secondAttribute="trailing" id="Tvp-BN-VJP"/>
                             <constraint firstAttribute="trailing" secondItem="I7j-Nd-lJp" secondAttribute="trailing" constant="20" symbolic="YES" id="i6C-4s-S0p"/>
                             <constraint firstAttribute="bottom" secondItem="CJw-iA-83I" secondAttribute="bottom" constant="9" id="mY4-AH-LO3"/>
                             <constraint firstItem="I7j-Nd-lJp" firstAttribute="leading" secondItem="KUd-VP-W3w" secondAttribute="leading" constant="20" symbolic="YES" id="qkd-qt-hgB"/>
+                            <constraint firstAttribute="bottom" secondItem="50G-Ve-ajM" secondAttribute="bottom" constant="42" id="tmZ-d6-QRS"/>
                         </constraints>
                     </view>
                     <connections>
@@ -1179,6 +1189,7 @@ DQ
         <image name="hand-grey" width="16" height="16"/>
         <image name="history" width="128" height="128"/>
         <image name="no" width="18" height="18"/>
+        <image name="search" width="18" height="18"/>
         <image name="users" width="16" height="16"/>
         <image name="variables" width="20" height="20"/>
     </resources>

@@ -7,9 +7,11 @@
 import Cocoa
 import CryptoSwift
 
-class RootViewController: AbstractSessionViewController, SessionDelegate, ResponseHandlerDelegate {
+class RootViewController: AbstractSessionViewController, SessionDelegate, ResponseHandlerDelegate, ToolbarItemHandler
+{
 	@IBOutlet var progressView: NSProgressIndicator?
 	@IBOutlet var statusField: NSTextField?
+	var searchButton: NSSegmentedControl?
 	var statusTimer:NSTimer?
 	dynamic var busy: Bool = false
 	dynamic var statusMessage: String = ""
@@ -33,10 +35,49 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:  "saveSessionState", name: NSWorkspaceWillSleepNotification, object:nil)
 	}
 	
+	override func viewDidAppear() {
+		super.viewDidAppear()
+		self.hookupToToolbarItems(self, window: view.window!)
+	}
+	
 	override func sessionChanged() {
 		session.delegate = self
 		imgCache.workspace = session.workspace
 		restoreSessionState()
+	}
+	
+	func handlesToolbarItem(item: NSToolbarItem) -> Bool {
+		if item.itemIdentifier == "search" {
+			searchButton = item.view as! NSSegmentedControl?
+			searchButton?.target = self
+			searchButton?.action = "searchClicked:"
+			if let myItem = item as? SearchToolbarItem {
+				myItem.rootController = self
+			}
+			return true
+		}
+		return false
+	}
+
+	func validateSearchButton(button:SearchToolbarItem) {
+		button.enabled = true
+	}
+	
+	func searchClicked(sender:AnyObject?) {
+		if inResponderChain(editor!) {
+			editor?.performTextFinderAction(sender)
+		} else {
+			outputHandler?.outputResponder().performTextFinderAction(sender)
+		}
+	}
+	
+	func inResponderChain(responder:NSResponder) -> Bool {
+		var curResponder = view.window?.firstResponder
+		while curResponder != nil {
+			if curResponder == responder { return true }
+			curResponder = curResponder?.nextResponder
+		}
+		return false
 	}
 	
 	func startTimer() {
@@ -186,4 +227,12 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	func appendFormattedString(string:NSAttributedString)
 	func saveSessionState() -> AnyObject
 	func restoreSessionState(state:[String:AnyObject])
+	func outputResponder() -> NSResponder
+}
+
+class SearchToolbarItem: NSToolbarItem {
+	var rootController: RootViewController?
+	override func validate() {
+		rootController?.validateSearchButton(self)
+	}
 }

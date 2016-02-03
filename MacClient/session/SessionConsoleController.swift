@@ -40,6 +40,12 @@ class SessionConsoleController: AbstractSessionViewController, NSTextViewDelegat
 	}
 	
 	//MARK: actions
+	@IBAction override func performTextFinderAction(sender: AnyObject?) {
+		let menuItem = NSMenuItem(title: "foo", action: Selector("performFindPanelAction:"), keyEquivalent: "")
+		menuItem.tag = Int(NSFindPanelAction.ShowFindPanel.rawValue)
+		resultsView?.performFindPanelAction(menuItem)
+	}
+
 	@IBAction func executeQuery(sender:AnyObject?) {
 		guard consoleInputText.characters.count > 0 else { return }
 		session.executeScript(consoleInputText)

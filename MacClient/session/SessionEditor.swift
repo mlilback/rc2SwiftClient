@@ -7,5 +7,8 @@
 import Cocoa
 
 class SessionEditor: NSTextView {
-
+	override func awakeFromNib() {
+		super.awakeFromNib()
+		usesFindBar = true
+	}
 }

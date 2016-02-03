@@ -42,7 +42,9 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		pageController?.delegate = self
 		pageController?.transitionStyle = .StackBook
 		pageController?.view = imageView!
+		view.wantsLayer = true
 		shareButton?.sendActionOn(Int(NSEventMask.LeftMouseDownMask.rawValue))
+		view.layer?.backgroundColor = PlatformColor.whiteColor().CGColor
 	}
 	
 	override func viewWillAppear() {
