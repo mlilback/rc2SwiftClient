@@ -11,7 +11,7 @@ public class Workspace: CustomStringConvertible, Equatable {
 	let userId : Int32
 	let name : String
 	let version : Int32
-	let files : [File]
+	var files : [File] = []
 	
 	static func workspacesFromJsonArray(jsonArray : AnyObject) -> [Workspace] {
 		let array = JSON(jsonArray)
@@ -25,6 +25,23 @@ public class Workspace: CustomStringConvertible, Equatable {
 		}
 		wspaces.sortInPlace { return $0.name.localizedCompare($1.name) == .OrderedAscending }
 		return wspaces
+	}
+	
+	static var fileManager:FileManager = NSFileManager.defaultManager()
+	
+	var fileDirUrl: NSURL {
+		let fm = Workspace.fileManager
+		do {
+			let cacheDir = try fm.URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
+			let wDir = NSURL(fileURLWithPath: "\(wspaceId)", isDirectory: true, relativeToURL: cacheDir).absoluteURL
+			if !wDir.checkResourceIsReachableAndReturnError(nil) {
+				try fm.createDirectoryAtURL(wDir, withIntermediateDirectories: true, attributes: nil)
+			}
+			return wDir
+		} catch let err {
+			log.error("failed to create workspace file cache dir:\(err)")
+		}
+		fatalError("failed to create file cache")
 	}
 	
 	convenience init (jsonData:AnyObject) {

@@ -71,6 +71,15 @@ extension PlatformColor {
 	}
 }
 
+@objc protocol FileManager {
+	func URLForDirectory(directory: NSSearchPathDirectory, inDomain domain: NSSearchPathDomainMask, appropriateForURL url: NSURL?, create shouldCreate: Bool) throws -> NSURL
+	func moveItemAtURL(srcURL: NSURL, toURL dstURL: NSURL) throws
+	func removeItemAtURL(URL: NSURL) throws
+	func createDirectoryAtURL(url: NSURL, withIntermediateDirectories createIntermediates: Bool, attributes: [String : AnyObject]?) throws
+}
+
+extension NSFileManager: FileManager {}
+
 extension NSFileManager {
 	func copyURLToTemporaryLocation(url:NSURL) throws -> NSURL {
 		let tmpDir = NSURL(fileURLWithPath:NSTemporaryDirectory()).URLByAppendingPathComponent("Rc2", isDirectory: true)

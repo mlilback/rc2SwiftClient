@@ -23,10 +23,13 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	}
 
 	func applicationDidFinishLaunching(aNotification: NSNotification) {
-		let sboard = NSStoryboard(name: "Main", bundle: nil)
-		loginWindowController = sboard.instantiateControllerWithIdentifier("loginWindow") as? NSWindowController
-		loginController = loginWindowController?.window?.contentViewController as? LoginViewController
-		showLoginWindow()
+		if NSProcessInfo.processInfo().environment["TestBundleLocation"] == nil {
+			//skip login when running unit tests
+			let sboard = NSStoryboard(name: "Main", bundle: nil)
+			loginWindowController = sboard.instantiateControllerWithIdentifier("loginWindow") as? NSWindowController
+			loginController = loginWindowController?.window?.contentViewController as? LoginViewController
+			showLoginWindow()
+		}
 	}
 
 	func applicationWillTerminate(aNotification: NSNotification) {
