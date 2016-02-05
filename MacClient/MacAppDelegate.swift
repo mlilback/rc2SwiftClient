@@ -59,12 +59,14 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	}
 	
 	func showSessionWindow() {
+		updateStatus(false, message: "")
 		let sboard = SwinjectStoryboard.create(name: "MainWindow", bundle: nil)
 		sessionWindowController = sboard.instantiateControllerWithIdentifier("sessionWindow") as? MainWindowController
 		sessionWindowController?.window?.makeKeyAndOrderFront(self)
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window
 		let root = sboard.instantiateControllerWithIdentifier("rootController") as? RootViewController
 		sessionWindowController?.contentViewController = root
+		sessionWindowController?.appStatus = self
 		sessionWindowController?.setupChildren()
 	}
 	
@@ -78,8 +80,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	}
 	
 	//MARK: AppStatus implementation
-	private var _busy: Bool = false
-	private var _status: NSString = ""
+	private dynamic var _busy: Bool = false
+	private dynamic var _status: NSString = ""
 	private var lock: Spinlock = Spinlock()
 	
 	dynamic var busy: Bool {

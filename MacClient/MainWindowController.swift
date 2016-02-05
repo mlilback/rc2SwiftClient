@@ -8,10 +8,18 @@ import Cocoa
 
 class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolbarDelegate {
 	@IBOutlet var rootTabController: NSTabViewController?
+	dynamic var appStatus: AppStatus?
+	var statusView: AppStatusView?
 	
 	private var toolbarSetupScheduled = false
 	
+	override func windowDidLoad() {
+		super.windowDidLoad()
+		window!.titleVisibility = .Hidden
+	}
+	
 	func setupChildren() {
+		statusView?.appStatus = appStatus
 		rootTabController = firstRecursiveDescendent(contentViewController!,
 			children: { $0.childViewControllers },
 			filter: { $0 is NSTabViewController })  as? NSTabViewController
@@ -27,11 +35,15 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 	
 	func showWorkspaceSelectTab() {
 		rootTabController?.selectedTabViewItemIndex = (rootTabController?.tabView.indexOfTabViewItemWithIdentifier("workspaceSelect"))!
+		appStatus!.updateStatus(true, message: "selecting workspace…")
 	}
 	
 	func showSessionTab() {
 		let sessionIndex = (rootTabController?.tabView.indexOfTabViewItemWithIdentifier("session"))!
-		dispatch_async(dispatch_get_main_queue(), { self.rootTabController?.selectedTabViewItemIndex = sessionIndex })
+		dispatch_async(dispatch_get_main_queue(), {
+			self.rootTabController?.selectedTabViewItemIndex = sessionIndex
+			self.appStatus?.updateStatus(false, message: "")
+		})
 	}
 	
 	func toolbarWillAddItem(notification: NSNotification) {
@@ -41,6 +53,12 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 				self.assignHandlers(self.contentViewController!, items: (self.window?.toolbar?.items)!)
 			}
 			toolbarSetupScheduled = true
+		}
+		let item:NSToolbarItem = (notification.userInfo!["item"] as? NSToolbarItem)!
+		if item.itemIdentifier == "status",
+			let sview = item.view as? AppStatusView
+		{
+			statusView = sview
 		}
 	}
 }

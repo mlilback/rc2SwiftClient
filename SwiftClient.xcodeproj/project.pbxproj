@@ -40,6 +40,7 @@
 		083305FD1C519B8500E27F66 /* RestServerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305F81C519B8500E27F66 /* RestServerTest.swift */; };
 		083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 083306061C51A0B200E27F66 /* CommonDefaults.plist */; };
 		0833061E1C541BB700E27F66 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0833061D1C541BB700E27F66 /* SwiftyJSON.swift */; };
+		083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F01C64341C00D40EEB /* AppStatusView.swift */; };
 		0845CB1E1C616E060090267C /* CommonMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* CommonMocks.swift */; };
 		0845CB201C6173CC0090267C /* DownloadRestFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */; };
 		086BC99F1C5422C0006ABAE0 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */; };
@@ -149,6 +150,7 @@
 		083305F81C519B8500E27F66 /* RestServerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestServerTest.swift; sourceTree = "<group>"; };
 		083306061C51A0B200E27F66 /* CommonDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CommonDefaults.plist; sourceTree = "<group>"; };
 		0833061D1C541BB700E27F66 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = submodules/SwiftyJSON/Source/SwiftyJSON.swift; sourceTree = SOURCE_ROOT; };
+		083382F01C64341C00D40EEB /* AppStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStatusView.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* CommonMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonMocks.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = XCGLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -276,6 +278,7 @@
 				088CE6BD1C4DAFA500153414 /* WorkspacesViewController.swift */,
 				088CE6721C4B0AF400153414 /* Main.storyboard */,
 				08F448F81C4E244500C64706 /* MainWindow.storyboard */,
+				083382F01C64341C00D40EEB /* AppStatusView.swift */,
 				08F448F31C4E244500C64706 /* session */,
 				083305D11C4FC76C00E27F66 /* extensions */,
 				088CE6751C4B0AF400153414 /* Info.plist */,
@@ -547,6 +550,7 @@
 				088CE6AD1C4B605D00153414 /* ServerResponse.swift in Sources */,
 				083174121C58014500071408 /* ServerResponseHandler.swift in Sources */,
 				088CE6B81C4C44A800153414 /* Keychain.swift in Sources */,
+				083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */,
 				086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
