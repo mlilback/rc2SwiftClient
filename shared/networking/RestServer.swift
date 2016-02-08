@@ -9,11 +9,6 @@ import SwiftWebSocket
 import BrightFutures
 import Result
 
-public enum RestError: Int, ErrorType {
-	case FileNotFound = 0
-	case FailedToSaveFile
-}
-
 @objc public class RestServer : NSObject {
 
 	private static var sInstance = RestServer()
@@ -31,12 +26,12 @@ public enum RestError: Int, ErrorType {
 	
 	public typealias Rc2RestCompletionHandler = (success:Bool, results:Any?, error:NSError?) -> Void
 	
-	private var urlConfig : NSURLSessionConfiguration
+	private(set) var urlConfig : NSURLSessionConfiguration
 	private var urlSession : NSURLSession
 	private(set) public var hosts : [NSDictionary]
 	private(set) public var selectedHost : NSDictionary
 	private(set) public var loginSession : LoginSession?
-	private var baseUrl : NSURL?
+	private(set) var baseUrl : NSURL?
 	private var userAgent: String
 
 	var restHosts : [String] {
@@ -148,6 +143,8 @@ public enum RestError: Int, ErrorType {
 			switch(httpResponse.statusCode) {
 				case 200:
 					self.loginSession = LoginSession(json: json, host: self.selectedHost["name"]! as! String)
+					//for anyone that copies our session config later, include the auth token
+					self.urlConfig.HTTPAdditionalHeaders!["Rc-Auth"] = self.loginSession!.authToken
 					dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: self.loginSession!, error: nil) })
 					NSUserDefaults.standardUserDefaults().setObject(self.loginSession!.host, forKey: self.kServerHostKey)
 					NSNotificationCenter.defaultCenter().postNotificationName(RestLoginChangedNotification, object: self)
@@ -241,7 +238,7 @@ public enum RestError: Int, ErrorType {
 				try self.fileManager.moveItemAtURL(dloadUrl!, toURL: fileUrl)
 				handler(success: true, results: fileUrl, error: nil)
 			} catch let err as NSError {
-				let error = self.createError(RestError.FailedToSaveFile.rawValue, description: err.localizedDescription)
+				let error = self.createError(FileError.FailedToSaveFile.rawValue, description: err.localizedDescription)
 				handler(success: false, results: nil, error: error)
 			}
 		}.onFailure(Queue.main.context) { (error) in
@@ -249,8 +246,8 @@ public enum RestError: Int, ErrorType {
 		}
 	}
 
-	public func downloadFile(wspace:Workspace, file:File, to destDirUrl:NSURL) -> Future<NSURL?, RestError> {
-		var p = Promise<NSURL?,RestError>()
+	public func downloadFile(wspace:Workspace, file:File, to destDirUrl:NSURL) -> Future<NSURL?, FileError> {
+		var p = Promise<NSURL?,FileError>()
 		let cacheUrl = NSURL(fileURLWithPath: file.name, relativeToURL: destDirUrl)
 		let req = request("workspaces/\(wspace.wspaceId)/files/\(file.fileId)", method: "GET", jsonDict: [:])
 		if cacheUrl.checkResourceIsReachableAndReturnError(nil) {
@@ -264,7 +261,7 @@ public enum RestError: Int, ErrorType {
 				case 304: //use existing
 					p.success(cacheUrl)
 				case 200: //dloaded it
-					self.moveTmpFile(dloadUrl!, toUrl: cacheUrl, file:file, promise: &p)
+					self.fileManager.moveTempFile(dloadUrl!, toUrl: cacheUrl, file:file, promise: &p)
 				default:
 					break
 			}
@@ -274,39 +271,21 @@ public enum RestError: Int, ErrorType {
 	}
 	
 	///parameter destination: the directory to save the image in, overwriting any existing file
-	public func downloadImage(wspace:Workspace, imageId:Int, destination:NSURL) -> Future<NSURL?,RestError>  {
-		var p = Promise<NSURL?, RestError>()
+	public func downloadImage(wspace:Workspace, imageId:Int, destination:NSURL) -> Future<NSURL?,FileError>  {
+		var p = Promise<NSURL?, FileError>()
 		let req = request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET", jsonDict:[:])
 		req.addValue("image/png", forHTTPHeaderField: "Accept")
 		let task = urlSession.downloadTaskWithRequest(req) { (dloadUrl, response, error) -> Void in
 			let hresponse = response as? NSHTTPURLResponse
 			if error == nil && hresponse?.statusCode == 200 {
 				let fileUrl = NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: destination)
-				self.moveTmpFile(dloadUrl!, toUrl: fileUrl, file:nil, promise: &p)
+				self.fileManager.moveTempFile(dloadUrl!, toUrl: fileUrl, file:nil, promise: &p)
 			} else {
-				p.failure(RestError.FailedToSaveFile)
+				p.failure(FileError.FailedToSaveFile)
 			}
 		}
 		task.resume()
 		return p.future
-	}
-
-	private func moveTmpFile(tmpFile: NSURL, toUrl:NSURL, file:File?, inout promise:Promise<NSURL?,RestError>) {
-		do {
-			if toUrl.checkResourceIsReachableAndReturnError(nil) {
-				try fileManager.removeItemAtURL(toUrl)
-			}
-			try fileManager.moveItemAtURL(tmpFile, toURL: toUrl)
-			//if a File, set mod/creation date, ignoring any errors
-			if let fileRef = file {
-				_ = try? toUrl.setResourceValue(fileRef.lastModified, forKey: NSURLContentModificationDateKey)
-				_ = try? toUrl.setResourceValue(fileRef.dateCreated, forKey: NSURLCreationDateKey)
-			}
-			promise.success(toUrl)
-		} catch let err as NSError {
-			log.warning("got error downloading file \(tmpFile.lastPathComponent): \(err)")
-			promise.failure(RestError.FailedToSaveFile)
-		}
 	}
 }
 

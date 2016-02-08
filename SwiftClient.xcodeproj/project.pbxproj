@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		080214861C692CA1008B55D3 /* xattrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382FB1C69189300D40EEB /* xattrTests.swift */; };
+		080214881C693A69008B55D3 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080214871C693A69008B55D3 /* FileManager.swift */; };
 		083174041C5571D300071408 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174031C5571D300071408 /* RootViewController.swift */; };
 		083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174051C56BE7B00071408 /* SessionSplitController.swift */; };
 		0831740A1C56DB2B00071408 /* Swinject.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9B21C556A2E006ABAE0 /* Swinject.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -123,6 +125,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		080214871C693A69008B55D3 /* FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FileManager.swift; path = shared/FileManager.swift; sourceTree = SOURCE_ROOT; };
 		083174031C5571D300071408 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		083174051C56BE7B00071408 /* SessionSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionSplitController.swift; sourceTree = "<group>"; };
 		0831740D1C577A2500071408 /* ConsoleTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleTextField.swift; sourceTree = "<group>"; };
@@ -158,6 +161,7 @@
 		083382F51C68E59300D40EEB /* FileCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
 		083382F71C68EBC200D40EEB /* FileCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCacheTests.swift; sourceTree = "<group>"; };
 		083382F91C68F2A900D40EEB /* BaseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseTest.swift; sourceTree = "<group>"; };
+		083382FB1C69189300D40EEB /* xattrTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = xattrTests.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* CommonMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonMocks.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = XCGLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -314,18 +318,19 @@
 			children = (
 				083382F41C68E43400D40EEB /* test resources */,
 				083382F91C68F2A900D40EEB /* BaseTest.swift */,
+				083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */,
 				0845CB1D1C616E060090267C /* CommonMocks.swift */,
+				0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */,
+				083382F71C68EBC200D40EEB /* FileCacheTests.swift */,
+				08FDB1981C591409006FCD1A /* ImageCacheTests.swift */,
 				088CE6BB1C4C508000153414 /* KeychainTests.swift */,
 				083305EB1C518CF300E27F66 /* KeyValueObserverTests.swift */,
+				08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */,
 				083305F61C519B8500E27F66 /* Rc2FileTypeTest.swift */,
 				083305F71C519B8500E27F66 /* Rc2SessionTests.swift */,
 				083305F81C519B8500E27F66 /* RestServerTest.swift */,
-				0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */,
-				083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */,
 				083305EF1C519B4B00E27F66 /* ServerResponseTests.swift */,
-				08FDB1981C591409006FCD1A /* ImageCacheTests.swift */,
-				08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */,
-				083382F71C68EBC200D40EEB /* FileCacheTests.swift */,
+				083382FB1C69189300D40EEB /* xattrTests.swift */,
 			);
 			path = MacClientTests;
 			sourceTree = "<group>";
@@ -371,6 +376,7 @@
 			isa = PBXGroup;
 			children = (
 				088CE6971C4B605D00153414 /* File.swift */,
+				080214871C693A69008B55D3 /* FileManager.swift */,
 				088CE6981C4B605D00153414 /* FileType.swift */,
 				088CE6991C4B605D00153414 /* FileTypes.plist */,
 				088CE69A1C4B605D00153414 /* LoginSession.swift */,
@@ -557,6 +563,7 @@
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
 				083305E21C517F8900E27F66 /* FileViewContrfoller.swift in Sources */,
 				088CE6AE1C4B605D00153414 /* Session.swift in Sources */,
+				080214881C693A69008B55D3 /* FileManager.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
 				088CE6BE1C4DAFA500153414 /* WorkspacesViewController.swift in Sources */,
 				083174161C587F7F00071408 /* ImageCache.swift in Sources */,
@@ -585,6 +592,7 @@
 				08FDB1991C591409006FCD1A /* ImageCacheTests.swift in Sources */,
 				083382F81C68EBC200D40EEB /* FileCacheTests.swift in Sources */,
 				083305FD1C519B8500E27F66 /* RestServerTest.swift in Sources */,
+				080214861C692CA1008B55D3 /* xattrTests.swift in Sources */,
 				088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */,
 				08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */,
 				083305EC1C518CF300E27F66 /* KeyValueObserverTests.swift in Sources */,

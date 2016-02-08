@@ -12,6 +12,26 @@ func errnoDescription() -> String {
 	return String(UTF8String: strerror(errno))!
 }
 
+
+/** Convience wrapper using URL instead of path */
+func setXAttributeWithName(name: String, data: NSData, atURL url: NSURL) -> String? {
+	guard url.fileURL else { return "invalid file URL" }
+	return setxattr(url.path!, name, data.bytes, data.length, 0, 0) == -1 ? errnoDescription() : nil
+}
+
+/** Convience wrapper using URL instead of path */
+func dataForXAttributeNamed(name: String, atURL url: NSURL) -> (error: String?, data: NSData?) {
+	guard url.fileURL else { return ("invalid file URL", nil) }
+	return dataForXAttributeNamed(name, atPath: url.path!)
+}
+
+/** Convience wrapper using URL instead of path */
+func removeXAttributeNamed(name: String, atURL url: NSURL) -> String? {
+	guard url.fileURL else { return "invalid file URL" }
+	return removeXAttributeNamed(name, atPath: url.path!)
+}
+
+
 /**
 Set extended attribute at path
 

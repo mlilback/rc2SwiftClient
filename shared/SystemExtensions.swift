@@ -5,6 +5,8 @@
 //
 
 import Foundation
+import BrightFutures
+import CryptoSwift
 
 func delay(delay:Double, closure:()->()) {
 	dispatch_after(
@@ -68,26 +70,6 @@ extension PlatformColor {
 		let divisor: CGFloat = 255.0
 		
 		self.init(red:CGFloat(redInt) / divisor, green:CGFloat(greenInt) / divisor, blue:CGFloat(blueInt) / divisor, alpha:alpha)
-	}
-}
-
-@objc protocol FileManager {
-	func URLForDirectory(directory: NSSearchPathDirectory, inDomain domain: NSSearchPathDomainMask, appropriateForURL url: NSURL?, create shouldCreate: Bool) throws -> NSURL
-	func moveItemAtURL(srcURL: NSURL, toURL dstURL: NSURL) throws
-	func removeItemAtURL(URL: NSURL) throws
-	func createDirectoryAtURL(url: NSURL, withIntermediateDirectories createIntermediates: Bool, attributes: [String : AnyObject]?) throws
-}
-
-extension NSFileManager: FileManager {}
-
-extension NSFileManager {
-	func copyURLToTemporaryLocation(url:NSURL) throws -> NSURL {
-		let tmpDir = NSURL(fileURLWithPath:NSTemporaryDirectory()).URLByAppendingPathComponent("Rc2", isDirectory: true)
-		_ = try? createDirectoryAtURL(tmpDir, withIntermediateDirectories: true, attributes: nil)
-		let destUrl = NSURL(fileURLWithPath: url.lastPathComponent!, relativeToURL: tmpDir)
-		_ = try? removeItemAtURL(destUrl)
-		try copyItemAtURL(url, toURL: destUrl)
-		return destUrl
 	}
 }
 

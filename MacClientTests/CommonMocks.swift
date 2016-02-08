@@ -17,6 +17,10 @@ import Foundation
 		return try NSFileManager.defaultManager().moveItemAtURL(srcURL, toURL: dstURL)
 	}
 	
+	func copyItemAtURL(srcURL: NSURL, toURL dstURL: NSURL) throws {
+		return try NSFileManager.defaultManager().copyItemAtURL(srcURL, toURL: dstURL)
+	}
+	
 	func removeItemAtURL(URL: NSURL) throws {
 		try NSFileManager.defaultManager().removeItemAtURL(URL)
 	}
