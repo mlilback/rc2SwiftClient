@@ -113,6 +113,7 @@ public class ImageCache :NSObject, NSSecureCoding {
 	}
 	
 	func imageWithId(imageId:Int) -> Future<PlatformImage, ImageCacheError> {
+		assert(workspace != nil, "imageCache.workspace must be set before using")
 		let promise = Promise<PlatformImage, ImageCacheError>()
 		let fileUrl = NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: self.cacheUrl)
 		Queue.global.async {

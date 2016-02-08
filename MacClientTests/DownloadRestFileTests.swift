@@ -16,7 +16,7 @@ class DownloadRestFileTests: XCTestCase {
 		NSURLSessionConfiguration.mockingjaySwizzleDefaultSessionConfiguration()
 	}
 	
-	class CacheFileManager: DefaultFileManger {
+	class CacheFileManager: DefaultFileManager {
 		let cacheDir: NSURL!
 		init(_ cacheDir:NSURL) {
 			self.cacheDir = cacheDir

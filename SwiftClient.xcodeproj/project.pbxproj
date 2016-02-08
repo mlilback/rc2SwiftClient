@@ -43,8 +43,9 @@
 		083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F01C64341C00D40EEB /* AppStatusView.swift */; };
 		083382F31C653B6300D40EEB /* xattr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F21C653B6300D40EEB /* xattr.swift */; };
 		083382F61C68E59300D40EEB /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F51C68E59300D40EEB /* FileCache.swift */; };
+		083382F81C68EBC200D40EEB /* FileCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F71C68EBC200D40EEB /* FileCacheTests.swift */; };
+		083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F91C68F2A900D40EEB /* BaseTest.swift */; };
 		0845CB1E1C616E060090267C /* CommonMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* CommonMocks.swift */; };
-		0845CB201C6173CC0090267C /* DownloadRestFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */; };
 		086BC99F1C5422C0006ABAE0 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */; };
 		086BC9A11C542309006ABAE0 /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		086BC9A41C5423D0006ABAE0 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9A31C5423D0006ABAE0 /* Mockingjay.framework */; };
@@ -155,6 +156,8 @@
 		083382F01C64341C00D40EEB /* AppStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStatusView.swift; sourceTree = "<group>"; };
 		083382F21C653B6300D40EEB /* xattr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = xattr.swift; sourceTree = "<group>"; };
 		083382F51C68E59300D40EEB /* FileCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
+		083382F71C68EBC200D40EEB /* FileCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCacheTests.swift; sourceTree = "<group>"; };
+		083382F91C68F2A900D40EEB /* BaseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseTest.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* CommonMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonMocks.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = XCGLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -310,6 +313,7 @@
 			isa = PBXGroup;
 			children = (
 				083382F41C68E43400D40EEB /* test resources */,
+				083382F91C68F2A900D40EEB /* BaseTest.swift */,
 				0845CB1D1C616E060090267C /* CommonMocks.swift */,
 				088CE6BB1C4C508000153414 /* KeychainTests.swift */,
 				083305EB1C518CF300E27F66 /* KeyValueObserverTests.swift */,
@@ -321,6 +325,7 @@
 				083305EF1C519B4B00E27F66 /* ServerResponseTests.swift */,
 				08FDB1981C591409006FCD1A /* ImageCacheTests.swift */,
 				08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */,
+				083382F71C68EBC200D40EEB /* FileCacheTests.swift */,
 			);
 			path = MacClientTests;
 			sourceTree = "<group>";
@@ -578,12 +583,13 @@
 				083305F21C519B4B00E27F66 /* ServerResponseTests.swift in Sources */,
 				083305FB1C519B8500E27F66 /* Rc2FileTypeTest.swift in Sources */,
 				08FDB1991C591409006FCD1A /* ImageCacheTests.swift in Sources */,
+				083382F81C68EBC200D40EEB /* FileCacheTests.swift in Sources */,
 				083305FD1C519B8500E27F66 /* RestServerTest.swift in Sources */,
 				088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */,
 				08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */,
 				083305EC1C518CF300E27F66 /* KeyValueObserverTests.swift in Sources */,
-				0845CB201C6173CC0090267C /* DownloadRestFileTests.swift in Sources */,
 				0845CB1E1C616E060090267C /* CommonMocks.swift in Sources */,
+				083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */,
 				083305F01C519B4B00E27F66 /* ColorEnumTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
