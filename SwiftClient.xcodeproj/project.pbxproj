@@ -41,6 +41,8 @@
 		083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 083306061C51A0B200E27F66 /* CommonDefaults.plist */; };
 		0833061E1C541BB700E27F66 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0833061D1C541BB700E27F66 /* SwiftyJSON.swift */; };
 		083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F01C64341C00D40EEB /* AppStatusView.swift */; };
+		083382F31C653B6300D40EEB /* xattr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F21C653B6300D40EEB /* xattr.swift */; };
+		083382F61C68E59300D40EEB /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F51C68E59300D40EEB /* FileCache.swift */; };
 		0845CB1E1C616E060090267C /* CommonMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* CommonMocks.swift */; };
 		0845CB201C6173CC0090267C /* DownloadRestFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */; };
 		086BC99F1C5422C0006ABAE0 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */; };
@@ -151,6 +153,8 @@
 		083306061C51A0B200E27F66 /* CommonDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CommonDefaults.plist; sourceTree = "<group>"; };
 		0833061D1C541BB700E27F66 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = submodules/SwiftyJSON/Source/SwiftyJSON.swift; sourceTree = SOURCE_ROOT; };
 		083382F01C64341C00D40EEB /* AppStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStatusView.swift; sourceTree = "<group>"; };
+		083382F21C653B6300D40EEB /* xattr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = xattr.swift; sourceTree = "<group>"; };
+		083382F51C68E59300D40EEB /* FileCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* CommonMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonMocks.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = XCGLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -247,6 +251,19 @@
 			path = shared;
 			sourceTree = "<group>";
 		};
+		083382F41C68E43400D40EEB /* test resources */ = {
+			isa = PBXGroup;
+			children = (
+				088CE6801C4B0AF500153414 /* Info.plist */,
+				083305F31C519B8500E27F66 /* createWorkspace.json */,
+				08FDB19A1C5917C3006FCD1A /* graph.png */,
+				083305EE1C519B4B00E27F66 /* resultsWithImages.json */,
+				083305F41C519B8500E27F66 /* loginResults.json */,
+				083305F51C519B8500E27F66 /* lognormal.R */,
+			);
+			name = "test resources";
+			sourceTree = "<group>";
+		};
 		088CE6601C4B0AF400153414 = {
 			isa = PBXGroup;
 			children = (
@@ -292,22 +309,17 @@
 		088CE67D1C4B0AF500153414 /* MacClientTests */ = {
 			isa = PBXGroup;
 			children = (
-				088CE6801C4B0AF500153414 /* Info.plist */,
+				083382F41C68E43400D40EEB /* test resources */,
 				0845CB1D1C616E060090267C /* CommonMocks.swift */,
 				088CE6BB1C4C508000153414 /* KeychainTests.swift */,
 				083305EB1C518CF300E27F66 /* KeyValueObserverTests.swift */,
-				083305F31C519B8500E27F66 /* createWorkspace.json */,
-				083305F41C519B8500E27F66 /* loginResults.json */,
-				083305F51C519B8500E27F66 /* lognormal.R */,
 				083305F61C519B8500E27F66 /* Rc2FileTypeTest.swift */,
 				083305F71C519B8500E27F66 /* Rc2SessionTests.swift */,
 				083305F81C519B8500E27F66 /* RestServerTest.swift */,
 				0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */,
 				083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */,
-				083305EE1C519B4B00E27F66 /* resultsWithImages.json */,
 				083305EF1C519B4B00E27F66 /* ServerResponseTests.swift */,
 				08FDB1981C591409006FCD1A /* ImageCacheTests.swift */,
-				08FDB19A1C5917C3006FCD1A /* graph.png */,
 				08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */,
 			);
 			path = MacClientTests;
@@ -335,15 +347,17 @@
 				088CE6B51C4B71F300153414 /* Constants.swift */,
 				088CE6961C4B605D00153414 /* model */,
 				088CE69D1C4B605D00153414 /* networking */,
-				088CE6951C4B605D00153414 /* ColorEnums.swift */,
-				088CE6A31C4B605D00153414 /* SystemExtensions.swift */,
-				088CE6B71C4C44A800153414 /* Keychain.swift */,
-				083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */,
-				083305E91C5188F700E27F66 /* KeyValueObserver.swift */,
-				086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */,
 				086BC9AE1C552D43006ABAE0 /* AppStatus.swift */,
+				088CE6951C4B605D00153414 /* ColorEnums.swift */,
+				083382F51C68E59300D40EEB /* FileCache.swift */,
 				083174151C587F7F00071408 /* ImageCache.swift */,
+				088CE6B71C4C44A800153414 /* Keychain.swift */,
+				083305E91C5188F700E27F66 /* KeyValueObserver.swift */,
 				08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */,
+				083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */,
+				086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */,
+				088CE6A31C4B605D00153414 /* SystemExtensions.swift */,
+				083382F21C653B6300D40EEB /* xattr.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -511,6 +525,7 @@
 				088CE6AF1C4B605D00153414 /* WebSocketSource.swift in Sources */,
 				088CE6B01C4B605D00153414 /* SystemExtensions.swift in Sources */,
 				088CE6A41C4B605D00153414 /* ColorEnums.swift in Sources */,
+				083382F31C653B6300D40EEB /* xattr.swift in Sources */,
 				083305E41C517FC000E27F66 /* VariableViewController.swift in Sources */,
 				088CE6AA1C4B605D00153414 /* Workspace.swift in Sources */,
 				086BC9AD1C552AA0006ABAE0 /* SpinLock.swift in Sources */,
@@ -525,6 +540,7 @@
 				0833061E1C541BB700E27F66 /* SwiftyJSON.swift in Sources */,
 				08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */,
 				08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */,
+				083382F61C68E59300D40EEB /* FileCache.swift in Sources */,
 				08F448FC1C4E244500C64706 /* SessionConsoleController.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
 				08CB55521C5C06B2002CB7EE /* OutputController.swift in Sources */,

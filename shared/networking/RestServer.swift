@@ -249,9 +249,9 @@ public enum RestError: Int, ErrorType {
 		}
 	}
 
-	public func downloadFile(wspace:Workspace, file:File) -> Future<NSURL?, RestError> {
+	public func downloadFile(wspace:Workspace, file:File, to destDirUrl:NSURL) -> Future<NSURL?, RestError> {
 		var p = Promise<NSURL?,RestError>()
-		let cacheUrl = NSURL(fileURLWithPath: file.name, relativeToURL: wspace.fileDirUrl)
+		let cacheUrl = NSURL(fileURLWithPath: file.name, relativeToURL: destDirUrl)
 		let req = request("workspaces/\(wspace.wspaceId)/files/\(file.fileId)", method: "GET", jsonDict: [:])
 		if cacheUrl.checkResourceIsReachableAndReturnError(nil) {
 			req.addValue("f/\(file.fileId)/\(file.version)", forHTTPHeaderField: "If-None-Match")

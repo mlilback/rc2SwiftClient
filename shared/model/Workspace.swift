@@ -27,23 +27,6 @@ public class Workspace: CustomStringConvertible, Equatable {
 		return wspaces
 	}
 	
-	static var fileManager:FileManager = NSFileManager.defaultManager()
-	
-	var fileDirUrl: NSURL {
-		let fm = Workspace.fileManager
-		do {
-			let cacheDir = try fm.URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-			let wDir = NSURL(fileURLWithPath: "\(wspaceId)", isDirectory: true, relativeToURL: cacheDir).absoluteURL
-			if !wDir.checkResourceIsReachableAndReturnError(nil) {
-				try fm.createDirectoryAtURL(wDir, withIntermediateDirectories: true, attributes: nil)
-			}
-			return wDir
-		} catch let err {
-			log.error("failed to create workspace file cache dir:\(err)")
-		}
-		fatalError("failed to create file cache")
-	}
-	
 	convenience init (jsonData:AnyObject) {
 		let json = JSON(jsonData)
 		self.init(json: json)
