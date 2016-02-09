@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		080214861C692CA1008B55D3 /* xattrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382FB1C69189300D40EEB /* xattrTests.swift */; };
 		080214881C693A69008B55D3 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080214871C693A69008B55D3 /* FileManager.swift */; };
+		080214891C6A923D008B55D3 /* lognormal.R in Resources */ = {isa = PBXBuildFile; fileRef = 083305F51C519B8500E27F66 /* lognormal.R */; };
 		083174041C5571D300071408 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174031C5571D300071408 /* RootViewController.swift */; };
 		083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174051C56BE7B00071408 /* SessionSplitController.swift */; };
 		0831740A1C56DB2B00071408 /* Swinject.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9B21C556A2E006ABAE0 /* Swinject.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -150,7 +151,7 @@
 		083305EF1C519B4B00E27F66 /* ServerResponseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerResponseTests.swift; sourceTree = "<group>"; };
 		083305F31C519B8500E27F66 /* createWorkspace.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = createWorkspace.json; sourceTree = "<group>"; };
 		083305F41C519B8500E27F66 /* loginResults.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loginResults.json; sourceTree = "<group>"; };
-		083305F51C519B8500E27F66 /* lognormal.R */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.rez; path = lognormal.R; sourceTree = "<group>"; };
+		083305F51C519B8500E27F66 /* lognormal.R */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = lognormal.R; sourceTree = "<group>"; };
 		083305F61C519B8500E27F66 /* Rc2FileTypeTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2FileTypeTest.swift; sourceTree = "<group>"; };
 		083305F71C519B8500E27F66 /* Rc2SessionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2SessionTests.swift; sourceTree = "<group>"; };
 		083305F81C519B8500E27F66 /* RestServerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestServerTest.swift; sourceTree = "<group>"; };
@@ -360,6 +361,7 @@
 				086BC9AE1C552D43006ABAE0 /* AppStatus.swift */,
 				088CE6951C4B605D00153414 /* ColorEnums.swift */,
 				083382F51C68E59300D40EEB /* FileCache.swift */,
+				080214871C693A69008B55D3 /* FileManager.swift */,
 				083174151C587F7F00071408 /* ImageCache.swift */,
 				088CE6B71C4C44A800153414 /* Keychain.swift */,
 				083305E91C5188F700E27F66 /* KeyValueObserver.swift */,
@@ -376,7 +378,6 @@
 			isa = PBXGroup;
 			children = (
 				088CE6971C4B605D00153414 /* File.swift */,
-				080214871C693A69008B55D3 /* FileManager.swift */,
 				088CE6981C4B605D00153414 /* FileType.swift */,
 				088CE6991C4B605D00153414 /* FileTypes.plist */,
 				088CE69A1C4B605D00153414 /* LoginSession.swift */,
@@ -519,6 +520,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				080214891C6A923D008B55D3 /* lognormal.R in Resources */,
 				083305F11C519B4B00E27F66 /* resultsWithImages.json in Resources */,
 				083305FA1C519B8500E27F66 /* loginResults.json in Resources */,
 				08FDB19B1C5917C3006FCD1A /* graph.png in Resources */,

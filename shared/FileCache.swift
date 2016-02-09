@@ -9,6 +9,8 @@ import BrightFutures
 
 public class FileCache: NSObject {
 	var fileManager:FileManager
+	var restServer:RestServer
+	
 	private lazy var urlSession:NSURLSession = {
 		return NSURLSession(configuration: RestServer.sharedInstance.urlConfig)
 	}()
@@ -28,6 +30,7 @@ public class FileCache: NSObject {
 	
 	override init() {
 		fileManager = NSFileManager.defaultManager()
+		restServer = RestServer.sharedInstance
 		super.init()
 	}
 	
@@ -36,9 +39,12 @@ public class FileCache: NSObject {
 	}
 	
 	func downloadFile(file:File, fromWorkspace wspace:Workspace) -> Future<NSURL?,FileError> {
-		var p = Promise<NSURL?,FileError>()
-		let restServer = RestServer.sharedInstance
+		let p = Promise<NSURL?,FileError>()
 		let cachedUrl = cachedFileUrl(file)
+		if file.urlXAttributesMatch(cachedUrl) {
+			p.success(cachedUrl)
+			return p.future
+		}
 		let reqUrl = NSURL(string: "workspaces/\(wspace.wspaceId)/files/\(file.fileId)", relativeToURL: restServer.baseUrl)
 		let req = NSMutableURLRequest(URL: reqUrl!)
 		req.HTTPMethod = "GET"
@@ -53,8 +59,15 @@ public class FileCache: NSObject {
 			case 304: //use existing
 				p.success(cachedUrl)
 			case 200: //dloaded it
-				self.fileManager.moveTempFile(dloadUrl!, toUrl: cachedUrl, file:file, promise: &p)
+				var movePromise = Promise<NSURL?,FileError>()
+				self.fileManager.moveTempFile(dloadUrl!, toUrl: cachedUrl, file:file, promise: &movePromise)
+				movePromise.future.onSuccess(callback: { (murl) -> Void in
+					p.success(murl)
+				}) .onFailure(callback: { (err) -> Void in
+					p.failure(err)
+				})
 			default:
+				p.failure(FileError.FileNotFound)
 				break
 			}
 		}
@@ -62,7 +75,7 @@ public class FileCache: NSObject {
 		return p.future
 	}
 	
-	private func cachedFileUrl(file:File) -> NSURL {
+	func cachedFileUrl(file:File) -> NSURL {
 		let fileUrl = NSURL(fileURLWithPath: "\(file.fileId).\(file.fileType.fileExtension)", relativeToURL: fileCacheUrl)
 		return fileUrl
 	}

@@ -66,11 +66,10 @@ extension File {
 		if let versionData = dataForXAttributeNamed(FileAttrVersion, atURL: url).data,
 			let readString = String(data:versionData, encoding:NSUTF8StringEncoding),
 			let readVersion = Int32(readString),
-			let shaString = NSData(contentsOfURL: url)?.sha256(),
-			let readShaData = dataForXAttributeNamed(FileAttrChecksum, atURL: url).data,
-			let readShaString = String(data:readShaData, encoding:NSUTF8StringEncoding)
+			let shaData = dataForXAttributeNamed (FileAttrChecksum, atURL: url).data,
+			let readShaData = dataForXAttributeNamed(FileAttrChecksum, atURL: url).data
 		{
-			return readVersion == version && shaString == readShaString
+			return readVersion == version && shaData == readShaData
 		}
 		return false
 	}
@@ -79,7 +78,9 @@ extension File {
 	func writeXAttributes(toUrl:NSURL) {
 		let versionData = String(version).dataUsingEncoding(NSUTF8StringEncoding)
 		setXAttributeWithName(FileAttrVersion, data: versionData!, atURL: toUrl)
-		if let fileData = NSData(contentsOfURL: toUrl), let shaData = fileData.sha256() {
+		if let fileData = NSData(contentsOfURL: toUrl),
+			let shaData = fileData.sha256()
+		{
 			setXAttributeWithName(FileAttrChecksum, data: shaData, atURL: toUrl)
 		} else {
 			log.error("failed to create sha256 checksum for \(toUrl.path)")
