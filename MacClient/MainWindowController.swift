@@ -35,7 +35,10 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 	
 	func showWorkspaceSelectTab() {
 		rootTabController?.selectedTabViewItemIndex = (rootTabController?.tabView.indexOfTabViewItemWithIdentifier("workspaceSelect"))!
-		appStatus!.updateStatus(true, message: "selecting workspace…")
+		appStatus!.updateStatus(true, message: "selecting workspace…") { appStatus in
+			NSBeep()
+			return false
+		}
 	}
 	
 	func showSessionTab() {

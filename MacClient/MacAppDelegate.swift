@@ -82,6 +82,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	//MARK: AppStatus implementation
 	private dynamic var _busy: Bool = false
 	private dynamic var _status: NSString = ""
+	private var _cancelHandler: ((appStatus:AppStatus) -> Bool)?
 	private var lock: Spinlock = Spinlock()
 	
 	dynamic var busy: Bool {
@@ -92,13 +93,19 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 		get { return lock.around({ return self._status}) }
 	}
 
-	func updateStatus(busy:Bool, message:String) {
+	var cancelHandler: ((appStatus:AppStatus) -> Bool)? {
+		get { return _cancelHandler }
+	}
+	
+	func updateStatus(busy:Bool, message:String, cancelHandler:((appStatus:AppStatus) -> Bool)?) {
 		lock.around({
 			self._status = message
 			self._busy = busy
+			self._cancelHandler = cancelHandler
 		})
 		NSNotificationCenter.defaultCenter().postNotificationName(AppStatusChangedNotification, object: self)
 	}
+
 }
 
 extension SwinjectStoryboard {

@@ -9,5 +9,12 @@ import Cocoa
 @objc protocol AppStatus {
 	var busy: Bool { get }
 	var statusMessage: NSString { get }
-	func updateStatus(busy:Bool, message:String)
+	var cancelHandler:((appStatus:AppStatus) -> Bool)? { get }
+	func updateStatus(busy:Bool, message:String, cancelHandler:((appStatus:AppStatus) -> Bool)?)
+}
+
+extension AppStatus {
+	func updateStatus(busy:Bool, message:String) {
+		return updateStatus(busy, message:message, cancelHandler: nil)
+	}
 }
