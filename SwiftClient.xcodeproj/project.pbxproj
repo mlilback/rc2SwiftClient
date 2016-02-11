@@ -10,6 +10,8 @@
 		080214861C692CA1008B55D3 /* xattrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382FB1C69189300D40EEB /* xattrTests.swift */; };
 		080214881C693A69008B55D3 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080214871C693A69008B55D3 /* FileManager.swift */; };
 		080214891C6A923D008B55D3 /* lognormal.R in Resources */ = {isa = PBXBuildFile; fileRef = 083305F51C519B8500E27F66 /* lognormal.R */; };
+		0816F89A1C6D0F7D00A6120B /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
+		0816F89C1C6D2BA000A6120B /* SessionDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */; };
 		083174041C5571D300071408 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174031C5571D300071408 /* RootViewController.swift */; };
 		083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174051C56BE7B00071408 /* SessionSplitController.swift */; };
 		0831740A1C56DB2B00071408 /* Swinject.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9B21C556A2E006ABAE0 /* Swinject.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -127,6 +129,8 @@
 
 /* Begin PBXFileReference section */
 		080214871C693A69008B55D3 /* FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FileManager.swift; path = shared/FileManager.swift; sourceTree = SOURCE_ROOT; };
+		0816F8991C6D0F7D00A6120B /* HTMLString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLString.swift; sourceTree = "<group>"; };
+		0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegates.swift; sourceTree = "<group>"; };
 		083174031C5571D300071408 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		083174051C56BE7B00071408 /* SessionSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionSplitController.swift; sourceTree = "<group>"; };
 		0831740D1C577A2500071408 /* ConsoleTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleTextField.swift; sourceTree = "<group>"; };
@@ -362,6 +366,7 @@
 				088CE6951C4B605D00153414 /* ColorEnums.swift */,
 				083382F51C68E59300D40EEB /* FileCache.swift */,
 				080214871C693A69008B55D3 /* FileManager.swift */,
+				0816F8991C6D0F7D00A6120B /* HTMLString.swift */,
 				083174151C587F7F00071408 /* ImageCache.swift */,
 				088CE6B71C4C44A800153414 /* Keychain.swift */,
 				083305E91C5188F700E27F66 /* KeyValueObserver.swift */,
@@ -395,6 +400,7 @@
 				088CE6A01C4B605D00153414 /* ServerResponse.swift */,
 				083174111C58014500071408 /* ServerResponseHandler.swift */,
 				088CE6A11C4B605D00153414 /* Session.swift */,
+				0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */,
 				088CE6A21C4B605D00153414 /* WebSocketSource.swift */,
 			);
 			path = networking;
@@ -552,12 +558,14 @@
 				08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */,
 				0833061E1C541BB700E27F66 /* SwiftyJSON.swift in Sources */,
 				08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */,
+				0816F89C1C6D2BA000A6120B /* SessionDelegates.swift in Sources */,
 				08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */,
 				083382F61C68E59300D40EEB /* FileCache.swift in Sources */,
 				08F448FC1C4E244500C64706 /* SessionConsoleController.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
 				08CB55521C5C06B2002CB7EE /* OutputController.swift in Sources */,
 				088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */,
+				0816F89A1C6D0F7D00A6120B /* HTMLString.swift in Sources */,
 				083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
 				083305E61C517FE300E27F66 /* UsersViewController.swift in Sources */,

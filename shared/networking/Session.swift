@@ -10,14 +10,6 @@ import XCGLogger
 	import AppKit
 #endif
 
-protocol SessionDelegate : class {
-	func sessionOpened()
-	func sessionClosed()
-	func sessionMessageReceived(response:ServerResponse)
-	func sessionErrorReceived(error:ErrorType)
-	func loadHelpItems(topic:String, items:[HelpItem])
-}
-
 public class Session : NSObject {
 	///tried kvo, forced to use notifications
 	class Manager: NSObject {

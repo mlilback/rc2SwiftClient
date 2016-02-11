@@ -67,7 +67,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		if inResponderChain(editor!) {
 			editor?.performTextFinderAction(sender)
 		} else {
-			outputHandler?.outputResponder().performTextFinderAction(sender)
+			outputHandler?.prepareForSearch()
 		}
 	}
 	
@@ -215,19 +215,6 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	func sessionErrorReceived(error:ErrorType) {
 		
 	}
-}
-
-@objc protocol SessionVariableHandler {
-	///parameter variables: key is a string, value is an ObjcBox of a JSON value
-	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String,AnyObject>)
-}
-
-@objc protocol SessionOutputHandler {
-	var imageCache: ImageCache? { get set }
-	func appendFormattedString(string:NSAttributedString)
-	func saveSessionState() -> AnyObject
-	func restoreSessionState(state:[String:AnyObject])
-	func outputResponder() -> NSResponder
 }
 
 class SearchToolbarItem: NSToolbarItem {

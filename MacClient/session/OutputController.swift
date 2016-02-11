@@ -88,8 +88,8 @@ class OutputController: NSTabViewController, SessionOutputHandler, ToolbarItemHa
 		}
 	}
 
-	func outputResponder() -> NSResponder {
-		return consoleController!
+	func prepareForSearch() {
+		consoleController?.performTextFinderAction(self)
 	}
 	
 	func saveSessionState() -> AnyObject {
