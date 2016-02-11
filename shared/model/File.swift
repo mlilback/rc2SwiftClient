@@ -7,10 +7,10 @@
 import Foundation
 
 public class File: CustomStringConvertible, Equatable {
-	let fileId : Int32
+	let fileId : Int
 	let name : String
-	let version : Int32
-	let fileSize : Int32
+	let version : Int
+	let fileSize : Int
 	let dateCreated : NSDate
 	let lastModified : NSDate
 	let fileType: FileType
@@ -34,10 +34,10 @@ public class File: CustomStringConvertible, Equatable {
 	}
 	
 	init(json:JSON) {
-		fileId = json["id"].int32Value
+		fileId = json["id"].intValue
 		name = json["name"].stringValue
-		version = json["version"].int32Value
-		fileSize = json["fileSize"].int32Value
+		version = json["version"].intValue
+		fileSize = json["fileSize"].intValue
 		dateCreated = NSDate(timeIntervalSince1970: json["dateCreated"].doubleValue/1000.0)
 		lastModified = NSDate(timeIntervalSince1970: json["lastModified"].doubleValue/1000.0)
 		if let ft = FileType.fileTypeWithExtension((name as NSString).pathExtension) {

@@ -11,7 +11,7 @@ import XCTest
 import BrightFutures
 import Mockingjay
 
-class FileCacheTests: BaseTest {
+class FileCacheTests: BaseTest, FileCacheDownloadDelegate {
 	var cache:FileCache!
 	var wspace:Workspace!
 	var file:File!
@@ -19,6 +19,7 @@ class FileCacheTests: BaseTest {
 	var fileData:NSData!
 	var destUri:String!
 	var cachedUrl:NSURL!
+	var multiExpectation:XCTestExpectation?
 
 	override class func initialize() {
 		NSURLSessionConfiguration.mockingjaySwizzleDefaultSessionConfiguration()
@@ -86,6 +87,31 @@ class FileCacheTests: BaseTest {
 				expect.fulfill()
 		}
 		self.waitForExpectationsWithTimeout(2) { (err) -> Void in }
+	}
+
+	func testMultipleDownload() {
+		stub(everything, builder: http(200, headers:[:], data:fileData))
+		multiExpectation = expectationWithDescription("download from server")
+		try! cache.cacheFilesForWorkspace(wspace, delegate:self)
+		self.waitForExpectationsWithTimeout(120) { (err) -> Void in }
+	}
+	
+	///called as bytes are recieved over the network
+	func fileCache(cache:FileCache, updatedProgressWithStatus progress:FileCacheDownloadStatus) {
+		//TODO: inspect that the percentage is what we expect
+		log.info("got progress")
+	}
+	
+	///called when all the files have been downloaded and cached
+	func fileCacheDidFinishDownload(cache:FileCache, workspace:Workspace) {
+		log.info("got complete")
+		multiExpectation?.fulfill()
+	}
+	
+	///called on error. The download is canceled and fileCacheDidFinishDownload is not called
+	func fileCache(cache:FileCache, failedToDownload file:File, error:ErrorType) {
+		log.info("error for dload:\(error)")
+		multiExpectation?.fulfill()
 	}
 
 }

@@ -65,7 +65,7 @@ extension File {
 	func urlXAttributesMatch(url:NSURL) -> Bool {
 		if let versionData = dataForXAttributeNamed(FileAttrVersion, atURL: url).data,
 			let readString = String(data:versionData, encoding:NSUTF8StringEncoding),
-			let readVersion = Int32(readString),
+			let readVersion = Int(readString),
 			let shaData = dataForXAttributeNamed (FileAttrChecksum, atURL: url).data,
 			let readShaData = dataForXAttributeNamed(FileAttrChecksum, atURL: url).data
 		{
