@@ -90,16 +90,35 @@ class FileCacheTests: BaseTest, FileCacheDownloadDelegate {
 	}
 
 	func testMultipleDownload() {
-		stub(everything, builder: http(200, headers:[:], data:fileData))
+		//use contents of words file instead of the R file we use in other tests (i.e. make it a lot larger)
+		let wordsUrl = NSURL(fileURLWithPath: "/usr/share/dict/words")
+		fileData = NSData(contentsOfURL: wordsUrl)!
+		let fakeFile = File(json: JSON.parse("{\"id\" : 1,\"wspaceId\" : 1,\"name\" : \"sample.R\",\"version\" : 0,\"dateCreated\" : 1439407405827,\"lastModified\" : 1439407405827,\"etag\": \"f/1/0\", \"fileSize\":\(fileData.length) }"))
+		file = fakeFile
+		wspace.files.removeAtIndex(0)
+		wspace.files.insert(fakeFile, atIndex: 0)
+		//stub out download of both files
+		stub(uri("/workspaces/\(wspace.wspaceId)/files/\(wspace.files[0].fileId)"), builder: http(200, headers:[:], data:fileData))
+		let file1Data = fileData.subdataWithRange(NSMakeRange(0, wspace.files[1].fileSize))
+		stub(uri("/workspaces/\(wspace.wspaceId)/files/\(wspace.files[1].fileId)"), builder: http(200, headers:[:], data:file1Data))
+		
 		multiExpectation = expectationWithDescription("download from server")
 		try! cache.cacheFilesForWorkspace(wspace, delegate:self)
-		self.waitForExpectationsWithTimeout(120) { (err) -> Void in }
+		self.waitForExpectationsWithTimeout(2) { (err) -> Void in }
+		var fileSize:UInt64 = 0
+		do {
+			let fileAttrs:NSDictionary = try NSFileManager.defaultManager().attributesOfItemAtPath(cachedUrl.path!)
+			fileSize = fileAttrs.fileSize()
+		} catch let e as NSError {
+			XCTAssertFalse(true, "error getting file size:\(e)")
+		}
+		XCTAssertEqual(fileSize, UInt64(fileData.length))
 	}
 	
 	///called as bytes are recieved over the network
 	func fileCache(cache:FileCache, updatedProgressWithStatus progress:FileCacheDownloadStatus) {
 		//TODO: inspect that the percentage is what we expect
-		log.info("got progress")
+		log.info("got progress \(progress.percentComplete)")
 	}
 	
 	///called when all the files have been downloaded and cached

@@ -43,8 +43,8 @@ protocol FileCacheDownloadDelegate {
 	var urlSession:NSURLSession!
 	var tasks:[NSURLSessionDownloadTask] = []
 	var fileForTask:[Int:File] = [:]
-	var totalBytes:Int = 0
-	var bytesDownloaded:Int = 0
+	var totalBytes:Double = 0
+	var bytesDownloaded:Double = 0
 	var downloadedCount:Int = 0
 	
 	init(cache:FileCache, workspace wspace:Workspace, delegate:FileCacheDownloadDelegate) {
@@ -69,7 +69,7 @@ protocol FileCacheDownloadDelegate {
 			let aTask = urlSession.downloadTaskWithURL(fileUrl!.absoluteURL)
 			tasks.append(aTask)
 			fileForTask[aTask.taskIdentifier] = aFile
-			totalBytes += aFile.fileSize
+			totalBytes += Double(aFile.fileSize)
 		}
 		//only start after all tasks are created
 		dispatch_async(dispatch_get_main_queue()) {
@@ -79,8 +79,12 @@ protocol FileCacheDownloadDelegate {
 	
 	func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
 	{
-		bytesDownloaded += Int(bytesWritten)
-		let status = FileCacheDownloadStatus(itemCount: workspace.files.count, downloadedCount: downloadedCount, currentFile: fileForTask[downloadTask.taskIdentifier], complete: Double(bytesDownloaded) / Double(totalBytes))
+		let file = fileForTask[downloadTask.taskIdentifier]!
+		bytesDownloaded += Double(bytesWritten)
+		let percent = Double(bytesDownloaded) / totalBytes
+//		let logStr = "progress for \(file.name) bytesWritten=\(bytesWritten), predicted=\(totalBytes), percent=\(percent)"
+//		log.info(logStr)
+		let status = FileCacheDownloadStatus(itemCount:workspace.files.count, downloadedCount:downloadedCount, currentFile:file, complete:percent)
 		delegate.fileCache(cache, updatedProgressWithStatus: status)
 	}
 	
