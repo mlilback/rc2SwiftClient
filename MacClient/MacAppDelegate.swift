@@ -15,6 +15,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	var loginWindowController: NSWindowController?
 	var loginController: LoginViewController?
 	var sessionWindowController: MainWindowController?
+	var closeNotificationToken: AnyObject?
 	
 	func applicationWillFinishLaunching(notification: NSNotification) {
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
@@ -68,6 +69,11 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 		sessionWindowController?.contentViewController = root
 		sessionWindowController?.appStatus = self
 		sessionWindowController?.setupChildren()
+		closeNotificationToken = NSNotificationCenter.defaultCenter().addObserverForName(NSWindowWillCloseNotification, object: sessionWindowController!.window!, queue: NSOperationQueue.mainQueue())
+		{ [weak self] (note) -> Void in
+			self?.closeNotificationToken = nil
+			self?.performSelector("showLoginWindow", withObject: nil, afterDelay: 0.2)
+		}
 	}
 	
 	func showLoginWindow() {
