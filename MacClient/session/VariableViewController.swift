@@ -7,7 +7,7 @@
 import Cocoa
 
 
-class VariableViewContrfoller : AbstractSessionViewController, SessionVariableHandler {
+class VariableViewContrfoller : AbstractSessionViewController, VariableHandler {
 
 	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String,AnyObject>) {
 	

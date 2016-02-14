@@ -13,6 +13,9 @@ let FileAttrChecksum = "io.rc2.FileAttr.SHA256"
 public enum FileError: Int, ErrorType {
 	case FileNotFound = 0
 	case FailedToSaveFile
+	case FailedToLoadFile
+	case ReadError
+	case FailedToDownload
 }
 
 ///Protocol for functions of NSFileManager that we use so we can inject a mock version in unit tests

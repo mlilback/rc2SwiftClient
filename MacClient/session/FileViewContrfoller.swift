@@ -21,7 +21,7 @@ protocol FileViewControllerDelegate: class {
 }
 //TODO: make sure when delegate renames file our list gets updated
 
-class FileViewContrfoller: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate {
+class FileViewContrfoller: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler {
 	let sectionNames:[String] = ["Source Files", "Images", "Other"]
 
 	@IBOutlet var tableView: NSTableView!
@@ -68,6 +68,13 @@ class FileViewContrfoller: AbstractSessionViewController, NSTableViewDataSource,
 		}
 	}
 	
+	//MARK: FileHandler implementation
+	func filesRefreshed() {
+		loadData()
+		tableView.reloadData()
+	}
+	
+	//MARK: TableView datasource/delegate implementation
 	func numberOfRowsInTableView(tableView: NSTableView) -> Int {
 		return rowData.count
 	}

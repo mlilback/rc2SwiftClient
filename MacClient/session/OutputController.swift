@@ -6,7 +6,7 @@
 
 import Cocoa
 
-class OutputController: NSTabViewController, SessionOutputHandler, ToolbarItemHandler {
+class OutputController: NSTabViewController, OutputHandler, ToolbarItemHandler {
 	var consoleController: SessionConsoleController?
 	var imageController: ImageOutputController?
 	var imageCache: ImageCache?

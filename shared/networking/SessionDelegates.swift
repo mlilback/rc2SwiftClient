@@ -5,7 +5,7 @@
 //
 
 import Foundation
-
+import BrightFutures
 
 protocol SessionDelegate : class {
 	func sessionOpened()
@@ -13,19 +13,17 @@ protocol SessionDelegate : class {
 	func sessionMessageReceived(response:ServerResponse)
 	func sessionErrorReceived(error:ErrorType)
 	func loadHelpItems(topic:String, items:[HelpItem])
+	func sessionFilesLoaded(session:Session)
 }
 
-@objc protocol SessionVariableHandler {
-	///parameter variables: key is a string, value is an ObjcBox of a JSON value
-	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String,AnyObject>)
+protocol SessionFileHandlerDelegate: class {
+	func filesLoaded()
 }
 
-@objc protocol SessionOutputHandler {
-	var imageCache: ImageCache? { get set }
-	func appendFormattedString(string:NSAttributedString)
-	func saveSessionState() -> AnyObject
-	func restoreSessionState(state:[String:AnyObject])
-	func prepareForSearch()
+protocol SessionFileHandler : class {
+	var workspace:Workspace { get set }
+	var fileDelegate:SessionFileHandlerDelegate? { get set }
+	
+	func loadFiles()
+	func contentsOfFile(file:File) -> Future<NSData?,FileError>
 }
-
-

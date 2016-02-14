@@ -27,7 +27,7 @@ struct FileCacheDownloadStatus {
 	}
 }
 
-protocol FileCacheDownloadDelegate {
+protocol FileCacheDownloadDelegate: class {
 	///called as bytes are recieved over the network
 	func fileCache(cache:FileCache, updatedProgressWithStatus progress:FileCacheDownloadStatus)
 	///called when all the files have been downloaded and cached
@@ -39,7 +39,8 @@ protocol FileCacheDownloadDelegate {
 @objc class FileCacheDownloader: NSObject, NSURLSessionDownloadDelegate {
 	let cache:FileCache
 	let workspace:Workspace
-	let delegate:FileCacheDownloadDelegate
+	///delegate must be set after initialization but before any other method is called
+	weak var delegate:FileCacheDownloadDelegate!
 	var urlSession:NSURLSession!
 	var tasks:[NSURLSessionDownloadTask] = []
 	var fileForTask:[Int:File] = [:]
@@ -47,10 +48,9 @@ protocol FileCacheDownloadDelegate {
 	var bytesDownloaded:Double = 0
 	var downloadedCount:Int = 0
 	
-	init(cache:FileCache, workspace wspace:Workspace, delegate:FileCacheDownloadDelegate) {
+	init(cache:FileCache, workspace wspace:Workspace) {
 		self.cache = cache
 		self.workspace = wspace
-		self.delegate = delegate
 		super.init()
 	}
 	
@@ -129,6 +129,8 @@ protocol FileCacheDownloadDelegate {
 	}
 }
 
+//MARK: FileCache implementation
+
 public class FileCache: NSObject {
 	var fileManager:FileManager
 	var restServer:RestServer
@@ -167,7 +169,8 @@ public class FileCache: NSObject {
 		if let _ = downloaders.indexOf({ $0.workspace.wspaceId == wspace.wspaceId }) {
 			throw FileCacheError.DownloadAlreadyInProgress
 		}
-		let dloader = FileCacheDownloader(cache: self, workspace: wspace, delegate: delegate)
+		let dloader = FileCacheDownloader(cache: self, workspace: wspace)
+		dloader.delegate = delegate
 		downloaders.append(dloader)
 		try dloader.startDownload()
 	}

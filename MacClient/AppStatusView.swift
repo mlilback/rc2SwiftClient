@@ -7,9 +7,9 @@
 import Cocoa
 
 class AppStatusView: NSView {
-	@IBOutlet var textField: NSTextField?
-	@IBOutlet var progress: NSProgressIndicator?
-	@IBOutlet var cancelButton: NSButton?
+	var textField: NSTextField?
+	var progress: NSProgressIndicator?
+	var cancelButton: NSButton?
 	var appStatus: AppStatus? { didSet { self.statusChanged(nil) } }
 	
 	override var intrinsicContentSize:NSSize { return NSSize(width:220, height:22) }

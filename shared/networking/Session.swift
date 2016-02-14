@@ -1,5 +1,5 @@
 //
-//  Rc2Session.swift
+//  Session.swift
 //
 //  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
@@ -10,7 +10,7 @@ import XCGLogger
 	import AppKit
 #endif
 
-public class Session : NSObject {
+public class Session : NSObject, SessionFileHandlerDelegate {
 	///tried kvo, forced to use notifications
 	class Manager: NSObject {
 		dynamic var currentSession: Session? {
@@ -21,6 +21,8 @@ public class Session : NSObject {
 	
 	let workspace : Workspace
 	let wsSource : WebSocketSource
+	let appStatus: AppStatus
+	let fileHandler: SessionFileHandler
 	weak var delegate : SessionDelegate?
 	var variablesVisible : Bool = false {
 		didSet {
@@ -35,17 +37,21 @@ public class Session : NSObject {
 	
 	private(set) var connectionOpen:Bool = false
 	
-	init(_ wspace:Workspace, delegate:SessionDelegate?=nil, source:WebSocketSource)
+	init(_ wspace:Workspace,  source:WebSocketSource, appStatus:AppStatus, delegate:SessionDelegate?=nil)
 	{
 		workspace = wspace
 		self.delegate = delegate
 		self.wsSource = source
+		self.appStatus = appStatus
+		self.fileHandler = DefaultSessionFileHandler(wspace: workspace)
 
 		super.init()
+		fileHandler.fileDelegate = self
 		wsSource.event.open = {
 			dispatch_async(dispatch_get_main_queue()) {
 				self.connectionOpen = true
 				Session.manager.currentSession = self
+				self.loadFiles()
 				self.delegate?.sessionOpened()
 			}
 		}
@@ -71,6 +77,11 @@ public class Session : NSObject {
 	
 	func close() {
 		self.wsSource.close(1000, reason: "") //default values that can't be specified in a protocol
+	}
+	
+	func loadFiles() {
+		appStatus.updateStatus(true, message: NSLocalizedString("Loading files", comment: ""))
+		fileHandler.loadFiles()
 	}
 	
 	//MARK: public request methods
@@ -110,6 +121,12 @@ public class Session : NSObject {
 	
 	func forceVariableRefresh() {
 		sendMessage(["msg":"watchVariables", "watch":true])
+	}
+	
+	//MARK: SessionFileHandlerDelegate methods
+	func filesLoaded() {
+		appStatus.updateStatus(false, message: "")
+		delegate?.sessionFilesLoaded(self)
 	}
 	
 	//MARK: other public methods

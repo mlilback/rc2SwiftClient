@@ -16,9 +16,11 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	dynamic var busy: Bool = false
 	dynamic var statusMessage: String = ""
 	
+	private var dimmingView:NSView?
 	weak var editor: SessionEditorController?
-	weak var outputHandler: SessionOutputHandler?
-	weak var variableHandler: SessionVariableHandler?
+	weak var outputHandler: OutputHandler?
+	weak var variableHandler: VariableHandler?
+	weak var fileHandler: FileHandler?
 	var responseHandler: ResponseHandler?
 	var savedStateHash: NSData?
 	var imgCache: ImageCache = ImageCache() { didSet { outputHandler?.imageCache = imgCache } }
@@ -30,6 +32,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		outputHandler?.imageCache = imgCache
 		variableHandler = firstChildViewController(self)
 		responseHandler = ResponseHandler(delegate: self)
+		fileHandler = firstChildViewController(self)
 		//save our state on quit and sleep
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "appWillTerminate", name: NSApplicationWillTerminateNotification, object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:  "saveSessionState", name: NSWorkspaceWillSleepNotification, object:nil)
@@ -38,6 +41,18 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	override func viewDidAppear() {
 		super.viewDidAppear()
 		self.hookupToToolbarItems(self, window: view.window!)
+		//create dimming view
+		let dview = NSView(frame: view.bounds)
+		dimmingView = dview
+		dview.translatesAutoresizingMaskIntoConstraints = false
+		dview.wantsLayer = true
+		dview.layer!.backgroundColor = NSColor.blackColor().colorWithAlphaComponent(0.1).CGColor
+		view.addSubview(dview)
+		view.addConstraint(dview.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor))
+		view.addConstraint(dview.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor))
+		view.addConstraint(dview.topAnchor.constraintEqualToAnchor(view.topAnchor))
+		view.addConstraint(dview.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor))
+		dview.hidden = true
 	}
 	
 	override func sessionChanged() {
@@ -154,7 +169,15 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 			}
 			self.busy = (self.appStatus?.busy)!
 			self.statusMessage = (self.appStatus?.statusMessage)! as String
-			if !self.busy { self.startTimer() }
+			//hide/show dimmingView only if
+			if self.editor?.view.hiddenOrHasHiddenAncestor == false {
+				if self.busy {
+					self.dimmingView?.hidden = false
+				} else {
+					self.startTimer()
+					self.dimmingView?.animator().hidden = true
+				}
+			}
 		}
 	}
 	
@@ -203,6 +226,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	
 	func sessionClosed() {
 		
+	}
+	
+	func sessionFilesLoaded(session:Session) {
+		fileHandler?.filesRefreshed()
 	}
 	
 	func sessionMessageReceived(response:ServerResponse) {

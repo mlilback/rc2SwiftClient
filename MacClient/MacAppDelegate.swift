@@ -21,6 +21,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
 		let cdUrl = NSBundle.mainBundle().URLForResource("CommonDefaults", withExtension: "plist")
 		NSUserDefaults.standardUserDefaults().registerDefaults(NSDictionary(contentsOfURL: cdUrl!)! as! [String : AnyObject])
+		RestServer.createServer(appStatus:self)
 	}
 
 	func applicationDidFinishLaunching(aNotification: NSNotification) {
@@ -104,6 +105,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	}
 	
 	func updateStatus(busy:Bool, message:String, cancelHandler:((appStatus:AppStatus) -> Bool)?) {
+		guard busy != _busy else { return } //do nothing if busy not changing
 		lock.around({
 			self._status = message
 			self._busy = busy

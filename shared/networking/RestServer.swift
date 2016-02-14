@@ -11,13 +11,20 @@ import Result
 
 @objc public class RestServer : NSObject {
 
-	private static var sInstance = RestServer()
+	private static var _sInstance:RestServer?? = nil
+	private static var sInstance:RestServer? { get { return _sInstance! } set { _sInstance = newValue } }
 	private let kServerHostKey = "ServerHostKey"
 	
+	static func createServer(appStatus appStatus:AppStatus) {
+		sInstance = RestServer()
+		sInstance!.appStatus = appStatus
+	}
+	
 	///singleton accessor
-	public static var sharedInstance : RestServer {
+	static var sharedInstance : RestServer {
 		get {
-			return sInstance
+			assert(sInstance != nil)
+			return sInstance!
 		}
 	}
 	
@@ -33,6 +40,7 @@ import Result
 	private(set) public var loginSession : LoginSession?
 	private(set) var baseUrl : NSURL?
 	private var userAgent: String
+	private var appStatus:AppStatus?
 
 	var restHosts : [String] {
 		get {
@@ -75,7 +83,7 @@ import Result
 		}
 		NSNotificationCenter.defaultCenter().addObserverForName(SelectedWorkspaceChangedNotification, object: nil, queue: nil) { (note) -> Void in
 			let wspace = note.object as! Box<Workspace>
-			self.createSession(wspace.unbox)
+			self.createSession(wspace.unbox, appStatus: self.appStatus!)
 		}
 	}
 	
@@ -97,7 +105,7 @@ import Result
 		return request
 	}
 	
-	public func selectHost(hostName:String) {
+	func selectHost(hostName:String) {
 		if let hostDict = hosts.filter({ return ($0["name"] as! String) == hostName }).first {
 			selectedHost = hostDict
 			let hprotocol = hostDict["secure"]!.boolValue! ? "https" : "http"
@@ -106,12 +114,12 @@ import Result
 		}
 	}
 	
-	public func createSession(wspace:Workspace) -> Session {
+	func createSession(wspace:Workspace, appStatus:AppStatus) -> Session {
 		let request = NSMutableURLRequest(URL: createWebsocketUrl(wspace.wspaceId))
 		request.addValue(loginSession!.authToken, forHTTPHeaderField: "Rc2-Auth")
 		request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
 		let ws = WebSocket()
-		let session = Session(wspace, source:ws)
+		let session = Session(wspace, source:ws, appStatus:appStatus)
 		session.open(request)
 		return session
 	}
