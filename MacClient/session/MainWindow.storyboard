@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
@@ -170,6 +170,9 @@
                                 <outlet property="delegate" destination="wlW-TF-z7z" id="fHW-1K-2RD"/>
                             </connections>
                         </toolbar>
+                        <connections>
+                            <outlet property="delegate" destination="wlW-TF-z7z" id="klO-Vf-q3J"/>
+                        </connections>
                     </window>
                 </windowController>
                 <customObject id="TXX-KR-SY6" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -181,11 +184,15 @@
             <objects>
                 <viewController storyboardIdentifier="rootController" id="dEf-uW-xcq" userLabel="root view controller" customClass="RootViewController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" wantsLayer="YES" id="yiQ-ic-8e8">
-                        <rect key="frame" x="0.0" y="0.0" width="868" height="513"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <containerView translatesAutoresizingMaskIntoConstraints="NO" id="xvS-2e-0OL">
-                                <rect key="frame" x="0.0" y="0.0" width="868" height="513"/>
+                                <rect key="frame" x="0.0" y="0.0" width="1000" height="600"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="1000" id="gaT-kw-xp1"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="600" id="ngZ-Tw-phW"/>
+                                </constraints>
                                 <connections>
                                     <segue destination="FZf-DS-tw6" kind="embed" id="igk-CI-Txa"/>
                                 </connections>
