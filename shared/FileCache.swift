@@ -60,7 +60,10 @@ protocol FileCacheDownloadDelegate: class {
 	
 	func startDownload() throws {
 		assert(tasks.count == 0, "FileCacheDownloader instance may only be used once")
-		self.urlSession = NSURLSession(configuration: cache.restServer.urlConfig, delegate: self, delegateQueue: NSOperationQueue.mainQueue())
+		let config = cache.urlSession.configuration
+		config.HTTPAdditionalHeaders!["Accept"] = "application/octet-stream"
+		self.urlSession = NSURLSession(configuration: config, delegate: self, delegateQueue: NSOperationQueue.mainQueue())
+		
 		for aFile in workspace.files {
 			let fileUrl = NSURL(string: "workspaces/\(workspace.wspaceId)/files/\(aFile.fileId)", relativeToURL: cache.restServer.baseUrl)
 			guard fileUrl != nil else {
@@ -73,7 +76,9 @@ protocol FileCacheDownloadDelegate: class {
 		}
 		//only start after all tasks are created
 		dispatch_async(dispatch_get_main_queue()) {
-			_ = self.tasks.map({ task in task.resume() })
+			for aTask in self.tasks {
+				aTask.resume()
+			}
 		}
 	}
 	
@@ -143,10 +148,11 @@ public class FileCache: NSObject {
 	lazy var fileCacheUrl: NSURL = { () -> NSURL in
 		do {
 			let cacheDir = try self.fileManager.URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-			if !cacheDir.checkResourceIsReachableAndReturnError(nil) {
-				try self.fileManager.createDirectoryAtURL(cacheDir, withIntermediateDirectories: true, attributes: nil)
+			let ourDir = cacheDir.URLByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!, isDirectory:true)
+			if !ourDir.checkResourceIsReachableAndReturnError(nil) {
+				try self.fileManager.createDirectoryAtURL(ourDir, withIntermediateDirectories: true, attributes: nil)
 			}
-			return cacheDir
+			return ourDir
 		} catch let err {
 			log.error("failed to create file cache dir:\(err)")
 		}
@@ -163,6 +169,10 @@ public class FileCache: NSObject {
 		return cachedFileUrl(file).checkResourceIsReachableAndReturnError(nil)
 	}
 
+	func flushCacheForWorkspace(wspace:Workspace) {
+		
+	}
+	
 	///caches all the files in the workspace that aren't already cached with the current version of the file
 	/// notifies the delegate when complete
 	func cacheFilesForWorkspace(wspace:Workspace, delegate:FileCacheDownloadDelegate) throws {
@@ -213,7 +223,7 @@ public class FileCache: NSObject {
 	}
 	
 	func cachedFileUrl(file:File) -> NSURL {
-		let fileUrl = NSURL(fileURLWithPath: "\(file.fileId).\(file.fileType.fileExtension)", relativeToURL: fileCacheUrl)
+		let fileUrl = NSURL(fileURLWithPath: "\(file.fileId).\(file.fileType.fileExtension)", relativeToURL: fileCacheUrl).absoluteURL
 		return fileUrl
 	}
 }

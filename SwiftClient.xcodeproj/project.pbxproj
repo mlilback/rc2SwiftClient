@@ -32,7 +32,7 @@
 		083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D81C501B7300E27F66 /* MainWindowController.swift */; };
 		083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */; };
 		083305E01C51571500E27F66 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 083305DE1C51571500E27F66 /* Localizable.strings */; };
-		083305E21C517F8900E27F66 /* FileViewContrfoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E11C517F8900E27F66 /* FileViewContrfoller.swift */; };
+		083305E21C517F8900E27F66 /* FileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E11C517F8900E27F66 /* FileViewController.swift */; };
 		083305E41C517FC000E27F66 /* VariableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E31C517FC000E27F66 /* VariableViewController.swift */; };
 		083305E61C517FE300E27F66 /* UsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E51C517FE300E27F66 /* UsersViewController.swift */; };
 		083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E71C51812300E27F66 /* AbstractSessionViewController.swift */; };
@@ -148,7 +148,7 @@
 		083305D81C501B7300E27F66 /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecursiveFlatMap.swift; sourceTree = "<group>"; };
 		083305DF1C51571500E27F66 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
-		083305E11C517F8900E27F66 /* FileViewContrfoller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileViewContrfoller.swift; sourceTree = "<group>"; };
+		083305E11C517F8900E27F66 /* FileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileViewController.swift; sourceTree = "<group>"; };
 		083305E31C517FC000E27F66 /* VariableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableViewController.swift; sourceTree = "<group>"; };
 		083305E51C517FE300E27F66 /* UsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersViewController.swift; sourceTree = "<group>"; };
 		083305E71C51812300E27F66 /* AbstractSessionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractSessionViewController.swift; sourceTree = "<group>"; };
@@ -411,6 +411,27 @@
 			path = networking;
 			sourceTree = "<group>";
 		};
+		08ED57011C7140C0002B2558 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		08ED57071C7140C0002B2558 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		08ED575A1C7140C0002B2558 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		08F448F31C4E244500C64706 /* session */ = {
 			isa = PBXGroup;
 			children = (
@@ -419,7 +440,7 @@
 				0816F89F1C6D3A4500A6120B /* MacSessionHandlers.swift */,
 				08F448F51C4E244500C64706 /* SessionEditorController.swift */,
 				08F448F61C4E244500C64706 /* MacSessionMultiController.swift */,
-				083305E11C517F8900E27F66 /* FileViewContrfoller.swift */,
+				083305E11C517F8900E27F66 /* FileViewController.swift */,
 				083305E31C517FC000E27F66 /* VariableViewController.swift */,
 				083305E51C517FE300E27F66 /* UsersViewController.swift */,
 				083174051C56BE7B00071408 /* SessionSplitController.swift */,
@@ -505,6 +526,20 @@
 			mainGroup = 088CE6601C4B0AF400153414;
 			productRefGroup = 088CE66A1C4B0AF400153414 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 08ED57011C7140C0002B2558 /* Products */;
+					ProjectRef = 08FDB19C1C5919BC006FCD1A /* BrightFutures.framework */;
+				},
+				{
+					ProductGroup = 08ED575A1C7140C0002B2558 /* Products */;
+					ProjectRef = 088CE67A1C4B0AF500153414 /* MacClientTests.xctest */;
+				},
+				{
+					ProductGroup = 08ED57071C7140C0002B2558 /* Products */;
+					ProjectRef = 086BC9A31C5423D0006ABAE0 /* Mockingjay.framework */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				088CE6681C4B0AF400153414 /* MacClient */,
@@ -579,7 +614,7 @@
 				083305E61C517FE300E27F66 /* UsersViewController.swift in Sources */,
 				08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */,
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
-				083305E21C517F8900E27F66 /* FileViewContrfoller.swift in Sources */,
+				083305E21C517F8900E27F66 /* FileViewController.swift in Sources */,
 				088CE6AE1C4B605D00153414 /* Session.swift in Sources */,
 				080214881C693A69008B55D3 /* FileManager.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,

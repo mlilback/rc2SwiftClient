@@ -152,7 +152,7 @@ import Result
 				case 200:
 					self.loginSession = LoginSession(json: json, host: self.selectedHost["name"]! as! String)
 					//for anyone that copies our session config later, include the auth token
-					self.urlConfig.HTTPAdditionalHeaders!["Rc-Auth"] = self.loginSession!.authToken
+					self.urlConfig.HTTPAdditionalHeaders!["Rc2-Auth"] = self.loginSession!.authToken
 					dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: self.loginSession!, error: nil) })
 					NSUserDefaults.standardUserDefaults().setObject(self.loginSession!.host, forKey: self.kServerHostKey)
 					NSNotificationCenter.defaultCenter().postNotificationName(RestLoginChangedNotification, object: self)

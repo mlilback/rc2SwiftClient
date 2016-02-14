@@ -7,7 +7,7 @@
 import Cocoa
 import CryptoSwift
 
-class RootViewController: AbstractSessionViewController, SessionDelegate, ResponseHandlerDelegate, ToolbarItemHandler
+class RootViewController: AbstractSessionViewController, SessionDelegate, ResponseHandlerDelegate, FileViewControllerDelegate, ToolbarItemHandler
 {
 	@IBOutlet var progressView: NSProgressIndicator?
 	@IBOutlet var statusField: NSTextField?
@@ -33,6 +33,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		variableHandler = firstChildViewController(self)
 		responseHandler = ResponseHandler(delegate: self)
 		fileHandler = firstChildViewController(self)
+		let concreteFH = fileHandler as? FileViewController
+		if concreteFH != nil {
+			concreteFH!.delegate = self
+		}
 		//save our state on quit and sleep
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "appWillTerminate", name: NSApplicationWillTerminateNotification, object: nil)
 		NSNotificationCenter.defaultCenter().addObserver(self, selector:  "saveSessionState", name: NSWorkspaceWillSleepNotification, object:nil)
@@ -219,6 +223,33 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		imgCache.cacheImagesFromServer(images)
 	}
 
+	//MARK:FileViewControllerDelegate
+	func fileSelectionChanged(file:File?) {
+		var contents:String?
+		if let theFile = file {
+			session.fileHandler.contentsOfFile(theFile).onComplete { result in
+				switch(result) {
+					case .Success(let val):
+						contents = String(data: val!, encoding: NSUTF8StringEncoding)
+					case .Failure(let err):
+						log.warning("got error \(err)")
+				}
+				self.editor?.fileSelectionChanged(file, text: contents)
+			}
+		} else {
+			self.editor?.fileSelectionChanged(nil, text: "")
+		}
+	}
+	
+	@IBAction func clearFileCache(sender:AnyObject) {
+		session.fileHandler.fileCache.flushCacheForWorkspace(session.workspace)
+	}
+	
+	func renameFile(file:File, to:String) {
+		//TODO:implement
+	}
+
+	
 	//MARK: SessionDelegate
 	func sessionOpened() {
 		

@@ -22,6 +22,7 @@ protocol SessionFileHandlerDelegate: class {
 
 protocol SessionFileHandler : class {
 	var workspace:Workspace { get set }
+	var fileCache:FileCache { get }
 	var fileDelegate:SessionFileHandlerDelegate? { get set }
 	
 	func loadFiles()

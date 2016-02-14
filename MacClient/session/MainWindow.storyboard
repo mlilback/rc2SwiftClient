@@ -335,20 +335,26 @@
                                             </textField>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="j6K-47-ewR">
                                                 <rect key="frame" x="229" y="-7" width="83" height="32"/>
-                                                <buttonCell key="cell" type="push" title="Source" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="rGi-Lp-GGO">
+                                                <buttonCell key="cell" type="push" title="Source" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="rGi-Lp-GGO">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
+                                                <connections>
+                                                    <action selector="sourceQuery:" target="thj-QN-rY1" id="r1Z-3t-v78"/>
+                                                </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7nG-Py-cN7">
                                                 <rect key="frame" x="308" y="-7" width="82" height="32"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="70" id="Ob3-qv-EWd"/>
                                                 </constraints>
-                                                <buttonCell key="cell" type="push" title="Run" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="FrN-I9-lrY">
+                                                <buttonCell key="cell" type="push" title="Run" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="FrN-I9-lrY">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
+                                                <connections>
+                                                    <action selector="runQuery:" target="thj-QN-rY1" id="TMe-dU-o5M"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <visibilityPriorities>
@@ -385,6 +391,9 @@
                     </view>
                     <connections>
                         <outlet property="editor" destination="avy-g3-Ese" id="vv5-Ia-mp9"/>
+                        <outlet property="fileNameField" destination="ucc-Ba-B6V" id="hv4-cC-8Ap"/>
+                        <outlet property="runButton" destination="7nG-Py-cN7" id="46B-3F-uTd"/>
+                        <outlet property="sourceButton" destination="j6K-47-ewR" id="cvQ-3q-zE8"/>
                         <outlet property="view" destination="kb3-PH-361" id="cBI-wl-Sug"/>
                     </connections>
                 </viewController>
@@ -420,7 +429,7 @@
         <!--file view controller-->
         <scene sceneID="6UQ-Z5-mlY">
             <objects>
-                <viewController id="XJm-U6-51C" userLabel="file view controller" customClass="FileViewContrfoller" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="XJm-U6-51C" userLabel="file view controller" customClass="FileViewController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="Yck-bc-8ar">
                         <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>

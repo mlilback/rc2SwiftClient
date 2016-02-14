@@ -16,12 +16,13 @@ class FileRowData {
 }
 
 protocol FileViewControllerDelegate: class {
-	func fileSelectionChanged(file:File, oldSelection:File)
+	func fileSelectionChanged(file:File?)
 	func renameFile(file:File, to:String)
 }
+
 //TODO: make sure when delegate renames file our list gets updated
 
-class FileViewContrfoller: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler {
+class FileViewController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler {
 	let sectionNames:[String] = ["Source Files", "Images", "Other"]
 
 	@IBOutlet var tableView: NSTableView!
@@ -98,7 +99,7 @@ class FileViewContrfoller: AbstractSessionViewController, NSTableViewDataSource,
 	}
 	
 	func tableViewSelectionDidChange(notification: NSNotification) {
-		NSNotificationCenter.defaultCenter().postNotificationName( SessionFileSelectionChangedNotification, object: selectedFile)
+		delegate?.fileSelectionChanged(selectedFile)
 	}
 }
 
