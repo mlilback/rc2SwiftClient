@@ -533,7 +533,7 @@
                                 <subviews>
                                     <segmentedControl horizontalHuggingPriority="240" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aMX-ir-wUz">
                                         <rect key="frame" x="0.0" y="-1" width="150" height="23"/>
-                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="momentary" id="KlC-GO-SPE">
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="momentary" id="KlC-GO-SPE" customClass="AddRemoveSegmentedCell" customModule="MacClient" customModuleProvider="target">
                                             <font key="font" metaFont="system" size="14"/>
                                             <segments>
                                                 <segment image="NSAddTemplate" width="23"/>
@@ -585,6 +585,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="addRemoveButtons" destination="aMX-ir-wUz" id="BMZ-Pz-7XE"/>
                         <outlet property="tableView" destination="wvl-Kg-cyW" id="fQP-a0-yDO"/>
                     </connections>
                 </viewController>

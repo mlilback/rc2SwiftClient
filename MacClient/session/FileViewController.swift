@@ -26,6 +26,7 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	let sectionNames:[String] = ["Source Files", "Images", "Other"]
 
 	@IBOutlet var tableView: NSTableView!
+	@IBOutlet var addRemoveButtons:NSSegmentedControl?
 	var rowData:[FileRowData] = [FileRowData]()
 	var delegate:FileViewControllerDelegate?
 	
@@ -34,11 +35,39 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 		return rowData[tableView.selectedRow].file
 	}
 	
-//	override func viewDidLoad() {
-//		super.viewDidLoad()
-//		loadData()
-//		tableView.reloadData()
-//	}
+	override func awakeFromNib() {
+		super.awakeFromNib()
+
+		if addRemoveButtons != nil {
+			let menu = NSMenu(title: "new document format")
+			for (index, aType) in FileType.creatableFileTypes.enumerate() {
+				let mi = NSMenuItem(title: aType.details, action: "addDocumentOfType:", keyEquivalent: "")
+				mi.representedObject = index
+				menu.addItem(mi)
+			}
+			menu.autoenablesItems = false
+			//NOTE: the action method of the menu item wasn't being called the first time. This works all times.
+			NSNotificationCenter.defaultCenter().addObserver(self, selector: "addFileMenuAction:", name: NSMenuDidSendActionNotification, object: menu)
+			addRemoveButtons?.setMenu(menu, forSegment: 0)
+			addRemoveButtons?.target = self
+			addRemoveButtons?.action = "addButtonClicked:"
+		}
+	}
+	
+	func addButtonClicked(sender:AnyObject?) {
+		log.info("called for \(addRemoveButtons?.selectedSegment)")
+	}
+	
+	func addFileMenuAction(note:NSNotification) {
+		let menuItem = note.userInfo!["MenuItem"] as! NSMenuItem
+		let index = menuItem.representedObject as! Int
+		let fileType = FileType.creatableFileTypes[index]
+		print("add file of type \(fileType.name)")
+	}
+	
+	func removeFileMenuItem(sender:AnyObject?) {
+		log.info("remove selcted file")
+	}
 	
 	override func sessionChanged() {
 		loadData()
@@ -118,5 +147,15 @@ public class SessionCellView : NSTableCellView, NSTextFieldDelegate {
 	}
 }
 
+//least hackish way to get segment's menu to show immediately if set, otherwise perform control's action
+class AddRemoveSegmentedCell : NSSegmentedCell {
+	override var action: Selector {
+		get {
+			if self.menuForSegment(self.selectedSegment) != nil { return nil }
+			return super.action
+		}
+		set { super.action = newValue }
+	}
+}
 
 
