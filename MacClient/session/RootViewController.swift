@@ -139,6 +139,11 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		}
 	}
 	
+	//MARK: - actions
+	@IBAction func clearFileCache(sender:AnyObject) {
+		session.fileHandler.fileCache.flushCacheForWorkspace(session.workspace)
+	}
+
 	//MARK: - save/restore
 	func stateFileUrl() throws -> NSURL {
 		let appSupportUrl = try NSFileManager.defaultManager().URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
@@ -244,14 +249,13 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		}
 	}
 	
-	@IBAction func clearFileCache(sender:AnyObject) {
-		session.fileHandler.fileCache.flushCacheForWorkspace(session.workspace)
-	}
-	
 	func renameFile(file:File, to:String) {
 		//TODO:implement renameFile
 	}
 
+	func importFiles(files:[NSURL]) {
+		
+	}
 	
 	//MARK: - SessionDelegate
 	func sessionOpened() {

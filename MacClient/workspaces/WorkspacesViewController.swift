@@ -11,6 +11,7 @@ import Cocoa
 	@IBOutlet weak var wspacesTableView: NSTableView?
 	@IBOutlet weak var segments: NSSegmentedControl?
 	@IBOutlet var arrayController: NSArrayController?
+	@IBOutlet var okButton: NSButton?
 	
 	dynamic var workspaces: [String]?
 	dynamic var selectedWorkspace : String?
@@ -20,6 +21,11 @@ import Cocoa
 		super.viewWillAppear();
 		workspaces = RestServer.sharedInstance.loginSession!.workspaces.map({$0.name})
 		selectedWorkspace = workspaces?.first
+	}
+	
+	override func viewDidAppear() {
+		super.viewDidAppear()
+		view.window?.performSelectorOnMainThread("makeFirstResponder:", withObject: okButton, waitUntilDone: false)
 	}
 	
 	@IBAction func segButtonClicked(sender:AnyObject?) {

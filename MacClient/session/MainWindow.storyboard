@@ -546,7 +546,7 @@
                                     </segmentedControl>
                                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wkm-KO-9pg" userLabel="action menu">
                                         <rect key="frame" x="158" y="-1" width="35" height="23"/>
-                                        <popUpButtonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" selectedItem="VB5-fG-XHD" id="zUd-0F-7El">
+                                        <popUpButtonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" id="zUd-0F-7El">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                             <menu key="menu" title="OtherViews" autoenablesItems="NO" id="FqJ-7k-WFf">
@@ -1212,6 +1212,7 @@ DQ
                     </view>
                     <connections>
                         <outlet property="arrayController" destination="ZbK-4v-kD8" id="hth-Ai-Dfg"/>
+                        <outlet property="okButton" destination="wfU-S3-JjU" id="V0d-ev-rhm"/>
                         <outlet property="segments" destination="gXG-ej-X46" id="dxY-mQ-adw"/>
                         <outlet property="wspacesTableView" destination="usg-Bq-vv6" id="uCb-6N-f3J"/>
                     </connections>

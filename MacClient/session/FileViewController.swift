@@ -18,23 +18,27 @@ class FileRowData {
 protocol FileViewControllerDelegate: class {
 	func fileSelectionChanged(file:File?)
 	func renameFile(file:File, to:String)
+	func importFiles(files:[NSURL])
 }
 
 //TODO: make sure when delegate renames file our list gets updated
 
-class FileViewController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler {
+class FileViewController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler, NSOpenSavePanelDelegate {
+	//MARK: properties
 	let sectionNames:[String] = ["Source Files", "Images", "Other"]
 
 	@IBOutlet var tableView: NSTableView!
 	@IBOutlet var addRemoveButtons:NSSegmentedControl?
 	var rowData:[FileRowData] = [FileRowData]()
 	var delegate:FileViewControllerDelegate?
+	var fileImporter:MacFileImporter?
 	
 	var selectedFile:File? {
 		guard tableView.selectedRow >= 0 else { return nil }
 		return rowData[tableView.selectedRow].file
 	}
 	
+	//MARK: - lifecycle
 	override func awakeFromNib() {
 		super.awakeFromNib()
 
@@ -52,21 +56,6 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 			addRemoveButtons?.target = self
 			addRemoveButtons?.action = "addButtonClicked:"
 		}
-	}
-	
-	func addButtonClicked(sender:AnyObject?) {
-		log.info("called for \(addRemoveButtons?.selectedSegment)")
-	}
-	
-	func addFileMenuAction(note:NSNotification) {
-		let menuItem = note.userInfo!["MenuItem"] as! NSMenuItem
-		let index = menuItem.representedObject as! Int
-		let fileType = FileType.creatableFileTypes[index]
-		print("add file of type \(fileType.name)")
-	}
-	
-	func removeFileMenuItem(sender:AnyObject?) {
-		log.info("remove selcted file")
 	}
 	
 	override func sessionChanged() {
@@ -98,13 +87,46 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 		}
 	}
 	
-	//MARK: FileHandler implementation
+	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
+		if menuItem.action == "importFiles:" {
+			return true
+		}
+		return super.validateMenuItem(menuItem)
+	}
+	
+	//MARK: - actions
+	func addButtonClicked(sender:AnyObject?) {
+		log.info("called for \(addRemoveButtons?.selectedSegment)")
+	}
+	
+	func addFileMenuAction(note:NSNotification) {
+		let menuItem = note.userInfo!["MenuItem"] as! NSMenuItem
+		let index = menuItem.representedObject as! Int
+		let fileType = FileType.creatableFileTypes[index]
+		print("add file of type \(fileType.name)")
+	}
+	
+	func removeFileMenuItem(sender:AnyObject?) {
+		log.info("remove selcted file")
+	}
+	
+	//MARK: - import/export
+	@IBAction func importFiles(sender:AnyObject?) {
+		if nil == fileImporter {
+			fileImporter = MacFileImporter()
+		}
+		fileImporter?.performFileImport(view.window!) { success in
+			//TODO: implement actual file import
+		}
+	}
+
+	//MARK: - FileHandler implementation
 	func filesRefreshed() {
 		loadData()
 		tableView.reloadData()
 	}
 	
-	//MARK: TableView datasource/delegate implementation
+	//MARK: - TableView datasource/delegate implementation
 	func numberOfRowsInTableView(tableView: NSTableView) -> Int {
 		return rowData.count
 	}

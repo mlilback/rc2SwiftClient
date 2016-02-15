@@ -104,11 +104,18 @@
                                                 <action selector="revertDocumentToSaved:" target="Ady-hI-5gd" id="iJ3-Pv-kwq"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="aWb-Wc-wEo"/>
-                                        <menuItem title="Flush File Cache" id="iiO-yF-ulD">
+                                        <menuItem isSeparatorItem="YES" id="foq-va-rvM"/>
+                                        <menuItem title="Import…" id="iiO-yF-ulD">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="clearFileCache:" target="Ady-hI-5gd" id="zex-Xc-gEy"/>
+                                                <action selector="importFiles:" target="Ady-hI-5gd" id="Ove-pi-MSS"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="aWb-Wc-wEo"/>
+                                        <menuItem title="Flush File Cache" id="XJC-CA-L66">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="clearFileCache:" target="Ady-hI-5gd" id="F23-Pn-A0e"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="aJh-i4-bef"/>
