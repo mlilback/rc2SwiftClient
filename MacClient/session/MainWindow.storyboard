@@ -440,7 +440,7 @@
                                     <rect key="frame" x="1" y="1" width="207" height="474"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="wvl-Kg-cyW">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="wvl-Kg-cyW" customClass="FileTableView" customModule="MacClient" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="147" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="6"/>
@@ -514,6 +514,7 @@
                                             <connections>
                                                 <outlet property="dataSource" destination="XJm-U6-51C" id="vbe-bE-Vei"/>
                                                 <outlet property="delegate" destination="XJm-U6-51C" id="vBb-kl-GIR"/>
+                                                <outlet property="menu" destination="TzK-hM-3Ib" id="6iV-Cu-Wav"/>
                                             </connections>
                                         </tableView>
                                     </subviews>
@@ -553,13 +554,19 @@
                                                 <items>
                                                     <menuItem state="on" image="NSActionTemplate" hidden="YES" id="VB5-fG-XHD"/>
                                                     <menuItem title="Rename…" id="tg4-ie-6Et"/>
-                                                    <menuItem title="Export…" id="SLT-dk-xdw"/>
-                                                    <menuItem title="Promote to Assignment…" id="sjt-ef-USS"/>
+                                                    <menuItem title="Export…" id="SLT-dk-xdw">
+                                                        <connections>
+                                                            <action selector="exportSelectedFile:" target="XJm-U6-51C" id="dof-Uu-BD1"/>
+                                                        </connections>
+                                                    </menuItem>
                                                     <menuItem isSeparatorItem="YES" id="f1B-5j-Bp6"/>
                                                     <menuItem title="Duplicate" id="q4a-by-u1C"/>
                                                     <menuItem isSeparatorItem="YES" id="DRo-bt-ToN"/>
                                                     <menuItem title="Delete…" id="GRl-iM-dRs"/>
                                                 </items>
+                                                <connections>
+                                                    <outlet property="delegate" destination="XJm-U6-51C" id="VU3-b2-MnQ"/>
+                                                </connections>
                                             </menu>
                                         </popUpButtonCell>
                                     </popUpButton>
@@ -590,6 +597,24 @@
                     </connections>
                 </viewController>
                 <customObject id="fP0-JA-Iqc" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <menu title="OtherViews" autoenablesItems="NO" id="TzK-hM-3Ib" userLabel="table context menu">
+                    <items>
+                        <menuItem state="on" image="NSActionTemplate" hidden="YES" id="Ao1-mE-2uq"/>
+                        <menuItem title="Rename…" id="WWz-mM-fc7"/>
+                        <menuItem title="Export…" id="2mf-vJ-Hk1">
+                            <connections>
+                                <action selector="exportSelectedFile:" target="XJm-U6-51C" id="e6g-lb-2mI"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem isSeparatorItem="YES" id="sTm-NY-SVW"/>
+                        <menuItem title="Duplicate" id="rxA-uF-D15"/>
+                        <menuItem isSeparatorItem="YES" id="eaJ-eT-c1f"/>
+                        <menuItem title="Delete…" id="5hA-bK-diZ"/>
+                    </items>
+                    <connections>
+                        <outlet property="delegate" destination="XJm-U6-51C" id="CdC-4c-0ln"/>
+                    </connections>
+                </menu>
             </objects>
             <point key="canvasLocation" x="-767.5" y="850.5"/>
         </scene>

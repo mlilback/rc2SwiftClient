@@ -23,7 +23,8 @@ protocol FileViewControllerDelegate: class {
 
 //TODO: make sure when delegate renames file our list gets updated
 
-class FileViewController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler, NSOpenSavePanelDelegate {
+class FileViewController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler, NSOpenSavePanelDelegate, NSMenuDelegate
+{
 	//MARK: properties
 	let sectionNames:[String] = ["Source Files", "Images", "Other"]
 
@@ -88,10 +89,22 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	}
 	
 	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
-		if menuItem.action == "importFiles:" {
-			return true
+		switch(menuItem.action) {
+			case "importFiles:":
+				return true
+			case "exportSelectedFile:":
+				return selectedFile != nil
+			case "exportAllFiles:":
+				return true
+			default:
+				return super.validateMenuItem(menuItem)
 		}
-		return super.validateMenuItem(menuItem)
+	}
+	
+	func menuNeedsUpdate(menu: NSMenu) {
+		menu.itemArray.filter() { item in
+			return item.action == "exportSelectedFile:"
+		}.first?.enabled = selectedFile != nil
 	}
 	
 	//MARK: - actions
@@ -118,6 +131,14 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 		fileImporter?.performFileImport(view.window!) { success in
 			//TODO: implement actual file import
 		}
+	}
+	
+	@IBAction func exportSelectedFile(sender:AnyObject?) {
+		
+	}
+	
+	@IBAction func exportAllFiles(sender:AnyObject?) {
+		
 	}
 
 	//MARK: - FileHandler implementation
@@ -177,6 +198,16 @@ class AddRemoveSegmentedCell : NSSegmentedCell {
 			return super.action
 		}
 		set { super.action = newValue }
+	}
+}
+
+class FileTableView: NSTableView {
+	override func menuForEvent(event: NSEvent) -> NSMenu? {
+		let row = rowAtPoint(convertPoint(event.locationInWindow, fromView: nil))
+		if row != -1 { //if right click is over a row, select that row
+			selectRowIndexes(NSIndexSet(index: row), byExtendingSelection: false)
+		}
+		return super.menuForEvent(event)
 	}
 }
 

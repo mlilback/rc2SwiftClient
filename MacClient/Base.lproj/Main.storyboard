@@ -111,6 +111,12 @@
                                                 <action selector="importFiles:" target="Ady-hI-5gd" id="Ove-pi-MSS"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Export Files…" id="2up-8o-9JE">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="exportAllFiles:" target="Ady-hI-5gd" id="LU4-HB-aQF"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="aWb-Wc-wEo"/>
                                         <menuItem title="Flush File Cache" id="XJC-CA-L66">
                                             <modifierMask key="keyEquivalentModifierMask"/>
