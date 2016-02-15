@@ -17,6 +17,7 @@ import Cocoa
 	func saveSessionState() -> AnyObject
 	func restoreSessionState(state:[String:AnyObject])
 	func prepareForSearch()
+	func initialFirstResponder() -> NSResponder
 }
 
 @objc protocol FileHandler {

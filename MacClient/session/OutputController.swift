@@ -17,6 +17,14 @@ class OutputController: NSTabViewController, OutputHandler, ToolbarItemHandler {
 		tabSwitchContext = nil
 	}
 	
+	override func awakeFromNib() {
+		super.awakeFromNib()
+//		if consoleController != nil {
+//			let titem = tabViewItemForViewController(consoleController!)!
+//			titem.initialFirstResponder = consoleController?.consoleTextField
+//		}
+	}
+	
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		selectedTabViewItemIndex = 0
@@ -33,6 +41,10 @@ class OutputController: NSTabViewController, OutputHandler, ToolbarItemHandler {
 				self.hookupToToolbarItems(self, window: myView.window!)
 			}
 		}
+	}
+	
+	func initialFirstResponder() -> NSResponder {
+		return (self.consoleController?.consoleTextField)!
 	}
 	
 	func handlesToolbarItem(item: NSToolbarItem) -> Bool {

@@ -59,6 +59,12 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		view.addConstraint(dview.topAnchor.constraintEqualToAnchor(view.topAnchor))
 		view.addConstraint(dview.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor))
 		dview.hidden = true
+		//we have to wait until next time through event loop to set first responder
+		self.performSelectorOnMainThread("setupResponder", withObject: nil, waitUntilDone: false)
+	}
+	
+	func setupResponder() {
+		view.window?.makeFirstResponder(outputHandler?.initialFirstResponder())
 	}
 	
 	override func sessionChanged() {
@@ -70,8 +76,13 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	func handlesToolbarItem(item: NSToolbarItem) -> Bool {
 		if item.itemIdentifier == "search" {
 			searchButton = item.view as! NSSegmentedControl?
-			searchButton?.target = self
-			searchButton?.action = "searchClicked:"
+			TargetActionBlock() { [weak self] sender in
+				if self!.inResponderChain(self!.editor!)  {
+					self!.editor?.performTextFinderAction(sender)
+				} else {
+					self!.outputHandler?.prepareForSearch()
+				}
+			}.installInControl(searchButton!)
 			if let myItem = item as? ValidatingToolbarItem {
 				myItem.validationHandler = { item in
 					item.enabled = self.inResponderChain(self)
@@ -82,14 +93,6 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		return false
 	}
 
-	func searchClicked(sender:AnyObject?) {
-		if inResponderChain(editor!) {
-			editor?.performTextFinderAction(sender)
-		} else {
-			outputHandler?.prepareForSearch()
-		}
-	}
-	
 	func inResponderChain(responder:NSResponder) -> Bool {
 		var curResponder = view.window?.firstResponder
 		while curResponder != nil {
