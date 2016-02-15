@@ -9,7 +9,7 @@ import CryptoSwift
 
 class RootViewController: AbstractSessionViewController, SessionDelegate, ResponseHandlerDelegate, FileViewControllerDelegate, ToolbarItemHandler
 {
-	//MARK: properties
+	//MARK: - properties
 	@IBOutlet var progressView: NSProgressIndicator?
 	@IBOutlet var statusField: NSTextField?
 	var searchButton: NSSegmentedControl?
@@ -26,7 +26,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	var savedStateHash: NSData?
 	var imgCache: ImageCache = ImageCache() { didSet { outputHandler?.imageCache = imgCache } }
 	
-	//MARK: AppKit
+	//MARK: - Lifecycle
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		editor = firstChildViewController(self)
@@ -61,6 +61,13 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		dview.hidden = true
 		//we have to wait until next time through event loop to set first responder
 		self.performSelectorOnMainThread("setupResponder", withObject: nil, waitUntilDone: false)
+	}
+	
+	func appWillTerminate() {
+		//can't save w/o a session (didn't leave workspace tab)
+		if sessionOptional != nil {
+			saveSessionState()
+		}
 	}
 	
 	func setupResponder() {
@@ -112,6 +119,27 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		statusMessage = ""
 	}
 
+	override func appStatusChanged() {
+		NSNotificationCenter.defaultCenter().addObserverForName(AppStatusChangedNotification, object: nil, queue: nil) { (note) -> Void in
+			guard self.appStatus != nil else {
+				log.error("appStatus not set on RootViewController")
+				return
+			}
+			self.busy = (self.appStatus?.busy)!
+			self.statusMessage = (self.appStatus?.statusMessage)! as String
+			//hide/show dimmingView only if
+			if self.editor?.view.hiddenOrHasHiddenAncestor == false {
+				if self.busy {
+					self.dimmingView?.hidden = false
+				} else {
+					self.startTimer()
+					self.dimmingView?.animator().hidden = true
+				}
+			}
+		}
+	}
+	
+	//MARK: - save/restore
 	func stateFileUrl() throws -> NSURL {
 		let appSupportUrl = try NSFileManager.defaultManager().URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
 		let dataDirUrl = NSURL(string: "Rc2/sessions/", relativeToURL: appSupportUrl)?.absoluteURL
@@ -119,13 +147,6 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		let fname = "\(RestServer.sharedInstance.loginSession!.host)--\(session.workspace.userId)--\(session.workspace.wspaceId).plist"
 		let furl = NSURL(string:fname, relativeToURL: dataDirUrl)?.absoluteURL
 		return furl!
-	}
-	
-	func appWillTerminate() {
-		//can't save w/o a session (didn't leave workspace tab)
-		if sessionOptional != nil {
-			saveSessionState()
-		}
 	}
 	
 	func saveSessionState() {
@@ -167,28 +188,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		}
 	}
 	
-	//TODO: need to add overlay view that blocks all interaction while busy
-	override func appStatusChanged() {
-		NSNotificationCenter.defaultCenter().addObserverForName(AppStatusChangedNotification, object: nil, queue: nil) { (note) -> Void in
-			guard self.appStatus != nil else {
-				log.error("appStatus not set on RootViewController")
-				return
-			}
-			self.busy = (self.appStatus?.busy)!
-			self.statusMessage = (self.appStatus?.statusMessage)! as String
-			//hide/show dimmingView only if
-			if self.editor?.view.hiddenOrHasHiddenAncestor == false {
-				if self.busy {
-					self.dimmingView?.hidden = false
-				} else {
-					self.startTimer()
-					self.dimmingView?.animator().hidden = true
-				}
-			}
-		}
-	}
-	
-	//MARK: ResponseHandlerDelegate
+	//MARK: - ResponseHandlerDelegate
 	//TODO: implement loadHelpItems
 	func loadHelpItems(topic:String, items:[HelpItem]) {
 		
@@ -226,7 +226,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		imgCache.cacheImagesFromServer(images)
 	}
 
-	//MARK:FileViewControllerDelegate
+	//MARK:- FileViewControllerDelegate
 	func fileSelectionChanged(file:File?) {
 		var contents:String?
 		if let theFile = file {
@@ -249,11 +249,11 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 	
 	func renameFile(file:File, to:String) {
-		//TODO:implement
+		//TODO:implement renameFile
 	}
 
 	
-	//MARK: SessionDelegate
+	//MARK: - SessionDelegate
 	func sessionOpened() {
 		
 	}
@@ -272,7 +272,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		}
 	}
 	
-	//TODO: impelment sessionReceivedError
+	//TODO: impelment sessionErrorReceived
 	func sessionErrorReceived(error:ErrorType) {
 		
 	}
