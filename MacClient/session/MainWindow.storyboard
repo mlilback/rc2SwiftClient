@@ -81,7 +81,7 @@
                                         <accessibility description="cclear"/>
                                     </segmentedControl>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="334E0D12-33E6-4F0F-9904-D75C6D9961A3" explicitItemIdentifier="search" label="Search" paletteLabel="Search" id="hsh-zb-F7R" customClass="SearchToolbarItem" customModule="MacClient" customModuleProvider="target">
+                                <toolbarItem implicitItemIdentifier="334E0D12-33E6-4F0F-9904-D75C6D9961A3" explicitItemIdentifier="search" label="Search" paletteLabel="Search" id="hsh-zb-F7R" customClass="ValidatingToolbarItem" customModule="MacClient" customModuleProvider="target">
                                     <nil key="toolTip"/>
                                     <size key="minSize" width="34" height="24"/>
                                     <size key="maxSize" width="34" height="25"/>

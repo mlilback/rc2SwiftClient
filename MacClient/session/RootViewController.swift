@@ -9,6 +9,7 @@ import CryptoSwift
 
 class RootViewController: AbstractSessionViewController, SessionDelegate, ResponseHandlerDelegate, FileViewControllerDelegate, ToolbarItemHandler
 {
+	//MARK: properties
 	@IBOutlet var progressView: NSProgressIndicator?
 	@IBOutlet var statusField: NSTextField?
 	var searchButton: NSSegmentedControl?
@@ -25,6 +26,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	var savedStateHash: NSData?
 	var imgCache: ImageCache = ImageCache() { didSet { outputHandler?.imageCache = imgCache } }
 	
+	//MARK: AppKit
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		editor = firstChildViewController(self)
@@ -70,18 +72,16 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 			searchButton = item.view as! NSSegmentedControl?
 			searchButton?.target = self
 			searchButton?.action = "searchClicked:"
-			if let myItem = item as? SearchToolbarItem {
-				myItem.rootController = self
+			if let myItem = item as? ValidatingToolbarItem {
+				myItem.validationHandler = { item in
+					item.enabled = self.inResponderChain(self)
+				}
 			}
 			return true
 		}
 		return false
 	}
 
-	func validateSearchButton(button:SearchToolbarItem) {
-		button.enabled = true
-	}
-	
 	func searchClicked(sender:AnyObject?) {
 		if inResponderChain(editor!) {
 			editor?.performTextFinderAction(sender)
@@ -272,12 +272,5 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	//TODO: impelment sessionReceivedError
 	func sessionErrorReceived(error:ErrorType) {
 		
-	}
-}
-
-class SearchToolbarItem: NSToolbarItem {
-	var rootController: RootViewController?
-	override func validate() {
-		rootController?.validateSearchButton(self)
 	}
 }

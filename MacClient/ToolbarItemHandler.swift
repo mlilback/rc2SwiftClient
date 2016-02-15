@@ -49,3 +49,14 @@ extension ToolbarDelegatingOwner {
 		}
 	}
 }
+
+//this subclass allows a closure to be injected for validation
+class ValidatingToolbarItem: NSToolbarItem {
+	typealias ToolbarValidationHandler = (ValidatingToolbarItem) -> Void
+	var validationHandler:ToolbarValidationHandler?
+	
+	override func validate() {
+		self.validationHandler?(self)
+	}
+}
+
