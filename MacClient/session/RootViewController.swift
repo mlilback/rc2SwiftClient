@@ -17,7 +17,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	dynamic var busy: Bool = false
 	dynamic var statusMessage: String = ""
 	
-	private var dimmingView:NSView?
+	private var dimmingView:DimmingView?
 	weak var editor: SessionEditorController?
 	weak var outputHandler: OutputHandler?
 	weak var variableHandler: VariableHandler?
@@ -25,6 +25,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	var responseHandler: ResponseHandler?
 	var savedStateHash: NSData?
 	var imgCache: ImageCache = ImageCache() { didSet { outputHandler?.imageCache = imgCache } }
+	var formerFirstResponder:NSResponder? //used to restore first responder when dimmingview goes away
 	
 	//MARK: - Lifecycle
 	override func viewWillAppear() {
@@ -48,17 +49,9 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		super.viewDidAppear()
 		self.hookupToToolbarItems(self, window: view.window!)
 		//create dimming view
-		let dview = NSView(frame: view.bounds)
-		dimmingView = dview
-		dview.translatesAutoresizingMaskIntoConstraints = false
-		dview.wantsLayer = true
-		dview.layer!.backgroundColor = NSColor.blackColor().colorWithAlphaComponent(0.1).CGColor
-		view.addSubview(dview)
-		view.addConstraint(dview.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor))
-		view.addConstraint(dview.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor))
-		view.addConstraint(dview.topAnchor.constraintEqualToAnchor(view.topAnchor))
-		view.addConstraint(dview.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor))
-		dview.hidden = true
+		dimmingView = DimmingView(frame: view.bounds)
+		view.addSubview(dimmingView!)
+		(view as! RootView).dimmingView = dimmingView //required to block clicks to subviews
 		//we have to wait until next time through event loop to set first responder
 		self.performSelectorOnMainThread("setupResponder", withObject: nil, waitUntilDone: false)
 	}
@@ -131,12 +124,19 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 			if self.editor?.view.hiddenOrHasHiddenAncestor == false {
 				if self.busy {
 					self.dimmingView?.hidden = false
+					self.formerFirstResponder = self.view.window?.firstResponder
+					self.view.window?.makeFirstResponder(self.dimmingView)
 				} else {
+					self.dimmingView?.hidden = true
 					self.startTimer()
-					self.dimmingView?.animator().hidden = true
+					self.view.window?.makeFirstResponder(self.formerFirstResponder)
+//					self.dimmingView?.animator().hidden = true
 				}
 			}
 		}
+	}
+	
+	func hideDimmingView() {
 	}
 	
 	//MARK: - actions
@@ -279,5 +279,45 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	//TODO: impelment sessionErrorReceived
 	func sessionErrorReceived(error:ErrorType) {
 		
+	}
+}
+
+class DimmingView: NSView {
+	override required init(frame frameRect: NSRect) {
+		super.init(frame: frameRect)
+	}
+
+	required init?(coder: NSCoder) {
+	    fatalError("DimmingView does not support NSCoding")
+	}
+
+	override func viewDidMoveToSuperview() {
+		guard let view = superview else { return }
+		translatesAutoresizingMaskIntoConstraints = false
+		wantsLayer = true
+		layer!.backgroundColor = NSColor.blackColor().colorWithAlphaComponent(0.1).CGColor
+		view.addConstraint(leadingAnchor.constraintEqualToAnchor(view.leadingAnchor))
+		view.addConstraint(trailingAnchor.constraintEqualToAnchor(view.trailingAnchor))
+		view.addConstraint(topAnchor.constraintEqualToAnchor(view.topAnchor))
+		view.addConstraint(bottomAnchor.constraintEqualToAnchor(view.bottomAnchor))
+		hidden = true
+	}
+
+	override func hitTest(aPoint: NSPoint) -> NSView? {
+		if !hidden {
+			return self
+		}
+		return super.hitTest(aPoint)
+	}
+}
+
+class RootView: NSView {
+	var dimmingView:DimmingView?
+	//if dimmingView is visible, block all subviews from getting clicks
+	override func hitTest(aPoint: NSPoint) -> NSView? {
+		if dimmingView != nil && !dimmingView!.hidden {
+			return self
+		}
+		return super.hitTest(aPoint)
 	}
 }

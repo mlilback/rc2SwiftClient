@@ -183,7 +183,7 @@
         <scene sceneID="dmn-fv-Adu">
             <objects>
                 <viewController storyboardIdentifier="rootController" id="dEf-uW-xcq" userLabel="root view controller" customClass="RootViewController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" wantsLayer="YES" id="yiQ-ic-8e8">
+                    <view key="view" wantsLayer="YES" id="yiQ-ic-8e8" customClass="RootView" customModule="MacClient" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -291,7 +291,7 @@
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="iih-RD-RqJ" userLabel="editor view">
                                 <rect key="frame" x="0.0" y="0.0" width="400" height="513"/>
                                 <subviews>
-                                    <scrollView autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTm-hy-NW5">
+                                    <scrollView focusRingType="exterior" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTm-hy-NW5">
                                         <rect key="frame" x="0.0" y="38" width="400" height="475"/>
                                         <clipView key="contentView" id="l0n-zj-EZh">
                                             <rect key="frame" x="1" y="1" width="398" height="473"/>
@@ -882,7 +882,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="435" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="77W-4U-1WA">
+                            <scrollView focusRingType="exterior" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="77W-4U-1WA">
                                 <rect key="frame" x="0.0" y="40" width="435" height="473"/>
                                 <clipView key="contentView" id="n15-ti-4jq">
                                     <rect key="frame" x="1" y="1" width="433" height="471"/>

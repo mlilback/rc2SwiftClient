@@ -21,6 +21,8 @@ protocol FileViewControllerDelegate: class {
 	func importFiles(files:[NSURL])
 }
 
+let FileDragTypes = [kUTTypeFileURL as String]
+
 //TODO: make sure when delegate renames file our list gets updated
 
 class FileViewController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler, NSOpenSavePanelDelegate, NSMenuDelegate
@@ -32,13 +34,13 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	@IBOutlet var addRemoveButtons:NSSegmentedControl?
 	var rowData:[FileRowData] = [FileRowData]()
 	var delegate:FileViewControllerDelegate?
-	var fileImporter:MacFileImporter?
+	lazy var fileImporter:MacFileImporter? = MacFileImporter()
 	
 	var selectedFile:File? {
 		guard tableView.selectedRow >= 0 else { return nil }
 		return rowData[tableView.selectedRow].file
 	}
-	
+
 	//MARK: - lifecycle
 	override func awakeFromNib() {
 		super.awakeFromNib()
@@ -57,11 +59,29 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 			addRemoveButtons?.target = self
 			addRemoveButtons?.action = "addButtonClicked:"
 		}
+		if tableView != nil {
+			tableView.setDraggingSourceOperationMask(.Copy, forLocal: true)
+			tableView.draggingDestinationFeedbackStyle = .None
+			tableView.registerForDraggedTypes(FileDragTypes)
+		}
 	}
 	
 	override func sessionChanged() {
 		loadData()
 		tableView.reloadData()
+	}
+	
+	override func appStatusChanged() {
+		NSNotificationCenter.defaultCenter().addObserverForName(AppStatusChangedNotification, object: nil, queue: nil) { (note) -> Void in
+			assert(self.appStatus != nil, "appStatus not set on FileViewController")
+			if let tv = self.tableView, let apps = self.appStatus {
+				if apps.busy {
+					tv.unregisterDraggedTypes()
+				} else {
+					tv.registerForDraggedTypes(FileDragTypes)
+				}
+			}
+		}
 	}
 	
 	func loadData() {
@@ -125,9 +145,6 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	
 	//MARK: - import/export
 	@IBAction func importFiles(sender:AnyObject?) {
-		if nil == fileImporter {
-			fileImporter = MacFileImporter()
-		}
 		fileImporter?.performFileImport(view.window!) { success in
 			//TODO: implement actual file import
 		}
@@ -172,6 +189,19 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	
 	func tableViewSelectionDidChange(notification: NSNotification) {
 		delegate?.fileSelectionChanged(selectedFile)
+	}
+	
+	func tableView(tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation dropOperation: NSTableViewDropOperation) -> NSDragOperation
+	{
+		return fileImporter!.validateTableViewDrop(info)
+	}
+
+	func tableView(tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableViewDropOperation) -> Bool
+	{
+		fileImporter!.acceptTableViewDrop(info, workspace: session.workspace, window: view.window!) { (urls, uniqueNames) in
+			
+		}
+		return true
 	}
 }
 
