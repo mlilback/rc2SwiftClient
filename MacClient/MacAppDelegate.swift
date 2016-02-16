@@ -61,7 +61,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	}
 	
 	func showSessionWindow() {
-		updateStatus(false, message: "")
+		updateStatus(nil)
 		let sboard = SwinjectStoryboard.create(name: "MainWindow", bundle: nil)
 		sessionWindowController = sboard.instantiateControllerWithIdentifier("sessionWindow") as? MainWindowController
 		sessionWindowController?.window?.makeKeyAndOrderFront(self)
@@ -87,31 +87,29 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	}
 	
 	//MARK: AppStatus implementation
-	private dynamic var _busy: Bool = false
-	private dynamic var _status: NSString = ""
-	private var _cancelHandler: ((appStatus:AppStatus) -> Bool)?
-	private var lock: Spinlock = Spinlock()
+	private dynamic var _currentProgress: NSProgress?
+	private var _statusLock: Spinlock = Spinlock()
+	
+	dynamic  var currentProgress: NSProgress? {
+		get { return _statusLock.around({ return self._currentProgress }) }
+	}
 	
 	dynamic var busy: Bool {
-		get { return lock.around({ return self._busy }) }
+		get { return _statusLock.around({ return self._currentProgress != nil }) }
 	}
 	
 	dynamic var statusMessage: NSString {
-		get { return lock.around({ return self._status}) }
+		get { return _statusLock.around({ return self._currentProgress != nil ? self._currentProgress?.localizedDescription! : "" })! }
 	}
 
-	var cancelHandler: ((appStatus:AppStatus) -> Bool)? {
-		get { return _cancelHandler }
-	}
-	
-	func updateStatus(busy:Bool, message:String, cancelHandler:((appStatus:AppStatus) -> Bool)?) {
-		guard busy != _busy else { return } //do nothing if busy not changing
-		lock.around({
-			self._status = message
-			self._busy = busy
-			self._cancelHandler = cancelHandler
-		})
-		NSNotificationCenter.defaultCenter().postNotificationName(AppStatusChangedNotification, object: self)
+	func updateStatus(progress: NSProgress?) {
+		if _currentProgress != nil && progress != nil {
+			fatalError("can't set progress when there already is one")
+		}
+		_statusLock.around({ self._currentProgress = progress })
+		dispatch_async(dispatch_get_main_queue()) {
+			NSNotificationCenter.defaultCenter().postNotificationName(AppStatusChangedNotification, object: self)
+		}
 	}
 
 }

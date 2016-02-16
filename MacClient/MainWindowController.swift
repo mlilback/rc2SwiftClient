@@ -35,17 +35,18 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 	
 	func showWorkspaceSelectTab() {
 		rootTabController?.selectedTabViewItemIndex = (rootTabController?.tabView.indexOfTabViewItemWithIdentifier("workspaceSelect"))!
-		appStatus!.updateStatus(true, message: "selecting workspace…") { appStatus in
+		let progress = NSProgress(totalUnitCount: 1) {
+			self.appStatus!.updateStatus(nil)
 			NSBeep()
-			return false
 		}
+		progress.localizedDescription = "selecting workspace…"
 	}
 	
 	func showSessionTab() {
 		let sessionIndex = (rootTabController?.tabView.indexOfTabViewItemWithIdentifier("session"))!
 		dispatch_async(dispatch_get_main_queue(), {
 			self.rootTabController?.selectedTabViewItemIndex = sessionIndex
-			self.appStatus?.updateStatus(false, message: "")
+			self.appStatus?.updateStatus(nil)
 		})
 	}
 	

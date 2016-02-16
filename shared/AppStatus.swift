@@ -7,14 +7,8 @@
 import Cocoa
 
 @objc protocol AppStatus {
+	var currentProgress: NSProgress? { get }
 	var busy: Bool { get }
 	var statusMessage: NSString { get }
-	var cancelHandler:((appStatus:AppStatus) -> Bool)? { get }
-	func updateStatus(busy:Bool, message:String, cancelHandler:((appStatus:AppStatus) -> Bool)?)
-}
-
-extension AppStatus {
-	func updateStatus(busy:Bool, message:String) {
-		return updateStatus(busy, message:message, cancelHandler: nil)
-	}
+	func updateStatus(progress: NSProgress?)
 }

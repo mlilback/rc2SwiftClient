@@ -11,5 +11,8 @@ let Rc2ErrorDomain = "Rc2ErrorDomain"
 let RestLoginChangedNotification = "RestLoginChangedNotification"
 let SelectedWorkspaceChangedNotification = "SelectedWorkspaceChangedNotification"
 let CurrentSessionChangedNotification = "CurrentSessionChangedNotification"
+
+///will always be posted on the main thread
 let AppStatusChangedNotification = "AppStatusChangedNotification"
+
 let PrefMaxCommandHistory = "MaxCommandHistorySize"

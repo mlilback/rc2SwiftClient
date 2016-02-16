@@ -201,8 +201,8 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 
 	func tableView(tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableViewDropOperation) -> Bool
 	{
-		fileImporter!.acceptTableViewDrop(info, workspace: session.workspace, window: view.window!) { (urls, uniqueNames) in
-			
+		fileImporter!.acceptTableViewDrop(info, workspace: session.workspace, window: view.window!) { (files) in
+			//TODO: implement update of table view after drop import
 		}
 		return true
 	}

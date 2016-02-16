@@ -376,6 +376,7 @@
 				086BC9AE1C552D43006ABAE0 /* AppStatus.swift */,
 				088CE6951C4B605D00153414 /* ColorEnums.swift */,
 				083382F51C68E59300D40EEB /* FileCache.swift */,
+				08B036211C73B131005928B3 /* FileImporter.swift */,
 				080214871C693A69008B55D3 /* FileManager.swift */,
 				0816F8991C6D0F7D00A6120B /* HTMLString.swift */,
 				083174151C587F7F00071408 /* ImageCache.swift */,
@@ -386,7 +387,6 @@
 				086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */,
 				088CE6A31C4B605D00153414 /* SystemExtensions.swift */,
 				083382F21C653B6300D40EEB /* xattr.swift */,
-				08B036211C73B131005928B3 /* FileImporter.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
