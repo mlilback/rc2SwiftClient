@@ -34,7 +34,7 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	@IBOutlet var addRemoveButtons:NSSegmentedControl?
 	var rowData:[FileRowData] = [FileRowData]()
 	var delegate:FileViewControllerDelegate?
-	lazy var fileImporter:MacFileImporter? = MacFileImporter()
+	var fileImporter:MacFileImportSetup?
 	
 	var selectedFile:File? {
 		guard tableView.selectedRow >= 0 else { return nil }
@@ -145,7 +145,10 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	
 	//MARK: - import/export
 	@IBAction func importFiles(sender:AnyObject?) {
-		fileImporter?.performFileImport(view.window!) { success in
+		if nil == fileImporter {
+			fileImporter = MacFileImportSetup()
+		}
+		fileImporter!.performFileImport(view.window!, workspace: session.workspace) { files in
 			//TODO: implement actual file import
 		}
 	}

@@ -7,19 +7,26 @@
 import Cocoa
 
 let LastImportDirectoryKey = "rc2.LastImportDirectory"
+let ReplaceFilesKey = "rc2.ImportReplacesExistingFiles"
 
-class MacFileImporter: NSObject, NSOpenSavePanelDelegate {
-	typealias AcceptDropHandler = ([NSURL], Bool) -> Void
+/** Handles importing via a save panel or drag and drop. */
+class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 	
 	var pboardReadOptions:Dictionary<String,AnyObject> {
 		return [NSPasteboardURLReadingFileURLsOnlyKey:true,
 			NSPasteboardURLReadingContentsConformToTypesKey:[kUTTypePlainText, kUTTypePDF]];
 	}
-
-	func performFileImport(window:NSWindow, completionHandler:(Bool) -> Void) {
+	
+	/** Prompts the user to select files to upload. 
+		parameter window: the parent window to display the sheet on
+		parameter workspace: the workspace the files will be imported into
+		parameter completionHandler: a closure called with an array of files to import, or nil if the user canceled the import
+	*/
+	func performFileImport(window:NSWindow, workspace:Workspace, completionHandler:([FileToImport]?) -> Void) {
 		
+		let defaults = NSUserDefaults.standardUserDefaults()
 		let panel = NSOpenPanel()
-		if let bmarkData = NSUserDefaults.standardUserDefaults().objectForKey(LastImportDirectoryKey) as? NSData {
+		if let bmarkData = defaults.objectForKey(LastImportDirectoryKey) as? NSData {
 			do {
 				panel.directoryURL = try NSURL(byResolvingBookmarkData: bmarkData, options: [], relativeToURL: nil, bookmarkDataIsStale: nil)
 			} catch {
@@ -34,18 +41,37 @@ class MacFileImporter: NSObject, NSOpenSavePanelDelegate {
 		panel.delegate = self
 		panel.treatsFilePackagesAsDirectories = true
 		panel.allowedFileTypes = FileType.importableFileTypes.map { $0.fileExtension }
+		let accessoryView = NSButton(frame: NSZeroRect)
+		accessoryView.setButtonType(.SwitchButton)
+		accessoryView.title = NSLocalizedString("Replace existing files", comment: "")
+		let replace = defaults.boolForKey(ReplaceFilesKey)
+		accessoryView.state = replace ? NSOffState : NSOnState
 		
 		panel.beginSheetModalForWindow(window) { result in
 			do {
 				let bmark = try panel.directoryURL?.bookmarkDataWithOptions([], includingResourceValuesForKeys: nil, relativeToURL: nil)
-				NSUserDefaults.standardUserDefaults().setObject(bmark, forKey: LastImportDirectoryKey)
+				defaults.setObject(bmark, forKey: LastImportDirectoryKey)
+				defaults.setBool(accessoryView.state == NSOnState, forKey: ReplaceFilesKey)
 			} catch let err {
 				log.error("why did we get error creating import bookmark: \(err)")
 			}
-			completionHandler(result == NSFileHandlingPanelOKButton)
+			panel.close()
+			if result == NSFileHandlingPanelOKButton && panel.URLs.count > 0 {
+				let replaceFiles = accessoryView.state == NSOnState
+				let files = panel.URLs.map() { url in
+					FileToImport(url: url, uniqueName: replaceFiles ? self.uniqueFileName(url.lastPathComponent!, inWorkspace: workspace) : nil)
+				}
+				completionHandler(files)
+			} else {
+				completionHandler(nil)
+			}
 		}
 	}
 	
+	/** If importing via drop, call this to to see if the file is acceptable
+		parameter info: the drag info
+		returns: the drag operation to perform
+	*/
 	func validateTableViewDrop(info:NSDraggingInfo) -> NSDragOperation {
 		guard info.draggingSource() == nil else  { return NSDragOperation.None } //don't allow local drags
 		let urls = info.draggingPasteboard().readObjectsForClasses([NSURL.self], options: pboardReadOptions)
@@ -59,7 +85,12 @@ class MacFileImporter: NSObject, NSOpenSavePanelDelegate {
 		return NSDragOperation.Copy
 	}
 	
-	func acceptTableViewDrop(info:NSDraggingInfo, workspace:Workspace, window:NSWindow, handler:AcceptDropHandler)
+	/** If importing via drop, prompts about replacing files if there are any duplicates
+		parameter info: the drag info
+		parameter workspace: the workspace the file(s) will be imported into
+		parameter handler: called with the array of files to import
+	*/
+	func acceptTableViewDrop(info:NSDraggingInfo, workspace:Workspace, window:NSWindow, handler:([FileToImport]) -> Void)
 	{
 		assert(validateTableViewDrop(info) != NSDragOperation.None, "validate wasn't called on drag info")
 		let urls = info.draggingPasteboard().readObjectsForClasses([NSURL.self], options: pboardReadOptions) as? [NSURL]
@@ -77,13 +108,17 @@ class MacFileImporter: NSObject, NSOpenSavePanelDelegate {
 			uniqButton.keyEquivalentModifierMask = Int(NSEventModifierFlags.CommandKeyMask.rawValue)
 			alert.beginSheetModalForWindow(window) { response in
 				guard response != NSAlertSecondButtonReturn else { return }
-				handler(urls!, response == NSAlertFirstButtonReturn)
+				let files = urls!.map() { url in
+					FileToImport(url: url, uniqueName: response == NSAlertFirstButtonReturn ? nil : self.uniqueFileName(url.lastPathComponent!, inWorkspace: workspace))
+				}
+				handler(files)
 			}
 		} else {
-			handler(urls!, true)
+			handler(urls!.map() { url in FileToImport(url: url, uniqueName: nil) } )
 		}
 	}
-
+	
+	/** generates a unique file name (by adding a number to the end) for a file in a workspace */
 	func uniqueFileName(desiredName:String, inWorkspace workspace:Workspace) -> String {
 		var i = 1
 		let nsname = NSString(string:desiredName)
