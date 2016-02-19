@@ -148,7 +148,7 @@
 		083174051C56BE7B00071408 /* SessionSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionSplitController.swift; sourceTree = "<group>"; };
 		0831740D1C577A2500071408 /* ConsoleTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleTextField.swift; sourceTree = "<group>"; };
 		0831740F1C57B2E200071408 /* CommandHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandHistory.swift; sourceTree = "<group>"; };
-		083174111C58014500071408 /* ServerResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ServerResponseHandler.swift; path = ../ServerResponseHandler.swift; sourceTree = "<group>"; };
+		083174111C58014500071408 /* ServerResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerResponseHandler.swift; sourceTree = "<group>"; };
 		083174131C5828B400071408 /* ResultsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultsView.swift; sourceTree = "<group>"; };
 		083174151C587F7F00071408 /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		083174171C5888F200071408 /* BrightFutures.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BrightFutures.framework; sourceTree = BUILT_PRODUCTS_DIR; };
