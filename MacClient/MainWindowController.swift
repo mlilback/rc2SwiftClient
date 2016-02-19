@@ -35,7 +35,8 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 	
 	func showWorkspaceSelectTab() {
 		rootTabController?.selectedTabViewItemIndex = (rootTabController?.tabView.indexOfTabViewItemWithIdentifier("workspaceSelect"))!
-		let progress = NSProgress(totalUnitCount: 1) {
+		let progress = NSProgress(totalUnitCount: 1)
+		progress.rc2_addCompletionHandler() {
 			self.appStatus!.updateStatus(nil)
 			NSBeep()
 		}

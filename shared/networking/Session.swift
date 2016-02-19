@@ -81,7 +81,8 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	}
 	
 	func loadFiles() {
-		let progress = NSProgress(totalUnitCount: 10) {
+		let progress = NSProgress(totalUnitCount: 10)
+		progress.rc2_addCompletionHandler() {
 			dispatch_source_cancel(self.loadTimer)
 			self.appStatus.updateStatus(nil)
 			self.fileHandler.loadFiles()

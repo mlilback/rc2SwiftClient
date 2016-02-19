@@ -22,3 +22,6 @@
 [submodule "submodules/CryptoSwift"]
 	path = submodules/CryptoSwift
 	url = https://github.com/krzyzanowskim/CryptoSwift.git
+[submodule "submodules/PMKVObserver"]
+	path = submodules/PMKVObserver
+	url = https://github.com/postmates/PMKVObserver.git

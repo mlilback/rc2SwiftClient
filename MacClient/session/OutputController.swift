@@ -11,11 +11,6 @@ class OutputController: NSTabViewController, OutputHandler, ToolbarItemHandler {
 	var imageController: ImageOutputController?
 	var imageCache: ImageCache?
 	var consoleToolbarControl: NSSegmentedControl?
-	var tabSwitchContext: KVOContext?
-	
-	deinit {
-		tabSwitchContext = nil
-	}
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()

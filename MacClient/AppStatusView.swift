@@ -12,7 +12,7 @@ class AppStatusView: NSView {
 	@IBOutlet var determinateProgress: NSProgressIndicator?
 	@IBOutlet var cancelButton: NSButton?
 	var appStatus: AppStatus? { didSet { self.statusChanged(nil) } }
-	private var progressContext:KVOContext?
+	var progressContext: KVObserver?
 	
 	override var intrinsicContentSize:NSSize { return NSSize(width:220, height:22) }
 	
@@ -45,20 +45,20 @@ class AppStatusView: NSView {
 			} else {
 				determinateProgress?.doubleValue = 0
 				determinateProgress?.hidden = false
-				progressContext = appStatus?.currentProgress?.addKeyValueObserver("fractionCompleted", options: [])
-				{ [weak self] (source, keypath, change) in
-					let prog = source as! NSProgress
-					self?.determinateProgress?.doubleValue = Double(prog.completedUnitCount) / Double(prog.totalUnitCount)
-					if self?.determinateProgress?.doubleValue >= 1.0 {
-						self?.appStatus?.updateStatus(nil)
+				progressContext = KVObserver(object: (appStatus?.currentProgress)!, keyPath: "fractionCompleted")
+					{ [weak self] prog, _, _ in
+						self!.determinateProgress?.doubleValue = Double(prog.completedUnitCount) / Double(prog.totalUnitCount)
+						if self!.determinateProgress?.doubleValue >= 1.0 {
+							self!.appStatus?.updateStatus(nil)
+						}
 					}
-				}
 			}
 			cancelButton?.hidden = appStatus?.currentProgress?.cancellable ?? false
 		} else {
 			progress?.stopAnimation(self)
 			determinateProgress?.hidden = true
 			cancelButton?.hidden = true
+			progressContext?.cancel()
 			progressContext = nil
 		}
 	}

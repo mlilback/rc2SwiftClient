@@ -88,7 +88,7 @@ class RestServerTest: XCTestCase {
 	func testCreateSession() {
 		doLogin()
 		let wspace = dummyWorkspace()
-		let session = server!.createSession(wspace)
+		let session = server!.createSession(wspace, appStatus: DummyAppStatus())
 		XCTAssertEqual(session.workspace, wspace)
 	}
 	
@@ -119,3 +119,19 @@ class RestServerTest: XCTestCase {
 		self.waitForExpectationsWithTimeout(2){ (error) in }
 	}
 }
+
+class DummyAppStatus: NSObject, AppStatus {
+	var currentProgress: NSProgress?
+	var busy:Bool { return currentProgress != nil }
+	var statusMessage: NSString = ""
+	
+	override init() {
+		super.init()
+	}
+	
+	func updateStatus(progress: NSProgress?) {
+		
+	}
+	
+}
+

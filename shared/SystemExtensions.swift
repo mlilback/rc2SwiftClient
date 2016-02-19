@@ -8,7 +8,7 @@ import Foundation
 import BrightFutures
 import CryptoSwift
 
-func delay(delay:Double, closure:()->()) {
+func delay(delay:Double, _ closure:()->()) {
 	dispatch_after(
 		dispatch_time(
 			DISPATCH_TIME_NOW,
@@ -102,25 +102,6 @@ extension NSURL {
 			}
 		} catch _ {}
 		return 0
-	}
-}
-
-private var ProgressCompletionHandler:UInt8 = 0
-
-extension NSProgress {
-	/** allows specification of a completion handler to be invoked when fractionCompleted is 1.0 */
-	convenience init(totalUnitCount:Int64, completionHandler:() -> Void) {
-		self.init(totalUnitCount: totalUnitCount)
-		let box = Box<() -> Void>(completionHandler)
-		objc_setAssociatedObject(self, &ProgressCompletionHandler, box, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-		self.addKeyValueObserver("fractionCompleted", options: .New) { [weak self] (source, keypath, change) in
-			guard (source as? NSProgress)?.fractionCompleted >= 1.0 else { return }
-			if let closure = objc_getAssociatedObject(self, &ProgressCompletionHandler) as? Box<()->Void> {
-				dispatch_async(dispatch_get_main_queue()) { closure.unbox() }
-			}
-			//remove associated object since we are complete
-			objc_setAssociatedObject(self, &ProgressCompletionHandler, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-		}
 	}
 }
 

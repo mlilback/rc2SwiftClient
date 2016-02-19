@@ -8,6 +8,10 @@ import Foundation
 
 let Rc2ErrorDomain = "Rc2ErrorDomain"
 
+enum Rc2ErrorCode: Int {
+	case ServerError = 101
+}
+
 let RestLoginChangedNotification = "RestLoginChangedNotification"
 let SelectedWorkspaceChangedNotification = "SelectedWorkspaceChangedNotification"
 let CurrentSessionChangedNotification = "CurrentSessionChangedNotification"
