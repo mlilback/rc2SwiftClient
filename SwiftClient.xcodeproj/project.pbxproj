@@ -54,6 +54,7 @@
 		083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F91C68F2A900D40EEB /* BaseTest.swift */; };
 		083550CD1C760F050013E2B5 /* NSProgress+Rc2.m in Sources */ = {isa = PBXBuildFile; fileRef = 083550CC1C760F050013E2B5 /* NSProgress+Rc2.m */; };
 		0845CB1E1C616E060090267C /* CommonMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* CommonMocks.swift */; };
+		0868FC591C7789C3002386CB /* NSURL+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0868FC581C7789C3002386CB /* NSURL+Rc2.swift */; };
 		086BC99F1C5422C0006ABAE0 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */; };
 		086BC9A11C542309006ABAE0 /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		086BC9A41C5423D0006ABAE0 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9A31C5423D0006ABAE0 /* Mockingjay.framework */; };
@@ -181,6 +182,7 @@
 		083550CC1C760F050013E2B5 /* NSProgress+Rc2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSProgress+Rc2.m"; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* CommonMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonMocks.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
+		0868FC581C7789C3002386CB /* NSURL+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+Rc2.swift"; sourceTree = "<group>"; };
 		086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = XCGLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		086BC9A31C5423D0006ABAE0 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Mockingjay.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		086BC9A91C54B9C7006ABAE0 /* SwiftWebSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SwiftWebSocket.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -405,12 +407,13 @@
 				083174151C587F7F00071408 /* ImageCache.swift */,
 				088CE6B71C4C44A800153414 /* Keychain.swift */,
 				08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */,
+				083550CB1C760F050013E2B5 /* NSProgress+Rc2.h */,
+				083550CC1C760F050013E2B5 /* NSProgress+Rc2.m */,
+				0868FC581C7789C3002386CB /* NSURL+Rc2.swift */,
 				083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */,
 				086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */,
 				088CE6A31C4B605D00153414 /* SystemExtensions.swift */,
 				083382F21C653B6300D40EEB /* xattr.swift */,
-				083550CB1C760F050013E2B5 /* NSProgress+Rc2.h */,
-				083550CC1C760F050013E2B5 /* NSProgress+Rc2.m */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -619,6 +622,7 @@
 				088CE6AF1C4B605D00153414 /* WebSocketSource.swift in Sources */,
 				088CE6B01C4B605D00153414 /* SystemExtensions.swift in Sources */,
 				08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */,
+				0868FC591C7789C3002386CB /* NSURL+Rc2.swift in Sources */,
 				088CE6A41C4B605D00153414 /* ColorEnums.swift in Sources */,
 				083382F31C653B6300D40EEB /* xattr.swift in Sources */,
 				083305E41C517FC000E27F66 /* VariableViewController.swift in Sources */,
