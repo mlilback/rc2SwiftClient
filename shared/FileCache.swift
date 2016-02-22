@@ -28,6 +28,7 @@ struct FileCacheDownloadStatus {
 }
 
 protocol FileCacheDownloadDelegate: class {
+	var baseUrl:NSURL { get }
 	///called as bytes are recieved over the network
 	func fileCache(cache:FileCache, updatedProgressWithStatus progress:FileCacheDownloadStatus)
 	///called when all the files have been downloaded and cached
@@ -61,11 +62,14 @@ protocol FileCacheDownloadDelegate: class {
 	func startDownload() throws {
 		assert(tasks.count == 0, "FileCacheDownloader instance may only be used once")
 		let config = cache.urlSession.configuration
+		if config.HTTPAdditionalHeaders == nil {
+			config.HTTPAdditionalHeaders = [:]
+		}
 		config.HTTPAdditionalHeaders!["Accept"] = "application/octet-stream"
 		self.urlSession = NSURLSession(configuration: config, delegate: self, delegateQueue: NSOperationQueue.mainQueue())
 		
 		for aFile in workspace.files {
-			let fileUrl = NSURL(string: "workspaces/\(workspace.wspaceId)/files/\(aFile.fileId)", relativeToURL: cache.restServer.baseUrl)
+			let fileUrl = NSURL(string: "workspaces/\(workspace.wspaceId)/files/\(aFile.fileId)", relativeToURL: delegate.baseUrl)
 			guard fileUrl != nil else {
 				throw FileCacheError.FailedToCreateURL(file: aFile)
 			}
@@ -138,11 +142,12 @@ protocol FileCacheDownloadDelegate: class {
 
 public class FileCache: NSObject {
 	var fileManager:FileManager
-	var restServer:RestServer
+	var baseUrl:NSURL
 	var downloaders:[FileCacheDownloader] = []
+	private var urlConfig:NSURLSessionConfiguration?
 	
 	private lazy var urlSession:NSURLSession = {
-		return NSURLSession(configuration: self.restServer.urlConfig)
+		return NSURLSession(configuration: self.urlConfig!)
 	}()
 	
 	lazy var fileCacheUrl: NSURL = { () -> NSURL in
@@ -159,10 +164,14 @@ public class FileCache: NSObject {
 		fatalError("failed to create file cache")
 	}()
 	
-	override init() {
-		fileManager = NSFileManager.defaultManager()
-		restServer = RestServer.sharedInstance
+	init(baseUrl:NSURL, config:NSURLSessionConfiguration?=nil) {
+		self.fileManager = NSFileManager.defaultManager()
+		self.baseUrl = baseUrl
+		self.urlConfig = config
 		super.init()
+		if nil == urlConfig {
+			urlConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
+		}
 	}
 	
 	func isFileCached(file:File) -> Bool {
@@ -192,7 +201,7 @@ public class FileCache: NSObject {
 			p.success(cachedUrl)
 			return p.future
 		}
-		let reqUrl = NSURL(string: "workspaces/\(wspace.wspaceId)/files/\(file.fileId)", relativeToURL: restServer.baseUrl)
+		let reqUrl = NSURL(string: "workspaces/\(wspace.wspaceId)/files/\(file.fileId)", relativeToURL: baseUrl)
 		let req = NSMutableURLRequest(URL: reqUrl!)
 		req.HTTPMethod = "GET"
 		if cachedUrl.checkResourceIsReachableAndReturnError(nil) {
@@ -200,8 +209,8 @@ public class FileCache: NSObject {
 		}
 		req.addValue(file.fileType.mimeType, forHTTPHeaderField: "Accept")
 		let task = urlSession.downloadTaskWithRequest(req) { (dloadUrl, response, error) -> Void in
-			let hresponse = response as! NSHTTPURLResponse
 			guard error == nil else { p.failure(.FileNotFound); return }
+			let hresponse = response as! NSHTTPURLResponse
 			switch (hresponse.statusCode) {
 			case 304: //use existing
 				p.success(cachedUrl)

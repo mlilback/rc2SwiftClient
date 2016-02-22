@@ -44,7 +44,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		self.delegate = delegate
 		self.wsSource = source
 		self.appStatus = appStatus
-		self.fileHandler = DefaultSessionFileHandler(wspace: workspace)
+		self.fileHandler = DefaultSessionFileHandler(wspace: workspace, baseUrl: RestServer.sharedInstance.baseUrl!)
 
 		super.init()
 		fileHandler.fileDelegate = self

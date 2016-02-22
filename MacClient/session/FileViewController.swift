@@ -34,7 +34,8 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	@IBOutlet var addRemoveButtons:NSSegmentedControl?
 	var rowData:[FileRowData] = [FileRowData]()
 	var delegate:FileViewControllerDelegate?
-	var fileImporter:MacFileImportSetup?
+	var importPrompter:MacFileImportSetup?
+	var fileImporter:FileImporter?
 	
 	var selectedFile:File? {
 		guard tableView.selectedRow >= 0 else { return nil }
@@ -145,11 +146,23 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	
 	//MARK: - import/export
 	@IBAction func importFiles(sender:AnyObject?) {
-		if nil == fileImporter {
-			fileImporter = MacFileImportSetup()
+		if nil == importPrompter {
+			importPrompter = MacFileImportSetup()
 		}
-		fileImporter!.performFileImport(view.window!, workspace: session.workspace) { files in
-			//TODO: implement actual file import
+		importPrompter!.performFileImport(view.window!, workspace: session.workspace) { files in
+			guard files != nil else { return } //user canceled import
+			//perform the import
+			let importer = FileImporter(files!, workspace:self.session.workspace) {
+				self.appStatus?.updateStatus(nil)
+			}
+			self.appStatus?.updateStatus(importer.progress)
+			do {
+				try importer.startImport()
+			} catch let err {
+				log.error("failed to start import: \(err)")
+				//TODO: report error to user
+			}
+			self.fileImporter = importer
 		}
 	}
 	
@@ -196,12 +209,12 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	
 	func tableView(tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation dropOperation: NSTableViewDropOperation) -> NSDragOperation
 	{
-		return fileImporter!.validateTableViewDrop(info)
+		return importPrompter!.validateTableViewDrop(info)
 	}
 
 	func tableView(tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableViewDropOperation) -> Bool
 	{
-		fileImporter!.acceptTableViewDrop(info, workspace: session.workspace, window: view.window!) { (files) in
+		importPrompter!.acceptTableViewDrop(info, workspace: session.workspace, window: view.window!) { (files) in
 			//TODO: implement update of table view after drop import
 		}
 		return true

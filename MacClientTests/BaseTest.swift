@@ -28,4 +28,17 @@ class BaseTest: XCTestCase {
 		mockFM = nil
 		super.tearDown()
 	}
+	
+	func workspaceForTesting() -> Workspace {
+		let path : String = NSBundle(forClass: self.dynamicType).pathForResource("createWorkspace", ofType: "json")!
+		let json = try! String(contentsOfFile: path)
+		let parsedJson = JSON.parse(json)
+		return Workspace(json:parsedJson)
+	}
+	
+	func fileUrlsForTesting() -> [NSURL] {
+		let imgUrl = NSURL(fileURLWithPath: "/Library/Desktop Pictures/Art")
+		let files = try! NSFileManager.defaultManager().contentsOfDirectoryAtURL(imgUrl, includingPropertiesForKeys: [NSURLFileSizeKey], options: [.SkipsHiddenFiles])
+		return files
+	}
 }

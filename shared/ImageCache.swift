@@ -24,7 +24,7 @@ public class ImageCache :NSObject, NSSecureCoding {
 	private var cache: NSCache
 	private var metaCache: [Int:SessionImage]
 	
-	lazy var cacheUrl: NSURL =
+	private(set) lazy var cacheUrl: NSURL =
 		{
 			var result: NSURL?
 			do {

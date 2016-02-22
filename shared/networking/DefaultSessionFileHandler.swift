@@ -10,13 +10,15 @@ import BrightFutures
 class DefaultSessionFileHandler: SessionFileHandler, FileCacheDownloadDelegate {
 	var workspace:Workspace
 	let fileCache:FileCache
+	var baseUrl:NSURL
 	weak var fileDelegate:SessionFileHandlerDelegate?
 	private(set) var filesLoaded:Bool = false
 	private var downloadPromise: Promise <Bool,FileError>
 	
-	init(wspace:Workspace) {
+	init(wspace:Workspace, baseUrl:NSURL) {
 		self.workspace = wspace
-		self.fileCache = FileCache()
+		self.fileCache = FileCache(baseUrl: baseUrl)
+		self.baseUrl = baseUrl
 		self.downloadPromise = Promise<Bool,FileError>()
 	}
 	

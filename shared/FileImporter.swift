@@ -17,16 +17,28 @@ struct FileToImport {
 	var actualFileName:String { return (uniqueFileName == nil ? fileUrl.lastPathComponent : uniqueFileName)! }
 }
 
-/** interested parties should observer completeUnitCount on progress. When it equals totalUnitCount, the task is done. If there was an error, the error property will be set. Errors can be either one returned via the NSURLSession api or an error from the Rc2ErrorDomain.
+struct ImportData {
+	var task:NSURLSessionUploadTask
+	var progress:NSProgress
+	var data:NSMutableData
+	
+	init(task:NSURLSessionUploadTask, progress:NSProgress) {
+		self.task = task
+		self.progress = progress
+		self.data = NSMutableData()
+	}
+}
+
+/** interested parties should observe completeUnitCount on progress. When it equals totalUnitCount, the task is done. If there was an error, the error property will be set. Errors can be either one returned via the NSURLSession api or an error from the Rc2ErrorDomain.
 */
 class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 	dynamic var progress:NSProgress
 	private var workspace:Workspace
 	private var files:[FileToImport]
 	private var uploadSession: NSURLSession!
-	private var tasks:[Int:NSURLSessionUploadTask] = [:]
-	private var childProgresses:[Int:NSProgress] = [:]
+	private var tasks:[Int:ImportData] = [:]
 	private var tmpDir:NSURL
+	///ultimately called from completion handler added to root NSProgress
 	private var completionHandler:(()->Void)
 	
 	/** designated initializer
@@ -78,9 +90,11 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 			let destUrl = NSURL(string: "/workspaces/\(workspace.wspaceId)/files/upload", relativeToURL: RestServer.sharedInstance.baseUrl)!
 			let request = NSMutableURLRequest(URL: destUrl)
 			request.HTTPMethod = "POST"
-			tasks[index] = uploadSession.uploadTaskWithRequest(request, fromFile: srcUrl)
-			childProgresses[index] = NSProgress(totalUnitCount: aFileToImport.fileUrl.fileSize())
-			tasks[index]!.resume()
+			let task = uploadSession.uploadTaskWithRequest(request, fromFile: srcUrl)
+			let cprogress = NSProgress(totalUnitCount: aFileToImport.fileUrl.fileSize())
+			tasks[index] = ImportData(task: task, progress: cprogress)
+			progress.addChild(cprogress, withPendingUnitCount: cprogress.totalUnitCount)
+			task.resume()
 		}
 	}
 	
@@ -92,29 +106,40 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 			log.error("error uploading file \(error)")
 			return
 		}
-		let index:Int = tasks.filter {  $1 == task }.map { $0.0 }.first!
-		guard let taskProgress = childProgresses[index] else {
+		let index:Int = tasks.filter {  $1.task == task }.map { $0.0 }.first!
+		guard let importData = tasks[index] else {
 			fatalError("failed to find progress for task of \(index)")
 		}
 		if let status = (task.response as? NSHTTPURLResponse)?.statusCode where status != 201 {
 			let err = NSError(domain: Rc2ErrorDomain, code: Rc2ErrorCode.ServerError.rawValue, userInfo: [NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(status)])
-			taskProgress.rc2_complete(err)
-			self.completionHandler()
-		} else {
-			taskProgress.rc2_complete(nil)
-			self.completionHandler()
+			importData.progress.rc2_complete(err)
+		} else { //got a proper 201 status code
+			//TODO: need to do something with File JSON that was returned and shoud have been stored in
+			let json = JSON(data:importData.data)
+			let newFile = File(json: json)
+			workspace.mutableArrayValueForKey("fileArray").addObject(newFile)
+			importData.progress.rc2_complete(nil)
 		}
 		tasks.removeValueForKey(index)
-		childProgresses.removeValueForKey(index)
 	}
 	
 	func URLSession(session: NSURLSession, task: NSURLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64)
 	{
 		log.info("session said sent data \(bytesSent)")
-		let index:Int = tasks.filter {  $1 == task }.map { $0.0 }.first!
-		guard let taskProgress = childProgresses[index] else {
+		let index:Int = tasks.filter {  $1.task == task }.map { $0.0 }.first!
+		guard let importData = tasks[index] else {
 			fatalError("failed to find progress for task of \(index)")
 		}
-		taskProgress.completedUnitCount = totalBytesSent
+		importData.progress.completedUnitCount = totalBytesSent
+	}
+	
+	func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData)
+	{
+		log.info("session said received data \(data.length)")
+		let index:Int = tasks.filter {  $1.task == dataTask }.map { $0.0 }.first!
+		guard let importData = tasks[index] else {
+			fatalError("failed to find progress for task of \(index)")
+		}
+		importData.data.appendData(data)
 	}
 }

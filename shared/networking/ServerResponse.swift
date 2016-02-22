@@ -129,6 +129,13 @@ public class SessionImage: NSObject, NSSecureCoding, NSCopying {
 	public func copyWithZone(zone: NSZone) -> AnyObject {
 		return SessionImage(imgId: id, batchId: batchId, name:name, date: dateCreated)
 	}
+	
+	public override func isEqual(object: AnyObject?) -> Bool {
+		if let other = object as? SessionImage {
+			return self.id == other.id && self.batchId == other.batchId && self.name == other.name && self.dateCreated == other.dateCreated
+		}
+		return false
+	}
 }
 
 public func ==(a:SessionImage, b:SessionImage) -> Bool {

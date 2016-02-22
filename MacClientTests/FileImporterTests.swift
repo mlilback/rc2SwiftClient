@@ -12,11 +12,12 @@ import Mockingjay
 
 var kvoContext:UInt8 = 1
 
-class FileImporterTests: XCTestCase, NSURLSessionDataDelegate {
+class FileImporterTests: BaseTest, NSURLSessionDataDelegate {
 	var expect:XCTestExpectation?
 	var filesToImport:[FileToImport] = []
 	var importer:FileImporter?
 	var testWorkspace:Workspace!
+	var expectedFiles:[String] = []
 
 	override class func initialize() {
 		NSURLSessionConfiguration.mockingjaySwizzleDefaultSessionConfiguration()
@@ -24,21 +25,14 @@ class FileImporterTests: XCTestCase, NSURLSessionDataDelegate {
 
 	override func setUp() {
 		super.setUp()
-		let imgUrl = NSURL(fileURLWithPath: "/Library/Desktop Pictures/Art")
-		let files = try! NSFileManager.defaultManager().contentsOfDirectoryAtURL(imgUrl, includingPropertiesForKeys: [NSURLFileSizeKey], options: [.SkipsHiddenFiles])
-		filesToImport = files.map() { return FileToImport(url: $0, uniqueName: nil) }
-		
-		let path : String = NSBundle(forClass: self.dynamicType).pathForResource("createWorkspace", ofType: "json")!
-		let json = try! String(contentsOfFile: path)
-		let parsedJson = JSON.parse(json)
-		testWorkspace = Workspace(json:parsedJson)
-		testWorkspace.files = filesToImport.enumerate().map() { (index, file) in
+		filesToImport = fileUrlsForTesting().map() { return FileToImport(url: $0, uniqueName: nil) }
+		testWorkspace = workspaceForTesting()
+		expectedFiles = filesToImport.enumerate().map() { (index, file) in
 			let jsonString = "{\"id\" : \(index),\"wspaceId\" : 1, " +
 				"\"name\" : \"\(file.fileUrl.lastPathComponent!)\", \"version\" : 0," +
 				"\"dateCreated\" : 1439407405827, \"lastModified\" : 1439407405827," +
 				"\"fileSize\" : \(file.fileUrl.fileSize()),\"etag\" : \"f/1/0\" }"
-			let json = JSON.parse(jsonString)
-			return File(json: json)
+			return jsonString
 		}
 //		testWorkspace.files = [testWorkspace.files.first!]
 //		filesToImport = [filesToImport.first!]
@@ -51,15 +45,16 @@ class FileImporterTests: XCTestCase, NSURLSessionDataDelegate {
 
 	func testSessionMock() {
 //		let destUri = "/workspaces/1/file/upload"
-//		stub(uri(destUri), builder:http(201))
-		stub(everything, builder:http(201))
+//		stub(uri(destUri), builder:json(expectedFiles.first!, status: 201))
+		stub(everything, builder:jsonData(expectedFiles.first!.dataUsingEncoding(NSUTF8StringEncoding)!, status: 201))
 		
+		testWorkspace.filesArray.removeAllObjects()
 		self.expect = self.expectationWithDescription("upload")
 		importer = FileImporter(filesToImport, workspace: testWorkspace) {
 			self.expect?.fulfill()
 		}
 		try! importer?.startImport()
-		self.waitForExpectationsWithTimeout(2) { _ in }
+		self.waitForExpectationsWithTimeout(20) { _ in }
 		XCTAssertNil(importer?.progress.rc2_error)
 		XCTAssertEqual(testWorkspace.files.count, filesToImport.count)
 	}
