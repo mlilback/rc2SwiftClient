@@ -46,7 +46,6 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 		accessoryView.title = NSLocalizedString("Replace existing files", comment: "")
 		let replace = defaults.boolForKey(ReplaceFilesKey)
 		accessoryView.state = replace ? NSOffState : NSOnState
-		
 		panel.beginSheetModalForWindow(window) { result in
 			do {
 				let bmark = try panel.directoryURL?.bookmarkDataWithOptions([], includingResourceValuesForKeys: nil, relativeToURL: nil)

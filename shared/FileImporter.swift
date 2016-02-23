@@ -13,17 +13,22 @@ struct FileToImport {
 	init(url:NSURL, uniqueName:String?) {
 		self.fileUrl = url
 		self.uniqueFileName = uniqueName
+		if nil == uniqueFileName {
+			uniqueFileName = fileUrl.lastPathComponent
+		}
 	}
 	var actualFileName:String { return (uniqueFileName == nil ? fileUrl.lastPathComponent : uniqueFileName)! }
 }
 
 struct ImportData {
 	var task:NSURLSessionUploadTask
+	var srcFile:NSURL
 	var progress:NSProgress
 	var data:NSMutableData
 	
-	init(task:NSURLSessionUploadTask, progress:NSProgress) {
+	init(task:NSURLSessionUploadTask, srcFile:NSURL, progress:NSProgress) {
 		self.task = task
+		self.srcFile = srcFile
 		self.progress = progress
 		self.data = NSMutableData()
 	}
@@ -39,14 +44,14 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 	private var tasks:[Int:ImportData] = [:]
 	private var tmpDir:NSURL
 	///ultimately called from completion handler added to root NSProgress
-	private var completionHandler:(()->Void)
+	private var completionHandler:((NSProgress)->Void)
 	
 	/** designated initializer
 		parameter files: the array of files to import
 		parameter workspace: the workspace to import the files into
 		urlSession: the session to use. Defaults to creating a new one using the config from RestServer
 	*/
-	init(_ files:[FileToImport], workspace:Workspace, configuration config:NSURLSessionConfiguration?, completionHandler:(()->Void))
+	init(_ files:[FileToImport], workspace:Workspace, configuration config:NSURLSessionConfiguration?, completionHandler:((progress:NSProgress)->Void))
 	{
 		self.files = files
 		self.workspace = workspace
@@ -63,17 +68,12 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 			log.error("failed to create temporary directory for upload: \(err)")
 		}
 		super.init()
-		progress.rc2_addCompletionHandler() { [weak self] in
+		progress.rc2_addCompletionHandler() {
 			log.info("complete progress")
-			self?.completionHandler()
+			self.completionHandler(self.progress)
 		}
 		if myConfig == nil { myConfig = NSURLSessionConfiguration.defaultSessionConfiguration() }
 		self.uploadSession = NSURLSession(configuration: myConfig!, delegate: self, delegateQueue: NSOperationQueue.mainQueue())
-	}
-	
-	convenience init(_ files:[FileToImport], workspace:Workspace, completionHandler:(()->Void))
-	{
-		self.init(files, workspace:workspace, configuration:nil, completionHandler:completionHandler)
 	}
 	
 	/** starts the import. To know when complete, observe progress.fractionComplete and is complete when >= 1.0  */
@@ -90,9 +90,11 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 			let destUrl = NSURL(string: "/workspaces/\(workspace.wspaceId)/files/upload", relativeToURL: RestServer.sharedInstance.baseUrl)!
 			let request = NSMutableURLRequest(URL: destUrl)
 			request.HTTPMethod = "POST"
+			request.setValue(aFileToImport.uniqueFileName, forHTTPHeaderField: "Rc2-Filename")
+			request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
 			let task = uploadSession.uploadTaskWithRequest(request, fromFile: srcUrl)
 			let cprogress = NSProgress(totalUnitCount: aFileToImport.fileUrl.fileSize())
-			tasks[index] = ImportData(task: task, progress: cprogress)
+			tasks[index] = ImportData(task: task, srcFile: srcUrl, progress: cprogress)
 			progress.addChild(cprogress, withPendingUnitCount: cprogress.totalUnitCount)
 			task.resume()
 		}
@@ -110,17 +112,22 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 		guard let importData = tasks[index] else {
 			fatalError("failed to find progress for task of \(index)")
 		}
+		log.info("upload status=\((task.response as? NSHTTPURLResponse)?.statusCode)")
 		if let status = (task.response as? NSHTTPURLResponse)?.statusCode where status != 201 {
 			let err = NSError(domain: Rc2ErrorDomain, code: Rc2ErrorCode.ServerError.rawValue, userInfo: [NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(status)])
-			importData.progress.rc2_complete(err)
+			progress.rc2_complete(err)
 		} else { //got a proper 201 status code
 			//TODO: need to do something with File JSON that was returned and shoud have been stored in
 			let json = JSON(data:importData.data)
 			let newFile = File(json: json)
 			workspace.mutableArrayValueForKey("fileArray").addObject(newFile)
+			importData.progress.completedUnitCount = importData.progress.totalUnitCount
 			importData.progress.rc2_complete(nil)
 		}
 		tasks.removeValueForKey(index)
+		if tasks.count < 1 {
+			log.info("children done")
+		}
 	}
 	
 	func URLSession(session: NSURLSession, task: NSURLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64)

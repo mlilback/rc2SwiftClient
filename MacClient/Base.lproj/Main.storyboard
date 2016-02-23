@@ -108,7 +108,7 @@
                                         <menuItem title="Import…" id="iiO-yF-ulD">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="importFiles:" target="Ady-hI-5gd" id="Ove-pi-MSS"/>
+                                                <action selector="promptToImportFiles:" target="Ady-hI-5gd" id="wDf-Ff-gRh"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Export Files…" id="2up-8o-9JE">

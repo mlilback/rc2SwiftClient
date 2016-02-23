@@ -63,6 +63,15 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		}
 	}
 	
+	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
+		switch(menuItem.action) {
+		case "promptToImportFiles:":
+			return fileHandler!.validateMenuItem(menuItem)
+		default:
+			return false
+		}
+	}
+
 	func setupResponder() {
 		view.window?.makeFirstResponder(outputHandler?.initialFirstResponder())
 	}
@@ -142,6 +151,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	//MARK: - actions
 	@IBAction func clearFileCache(sender:AnyObject) {
 		session.fileHandler.fileCache.flushCacheForWorkspace(session.workspace)
+	}
+	
+	@IBAction func promptToImportFiles(sender:AnyObject?) {
+		fileHandler?.promptToImportFiles(sender)
 	}
 
 	//MARK: - save/restore

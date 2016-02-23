@@ -19,6 +19,8 @@ NSString* FractionTokenKey = @"rc.fractionToken";
 -(instancetype)initWithProgress:(NSProgress*)prog;
 @end
 
+typedef  void (^ _Nonnull ProgressCompleteCallback)();
+
 @implementation ProgressKVOProxy
 -(instancetype)initWithProgress:(NSProgress*)prog
 {
@@ -35,19 +37,26 @@ NSString* FractionTokenKey = @"rc.fractionToken";
 	[self.progress removeObserver:self forKeyPath:@"completedUnitCount"];
 }
 
+-(void)progressComplete
+{
+	NSLog(@"calling progress completion handlers");
+	for (ProgressCompleteCallback block in self.completionBlocks) {
+		dispatch_async(dispatch_get_main_queue(), ^{
+			block(self);
+		});
+	}
+	[self.completionBlocks removeAllObjects];
+}
+
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
 {
 	if (context == &CompletionHandlerKey && [keyPath isEqualToString:@"completedUnitCount"])
 	{
 		NSLog(@"fractionComplete changed %1.4f", [object fractionCompleted]);
-		double fraction = [object fractionCompleted];
-		if (fraction >= 1.0) {
-			NSLog(@"calling progress completion handlers");
-			for (dispatch_block_t block in self.completionBlocks) {
-				dispatch_async(dispatch_get_main_queue(), block);
-			}
-			[self.completionBlocks removeAllObjects];
-		}
+//		double fraction = [object fractionCompleted];
+//		if (fraction >= 1.0) {
+//			[self progressComplete];
+//		}
 	} else {
 		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 	}
@@ -76,20 +85,20 @@ NSString* FractionTokenKey = @"rc.fractionToken";
 -(void)rc2_complete:(nullable NSError*) error
 {
 	[self setRc2_error:error];
-	self.completedUnitCount = self.totalUnitCount;
+	[[self rc2_proxy] progressComplete];
 }
 
 -(ProgressKVOProxy*)rc2_proxy
 {
-	ProgressKVOProxy *proxy = self.userInfo[CompletionHandlerKey];
+	ProgressKVOProxy *proxy = objc_getAssociatedObject(self, &CompletionHandlerKey);
 	if (nil == proxy) {
 		proxy = [[ProgressKVOProxy alloc] initWithProgress:self];
-		[self setUserInfoObject:proxy forKey:CompletionHandlerKey];
+		objc_setAssociatedObject(self, &CompletionHandlerKey, proxy, OBJC_ASSOCIATION_RETAIN);
 	}
 	return proxy;
 }
 
--(void)rc2_addCompletionHandler:( void (^ _Nonnull )())handler
+-(void)rc2_addCompletionHandler:(ProgressCompleteCallback)handler
 {
 	[[self rc2_proxy] addCompletionHandler:handler];
 }

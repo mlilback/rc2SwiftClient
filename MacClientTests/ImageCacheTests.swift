@@ -21,7 +21,7 @@ class ImageCacheTests: BaseTest {
 		}
 		try! mockFM.copyItemAtURL(srcImage, toURL: destUrl)
 		cache.imageWithId(1).onSuccess { image in
-			XCTAssertEqual(image, NSImage(contentsOfURL: srcImage))
+			XCTAssert(self.mockFM.contentsEqualAtPath(srcImage.absoluteURL.path!, andPath: destUrl.absoluteURL.path!))
 		}.onFailure { error in
 			XCTFail("test failed: \(error)")
 		}

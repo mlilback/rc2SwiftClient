@@ -123,7 +123,7 @@
                                                         </textFieldCell>
                                                     </textField>
                                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bTG-Vu-w1Y">
-                                                        <rect key="frame" x="277" y="1" width="15" height="15"/>
+                                                        <rect key="frame" x="277" y="0.0" width="15" height="15"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" secondItem="bTG-Vu-w1Y" secondAttribute="height" multiplier="1:1" id="ybA-dd-GPE"/>
                                                         </constraints>
@@ -553,7 +553,7 @@
                                     </segmentedControl>
                                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wkm-KO-9pg" userLabel="action menu">
                                         <rect key="frame" x="158" y="-1" width="35" height="23"/>
-                                        <popUpButtonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" id="zUd-0F-7El">
+                                        <popUpButtonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" selectedItem="vD9-gx-Q9M" id="zUd-0F-7El">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                             <menu key="menu" title="OtherViews" autoenablesItems="NO" id="FqJ-7k-WFf">
@@ -563,6 +563,11 @@
                                                     <menuItem title="Export…" id="SLT-dk-xdw">
                                                         <connections>
                                                             <action selector="exportSelectedFile:" target="XJm-U6-51C" id="dof-Uu-BD1"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Import…" id="vD9-gx-Q9M">
+                                                        <connections>
+                                                            <action selector="promptToImportFiles:" target="XJm-U6-51C" id="0DF-ly-Tj4"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem isSeparatorItem="YES" id="f1B-5j-Bp6"/>
@@ -1210,7 +1215,7 @@ DQ
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </clipView>
                                             <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="yy1-j0-irk">
-                                                <rect key="frame" x="1" y="156" width="238" height="16"/>
+                                                <rect key="frame" x="1" y="-15" width="0.0" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
                                             <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="zO2-o2-Moe">

@@ -9,7 +9,12 @@ import Cocoa
 class AppStatusView: NSView {
 	@IBOutlet var textField: NSTextField?
 	@IBOutlet var progress: NSProgressIndicator?
-	@IBOutlet var determinateProgress: NSProgressIndicator?
+	@IBOutlet var determinateProgress: NSProgressIndicator? {
+		get { return self.realDetProgress }
+		set { self.realDetProgress = newValue }
+	}
+	private var realDetProgress:NSProgressIndicator?
+
 	@IBOutlet var cancelButton: NSButton?
 	var appStatus: AppStatus? { didSet { self.statusChanged(nil) } }
 	var progressContext: KVObserver?
@@ -46,10 +51,13 @@ class AppStatusView: NSView {
 				determinateProgress?.doubleValue = 0
 				determinateProgress?.hidden = false
 				progressContext = KVObserver(object: (appStatus?.currentProgress)!, keyPath: "fractionCompleted")
-					{ [weak self] prog, _, _ in
-						self!.determinateProgress?.doubleValue = Double(prog.completedUnitCount) / Double(prog.totalUnitCount)
-						if self!.determinateProgress?.doubleValue >= 1.0 {
-							self!.appStatus?.updateStatus(nil)
+					{ prog, _, _ in
+						self.determinateProgress?.doubleValue = prog.fractionCompleted
+						self.textField?.stringValue = prog.localizedDescription
+						if self.determinateProgress?.doubleValue >= 1.0 {
+							dispatch_async(dispatch_get_main_queue()) {
+								self.appStatus?.updateStatus(nil)
+							}
 						}
 					}
 			}

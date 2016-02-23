@@ -34,7 +34,7 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	@IBOutlet var addRemoveButtons:NSSegmentedControl?
 	var rowData:[FileRowData] = [FileRowData]()
 	var delegate:FileViewControllerDelegate?
-	var importPrompter:MacFileImportSetup?
+	lazy var importPrompter:MacFileImportSetup? = { MacFileImportSetup() }()
 	var fileImporter:FileImporter?
 	
 	var selectedFile:File? {
@@ -64,6 +64,7 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 			tableView.setDraggingSourceOperationMask(.Copy, forLocal: true)
 			tableView.draggingDestinationFeedbackStyle = .None
 			tableView.registerForDraggedTypes(FileDragTypes)
+			NSNotificationCenter.defaultCenter().addObserver(self, selector: "filesRefreshed", name: WorkspaceFileChangedNotification, object: nil)
 		}
 	}
 	
@@ -111,7 +112,7 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	
 	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
 		switch(menuItem.action) {
-			case "importFiles:":
+			case "promptToImportFiles:":
 				return true
 			case "exportSelectedFile:":
 				return selectedFile != nil
@@ -145,14 +146,19 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	}
 	
 	//MARK: - import/export
-	@IBAction func importFiles(sender:AnyObject?) {
+	@IBAction func promptToImportFiles(sender:AnyObject?) {
 		if nil == importPrompter {
 			importPrompter = MacFileImportSetup()
 		}
 		importPrompter!.performFileImport(view.window!, workspace: session.workspace) { files in
 			guard files != nil else { return } //user canceled import
 			//perform the import
-			let importer = FileImporter(files!, workspace:self.session.workspace) {
+			let importer = FileImporter(files!, workspace:self.session.workspace, configuration: RestServer.sharedInstance.urlConfig)
+			{ (progress:NSProgress) in
+				if progress.rc2_error != nil {
+					//TODO: handle error
+					log.error("got import error \(progress.rc2_error)")
+				}
 				self.appStatus?.updateStatus(nil)
 			}
 			self.appStatus?.updateStatus(importer.progress)
@@ -176,6 +182,7 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 
 	//MARK: - FileHandler implementation
 	func filesRefreshed() {
+		//TODO: ideally should figure out what file was changed and animate the tableview update instead of refreshing all rows
 		loadData()
 		tableView.reloadData()
 	}

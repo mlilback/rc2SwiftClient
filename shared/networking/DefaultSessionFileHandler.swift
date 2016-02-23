@@ -15,9 +15,9 @@ class DefaultSessionFileHandler: SessionFileHandler, FileCacheDownloadDelegate {
 	private(set) var filesLoaded:Bool = false
 	private var downloadPromise: Promise <Bool,FileError>
 	
-	init(wspace:Workspace, baseUrl:NSURL) {
+	init(wspace:Workspace, baseUrl:NSURL, config:NSURLSessionConfiguration) {
 		self.workspace = wspace
-		self.fileCache = FileCache(baseUrl: baseUrl)
+		self.fileCache = FileCache(baseUrl: baseUrl, config: config)
 		self.baseUrl = baseUrl
 		self.downloadPromise = Promise<Bool,FileError>()
 	}

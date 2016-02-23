@@ -97,6 +97,8 @@
 		08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB55531C5C096E002CB7EE /* ImageOutputController.swift */; };
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
+		08EFF6031C7BB2E600AAF1D4 /* MultipartInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */; };
+		08EFF6051C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */; };
 		08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* SessionEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* MacSessionMultiController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* MacSessionMultiController.swift */; };
 		08F448FC1C4E244500C64706 /* SessionConsoleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F71C4E244500C64706 /* SessionConsoleController.swift */; };
@@ -231,6 +233,8 @@
 		08CB55531C5C096E002CB7EE /* ImageOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageOutputController.swift; sourceTree = "<group>"; };
 		08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetActionBlock.swift; sourceTree = "<group>"; };
 		08ED575E1C724383002B2558 /* MacFileImportSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacFileImportSetup.swift; sourceTree = "<group>"; };
+		08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStream.swift; sourceTree = "<group>"; };
+		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* SessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditorController.swift; sourceTree = "<group>"; };
 		08F448F61C4E244500C64706 /* MacSessionMultiController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionMultiController.swift; sourceTree = "<group>"; };
 		08F448F71C4E244500C64706 /* SessionConsoleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionConsoleController.swift; sourceTree = "<group>"; };
@@ -375,6 +379,7 @@
 				083305EF1C519B4B00E27F66 /* ServerResponseTests.swift */,
 				0825475A1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift */,
 				083382FB1C69189300D40EEB /* xattrTests.swift */,
+				08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */,
 			);
 			path = MacClientTests;
 			sourceTree = "<group>";
@@ -445,6 +450,7 @@
 				088CE6A11C4B605D00153414 /* Session.swift */,
 				0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */,
 				088CE6A21C4B605D00153414 /* WebSocketSource.swift */,
+				08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */,
 			);
 			path = networking;
 			sourceTree = "<group>";
@@ -650,6 +656,7 @@
 				088CE6AA1C4B605D00153414 /* Workspace.swift in Sources */,
 				086BC9AD1C552AA0006ABAE0 /* SpinLock.swift in Sources */,
 				088CE6A51C4B605D00153414 /* File.swift in Sources */,
+				08EFF6031C7BB2E600AAF1D4 /* MultipartInputStream.swift in Sources */,
 				08F448FB1C4E244500C64706 /* MacSessionMultiController.swift in Sources */,
 				088CE6A61C4B605D00153414 /* FileType.swift in Sources */,
 				083174041C5571D300071408 /* RootViewController.swift in Sources */,
@@ -717,6 +724,7 @@
 				0845CB1E1C616E060090267C /* CommonMocks.swift in Sources */,
 				083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */,
 				083305F01C519B4B00E27F66 /* ColorEnumTests.swift in Sources */,
+				08EFF6051C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

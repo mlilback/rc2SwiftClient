@@ -39,6 +39,7 @@ static int kvoKey = 0;
 	self.progress.completedUnitCount = 5;
 	XCTAssertEqual(self.currentCount, 5);
 	self.progress.completedUnitCount = 10;
+	[self.progress rc2_complete:nil];
 	[self waitForExpectationsWithTimeout:2 handler:^(NSError * _Nullable error) {
 	}];
 	

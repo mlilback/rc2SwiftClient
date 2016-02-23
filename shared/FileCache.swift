@@ -222,7 +222,10 @@ public class FileCache: NSObject {
 				}) .onFailure(callback: { (err) -> Void in
 					p.failure(err)
 				})
+			case 401: //auth error, should never happen
+				fatalError("auth not properly setup for fileCache download")
 			default:
+				log.error("got a \(hresponse.statusCode) response from server downloading a file")
 				p.failure(FileError.FileNotFound)
 				break
 			}

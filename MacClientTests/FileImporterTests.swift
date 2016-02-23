@@ -43,6 +43,11 @@ class FileImporterTests: BaseTest, NSURLSessionDataDelegate {
 		super.tearDown()
 	}
 
+	func testSingleFile() {
+		filesToImport = [filesToImport.first!]
+		testSessionMock()
+	}
+	
 	func testSessionMock() {
 //		let destUri = "/workspaces/1/file/upload"
 //		stub(uri(destUri), builder:json(expectedFiles.first!, status: 201))
@@ -50,9 +55,11 @@ class FileImporterTests: BaseTest, NSURLSessionDataDelegate {
 		
 		testWorkspace.filesArray.removeAllObjects()
 		self.expect = self.expectationWithDescription("upload")
-		importer = FileImporter(filesToImport, workspace: testWorkspace) {
+		importer = FileImporter(filesToImport, workspace: testWorkspace, configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+		{_ in
 			self.expect?.fulfill()
 		}
+		importer?.progress.addObserver(self, forKeyPath: "completedUnitCount", options: .New, context: &kvoContext)
 		try! importer?.startImport()
 		self.waitForExpectationsWithTimeout(20) { _ in }
 		XCTAssertNil(importer?.progress.rc2_error)
@@ -72,6 +79,13 @@ class FileImporterTests: BaseTest, NSURLSessionDataDelegate {
 				if percent >= 1.0 {
 					expect?.fulfill()
 				}
+			
+		case("completedUnitCount", &kvoContext):
+			let percent = (object as? NSProgress)?.fractionCompleted
+			print("per updated \(percent)")
+			if percent >= 1.0 {
+				expect?.fulfill()
+			}
 			
 			case("error", &kvoContext):
 				print("completed set to \(importer?.progress.rc2_error)")

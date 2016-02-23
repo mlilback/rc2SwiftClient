@@ -38,13 +38,13 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	private(set) var connectionOpen:Bool = false
 	private var loadTimer:dispatch_source_t = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue())
 	
-	init(_ wspace:Workspace,  source:WebSocketSource, appStatus:AppStatus, delegate:SessionDelegate?=nil)
+	init(_ wspace:Workspace,  source:WebSocketSource, appStatus:AppStatus, networkConfig config:NSURLSessionConfiguration, delegate:SessionDelegate?=nil)
 	{
 		workspace = wspace
 		self.delegate = delegate
 		self.wsSource = source
 		self.appStatus = appStatus
-		self.fileHandler = DefaultSessionFileHandler(wspace: workspace, baseUrl: RestServer.sharedInstance.baseUrl!)
+		self.fileHandler = DefaultSessionFileHandler(wspace: workspace, baseUrl: RestServer.sharedInstance.baseUrl!, config: config)
 
 		super.init()
 		fileHandler.fileDelegate = self
@@ -81,19 +81,19 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	}
 	
 	func loadFiles() {
-		let progress = NSProgress(totalUnitCount: 10)
-		progress.rc2_addCompletionHandler() {
-			dispatch_source_cancel(self.loadTimer)
-			self.appStatus.updateStatus(nil)
-			self.fileHandler.loadFiles()
-		}
-		progress.localizedDescription = NSLocalizedString("Loading files…", comment: "")
-		appStatus.updateStatus(progress)
-		dispatch_source_set_timer(loadTimer, dispatch_time(DISPATCH_TIME_NOW, Int64(NSEC_PER_SEC)), NSEC_PER_SEC, 200)
-		dispatch_source_set_event_handler(loadTimer) {
-			progress.completedUnitCount = progress.completedUnitCount + 1
-		}
-		dispatch_resume(loadTimer)
+//		let progress = NSProgress(totalUnitCount: 10)
+//		progress.rc2_addCompletionHandler() {
+//			dispatch_source_cancel(self.loadTimer)
+//			self.appStatus.updateStatus(nil)
+//			self.fileHandler.loadFiles()
+//		}
+//		progress.localizedDescription = NSLocalizedString("Loading files…", comment: "")
+//		appStatus.updateStatus(progress)
+//		dispatch_source_set_timer(loadTimer, dispatch_time(DISPATCH_TIME_NOW, Int64(NSEC_PER_SEC)), NSEC_PER_SEC, 200)
+//		dispatch_source_set_event_handler(loadTimer) {
+//			progress.completedUnitCount = progress.completedUnitCount + 1
+//		}
+//		dispatch_resume(loadTimer)
 	}
 	
 	//MARK: public request methods
