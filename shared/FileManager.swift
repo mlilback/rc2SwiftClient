@@ -10,12 +10,13 @@ import BrightFutures
 let FileAttrVersion = "io.rc2.FileAttr.Version"
 let FileAttrChecksum = "io.rc2.FileAttr.SHA256"
 
-public enum FileError: Int, ErrorType {
-	case FileNotFound = 0
+public enum FileError: ErrorType {
+	case FileNotFound
 	case FailedToSaveFile
 	case FailedToLoadFile
 	case ReadError
 	case FailedToDownload
+	case FoundationError(error:NSError)
 }
 
 ///Protocol for functions of NSFileManager that we use so we can inject a mock version in unit tests

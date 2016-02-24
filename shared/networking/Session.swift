@@ -44,7 +44,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		self.delegate = delegate
 		self.wsSource = source
 		self.appStatus = appStatus
-		self.fileHandler = DefaultSessionFileHandler(wspace: workspace, baseUrl: RestServer.sharedInstance.baseUrl!, config: config)
+		self.fileHandler = DefaultSessionFileHandler(wspace: workspace, baseUrl: RestServer.sharedInstance.baseUrl!, config: config, appStatus: appStatus)
 
 		super.init()
 		fileHandler.fileDelegate = self
@@ -52,7 +52,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 			dispatch_async(dispatch_get_main_queue()) {
 				self.connectionOpen = true
 				Session.manager.currentSession = self
-				self.loadFiles()
+				self.fileHandler.loadFiles()
 				self.delegate?.sessionOpened()
 			}
 		}

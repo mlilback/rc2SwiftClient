@@ -22,6 +22,7 @@ protocol FileViewControllerDelegate: class {
 }
 
 let FileDragTypes = [kUTTypeFileURL as String]
+let LastExportDirectoryKey = "rc2.LastExportDirectory"
 
 //TODO: make sure when delegate renames file our list gets updated
 
@@ -173,7 +174,37 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	}
 	
 	@IBAction func exportSelectedFile(sender:AnyObject?) {
-		
+		let defaults = NSUserDefaults.standardUserDefaults()
+		let savePanel = NSSavePanel()
+		savePanel.extensionHidden = false
+		savePanel.allowedFileTypes = [(selectedFile?.fileType.fileExtension)!]
+		savePanel.nameFieldStringValue = (selectedFile?.name)!
+		if let bmarkData = defaults.objectForKey(LastExportDirectoryKey) as? NSData {
+			do {
+				savePanel.directoryURL = try NSURL(byResolvingBookmarkData: bmarkData, options: [], relativeToURL: nil, bookmarkDataIsStale: nil)
+			} catch {
+			}
+		}
+		savePanel.beginSheetModalForWindow(view.window!) { result in
+			do {
+				let bmark = try savePanel.directoryURL?.bookmarkDataWithOptions([], includingResourceValuesForKeys: nil, relativeToURL: nil)
+				defaults.setObject(bmark, forKey: LastExportDirectoryKey)
+			} catch let err {
+				log.error("why did we get error creating export bookmark: \(err)")
+			}
+			savePanel.close()
+			if result == NSFileHandlingPanelOKButton && savePanel.URL != nil {
+				do {
+					try NSFileManager.defaultManager().copyItemAtURL(self.session.fileHandler.fileCache.cachedFileUrl(self.selectedFile!), toURL: savePanel.URL!)
+				} catch let error as NSError {
+					log.warning("failed to copy file for export:\(error)")
+					let alert = NSAlert(error:error)
+					alert.beginSheetModalForWindow(self.view.window!) { (response) -> Void in
+						//do nothing
+					}
+				}
+			}
+		}
 	}
 	
 	@IBAction func exportAllFiles(sender:AnyObject?) {

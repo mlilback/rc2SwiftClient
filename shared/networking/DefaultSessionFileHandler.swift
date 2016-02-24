@@ -7,28 +7,36 @@
 import Foundation
 import BrightFutures
 
-class DefaultSessionFileHandler: SessionFileHandler, FileCacheDownloadDelegate {
+class DefaultSessionFileHandler: SessionFileHandler {
 	var workspace:Workspace
 	let fileCache:FileCache
+	let appStatus:AppStatus?
 	var baseUrl:NSURL
 	weak var fileDelegate:SessionFileHandlerDelegate?
 	private(set) var filesLoaded:Bool = false
-	private var downloadPromise: Promise <Bool,FileError>
+	private var downloadPromise: Promise <Bool,NSError>
 	
-	init(wspace:Workspace, baseUrl:NSURL, config:NSURLSessionConfiguration) {
+	init(wspace:Workspace, baseUrl:NSURL, config:NSURLSessionConfiguration, appStatus:AppStatus?) {
 		self.workspace = wspace
-		self.fileCache = FileCache(baseUrl: baseUrl, config: config)
+		self.appStatus = appStatus
+		self.fileCache = FileCache(workspace: workspace, baseUrl: baseUrl, config: config, appStatus:appStatus)
 		self.baseUrl = baseUrl
-		self.downloadPromise = Promise<Bool,FileError>()
+		self.downloadPromise = Promise<Bool,NSError>()
 	}
 	
 	func loadFiles() {
-		do  {
-			downloadPromise = Promise<Bool,FileError>()
-			try fileCache.cacheFilesForWorkspace(workspace, delegate: self)
-		} catch {
-			//TODO: inform caller that already in progress
-			log.error("loadFiles called while load already in progress")
+		filesLoaded = false //can be called to cache any new files
+		fileCache.cacheAllFiles() { (progress) in
+			self.appStatus?.updateStatus(progress)
+			progress.rc2_addCompletionHandler() {
+				if let error = progress.rc2_error {
+					self.downloadPromise.failure(error)
+				} else {
+					self.filesLoaded = true
+					self.downloadPromise.success(true)
+				}
+				self.appStatus?.updateStatus(nil)
+			}
 		}
 	}
 
@@ -40,10 +48,10 @@ class DefaultSessionFileHandler: SessionFileHandler, FileCacheDownloadDelegate {
 				if let data = NSData(contentsOfURL: self.fileCache.cachedFileUrl(file)) {
 					p.success(data)
 				} else {
-					p.failure(self.downloadPromise.future.error!)
+					p.failure(FileError.FoundationError(error: self.downloadPromise.future.error!))
 				}
 			}.onFailure() { err in
-				p.failure(err)
+				p.failure(FileError.FoundationError(error: err))
 			}
 		} else {
 			if let data = NSData(contentsOfURL: fileCache.cachedFileUrl(file)) {
@@ -55,22 +63,11 @@ class DefaultSessionFileHandler: SessionFileHandler, FileCacheDownloadDelegate {
 		return p.future
 	}
 	
-	///called as bytes are recieved over the network
-	func fileCache(cache:FileCache, updatedProgressWithStatus progress:FileCacheDownloadStatus) {
-		
-	}
-	
 	///called when all the files have been downloaded and cached
-	func fileCacheDidFinishDownload(cache:FileCache, workspace:Workspace) {
+	func loadComplete() {
 		fileDelegate?.filesLoaded()
 		filesLoaded = true
 		downloadPromise.success(true)
 	}
 	
-	///called on error. The download is canceled and fileCacheDidFinishDownload is not called
-	func fileCache(cache:FileCache, failedToDownload file:File, error:ErrorType) {
-		log.error("error loading file \(file.name): \(error)")
-		downloadPromise.failure(.FailedToDownload)
-	}
-
 }

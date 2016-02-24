@@ -87,6 +87,15 @@ import Result
 		}
 	}
 	
+	private func createError(err:FileError, description:String) -> NSError {
+		switch(err) {
+			case .FoundationError(let nserror):
+				return nserror
+			default:
+				return NSError(domain: Rc2ErrorDomain, code: 1, userInfo: [NSLocalizedDescriptionKey:NSLocalizedString(description, comment: "")])
+		}
+	}
+	
 	private func createError(code:Int, description:String) -> NSError {
 		return NSError(domain: Rc2ErrorDomain, code: code, userInfo: [NSLocalizedDescriptionKey:NSLocalizedString(description, comment: "")])
 	}
@@ -246,7 +255,7 @@ import Result
 				try self.fileManager.moveItemAtURL(dloadUrl!, toURL: fileUrl)
 				handler(success: true, results: fileUrl, error: nil)
 			} catch let err as NSError {
-				let error = self.createError(FileError.FailedToSaveFile.rawValue, description: err.localizedDescription)
+				let error = self.createError(FileError.FailedToSaveFile, description: err.localizedDescription)
 				handler(success: false, results: nil, error: error)
 			}
 		}.onFailure(Queue.main.context) { (error) in

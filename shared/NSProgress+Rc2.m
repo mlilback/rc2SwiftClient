@@ -27,39 +27,18 @@ typedef  void (^ _Nonnull ProgressCompleteCallback)();
 	if ((self = [super init]))  {
 		self.progress = prog;
 		self.completionBlocks = [NSMutableSet set];
-		[self.progress addObserver:self forKeyPath:@"completedUnitCount" options:NSKeyValueObservingOptionNew context:&CompletionHandlerKey];
 	}
 	return self;
 }
 
--(void)dealloc
-{
-	[self.progress removeObserver:self forKeyPath:@"completedUnitCount"];
-}
-
 -(void)progressComplete
 {
-	NSLog(@"calling progress completion handlers");
 	for (ProgressCompleteCallback block in self.completionBlocks) {
 		dispatch_async(dispatch_get_main_queue(), ^{
 			block(self);
 		});
 	}
 	[self.completionBlocks removeAllObjects];
-}
-
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
-{
-	if (context == &CompletionHandlerKey && [keyPath isEqualToString:@"completedUnitCount"])
-	{
-		NSLog(@"fractionComplete changed %1.4f", [object fractionCompleted]);
-//		double fraction = [object fractionCompleted];
-//		if (fraction >= 1.0) {
-//			[self progressComplete];
-//		}
-	} else {
-		[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-	}
 }
 
 -(void)addCompletionHandler:( void (^ _Nonnull )())handler
