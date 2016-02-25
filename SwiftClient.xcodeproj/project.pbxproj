@@ -17,6 +17,15 @@
 		0816F89E1C6D320D00A6120B /* DefaultSessionFileHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89D1C6D320D00A6120B /* DefaultSessionFileHandler.swift */; };
 		0816F8A01C6D3A4500A6120B /* MacSessionHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89F1C6D3A4500A6120B /* MacSessionHandlers.swift */; };
 		0825475B1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0825475A1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift */; };
+		0827A4E11C7ED9CE001F0AFB /* DocumentChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4D81C7ED9CE001F0AFB /* DocumentChunk.swift */; };
+		0827A4E21C7ED9CE001F0AFB /* CodeHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4D91C7ED9CE001F0AFB /* CodeHighlighter.swift */; };
+		0827A4E31C7ED9CE001F0AFB /* LatexCodeHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4DA1C7ED9CE001F0AFB /* LatexCodeHighlighter.swift */; };
+		0827A4E41C7ED9CE001F0AFB /* RCodeHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4DB1C7ED9CE001F0AFB /* RCodeHighlighter.swift */; };
+		0827A4E51C7ED9CE001F0AFB /* RKeywords.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0827A4DC1C7ED9CE001F0AFB /* RKeywords.txt */; };
+		0827A4E61C7ED9CE001F0AFB /* RmdSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4DD1C7ED9CE001F0AFB /* RmdSyntaxParser.swift */; };
+		0827A4E71C7ED9CE001F0AFB /* RnwSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4DE1C7ED9CE001F0AFB /* RnwSyntaxParser.swift */; };
+		0827A4E81C7ED9CE001F0AFB /* RSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4DF1C7ED9CE001F0AFB /* RSyntaxParser.swift */; };
+		0827A4E91C7ED9CE001F0AFB /* SyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4E01C7ED9CE001F0AFB /* SyntaxParser.swift */; };
 		083174041C5571D300071408 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174031C5571D300071408 /* RootViewController.swift */; };
 		083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174051C56BE7B00071408 /* SessionSplitController.swift */; };
 		0831740A1C56DB2B00071408 /* Swinject.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086BC9B21C556A2E006ABAE0 /* Swinject.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -148,6 +157,15 @@
 		0816F89D1C6D320D00A6120B /* DefaultSessionFileHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultSessionFileHandler.swift; sourceTree = "<group>"; };
 		0816F89F1C6D3A4500A6120B /* MacSessionHandlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionHandlers.swift; sourceTree = "<group>"; };
 		0825475A1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceKVOTests.swift; sourceTree = "<group>"; };
+		0827A4D81C7ED9CE001F0AFB /* DocumentChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentChunk.swift; sourceTree = "<group>"; };
+		0827A4D91C7ED9CE001F0AFB /* CodeHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeHighlighter.swift; sourceTree = "<group>"; };
+		0827A4DA1C7ED9CE001F0AFB /* LatexCodeHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatexCodeHighlighter.swift; sourceTree = "<group>"; };
+		0827A4DB1C7ED9CE001F0AFB /* RCodeHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RCodeHighlighter.swift; sourceTree = "<group>"; };
+		0827A4DC1C7ED9CE001F0AFB /* RKeywords.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = RKeywords.txt; sourceTree = "<group>"; };
+		0827A4DD1C7ED9CE001F0AFB /* RmdSyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RmdSyntaxParser.swift; sourceTree = "<group>"; };
+		0827A4DE1C7ED9CE001F0AFB /* RnwSyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RnwSyntaxParser.swift; sourceTree = "<group>"; };
+		0827A4DF1C7ED9CE001F0AFB /* RSyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSyntaxParser.swift; sourceTree = "<group>"; };
+		0827A4E01C7ED9CE001F0AFB /* SyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxParser.swift; sourceTree = "<group>"; };
 		083174031C5571D300071408 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		083174051C56BE7B00071408 /* SessionSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionSplitController.swift; sourceTree = "<group>"; };
 		0831740D1C577A2500071408 /* ConsoleTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleTextField.swift; sourceTree = "<group>"; };
@@ -273,6 +291,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0827A4D71C7ED9CE001F0AFB /* SyntaxHighlighting */ = {
+			isa = PBXGroup;
+			children = (
+				0827A4D81C7ED9CE001F0AFB /* DocumentChunk.swift */,
+				0827A4D91C7ED9CE001F0AFB /* CodeHighlighter.swift */,
+				0827A4DB1C7ED9CE001F0AFB /* RCodeHighlighter.swift */,
+				0827A4DA1C7ED9CE001F0AFB /* LatexCodeHighlighter.swift */,
+				0827A4DC1C7ED9CE001F0AFB /* RKeywords.txt */,
+				0827A4DD1C7ED9CE001F0AFB /* RmdSyntaxParser.swift */,
+				0827A4DE1C7ED9CE001F0AFB /* RnwSyntaxParser.swift */,
+				0827A4DF1C7ED9CE001F0AFB /* RSyntaxParser.swift */,
+				0827A4E01C7ED9CE001F0AFB /* SyntaxParser.swift */,
+			);
+			path = SyntaxHighlighting;
+			sourceTree = "<group>";
+		};
 		083305D11C4FC76C00E27F66 /* extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -406,6 +440,7 @@
 				088CE6B51C4B71F300153414 /* Constants.swift */,
 				088CE6961C4B605D00153414 /* model */,
 				088CE69D1C4B605D00153414 /* networking */,
+				0827A4D71C7ED9CE001F0AFB /* SyntaxHighlighting */,
 				086BC9AE1C552D43006ABAE0 /* AppStatus.swift */,
 				088CE6951C4B605D00153414 /* ColorEnums.swift */,
 				083382F51C68E59300D40EEB /* FileCache.swift */,
@@ -604,6 +639,7 @@
 				08F448FD1C4E244500C64706 /* MainWindow.storyboard in Resources */,
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
 				088CE6AB1C4B605D00153414 /* RestHosts.json in Resources */,
+				0827A4E51C7ED9CE001F0AFB /* RKeywords.txt in Resources */,
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
 				088CE6A71C4B605D00153414 /* FileTypes.plist in Resources */,
 			);
@@ -651,6 +687,7 @@
 				08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */,
 				0868FC591C7789C3002386CB /* NSURL+Rc2.swift in Sources */,
 				088CE6A41C4B605D00153414 /* ColorEnums.swift in Sources */,
+				0827A4E21C7ED9CE001F0AFB /* CodeHighlighter.swift in Sources */,
 				083382F31C653B6300D40EEB /* xattr.swift in Sources */,
 				083305E41C517FC000E27F66 /* VariableViewController.swift in Sources */,
 				088CE6AA1C4B605D00153414 /* Workspace.swift in Sources */,
@@ -665,11 +702,13 @@
 				0816F8A01C6D3A4500A6120B /* MacSessionHandlers.swift in Sources */,
 				0816F89E1C6D320D00A6120B /* DefaultSessionFileHandler.swift in Sources */,
 				0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */,
+				0827A4E61C7ED9CE001F0AFB /* RmdSyntaxParser.swift in Sources */,
 				08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */,
 				083550CD1C760F050013E2B5 /* NSProgress+Rc2.m in Sources */,
 				0833061E1C541BB700E27F66 /* SwiftyJSON.swift in Sources */,
 				087AE5B01C75F12600076F7A /* KVObserver.swift in Sources */,
 				08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */,
+				0827A4E71C7ED9CE001F0AFB /* RnwSyntaxParser.swift in Sources */,
 				0816F89C1C6D2BA000A6120B /* SessionDelegates.swift in Sources */,
 				08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */,
 				08B036221C73B131005928B3 /* FileImporter.swift in Sources */,
@@ -677,6 +716,7 @@
 				08F448FC1C4E244500C64706 /* SessionConsoleController.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
 				08CB55521C5C06B2002CB7EE /* OutputController.swift in Sources */,
+				0827A4E31C7ED9CE001F0AFB /* LatexCodeHighlighter.swift in Sources */,
 				088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */,
 				0816F89A1C6D0F7D00A6120B /* HTMLString.swift in Sources */,
 				083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */,
@@ -688,7 +728,9 @@
 				088CE6AE1C4B605D00153414 /* Session.swift in Sources */,
 				080214881C693A69008B55D3 /* FileManager.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
+				0827A4E41C7ED9CE001F0AFB /* RCodeHighlighter.swift in Sources */,
 				088CE6BE1C4DAFA500153414 /* WorkspacesViewController.swift in Sources */,
+				0827A4E11C7ED9CE001F0AFB /* DocumentChunk.swift in Sources */,
 				083174161C587F7F00071408 /* ImageCache.swift in Sources */,
 				083174141C5828B400071408 /* ResultsView.swift in Sources */,
 				087AE5AF1C75F12600076F7A /* KVObserver.m in Sources */,
@@ -703,6 +745,8 @@
 				088CE6B81C4C44A800153414 /* Keychain.swift in Sources */,
 				083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */,
 				086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */,
+				0827A4E81C7ED9CE001F0AFB /* RSyntaxParser.swift in Sources */,
+				0827A4E91C7ED9CE001F0AFB /* SyntaxParser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
