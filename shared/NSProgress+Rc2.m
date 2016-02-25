@@ -8,7 +8,7 @@
 
 #import "NSProgress+Rc2.h"
 #import <objc/runtime.h>
-#import "KVObserver.h"
+#import "PMKVObserver/PMKVObserver.h"
 
 NSString* CompletionHandlerKey = @"rc2.completionHandler";
 NSString* FractionTokenKey = @"rc.fractionToken";

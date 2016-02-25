@@ -8,6 +8,7 @@ import Foundation
 import SwiftWebSocket
 import BrightFutures
 import Result
+import SwiftyJSON
 
 @objc public class RestServer : NSObject {
 

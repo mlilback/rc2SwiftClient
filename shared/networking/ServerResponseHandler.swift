@@ -9,6 +9,7 @@
 #else
 	import UIKit
 #endif
+import SwiftyJSON
 
 enum FileChangeType : String {
 	case Update, Insert, Delete

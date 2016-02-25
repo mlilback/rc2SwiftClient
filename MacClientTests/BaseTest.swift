@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import MacClient
+import SwiftyJSON
 
 class BaseTest: XCTestCase {
 

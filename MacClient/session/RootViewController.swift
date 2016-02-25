@@ -6,6 +6,7 @@
 
 import Cocoa
 import CryptoSwift
+import SwiftyJSON
 
 class RootViewController: AbstractSessionViewController, SessionDelegate, ResponseHandlerDelegate, FileViewControllerDelegate, ToolbarItemHandler
 {

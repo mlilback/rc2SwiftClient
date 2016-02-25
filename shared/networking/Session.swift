@@ -9,6 +9,7 @@ import XCGLogger
 #if os(OSX)
 	import AppKit
 #endif
+import SwiftyJSON
 
 public class Session : NSObject, SessionFileHandlerDelegate {
 	///tried kvo, forced to use notifications

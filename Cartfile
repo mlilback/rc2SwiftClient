@@ -1,0 +1,10 @@
+github "DaveWoodCom/XCGLogger" >= 3.2
+github "kylef/Mockingjay"
+github "SwiftyJSON/SwiftyJSON"
+github "tidwall/SwiftWebSocket"
+github "Swinject/Swinject"
+github "Thomvis/BrightFutures"
+github "antitypical/Result"
+github "krzyzanowskim/CryptoSwift"
+github "postmates/PMKVObserver"
+github "kylef/URITemplate.swift"

@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 public class User: CustomStringConvertible, Equatable {
 	let userId : Int32;

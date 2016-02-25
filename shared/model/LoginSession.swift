@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 public class LoginSession: CustomStringConvertible {
 	let host : String;

@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 public enum ServerResponse : Equatable {
 	case Error(queryId:Int, error:String)

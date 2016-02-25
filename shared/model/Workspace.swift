@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 ///posted to defaultCenter when a change happens to a member of the files array.
 let WorkspaceFileChangedNotification = "WorkspaceFileChangedNotification"

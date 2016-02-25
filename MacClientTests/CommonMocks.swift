@@ -50,6 +50,11 @@ class MockFileManager: NSFileManager {
 		}
 	}
 	
+	override func contentsEqualAtPath(path1: String, andPath path2: String) -> Bool {
+		log.info("compare files: \(path1) and \(path2)")
+		return super.contentsEqualAtPath(path1, andPath: path2)
+	}
+	
 	override func URLForDirectory(directory: NSSearchPathDirectory, inDomain domain: NSSearchPathDomainMask, appropriateForURL url: NSURL?, create shouldCreate: Bool) throws -> NSURL
 	{
 		switch(directory) {

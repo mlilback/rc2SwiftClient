@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import SwiftyJSON
 
 /** represents a file to import along with the name to use for it (in case there already is a file with that name. If the name is nil, use the existing file name. */
 struct FileToImport {

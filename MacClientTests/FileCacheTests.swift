@@ -10,6 +10,7 @@ import XCTest
 @testable import MacClient
 import BrightFutures
 import Mockingjay
+import SwiftyJSON
 
 class FileCacheTests: BaseTest {
 	var cache:FileCache!
