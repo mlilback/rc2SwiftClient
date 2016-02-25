@@ -5,25 +5,40 @@
 //
 
 import Foundation
+#if os(OSX)
+	import AppKit
+#endif
+import PEGKit
 
 let RCodeHighlighterColors = "RCodeHighlighterColors"
 
-class RCodeHighlighter: NSObject, CodeHighlighter {
-	///loads RCodeHighlighterColors [String:String(hexcode)] from NSUserDefaults
-	let colorMap:[SyntaxColor:PlatformColor]
+class RCodeHighlighter: CodeHighlighter {
 	
-	///will cause runtime exception if RCodeHighlighterColors not in user defaults with string keys matching SyntaxColor enum rawValues and color hex strings for values
-	override init() {
-		let srcMap = NSUserDefaults.standardUserDefaults().objectForKey(RCodeHighlighterColors) as! [String:String]
-		var dict: [SyntaxColor:PlatformColor] = [:]
-		for (key,value) in srcMap {
-			try! dict[SyntaxColor(rawValue:key)!] = PlatformColor(hex:value)
+	let keywords:Set<String> = {
+		let url = NSBundle().URLForResource("RKeywords", withExtension: "txt")!
+		let keyArray = try! NSString(contentsOfURL: url, encoding: NSUTF8StringEncoding).componentsSeparatedByString("\n")
+		return Set<String>(keyArray)
+	}()
+	
+	override func colorForToken(token:PKToken, lastToken:PKToken?, inout includePreviousCharacter usePrevious:Bool) -> PlatformColor?
+	{
+		var color:PlatformColor?
+		switch(token.tokenType) {
+			case .Comment:
+				color = colorMap[.Comment]
+			case .QuotedString:
+				color = colorMap[.Quote]
+			case .Number:
+				color = PlatformColor.blackColor()
+			case .Symbol:
+				color = colorMap[.Symbol]
+			case .Word:
+				if keywords.contains(token.stringValue) {
+					color = colorMap[.Keyword]
+				}
+			default:
+				color = nil
 		}
-		self.colorMap = dict
-		super.init()
-	}
-	
-	func highlightText(content:NSMutableAttributedString, range:NSRange) {
-		
+		return color
 	}
 }

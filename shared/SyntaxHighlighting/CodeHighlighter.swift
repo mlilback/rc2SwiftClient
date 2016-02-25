@@ -5,6 +5,10 @@
 //
 
 import Foundation
+import PEGKit
+#if os(OSX)
+	import AppKit
+#endif
 
 enum SyntaxColor: String {
 	case Comment, Keyword, Function, Quote, Symbol, CodeBackground, InlineBackground, EquationBackground
@@ -12,8 +16,57 @@ enum SyntaxColor: String {
 	static let allValues = [Comment, Keyword, Function, Quote, Symbol, CodeBackground, InlineBackground, EquationBackground]
 }
 
-protocol CodeHighlighter: NSObjectProtocol {
-	var colorMap:[SyntaxColor:PlatformColor] { get }
+class CodeHighlighter: NSObject {
+	var colorMap:[SyntaxColor:PlatformColor] = {
+		let srcMap = NSUserDefaults.standardUserDefaults().objectForKey(RCodeHighlighterColors) as! [String:String]
+		var dict: [SyntaxColor:PlatformColor] = [:]
+		for (key,value) in srcMap {
+			try! dict[SyntaxColor(rawValue:key)!] = PlatformColor(hex:value)
+		}
+		return dict
+	}()
 	
-	func highlightText(content:NSMutableAttributedString, range:NSRange)
+	///subclass should override this to return the color to use and if the previous character should be colorized, too (for latex)
+	func colorForToken(token:PKToken, lastToken:PKToken?, inout includePreviousCharacter usePrevious:Bool) -> PlatformColor?
+	{
+		preconditionFailure("subclass must override highlightText")
+	}
+	
+	///should not manipulate the string, only attributes
+	func addAttributes(string:NSMutableAttributedString, range:NSRange) {
+		
+	}
+	
+	func highlightText(content:NSMutableAttributedString, range:NSRange) {
+		content.removeAttribute(NSForegroundColorAttributeName, range: range)
+		addAttributes(content, range:range)
+		let sourceStr = content.string.substringWithRange(range.toStringRange(content.string)!)
+
+		let tokenizer = PKTokenizer(string: sourceStr)
+		let slash = Int32("/".unicodeScalars.first!.value)
+		let hash = Int32("#".unicodeScalars.first!.value)
+		tokenizer.setTokenizerState(tokenizer.symbolState, from: slash, to: slash)
+		tokenizer.commentState.reportsCommentTokens = true
+		tokenizer.commentState.addSingleLineStartMarker("#")
+		tokenizer.commentState.reportsCommentTokens = true
+		tokenizer.symbolState.add("<-")
+		tokenizer.symbolState.remove(":-")
+		tokenizer.setTokenizerState(tokenizer.commentState, from: hash, to: hash)
+		let eof = PKToken.EOFToken()
+		var lastToken:PKToken?
+		while let token = tokenizer.nextToken() where token != eof {
+			var tokenRange = NSMakeRange(range.location + Int(token.offset), token.stringValue.characters.count)
+			var includePrevious:Bool = false
+			if let color = colorForToken(token, lastToken: lastToken, includePreviousCharacter: &includePrevious)
+			{
+				if includePrevious {
+					tokenRange.location -= 1
+					tokenRange.length += 1
+				}
+				content.addAttribute(NSForegroundColorAttributeName, value: color, range: tokenRange)
+				
+			}
+			lastToken = token
+		}
+	}
 }

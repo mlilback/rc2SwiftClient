@@ -111,6 +111,9 @@
 		088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 088CE6B91C4C44BD00153414 /* Security.framework */; };
 		088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6BB1C4C508000153414 /* KeychainTests.swift */; };
 		088CE6BE1C4DAFA500153414 /* WorkspacesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6BD1C4DAFA500153414 /* WorkspacesViewController.swift */; };
+		089346011C7F660B00100CF6 /* PEGKit.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 089346001C7F660B00100CF6 /* PEGKit.framework.dSYM */; };
+		089346031C7F661400100CF6 /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; };
+		089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */; };
 		08B036221C73B131005928B3 /* FileImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B036211C73B131005928B3 /* FileImporter.swift */; };
 		08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */; };
@@ -121,7 +124,6 @@
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08EFF6031C7BB2E600AAF1D4 /* MultipartInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */; };
-		08F2A85D1C7F36EC00A803A0 /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08F2A85B1C7F36EC00A803A0 /* Mockingjay.framework */; };
 		08F2A85E1C7F36EC00A803A0 /* Mockingjay.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */; };
 		08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* SessionEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* MacSessionMultiController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* MacSessionMultiController.swift */; };
@@ -153,6 +155,7 @@
 				082FF1D01C7F321B00CCC27F /* SwiftWebSocket.framework in Embed Frameworks */,
 				082FF1CE1C7F321B00CCC27F /* Result.framework in Embed Frameworks */,
 				082FF1D21C7F321B00CCC27F /* SwiftyJSON.framework in Embed Frameworks */,
+				089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */,
 				082FF1D41C7F321B00CCC27F /* Swinject.framework in Embed Frameworks */,
 				082FF1C61C7F321B00CCC27F /* BrightFutures.framework in Embed Frameworks */,
 				082FF1C81C7F321B00CCC27F /* CryptoSwift.framework in Embed Frameworks */,
@@ -170,8 +173,8 @@
 			files = (
 				082FF1E21C7F323800CCC27F /* BrightFutures.framework.dSYM in CopyFiles */,
 				082FF1E31C7F323800CCC27F /* CryptoSwift.framework.dSYM in CopyFiles */,
-				08F2A85D1C7F36EC00A803A0 /* Mockingjay.framework in CopyFiles */,
 				08F2A85E1C7F36EC00A803A0 /* Mockingjay.framework.dSYM in CopyFiles */,
+				089346011C7F660B00100CF6 /* PEGKit.framework.dSYM in CopyFiles */,
 				082FF1E51C7F323800CCC27F /* PMKVObserver.framework.dSYM in CopyFiles */,
 				082FF1E61C7F323800CCC27F /* Result.framework.dSYM in CopyFiles */,
 				082FF1E71C7F323800CCC27F /* SwiftWebSocket.framework.dSYM in CopyFiles */,
@@ -291,6 +294,8 @@
 		088CE6B91C4C44BD00153414 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		088CE6BB1C4C508000153414 /* KeychainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
 		088CE6BD1C4DAFA500153414 /* WorkspacesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WorkspacesViewController.swift; path = workspaces/WorkspacesViewController.swift; sourceTree = "<group>"; };
+		089346001C7F660B00100CF6 /* PEGKit.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = PEGKit.framework.dSYM; path = Carthage/Build/Mac/PEGKit.framework.dSYM; sourceTree = "<group>"; };
+		089346021C7F661400100CF6 /* PEGKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PEGKit.framework; path = Carthage/Build/Mac/PEGKit.framework; sourceTree = "<group>"; };
 		089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSStoryboard+TypeSaftey.swift"; sourceTree = "<group>"; };
 		08B036211C73B131005928B3 /* FileImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporter.swift; sourceTree = "<group>"; };
 		08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManager.swift; sourceTree = "<group>"; };
@@ -302,7 +307,6 @@
 		08ED575E1C724383002B2558 /* MacFileImportSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacFileImportSetup.swift; sourceTree = "<group>"; };
 		08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStream.swift; sourceTree = "<group>"; };
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
-		08F2A85B1C7F36EC00A803A0 /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Build/Mac/Mockingjay.framework; sourceTree = "<group>"; };
 		08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Mockingjay.framework.dSYM; path = Carthage/Build/Mac/Mockingjay.framework.dSYM; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* SessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditorController.swift; sourceTree = "<group>"; };
 		08F448F61C4E244500C64706 /* MacSessionMultiController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionMultiController.swift; sourceTree = "<group>"; };
@@ -319,6 +323,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				082FF1D11C7F321B00CCC27F /* SwiftyJSON.framework in Frameworks */,
+				089346031C7F661400100CF6 /* PEGKit.framework in Frameworks */,
 				082FF1CB1C7F321B00CCC27F /* PMKVObserver.framework in Frameworks */,
 				082FF1EE1C7F339400CCC27F /* URITemplate.framework in Frameworks */,
 				082FF1C71C7F321B00CCC27F /* CryptoSwift.framework in Frameworks */,
@@ -405,8 +410,6 @@
 		088CE6601C4B0AF400153414 = {
 			isa = PBXGroup;
 			children = (
-				082FF1DB1C7F323800CCC27F /* Mockingjay.framework.dSYM */,
-				082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */,
 				088CE66B1C4B0AF400153414 /* MacClient */,
 				088CE6941C4B605D00153414 /* shared */,
 				0833061F1C541BBC00E27F66 /* 3rdParty */,
@@ -476,7 +479,10 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				08F2A85B1C7F36EC00A803A0 /* Mockingjay.framework */,
+				089346021C7F661400100CF6 /* PEGKit.framework */,
+				089346001C7F660B00100CF6 /* PEGKit.framework.dSYM */,
+				082FF1DB1C7F323800CCC27F /* Mockingjay.framework.dSYM */,
+				082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */,
 				08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */,
 				082FF1ED1C7F339400CCC27F /* URITemplate.framework */,
 				082FF1EB1C7F338C00CCC27F /* URITemplate.framework.dSYM */,
@@ -496,14 +502,6 @@
 				082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */,
 				082FF1C31C7F321B00CCC27F /* Swinject.framework */,
 				082FF1C41C7F321B00CCC27F /* XCGLogger.framework */,
-				08CB55411C5A8756002CB7EE /* CryptoSwift.framework */,
-				08FDB19C1C5919BC006FCD1A /* BrightFutures.framework */,
-				0831741B1C588B1E00071408 /* Result.framework */,
-				083174171C5888F200071408 /* BrightFutures.framework */,
-				086BC9B21C556A2E006ABAE0 /* Swinject.framework */,
-				086BC9A91C54B9C7006ABAE0 /* SwiftWebSocket.framework */,
-				086BC9A31C5423D0006ABAE0 /* Mockingjay.framework */,
-				086BC99E1C5422C0006ABAE0 /* XCGLogger.framework */,
 				088CE6B91C4C44BD00153414 /* Security.framework */,
 			);
 			name = Frameworks;
@@ -563,20 +561,6 @@
 				08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */,
 			);
 			path = networking;
-			sourceTree = "<group>";
-		};
-		08ED57011C7140C0002B2558 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		08ED57071C7140C0002B2558 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		08ED575A1C7140C0002B2558 /* Products */ = {
@@ -685,16 +669,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 08ED57011C7140C0002B2558 /* Products */;
-					ProjectRef = 08FDB19C1C5919BC006FCD1A /* BrightFutures.framework */;
-				},
-				{
 					ProductGroup = 08ED575A1C7140C0002B2558 /* Products */;
 					ProjectRef = 088CE67A1C4B0AF500153414 /* MacClientTests.xctest */;
-				},
-				{
-					ProductGroup = 08ED57071C7140C0002B2558 /* Products */;
-					ProjectRef = 086BC9A31C5423D0006ABAE0 /* Mockingjay.framework */;
 				},
 			);
 			projectRoot = "";

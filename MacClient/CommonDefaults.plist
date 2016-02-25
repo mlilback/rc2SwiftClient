@@ -4,22 +4,6 @@
 <dict>
 	<key>WebKitDeveloperExtras</key>
 	<true/>
-	<key>SyntaxColor_Comment</key>
-	<string>1735FF</string>
-	<key>SyntaxColor_Keyword</key>
-	<string>C71267</string>
-	<key>SyntaxColor_Function</key>
-	<string>C78312</string>
-	<key>SyntaxColor_Quote</key>
-	<string>31aa2a</string>
-	<key>SyntaxColor_Symbol</key>
-	<string>c7c431</string>
-	<key>SyntaxColor_CodeBackground</key>
-	<string>eeeeee</string>
-	<key>SyntaxColor_InlineBackground</key>
-	<string>eef4cd</string>
-	<key>SyntaxColor_EquationBackground</key>
-	<string>f3e4bc</string>
 	<key>EditorFontColor</key>
 	<string>000000</string>
 	<key>OutputColor_Input</key>
@@ -70,5 +54,24 @@
 	</dict>
 	<key>EditorBGColor</key>
 	<string>FFFFFF</string>
+	<key>RCodeHighlighterColors</key>
+	<dict>
+		<key>Comment</key>
+		<string>1735FF</string>
+		<key>Keyword</key>
+		<string>C71267</string>
+		<key>Function</key>
+		<string>C78312</string>
+		<key>Quote</key>
+		<string>31aa2a</string>
+		<key>Symbol</key>
+		<string>c7c431</string>
+		<key>CodeBackground</key>
+		<string>eeeeee</string>
+		<key>InlineBackground</key>
+		<string>eef4cd</string>
+		<key>EquationBackground</key>
+		<string>f3e4bc</string>
+	</dict>
 </dict>
 </plist>
