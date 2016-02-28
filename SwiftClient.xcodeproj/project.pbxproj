@@ -24,7 +24,6 @@
 		0827A4E51C7ED9CE001F0AFB /* RKeywords.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0827A4DC1C7ED9CE001F0AFB /* RKeywords.txt */; };
 		0827A4E61C7ED9CE001F0AFB /* RmdSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4DD1C7ED9CE001F0AFB /* RmdSyntaxParser.swift */; };
 		0827A4E71C7ED9CE001F0AFB /* RnwSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4DE1C7ED9CE001F0AFB /* RnwSyntaxParser.swift */; };
-		0827A4E81C7ED9CE001F0AFB /* RSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4DF1C7ED9CE001F0AFB /* RSyntaxParser.swift */; };
 		0827A4E91C7ED9CE001F0AFB /* SyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4E01C7ED9CE001F0AFB /* SyntaxParser.swift */; };
 		082FF1C51C7F321B00CCC27F /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
 		082FF1C61C7F321B00CCC27F /* BrightFutures.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -114,6 +113,7 @@
 		089346011C7F660B00100CF6 /* PEGKit.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 089346001C7F660B00100CF6 /* PEGKit.framework.dSYM */; };
 		089346031C7F661400100CF6 /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; };
 		089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		089346061C7FB14B00100CF6 /* SyntaxColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089346051C7FB14B00100CF6 /* SyntaxColor.swift */; };
 		089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */; };
 		08B036221C73B131005928B3 /* FileImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B036211C73B131005928B3 /* FileImporter.swift */; };
 		08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */; };
@@ -203,7 +203,6 @@
 		0827A4DC1C7ED9CE001F0AFB /* RKeywords.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = RKeywords.txt; sourceTree = "<group>"; };
 		0827A4DD1C7ED9CE001F0AFB /* RmdSyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RmdSyntaxParser.swift; sourceTree = "<group>"; };
 		0827A4DE1C7ED9CE001F0AFB /* RnwSyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RnwSyntaxParser.swift; sourceTree = "<group>"; };
-		0827A4DF1C7ED9CE001F0AFB /* RSyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSyntaxParser.swift; sourceTree = "<group>"; };
 		0827A4E01C7ED9CE001F0AFB /* SyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxParser.swift; sourceTree = "<group>"; };
 		082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BrightFutures.framework; path = Carthage/Build/Mac/BrightFutures.framework; sourceTree = "<group>"; };
 		082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/Mac/CryptoSwift.framework; sourceTree = "<group>"; };
@@ -296,6 +295,7 @@
 		088CE6BD1C4DAFA500153414 /* WorkspacesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WorkspacesViewController.swift; path = workspaces/WorkspacesViewController.swift; sourceTree = "<group>"; };
 		089346001C7F660B00100CF6 /* PEGKit.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = PEGKit.framework.dSYM; path = Carthage/Build/Mac/PEGKit.framework.dSYM; sourceTree = "<group>"; };
 		089346021C7F661400100CF6 /* PEGKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PEGKit.framework; path = Carthage/Build/Mac/PEGKit.framework; sourceTree = "<group>"; };
+		089346051C7FB14B00100CF6 /* SyntaxColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxColor.swift; sourceTree = "<group>"; };
 		089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSStoryboard+TypeSaftey.swift"; sourceTree = "<group>"; };
 		08B036211C73B131005928B3 /* FileImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporter.swift; sourceTree = "<group>"; };
 		08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManager.swift; sourceTree = "<group>"; };
@@ -352,6 +352,7 @@
 		0827A4D71C7ED9CE001F0AFB /* SyntaxHighlighting */ = {
 			isa = PBXGroup;
 			children = (
+				089346051C7FB14B00100CF6 /* SyntaxColor.swift */,
 				0827A4D81C7ED9CE001F0AFB /* DocumentChunk.swift */,
 				0827A4D91C7ED9CE001F0AFB /* CodeHighlighter.swift */,
 				0827A4DB1C7ED9CE001F0AFB /* RCodeHighlighter.swift */,
@@ -359,7 +360,6 @@
 				0827A4DC1C7ED9CE001F0AFB /* RKeywords.txt */,
 				0827A4DD1C7ED9CE001F0AFB /* RmdSyntaxParser.swift */,
 				0827A4DE1C7ED9CE001F0AFB /* RnwSyntaxParser.swift */,
-				0827A4DF1C7ED9CE001F0AFB /* RSyntaxParser.swift */,
 				0827A4E01C7ED9CE001F0AFB /* SyntaxParser.swift */,
 			);
 			path = SyntaxHighlighting;
@@ -783,6 +783,7 @@
 				0827A4E11C7ED9CE001F0AFB /* DocumentChunk.swift in Sources */,
 				083174161C587F7F00071408 /* ImageCache.swift in Sources */,
 				083174141C5828B400071408 /* ResultsView.swift in Sources */,
+				089346061C7FB14B00100CF6 /* SyntaxColor.swift in Sources */,
 				088CE6AC1C4B605D00153414 /* RestServer.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,
 				083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */,
@@ -794,7 +795,6 @@
 				088CE6B81C4C44A800153414 /* Keychain.swift in Sources */,
 				083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */,
 				086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */,
-				0827A4E81C7ED9CE001F0AFB /* RSyntaxParser.swift in Sources */,
 				0827A4E91C7ED9CE001F0AFB /* SyntaxParser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

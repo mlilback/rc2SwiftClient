@@ -10,21 +10,8 @@ import PEGKit
 	import AppKit
 #endif
 
-enum SyntaxColor: String {
-	case Comment, Keyword, Function, Quote, Symbol, CodeBackground, InlineBackground, EquationBackground
-	
-	static let allValues = [Comment, Keyword, Function, Quote, Symbol, CodeBackground, InlineBackground, EquationBackground]
-}
-
 class CodeHighlighter: NSObject {
-	var colorMap:[SyntaxColor:PlatformColor] = {
-		let srcMap = NSUserDefaults.standardUserDefaults().objectForKey(RCodeHighlighterColors) as! [String:String]
-		var dict: [SyntaxColor:PlatformColor] = [:]
-		for (key,value) in srcMap {
-			try! dict[SyntaxColor(rawValue:key)!] = PlatformColor(hex:value)
-		}
-		return dict
-	}()
+	let colorMap:SyntaxColorMap = { return SyntaxColorMap.standardMap }()
 	
 	///subclass should override this to return the color to use and if the previous character should be colorized, too (for latex)
 	func colorForToken(token:PKToken, lastToken:PKToken?, inout includePreviousCharacter usePrevious:Bool) -> PlatformColor?

@@ -20,7 +20,7 @@ class DocumentChunk: NSObject {
 	let type:ChunkType
 	
 	var equationType:EquationType = .NotAnEquation
-	var contentOffset:UInt = 0
+	var contentOffset:Int = 0
 	//should only be used by the parser/highlighter
 	var parseRange:NSRange = NSRange(location: 0,length: 0)
 	
