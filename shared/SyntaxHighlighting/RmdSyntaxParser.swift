@@ -41,6 +41,7 @@ class RmdSyntaxParser: SyntaxParser {
 				docChunk.parseRange = NSMakeRange(docBlockStart, result!.range.location - docBlockStart)
 				self.chunks.append(docChunk)
 			}
+			print("chunk=\(str.substringWithRange(result!.range.toStringRange(str)!))")
 			var cname:String?
 			if result?.rangeAtIndex(1).length > 0 {
 				cname = str.substringWithRange(result!.rangeAtIndex(1).toStringRange(str)!)

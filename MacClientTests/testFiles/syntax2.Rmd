@@ -1,0 +1,32 @@
+* point 1
+
+$$
+	\begin{aligned}
+	\dot{x} & = \sigma(y-x) \\
+	\dot{y} & = \rho x - y -xz \\
+	\dot{z} & = -\beta z + xy
+	\end{aligned}
+$$
+
+* point `r 2+2` $\frac{1}{n} \sum_{i=i}^{n} x_{i}$
+
+```{r foo}
+plot(rnorm(100))
+```
+
+<math display="block">
+<mrow>
+   <apply>
+     <power/>
+     <apply>
+       <plus/>
+       <ci>a</ci>
+       <ci>b</ci>
+     </apply>
+     <cn>2</cn>
+   </apply>
+ </mrow>
+</math>
+
+_blah blah_
+

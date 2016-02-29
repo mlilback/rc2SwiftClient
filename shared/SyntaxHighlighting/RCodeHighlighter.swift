@@ -15,7 +15,7 @@ let RCodeHighlighterColors = "RCodeHighlighterColors"
 class RCodeHighlighter: CodeHighlighter {
 	
 	let keywords:Set<String> = {
-		let url = NSBundle().URLForResource("RKeywords", withExtension: "txt")!
+		let url = NSBundle.mainBundle().URLForResource("RKeywords", withExtension: "txt")!
 		let keyArray = try! NSString(contentsOfURL: url, encoding: NSUTF8StringEncoding).componentsSeparatedByString("\n")
 		return Set<String>(keyArray)
 	}()

@@ -33,8 +33,10 @@ class RnwSyntaxParser: SyntaxParser {
 				//record the default font at start of file
 				newChunk = DocumentChunk(chunkType: .Documentation, chunkNumber: curChunkNum)
 				newChunk?.parseRange = NSMakeRange(0, result!.range.location)
+				self.chunks.append(newChunk!)
 			}
-			if str.characters.first == "@" {
+			let matchStr:String = str.substringWithRange(result!.range.toStringRange(str)!)
+			if matchStr[matchStr.startIndex] == "@" {
 				newChunk = DocumentChunk(chunkType: .Documentation, chunkNumber: curChunkNum)
 			} else  {
 				var cname:String?

@@ -39,9 +39,9 @@ class CodeHighlighter: NSObject {
 		tokenizer.symbolState.add("<-")
 		tokenizer.symbolState.remove(":-")
 		tokenizer.setTokenizerState(tokenizer.commentState, from: hash, to: hash)
-		let eof = PKToken.EOFToken()
+		let eof = PKToken.EOFToken().tokenType
 		var lastToken:PKToken?
-		while let token = tokenizer.nextToken() where token != eof {
+		while let token = tokenizer.nextToken() where token.tokenType != eof {
 			var tokenRange = NSMakeRange(range.location + Int(token.offset), token.stringValue.characters.count)
 			var includePrevious:Bool = false
 			if let color = colorForToken(token, lastToken: lastToken, includePreviousCharacter: &includePrevious)
