@@ -20,7 +20,7 @@
 		0816F89A1C6D0F7D00A6120B /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
 		0816F89C1C6D2BA000A6120B /* SessionDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */; };
 		0816F89E1C6D320D00A6120B /* DefaultSessionFileHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89D1C6D320D00A6120B /* DefaultSessionFileHandler.swift */; };
-		0816F8A01C6D3A4500A6120B /* MacSessionHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89F1C6D3A4500A6120B /* MacSessionHandlers.swift */; };
+		0816F8A01C6D3A4500A6120B /* SessionHandlerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */; };
 		0825475B1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0825475A1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift */; };
 		0827A4E11C7ED9CE001F0AFB /* DocumentChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4D81C7ED9CE001F0AFB /* DocumentChunk.swift */; };
 		0827A4E21C7ED9CE001F0AFB /* CodeHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4D91C7ED9CE001F0AFB /* CodeHighlighter.swift */; };
@@ -68,9 +68,9 @@
 		083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D81C501B7300E27F66 /* MainWindowController.swift */; };
 		083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */; };
 		083305E01C51571500E27F66 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 083305DE1C51571500E27F66 /* Localizable.strings */; };
-		083305E21C517F8900E27F66 /* FileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E11C517F8900E27F66 /* FileViewController.swift */; };
-		083305E41C517FC000E27F66 /* VariableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E31C517FC000E27F66 /* VariableViewController.swift */; };
-		083305E61C517FE300E27F66 /* UsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E51C517FE300E27F66 /* UsersViewController.swift */; };
+		083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E11C517F8900E27F66 /* SidebarFileController.swift */; };
+		083305E41C517FC000E27F66 /* SidebarVariableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E31C517FC000E27F66 /* SidebarVariableController.swift */; };
+		083305E61C517FE300E27F66 /* SidebarUsersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E51C517FE300E27F66 /* SidebarUsersController.swift */; };
 		083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E71C51812300E27F66 /* AbstractSessionViewController.swift */; };
 		083305F01C519B4B00E27F66 /* ColorEnumTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */; };
 		083305F11C519B4B00E27F66 /* resultsWithImages.json in Resources */ = {isa = PBXBuildFile; fileRef = 083305EE1C519B4B00E27F66 /* resultsWithImages.json */; };
@@ -124,15 +124,15 @@
 		08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */; };
 		08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */; };
 		08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB554F1C5AC727002CB7EE /* SessionEditor.swift */; };
-		08CB55521C5C06B2002CB7EE /* OutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB55511C5C06B2002CB7EE /* OutputController.swift */; };
+		08CB55521C5C06B2002CB7EE /* OutputTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB55511C5C06B2002CB7EE /* OutputTabController.swift */; };
 		08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB55531C5C096E002CB7EE /* ImageOutputController.swift */; };
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08EFF6031C7BB2E600AAF1D4 /* MultipartInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */; };
 		08F2A85E1C7F36EC00A803A0 /* Mockingjay.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */; };
 		08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* SessionEditorController.swift */; };
-		08F448FB1C4E244500C64706 /* MacSessionMultiController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* MacSessionMultiController.swift */; };
-		08F448FC1C4E244500C64706 /* SessionConsoleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F71C4E244500C64706 /* SessionConsoleController.swift */; };
+		08F448FB1C4E244500C64706 /* SidebarTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* SidebarTabController.swift */; };
+		08F448FC1C4E244500C64706 /* SessionOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F71C4E244500C64706 /* SessionOutputController.swift */; };
 		08F448FD1C4E244500C64706 /* MainWindow.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08F448F81C4E244500C64706 /* MainWindow.storyboard */; };
 		08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448FF1C4EBEF100C64706 /* MacSplitter.swift */; };
 		08FDB1991C591409006FCD1A /* ImageCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDB1981C591409006FCD1A /* ImageCacheTests.swift */; };
@@ -215,7 +215,7 @@
 		0816F8991C6D0F7D00A6120B /* HTMLString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLString.swift; sourceTree = "<group>"; };
 		0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegates.swift; sourceTree = "<group>"; };
 		0816F89D1C6D320D00A6120B /* DefaultSessionFileHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultSessionFileHandler.swift; sourceTree = "<group>"; };
-		0816F89F1C6D3A4500A6120B /* MacSessionHandlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionHandlers.swift; sourceTree = "<group>"; };
+		0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionHandlerProtocols.swift; sourceTree = "<group>"; };
 		0825475A1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceKVOTests.swift; sourceTree = "<group>"; };
 		0827A4D81C7ED9CE001F0AFB /* DocumentChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentChunk.swift; sourceTree = "<group>"; };
 		0827A4D91C7ED9CE001F0AFB /* CodeHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeHighlighter.swift; sourceTree = "<group>"; };
@@ -256,9 +256,9 @@
 		083305D81C501B7300E27F66 /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecursiveFlatMap.swift; sourceTree = "<group>"; };
 		083305DF1C51571500E27F66 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
-		083305E11C517F8900E27F66 /* FileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileViewController.swift; sourceTree = "<group>"; };
-		083305E31C517FC000E27F66 /* VariableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableViewController.swift; sourceTree = "<group>"; };
-		083305E51C517FE300E27F66 /* UsersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsersViewController.swift; sourceTree = "<group>"; };
+		083305E11C517F8900E27F66 /* SidebarFileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarFileController.swift; sourceTree = "<group>"; };
+		083305E31C517FC000E27F66 /* SidebarVariableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarVariableController.swift; sourceTree = "<group>"; };
+		083305E51C517FE300E27F66 /* SidebarUsersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarUsersController.swift; sourceTree = "<group>"; };
 		083305E71C51812300E27F66 /* AbstractSessionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractSessionViewController.swift; sourceTree = "<group>"; };
 		083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorEnumTests.swift; sourceTree = "<group>"; };
 		083305EE1C519B4B00E27F66 /* resultsWithImages.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = resultsWithImages.json; sourceTree = "<group>"; };
@@ -318,7 +318,7 @@
 		08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManager.swift; sourceTree = "<group>"; };
 		08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManagerTests.swift; sourceTree = "<group>"; };
 		08CB554F1C5AC727002CB7EE /* SessionEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditor.swift; sourceTree = "<group>"; };
-		08CB55511C5C06B2002CB7EE /* OutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputController.swift; sourceTree = "<group>"; };
+		08CB55511C5C06B2002CB7EE /* OutputTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputTabController.swift; sourceTree = "<group>"; };
 		08CB55531C5C096E002CB7EE /* ImageOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageOutputController.swift; sourceTree = "<group>"; };
 		08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetActionBlock.swift; sourceTree = "<group>"; };
 		08ED575E1C724383002B2558 /* MacFileImportSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacFileImportSetup.swift; sourceTree = "<group>"; };
@@ -326,8 +326,8 @@
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
 		08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Mockingjay.framework.dSYM; path = Carthage/Build/Mac/Mockingjay.framework.dSYM; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* SessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditorController.swift; sourceTree = "<group>"; };
-		08F448F61C4E244500C64706 /* MacSessionMultiController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSessionMultiController.swift; sourceTree = "<group>"; };
-		08F448F71C4E244500C64706 /* SessionConsoleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionConsoleController.swift; sourceTree = "<group>"; };
+		08F448F61C4E244500C64706 /* SidebarTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarTabController.swift; sourceTree = "<group>"; };
+		08F448F71C4E244500C64706 /* SessionOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionOutputController.swift; sourceTree = "<group>"; };
 		08F448F81C4E244500C64706 /* MainWindow.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainWindow.storyboard; path = session/MainWindow.storyboard; sourceTree = "<group>"; };
 		08F448FF1C4EBEF100C64706 /* MacSplitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSplitter.swift; sourceTree = "<group>"; };
 		08FDB1981C591409006FCD1A /* ImageCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCacheTests.swift; sourceTree = "<group>"; };
@@ -377,6 +377,37 @@
 			name = "generic views";
 			path = MacClient/views;
 			sourceTree = SOURCE_ROOT;
+		};
+		0812631B1C8628D0003E37A5 /* session views */ = {
+			isa = PBXGroup;
+			children = (
+				08CB554F1C5AC727002CB7EE /* SessionEditor.swift */,
+				08F448FF1C4EBEF100C64706 /* MacSplitter.swift */,
+				0831740D1C577A2500071408 /* ConsoleTextField.swift */,
+				083174131C5828B400071408 /* ResultsView.swift */,
+			);
+			name = "session views";
+			sourceTree = "<group>";
+		};
+		0812631C1C862918003E37A5 /* data/helpers */ = {
+			isa = PBXGroup;
+			children = (
+				08ED575E1C724383002B2558 /* MacFileImportSetup.swift */,
+				0831740F1C57B2E200071408 /* CommandHistory.swift */,
+			);
+			name = data/helpers;
+			sourceTree = "<group>";
+		};
+		0812631D1C862B94003E37A5 /* sidebar */ = {
+			isa = PBXGroup;
+			children = (
+				08F448F61C4E244500C64706 /* SidebarTabController.swift */,
+				083305E11C517F8900E27F66 /* SidebarFileController.swift */,
+				083305E31C517FC000E27F66 /* SidebarVariableController.swift */,
+				083305E51C517FE300E27F66 /* SidebarUsersController.swift */,
+			);
+			name = sidebar;
+			sourceTree = "<group>";
 		};
 		0827A4D71C7ED9CE001F0AFB /* SyntaxHighlighting */ = {
 			isa = PBXGroup;
@@ -583,24 +614,17 @@
 		08F448F31C4E244500C64706 /* session */ = {
 			isa = PBXGroup;
 			children = (
+				0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */,
 				083305E71C51812300E27F66 /* AbstractSessionViewController.swift */,
 				083174031C5571D300071408 /* RootViewController.swift */,
-				0816F89F1C6D3A4500A6120B /* MacSessionHandlers.swift */,
-				08F448F51C4E244500C64706 /* SessionEditorController.swift */,
-				08F448F61C4E244500C64706 /* MacSessionMultiController.swift */,
-				083305E11C517F8900E27F66 /* FileViewController.swift */,
-				083305E31C517FC000E27F66 /* VariableViewController.swift */,
-				083305E51C517FE300E27F66 /* UsersViewController.swift */,
 				083174051C56BE7B00071408 /* SessionSplitController.swift */,
-				08CB554F1C5AC727002CB7EE /* SessionEditor.swift */,
-				08F448FF1C4EBEF100C64706 /* MacSplitter.swift */,
-				08CB55511C5C06B2002CB7EE /* OutputController.swift */,
-				0831740D1C577A2500071408 /* ConsoleTextField.swift */,
-				083174131C5828B400071408 /* ResultsView.swift */,
-				0831740F1C57B2E200071408 /* CommandHistory.swift */,
-				08F448F71C4E244500C64706 /* SessionConsoleController.swift */,
+				08F448F51C4E244500C64706 /* SessionEditorController.swift */,
+				08CB55511C5C06B2002CB7EE /* OutputTabController.swift */,
+				08F448F71C4E244500C64706 /* SessionOutputController.swift */,
 				08CB55531C5C096E002CB7EE /* ImageOutputController.swift */,
-				08ED575E1C724383002B2558 /* MacFileImportSetup.swift */,
+				0812631D1C862B94003E37A5 /* sidebar */,
+				0812631B1C8628D0003E37A5 /* session views */,
+				0812631C1C862918003E37A5 /* data/helpers */,
 			);
 			path = session;
 			sourceTree = "<group>";
@@ -753,17 +777,17 @@
 				088CE6A41C4B605D00153414 /* ColorEnums.swift in Sources */,
 				0827A4E21C7ED9CE001F0AFB /* CodeHighlighter.swift in Sources */,
 				083382F31C653B6300D40EEB /* xattr.swift in Sources */,
-				083305E41C517FC000E27F66 /* VariableViewController.swift in Sources */,
+				083305E41C517FC000E27F66 /* SidebarVariableController.swift in Sources */,
 				088CE6AA1C4B605D00153414 /* Workspace.swift in Sources */,
 				086BC9AD1C552AA0006ABAE0 /* SpinLock.swift in Sources */,
 				088CE6A51C4B605D00153414 /* File.swift in Sources */,
 				08EFF6031C7BB2E600AAF1D4 /* MultipartInputStream.swift in Sources */,
-				08F448FB1C4E244500C64706 /* MacSessionMultiController.swift in Sources */,
+				08F448FB1C4E244500C64706 /* SidebarTabController.swift in Sources */,
 				088CE6A61C4B605D00153414 /* FileType.swift in Sources */,
 				083174041C5571D300071408 /* RootViewController.swift in Sources */,
 				088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */,
 				088CE6A81C4B605D00153414 /* LoginSession.swift in Sources */,
-				0816F8A01C6D3A4500A6120B /* MacSessionHandlers.swift in Sources */,
+				0816F8A01C6D3A4500A6120B /* SessionHandlerProtocols.swift in Sources */,
 				0816F89E1C6D320D00A6120B /* DefaultSessionFileHandler.swift in Sources */,
 				0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */,
 				0827A4E61C7ED9CE001F0AFB /* RmdSyntaxParser.swift in Sources */,
@@ -775,20 +799,20 @@
 				08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */,
 				08B036221C73B131005928B3 /* FileImporter.swift in Sources */,
 				083382F61C68E59300D40EEB /* FileCache.swift in Sources */,
-				08F448FC1C4E244500C64706 /* SessionConsoleController.swift in Sources */,
+				08F448FC1C4E244500C64706 /* SessionOutputController.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
-				08CB55521C5C06B2002CB7EE /* OutputController.swift in Sources */,
+				08CB55521C5C06B2002CB7EE /* OutputTabController.swift in Sources */,
 				0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */,
 				0827A4E31C7ED9CE001F0AFB /* LatexCodeHighlighter.swift in Sources */,
 				088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */,
 				0816F89A1C6D0F7D00A6120B /* HTMLString.swift in Sources */,
 				083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
-				083305E61C517FE300E27F66 /* UsersViewController.swift in Sources */,
+				083305E61C517FE300E27F66 /* SidebarUsersController.swift in Sources */,
 				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,
 				08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */,
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
-				083305E21C517F8900E27F66 /* FileViewController.swift in Sources */,
+				083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */,
 				088CE6AE1C4B605D00153414 /* Session.swift in Sources */,
 				080214881C693A69008B55D3 /* FileManager.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,

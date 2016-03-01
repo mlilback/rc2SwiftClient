@@ -119,7 +119,7 @@ extension SwinjectStoryboard {
 		defaultContainer.registerForStoryboard(RootViewController.self) { r, c in
 			c.appStatus = r.resolve(AppStatus.self, name:"root")
 		}
-		defaultContainer.registerForStoryboard(FileViewController.self) { r, c in
+		defaultContainer.registerForStoryboard(SidebarFileController.self) { r, c in
 			c.appStatus = r.resolve(AppStatus.self, name:"file")
 		}
 		defaultContainer.register(AppStatus.self, name:"file") { _ in NSApp.delegate as! AppStatus }

@@ -1,12 +1,12 @@
 //
-//  MacSessionMultiController.swift
+//  SidebarTabController.swift
 //
 //  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
 import Cocoa
 
-class MacSessionMultiController: NSTabViewController {
+class SidebarTabController: NSTabViewController {
 	let LastSelectionKey = "LastSelectionKey"
 	
 	var selectedTabIndex: Int {

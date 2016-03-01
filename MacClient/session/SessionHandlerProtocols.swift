@@ -1,10 +1,12 @@
 //
-//  MacSessionHandlers.swift
+//  SessionHandlerProtocols.swift
 //
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
 import Cocoa
+
+///These protocols exist to decouple various view controllers
 
 @objc protocol VariableHandler {
 	///parameter variables: key is a string, value is an ObjcBox of a JSON value

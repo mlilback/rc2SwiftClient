@@ -1,5 +1,5 @@
 //
-//  MacSessionOutputController.swift
+//  SessionOutputController.swift
 //
 //  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
@@ -12,7 +12,7 @@ enum SessionStateKey: String {
 }
 
 ///ViewController whose view contains the text view showing the results, and the text field for entering short queries
-class SessionConsoleController: AbstractSessionViewController, NSTextViewDelegate, NSTextFieldDelegate 
+class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate, NSTextFieldDelegate
 {
 	//MARK: properties
 	@IBOutlet var resultsView: ResultsView?

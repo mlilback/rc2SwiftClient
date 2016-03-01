@@ -37,7 +37,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		variableHandler = firstChildViewController(self)
 		responseHandler = ResponseHandler(delegate: self)
 		fileHandler = firstChildViewController(self)
-		let concreteFH = fileHandler as? FileViewController
+		let concreteFH = fileHandler as? SidebarFileController
 		if concreteFH != nil {
 			concreteFH!.delegate = self
 		}

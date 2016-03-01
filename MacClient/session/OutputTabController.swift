@@ -1,13 +1,13 @@
 //
-//  OutputController.swift
+//  OutputTabController.swift
 //
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
 import Cocoa
 
-class OutputController: NSTabViewController, OutputHandler, ToolbarItemHandler {
-	var consoleController: SessionConsoleController?
+class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandler {
+	var consoleController: SessionOutputController?
 	var imageController: ImageOutputController?
 	var imageCache: ImageCache?
 	var consoleToolbarControl: NSSegmentedControl?

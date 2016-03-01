@@ -266,7 +266,7 @@
         <!--output controller-->
         <scene sceneID="GKh-8C-jU5">
             <objects>
-                <tabViewController storyboardIdentifier="output" tabStyle="unspecified" id="qFx-32-GX3" userLabel="output controller" customClass="OutputController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <tabViewController storyboardIdentifier="output" tabStyle="unspecified" id="qFx-32-GX3" userLabel="output controller" customClass="OutputTabController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <tabViewItems>
                         <tabViewItem id="efd-Px-WGZ"/>
                         <tabViewItem id="j2a-HV-n5N"/>
@@ -413,7 +413,7 @@
         <!--left tab controller-->
         <scene sceneID="Zy7-r2-fPT">
             <objects>
-                <tabViewController selectedTabViewItemIndex="0" tabStyle="unspecified" id="IeT-2r-pnl" userLabel="left tab controller" customClass="MacSessionMultiController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <tabViewController selectedTabViewItemIndex="0" tabStyle="unspecified" id="IeT-2r-pnl" userLabel="left tab controller" customClass="SidebarTabController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <tabViewItems>
                         <tabViewItem identifier="fileTab" id="CTV-YU-27t"/>
                         <tabViewItem identifier="variableTab" id="Wcq-lB-PA7"/>
@@ -438,7 +438,7 @@
         <!--file view controller-->
         <scene sceneID="6UQ-Z5-mlY">
             <objects>
-                <viewController id="XJm-U6-51C" userLabel="file view controller" customClass="FileViewController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="XJm-U6-51C" userLabel="file view controller" customClass="SidebarFileController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="Yck-bc-8ar">
                         <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -635,7 +635,7 @@
         <!--variables view controller-->
         <scene sceneID="AJm-u8-LUo">
             <objects>
-                <viewController id="1Ce-Bb-cCN" userLabel="variables view controller" customClass="VariableViewContrfoller" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="1Ce-Bb-cCN" userLabel="variables view controller" customClass="SidebarVariableController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="ePu-VH-UTN">
                         <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -773,7 +773,7 @@
         <!--user view controller-->
         <scene sceneID="H5P-eh-gMY">
             <objects>
-                <viewController id="lJM-BU-ZVt" userLabel="user view controller" customClass="UsersViewContrfoller" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="lJM-BU-ZVt" userLabel="user view controller" customClass="SidebarUsersController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="GGz-OC-pcD">
                         <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -891,7 +891,7 @@
         <!--console controller-->
         <scene sceneID="ECV-EI-33P">
             <objects>
-                <viewController storyboardIdentifier="console" id="cmA-J2-3x3" userLabel="console controller" customClass="SessionConsoleController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="console" id="cmA-J2-3x3" userLabel="console controller" customClass="SessionOutputController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="sbQ-OJ-NsG">
                         <rect key="frame" x="0.0" y="0.0" width="435" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>

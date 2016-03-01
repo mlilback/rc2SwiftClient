@@ -1,5 +1,5 @@
 //
-//  FileViewController.swift
+//  SidebarFileController.swift
 //
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
@@ -26,7 +26,7 @@ let LastExportDirectoryKey = "rc2.LastExportDirectory"
 
 //TODO: make sure when delegate renames file our list gets updated
 
-class FileViewController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler, NSOpenSavePanelDelegate, NSMenuDelegate
+class SidebarFileController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler, NSOpenSavePanelDelegate, NSMenuDelegate
 {
 	//MARK: properties
 	let sectionNames:[String] = ["Source Files", "Images", "Other"]
@@ -76,7 +76,7 @@ class FileViewController: AbstractSessionViewController, NSTableViewDataSource, 
 	
 	override func appStatusChanged() {
 		NSNotificationCenter.defaultCenter().addObserverForName(AppStatusChangedNotification, object: nil, queue: nil) { (note) -> Void in
-			assert(self.appStatus != nil, "appStatus not set on FileViewController")
+			assert(self.appStatus != nil, "appStatus not set on SidebarFileController")
 			if let tv = self.tableView, let apps = self.appStatus {
 				if apps.busy {
 					tv.unregisterDraggedTypes()
