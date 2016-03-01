@@ -86,3 +86,7 @@ extension NSRange {
 	}
 }
 
+func MaxNSRangeIndex(range:NSRange) -> Int {
+	return range.location + range.length - 1
+}
+

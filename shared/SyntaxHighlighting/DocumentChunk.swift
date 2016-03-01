@@ -22,7 +22,7 @@ class DocumentChunk: NSObject {
 	var equationType:EquationType = .NotAnEquation
 	var contentOffset:Int = 0
 	//should only be used by the parser/highlighter
-	var parseRange:NSRange = NSRange(location: 0,length: 0)
+	var parsedRange:NSRange = NSRange(location: 0,length: 0)
 	
 	init(chunkType:ChunkType, chunkNumber:Int, name:String?=nil) {
 		self.chunkNumber = chunkNumber
@@ -36,14 +36,34 @@ class DocumentChunk: NSObject {
 		self.equationType = equationType
 	}
 	
+	func duplicateWithChunkNumber(newNum:Int) -> DocumentChunk {
+		let dup = DocumentChunk(chunkType: type, chunkNumber: newNum, name: name)
+		dup.parsedRange = parsedRange
+		dup.contentOffset = contentOffset
+		dup.equationType = equationType
+		return dup
+	}
+	
+	override func isEqual(object: AnyObject?) -> Bool {
+		if let other = object as? DocumentChunk {
+			return other.chunkNumber == chunkNumber && other.type == type && other.name == name && NSEqualRanges(parsedRange, other.parsedRange)
+		}
+		return false
+	}
+	
+	override var hash:Int {
+		return chunkNumber.hashValue + type.hashValue + (name == nil ? 0 : name!.hashValue)
+	}
+	
 	override var description: String {
+		let range = NSStringFromRange(parsedRange)
 		switch(self.type) {
 			case .RCode:
-				return "R chunk \(chunkNumber) \"\(name)\""
+				return "R chunk \(chunkNumber) \"\((name == nil ? "" : name!))\" (\(range))"
 			case .Documentation:
-				return "documentation chunk \(chunkNumber)"
+				return "documentation chunk \(chunkNumber) (\(range))"
 			case .Equation:
-				return "\(equationType.rawValue) equation chunk \(chunkNumber)"
+				return "\(equationType.rawValue) equation chunk \(chunkNumber) (\(range))"
 		}
 	}
 }

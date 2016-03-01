@@ -9,8 +9,7 @@ import Foundation
 	import AppKit
 #endif
 
-let ChunkStartAttribute = "ChunkStartAttribute"
-
+/** parses the contents of an NSTextStorage into an array of chunks that can be syntax colored */
 class SyntaxParser: NSObject {
 	///returns the approprate syntax parser to use for fileType
 	class func parserWithTextStorage(storage:NSTextStorage, fileType:FileType) -> SyntaxParser?
@@ -56,23 +55,39 @@ class SyntaxParser: NSObject {
 		if range.location == textStorage.length && range.length == 0 {
 			range.location -= 1
 		}
-		return textStorage.attribute(ChunkStartAttribute, atIndex: range.location, effectiveRange: nil) as? DocumentChunk
+		for aChunk in chunks {
+			if NSIntersectionRange(range, aChunk.parsedRange).length > 0 {
+				return aChunk
+			}
+		}
+		return nil
 	}
 	
 	func chunksForRange(range:NSRange) -> [DocumentChunk] {
+		//if full range of textstorage, just return all chunks
+		if NSEqualRanges(range, NSMakeRange(0, textStorage.length)) {
+			return chunks
+		}
 		var outArray:[DocumentChunk] = []
-		textStorage.enumerateAttribute(ChunkStartAttribute, inRange: range, options: [])
-		{ (value, rng, _) -> Void in
-			outArray.append(value as! DocumentChunk)
+		for aChunk in chunks {
+			if NSIntersectionRange(aChunk.parsedRange, range).length > 0 {
+				outArray.append(aChunk)
+			}
 		}
 		return outArray
 	}
 	
-	func parse() {
+	///returns true if the chunks changed
+	func parse() -> Bool {
 		if textStorage.string != lastSource {
+			let oldChunks = chunks
 			parseRange(NSMakeRange(0, textStorage.length))
 			lastSource = textStorage.string
+			if oldChunks == chunks {
+				return false
+			}
 		}
+		return false
 	}
 	
 	func parseRange(range:NSRange) {
@@ -83,31 +98,33 @@ class SyntaxParser: NSObject {
 		colorChunks(chunksForRange(range))
 	}
 
+	///should be called when the textstorage contents have changed, ideally by the NSTextStorageDelegate call textStorage:didProcessEditing:range:changeInLength:
 	func adjustParseRanges(fullRangeLength:Int) {
 		guard chunks.count > 0 else { return }
 		for (index,chunk) in chunks.enumerate() {
 			guard index+1 < chunks.count - 1 else { break }
 			let nextChunk = chunks[index+1]
-			var rng = chunk.parseRange
-			rng.length = nextChunk.parseRange.location - chunk.parseRange.location
-			chunk.parseRange = rng
+			var rng = chunk.parsedRange
+			rng.length = nextChunk.parsedRange.location - chunk.parsedRange.location
+			chunk.parsedRange = rng
 		}
 		//adjust last one
-		var finalRange = chunks.last!.parseRange
+		var finalRange = chunks.last!.parsedRange
 		finalRange.length = fullRangeLength - finalRange.location
-		chunks.last!.parseRange = finalRange
+		chunks.last!.parsedRange = finalRange
 	}
 	
 	func colorChunks(chunksToColor:[DocumentChunk]) {
 		for chunk in chunksToColor {
-			textStorage.addAttribute(ChunkStartAttribute, value: chunk, range: chunk.parseRange)
 			if chunk.type == .RCode {
 				if let bgcolor = colorMap[.CodeBackground] {
-					textStorage.addAttribute(NSBackgroundColorAttributeName, value: bgcolor, range: chunk.parseRange)
+					textStorage.addAttribute(NSBackgroundColorAttributeName, value: bgcolor, range: chunk.parsedRange)
 				}
-				codeHighlighter?.highlightText(textStorage, range: chunk.parseRange)
+				codeHighlighter?.highlightText(textStorage, range: chunk.parsedRange)
 			} else if chunk.type == .Documentation {
-				docHighlighter?.highlightText(textStorage, range: chunk.parseRange)
+				docHighlighter?.highlightText(textStorage, range: chunk.parsedRange)
+			} else if chunk.type == .Equation, let bgcolor = colorMap[.EquationBackground] {
+				textStorage.addAttribute(NSBackgroundColorAttributeName, value: bgcolor, range: chunk.parsedRange)
 			}
 		}
 	}
@@ -115,6 +132,9 @@ class SyntaxParser: NSObject {
 
 class RSyntaxParser:SyntaxParser {
 	override func parseRange(range: NSRange) {
-		codeHighlighter?.highlightText(textStorage, range: range)
+		chunks.removeAll()
+		let chunk = DocumentChunk(chunkType: .RCode, chunkNumber: 1)
+		chunk.parsedRange = NSMakeRange(0, textStorage.string.characters.count)
+		chunks.append(chunk)
 	}
 }

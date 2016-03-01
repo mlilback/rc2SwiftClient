@@ -37,17 +37,22 @@ class SyntaxParserTests: XCTestCase {
 		XCTAssertEqual(parser.chunks[1].type, ChunkType.RCode)
 		XCTAssertEqual(parser.chunks[2].type, ChunkType.Documentation)
 		XCTAssertEqual(parser.chunks[3].type, ChunkType.RCode)
+		XCTAssertEqual(parser.chunks[3].name, "fig=TRUE,echo=FALSE")
 		XCTAssertEqual(parser.chunks[4].type, ChunkType.Documentation)
 	}
 	
 	func testMarkdown1() {
 		loadStorageWith("syntax2", suffix:"Rmd")
 		parser.parse()
-		XCTAssertEqual(parser.chunks.count, 3)
-//		XCTAssertEqual(parser.chunks[0].type, ChunkType.Documentation)
-//		XCTAssertEqual(parser.chunks[1].type, ChunkType.RCode)
-//		XCTAssertEqual(parser.chunks[2].type, ChunkType.Documentation)
-//		XCTAssertEqual(parser.chunks[3].type, ChunkType.RCode)
-//		XCTAssertEqual(parser.chunks[4].type, ChunkType.Documentation)
+		XCTAssertEqual(parser.chunks.count, 7)
+		XCTAssertEqual(parser.chunks[0].type, ChunkType.Documentation)
+		XCTAssertEqual(parser.chunks[1].type, ChunkType.Equation)
+		XCTAssertEqual(parser.chunks[2].type, ChunkType.Documentation)
+		XCTAssertEqual(parser.chunks[3].type, ChunkType.RCode)
+		XCTAssertEqual(parser.chunks[4].type, ChunkType.Documentation)
+		XCTAssertEqual(parser.chunks[5].type, ChunkType.Equation)
+		XCTAssertEqual(parser.chunks[4].type, ChunkType.Documentation)
+		
+		//TODO: check equation chunks have correct range and background color
 	}
 }

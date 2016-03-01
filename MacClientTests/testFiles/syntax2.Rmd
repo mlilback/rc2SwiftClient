@@ -29,4 +29,3 @@ plot(rnorm(100))
 </math>
 
 _blah blah_
-
