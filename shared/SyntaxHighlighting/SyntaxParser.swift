@@ -34,6 +34,7 @@ class SyntaxParser: NSObject {
 	let colorMap:SyntaxColorMap
 	var chunks:[DocumentChunk] = []
 	private var lastSource:String = ""
+	var colorBackgrounds = false
 
 	var docHighlighter:CodeHighlighter?
 	var codeHighlighter:CodeHighlighter?
@@ -117,14 +118,16 @@ class SyntaxParser: NSObject {
 	func colorChunks(chunksToColor:[DocumentChunk]) {
 		for chunk in chunksToColor {
 			if chunk.type == .RCode {
-				if let bgcolor = colorMap[.CodeBackground] {
+				if colorBackgrounds, let bgcolor = colorMap[.CodeBackground] {
 					textStorage.addAttribute(NSBackgroundColorAttributeName, value: bgcolor, range: chunk.parsedRange)
 				}
 				codeHighlighter?.highlightText(textStorage, range: chunk.parsedRange)
 			} else if chunk.type == .Documentation {
 				docHighlighter?.highlightText(textStorage, range: chunk.parsedRange)
 			} else if chunk.type == .Equation, let bgcolor = colorMap[.EquationBackground] {
-				textStorage.addAttribute(NSBackgroundColorAttributeName, value: bgcolor, range: chunk.parsedRange)
+				if colorBackgrounds {
+					textStorage.addAttribute(NSBackgroundColorAttributeName, value: bgcolor, range: chunk.parsedRange)
+				}
 			}
 		}
 	}

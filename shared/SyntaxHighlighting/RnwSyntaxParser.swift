@@ -18,6 +18,7 @@ class RnwSyntaxParser: SyntaxParser {
 		super.init(storage: storage, fileType: fileType, colorMap: colorMap)
 		codeHighlighter = RCodeHighlighter()
 		docHighlighter = LatexCodeHighlighter()
+		colorBackgrounds = true
 	}
 	
 	override func parseRange(fullRange: NSRange) {

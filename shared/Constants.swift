@@ -20,3 +20,4 @@ let CurrentSessionChangedNotification = "CurrentSessionChangedNotification"
 let AppStatusChangedNotification = "AppStatusChangedNotification"
 
 let PrefMaxCommandHistory = "MaxCommandHistorySize"
+let PrefWordWrap = "WordWrapEnabled"

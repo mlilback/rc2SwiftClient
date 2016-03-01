@@ -25,6 +25,7 @@ class RmdSyntaxParser: SyntaxParser {
 		
 		super.init(storage: storage, fileType: fileType, colorMap: colorMap)
 		codeHighlighter = RCodeHighlighter()
+		colorBackgrounds = true
 	}
 	
 	override func parseRange(range: NSRange) {
