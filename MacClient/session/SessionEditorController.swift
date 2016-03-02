@@ -12,6 +12,7 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	@IBOutlet var sourceButton:NSButton?
 	@IBOutlet var fileNameField:NSTextField?
 	
+	let defaultUndoManager = NSUndoManager()
 	var parser:SyntaxParser?
 	private(set) var currentDocument:EditorDocument?
 	private var openDocuments:[Int:EditorDocument] = [:]
@@ -119,6 +120,12 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 			//only color chunks in the edited range
 			parser!.colorChunks(parser!.chunksForRange(editedRange))
 		}
+	}
+	
+	//MARK: NSTextViewDelegate methods
+	func undoManagerForTextView(view: NSTextView) -> NSUndoManager? {
+		if currentDocument != nil { return currentDocument!.undoManager }
+		return editor?.undoManager
 	}
 }
 
