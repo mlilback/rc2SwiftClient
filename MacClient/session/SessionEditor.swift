@@ -18,6 +18,10 @@ class SessionEditor: NSTextView {
 		
 	}
 	
+	var rangeOfAllText:NSRange {
+		return NSMakeRange(0, textStorage!.length)
+	}
+	
 	//with this version, if the close paren was at the end of the line, the blank space at the end of the line was colored, too. this did not happen in the old version of the client with similar code in objective-c. so we don't flash the close paren they just typed
 	override func insertText(aString: AnyObject, replacementRange: NSRange) {
 		super.insertText(aString, replacementRange: replacementRange)

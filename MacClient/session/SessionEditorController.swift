@@ -12,8 +12,9 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	@IBOutlet var sourceButton:NSButton?
 	@IBOutlet var fileNameField:NSTextField?
 	
-	var currentFile:File?
 	var parser:SyntaxParser?
+	private(set) var currentDocument:EditorDocument?
+	private var openDocuments:[Int:EditorDocument] = [:]
 	
 	@IBAction override func performTextFinderAction(sender: AnyObject?) {
 		let menuItem = NSMenuItem(title: "foo", action: Selector("performFindPanelAction:"), keyEquivalent: "")
@@ -43,40 +44,67 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
 		if menuItem.action == "runQuery:" {
 			print("setting run enabled state")
-			return currentFile != nil
+			return currentDocument != nil
 		}
 		return super.validateMenuItem(menuItem)
 	}
 	
 	@IBAction func runQuery(sender:AnyObject) {
-		assert(currentFile != nil, "runQuery called with no file selected")
-		session.executeScriptFile((currentFile?.fileId)!)
+		assert(currentDocument != nil, "runQuery called with no file selected")
+		session.executeScriptFile(currentDocument!.file.fileId)
 	}
 
 	@IBAction func sourceQuery(sender:AnyObject) {
 		//TODO: implement sourcing files
-		assert(currentFile != nil, "runQuery called with no file selected")
-		session.executeScriptFile((currentFile?.fileId)!)
+		assert(currentDocument != nil, "runQuery called with no file selected")
+		session.executeScriptFile(currentDocument!.file.fileId)
 	}
 
-	func fileSelectionChanged(newFile:File?, text:String?) {
-		let selected = newFile != nil
-		if let theText = text {
-			parser = SyntaxParser.parserWithTextStorage(editor!.textStorage!, fileType: newFile!.fileType)
-			editor?.string = theText
-		} else {
-			//disable editor
-			editor?.editable = false
-			editor?.textStorage?.deleteCharactersInRange(NSMakeRange(0, (editor?.textStorage!.length)!))
-			parser = nil
+	//called when file has changed in UI
+	func fileSelectionChanged(file:File?) {
+		var contents:String?
+		if let theFile = file {
+			if currentDocument?.file.fileId == theFile.fileId { return } //same file
+			session.fileHandler.contentsOfFile(theFile).onComplete { result in
+				switch(result) {
+				case .Success(let val):
+					contents = String(data: val!, encoding: NSUTF8StringEncoding)
+				case .Failure(let err):
+					log.warning("got error \(err)")
+				}
+				self.adjustDocumentForFile(file, content: contents)
+			}
 		}
-		currentFile = newFile
-		runButton?.enabled = selected
-		sourceButton?.enabled = selected
-		fileNameField?.stringValue = selected ? (currentFile?.name)! : ""
-		editor?.editable = selected
 	}
 	
+	private func adjustDocumentForFile(file:File?, content:String?) {
+		currentDocument?.wilLBecomeInactive()
+		if let theFile = file, theText = content {
+			currentDocument = openDocuments[theFile.fileId]
+			if currentDocument == nil {
+				currentDocument = EditorDocument(file: theFile)
+				openDocuments[theFile.fileId] = currentDocument!
+			}
+			currentDocument!.willBecomeActive()
+			parser = SyntaxParser.parserWithTextStorage(editor!.textStorage!, fileType: theFile.fileType)
+			editor!.replaceCharactersInRange(editor!.rangeOfAllText, withString: theText)
+		} else {
+			parser = nil
+			currentDocument = nil
+			editor?.textStorage?.deleteCharactersInRange(editor!.rangeOfAllText)
+		}
+		adjustInterfaceForFile(file)
+	}
+	
+	//adjust our interface based on new file
+	private func adjustInterfaceForFile(file:File?) {
+		let selected = file != nil
+		runButton?.enabled = selected
+		sourceButton?.enabled = selected
+		fileNameField?.stringValue = selected ? file!.name : ""
+		editor?.editable = selected
+	}
+
 	//MARK: NSTextStorageDelegate methods
 	//called when text editing has ended
 	func textStorage(textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)

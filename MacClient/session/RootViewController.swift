@@ -247,20 +247,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 
 	//MARK:- FileViewControllerDelegate
 	func fileSelectionChanged(file:File?) {
-		var contents:String?
-		if let theFile = file {
-			session.fileHandler.contentsOfFile(theFile).onComplete { result in
-				switch(result) {
-					case .Success(let val):
-						contents = String(data: val!, encoding: NSUTF8StringEncoding)
-					case .Failure(let err):
-						log.warning("got error \(err)")
-				}
-				self.editor?.fileSelectionChanged(file, text: contents)
-			}
-		} else {
-			self.editor?.fileSelectionChanged(nil, text: "")
-		}
+		self.editor?.fileSelectionChanged(file)
 	}
 	
 	func renameFile(file:File, to:String) {
