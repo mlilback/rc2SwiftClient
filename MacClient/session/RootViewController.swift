@@ -113,7 +113,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 	
 	func startTimer() {
-		if statusTimer != nil && statusTimer!.valid { statusTimer?.invalidate() }
+		if statusTimer?.valid ?? false { statusTimer?.invalidate() }
 		statusTimer = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: "clearStatus", userInfo: nil, repeats: false)
 	}
 	
