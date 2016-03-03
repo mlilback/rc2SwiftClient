@@ -27,4 +27,6 @@ protocol SessionFileHandler : class {
 	
 	func loadFiles()
 	func contentsOfFile(file:File) -> Future<NSData?,FileError>
+	//the following will add the save operation to a serial queue to be executed immediately
+	func saveFile(file:File, contents:String, completionHandler:(NSError?) -> Void)
 }

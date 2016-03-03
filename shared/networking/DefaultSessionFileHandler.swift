@@ -15,6 +15,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 	weak var fileDelegate:SessionFileHandlerDelegate?
 	private(set) var filesLoaded:Bool = false
 	private var downloadPromise: Promise <Bool,NSError>
+	private var saveQueue:dispatch_queue_t
 	
 	init(wspace:Workspace, baseUrl:NSURL, config:NSURLSessionConfiguration, appStatus:AppStatus?) {
 		self.workspace = wspace
@@ -22,6 +23,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 		self.fileCache = FileCache(workspace: workspace, baseUrl: baseUrl, config: config, appStatus:appStatus)
 		self.baseUrl = baseUrl
 		self.downloadPromise = Promise<Bool,NSError>()
+		self.saveQueue = dispatch_queue_create("fileHandlerSerial", DISPATCH_QUEUE_SERIAL)
 	}
 	
 	func loadFiles() {
@@ -69,5 +71,19 @@ class DefaultSessionFileHandler: SessionFileHandler {
 		filesLoaded = true
 		downloadPromise.success(true)
 	}
-	
+
+	//the following will add the save operation to a serial queue to be executed immediately
+	func saveFile(file:File, contents:String, completionHandler:(NSError?) -> Void) {
+		let url = fileCache.cachedFileUrl(file)
+		dispatch_async(saveQueue) {
+			do {
+				try contents.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding)
+				completionHandler(nil)
+			} catch let err as NSError? {
+				log.error("error saving file \(file): \(err)")
+				completionHandler(err)
+			}
+		}
+	}
+
 }

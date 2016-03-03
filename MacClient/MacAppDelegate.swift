@@ -110,6 +110,9 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 		dispatch_async(dispatch_get_main_queue()) {
 			NSNotificationCenter.defaultCenter().postNotificationName(AppStatusChangedNotification, object: self)
 		}
+		currentProgress?.rc2_addCompletionHandler() {
+			self.updateStatus(nil)
+		}
 	}
 
 }

@@ -16,6 +16,7 @@
 		081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */; };
 		0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */; };
 		0812631F1C862F4B003E37A5 /* EditorDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812631E1C862F4B003E37A5 /* EditorDocument.swift */; };
+		081263211C87A9E8003E37A5 /* EditorDocumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */; };
 		081468371C755A1E006DF8FC /* FileImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081468361C755A1E006DF8FC /* FileImporterTests.swift */; };
 		08159D1E1C77656C004A205A /* NSProgressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08159D1D1C77656C004A205A /* NSProgressTests.m */; };
 		0816F89A1C6D0F7D00A6120B /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
@@ -212,6 +213,7 @@
 		081263171C85D2E0003E37A5 /* NoodleLineNumberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoodleLineNumberView.h; sourceTree = "<group>"; };
 		081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoodleLineNumberView.m; sourceTree = "<group>"; };
 		0812631E1C862F4B003E37A5 /* EditorDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorDocument.swift; sourceTree = "<group>"; };
+		081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorDocumentTests.swift; sourceTree = "<group>"; };
 		081468361C755A1E006DF8FC /* FileImporterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporterTests.swift; sourceTree = "<group>"; };
 		08159D1D1C77656C004A205A /* NSProgressTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSProgressTests.m; sourceTree = "<group>"; };
 		0816F8991C6D0F7D00A6120B /* HTMLString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLString.swift; sourceTree = "<group>"; };
@@ -502,20 +504,21 @@
 				083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */,
 				0845CB1D1C616E060090267C /* CommonMocks.swift */,
 				0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */,
+				081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */,
 				083382F71C68EBC200D40EEB /* FileCacheTests.swift */,
 				081468361C755A1E006DF8FC /* FileImporterTests.swift */,
 				08FDB1981C591409006FCD1A /* ImageCacheTests.swift */,
 				088CE6BB1C4C508000153414 /* KeychainTests.swift */,
 				08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */,
+				08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */,
 				08159D1D1C77656C004A205A /* NSProgressTests.m */,
 				083305F61C519B8500E27F66 /* Rc2FileTypeTest.swift */,
 				083305F71C519B8500E27F66 /* Rc2SessionTests.swift */,
 				083305F81C519B8500E27F66 /* RestServerTest.swift */,
 				083305EF1C519B4B00E27F66 /* ServerResponseTests.swift */,
+				080834551C84C13300F5A190 /* SyntaxParserTests.swift */,
 				0825475A1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift */,
 				083382FB1C69189300D40EEB /* xattrTests.swift */,
-				08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */,
-				080834551C84C13300F5A190 /* SyntaxParserTests.swift */,
 			);
 			path = MacClientTests;
 			sourceTree = "<group>";
@@ -858,6 +861,7 @@
 				0825475B1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift in Sources */,
 				0845CB1E1C616E060090267C /* CommonMocks.swift in Sources */,
 				080834561C84C13300F5A190 /* SyntaxParserTests.swift in Sources */,
+				081263211C87A9E8003E37A5 /* EditorDocumentTests.swift in Sources */,
 				083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */,
 				083305F01C519B4B00E27F66 /* ColorEnumTests.swift in Sources */,
 			);

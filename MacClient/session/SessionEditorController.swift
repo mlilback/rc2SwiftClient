@@ -79,16 +79,21 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	}
 	
 	private func adjustDocumentForFile(file:File?, content:String?) {
-		currentDocument?.wilLBecomeInactive()
+		let oldDocument = currentDocument
+		let oldContents = editor!.textStorage!.string
+		currentDocument?.willBecomeInactive(oldContents)
 		if let theFile = file, theText = content {
 			currentDocument = openDocuments[theFile.fileId]
 			if currentDocument == nil {
-				currentDocument = EditorDocument(file: theFile)
+				currentDocument = EditorDocument(file: theFile, fileHandler: session.fileHandler)
 				openDocuments[theFile.fileId] = currentDocument!
 			}
 			currentDocument!.willBecomeActive()
 			parser = SyntaxParser.parserWithTextStorage(editor!.textStorage!, fileType: theFile.fileType)
 			editor!.replaceCharactersInRange(editor!.rangeOfAllText, withString: theText)
+			if oldDocument?.dirty ?? false {
+				appStatus?.updateStatus(oldDocument!.saveContents())
+			}
 		} else {
 			parser = nil
 			currentDocument = nil
