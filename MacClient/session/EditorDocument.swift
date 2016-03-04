@@ -6,6 +6,8 @@
 
 import Foundation
 
+let MinTimeBetweenAutoSaves:NSTimeInterval = 2
+
 class EditorDocument: NSObject {
 	let file:File
 	let fileUrl:NSURL
@@ -13,6 +15,7 @@ class EditorDocument: NSObject {
 	let undoManager:NSUndoManager
 	private(set) var savedContents:String!
 	private(set) var editedContents:String?
+	private(set) var lastSaveTime:NSTimeInterval = 0
 	
 	var currentContents:String { return editedContents != nil ? editedContents! : savedContents }
 	var dirty:Bool {
@@ -26,7 +29,9 @@ class EditorDocument: NSObject {
 		self.fileUrl = fileHandler.fileCache.cachedFileUrl(file)
 		self.undoManager = NSUndoManager()
 		super.init()
-		self.savedContents = try! String(contentsOfURL: fileUrl)
+		fileHandler.contentsOfFile(file).onSuccess { fileData in
+			self.savedContents = String(data: fileData!, encoding: NSUTF8StringEncoding)
+		}
 	}
 	
 	func willBecomeActive() {
@@ -37,11 +42,20 @@ class EditorDocument: NSObject {
 		editedContents = text
 	}
 	
+	func autosaveContents() {
+		let curTime = NSDate.timeIntervalSinceReferenceDate()
+		guard curTime - lastSaveTime > MinTimeBetweenAutoSaves else { return }
+		saveContents()
+	}
+	
 	func saveContents() -> NSProgress {
 		let prog = NSProgress(totalUnitCount: -1) //indeterminate
 		fileHandler.saveFile(file, contents: editedContents!) { err in
+			//TODO: show alert to user if save failed
+			guard nil == err else { return }
 			self.savedContents = self.editedContents
 			self.editedContents = nil
+			self.lastSaveTime = NSDate.timeIntervalSinceReferenceDate()
 			prog.totalUnitCount = 1 //makes it determinate so it can be completed
 			prog.rc2_complete(err)
 		}

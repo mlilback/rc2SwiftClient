@@ -15,6 +15,10 @@ class AbstractSessionViewController: NSViewController {
 		appStatusChanged()
 	} }
 	
+	deinit {
+		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		NSNotificationCenter.defaultCenter().addObserverForName(CurrentSessionChangedNotification, object: nil, queue: nil) {

@@ -43,6 +43,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		return rowData[tableView.selectedRow].file
 	}
 
+	deinit {
+		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+	
 	//MARK: - lifecycle
 	override func awakeFromNib() {
 		super.awakeFromNib()
@@ -74,17 +78,19 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		tableView.reloadData()
 	}
 	
-	override func appStatusChanged() {
-		NSNotificationCenter.defaultCenter().addObserverForName(AppStatusChangedNotification, object: nil, queue: nil) { (note) -> Void in
-			assert(self.appStatus != nil, "appStatus not set on SidebarFileController")
-			if let tv = self.tableView, let apps = self.appStatus {
-				if apps.busy {
-					tv.unregisterDraggedTypes()
-				} else {
-					tv.registerForDraggedTypes(FileDragTypes)
-				}
+	func receivedStatusChange(note:NSNotification) {
+		assert(self.appStatus != nil, "appStatus not set on SidebarFileController")
+		if let tv = self.tableView, let apps = self.appStatus {
+			if apps.busy {
+				tv.unregisterDraggedTypes()
+			} else {
+				tv.registerForDraggedTypes(FileDragTypes)
 			}
 		}
+	}
+	
+	override func appStatusChanged() {
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedStatusChange", name: AppStatusChangedNotification, object: nil)
 	}
 	
 	func loadData() {

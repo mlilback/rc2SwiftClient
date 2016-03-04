@@ -82,10 +82,16 @@ import SwiftyJSON
 		if let previousHostName = NSUserDefaults.standardUserDefaults().stringForKey(self.kServerHostKey) {
 			selectHost(previousHostName)
 		}
-		NSNotificationCenter.defaultCenter().addObserverForName(SelectedWorkspaceChangedNotification, object: nil, queue: nil) { (note) -> Void in
-			let wspace = note.object as! Box<Workspace>
-			self.createSession(wspace.unbox, appStatus: self.appStatus!)
-		}
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"workspaceChanged", name:SelectedWorkspaceChangedNotification, object: nil)
+	}
+
+	deinit {
+		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+	
+	func workspaceChanged(note:NSNotification) {
+		let wspace = note.object as! Box<Workspace>
+		createSession(wspace.unbox, appStatus: appStatus!)
 	}
 	
 	private func createError(err:FileError, description:String) -> NSError {
@@ -165,7 +171,7 @@ import SwiftyJSON
 					self.urlConfig.HTTPAdditionalHeaders!["Rc2-Auth"] = self.loginSession!.authToken
 					dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: self.loginSession!, error: nil) })
 					NSUserDefaults.standardUserDefaults().setObject(self.loginSession!.host, forKey: self.kServerHostKey)
-					NSNotificationCenter.defaultCenter().postNotificationName(RestLoginChangedNotification, object: self)
+					NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(RestLoginChangedNotification, object: self)
 				case 401:
 					let error = self.createError(401, description: "Invalid login or password")
 					log.verbose("got a \(httpResponse.statusCode)")

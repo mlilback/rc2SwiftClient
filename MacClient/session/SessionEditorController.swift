@@ -17,6 +17,11 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	private(set) var currentDocument:EditorDocument?
 	private var openDocuments:[Int:EditorDocument] = [:]
 	
+	deinit {
+		NSWorkspace.sharedWorkspace().notificationCenter.removeObserver(self)
+		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+	
 	@IBAction override func performTextFinderAction(sender: AnyObject?) {
 		let menuItem = NSMenuItem(title: "foo", action: Selector("performFindPanelAction:"), keyEquivalent: "")
 		menuItem.tag = Int(NSFindPanelAction.ShowFindPanel.rawValue)
@@ -25,6 +30,7 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		guard editor != nil else { return }
 		var font:NSFont? = NSFont(name: "Menlo", size: 14.0)
 		if font == nil {
 			font = NSFont.userFixedPitchFontOfSize(14.0)
@@ -40,6 +46,11 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		let lnv = NoodleLineNumberView(scrollView: editor!.enclosingScrollView)
 		editor!.enclosingScrollView!.verticalRulerView = lnv
 		editor!.enclosingScrollView!.rulersVisible = true
+		let ncenter = NSNotificationCenter.defaultCenter()
+		ncenter.addObserver(self, selector: "autosaveCurrentDocument", name: NSApplicationDidResignActiveNotification, object: NSApp)
+		ncenter.addObserver(self, selector: "autosaveCurrentDocument", name: NSApplicationWillTerminateNotification, object: NSApp)
+		let nswspace = NSWorkspace.sharedWorkspace()
+		nswspace.notificationCenter.addObserver(self, selector: "autosaveCurrentDocument", name: NSWorkspaceWillSleepNotification, object: nswspace)
 	}
 	
 	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
@@ -76,6 +87,11 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 				self.adjustDocumentForFile(file, content: contents)
 			}
 		}
+	}
+	
+	private func autosaveCurrentDocument() {
+		guard currentDocument?.dirty ?? false else { return }
+		currentDocument!.autosaveContents()
 	}
 	
 	private func adjustDocumentForFile(file:File?, content:String?) {

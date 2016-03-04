@@ -73,6 +73,18 @@ extension PlatformColor {
 	}
 }
 
+extension NSNotificationCenter {
+	func postNotificationNameOnMainThread(noteName:String, object:AnyObject, userInfo:[NSObject:AnyObject]?=nil) {
+		if !NSThread.isMainThread() {
+			dispatch_async(dispatch_get_main_queue(), {
+				self.postNotificationName(noteName, object: object, userInfo: userInfo)
+			})
+		} else {
+			postNotificationName(noteName, object: object, userInfo: userInfo)
+		}
+	}
+}
+
 extension NSRange {
 	func toStringRange(str:String) -> Range<String.Index>? {
 		let fromIdx = str.utf16.startIndex.advancedBy(self.location)

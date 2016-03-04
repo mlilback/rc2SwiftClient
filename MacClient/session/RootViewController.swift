@@ -31,6 +31,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	//MARK: - Lifecycle
 	override func viewWillAppear() {
 		super.viewWillAppear()
+		guard editor == nil else { return } //only run once
 		editor = firstChildViewController(self)
 		outputHandler = firstChildViewController(self)
 		outputHandler?.imageCache = imgCache
@@ -122,28 +123,30 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		statusMessage = ""
 	}
 
-	override func appStatusChanged() {
-		NSNotificationCenter.defaultCenter().addObserverForName(AppStatusChangedNotification, object: nil, queue: nil) { (note) -> Void in
-			guard self.appStatus != nil else {
-				log.error("appStatus not set on RootViewController")
-				return
-			}
-			self.busy = (self.appStatus?.busy)!
-			self.statusMessage = (self.appStatus?.statusMessage)! as String
-			//hide/show dimmingView only if
-			if self.editor?.view.hiddenOrHasHiddenAncestor == false {
-				if self.busy {
-					self.dimmingView?.hidden = false
-					self.formerFirstResponder = self.view.window?.firstResponder
-					self.view.window?.makeFirstResponder(self.dimmingView)
-				} else {
-					self.dimmingView?.hidden = true
-					self.startTimer()
-					self.view.window?.makeFirstResponder(self.formerFirstResponder)
+	func receivedStatusNotification(note:NSNotification) {
+		guard self.appStatus != nil else {
+			log.error("appStatus not set on RootViewController")
+			return
+		}
+		self.busy = (self.appStatus?.busy)!
+		self.statusMessage = (self.appStatus?.statusMessage)! as String
+		//hide/show dimmingView only if
+		if self.editor?.view.hiddenOrHasHiddenAncestor == false {
+			if self.busy {
+				self.dimmingView?.hidden = false
+				self.formerFirstResponder = self.view.window?.firstResponder
+				self.view.window?.makeFirstResponder(self.dimmingView)
+			} else {
+				self.dimmingView?.hidden = true
+				self.startTimer()
+				self.view.window?.makeFirstResponder(self.formerFirstResponder)
 //					self.dimmingView?.animator().hidden = true
-				}
 			}
 		}
+	}
+	
+	override func appStatusChanged() {
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedStatusNotification:", name: AppStatusChangedNotification, object: nil)
 	}
 	
 	func hideDimmingView() {

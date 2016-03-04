@@ -110,7 +110,7 @@ public class Workspace: NSObject {
 	{
 		if context == &fileKvoKey {
 			let fileChange = WorkspaceFileChange(change: change)
-			NSNotificationCenter.defaultCenter().postNotificationName(WorkspaceFileChangedNotification, object: self, userInfo: ["change":fileChange])
+			NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(WorkspaceFileChangedNotification, object: self, userInfo: ["change":fileChange])
 		} else {
 			super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
 		}

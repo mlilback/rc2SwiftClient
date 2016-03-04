@@ -17,6 +17,10 @@ import Cocoa
 	dynamic var selectedWorkspace : String?
 	var actionCallback: ((controller:WorkspacesViewController, workspaceName:String) -> ())?
 	
+	deinit {
+		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+	
 	override func viewWillAppear() {
 		super.viewWillAppear();
 		workspaces = RestServer.sharedInstance.loginSession!.workspaces.map({$0.name})
@@ -38,7 +42,7 @@ import Cocoa
 	
 	@IBAction func selectWorkspace(sender:AnyObject?) {
 		let wspace = RestServer.sharedInstance.loginSession!.workspaceWithName(selectedWorkspace!)!
-		NSNotificationCenter.defaultCenter().postNotificationName(SelectedWorkspaceChangedNotification, object: Box(wspace))
+		NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(SelectedWorkspaceChangedNotification, object: Box(wspace))
 		actionCallback?(controller: self, workspaceName: selectedWorkspace!)
 	}
 	

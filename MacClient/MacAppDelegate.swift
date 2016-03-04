@@ -15,7 +15,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	var loginWindowController: NSWindowController?
 	var loginController: LoginViewController?
 	var sessionWindowController: MainWindowController?
-	var closeNotificationToken: AnyObject?
 	
 	func applicationWillFinishLaunching(notification: NSNotification) {
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
@@ -36,6 +35,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 
 	func applicationWillTerminate(aNotification: NSNotification) {
 		// Insert code here to tear down your application
+		NSNotificationCenter.defaultCenter().removeObserver(self)
 	}
 
 	func applicationShouldOpenUntitledFile(sender: NSApplication) -> Bool {
@@ -70,11 +70,11 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 		sessionWindowController?.contentViewController = root
 		sessionWindowController?.appStatus = self
 		sessionWindowController?.setupChildren()
-		closeNotificationToken = NSNotificationCenter.defaultCenter().addObserverForName(NSWindowWillCloseNotification, object: sessionWindowController!.window!, queue: NSOperationQueue.mainQueue())
-		{ [weak self] (note) -> Void in
-			self?.closeNotificationToken = nil
-			self?.performSelector("showLoginWindow", withObject: nil, afterDelay: 0.2)
-		}
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "sessionWindowWillClose", name: NSWindowWillCloseNotification, object: sessionWindowController!.window!)
+	}
+	
+	func sessionWindowWillClose() {
+		performSelector("showLoginWindow", withObject: nil, afterDelay: 0.2)
 	}
 	
 	func showLoginWindow() {
@@ -107,9 +107,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 			fatalError("can't set progress when there already is one")
 		}
 		_statusLock.around({ self._currentProgress = progress })
-		dispatch_async(dispatch_get_main_queue()) {
-			NSNotificationCenter.defaultCenter().postNotificationName(AppStatusChangedNotification, object: self)
-		}
+		NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(AppStatusChangedNotification, object: self)
 		currentProgress?.rc2_addCompletionHandler() {
 			self.updateStatus(nil)
 		}

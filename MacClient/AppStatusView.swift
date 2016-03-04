@@ -21,6 +21,10 @@ class AppStatusView: NSView {
 	
 	override var intrinsicContentSize:NSSize { return NSSize(width:220, height:22) }
 	
+	deinit {
+		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+	
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		dispatch_async(dispatch_get_main_queue()) {
