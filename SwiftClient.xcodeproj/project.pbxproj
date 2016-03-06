@@ -95,6 +95,8 @@
 		0868FC591C7789C3002386CB /* NSURL+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0868FC581C7789C3002386CB /* NSURL+Rc2.swift */; };
 		086BC9AD1C552AA0006ABAE0 /* SpinLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */; };
 		086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086BC9AE1C552D43006ABAE0 /* AppStatus.swift */; };
+		0874E7421C8B507F00A00036 /* MessagePackParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0874E7411C8B507F00A00036 /* MessagePackParser.swift */; };
+		0874E7441C8BAF2300A00036 /* MessagePackParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0874E7431C8BAF2300A00036 /* MessagePackParserTests.swift */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66E1C4B0AF400153414 /* LoginViewController.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
@@ -287,6 +289,8 @@
 		0868FC581C7789C3002386CB /* NSURL+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+Rc2.swift"; sourceTree = "<group>"; };
 		086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpinLock.swift; sourceTree = "<group>"; };
 		086BC9AE1C552D43006ABAE0 /* AppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStatus.swift; sourceTree = "<group>"; };
+		0874E7411C8B507F00A00036 /* MessagePackParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagePackParser.swift; sourceTree = "<group>"; };
+		0874E7431C8BAF2300A00036 /* MessagePackParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagePackParserTests.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		088CE6691C4B0AF400153414 /* Rc².app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Rc².app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppDelegate.swift; sourceTree = "<group>"; };
@@ -509,6 +513,7 @@
 				081468361C755A1E006DF8FC /* FileImporterTests.swift */,
 				08FDB1981C591409006FCD1A /* ImageCacheTests.swift */,
 				088CE6BB1C4C508000153414 /* KeychainTests.swift */,
+				0874E7431C8BAF2300A00036 /* MessagePackParserTests.swift */,
 				08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */,
 				08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */,
 				08159D1D1C77656C004A205A /* NSProgressTests.m */,
@@ -569,6 +574,7 @@
 				0816F8991C6D0F7D00A6120B /* HTMLString.swift */,
 				083174151C587F7F00071408 /* ImageCache.swift */,
 				088CE6B71C4C44A800153414 /* Keychain.swift */,
+				0874E7411C8B507F00A00036 /* MessagePackParser.swift */,
 				08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */,
 				083550CB1C760F050013E2B5 /* NSProgress+Rc2.h */,
 				083550CC1C760F050013E2B5 /* NSProgress+Rc2.m */,
@@ -796,6 +802,7 @@
 				0816F8A01C6D3A4500A6120B /* SessionHandlerProtocols.swift in Sources */,
 				0812631F1C862F4B003E37A5 /* EditorDocument.swift in Sources */,
 				0816F89E1C6D320D00A6120B /* DefaultSessionFileHandler.swift in Sources */,
+				0874E7421C8B507F00A00036 /* MessagePackParser.swift in Sources */,
 				0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */,
 				0827A4E61C7ED9CE001F0AFB /* RmdSyntaxParser.swift in Sources */,
 				08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */,
@@ -863,6 +870,7 @@
 				080834561C84C13300F5A190 /* SyntaxParserTests.swift in Sources */,
 				081263211C87A9E8003E37A5 /* EditorDocumentTests.swift in Sources */,
 				083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */,
+				0874E7441C8BAF2300A00036 /* MessagePackParserTests.swift in Sources */,
 				083305F01C519B4B00E27F66 /* ColorEnumTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
