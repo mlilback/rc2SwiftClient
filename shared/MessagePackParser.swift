@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import CoreFoundation
 
 enum MessagePackError: Int, ErrorType {
 	case InvalidBinaryData
@@ -82,7 +83,7 @@ class MessagePackParser {
 		case 0x0...0x7f as ClosedInterval:
 			return .IntValue(parseFixedPositiveInt())
 		case 0x90...0x9f as ClosedInterval:
-			return .ArrayValue(try parseFixedArray())
+			return .ArrayValue(try parseArray())
 		case 0xe0...0xff as ClosedInterval:
 			return .IntValue(parseFixedNegativeInt())
 		case 0xa0...0xbf as ClosedInterval:
@@ -109,11 +110,11 @@ class MessagePackParser {
 		case 0xd0...0xd3 as ClosedInterval:
 			return try parseInt()
 		case 0xd9...0xdb as ClosedInterval:
-			return .StringValue(parseString())
+			return .StringValue(try parseString())
 		case 0xdc, 0xdd:
-			return .ArrayValue(parseArray())
-		case 0xde, 0xdf:
-			return .DictionaryValue(parseMap())
+			return .ArrayValue(try parseArray())
+		case 0x80...0x8f, 0xde, 0xdf:
+			return .DictionaryValue(try parseMap())
 		default:
 			throw MessagePackError.InvalidBinaryData
 		}
@@ -129,36 +130,117 @@ class MessagePackParser {
 		return objs
 	}
 	
-	func parseFixedArray() throws -> [MessageValue] {
+	func parseMap() throws -> [String:MessageValue] {
 		let byte1 = bytes[curIndex]
-		let count = byte1 & 0xf
 		curIndex += 1
+		var length = 0
+		switch(byte1) {
+		case 0x80...0x8f:
+			length = Int(byte1) & 0xf
+		case 0xde:
+			let u16 = bytes.withUnsafeBufferPointer({
+				UnsafePointer<UInt16>($0.baseAddress + curIndex).memory
+			})
+			length = Int(UInt16(bigEndian: u16))
+			curIndex += 2
+		case 0xdf:
+			let u32 = bytes.withUnsafeBufferPointer({
+				UnsafePointer<UInt32>($0.baseAddress + curIndex).memory
+			})
+			length = Int(UInt32(bigEndian: u32))
+			curIndex += 4
+		default:
+			throw MessagePackError.InvalidBinaryData
+		}
+		//should now read pairs of keys and values
+		var dict:[String:MessageValue] = [:]
+		for _ in 0..<length {
+			let key = try parseNext()
+			let value = try parseNext()
+			guard case .StringValue(let keyStr) = key else {
+				throw MessagePackError.UnsupportedDictionaryKey
+			}
+			dict[keyStr] = value
+		}
+		return dict
+	}
+	
+	func parseArray() throws -> [MessageValue] {
+		let byte1 = bytes[curIndex]
+		curIndex += 1
+		var length = 0
+		switch(byte1) {
+		case 0x90...0x9f as ClosedInterval:
+			length = Int(byte1) & 0xf
+		case 0xdc:
+			let u16 = bytes.withUnsafeBufferPointer({
+				UnsafePointer<UInt16>($0.baseAddress + curIndex).memory
+			})
+			length = Int(UInt16(bigEndian: u16))
+			curIndex += 2
+		case 0xdd:
+			let u32 = bytes.withUnsafeBufferPointer({
+				UnsafePointer<UInt32>($0.baseAddress + curIndex).memory
+			})
+			length = Int(UInt32(bigEndian: u32))
+			curIndex += 4
+		default:
+			throw MessagePackError.InvalidBinaryData
+		}
 		var objs:[MessageValue] = []
-		for _ in 0..<count {
+		for _ in 0..<length {
 			let mo = try parseNext()
 			objs.append(mo)
 		}
 		return objs
 	}
 	
-	func parseMap() -> [String:MessageValue] {
-		fatalError("not implemented")
-	}
-	
-	func parseArray() -> [MessageValue] {
-		fatalError("not implemented")
-	}
-	
-	func parseString() -> String {
-		fatalError("not implemented")
+	func parseString() throws -> String {
+		var length = 0
+		let byte1 = bytes[curIndex]
+		curIndex += 1
+		switch(byte1) {
+		case 0xd9:
+			length = Int(bytes[curIndex])
+			curIndex += 1
+		case 0xda:
+			let u16 = bytes.withUnsafeBufferPointer({
+				UnsafePointer<UInt16>($0.baseAddress + curIndex).memory
+			})
+			length = Int(UInt16(bigEndian: u16))
+			curIndex += 2
+		case 0xdb:
+			let u32 = bytes.withUnsafeBufferPointer({
+				UnsafePointer<UInt32>($0.baseAddress + curIndex).memory
+			})
+			length = Int(UInt32(bigEndian: u32))
+			curIndex += 4
+		default:
+			throw MessagePackError.InvalidBinaryData
+		}
+		let str = String(bytes: bytes[curIndex..<curIndex+length], encoding: NSUTF8StringEncoding)
+		curIndex += length
+		return str!
 	}
 
 	func parseDouble() -> Double {
-		fatalError("not implemented")
+		curIndex += 1
+		let dbytes = Array(bytes[curIndex..<curIndex+8])
+		var u64:UInt64 = 0
+		memcpy(&u64, dbytes, 8)
+		let cfswapped = CFSwappedFloat64(v:u64)
+		curIndex += 8
+		return CFConvertDoubleSwappedToHost(cfswapped)
 	}
 	
 	func parseFloat() -> Float {
-		fatalError("not implemented")
+		curIndex += 1
+		let dbytes = Array(bytes[curIndex..<curIndex+4])
+		var u32:UInt32 = 0
+		memcpy(&u32, dbytes, 4)
+		let cfswapped = CFSwappedFloat32(v:u32)
+		curIndex += 4
+		return CFConvertFloatSwappedToHost(cfswapped)
 	}
 	
 	func parseExt() -> NSData {

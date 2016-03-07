@@ -45,6 +45,19 @@ class MessagePackParserTests: XCTestCase {
 		XCTAssert(result)
 	}
 	
+	func testFloats() {
+		let fileUrl = NSBundle(forClass: self.dynamicType).URLForResource("float", withExtension: "mpdata", subdirectory: "testFiles")!
+		let data = NSData(contentsOfURL: fileUrl)
+		let packer = MessagePackParser(data: data!)
+		let rootVals = try! packer.parse()
+		if case .ArrayValue(let vals) = rootVals[0] {
+			if case .FloatValue(let fval) = vals[0] { XCTAssertEqual(fval, Float(1.1)) } else { XCTFail("float != 1.1") }
+			if case .DoubleValue(let dval) = vals[1] { XCTAssertEqual(dval, Double(22323.123456789)) } else { XCTFail("double != 22323.123456789") }
+		} else {
+			XCTFail("failed to parse float arary")
+		}
+	}
+	
 	func testBooleanAndNil() {
 		let fileUrl = NSBundle(forClass: self.dynamicType).URLForResource("boolnil", withExtension: "mpdata", subdirectory: "testFiles")!
 		let data = NSData(contentsOfURL: fileUrl)
@@ -72,4 +85,79 @@ class MessagePackParserTests: XCTestCase {
 			XCTFail("failed to parse array for integers")
 		}
 	}
+
+	func testArrays() {
+		let fileUrl = NSBundle(forClass: self.dynamicType).URLForResource("smarray", withExtension: "mpdata", subdirectory: "testFiles")!
+		let data = NSData(contentsOfURL: fileUrl)
+		let packer = MessagePackParser(data: data!)
+		let rootVals = try! packer.parse()
+		XCTAssertEqual(rootVals.count, 1)
+		guard case .ArrayValue(let a1) = rootVals[0] else {
+			XCTFail("failed to get root array")
+			return
+		}
+		evaluateArray(a1, index:0, count: 5)
+		evaluateArray(a1, index:1, count: 25)
+		evaluateArray(a1, index:2, count: Int(Int16.max) + 1)
+	}
+
+	func evaluateArray(arrayVal:[MessageValue], index:Int, count:Int) {
+		guard case .ArrayValue(let array) = arrayVal[index] else {
+			XCTFail("failed to evaluate array of len \(count)")
+			return
+		}
+		XCTAssertEqual(count, array.count)
+		if case .IntValue(let i1) = array[count - 1] {
+			XCTAssertEqual(count - 1, i1)
+		} else {
+			XCTFail("invalid value for array value \(count)")
+		}
+	}
+	
+	func testDictionary() {
+		let fileUrl = NSBundle(forClass: self.dynamicType).URLForResource("dict", withExtension: "mpdata", subdirectory: "testFiles")!
+		let data = NSData(contentsOfURL: fileUrl)
+		let packer = MessagePackParser(data: data!)
+		let rootVals = try! packer.parse()
+		guard case .DictionaryValue(let dict) = rootVals[0]  else {
+			XCTFail("failed to parse dict")
+			return
+		}
+		XCTAssertEqual(2, dict.count)
+		guard case .FloatValue(let fval) = dict["key1"]! else {
+			XCTFail("failed to parse key1 from dict")
+			return
+		}
+		XCTAssertEqual(Float(1.1), fval)
+		guard case .BooleanValue(let bval) = dict["enabled"]! else {
+			XCTFail("failed to parse enabled from dict")
+			return
+		}
+		XCTAssertEqual(true, bval)
+	}
+	
+	func testStrings() {
+		let fileUrl = NSBundle(forClass: self.dynamicType).URLForResource("string", withExtension: "mpdata", subdirectory: "testFiles")!
+		let data = NSData(contentsOfURL: fileUrl)
+		let packer = MessagePackParser(data: data!)
+		let rootVals = try! packer.parse()
+		if case .ArrayValue(let vals) = rootVals[0] {
+			if case .StringValue(let sstr) = vals[0] {
+				XCTAssertEqual(sstr.utf8.count, 100)
+				XCTAssert(sstr.hasSuffix("ZZ"), "end of string 0 incorrect")
+			} else {
+				XCTFail("first string incorrect")
+			}
+			if case .StringValue(let lstr) = vals[1] {
+				let imax = Int(Int16.max) + 1
+				XCTAssertEqual(lstr.utf8.count, imax, "lstr len wrong: \(lstr.utf8.count) vs \(imax)")
+				XCTAssert(lstr.hasSuffix("ZZ"), "end of string 1 incorrect")
+			} else {
+				XCTFail("second string incorrect")
+			}
+		} else {
+			XCTFail("failed to parse array for integers")
+		}
+	}
+
 }
