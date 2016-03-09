@@ -82,7 +82,7 @@ import SwiftyJSON
 		if let previousHostName = NSUserDefaults.standardUserDefaults().stringForKey(self.kServerHostKey) {
 			selectHost(previousHostName)
 		}
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"workspaceChanged", name:SelectedWorkspaceChangedNotification, object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:"workspaceChanged:", name:SelectedWorkspaceChangedNotification, object: nil)
 	}
 
 	deinit {

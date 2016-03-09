@@ -89,7 +89,7 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		}
 	}
 	
-	private func autosaveCurrentDocument() {
+	func autosaveCurrentDocument() {
 		guard currentDocument?.dirty ?? false else { return }
 		currentDocument!.autosaveContents()
 	}

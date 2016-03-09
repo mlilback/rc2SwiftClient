@@ -8,7 +8,6 @@ import Foundation
 #if os(OSX)
 	import AppKit
 #endif
-import PEGKit
 
 let RCodeHighlighterColors = "RCodeHighlighterColors"
 

@@ -5,7 +5,6 @@
 //
 
 import Foundation
-import PEGKit
 #if os(OSX)
 	import AppKit
 #endif

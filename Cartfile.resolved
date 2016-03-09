@@ -1,6 +1,7 @@
 github "krzyzanowskim/CryptoSwift" "0.2.3"
+github "mlilback/MessagePackSwift" "v0.1"
 github "kylef/Mockingjay" "1.1.1"
-github "postmates/PMKVObserver" "v1.0.3"
+github "postmates/PMKVObserver" "v1.0.4"
 github "antitypical/Result" "1.0.2"
 github "tidwall/SwiftWebSocket" "2.5.0"
 github "SwiftyJSON/SwiftyJSON" "2.3.3"
