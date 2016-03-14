@@ -407,7 +407,6 @@
 			children = (
 				08ED575E1C724383002B2558 /* MacFileImportSetup.swift */,
 				0831740F1C57B2E200071408 /* CommandHistory.swift */,
-				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
 			);
 			name = data/helpers;
 			sourceTree = "<group>";
@@ -574,6 +573,7 @@
 				0827A4D71C7ED9CE001F0AFB /* SyntaxHighlighting */,
 				086BC9AE1C552D43006ABAE0 /* AppStatus.swift */,
 				088CE6951C4B605D00153414 /* ColorEnums.swift */,
+				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
 				083382F51C68E59300D40EEB /* FileCache.swift */,
 				08B036211C73B131005928B3 /* FileImporter.swift */,
 				080214871C693A69008B55D3 /* FileManager.swift */,
