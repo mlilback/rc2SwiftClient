@@ -91,7 +91,16 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	
 	func autosaveCurrentDocument() {
 		guard currentDocument?.dirty ?? false else { return }
-		currentDocument!.autosaveContents()
+		let prog = currentDocument!.saveContents(isAutoSave: true)
+		prog?.rc2_addCompletionHandler() {
+			self.saveDocumentToServer(self.currentDocument!)
+		}
+	}
+	
+	//should be called when document is locally saved but stil marked as dirty (e.g. from progress completion handler)
+	func saveDocumentToServer(document:EditorDocument) {
+		//TODO: implement
+		log.info("save to server")
 	}
 	
 	private func adjustDocumentForFile(file:File?, content:String?) {
@@ -108,7 +117,11 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 			parser = SyntaxParser.parserWithTextStorage(editor!.textStorage!, fileType: theFile.fileType)
 			editor!.replaceCharactersInRange(editor!.rangeOfAllText, withString: theText)
 			if oldDocument?.dirty ?? false {
-				appStatus?.updateStatus(oldDocument!.saveContents())
+				let prog = oldDocument!.saveContents()
+				appStatus?.updateStatus(prog)
+				prog?.rc2_addCompletionHandler() {
+					self.saveDocumentToServer(oldDocument!)
+				}
 			}
 		} else {
 			parser = nil

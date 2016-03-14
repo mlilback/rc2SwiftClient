@@ -42,22 +42,26 @@ class EditorDocument: NSObject {
 		editedContents = text
 	}
 	
-	func autosaveContents() {
-		let curTime = NSDate.timeIntervalSinceReferenceDate()
-		guard curTime - lastSaveTime > MinTimeBetweenAutoSaves else { return }
-		saveContents()
-	}
-	
-	func saveContents() -> NSProgress {
+	///any completion blocks added to progress will be executed on the main queue after the
+	///save is complete, but before the document replaces the savedContents with the editedContents
+	///this allows observers to access the previous and new content
+	func saveContents(isAutoSave autosave:Bool=false) -> NSProgress? {
+		if autosave {
+			let curTime = NSDate.timeIntervalSinceReferenceDate()
+			guard curTime - lastSaveTime > MinTimeBetweenAutoSaves else { return nil }
+		}
 		let prog = NSProgress(totalUnitCount: -1) //indeterminate
 		fileHandler.saveFile(file, contents: editedContents!) { err in
 			//TODO: show alert to user if save failed
 			guard nil == err else { return }
-			self.savedContents = self.editedContents
-			self.editedContents = nil
-			self.lastSaveTime = NSDate.timeIntervalSinceReferenceDate()
 			prog.totalUnitCount = 1 //makes it determinate so it can be completed
 			prog.rc2_complete(err)
+			//let progress handler blocks run first
+			dispatch_async(dispatch_get_main_queue()) {
+				self.savedContents = self.editedContents
+				self.editedContents = nil
+				self.lastSaveTime = NSDate.timeIntervalSinceReferenceDate()
+			}
 		}
 		return prog
 	}
