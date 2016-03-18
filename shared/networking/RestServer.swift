@@ -10,7 +10,7 @@ import BrightFutures
 import Result
 import SwiftyJSON
 
-@objc public class RestServer : NSObject {
+@objc public class RestServer : NSObject, NSURLSessionTaskDelegate {
 
 	private static var _sInstance:RestServer?? = nil
 	private static var sInstance:RestServer? { get { return _sInstance! } set { _sInstance = newValue } }
@@ -34,8 +34,8 @@ import SwiftyJSON
 	
 	public typealias Rc2RestCompletionHandler = (success:Bool, results:Any?, error:NSError?) -> Void
 	
-	private(set) var urlConfig : NSURLSessionConfiguration
-	private var urlSession : NSURLSession
+	private(set) var urlConfig : NSURLSessionConfiguration!
+	private var urlSession : NSURLSession!
 	private(set) public var hosts : [NSDictionary]
 	private(set) public var selectedHost : NSDictionary
 	private(set) public var loginSession : LoginSession?
@@ -65,9 +65,6 @@ import SwiftyJSON
 		#if os(OSX)
 			userAgent = "Rc2 MacClient"
 		#endif
-		urlConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
-		urlConfig.HTTPAdditionalHeaders = ["User-Agent": userAgent, "Accept": "application/json"]
-		urlSession = NSURLSession.init(configuration: urlConfig)
 		
 		//load hosts info from resource file
 		let hostFileUrl = NSBundle.mainBundle().URLForResource("RestHosts", withExtension: "json")
@@ -79,6 +76,9 @@ import SwiftyJSON
 		hosts = theHosts as! [NSDictionary]
 		selectedHost = hosts.first!
 		super.init()
+		urlConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
+		urlConfig.HTTPAdditionalHeaders = ["User-Agent": userAgent, "Accept": "application/json"]
+		urlSession = NSURLSession(configuration: urlConfig, delegate: self, delegateQueue:NSOperationQueue.mainQueue())
 		if let previousHostName = NSUserDefaults.standardUserDefaults().stringForKey(self.kServerHostKey) {
 			selectHost(previousHostName)
 		}
@@ -154,17 +154,15 @@ import SwiftyJSON
 	
 	public func login(login:String, password:String, handler:Rc2RestCompletionHandler) {
 		assert(baseUrl != nil, "baseUrl not specified")
-		let req = request("login", method:"POST", jsonDict: ["login":login, "password":password])
-		let task = urlSession.dataTaskWithRequest(req) {
-			(data, response, error) -> Void in
+		let loginObj = LoginHandler(config: urlConfig, baseUrl: baseUrl!)
+		loginObj.login(login, password:password) { (data, response, error) -> Void in
 			guard error == nil else {
-				let error = self.createError(404, description: (error?.localizedDescription)!)
-				dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
+				let appError = self.createError(404, description: (error?.localizedDescription)!)
+				dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: appError) })
 				return
 			}
 			let json = JSON(data:data!)
-			let httpResponse = response as! NSHTTPURLResponse
-			switch(httpResponse.statusCode) {
+			switch(response!.statusCode) {
 				case 200:
 					self.loginSession = LoginSession(json: json, host: self.selectedHost["name"]! as! String)
 					//for anyone that copies our session config later, include the auth token
@@ -174,15 +172,14 @@ import SwiftyJSON
 					NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(RestLoginChangedNotification, object: self)
 				case 401:
 					let error = self.createError(401, description: "Invalid login or password")
-					log.verbose("got a \(httpResponse.statusCode)")
+					log.verbose("got a \(response!.statusCode)")
 					dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
 				default:
-					let error = self.createError(httpResponse.statusCode, description: "")
-					log.warning("got unknown status code: \(httpResponse.statusCode)")
+					let error = self.createError(response!.statusCode, description: "")
+					log.warning("got unknown status code: \(response!.statusCode)")
 					dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
 			}
 		}
-		task.resume()
 	}
 	
 	public func createWorkspace(wspaceName:String, handler:Rc2RestCompletionHandler) {
@@ -310,6 +307,80 @@ import SwiftyJSON
 		}
 		task.resume()
 		return p.future
+	}
+}
+
+public class LoginHandler: NSObject, NSURLSessionDataDelegate {
+	let urlConfig:NSURLSessionConfiguration
+	let baseUrl:NSURL
+	var loggedInHandler:LoginHandler?
+	var urlSession:NSURLSession!
+	var loginResponse:NSURLResponse?
+	var responseData:NSMutableData = NSMutableData()
+
+	public typealias LoginHandler = (data:NSData?, response:NSHTTPURLResponse?, error:NSError?) -> Void
+	
+	init(config:NSURLSessionConfiguration, baseUrl:NSURL) {
+		self.urlConfig = config
+		self.baseUrl = baseUrl
+		super.init()
+	}
+
+	public func login(login:String, password:String, handler:LoginHandler) {
+		self.urlSession = NSURLSession(configuration: urlConfig, delegate: self, delegateQueue:NSOperationQueue.mainQueue())
+		loggedInHandler = handler
+		let url = NSURL(string: "login", relativeToURL: baseUrl)
+
+		let req = NSMutableURLRequest(URL: url!)
+		req.HTTPMethod = "POST"
+		req.addValue("application/json", forHTTPHeaderField:"Content-Type")
+		req.HTTPBody = try! NSJSONSerialization.dataWithJSONObject(["login":login, "password":password], options: [])
+
+		let task = urlSession.dataTaskWithRequest(req);
+		task.resume()
+	}
+
+	public func URLSession(session: NSURLSession, didReceiveChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void)
+	{
+		log.info("challenge 1")
+		guard challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+			let serverTrust = challenge.protectionSpace.serverTrust,
+			let serverCert = SecTrustGetCertificateAtIndex(serverTrust, 0),
+			let certPath = NSBundle.mainBundle().URLForResource("server", withExtension: "cer"),
+			let storedData = NSData(contentsOfURL: certPath) where
+			storedData.isEqualToData(SecCertificateCopyData(serverCert))  else
+		{
+			completionHandler(NSURLSessionAuthChallengeDisposition.CancelAuthenticationChallenge, nil)
+			return
+		}
+		completionHandler(NSURLSessionAuthChallengeDisposition.UseCredential, nil)
+	}
+	
+	public func URLSession(session: NSURLSession, task: NSURLSessionTask, didReceiveChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void)
+	{
+		log.info("challenge 2")
+		completionHandler(NSURLSessionAuthChallengeDisposition.UseCredential, nil)
+	}
+
+	public func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveResponse response: NSURLResponse, completionHandler: (NSURLSessionResponseDisposition) -> Void)
+	{
+		self.loginResponse = response
+		completionHandler(NSURLSessionResponseDisposition.Allow)
+	}
+	
+	public func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData)
+	{
+		responseData.appendData(data)
+	}
+	
+	public func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?)
+	{
+		if error != nil {
+			loggedInHandler!(data: nil, response:loginResponse as! NSHTTPURLResponse!, error: error)
+		} else {
+			loggedInHandler!(data:responseData, response:loginResponse as! NSHTTPURLResponse!, error:nil)
+		}
+		urlSession.invalidateAndCancel()
 	}
 }
 
