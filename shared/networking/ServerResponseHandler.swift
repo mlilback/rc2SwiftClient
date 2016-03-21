@@ -52,6 +52,9 @@ class ResponseHandler {
 				delegate.handleFileUpdate(file, change: FileChangeType.init(rawValue: changeType)!)
 			case .Variable(let socketId, let delta, let single, let variables):
 				delegate.handleVariableMessage(socketId, delta: delta, single: single, variables: variables)
+			case .SaveResponse( _):
+				//handled by the session, never passed to delegate
+				return nil
 		}
 		return nil
 	}

@@ -10,6 +10,7 @@ import XCGLogger
 	import AppKit
 #endif
 import SwiftyJSON
+import MessagePackSwift
 
 public class Session : NSObject, SessionFileHandlerDelegate {
 	///tried kvo, forced to use notifications
@@ -38,6 +39,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	
 	private(set) var connectionOpen:Bool = false
 	private var loadTimer:dispatch_source_t = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue())
+	private var waitingOnTransactions: [String:(String) -> Void] = [:]
 	
 	init(_ wspace:Workspace,  source:WebSocketSource, appStatus:AppStatus, networkConfig config:NSURLSessionConfiguration, delegate:SessionDelegate?=nil)
 	{
@@ -49,26 +51,23 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 
 		super.init()
 		fileHandler.fileDelegate = self
+		wsSource.binaryType = .NSData
 		wsSource.event.open = {
-			dispatch_async(dispatch_get_main_queue()) {
+			dispatch_async(dispatch_get_main_queue()) { [unowned self] in
 				self.connectionOpen = true
 				Session.manager.currentSession = self
 				self.fileHandler.loadFiles()
 				self.delegate?.sessionOpened()
 			}
 		}
-		wsSource.event.close = { (code, reason, clear) in
+		wsSource.event.close = { [unowned self] (code, reason, clear)in
 			self.connectionOpen = false
 			self.delegate?.sessionClosed()
 		}
-		wsSource.event.message = { message in
-//			log.info("got message: \(message as? String)")
-			let jsonMessage = JSON.parse(message as! String)
-			if let response = ServerResponse.parseResponse(jsonMessage) {
-				self.delegate?.sessionMessageReceived(response)
-			}
+		wsSource.event.message = { [unowned self] message in
+			self.handleReceivedMessage(message)
 		}
-		wsSource.event.error = { error in
+		wsSource.event.error = { [unowned self] error in
 			self.delegate?.sessionErrorReceived(error)
 		}
 	}
@@ -79,22 +78,6 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	
 	func close() {
 		self.wsSource.close(1000, reason: "") //default values that can't be specified in a protocol
-	}
-	
-	func loadFiles() {
-//		let progress = NSProgress(totalUnitCount: 10)
-//		progress.rc2_addCompletionHandler() {
-//			dispatch_source_cancel(self.loadTimer)
-//			self.appStatus.updateStatus(nil)
-//			self.fileHandler.loadFiles()
-//		}
-//		progress.localizedDescription = NSLocalizedString("Loading files…", comment: "")
-//		appStatus.updateStatus(progress)
-//		dispatch_source_set_timer(loadTimer, dispatch_time(DISPATCH_TIME_NOW, Int64(NSEC_PER_SEC)), NSEC_PER_SEC, 200)
-//		dispatch_source_set_event_handler(loadTimer) {
-//			progress.completedUnitCount = progress.completedUnitCount + 1
-//		}
-//		dispatch_resume(loadTimer)
 	}
 	
 	//MARK: public request methods
@@ -142,12 +125,96 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		delegate?.sessionFilesLoaded(self)
 	}
 	
+	///sends document changes to the server
+	///parameter completionHandler: called when the server confirms it saved it and passed to any subsytems (like R)
+	func sendSaveFileMessage(document:EditorDocument, completionHandler:(EditorDocument, NSError?) -> Void) {
+		let data = NSMutableData()
+		let transId = encodeDocumentSaveMessage(document, data: data)
+		waitingOnTransactions[transId] = { (responseId) in
+			completionHandler(document, nil)
+		}
+		self.wsSource.send(data)
+	}
+	
 	//MARK: other public methods
 //	func noHelpFoundString(topic:String) -> NSAttributedString {
 //		return NSAttributedString(string: "No help available for '\(topic)'\n", attributes: attrDictForColor(.Help))
 //	}
 //	
 	//MARK: private methods
+	
+	//assumes currentContents of document is what should be sent to the server
+	///returns a token to uniquely identify this transaction, encoded into the message data
+	private func encodeDocumentSaveMessage(document:EditorDocument, data:NSMutableData) -> String {
+		let uniqueIdent = NSUUID().UUIDString
+		let encoder = MessagePackEncoder()
+		var attrs = ["msg":MessageValue.forValue("save"), "apiVersion":MessageValue.forValue(1)]
+		attrs["transId"] = MessageValue.forValue(uniqueIdent)
+		attrs["fileId"] = MessageValue.forValue(document.file.fileId)
+		attrs["fileVersion"] = MessageValue.forValue(document.file.version)
+		attrs["content"] = MessageValue.forValue(document.currentContents)
+		encoder.encodeValue(MessageValue.DictionaryValue(MessageValueDictionary(attrs)))
+		data.appendData(encoder.data!)
+	data.writeToURL(NSURL(fileURLWithPath: "/tmp/lastSaveToServer"), atomically: true)
+		return uniqueIdent
+	}
+	
+	private func processBinaryResponse(data:NSData) {
+		var parsedValues:[MessageValue]? = nil
+		let decoder = MessagePackDecoder(data: data)
+		do {
+			parsedValues = try decoder.parse()
+		} catch let err {
+			log.error("error parsing binary message:\(err)")
+		}
+		//get the dictionary of messagevalues
+		guard case MessageValue.DictionaryValue(let msgDict) = parsedValues![0] else {
+			log.warning("received invalid binary response from server")
+			return
+		}
+		let dict = msgDict.nativeValue()
+		//eventually we need to switch on the msg property. For now, just verify it is the only one we support
+		guard let msgStr = dict["msg"] as? String where msgStr == "saveResponse" else {
+			log.warning("received unkown bimary message")
+			return
+		}
+		handleSaveResponse(dict)
+	}
+	
+	//we've got a dictionary of the save response. keys should be transId, success, file, error
+	private func handleSaveResponse(rawDict:[String:AnyObject]) {
+		if let transId = rawDict["transId"] as? String {
+			waitingOnTransactions[transId]?(transId)
+			waitingOnTransactions.removeValueForKey(transId)
+			log.info("transaction \(transId) complelte")
+		}
+		if rawDict["error"] != nil {
+			log.info("got save response error \(rawDict["error"])")
+			return
+		}
+		do {
+			let fileData = try NSJSONSerialization.dataWithJSONObject(rawDict["file"]!, options: [])
+			let json = JSON(data: fileData)
+			let file = File(json: json)
+			log.info("got file saved for \(file.name)")
+		} catch let err {
+			log.error("error parsing binary message: \(err)")
+		}
+	}
+	
+	private func handleReceivedMessage(message:Any) {
+		if let stringMessage = message as? String {
+			let jsonMessage = JSON.parse(stringMessage)
+			if let response = ServerResponse.parseResponse(jsonMessage) {
+				self.delegate?.sessionMessageReceived(response)
+			}
+		} else if let _ = message as? NSData {
+			processBinaryResponse(message as! NSData)
+		} else {
+			log.error("invalid binary data format received: \(message)")
+		}
+	}
+	
 	func sendMessage(message:Dictionary<String,AnyObject>) -> Bool {
 		guard NSJSONSerialization.isValidJSONObject(message) else {
 			return false
@@ -163,4 +230,3 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		return true
 	}
 }
-

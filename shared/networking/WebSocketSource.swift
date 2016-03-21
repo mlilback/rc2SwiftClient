@@ -10,6 +10,7 @@ import SwiftWebSocket
 //wrapper protocol around WebSocket class to allow DI and mocking
 public protocol WebSocketSource : class {
 	var event: WebSocketEvents { get set }
+	var binaryType: WebSocketBinaryType { get set }
 	func open(request request: NSURLRequest, subProtocols : [String])
 	func close(code : Int, reason : String)
 	func send(message : Any)

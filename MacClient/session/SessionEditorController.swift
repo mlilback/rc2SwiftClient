@@ -99,8 +99,11 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	
 	//should be called when document is locally saved but stil marked as dirty (e.g. from progress completion handler)
 	func saveDocumentToServer(document:EditorDocument) {
-		//TODO: implement
-		log.info("save to server")
+		//TODO: enable busy status
+		session.sendSaveFileMessage(document) { (doc, err) -> Void in
+			//ideally should remove busy progress added before this call
+			log.info("saved to server")
+		}
 	}
 	
 	private func adjustDocumentForFile(file:File?, content:String?) {

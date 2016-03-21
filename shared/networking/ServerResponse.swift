@@ -14,6 +14,7 @@ public enum ServerResponse : Equatable {
 	case FileChanged(changeType:String, file:File)
 	case Help(topic:String, paths:[HelpItem])
 	case Results(queryId:Int, fileId:Int, text:String)
+	case SaveResponse(transId:String)
 	case Variable(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String, JSON>)
 	
 	static func parseResponse(jsonObj:JSON) -> ServerResponse? {
@@ -38,6 +39,8 @@ public enum ServerResponse : Equatable {
 				return ServerResponse.Help(topic: jsonObj["topic"].stringValue, paths: jsonObj["paths"].arrayValue.map({ return HelpItem(dict: $0.dictionaryValue) }))
 			case "variables":
 				return ServerResponse.Variable(socketId: jsonObj["socketId"].intValue, delta: jsonObj["delta"].boolValue, single: jsonObj["singleValue"].boolValue, variables: jsonObj["variables"].dictionaryValue)
+			case "saveResponse":
+				return ServerResponse.SaveResponse(transId: jsonObj["transId"].stringValue)
 			default:
 				return nil
 		}
@@ -142,4 +145,3 @@ public class SessionImage: NSObject, NSSecureCoding, NSCopying {
 public func ==(a:SessionImage, b:SessionImage) -> Bool {
 	return a.id == b.id 
 }
-
