@@ -54,22 +54,22 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		if addRemoveButtons != nil {
 			let menu = NSMenu(title: "new document format")
 			for (index, aType) in FileType.creatableFileTypes.enumerate() {
-				let mi = NSMenuItem(title: aType.details, action: "addDocumentOfType:", keyEquivalent: "")
+				let mi = NSMenuItem(title: aType.details, action: #selector(SidebarFileController.addDocumentOfType(_:)), keyEquivalent: "")
 				mi.representedObject = index
 				menu.addItem(mi)
 			}
 			menu.autoenablesItems = false
 			//NOTE: the action method of the menu item wasn't being called the first time. This works all times.
-			NSNotificationCenter.defaultCenter().addObserver(self, selector: "addFileMenuAction:", name: NSMenuDidSendActionNotification, object: menu)
+			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SidebarFileController.addFileMenuAction(_:)), name: NSMenuDidSendActionNotification, object: menu)
 			addRemoveButtons?.setMenu(menu, forSegment: 0)
 			addRemoveButtons?.target = self
-			addRemoveButtons?.action = "addButtonClicked:"
+			addRemoveButtons?.action = #selector(SidebarFileController.addButtonClicked(_:))
 		}
 		if tableView != nil {
 			tableView.setDraggingSourceOperationMask(.Copy, forLocal: true)
 			tableView.draggingDestinationFeedbackStyle = .None
 			tableView.registerForDraggedTypes(FileDragTypes)
-			NSNotificationCenter.defaultCenter().addObserver(self, selector: "filesRefreshed", name: WorkspaceFileChangedNotification, object: nil)
+			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(FileHandler.filesRefreshed), name: WorkspaceFileChangedNotification, object: nil)
 		}
 	}
 	
@@ -90,7 +90,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	override func appStatusChanged() {
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedStatusChange:", name: AppStatusChangedNotification, object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SidebarFileController.receivedStatusChange(_:)), name: AppStatusChangedNotification, object: nil)
 	}
 	
 	func loadData() {
@@ -119,11 +119,11 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
 		switch(menuItem.action) {
-			case "promptToImportFiles:":
+			case #selector(FileHandler.promptToImportFiles(_:)):
 				return true
-			case "exportSelectedFile:":
+			case #selector(SidebarFileController.exportSelectedFile(_:)):
 				return selectedFile != nil
-			case "exportAllFiles:":
+			case #selector(SidebarFileController.exportAllFiles(_:)):
 				return true
 			default:
 				return super.validateMenuItem(menuItem)
@@ -132,7 +132,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	func menuNeedsUpdate(menu: NSMenu) {
 		menu.itemArray.filter() { item in
-			return item.action == "exportSelectedFile:"
+			return item.action == #selector(SidebarFileController.exportSelectedFile(_:))
 		}.first?.enabled = selectedFile != nil
 	}
 	
@@ -150,6 +150,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	func removeFileMenuItem(sender:AnyObject?) {
 		log.info("remove selcted file")
+	}
+	
+	@IBAction func addDocumentOfType(menuItem:NSMenuItem) {
+		
 	}
 	
 	//MARK: - import/export

@@ -23,7 +23,7 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	}
 	
 	@IBAction override func performTextFinderAction(sender: AnyObject?) {
-		let menuItem = NSMenuItem(title: "foo", action: Selector("performFindPanelAction:"), keyEquivalent: "")
+		let menuItem = NSMenuItem(title: "foo", action: #selector(NSTextView.performFindPanelAction(_:)), keyEquivalent: "")
 		menuItem.tag = Int(NSFindPanelAction.ShowFindPanel.rawValue)
 		editor?.performFindPanelAction(menuItem)
 	}
@@ -47,14 +47,14 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		editor!.enclosingScrollView!.verticalRulerView = lnv
 		editor!.enclosingScrollView!.rulersVisible = true
 		let ncenter = NSNotificationCenter.defaultCenter()
-		ncenter.addObserver(self, selector: "autosaveCurrentDocument", name: NSApplicationDidResignActiveNotification, object: NSApp)
-		ncenter.addObserver(self, selector: "autosaveCurrentDocument", name: NSApplicationWillTerminateNotification, object: NSApp)
+		ncenter.addObserver(self, selector: #selector(SessionEditorController.autosaveCurrentDocument), name: NSApplicationDidResignActiveNotification, object: NSApp)
+		ncenter.addObserver(self, selector: #selector(SessionEditorController.autosaveCurrentDocument), name: NSApplicationWillTerminateNotification, object: NSApp)
 		let nswspace = NSWorkspace.sharedWorkspace()
-		nswspace.notificationCenter.addObserver(self, selector: "autosaveCurrentDocument", name: NSWorkspaceWillSleepNotification, object: nswspace)
+		nswspace.notificationCenter.addObserver(self, selector: #selector(SessionEditorController.autosaveCurrentDocument), name: NSWorkspaceWillSleepNotification, object: nswspace)
 	}
 	
 	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
-		if menuItem.action == "runQuery:" {
+		if menuItem.action == #selector(SessionEditorController.runQuery(_:)) {
 			print("setting run enabled state")
 			return currentDocument != nil
 		}

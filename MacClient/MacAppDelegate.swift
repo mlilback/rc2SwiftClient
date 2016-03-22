@@ -70,11 +70,11 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 		sessionWindowController?.contentViewController = root
 		sessionWindowController?.appStatus = self
 		sessionWindowController?.setupChildren()
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: "sessionWindowWillClose", name: NSWindowWillCloseNotification, object: sessionWindowController!.window!)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MacAppDelegate.sessionWindowWillClose), name: NSWindowWillCloseNotification, object: sessionWindowController!.window!)
 	}
 	
 	func sessionWindowWillClose() {
-		performSelector("showLoginWindow", withObject: nil, afterDelay: 0.2)
+		performSelector(#selector(MacAppDelegate.showLoginWindow), withObject: nil, afterDelay: 0.2)
 	}
 	
 	func showLoginWindow() {

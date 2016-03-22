@@ -24,13 +24,13 @@ class TargetActionBlock: NSObject {
 	
 	func installInToolbarItem(item:NSToolbarItem) {
 		item.target = self
-		item.action = "performAction:"
+		item.action = #selector(TargetActionBlock.performAction(_:))
 		objc_setAssociatedObject(item, &Keys.SelfName, self, .OBJC_ASSOCIATION_RETAIN)
 	}
 	
 	func installInControl(item:NSControl) {
 		item.target = self
-		item.action = "performAction:"
+		item.action = #selector(TargetActionBlock.performAction(_:))
 		objc_setAssociatedObject(item, &Keys.SelfName, self, .OBJC_ASSOCIATION_RETAIN)
 	}
 }

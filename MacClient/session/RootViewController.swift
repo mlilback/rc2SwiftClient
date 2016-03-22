@@ -43,8 +43,8 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 			concreteFH!.delegate = self
 		}
 		//save our state on quit and sleep
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: "appWillTerminate", name: NSApplicationWillTerminateNotification, object: nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:  "saveSessionState", name: NSWorkspaceWillSleepNotification, object:nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootViewController.appWillTerminate), name: NSApplicationWillTerminateNotification, object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:  #selector(OutputHandler.saveSessionState), name: NSWorkspaceWillSleepNotification, object:nil)
 	}
 	
 	override func viewDidAppear() {
@@ -55,7 +55,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		view.addSubview(dimmingView!)
 		(view as! RootView).dimmingView = dimmingView //required to block clicks to subviews
 		//we have to wait until next time through event loop to set first responder
-		self.performSelectorOnMainThread("setupResponder", withObject: nil, waitUntilDone: false)
+		self.performSelectorOnMainThread(#selector(RootViewController.setupResponder), withObject: nil, waitUntilDone: false)
 	}
 	
 	func appWillTerminate() {
@@ -67,7 +67,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	
 	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
 		switch(menuItem.action) {
-		case "promptToImportFiles:":
+		case #selector(FileHandler.promptToImportFiles(_:)):
 			return fileHandler!.validateMenuItem(menuItem)
 		default:
 			return false
@@ -115,7 +115,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	
 	func startTimer() {
 		if statusTimer?.valid ?? false { statusTimer?.invalidate() }
-		statusTimer = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: "clearStatus", userInfo: nil, repeats: false)
+		statusTimer = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: #selector(RootViewController.clearStatus), userInfo: nil, repeats: false)
 	}
 	
 	func clearStatus() {
@@ -146,7 +146,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 	
 	override func appStatusChanged() {
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedStatusNotification:", name: AppStatusChangedNotification, object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootViewController.receivedStatusNotification(_:)), name: AppStatusChangedNotification, object: nil)
 	}
 	
 	func hideDimmingView() {

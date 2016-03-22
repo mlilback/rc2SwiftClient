@@ -17,7 +17,7 @@ class WorkspaceKVOTests: BaseTest {
 		super.setUp()
 		workspace = sessionData.workspaces.first
 		workspace!.filesArray.removeAllObjects()
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: "fileChangeNotification:", name: WorkspaceFileChangedNotification, object: workspace)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(WorkspaceKVOTests.fileChangeNotificationHandler(_:)), name: WorkspaceFileChangedNotification, object: workspace)
 	}
 	
 	override func tearDown() {

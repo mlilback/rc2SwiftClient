@@ -47,7 +47,8 @@ class SyntaxParser: NSObject {
 		super.init()
 	}
 	
-	func chunkForRange(var range:NSRange) -> DocumentChunk? {
+	func chunkForRange(inRange:NSRange) -> DocumentChunk? {
+		var range = inRange
 		if range.location == NSNotFound { return nil }
 		if range.location == 0 && range.length == 0 {
 			if textStorage.length < 1 { return nil; }

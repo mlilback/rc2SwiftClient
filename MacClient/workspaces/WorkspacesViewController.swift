@@ -29,7 +29,7 @@ import Cocoa
 	
 	override func viewDidAppear() {
 		super.viewDidAppear()
-		view.window?.performSelectorOnMainThread("makeFirstResponder:", withObject: okButton, waitUntilDone: false)
+		view.window?.performSelectorOnMainThread(#selector(NSWindow.makeFirstResponder(_:)), withObject: okButton, waitUntilDone: false)
 	}
 	
 	@IBAction func segButtonClicked(sender:AnyObject?) {

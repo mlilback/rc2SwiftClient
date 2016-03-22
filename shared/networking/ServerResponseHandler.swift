@@ -30,9 +30,10 @@ class ResponseHandler {
 	required init(delegate:ResponseHandlerDelegate) {
 		self.delegate = delegate
 		let oldDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("OutputColors") as! Dictionary<String,String>
-		outputColors = oldDict.reduce([OutputColors:PlatformColor]()) { (var dict, pair) in
-			dict[OutputColors(rawValue: pair.0)!] = PlatformColor.colorWithHexString(pair.1)
-			return dict
+		outputColors = oldDict.reduce([OutputColors:PlatformColor]()) { (dict, pair) in
+			var aDict = dict
+			aDict[OutputColors(rawValue: pair.0)!] = PlatformColor.colorWithHexString(pair.1)
+			return aDict
 		}
 	}
 

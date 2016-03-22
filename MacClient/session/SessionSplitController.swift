@@ -25,7 +25,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 			segmentItem = item
 			segmentControl = item.view as! NSSegmentedControl?
 			segmentControl?.target = self
-			segmentControl?.action = "tabSwitcherClicked:"
+			segmentControl?.action = #selector(SessionSplitController.tabSwitcherClicked(_:))
 			let sidebar = sidebarTabController()
 			let lastSelection = NSUserDefaults.standardUserDefaults().integerForKey(LastSelectedSessionTabIndex)
 			segmentControl?.selectedSegment = lastSelection

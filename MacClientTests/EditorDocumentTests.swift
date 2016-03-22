@@ -41,7 +41,7 @@ class EditorDocumentTests: BaseTest {
 		XCTAssertEqual(doc.currentContents, modContent)
 		let expect = expectationWithDescription("save file")
 		let prog = doc.saveContents()
-		prog.rc2_addCompletionHandler() {
+		prog?.rc2_addCompletionHandler() {
 			expect.fulfill()
 		}
 		self.waitForExpectationsWithTimeout(2){ (error) in }

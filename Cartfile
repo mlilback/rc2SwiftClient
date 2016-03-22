@@ -1,7 +1,7 @@
 github "DaveWoodCom/XCGLogger" >= 3.2
 github "kylef/Mockingjay"
 github "SwiftyJSON/SwiftyJSON"
-github "tidwall/SwiftWebSocket"
+github "tidwall/SwiftWebSocket" >= 2.6
 github "Swinject/Swinject"
 github "Thomvis/BrightFutures"
 github "antitypical/Result"

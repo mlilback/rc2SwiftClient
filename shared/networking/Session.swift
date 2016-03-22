@@ -81,11 +81,12 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	}
 	
 	//MARK: public request methods
-	func executeScript(var script: String) {
+	func executeScript(srcScript: String) {
 		//don't send empty scripts
-		guard script.characters.count > 0 else {
+		guard srcScript.characters.count > 0 else {
 			return
 		}
+		var script = srcScript
 		let helpCheck = helpRegex.firstMatchInString(script, options: [], range: NSMakeRange(0, script.utf16.count))
 		if helpCheck?.numberOfRanges == 3 {
 			let topic = script.substringWithRange((helpCheck?.rangeAtIndex(2).toStringRange(script))!)

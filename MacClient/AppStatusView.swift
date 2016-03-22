@@ -28,7 +28,7 @@ class AppStatusView: NSView {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		dispatch_async(dispatch_get_main_queue()) {
-			NSNotificationCenter.defaultCenter().addObserver(self, selector: "statusChanged:", name: AppStatusChangedNotification, object: nil)
+			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppStatusView.statusChanged(_:)), name: AppStatusChangedNotification, object: nil)
 		}
 	}
 	

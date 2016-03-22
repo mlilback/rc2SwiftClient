@@ -59,8 +59,8 @@ extension PlatformColor {
 			hcode = hcode.substringFromIndex(hcode.characters.startIndex.advancedBy(1))
 		}
 		let redHex = hex.substringToIndex(hex.startIndex.advancedBy(2))
-		let greenHex = hex.substringWithRange(Range<String.Index>(start: hex.startIndex.advancedBy(2), end: hex.startIndex.advancedBy(4)))
-		let blueHex = hex.substringWithRange(Range<String.Index>(start: hex.startIndex.advancedBy(4), end: hex.startIndex.advancedBy(6)))
+		let greenHex = hex.substringWithRange(hex.startIndex.advancedBy(2) ..< hex.startIndex.advancedBy(4))
+		let blueHex = hex.substringWithRange(hex.startIndex.advancedBy(4) ..< hex.startIndex.advancedBy(6))
 		var redInt: CUnsignedInt = 0
 		var greenInt: CUnsignedInt = 0
 		var blueInt: CUnsignedInt = 0

@@ -32,12 +32,25 @@ import SwiftyJSON
 	//for dependency injection
 	var fileManager:FileManager = NSFileManager.defaultManager()
 	
+	public struct Host {
+		let name:String
+		let host:String
+		let port:Int
+		let secure:Bool
+		init(dict:JSON) {
+			self.name = dict["name"].stringValue
+			self.host = dict["host"].stringValue
+			self.port = dict["port"].intValue
+			self.secure = dict["secure"].boolValue
+		}
+	}
+	
 	public typealias Rc2RestCompletionHandler = (success:Bool, results:Any?, error:NSError?) -> Void
 	
 	private(set) var urlConfig : NSURLSessionConfiguration!
 	private var urlSession : NSURLSession!
-	private(set) public var hosts : [NSDictionary]
-	private(set) public var selectedHost : NSDictionary
+	private(set) public var hosts : [Host]
+	private(set) public var selectedHost : Host
 	private(set) public var loginSession : LoginSession?
 	private(set) var baseUrl : NSURL?
 	private var userAgent: String
@@ -45,7 +58,7 @@ import SwiftyJSON
 
 	var restHosts : [String] {
 		get {
-			return hosts.map({ $0["name"]! as! String })
+			return hosts.map({ $0.name })
 		}
 	}
 	var connectionDescription : String {
@@ -71,9 +84,9 @@ import SwiftyJSON
 		assert(hostFileUrl != nil, "failed to get RestHosts.json URL")
 		let jsonData = NSData(contentsOfURL: hostFileUrl!)
 		let json = JSON(data:jsonData!)
-		let theHosts = json["hosts"].arrayObject!
+		let theHosts = json["hosts"].arrayValue
 		assert(theHosts.count > 0, "invalid hosts data")
-		hosts = theHosts as! [NSDictionary]
+		hosts = theHosts.map() { Host(dict: $0["name"]) }
 		selectedHost = hosts.first!
 		super.init()
 		urlConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
@@ -82,7 +95,7 @@ import SwiftyJSON
 		if let previousHostName = NSUserDefaults.standardUserDefaults().stringForKey(self.kServerHostKey) {
 			selectHost(previousHostName)
 		}
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:"workspaceChanged:", name:SelectedWorkspaceChangedNotification, object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(RestServer.workspaceChanged(_:)), name:SelectedWorkspaceChangedNotification, object: nil)
 	}
 
 	deinit {
@@ -122,10 +135,10 @@ import SwiftyJSON
 	}
 	
 	func selectHost(hostName:String) {
-		if let hostDict = hosts.filter({ return ($0["name"] as! String) == hostName }).first {
-			selectedHost = hostDict
-			let hprotocol = hostDict["secure"]!.boolValue! ? "https" : "http"
-			let hoststr = "\(hprotocol)://\(hostDict["host"]!):\(hostDict["port"]!.stringValue)/"
+		if let host = hosts.filter({ return $0.name == hostName }).first {
+			selectedHost = host
+			let hprotocol = host.secure ? "https" : "http"
+			let hoststr = "\(hprotocol)://\(host.host):\(host.port)/"
 			baseUrl = NSURL(string: hoststr)!
 		}
 	}
@@ -147,8 +160,8 @@ import SwiftyJSON
 		#else
 			let client = "ios"
 		#endif
-		let prot = selectedHost["secure"]!.boolValue! ? "wss" : "ws"
-		let urlStr = "\(prot)://\(selectedHost["host"]!):\(selectedHost["port"]!.stringValue)/ws/\(wspaceId)?client=\(client)&build=\(build)"
+		let prot = selectedHost.secure ? "wss" : "ws"
+		let urlStr = "\(prot)://\(selectedHost.host):\(selectedHost.port)/ws/\(wspaceId)?client=\(client)&build=\(build)"
 		return NSURL(string: urlStr)!
 	}
 	
@@ -164,7 +177,7 @@ import SwiftyJSON
 			let json = JSON(data:data!)
 			switch(response!.statusCode) {
 				case 200:
-					self.loginSession = LoginSession(json: json, host: self.selectedHost["name"]! as! String)
+					self.loginSession = LoginSession(json: json, host: self.selectedHost.name)
 					//for anyone that copies our session config later, include the auth token
 					self.urlConfig.HTTPAdditionalHeaders!["Rc2-Auth"] = self.loginSession!.authToken
 					dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: self.loginSession!, error: nil) })

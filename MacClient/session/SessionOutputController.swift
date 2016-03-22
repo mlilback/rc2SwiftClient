@@ -25,7 +25,7 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 	var viewFileOrImage: ((fileWrapper: NSFileWrapper) -> ())?
 	
 	required init?(coder: NSCoder) {
-		cmdHistory = CommandHistory(target:nil, selector:Selector("displayHistoryItem:"))
+		cmdHistory = CommandHistory(target:nil, selector:#selector(SessionOutputController.displayHistoryItem(_:)))
 		super.init(coder: coder)
 	}
 	
@@ -41,7 +41,7 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 	
 	//MARK: actions
 	@IBAction override func performTextFinderAction(sender: AnyObject?) {
-		let menuItem = NSMenuItem(title: "foo", action: Selector("performFindPanelAction:"), keyEquivalent: "")
+		let menuItem = NSMenuItem(title: "foo", action: #selector(NSTextView.performFindPanelAction(_:)), keyEquivalent: "")
 		menuItem.tag = Int(NSFindPanelAction.ShowFindPanel.rawValue)
 		resultsView?.performFindPanelAction(menuItem)
 	}
@@ -115,7 +115,7 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 	
 	//MARK: textfield delegate
 	func control(control: NSControl, textView: NSTextView, doCommandBySelector commandSelector: Selector) -> Bool {
-		if commandSelector == "insertNewline:" {
+		if commandSelector == #selector(NSResponder.insertNewline(_:)) {
 			executeQuery(control)
 			return true
 		}
