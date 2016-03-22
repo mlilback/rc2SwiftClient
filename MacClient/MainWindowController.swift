@@ -13,6 +13,11 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 	
 	private var toolbarSetupScheduled = false
 	
+	class func createFromNib() -> Self {
+		let winc = self.init(windowNibName: "MainWindow")
+		return winc
+	}
+	
 	override func windowDidLoad() {
 		super.windowDidLoad()
 		window!.titleVisibility = .Hidden
