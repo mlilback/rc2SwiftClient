@@ -62,7 +62,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	
 	func showSessionWindow() {
 		updateStatus(nil)
-		let sboard = SwinjectStoryboard.create(name: "MainWindow", bundle: nil)
+		let sboard = SwinjectStoryboard.create(name: "MainController", bundle: nil)
 		sessionWindowController = sboard.instantiateControllerWithIdentifier("sessionWindow") as? MainWindowController
 		sessionWindowController?.window?.makeKeyAndOrderFront(self)
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window

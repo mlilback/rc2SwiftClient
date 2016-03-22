@@ -58,7 +58,8 @@ import SwiftyJSON
 
 	var restHosts : [String] {
 		get {
-			return hosts.map({ $0.name })
+			let hmap = hosts.map({ $0.name })
+			return hmap
 		}
 	}
 	var connectionDescription : String {
@@ -86,7 +87,7 @@ import SwiftyJSON
 		let json = JSON(data:jsonData!)
 		let theHosts = json["hosts"].arrayValue
 		assert(theHosts.count > 0, "invalid hosts data")
-		hosts = theHosts.map() { Host(dict: $0["name"]) }
+		hosts = theHosts.map() { Host(dict: $0) }
 		selectedHost = hosts.first!
 		super.init()
 		urlConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
