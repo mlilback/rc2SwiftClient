@@ -17,6 +17,26 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	private(set) var currentDocument:EditorDocument?
 	private var openDocuments:[Int:EditorDocument] = [:]
 	
+	///allow dependency injection
+	var notificationCenter:NSNotificationCenter? {
+		willSet {
+			if newValue != notificationCenter {
+				notificationCenter?.removeObserver(self)
+				NSWorkspace.sharedWorkspace().notificationCenter.removeObserver(self)
+			}
+		}
+		didSet {
+			if oldValue != notificationCenter {
+				let ncenter = NSNotificationCenter.defaultCenter()
+				ncenter.addObserver(self, selector: #selector(SessionEditorController.autosaveCurrentDocument), name: NSApplicationDidResignActiveNotification, object: NSApp)
+				ncenter.addObserver(self, selector: #selector(SessionEditorController.autosaveCurrentDocument), name: NSApplicationWillTerminateNotification, object: NSApp)
+				let nswspace = NSWorkspace.sharedWorkspace()
+				nswspace.notificationCenter.addObserver(self, selector: #selector(SessionEditorController.autosaveCurrentDocument), name: NSWorkspaceWillSleepNotification, object: nswspace)
+			}
+		}
+	}
+	
+	//TODO: allow DI of notification center
 	deinit {
 		NSWorkspace.sharedWorkspace().notificationCenter.removeObserver(self)
 		NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -46,32 +66,44 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		let lnv = NoodleLineNumberView(scrollView: editor!.enclosingScrollView)
 		editor!.enclosingScrollView!.verticalRulerView = lnv
 		editor!.enclosingScrollView!.rulersVisible = true
-		let ncenter = NSNotificationCenter.defaultCenter()
-		ncenter.addObserver(self, selector: #selector(SessionEditorController.autosaveCurrentDocument), name: NSApplicationDidResignActiveNotification, object: NSApp)
-		ncenter.addObserver(self, selector: #selector(SessionEditorController.autosaveCurrentDocument), name: NSApplicationWillTerminateNotification, object: NSApp)
-		let nswspace = NSWorkspace.sharedWorkspace()
-		nswspace.notificationCenter.addObserver(self, selector: #selector(SessionEditorController.autosaveCurrentDocument), name: NSWorkspaceWillSleepNotification, object: nswspace)
+		if nil == notificationCenter {
+			notificationCenter = NSNotificationCenter.defaultCenter()
+		}
 	}
 	
-	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
-		if menuItem.action == #selector(SessionEditorController.runQuery(_:)) {
-			print("setting run enabled state")
-			return currentDocument != nil
-		}
-		return super.validateMenuItem(menuItem)
-	}
+//	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
+//		if menuItem.action == #selector(SessionEditorController.runQuery(_:)) {
+//			print("setting run enabled state")
+//			return currentDocument != nil
+//		}
+//		return super.validateMenuItem(menuItem)
+//	}
 	
 	@IBAction func runQuery(sender:AnyObject) {
-		assert(currentDocument != nil, "runQuery called with no file selected")
-		session.executeScriptFile(currentDocument!.file.fileId)
+		executeQuery(type:.Run)
 	}
 
 	@IBAction func sourceQuery(sender:AnyObject) {
-		//TODO: implement sourcing files
-		assert(currentDocument != nil, "runQuery called with no file selected")
-		session.executeScriptFile(currentDocument!.file.fileId)
+		executeQuery(type:.Source)
 	}
 
+	//actually implements running a query
+	func executeQuery(type type:ExecuteType) {
+		assert(currentDocument != nil, "runQuery called with no file selected")
+		if currentDocument!.dirty {
+			let progress = currentDocument!.saveContents()
+			progress?.rc2_addCompletionHandler() {
+				self.session.sendSaveFileMessage(self.currentDocument!, executeType: type) {doc, error in
+					//TODO notify user of error
+					self.session.executeScriptFile(doc.file.fileId, type: type)
+				}
+			}
+			appStatus?.updateStatus(progress)
+		} else {
+			session.executeScriptFile(currentDocument!.file.fileId, type: type)
+		}
+	}
+	
 	//called when file has changed in UI
 	func fileSelectionChanged(file:File?) {
 		var contents:String?
@@ -156,6 +188,9 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		} else {
 			//only color chunks in the edited range
 			parser!.colorChunks(parser!.chunksForRange(editedRange))
+		}
+		if currentDocument?.editedContents != textStorage.string {
+			currentDocument?.editedContents = textStorage.string
 		}
 	}
 	

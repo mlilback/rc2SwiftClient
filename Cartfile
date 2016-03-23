@@ -9,4 +9,4 @@ github "krzyzanowskim/CryptoSwift"
 github "postmates/PMKVObserver"
 github "kylef/URITemplate.swift"
 github "mlilback/pegkit"
-github "mlilback/MessagePackSwift" "HEAD"
+github "mlilback/MessagePackSwift"  >= 0.2.2

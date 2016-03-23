@@ -1,5 +1,5 @@
 github "krzyzanowskim/CryptoSwift" "0.2.3"
-github "mlilback/MessagePackSwift" "b89fb844e08a3b455b174e32831a853dd2d2a404"
+github "mlilback/MessagePackSwift" "882ced3"
 github "kylef/Mockingjay" "1.1.1"
 github "postmates/PMKVObserver" "v1.0.4"
 github "antitypical/Result" "1.0.2"

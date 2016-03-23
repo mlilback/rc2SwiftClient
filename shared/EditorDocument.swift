@@ -14,7 +14,7 @@ class EditorDocument: NSObject {
 	let fileHandler:SessionFileHandler
 	let undoManager:NSUndoManager
 	private(set) var savedContents:String!
-	private(set) var editedContents:String?
+	var editedContents:String?
 	private(set) var lastSaveTime:NSTimeInterval = 0
 	
 	var currentContents:String { return editedContents != nil ? editedContents! : savedContents }
@@ -50,9 +50,10 @@ class EditorDocument: NSObject {
 			let curTime = NSDate.timeIntervalSinceReferenceDate()
 			guard curTime - lastSaveTime > MinTimeBetweenAutoSaves else { return nil }
 		}
+		self.lastSaveTime = NSDate.timeIntervalSinceReferenceDate()
 		let prog = NSProgress(totalUnitCount: -1) //indeterminate
 		fileHandler.saveFile(file, contents: editedContents!) { err in
-			//TODO: show alert to user if save failed
+			//TODO: show alert to user if save failed, probably should tell caller
 			guard nil == err else { return }
 			prog.totalUnitCount = 1 //makes it determinate so it can be completed
 			prog.rc2_complete(err)

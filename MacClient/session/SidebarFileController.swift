@@ -224,6 +224,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	//MARK: - FileHandler implementation
 	func filesRefreshed() {
 		//TODO: ideally should figure out what file was changed and animate the tableview update instead of refreshing all rows
+		//TODO: updated file always shows last, which is wrong
 		loadData()
 		tableView.reloadData()
 	}

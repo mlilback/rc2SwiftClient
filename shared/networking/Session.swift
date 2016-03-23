@@ -12,6 +12,10 @@ import XCGLogger
 import SwiftyJSON
 import MessagePackSwift
 
+public enum ExecuteType: String {
+	case Run = "run", Source = "source", None = ""
+}
+
 public class Session : NSObject, SessionFileHandlerDelegate {
 	///tried kvo, forced to use notifications
 	class Manager: NSObject {
@@ -81,7 +85,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	}
 	
 	//MARK: public request methods
-	func executeScript(srcScript: String) {
+	func executeScript(srcScript: String, type:ExecuteType = .Run) {
 		//don't send empty scripts
 		guard srcScript.characters.count > 0 else {
 			return
@@ -97,11 +101,11 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 			}
 			script = adjScript
 		}
-		sendMessage(["msg":"execute", "code":script])
+		sendMessage(["msg":"execute", "type":type.rawValue, "code":script])
 	}
 	
-	func executeScriptFile(fileId:Int) {
-		sendMessage(["msg":"execute", "fileId":fileId])
+	func executeScriptFile(fileId:Int, type:ExecuteType = .Run) {
+		sendMessage(["msg":"execute", "type":type.rawValue, "fileId":fileId])
 	}
 	
 	func clearVariables() {
@@ -128,12 +132,13 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	
 	///sends document changes to the server
 	///parameter completionHandler: called when the server confirms it saved it and passed to any subsytems (like R)
-	func sendSaveFileMessage(document:EditorDocument, completionHandler:(EditorDocument, NSError?) -> Void) {
+	func sendSaveFileMessage(document:EditorDocument, executeType:ExecuteType = .None, completionHandler:(EditorDocument, NSError?) -> Void) {
 		let data = NSMutableData()
 		let transId = encodeDocumentSaveMessage(document, data: data)
 		waitingOnTransactions[transId] = { (responseId) in
 			completionHandler(document, nil)
 		}
+		log.info("sending binary save requwst");
 		self.wsSource.send(data)
 	}
 	
@@ -149,7 +154,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	private func encodeDocumentSaveMessage(document:EditorDocument, data:NSMutableData) -> String {
 		let uniqueIdent = NSUUID().UUIDString
 		let encoder = MessagePackEncoder()
-		var attrs = ["msg":MessageValue.forValue("save"), "apiVersion":MessageValue.forValue(1)]
+		var attrs = ["msg":MessageValue.forValue("save"), "apiVersion":MessageValue.forValue(Int(1))]
 		attrs["transId"] = MessageValue.forValue(uniqueIdent)
 		attrs["fileId"] = MessageValue.forValue(document.file.fileId)
 		attrs["fileVersion"] = MessageValue.forValue(document.file.version)
@@ -187,10 +192,11 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		if let transId = rawDict["transId"] as? String {
 			waitingOnTransactions[transId]?(transId)
 			waitingOnTransactions.removeValueForKey(transId)
-			log.info("transaction \(transId) complelte")
+			log.info("transaction \(transId) complete")
 		}
-		if rawDict["error"] != nil {
-			log.info("got save response error \(rawDict["error"])")
+		if rawDict["error"] is String {
+			//TODO: inform user
+			log.error("got save response error \(rawDict["error"])")
 			return
 		}
 		do {
