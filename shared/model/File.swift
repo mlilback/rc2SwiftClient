@@ -51,7 +51,7 @@ public class File: CustomStringConvertible, Equatable {
 	}
 	
 	public var description : String {
-		return "<File: \(name) (\(fileId))";
+		return "<File: \(name) (\(fileId) v\(version))>";
 	}
 
 }
