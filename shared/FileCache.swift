@@ -59,6 +59,18 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 		
 	}
 	
+	///recaches the specified file if it has changed
+	func flushCacheForFile(file:File) -> NSProgress? {
+		assert(currentProgress == nil)
+		currentProgress = NSProgress(totalUnitCount: Int64(1))
+		let theTask = prepareTask(file)
+		tasks[theTask.task.taskIdentifier] = theTask
+		dispatch_async(dispatch_get_main_queue()) {
+			theTask.task.resume()
+		}
+		return currentProgress
+	}
+	
 	///caches all the files in the workspace that aren't already cached with the current version of the file
 	//observer fractionCompleted on returned progress for completion handling
 	func cacheAllFiles(setupHandler:((NSProgress)-> Void)) -> NSProgress {
@@ -66,15 +78,8 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 		prepareUrlSession()
 		currentProgress = NSProgress(totalUnitCount: Int64(workspace.files.count))
 		for aFile in workspace.files {
-			let fileUrl = NSURL(string: "workspaces/\(workspace.wspaceId)/files/\(aFile.fileId)", relativeToURL: baseUrl)!
-			let request = NSMutableURLRequest(URL: fileUrl.absoluteURL)
-			let cacheUrl = cachedFileUrl(aFile)
-			if cacheUrl.checkResourceIsReachableAndReturnError(nil) {
-				request.addValue("\"f/\(aFile.fileId)/\(aFile.version)\"", forHTTPHeaderField: "If-None-Match")
-			}
-			let aTask = urlSession!.downloadTaskWithRequest(request)
-			let aProgress = NSProgress(totalUnitCount: Int64(aFile.fileSize), parent: currentProgress!, pendingUnitCount: 1)
-			tasks[aTask.taskIdentifier] = FileCacheTask(task: aTask, file:aFile, progress: aProgress)
+			let theTask = prepareTask(aFile)
+			tasks[theTask.task.taskIdentifier] = theTask
 		}
 		setupHandler(currentProgress!)
 		//only start after all tasks are created
@@ -84,6 +89,19 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 			}
 		}
 		return currentProgress!
+	}
+	
+	//creates a task to download a file if changed
+	private func prepareTask(file:File) -> FileCacheTask {
+		let fileUrl = NSURL(string: "workspaces/\(workspace.wspaceId)/files/\(file.fileId)", relativeToURL: baseUrl)!
+		let request = NSMutableURLRequest(URL: fileUrl.absoluteURL)
+		let cacheUrl = cachedFileUrl(file)
+		if cacheUrl.checkResourceIsReachableAndReturnError(nil) {
+			request.addValue("\"f/\(file.fileId)/\(file.version)\"", forHTTPHeaderField: "If-None-Match")
+		}
+		let aTask = urlSession!.downloadTaskWithRequest(request)
+		let aProgress = NSProgress(totalUnitCount: Int64(file.fileSize), parent: currentProgress!, pendingUnitCount: 1)
+		return FileCacheTask(task: aTask, file:file, progress: aProgress)
 	}
 	
 	func cachedFileUrl(file:File) -> NSURL {
@@ -160,6 +178,9 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 		guard let _ = tasks[task.taskIdentifier] else { return }
 		self.tasks.removeAll()
 		currentProgress!.rc2_complete(error)
+		dispatch_async(dispatch_get_main_queue()) {
+			self.currentProgress = nil
+		}
 	}
 	
 	//called when a task has finished downloading a file

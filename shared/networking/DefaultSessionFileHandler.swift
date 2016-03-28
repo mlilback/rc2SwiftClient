@@ -78,10 +78,14 @@ class DefaultSessionFileHandler: SessionFileHandler {
 		dispatch_async(saveQueue) {
 			do {
 				try contents.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding)
-				completionHandler(nil)
+				dispatch_async(dispatch_get_main_queue()) {
+					completionHandler(nil)
+				}
 			} catch let err as NSError? {
 				log.error("error saving file \(file): \(err)")
-				completionHandler(err)
+				dispatch_async(dispatch_get_main_queue()) {
+					completionHandler(err)
+				}
 			}
 		}
 	}

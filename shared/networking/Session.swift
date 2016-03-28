@@ -42,7 +42,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	}()
 	
 	private(set) var connectionOpen:Bool = false
-	private var loadTimer:dispatch_source_t = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue())
+	private var keepAliveTimer:dispatch_source_t = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue())
 	private var waitingOnTransactions: [String:(String) -> Void] = [:]
 	
 	init(_ wspace:Workspace,  source:WebSocketSource, appStatus:AppStatus, networkConfig config:NSURLSessionConfiguration, delegate:SessionDelegate?=nil)
@@ -74,6 +74,13 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		wsSource.event.error = { [unowned self] error in
 			self.delegate?.sessionErrorReceived(error)
 		}
+		//setup a timer to send keep alive messages every 2 minutes
+		let interval = 120 * NSEC_PER_SEC
+		dispatch_source_set_timer(keepAliveTimer, dispatch_time(DISPATCH_TIME_NOW, Int64(interval)), interval, NSEC_PER_SEC/10)
+		dispatch_source_set_event_handler(keepAliveTimer) {
+			self.sendMessage(["msg":"keepAlive"])
+		}
+		dispatch_resume(keepAliveTimer)
 	}
 	
 	func open(request:NSURLRequest) {
@@ -138,7 +145,6 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		waitingOnTransactions[transId] = { (responseId) in
 			completionHandler(document, nil)
 		}
-		log.info("sending binary save requwst");
 		self.wsSource.send(data)
 	}
 	
@@ -181,7 +187,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		let dict = msgDict.nativeValue()
 		//eventually we need to switch on the msg property. For now, just verify it is the only one we support
 		guard let msgStr = dict["msg"] as? String where msgStr == "saveResponse" else {
-			log.warning("received unkown bimary message")
+			log.warning("received unknown binary message")
 			return
 		}
 		handleSaveResponse(dict)
@@ -192,18 +198,22 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		if let transId = rawDict["transId"] as? String {
 			waitingOnTransactions[transId]?(transId)
 			waitingOnTransactions.removeValueForKey(transId)
-			log.info("transaction \(transId) complete")
 		}
-		if rawDict["error"] is String {
+		if let errorDict = rawDict["error"] as? Dictionary<String,AnyObject> {
 			//TODO: inform user
-			log.error("got save response error \(rawDict["error"])")
+			log.error("got save response error \(errorDict["message"] as? String)")
 			return
 		}
 		do {
 			let fileData = try NSJSONSerialization.dataWithJSONObject(rawDict["file"]!, options: [])
 			let json = JSON(data: fileData)
 			let file = File(json: json)
-			log.info("got file saved for \(file.name)")
+			let idx = workspace.indexOfFilePassingTest()
+			{ obj, idx, _ in
+				return (obj as! File).fileId == file.fileId
+			}
+			assert(idx != NSNotFound)
+			workspace.replaceFileAtIndex(idx, withFile: file)
 		} catch let err {
 			log.error("error parsing binary message: \(err)")
 		}

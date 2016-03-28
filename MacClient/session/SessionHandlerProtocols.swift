@@ -23,7 +23,7 @@ import Cocoa
 }
 
 @objc protocol FileHandler {
-	func filesRefreshed()
+	func filesRefreshed(note:NSNotification?)
 	func promptToImportFiles(sender:AnyObject?)
 	func validateMenuItem(menuItem: NSMenuItem) -> Bool
 }

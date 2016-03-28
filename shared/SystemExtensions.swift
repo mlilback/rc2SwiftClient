@@ -76,12 +76,15 @@ extension PlatformColor {
 extension NSNotificationCenter {
 	func postNotificationNameOnMainThread(noteName:String, object:AnyObject, userInfo:[NSObject:AnyObject]?=nil) {
 		if !NSThread.isMainThread() {
-			dispatch_async(dispatch_get_main_queue(), {
-				self.postNotificationName(noteName, object: object, userInfo: userInfo)
-			})
+			postAsyncNotificationNameOnMainThread(noteName, object: object, userInfo:userInfo)
 		} else {
 			postNotificationName(noteName, object: object, userInfo: userInfo)
 		}
+	}
+	func postAsyncNotificationNameOnMainThread(noteName:String, object:AnyObject, userInfo:[NSObject:AnyObject]?=nil) {
+		dispatch_async(dispatch_get_main_queue(), {
+			self.postNotificationName(noteName, object: object, userInfo: userInfo)
+		})
 	}
 }
 

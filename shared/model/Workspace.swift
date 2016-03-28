@@ -7,7 +7,7 @@
 import Foundation
 import SwiftyJSON
 
-///posted to defaultCenter when a change happens to a member of the files array.
+///posted to defaultCenter when a change happens to a member of the files array. userInfo["change"] is a WorkspaceFileChange notification
 let WorkspaceFileChangedNotification = "WorkspaceFileChangedNotification"
 
 class WorkspaceFileChange: NSObject {
@@ -17,6 +17,12 @@ class WorkspaceFileChange: NSObject {
 	let oldFile:File?
 	let newFile:File?
 	let indexSet:NSIndexSet?
+	init(old:File?, new:File?, type:ChangeType, indexes:NSIndexSet?) {
+		self.changeType = type
+		self.oldFile = old
+		self.newFile = new
+		self.indexSet = indexes
+	}
 	init(change:[String:AnyObject]?) {
 		guard let ctype = change![NSKeyValueChangeKindKey] else {
 			log.error("failed to cast change type")
@@ -49,7 +55,7 @@ public class Workspace: NSObject {
 	let name : String
 	let version : Int32
 	///have to use a dynamic NSMutableArray so KVO via mutableArrayValueForKey will work properly
-	dynamic let filesArray : NSMutableArray = NSMutableArray() //can use kvo to monitor changes to contents
+	private let filesArray : NSMutableArray = NSMutableArray() //can use kvo to monitor changes to contents
 	///properly casts the fileArray as native swift array of File objects so swift code can ignore the fact that it is really a NSMutableArray set up for KVO
 	var files:[File] { return filesArray as AnyObject as! [File] }
 	
@@ -79,43 +85,44 @@ public class Workspace: NSObject {
 		name = json["name"].stringValue
 		filesArray.addObjectsFromArray(File.filesFromJsonArray(json["files"]))
 		super.init()
-		addObserver(self, forKeyPath: "fileArray", options: [.New,.Old], context:&fileKvoKey)
 	}
 	
-	deinit {
-		removeObserver(self, forKeyPath: "fileArray", context:&fileKvoKey)
+	var fileCount:Int { return filesArray.count }
+	
+	public func fileAtIndex(index:Int) -> File? {
+		return filesArray.objectAtIndex(index) as? File
 	}
 	
-	public func countOfFileArray() -> Int {
-		return filesArray.count
-	}
-	
-	public func objectInFileArrayAtIndex(index:Int) -> AnyObject? {
-		return filesArray.objectAtIndex(index)
-	}
-	
-	public func insertObject(aFile:AnyObject, inFileArrayAtIndex index:Int) {
+	public func insertFile(aFile:AnyObject, atIndex index:Int) {
 		filesArray.insertObject(aFile, atIndex: index)
+		let oldFile = filesArray.objectAtIndex(index) as! File
+		let change = WorkspaceFileChange(old: oldFile, new: nil, type: .Insert, indexes: NSIndexSet(index: index))
+		NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(WorkspaceFileChangedNotification, object: self, userInfo: ["change":change])
 	}
 	
-	public func removeObjectFromFileArrayAtIndex(index:Int) {
+	public func removeFileAtIndex(index:Int) {
 		filesArray.removeObjectAtIndex(index)
+		let oldFile = filesArray.objectAtIndex(index) as! File
+		let change = WorkspaceFileChange(old: oldFile, new: nil, type: .Remove, indexes: NSIndexSet(index: index))
+		NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(WorkspaceFileChangedNotification, object: self, userInfo: ["change":change])
+	}
+	
+	public func replaceFileAtIndex(index:Int, withFile newFile:File) {
+		let oldFile = filesArray.objectAtIndex(index) as! File
+		assert(oldFile.fileId == newFile.fileId)
+		filesArray.replaceObjectAtIndex(index, withObject: newFile)
+		let change = WorkspaceFileChange(old: oldFile, new: newFile, type: .Change, indexes: NSIndexSet(index: index))
+		NSNotificationCenter.defaultCenter().postAsyncNotificationNameOnMainThread(WorkspaceFileChangedNotification, object: self, userInfo: ["change":change])
+	}
+	
+	public func indexOfFilePassingTest(predicate:(AnyObject, Int, UnsafeMutablePointer<ObjCBool>) -> Bool) -> Int {
+		return filesArray.indexOfObjectPassingTest(predicate)
 	}
 	
 	public override var description : String {
 		return "<Workspace: \(name) (\(wspaceId))";
 	}
 	
-	override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
-	{
-		if context == &fileKvoKey {
-			let fileChange = WorkspaceFileChange(change: change)
-			NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(WorkspaceFileChangedNotification, object: self, userInfo: ["change":fileChange])
-		} else {
-			super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-		}
-	}
-
 }
 
 public func ==(a: Workspace, b: Workspace) -> Bool {

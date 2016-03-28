@@ -6,6 +6,13 @@
 
 import Cocoa
 
+///selectors used in this file, aliased with shorter, descriptive names
+private extension Selector {
+	static let autoSave = #selector(SessionEditorController.autosaveCurrentDocument)
+	static let fileChangedNotification = #selector(SessionEditorController.fileChanged(_:))
+	static let findPanelAction = #selector(NSTextView.performFindPanelAction(_:))
+}
+
 class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate, NSTextStorageDelegate {
 	@IBOutlet var editor: SessionEditor?
 	@IBOutlet var runButton:NSButton?
@@ -28,10 +35,11 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		didSet {
 			if oldValue != notificationCenter {
 				let ncenter = NSNotificationCenter.defaultCenter()
-				ncenter.addObserver(self, selector: #selector(SessionEditorController.autosaveCurrentDocument), name: NSApplicationDidResignActiveNotification, object: NSApp)
-				ncenter.addObserver(self, selector: #selector(SessionEditorController.autosaveCurrentDocument), name: NSApplicationWillTerminateNotification, object: NSApp)
+				ncenter.addObserver(self, selector: .autoSave, name: NSApplicationDidResignActiveNotification, object: NSApp)
+				ncenter.addObserver(self, selector: .autoSave, name: NSApplicationWillTerminateNotification, object: NSApp)
+				ncenter.addObserver(self, selector: .fileChangedNotification, name: WorkspaceFileChangedNotification, object: nil)
 				let nswspace = NSWorkspace.sharedWorkspace()
-				nswspace.notificationCenter.addObserver(self, selector: #selector(SessionEditorController.autosaveCurrentDocument), name: NSWorkspaceWillSleepNotification, object: nswspace)
+				nswspace.notificationCenter.addObserver(self, selector: .autoSave, name: NSWorkspaceWillSleepNotification, object: nswspace)
 			}
 		}
 	}
@@ -43,7 +51,7 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	}
 	
 	@IBAction override func performTextFinderAction(sender: AnyObject?) {
-		let menuItem = NSMenuItem(title: "foo", action: #selector(NSTextView.performFindPanelAction(_:)), keyEquivalent: "")
+		let menuItem = NSMenuItem(title: "foo", action: .findPanelAction, keyEquivalent: "")
 		menuItem.tag = Int(NSFindPanelAction.ShowFindPanel.rawValue)
 		editor?.performFindPanelAction(menuItem)
 	}
@@ -91,8 +99,9 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	func executeQuery(type type:ExecuteType) {
 		assert(currentDocument != nil, "runQuery called with no file selected")
 		if currentDocument!.dirty {
+			//not passing autosave param, so will always return progress
 			let progress = currentDocument!.saveContents()
-			progress?.rc2_addCompletionHandler() {
+			progress!.rc2_addCompletionHandler() {
 				self.session.sendSaveFileMessage(self.currentDocument!, executeType: type) {doc, error in
 					//TODO notify user of error
 					self.session.executeScriptFile(doc.file.fileId, type: type)
@@ -108,7 +117,7 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	func fileSelectionChanged(file:File?) {
 		var contents:String?
 		if let theFile = file {
-			if currentDocument?.file.fileId == theFile.fileId { return } //same file
+			if currentDocument?.file.fileId == theFile.fileId && currentDocument?.file.version == theFile.version { return } //same file
 			session.fileHandler.contentsOfFile(theFile).onComplete { result in
 				switch(result) {
 				case .Success(let val):
@@ -117,6 +126,24 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 					log.warning("got error \(err)")
 				}
 				self.adjustDocumentForFile(file, content: contents)
+			}
+		}
+	}
+	
+	//called when a file in the workspace file array has changed
+	func fileChanged(note:NSNotification) {
+		if note.userInfo?["change"] == nil {
+			log.error("got filechangenotification without a change object")
+			return
+		}
+		let change = note.userInfo?["change"] as! WorkspaceFileChange
+		//if it was a file change (content or metadata)
+		if change.changeType == .Change &&  currentDocument!.file.fileId == change.newFile?.fileId {
+			let progress = session.fileHandler.fileCache.flushCacheForFile(change.newFile!)
+			progress?.rc2_addCompletionHandler() {
+				let newFile = change.newFile!
+				self.currentDocument?.updateFile(change.newFile!)
+				self.fileSelectionChanged(newFile)
 			}
 		}
 	}
@@ -193,7 +220,7 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 			currentDocument?.editedContents = textStorage.string
 		}
 	}
-	
+
 	//MARK: NSTextViewDelegate methods
 	func undoManagerForTextView(view: NSTextView) -> NSUndoManager? {
 		if currentDocument != nil { return currentDocument!.undoManager }

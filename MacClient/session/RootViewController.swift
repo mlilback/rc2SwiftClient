@@ -267,11 +267,11 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 	
 	func sessionClosed() {
-		
+		//TODO: implement close
 	}
 	
 	func sessionFilesLoaded(session:Session) {
-		fileHandler?.filesRefreshed()
+		fileHandler?.filesRefreshed(nil)
 	}
 	
 	func sessionMessageReceived(response:ServerResponse) {

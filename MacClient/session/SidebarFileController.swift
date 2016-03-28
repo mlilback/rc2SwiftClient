@@ -69,7 +69,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			tableView.setDraggingSourceOperationMask(.Copy, forLocal: true)
 			tableView.draggingDestinationFeedbackStyle = .None
 			tableView.registerForDraggedTypes(FileDragTypes)
-			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(FileHandler.filesRefreshed), name: WorkspaceFileChangedNotification, object: nil)
+			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(FileHandler.filesRefreshed(_:)), name: WorkspaceFileChangedNotification, object: nil)
 		}
 	}
 	
@@ -222,11 +222,18 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 
 	//MARK: - FileHandler implementation
-	func filesRefreshed() {
-		//TODO: ideally should figure out what file was changed and animate the tableview update instead of refreshing all rows
-		//TODO: updated file always shows last, which is wrong
-		loadData()
-		tableView.reloadData()
+	func filesRefreshed(note:NSNotification?) {
+		if let _ = note?.userInfo?["change"] as? WorkspaceFileChange {
+			//TODO: ideally should figure out what file was changed and animate the tableview update instead of refreshing all rows
+			//TODO: updated file always shows last, which is wrong
+			loadData()
+			tableView.reloadData()
+		} else {
+			log.error("got filechangenotification without a change object")
+			//reload it all
+			loadData()
+			tableView.reloadData()
+		}
 	}
 	
 	//MARK: - TableView datasource/delegate implementation
