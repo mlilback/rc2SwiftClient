@@ -17,6 +17,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	var statusTimer:NSTimer?
 	dynamic var busy: Bool = false
 	dynamic var statusMessage: String = ""
+	var sessionClosedHandler:((Void)->Void)?
 	
 	private var dimmingView:DimmingView?
 	weak var editor: SessionEditorController?
@@ -267,7 +268,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 	
 	func sessionClosed() {
-		//TODO: implement close
+		sessionClosedHandler?()
 	}
 	
 	func sessionFilesLoaded(session:Session) {

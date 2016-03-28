@@ -348,6 +348,7 @@ public class LoginHandler: NSObject, NSURLSessionDataDelegate {
 		let req = NSMutableURLRequest(URL: url!)
 		req.HTTPMethod = "POST"
 		req.addValue("application/json", forHTTPHeaderField:"Content-Type")
+		req.addValue("application/json", forHTTPHeaderField: "Accept")
 		req.HTTPBody = try! NSJSONSerialization.dataWithJSONObject(["login":login, "password":password], options: [])
 
 		let task = urlSession.dataTaskWithRequest(req);

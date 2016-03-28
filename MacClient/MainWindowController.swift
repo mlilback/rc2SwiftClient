@@ -36,6 +36,12 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 				self.window!.title = String.localizedStringWithFormat(NSLocalizedString("WindowTitleFormat", comment: ""), workspaceName)
 			}
 		})
+		let rootVC = self.rootTabController!.parentViewController! as! RootViewController
+		rootVC.sessionClosedHandler = {
+			dispatch_async(dispatch_get_main_queue()) {
+				self.showWorkspaceSelectTab()
+			}
+		}
 	}
 	
 	func showWorkspaceSelectTab() {
