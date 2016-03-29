@@ -28,7 +28,7 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 		rootTabController = firstRecursiveDescendent(contentViewController!,
 			children: { $0.childViewControllers },
 			filter: { $0 is NSTabViewController })  as? NSTabViewController
-		showWorkspaceSelectTab()
+//		showWorkspaceSelectTab()
 		let workspacesVC = firstRecursiveDescendent(rootTabController!, children: {$0.childViewControllers}, filter: {$0 is WorkspacesViewController}) as! WorkspacesViewController
 		dispatch_async(dispatch_get_main_queue(), {
 			workspacesVC.actionCallback = { (controller:WorkspacesViewController, workspaceName:String) in
@@ -39,20 +39,20 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 		let rootVC = self.rootTabController!.parentViewController! as! RootViewController
 		rootVC.sessionClosedHandler = {
 			dispatch_async(dispatch_get_main_queue()) {
-				self.showWorkspaceSelectTab()
+				self.window?.close()
 			}
 		}
 	}
 	
-	func showWorkspaceSelectTab() {
-		rootTabController?.selectedTabViewItemIndex = (rootTabController?.tabView.indexOfTabViewItemWithIdentifier("workspaceSelect"))!
-		let progress = NSProgress(totalUnitCount: 1)
-		progress.rc2_addCompletionHandler() {
-			self.appStatus!.updateStatus(nil)
-			NSBeep()
-		}
-		progress.localizedDescription = "selecting workspace…"
-	}
+//	func showWorkspaceSelectTab() {
+//		rootTabController?.selectedTabViewItemIndex = (rootTabController?.tabView.indexOfTabViewItemWithIdentifier("workspaceSelect"))!
+//		let progress = NSProgress(totalUnitCount: 1)
+//		progress.rc2_addCompletionHandler() {
+//			self.appStatus!.updateStatus(nil)
+//			NSBeep()
+//		}
+//		progress.localizedDescription = "selecting workspace…"
+//	}
 	
 	func showSessionTab() {
 		let sessionIndex = (rootTabController?.tabView.indexOfTabViewItemWithIdentifier("session"))!

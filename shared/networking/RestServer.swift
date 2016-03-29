@@ -103,6 +103,16 @@ import SwiftyJSON
 		NSNotificationCenter.defaultCenter().removeObserver(self)
 	}
 	
+	///give a hostname from hosts property, the list of last known workspace names
+	func workspaceNamesForHostName(hostName:String, userName:String) -> [String] {
+		let defaults = NSUserDefaults.standardUserDefaults()
+		let key = "ws//\(hostName)//\(userName)"
+		if let names = defaults.objectForKey(key) as? [String] where names.count > 0 {
+			return names
+		}
+		return ["Default"]
+	}
+	
 	func workspaceChanged(note:NSNotification) {
 		let wspace = note.object as! Box<Workspace>
 		createSession(wspace.unbox, appStatus: appStatus!)
@@ -179,6 +189,9 @@ import SwiftyJSON
 			switch(response!.statusCode) {
 				case 200:
 					self.loginSession = LoginSession(json: json, host: self.selectedHost.name)
+					//store list of workspace names for this session
+					let wspaceListKey = "ws//\(self.selectedHost.name)//\(login)"
+					NSUserDefaults.standardUserDefaults().setObject(self.loginSession!.workspaces.map() { $0.name }, forKey: wspaceListKey)
 					//for anyone that copies our session config later, include the auth token
 					self.urlConfig.HTTPAdditionalHeaders!["Rc2-Auth"] = self.loginSession!.authToken
 					dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: self.loginSession!, error: nil) })

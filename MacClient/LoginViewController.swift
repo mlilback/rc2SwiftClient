@@ -11,11 +11,12 @@ class LoginViewController: NSViewController {
 	let AutoLoginPrefKey = "AutomaticallyLogin"
 	let LastLoginNamePrefKey = "LastLoginName"
 	let LastHostPrefKey = "LastHost"
+	let LastWorkspacePrefKey = "LastWorkspace"
 	
 	private let keychain = Keychain()
 	
 	///The user specified login name
-	dynamic var loginName : String?
+	dynamic var loginName : String? { didSet { adjustWorkspacePopUp() } }
 	///The user specified password
 	dynamic var password : String?
 	///Value is save/restored to NSUserDefaults
@@ -26,12 +27,18 @@ class LoginViewController: NSViewController {
 	var completionHandler : ((controller: LoginViewController) -> Void)?
 	///An array of host names to display to the user
 	var hosts : [String] = ["localhost"] {
-		didSet { selectedHost = hosts.first; arrayController?.content = hosts }
+		didSet { selectedHost = hosts.first; hostArrayController?.content = hosts }
 	}
-	///The user selected host. Defaults to first host in hosts array
-	dynamic var selectedHost : String?
+	var workspaces : [String] = ["Default"]
 	
-	@IBOutlet var arrayController: NSArrayController!
+	///The user selected host. Defaults to first host in hosts array
+	dynamic var selectedHost : String? { didSet { adjustWorkspacePopUp() } }
+	dynamic var selectedWorkspace: String?
+	//used to lookup the values to show in the workspace popup
+	var lookupWorkspaceArray: ((String, String) -> [String])?
+	
+	@IBOutlet var hostArrayController: NSArrayController!
+	@IBOutlet var workspaceArrayController: NSArrayController!
 	@IBOutlet weak var progressIndicator: NSProgressIndicator!
 	@IBOutlet weak var loginField: NSTextField!
 	
@@ -51,6 +58,18 @@ class LoginViewController: NSViewController {
 		}
 	}
 	
+	//adjusts the workspace popup based on selectedHost and login
+	func adjustWorkspacePopUp() {
+		workspaces = lookupWorkspaceArray?(selectedHost!, loginName ?? "") ?? ["Default"]
+		workspaceArrayController.content = workspaces
+		let lastWspace = "\(LastWorkspacePrefKey).\(selectedHost).\(loginName)"
+		if let lastWspace = NSUserDefaults.standardUserDefaults().objectForKey(lastWspace) as? String where workspaces.contains(lastWspace) {
+			selectedWorkspace = lastWspace
+		} else {
+			selectedWorkspace = workspaces.first
+		}
+	}
+	
 	/**
 		Owner should call this when the completionHandler has finished the async login attempt.
 		This will set isBusy to false and show any error message.
@@ -66,6 +85,7 @@ class LoginViewController: NSViewController {
 			defaults.setBool(autoSignIn, forKey: AutoLoginPrefKey)
 			defaults.setObject(loginName, forKey: LastLoginNamePrefKey)
 			defaults.setObject(selectedHost, forKey: LastHostPrefKey)
+			defaults.setObject(selectedWorkspace, forKey: "\(LastWorkspacePrefKey).\(selectedHost).\(loginName)")
 			do {
 				try keychain.setString("\(loginName!)@\(selectedHost!)", value: password)
 			} catch let error {

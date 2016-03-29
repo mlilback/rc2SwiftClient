@@ -52,6 +52,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 		RestServer.sharedInstance.login(controller.loginName!, password: controller.password!) { (success, results, error) -> Void in
 			if success {
 				NSApp.stopModal()
+				let wspace = RestServer.sharedInstance.loginSession!.workspaceWithName(controller.selectedWorkspace!)!
+				NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(SelectedWorkspaceChangedNotification, object: Box(wspace))
 				self.loginController!.loginAttemptComplete(nil)
 				self.showSessionWindow()
 			} else {
@@ -81,6 +83,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 		//will be nil when running unit tests
 		if loginController != nil {
 			loginController!.hosts = RestServer.sharedInstance.restHosts
+			loginController!.lookupWorkspaceArray = RestServer.sharedInstance.workspaceNamesForHostName
 			loginController!.completionHandler = attemptLogin
 			NSApp!.runModalForWindow((loginWindowController?.window)!)
 		}
