@@ -118,10 +118,10 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 			let err = NSError(domain: Rc2ErrorDomain, code: Rc2ErrorCode.ServerError.rawValue, userInfo: [NSLocalizedDescriptionKey: NSHTTPURLResponse.localizedStringForStatusCode(status)])
 			progress.rc2_complete(err)
 		} else { //got a proper 201 status code
-			//TODO: need to do something with File JSON that was returned and shoud have been stored in
 			let json = JSON(data:importData.data)
 			let newFile = File(json: json)
-			workspace.mutableArrayValueForKey("fileArray").addObject(newFile)
+			workspace.insertFile(newFile, atIndex: workspace.fileCount)
+			//TODO: need to move file from importData.srcUrl to the cache directory via FileCache and/or FileManager
 			importData.progress.completedUnitCount = importData.progress.totalUnitCount
 			importData.progress.rc2_complete(nil)
 		}

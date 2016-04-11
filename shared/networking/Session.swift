@@ -80,7 +80,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		dispatch_source_set_event_handler(keepAliveTimer) {
 			self.sendMessage(["msg":"keepAlive"])
 		}
-//		dispatch_resume(keepAliveTimer)
+		dispatch_resume(keepAliveTimer)
 	}
 	
 	func open(request:NSURLRequest) {

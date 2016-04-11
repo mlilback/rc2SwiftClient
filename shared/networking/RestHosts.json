@@ -4,6 +4,6 @@
 		{"name": "Barney", "host":"barney.stat.wvu.edu", "port":8443, "secure":true},
 		{"name": "localhost", "host":"localhost", "port":8088, "secure":false},
 		{"name": "rc2dev", "host":"10.0.1.8", "port":8088, "secure":false},
-		{"name": "rc2devTLS", "host":"rc2dev.rc2.io", "port":8433, "secure":true}
+		{"name": "rc2devTLS", "host":"10.0.1.9", "port":8088, "secure":false}
 	]
 }

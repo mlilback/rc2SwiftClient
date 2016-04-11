@@ -13,8 +13,9 @@ public enum ServerResponse : Equatable {
 	case ExecComplete(queryId:Int, batchId:Int, images:[SessionImage])
 	case FileChanged(changeType:String, file:File)
 	case Help(topic:String, paths:[HelpItem])
-	case Results(queryId:Int, fileId:Int, text:String)
+	case Results(queryId:Int, text:String)
 	case SaveResponse(transId:String)
+	case ShowOutput(queryId:Int, updatedFile:File)
 	case Variable(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String, JSON>)
 	
 	static func parseResponse(jsonObj:JSON) -> ServerResponse? {
@@ -26,9 +27,11 @@ public enum ServerResponse : Equatable {
 					let images = jsonObj["images"].arrayValue.map({ return SessionImage($0, batchId:batchId) })
 					NSUserDefaults.standardUserDefaults().setInteger(batchId+1, forKey: "NextBatchIdKey")
 					return ServerResponse.ExecComplete(queryId: jsonObj["queryId"].intValue, batchId: jsonObj["imageBatchId"].intValue, images: images)
-			} else {
-					return ServerResponse.Results(queryId: jsonObj["queryId"].intValue, fileId: jsonObj["fileId"].intValue, text: jsonObj["string"].stringValue)
-			}
+				} else {
+					return ServerResponse.Results(queryId: jsonObj["queryId"].intValue, text: jsonObj["string"].stringValue)
+				}
+			case "showOutput":
+				return ServerResponse.ShowOutput(queryId: jsonObj["queryId"].intValue, updatedFile: File(json: jsonObj["file"]))
 			case "error":
 				return ServerResponse.Error(queryId: jsonObj["queryId"].intValue, error: jsonObj["error"].stringValue)
 			case "echo":
@@ -41,7 +44,10 @@ public enum ServerResponse : Equatable {
 				return ServerResponse.Variable(socketId: jsonObj["socketId"].intValue, delta: jsonObj["delta"].boolValue, single: jsonObj["singleValue"].boolValue, variables: jsonObj["variables"].dictionaryValue)
 			case "saveResponse":
 				return ServerResponse.SaveResponse(transId: jsonObj["transId"].stringValue)
+			case "userid":
+				return nil //TODO: need to implement
 			default:
+				log.warning("unknown message from server:\(jsonObj["msg"].stringValue)")
 				return nil
 		}
 	}
@@ -57,10 +63,12 @@ public func == (a:ServerResponse, b:ServerResponse) -> Bool {
 			return q1 == q2 && b1 == b2 && i1 == i2
 		case (.Help(let t1, let p1), .Help(let t2, let p2)):
 			return t1 == t2 && p1 == p2
-		case (.Results(let q1, let f1, let t1), .Results(let q2, let f2, let t2)):
-			return q1 == q2 && f1 == f2 && t1 == t2
+		case (.Results(let q1, let t1), .Results(let q2, let t2)):
+			return q1 == q2 && t1 == t2
 		case (.Variable(let s1, let d1, let sn1, let v1), .Variable(let s2, let d2, let sn2, let v2)):
 			return s1 == s2 && d1 == d2 && sn1 == sn2 && v1 == v2
+		case (.ShowOutput(let q1, let f1), .ShowOutput(let q2, let f2)):
+			return q1 == q2 && f1.fileId == f2.fileId && f1.version == f2.version
 		default:
 			return false
 	}

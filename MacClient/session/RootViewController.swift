@@ -219,7 +219,12 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	
 	//TODO: implement handleFileUpdate
 	func handleFileUpdate(file:File, change:FileChangeType) {
-		
+		log.info("got file update \(file.fileId)")
+	}
+	
+	func showOutputFile(updatedFile:File, queryId:Int) {
+		//TODO: show file output
+		log.info("show filed output: \(updatedFile)")
 	}
 	
 	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String,JSON>) {
@@ -243,6 +248,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		let str = NSMutableAttributedString(attributedString: NSAttributedString(attachment: attachment))
 		str.addAttribute(NSToolTipAttributeName, value: image.name, range: NSMakeRange(0,1))
 		return str
+	}
+	
+	func attributedStringWithFileId(fileId:Int) -> NSAttributedString {
+		return NSAttributedString(string: "")
 	}
 	
 	func cacheImages(images:[SessionImage]) {
@@ -276,6 +285,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 	
 	func sessionMessageReceived(response:ServerResponse) {
+		//TODO need 
 		if let astr = responseHandler?.handleResponse(response) {
 			outputHandler?.appendFormattedString(astr)
 		}

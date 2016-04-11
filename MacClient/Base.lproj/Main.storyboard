@@ -618,7 +618,7 @@ DQ
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="LoginViewController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="m2S-Jp-Qdl">
+                    <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
                         <rect key="frame" x="0.0" y="0.0" width="279" height="364"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>

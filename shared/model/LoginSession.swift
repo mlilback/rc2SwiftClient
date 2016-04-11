@@ -24,6 +24,9 @@ public class LoginSession: CustomStringConvertible {
 		if let found = workspaces.indexOf({$0.name == name}) {
 			return workspaces[found]
 		}
+		if name == "Default" {
+			return workspaces.first
+		}
 		return nil
 	}
 

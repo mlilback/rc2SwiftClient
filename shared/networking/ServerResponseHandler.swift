@@ -20,7 +20,9 @@ protocol ResponseHandlerDelegate {
 	func handleFileUpdate(file:File, change:FileChangeType)
 	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String,JSON>)
 	func attributedStringWithImage(image:SessionImage) -> NSAttributedString
+	func attributedStringWithFileId(fileId:Int) -> NSAttributedString
 	func cacheImages(images:[SessionImage])
+	func showOutputFile(updatedFile:File, queryId:Int)
 }
 
 class ResponseHandler {
@@ -41,8 +43,8 @@ class ResponseHandler {
 		switch(response) {
 			case .EchoQuery(let queryId, let fileId, let query):
 				return formatQueryEcho(query, queryId:queryId, fileId:fileId)
-			case .Results(let queryId, let fileId, let text):
-				return formatResults(text, queryId: queryId, fileId: fileId)
+			case .Results(let queryId, let text):
+				return formatResults(text, queryId: queryId)
 			case .Help(let topic, let items):
 				delegate.loadHelpItems(topic, items: items)
 			case .Error(let queryId, let error):
@@ -53,6 +55,8 @@ class ResponseHandler {
 				delegate.handleFileUpdate(file, change: FileChangeType.init(rawValue: changeType)!)
 			case .Variable(let socketId, let delta, let single, let variables):
 				delegate.handleVariableMessage(socketId, delta: delta, single: single, variables: variables)
+			case .ShowOutput(let queryId, let updatedFile):
+				delegate.showOutputFile(updatedFile, queryId:queryId)
 			case .SaveResponse( _):
 				//handled by the session, never passed to delegate
 				return nil
@@ -65,9 +69,13 @@ class ResponseHandler {
 		return NSAttributedString(string: formString, attributes: [NSBackgroundColorAttributeName:outputColors[.Input]!])
 	}
 	
-	private func formatResults(text:String, queryId:Int, fileId:Int) -> NSAttributedString? {
-		let formString = "\(text)\n"
-		return NSAttributedString(string: formString)
+	private func formatResults(text:String, queryId:Int) -> NSAttributedString? {
+		let mstr = NSMutableAttributedString()
+		if text.characters.count > 0 {
+			let formString = "\(text)\n"
+			mstr.appendAttributedString(NSAttributedString(string: formString))
+		}
+		return mstr
 	}
 
 	private func formatExecComplete(queryId:Int, batchId:Int, images:[SessionImage]) -> NSAttributedString? {
