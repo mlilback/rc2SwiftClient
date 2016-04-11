@@ -185,12 +185,18 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 			return
 		}
 		let dict = msgDict.nativeValue()
-		//eventually we need to switch on the msg property. For now, just verify it is the only one we support
-		guard let msgStr = dict["msg"] as? String where msgStr == "saveResponse" else {
-			log.warning("received unknown binary message")
+		switch dict["msg"] as! String {
+		case "saveResponse":
+			handleSaveResponse(dict)
+		case "showOutput":
+			let file = File(dict: dict["file"] as! [String:AnyObject])
+			let response = ServerResponse.ShowOutput(queryId: dict["queryId"] as! Int, updatedFile: file)
+			delegate?.sessionMessageReceived(response)
+			fileHandler.updateFile(file, withData: dict["fileData"] as? NSData)
+		default:
+			log.warning("received unknown binary message: \(dict["msg"])")
 			return
 		}
-		handleSaveResponse(dict)
 	}
 	
 	//we've got a dictionary of the save response. keys should be transId, success, file, error

@@ -66,10 +66,12 @@ public class FileType : Equatable {
 	///image function differs based on platform
 #if os(OSX)
 	func image() -> NSImage? {
-		if let img = NSImage(named: "console/\(self.fileExtension)-file") {
+		let imgName = "file-\(fileExtension)"
+		if let img = NSImage(named: imgName) {
+			img.backgroundColor = NSColor.clearColor()
 			return img
 		}
-		return NSImage(named: "console/plain-file")
+		return NSImage(named: "file-plain")
 	}
 	func fileImage() -> NSImage? {
 		if let iname = self.iconName {

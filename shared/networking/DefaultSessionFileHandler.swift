@@ -72,6 +72,52 @@ class DefaultSessionFileHandler: SessionFileHandler {
 		downloadPromise.success(true)
 	}
 
+	func updateFile(file:File, withData data:NSData?) {
+		let idx = workspace.indexOfFilePassingTest() { (obj, idx, stop) -> Bool in
+			return (obj as! File).fileId == file.fileId
+		}
+		guard idx != NSNotFound else {
+			log.warning("got file update for non-existing file: \(file.fileId)")
+			return
+		}
+		workspace.replaceFileAtIndex(idx, withFile: file)
+		if let fileContents = data {
+			do {
+				try fileContents.writeToURL(fileCache.cachedFileUrl(file), options: [])
+			} catch let err {
+				log.error("failed to write file \(file.fileId) update: \(err)")
+			}
+		} else {
+			workspace.replaceFileAtIndex(idx, withFile: file)
+			if let prog = fileCache.flushCacheForFile(file) {
+				appStatus?.updateStatus(prog)
+			}
+		}
+	}
+	
+	func handleFileUpdate(file:File, change:FileChangeType) {
+		switch(change) {
+		case .Update:
+			let idx = workspace.indexOfFilePassingTest() { (obj, idx, stop) -> Bool in
+				return (obj as! File).fileId == file.fileId
+			}
+			guard idx != NSNotFound else {
+				log.warning("got file update for non-existing file: \(file.fileId)")
+				return
+			}
+			workspace.replaceFileAtIndex(idx, withFile: file)
+			if let prog = fileCache.flushCacheForFile(file) {
+				appStatus?.updateStatus(prog)
+			}
+		case .Insert:
+			//TODO: implement file insert handling
+			break
+		case .Delete:
+			//TODO:  implement file deletion handling
+			break
+		}
+	}
+
 	//the following will add the save operation to a serial queue to be executed immediately
 	func saveFile(file:File, contents:String, completionHandler:(NSError?) -> Void) {
 		let url = fileCache.cachedFileUrl(file)

@@ -217,14 +217,9 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		
 	}
 	
-	//TODO: implement handleFileUpdate
 	func handleFileUpdate(file:File, change:FileChangeType) {
 		log.info("got file update \(file.fileId)")
-	}
-	
-	func showOutputFile(updatedFile:File, queryId:Int) {
-		//TODO: show file output
-		log.info("show filed output: \(updatedFile)")
+		session.fileHandler.handleFileUpdate(file, change: change)
 	}
 	
 	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String,JSON>) {
@@ -250,8 +245,19 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		return str
 	}
 	
-	func attributedStringWithFileId(fileId:Int) -> NSAttributedString {
-		return NSAttributedString(string: "")
+	func attributedStringWithFile(file:File) -> NSAttributedString {
+		let fileDict = ["id":file.fileId, "version":file.version]
+		let data = NSKeyedArchiver.archivedDataWithRootObject(fileDict)
+		let fw = NSFileWrapper(regularFileWithContents: data)
+		fw.filename = file.name
+		fw.preferredFilename = file.name
+		let attachment = NSTextAttachment(fileWrapper: fw)
+		let cell = NSTextAttachmentCell(imageCell: file.fileType.image())
+		cell.image?.size = NSMakeSize(48, 48)
+		attachment.attachmentCell = cell
+		let str = NSMutableAttributedString(attributedString: NSAttributedString(attachment: attachment))
+		str.addAttribute(NSToolTipAttributeName, value: file.name, range: NSMakeRange(0,1))
+		return str
 	}
 	
 	func cacheImages(images:[SessionImage]) {

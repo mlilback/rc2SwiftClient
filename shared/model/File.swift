@@ -50,6 +50,23 @@ public class File: CustomStringConvertible, Equatable {
 		}
 	}
 	
+	///initialize with native dictionary from a MessagePackDictionary
+	init(dict:[String:AnyObject]) {
+		fileId = dict["id"] as! Int
+		name = dict["name"] as! String
+		version = dict["version"] as! Int
+		fileSize = dict["fileSize"] as! Int!
+		dateCreated = NSDate(timeIntervalSince1970: (dict["dateCreated"] as! Double)/1000.0)
+		lastModified = NSDate(timeIntervalSince1970: (dict["lastModified"] as! Double)/1000.0)
+		if let ft = FileType.fileTypeWithExtension((name as NSString).pathExtension) {
+			self.fileType = ft
+		} else {
+			assertionFailure("invalid file type")
+			//compiler won't let the property not be set, even though we're exiting the program
+			self.fileType = FileType.allFileTypes.first!
+		}
+	}
+	
 	public var description : String {
 		return "<File: \(name) (\(fileId) v\(version))>";
 	}

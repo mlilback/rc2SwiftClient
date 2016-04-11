@@ -20,9 +20,8 @@ protocol ResponseHandlerDelegate {
 	func handleFileUpdate(file:File, change:FileChangeType)
 	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String,JSON>)
 	func attributedStringWithImage(image:SessionImage) -> NSAttributedString
-	func attributedStringWithFileId(fileId:Int) -> NSAttributedString
+	func attributedStringWithFile(file:File) -> NSAttributedString
 	func cacheImages(images:[SessionImage])
-	func showOutputFile(updatedFile:File, queryId:Int)
 }
 
 class ResponseHandler {
@@ -56,7 +55,7 @@ class ResponseHandler {
 			case .Variable(let socketId, let delta, let single, let variables):
 				delegate.handleVariableMessage(socketId, delta: delta, single: single, variables: variables)
 			case .ShowOutput(let queryId, let updatedFile):
-				delegate.showOutputFile(updatedFile, queryId:queryId)
+				return formatShowOutput(queryId, file:updatedFile)
 			case .SaveResponse( _):
 				//handled by the session, never passed to delegate
 				return nil
@@ -78,6 +77,10 @@ class ResponseHandler {
 		return mstr
 	}
 
+	private func formatShowOutput(queryId:Int, file:File) -> NSAttributedString? {
+		return delegate.attributedStringWithFile(file)
+	}
+	
 	private func formatExecComplete(queryId:Int, batchId:Int, images:[SessionImage]) -> NSAttributedString? {
 		guard images.count > 0 else { return nil }
 		delegate.cacheImages(images)
