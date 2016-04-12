@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 15.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="Layer_1" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ns1="http://sozi.baierouge.fr" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="48px" height="48px"
+	 viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
+<filter  x="-.16044" y="-.15096" height="1.3019" width="1.3209" color-interpolation-filters="sRGB" id="filter4745">
+	<feGaussianBlur  id="feGaussianBlur4747" stdDeviation="0.53269676"></feGaussianBlur>
+</filter>
+<radialGradient id="path3117_1_" cx="54.584" cy="-260.9004" r="5.2344" gradientTransform="matrix(4.56 0 0 -0.3721 -225.03 -52.8555)" gradientUnits="userSpaceOnUse">
+	<stop  offset="0" style="stop-color:#2E3436"/>
+	<stop  offset="1" style="stop-color:#2E3436;stop-opacity:0"/>
+</radialGradient>
+<path id="path3117" opacity="0.5402" fill="url(#path3117_1_)" enable-background="new    " d="M47.743,44.228
+	c0.089,1.076-10.526,1.954-23.709,1.961C10.85,46.197,0.09,45.331,0,44.254c0-0.009,0-0.017,0-0.027
+	c-0.089-1.076,10.526-1.954,23.709-1.96c13.184-0.008,23.943,0.858,24.033,1.934C47.743,44.21,47.743,44.219,47.743,44.228z"/>
+<path id="rect2706" fill="#888A85" d="M9.744,1C8.029,1,6.657,2.374,6.657,4.088V41.17c0,1.714,1.373,3.088,3.087,3.088h28.255
+	c1.715,0,3.087-1.374,3.087-3.088V8.017L34.35,1L9.744,1L9.744,1z"/>
+<radialGradient id="path3911_1_" cx="41.5244" cy="194.5566" r="3.8847" gradientTransform="matrix(2.5727 10.6687 15.7863 -3.8067 -3166.2263 305.2343)" gradientUnits="userSpaceOnUse">
+	<stop  offset="0" style="stop-color:#EEEEEC"/>
+	<stop  offset="1" style="stop-color:#D3D7CF"/>
+</radialGradient>
+<path id="path3911" fill="url(#path3911_1_)" d="M9.744,2.03c-1.157,0-2.058,0.902-2.058,2.058V41.17
+	c0,1.157,0.901,2.058,2.058,2.058h28.255c1.157,0,2.059-0.901,2.059-2.058V8.455L33.914,2.03L9.744,2.03L9.744,2.03z"/>
+<linearGradient id="path3935_1_" gradientUnits="userSpaceOnUse" x1="0.5" y1="198.0625" x2="0.5" y2="157.156">
+	<stop  offset="0" style="stop-color:#FFFFFF;stop-opacity:0.8"/>
+	<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+</linearGradient>
+<path id="path3935" opacity="0.8" fill="none" stroke="url(#path3935_1_)" stroke-linecap="square" stroke-linejoin="round" enable-background="new    " d="
+	M9.744,2.529c-0.896,0-1.56,0.664-1.56,1.559V41.17c0,0.896,0.664,1.56,1.56,1.56h28.255c0.896,0,1.56-0.664,1.56-1.56V8.609
+	l-5.864-6.081L9.744,2.529L9.744,2.529z"/>
+<g id="path3992" opacity="0.16" filter="url(#filter4745)" enable-background="new    ">
+	<path fill="#2E3436" d="M32.105,2.037v6.862c0,0.954,0.676,1.59,1.716,1.59h6.237V8.68l-6.923-6.643H32.105L32.105,2.037z"/>
+</g>
+<path id="path3945" fill="#888A85" d="M32.979,1.008v6.3c0,1.156,0.901,2.058,2.058,2.058h6.05V8.025l-6.736-7.017H32.979z"/>
+<radialGradient id="path3953_1_" cx="46.2988" cy="161.2246" r="0.7261" gradientTransform="matrix(8.3333 0 0 -8.72 -351.8542 1414.2427)" gradientUnits="userSpaceOnUse">
+	<stop  offset="0" style="stop-color:#EEEEEC"/>
+	<stop  offset="1" style="stop-color:#D3D7CF"/>
+</radialGradient>
+<path id="path3953" fill="url(#path3953_1_)" d="M33.976,2.037v5.271c0,0.639,0.422,1.06,1.061,1.06h4.99L33.976,2.037L33.976,2.037
+	z"/>
+<linearGradient id="path3982_1_" gradientUnits="userSpaceOnUse" x1="34.625" y1="191.75" x2="37.033" y2="194.1367">
+	<stop  offset="0" style="stop-color:#FFFFFF;stop-opacity:0.8"/>
+	<stop  offset="1" style="stop-color:#FFFFFF;stop-opacity:0"/>
+</linearGradient>
+<path id="path3982" opacity="0.8" fill="none" stroke="url(#path3982_1_)" stroke-linecap="square" enable-background="new    " d="
+	M34.476,3.316v3.992c0,0.376,0.185,0.561,0.562,0.561h3.837L34.476,3.316L34.476,3.316z"/>
+<text transform="matrix(1 0 0 1 9.7676 26.4951)" fill="#888A85" font-family="'BPreplay'" font-size="11.1217">HTML</text>
+</svg>
