@@ -358,9 +358,24 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="View" id="H8h-7b-M4v">
+                            <menuItem title="Session" id="H8h-7b-M4v">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="View" id="HyV-fh-RgO">
+                                <menu key="submenu" title="Session" id="HyV-fh-RgO">
+                                    <items>
+                                        <menuItem title="Clear Console" id="ewc-iC-cVv">
+                                            <string key="keyEquivalent" base64-UTF8="YES">
+CA
+</string>
+                                            <connections>
+                                                <action selector="clearConsole:" target="Ady-hI-5gd" id="PhU-BR-PPj"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Window" id="aUF-d1-5bR">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Window" systemMenu="window" id="Td7-aD-5lo">
                                     <items>
                                         <menuItem title="Show Toolbar" keyEquivalent="t" id="snW-S8-Cw5">
                                             <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
@@ -374,13 +389,7 @@
                                                 <action selector="runToolbarCustomizationPalette:" target="Ady-hI-5gd" id="pQI-g3-MTW"/>
                                             </connections>
                                         </menuItem>
-                                    </items>
-                                </menu>
-                            </menuItem>
-                            <menuItem title="Window" id="aUF-d1-5bR">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Window" systemMenu="window" id="Td7-aD-5lo">
-                                    <items>
+                                        <menuItem isSeparatorItem="YES" id="yWS-FU-uh5"/>
                                         <menuItem title="Minimize" keyEquivalent="m" id="OY7-WF-poV">
                                             <connections>
                                                 <action selector="performMiniaturize:" target="Ady-hI-5gd" id="VwT-WD-YPe"/>
