@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
@@ -92,6 +92,7 @@
                     <tabViewItems>
                         <tabViewItem id="efd-Px-WGZ"/>
                         <tabViewItem id="j2a-HV-n5N"/>
+                        <tabViewItem id="8vd-Ra-yNB"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="yzp-ro-Qov" customClass="OutputTopView" customModule="MacClient" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -102,6 +103,7 @@
                     <connections>
                         <segue destination="cmA-J2-3x3" kind="relationship" relationship="tabItems" id="ZGF-RH-jDc"/>
                         <segue destination="cag-VX-0j2" kind="relationship" relationship="tabItems" id="hwK-qM-BN7"/>
+                        <segue destination="q5U-HH-oqN" kind="relationship" relationship="tabItems" id="DYt-ys-YDI"/>
                     </connections>
                 </tabViewController>
                 <customObject id="aWp-lc-ahp" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -932,6 +934,102 @@
                 <customObject id="W1T-z3-tEv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2096.5" y="-41.5"/>
+        </scene>
+        <!--webkit controller-->
+        <scene sceneID="mGN-r2-0sB">
+            <objects>
+                <viewController title="webkit controller" id="q5U-HH-oqN" customClass="WebKitOutputController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="eBF-S2-z6R">
+                        <rect key="frame" x="0.0" y="0.0" width="510" height="513"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="mgA-sQ-2dm">
+                                <rect key="frame" x="0.0" y="42" width="510" height="471"/>
+                            </customView>
+                            <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="Uv4-HC-CEy">
+                                <rect key="frame" x="0.0" y="40" width="510" height="5"/>
+                                <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <font key="titleFont" metaFont="system"/>
+                            </box>
+                            <stackView distribution="fill" orientation="horizontal" alignment="baseline" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eQ1-T8-zV0">
+                                <rect key="frame" x="10" y="13" width="480" height="21"/>
+                                <subviews>
+                                    <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4qM-Gs-S7V">
+                                        <rect key="frame" x="-2" y="-2" width="71" height="24"/>
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="DhX-Pz-jfz">
+                                            <font key="font" metaFont="system"/>
+                                            <segments>
+                                                <segment toolTip="Back" image="NSGoLeftTemplate" width="32" enabled="NO"/>
+                                                <segment toolTip="Forward" image="NSGoRightTemplate" width="32" enabled="NO" tag="1"/>
+                                            </segments>
+                                        </segmentedCell>
+                                        <accessibility description="Navigate"/>
+                                        <connections>
+                                            <action selector="navigateWebView:" target="q5U-HH-oqN" id="QhM-kj-7WZ"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Wi0-ZF-Par">
+                                        <rect key="frame" x="73" y="3" width="367" height="18"/>
+                                        <textFieldCell key="cell" lineBreakMode="truncatingHead" sendsActionOnEndEditing="YES" alignment="center" title="Loading…" id="G82-68-MnS">
+                                            <font key="font" metaFont="system" size="14"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZvK-QY-nPW">
+                                        <rect key="frame" x="444" y="-2" width="38" height="24"/>
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="T7y-xJ-4GF">
+                                            <font key="font" metaFont="system"/>
+                                            <segments>
+                                                <segment toolTip="Share" image="NSShareTemplate" width="32"/>
+                                            </segments>
+                                        </segmentedCell>
+                                        <accessibility description="Share"/>
+                                        <connections>
+                                            <action selector="showShareSheet:" target="q5U-HH-oqN" id="FCH-or-h1D"/>
+                                        </connections>
+                                    </segmentedControl>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="dyd-FQ-Cw3"/>
+                                    <constraint firstAttribute="height" constant="21" id="jQt-KI-lc5"/>
+                                </constraints>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="mgA-sQ-2dm" secondAttribute="trailing" id="ApP-Nn-vY7"/>
+                            <constraint firstItem="mgA-sQ-2dm" firstAttribute="leading" secondItem="eBF-S2-z6R" secondAttribute="leading" id="EJS-BE-2Qd"/>
+                            <constraint firstItem="eQ1-T8-zV0" firstAttribute="leading" secondItem="eBF-S2-z6R" secondAttribute="leading" constant="10" id="P4b-Uw-nc1"/>
+                            <constraint firstAttribute="bottom" secondItem="eQ1-T8-zV0" secondAttribute="bottom" constant="13" id="R0w-gQ-yhi"/>
+                            <constraint firstAttribute="bottom" secondItem="mgA-sQ-2dm" secondAttribute="bottom" constant="42" id="Rd3-BD-p4h"/>
+                            <constraint firstAttribute="trailing" secondItem="eQ1-T8-zV0" secondAttribute="trailing" constant="20" id="W6j-tE-3mN"/>
+                            <constraint firstAttribute="trailing" secondItem="Uv4-HC-CEy" secondAttribute="trailing" id="hcr-pD-Xsi"/>
+                            <constraint firstItem="mgA-sQ-2dm" firstAttribute="top" secondItem="eBF-S2-z6R" secondAttribute="top" id="leC-PS-iZY"/>
+                            <constraint firstItem="Uv4-HC-CEy" firstAttribute="leading" secondItem="eBF-S2-z6R" secondAttribute="leading" id="sD6-gW-m0j"/>
+                            <constraint firstAttribute="bottom" secondItem="Uv4-HC-CEy" secondAttribute="bottom" constant="42" id="y8j-SB-14l"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="containerView" destination="mgA-sQ-2dm" id="GQZ-fk-34a"/>
+                        <outlet property="navButtons" destination="4qM-Gs-S7V" id="eQ3-gg-l54"/>
+                        <outlet property="shareButton" destination="ZvK-QY-nPW" id="LTR-oY-1ci"/>
+                        <outlet property="titleLabel" destination="Wi0-ZF-Par" id="2Dn-eg-oDE"/>
+                    </connections>
+                </viewController>
+                <customObject id="BnK-Cz-OOn" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2662" y="-41.5"/>
         </scene>
         <!--Workspaces View Controller-->
         <scene sceneID="FZH-15-YFf">

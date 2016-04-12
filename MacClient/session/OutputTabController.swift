@@ -9,7 +9,9 @@ import Cocoa
 class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandler {
 	var consoleController: SessionOutputController?
 	var imageController: ImageOutputController?
+	var webController: WebKitOutputController?
 	var imageCache: ImageCache?
+	var session: Session?
 	var consoleToolbarControl: NSSegmentedControl?
 	
 	override func awakeFromNib() {
@@ -27,6 +29,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		consoleController?.viewFileOrImage = displayFileOrImage
 		imageController = firstChildViewController(self)
 		imageController?.imageCache = imageCache
+		webController = firstChildViewController(self)
 	}
 	
 	override func viewDidAppear() {
@@ -84,6 +87,13 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			imageController?.displayImageAtIndex(index, images:images)
 			selectedTabViewItemIndex = 1
 			tabView.window?.toolbar?.validateVisibleItems()
+		} else if let fdata = fileWrapper.regularFileContents,
+			let fdict = NSKeyedUnarchiver.unarchiveObjectWithData(fdata) as? NSDictionary,
+			let fileId = fdict["id"] as? Int,
+			let file = session?.workspace.fileWithId(fileId)
+		{
+			webController?.loadLocalFile(session!.fileHandler.fileCache.cachedFileUrl(file))
+			selectedTabViewItemIndex = 2
 		}
 	}
 

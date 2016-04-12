@@ -21,6 +21,7 @@ protocol ResponseHandlerDelegate {
 	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String,JSON>)
 	func attributedStringWithImage(image:SessionImage) -> NSAttributedString
 	func attributedStringWithFile(file:File) -> NSAttributedString
+	func attributedStringForInputFile(fileId:Int) -> NSAttributedString
 	func cacheImages(images:[SessionImage])
 }
 
@@ -64,8 +65,13 @@ class ResponseHandler {
 	}
 
 	private func formatQueryEcho(query:String, queryId:Int, fileId:Int) -> NSAttributedString? {
-		let formString = "\(query)\n"
-		return NSAttributedString(string: formString, attributes: [NSBackgroundColorAttributeName:outputColors[.Input]!])
+		if fileId > 0 {
+			let mstr = NSMutableAttributedString(attributedString: delegate.attributedStringForInputFile(fileId))
+			mstr.appendAttributedString(NSAttributedString(string: "\n"))
+			mstr.addAttribute(NSBackgroundColorAttributeName, value: outputColors[.Input]!, range: NSMakeRange(0, mstr.length))
+			return mstr
+		}
+		return NSAttributedString(string: "\(query)\n", attributes: [NSBackgroundColorAttributeName:outputColors[.Input]!])
 	}
 	
 	private func formatResults(text:String, queryId:Int) -> NSAttributedString? {

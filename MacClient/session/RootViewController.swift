@@ -82,6 +82,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	override func sessionChanged() {
 		session.delegate = self
 		imgCache.workspace = session.workspace
+		outputHandler?.session = session
 		restoreSessionState()
 	}
 	
@@ -255,9 +256,16 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		let cell = NSTextAttachmentCell(imageCell: file.fileType.image())
 		cell.image?.size = NSMakeSize(48, 48)
 		attachment.attachmentCell = cell
+		//we need to add a newline after cell or background color (of preceding text) gets exended over image
 		let str = NSMutableAttributedString(attributedString: NSAttributedString(attachment: attachment))
+		str.appendAttributedString(NSAttributedString(string:"\n"))
 		str.addAttribute(NSToolTipAttributeName, value: file.name, range: NSMakeRange(0,1))
 		return str
+	}
+	
+	func attributedStringForInputFile(fileId:Int) -> NSAttributedString {
+		let file = session.workspace.fileWithId(fileId)
+		return NSAttributedString(string: "[\(file!.name)]")
 	}
 	
 	func cacheImages(images:[SessionImage]) {
@@ -291,7 +299,6 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 	
 	func sessionMessageReceived(response:ServerResponse) {
-		//TODO need 
 		if let astr = responseHandler?.handleResponse(response) {
 			outputHandler?.appendFormattedString(astr)
 		}

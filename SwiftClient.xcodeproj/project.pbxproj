@@ -123,6 +123,7 @@
 		089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		089346061C7FB14B00100CF6 /* SyntaxColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089346051C7FB14B00100CF6 /* SyntaxColor.swift */; };
 		089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */; };
+		08A01FA91CBC07B0001EDFAA /* WebKitOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FA81CBC07B0001EDFAA /* WebKitOutputController.swift */; };
 		08B036221C73B131005928B3 /* FileImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B036211C73B131005928B3 /* FileImporter.swift */; };
 		08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; };
 		08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -325,6 +326,7 @@
 		089346021C7F661400100CF6 /* PEGKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PEGKit.framework; path = Carthage/Build/Mac/PEGKit.framework; sourceTree = "<group>"; };
 		089346051C7FB14B00100CF6 /* SyntaxColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxColor.swift; sourceTree = "<group>"; };
 		089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSStoryboard+TypeSaftey.swift"; sourceTree = "<group>"; };
+		08A01FA81CBC07B0001EDFAA /* WebKitOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebKitOutputController.swift; sourceTree = "<group>"; };
 		08B036211C73B131005928B3 /* FileImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporter.swift; sourceTree = "<group>"; };
 		08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessagePackSwift.framework; path = Carthage/Build/Mac/MessagePackSwift.framework; sourceTree = "<group>"; };
 		08BFD3E71C90B5AC0041EB1C /* MessagePackSwift.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = MessagePackSwift.framework.dSYM; path = Carthage/Build/Mac/MessagePackSwift.framework.dSYM; sourceTree = "<group>"; };
@@ -646,6 +648,7 @@
 				0812631D1C862B94003E37A5 /* sidebar */,
 				0812631B1C8628D0003E37A5 /* session views */,
 				0812631C1C862918003E37A5 /* data/helpers */,
+				08A01FA81CBC07B0001EDFAA /* WebKitOutputController.swift */,
 			);
 			path = session;
 			sourceTree = "<group>";
@@ -830,6 +833,7 @@
 				0827A4E31C7ED9CE001F0AFB /* LatexCodeHighlighter.swift in Sources */,
 				088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */,
 				0816F89A1C6D0F7D00A6120B /* HTMLString.swift in Sources */,
+				08A01FA91CBC07B0001EDFAA /* WebKitOutputController.swift in Sources */,
 				083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
 				083305E61C517FE300E27F66 /* SidebarUsersController.swift in Sources */,

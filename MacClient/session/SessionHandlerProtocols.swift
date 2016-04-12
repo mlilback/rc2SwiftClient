@@ -15,6 +15,7 @@ import Cocoa
 
 @objc protocol OutputHandler {
 	var imageCache: ImageCache? { get set }
+	var session: Session? { get set }
 	func appendFormattedString(string:NSAttributedString)
 	func saveSessionState() -> AnyObject
 	func restoreSessionState(state:[String:AnyObject])
