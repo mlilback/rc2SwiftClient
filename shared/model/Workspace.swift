@@ -89,6 +89,12 @@ public class Workspace: NSObject {
 	
 	var fileCount:Int { return filesArray.count }
 	
+	public func fileWithId(fileId:Int) -> File? {
+		let idx = indexOfFilePassingTest() { (obj, curIdx, _) in (obj as! File).fileId == fileId }
+		if idx == NSNotFound { return nil }
+		return fileAtIndex(idx)
+	}
+	
 	public func fileAtIndex(index:Int) -> File? {
 		return filesArray.objectAtIndex(index) as? File
 	}

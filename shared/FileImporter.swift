@@ -93,6 +93,7 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 			request.HTTPMethod = "POST"
 			request.setValue(aFileToImport.uniqueFileName, forHTTPHeaderField: "Rc2-Filename")
 			request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
+			request.setValue("application/json", forHTTPHeaderField: "Accept")
 			let task = uploadSession.uploadTaskWithRequest(request, fromFile: srcUrl)
 			let cprogress = NSProgress(totalUnitCount: aFileToImport.fileUrl.fileSize())
 			tasks[index] = ImportData(task: task, srcFile: srcUrl, progress: cprogress)
