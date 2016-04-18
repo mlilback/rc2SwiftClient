@@ -129,7 +129,6 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 			defer { self.taskLock.unlock() }
 			for aTask in self.tasks.values {
 				aTask.task.resume()
-				log.info("launching task \(aTask.task.taskIdentifier)")
 			}
 		}
  		downloadingAllFiles = true
@@ -190,7 +189,6 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 	{
 		taskLock.lock()
 		defer { taskLock.unlock() }
-		log.info("didFinish for \(downloadTask.taskIdentifier)")
 		guard let cacheTask = tasks[downloadTask.taskIdentifier] else {
 			fatalError("no DownloadTask for Session Task")
 		}

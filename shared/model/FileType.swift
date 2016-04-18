@@ -47,8 +47,9 @@ public class FileType : Equatable {
 	
 	private let typeDict : NSDictionary
 	
-	static func fileTypeWithExtension(anExtension:String) -> FileType? {
-		let filtered:[FileType] = FileType.allFileTypes.filter {return $0.fileExtension == anExtension }
+	static func fileTypeWithExtension(anExtension:String?) -> FileType? {
+		guard let ext = anExtension else { return nil }
+		let filtered:[FileType] = FileType.allFileTypes.filter {return $0.fileExtension == ext }
 		return filtered.first
 	}
 	

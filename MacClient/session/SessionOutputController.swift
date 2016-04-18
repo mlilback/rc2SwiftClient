@@ -75,6 +75,8 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 		if state[SessionStateKey.Results.rawValue] is NSData {
 			let data = state[SessionStateKey.Results.rawValue] as! NSData
 			let ts = resultsView!.textStorage!
+			//for some reason, NSLayoutManager is initially making the line with an attachment 32 tall, even though image is 48. On window resize, it corrects itself. so we are going to keep an array of attachment indexes so we can fix this later
+			var fileIndexes:[Int] = []
 			resultsView!.replaceCharactersInRange(NSMakeRange(0, ts.length), withRTFD:data)
 			resultsView!.textStorage?.enumerateAttribute(NSAttachmentAttributeName, inRange: NSMakeRange(0, ts.length), options: [], usingBlock:
 			{ (value, range, stop) -> Void in
@@ -83,15 +85,29 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 				let fname = (fw?.filename!)!
 				if fname.hasPrefix("img") {
 					let cell = NSTextAttachmentCell(imageCell: NSImage(named: "graph"))
-					cell.image?.size = NSMakeSize(48, 48)
+					cell.image?.size = ConsoleAttachmentImageSize
 					ts.removeAttribute(NSAttachmentAttributeName, range: range)
 					attach.attachmentCell = cell
 					ts.addAttribute(NSAttachmentAttributeName, value: attach, range: range)
-				} else if fname.hasPrefix("file") {
-					//TODO: set cell for a file attachment
+				} else {
+					attach.attachmentCell = self.attachmentCellForAttachment(attach)
+					fileIndexes.append(range.location)
 				}
 			})
+			//now go through all lines with an attachment and insert a space, and then delete it. that forces a layout that uses the correct line height
+			fileIndexes.forEach() {
+				ts.insertAttributedString(NSAttributedString(string: " "), atIndex: $0)
+				ts.deleteCharactersInRange(NSMakeRange($0, 1))
+			}
 		}
+	}
+	
+	func attachmentCellForAttachment(attachment:NSTextAttachment) -> NSTextAttachmentCell {
+		let fdict = NSKeyedUnarchiver.unarchiveObjectWithData((attachment.fileWrapper?.regularFileContents)!) as? NSDictionary
+		let fileType = FileType.fileTypeWithExtension(fdict?.objectForKey("ext") as? String)
+		let img = fileType?.image()
+		img?.size = ConsoleAttachmentImageSize
+		return NSTextAttachmentCell(imageCell: img)
 	}
 	
 	//MARK: command history

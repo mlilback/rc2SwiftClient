@@ -247,14 +247,14 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 	
 	func attributedStringWithFile(file:File) -> NSAttributedString {
-		let fileDict = ["id":file.fileId, "version":file.version]
+		let fileDict = ["id":file.fileId, "version":file.version, "ext":file.fileType.fileExtension]
 		let data = NSKeyedArchiver.archivedDataWithRootObject(fileDict)
 		let fw = NSFileWrapper(regularFileWithContents: data)
 		fw.filename = file.name
 		fw.preferredFilename = file.name
 		let attachment = NSTextAttachment(fileWrapper: fw)
 		let cell = NSTextAttachmentCell(imageCell: file.fileType.image())
-		cell.image?.size = NSMakeSize(48, 48)
+		cell.image?.size = ConsoleAttachmentImageSize
 		attachment.attachmentCell = cell
 		//we need to add a newline after cell or background color (of preceding text) gets exended over image
 		let str = NSMutableAttributedString(attributedString: NSAttributedString(attachment: attachment))
