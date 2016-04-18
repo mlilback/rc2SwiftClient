@@ -87,9 +87,11 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 		}
 		do {
 			try fileManager.removeItemAtURL(cachedFileUrl(file))
-		} catch let err {
+		} catch let err as NSError {
 			//don't care if doesn't exist
-			log.info("got err removing file in flushCacheForFile:\(err)")
+			if !(err.domain == NSCocoaErrorDomain && err.code == 4) {
+				log.info("got err removing file in flushCacheForFile:\(err)")
+			}
 		}
 		let task = DownloadTask(file: file, cache: self, parentProgress: nil)
 		if currentProgress == nil { currentProgress = task.progress }
