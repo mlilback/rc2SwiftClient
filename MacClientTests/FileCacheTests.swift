@@ -44,67 +44,14 @@ class FileCacheTests: BaseTest {
 		super.tearDown()
 	}
 	
-//	func testDownload() {
-//		XCTAssertFalse(cache.isFileCached(file))
-//		//test download
-//		stub(everything, builder: http(200, headers:["Content-Type":file.fileType.mimeType], data:fileData))
-//		let expect = expectationWithDescription("download from server")
-//		cache.downloadFile(file, fromWorkspace: wspace).onSuccess { (furl) -> Void in
-//			XCTAssertEqual(NSData(contentsOfURL: furl!), self.fileData, "data failed to match")
-//			XCTAssert(self.file.urlXAttributesMatch(furl!), "xattrs don't match")
-//			expect.fulfill()
-//		}.onFailure { (error) -> Void in
-//			log.error("download error: \(error)")
-//			XCTAssert(false)
-//			expect.fulfill()
-//		}
-//		self.waitForExpectationsWithTimeout(2) { (err) -> Void in }
-//	}
-	
-	func testCacheHit() {
-		fileData.writeToURL(cachedUrl, atomically: true)
-		file.writeXAttributes(cachedUrl)
-		
-		//test file is cached
-		stub(uri(destUri), builder: http(404, headers:[:], data:fileData))
-		let expect = expectationWithDescription("download from server")
-		cache.downloadFile(file).onSuccess { (furl) -> Void in
-			XCTAssertEqual(NSData(contentsOfURL: furl!), self.fileData)
-			XCTAssert(self.file.urlXAttributesMatch(furl!))
-			expect.fulfill()
-		}.onFailure { (error) -> Void in
-			XCTAssert(false)
-			expect.fulfill()
-		}
-		self.waitForExpectationsWithTimeout(2) { (err) -> Void in }
-	}
-
-	func testNoSuchFile() {
-		stub(uri(destUri), builder: http(404, headers:[:], data:fileData))
-		let expect = expectationWithDescription("404 from server")
-		cache.downloadFile(file).onSuccess { (furl) -> Void in
-			XCTFail("404 download was a success")
-			expect.fulfill()
-			}.onFailure { (error) -> Void in
-				switch(error) {
-					case .FileNotFound:
-						XCTAssertTrue(true)
-					default:
-						XCTAssertFalse(false)
-				}
-				expect.fulfill()
-		}
-		self.waitForExpectationsWithTimeout(2) { (err) -> Void in }
-	}
-
+	//TODO: needs to actually test the second file was downloaded correctly
 	func testMultipleDownload() {
 		//use contents of words file instead of the R file we use in other tests (i.e. make it a lot larger)
 		let wordsUrl = NSURL(fileURLWithPath: "/usr/share/dict/words")
 		fileData = NSData(contentsOfURL: wordsUrl)!
 		let fakeFile = File(json: JSON.parse("{\"id\" : 1,\"wspaceId\" : 1,\"name\" : \"sample.R\",\"version\" : 0,\"dateCreated\" : 1439407405827,\"lastModified\" : 1439407405827,\"etag\": \"f/1/0\", \"fileSize\":\(fileData.length) }"))
 		file = fakeFile
-		wspace.filesArray.removeObjectAtIndex(0)
-		wspace.filesArray.insertObject(fakeFile, atIndex: 0)
+		wspace.replaceFileAtIndex(0, withFile: fakeFile)
 		//stub out download of both files
 		stub(uri("/workspaces/\(wspace.wspaceId)/files/\(wspace.files[0].fileId)"), builder: http(200, headers:[:], data:fileData))
 		let file1Data = fileData.subdataWithRange(NSMakeRange(0, wspace.files[1].fileSize))
@@ -116,7 +63,7 @@ class FileCacheTests: BaseTest {
 				self.multiExpectation?.fulfill()
 			}
 		}
-		self.waitForExpectationsWithTimeout(2) { (err) -> Void in }
+		self.waitForExpectationsWithTimeout(60) { (err) -> Void in }
 		var fileSize:UInt64 = 0
 		do {
 			let fileAttrs:NSDictionary = try NSFileManager.defaultManager().attributesOfItemAtPath(cachedUrl.path!)

@@ -29,7 +29,7 @@ protocol SessionFileHandler : class {
 	///handle file change that requires refetching contents
 	func handleFileUpdate(file:File, change:FileChangeType)
 	//handle file change that might contain the file's contents
-	func updateFile(file:File, withData data:NSData?)
+	func updateFile(file:File, withData data:NSData?) -> NSProgress?
 	func contentsOfFile(file:File) -> Future<NSData?,FileError>
 	//the following will add the save operation to a serial queue to be executed immediately
 	func saveFile(file:File, contents:String, completionHandler:(NSError?) -> Void)

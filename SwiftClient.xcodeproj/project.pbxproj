@@ -645,10 +645,10 @@
 				08CB55511C5C06B2002CB7EE /* OutputTabController.swift */,
 				08F448F71C4E244500C64706 /* SessionOutputController.swift */,
 				08CB55531C5C096E002CB7EE /* ImageOutputController.swift */,
+				08A01FA81CBC07B0001EDFAA /* WebKitOutputController.swift */,
 				0812631D1C862B94003E37A5 /* sidebar */,
 				0812631B1C8628D0003E37A5 /* session views */,
 				0812631C1C862918003E37A5 /* data/helpers */,
-				08A01FA81CBC07B0001EDFAA /* WebKitOutputController.swift */,
 			);
 			path = session;
 			sourceTree = "<group>";

@@ -32,7 +32,7 @@ extension NSFileManager: FileManager {}
 
 extension FileManager {
 	///copies url to a new location in a temporary directory that can be passed to the user or another application
-	// (i.e. it is not in our sandbox/app support/cache directories)
+	/// (i.e. it is not in our sandbox/app support/cache directories)
 	func copyURLToTemporaryLocation(url:NSURL) throws -> NSURL {
 		let tmpDir = NSURL(fileURLWithPath:NSTemporaryDirectory()).URLByAppendingPathComponent("Rc2", isDirectory: true)
 		_ = try? createDirectoryAtURL(tmpDir, withIntermediateDirectories: true, attributes: nil)

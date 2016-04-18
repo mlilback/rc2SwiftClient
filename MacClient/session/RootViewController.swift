@@ -219,7 +219,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 	
 	func handleFileUpdate(file:File, change:FileChangeType) {
-		log.info("got file update \(file.fileId)")
+		log.info("got file update \(file.fileId) v\(file.version)")
 		session.fileHandler.handleFileUpdate(file, change: change)
 	}
 	
@@ -260,6 +260,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		let str = NSMutableAttributedString(attributedString: NSAttributedString(attachment: attachment))
 		str.appendAttributedString(NSAttributedString(string:"\n"))
 		str.addAttribute(NSToolTipAttributeName, value: file.name, range: NSMakeRange(0,1))
+		log.info("showing file \(file)")
 		return str
 	}
 	
@@ -299,6 +300,16 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	}
 	
 	func sessionMessageReceived(response:ServerResponse) {
+		if case ServerResponse.ShowOutput( _, let updatedFile) = response {
+			if updatedFile != session.workspace.fileWithId(updatedFile.fileId) {
+				//need to refetch file from server, then show it
+				let prog = session.fileHandler.updateFile(updatedFile, withData: nil)
+				prog?.rc2_addCompletionHandler() {
+					self.outputHandler?.appendFormattedString(self.attributedStringWithFile(updatedFile))
+				}
+				return
+			}
+		}
 		if let astr = responseHandler?.handleResponse(response) {
 			outputHandler?.appendFormattedString(astr)
 		}

@@ -939,11 +939,11 @@
         <scene sceneID="mGN-r2-0sB">
             <objects>
                 <viewController title="webkit controller" id="q5U-HH-oqN" customClass="WebKitOutputController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="eBF-S2-z6R">
+                    <view key="view" identifier="web root" id="eBF-S2-z6R">
                         <rect key="frame" x="0.0" y="0.0" width="510" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="mgA-sQ-2dm">
+                            <customView identifier="web container" translatesAutoresizingMaskIntoConstraints="NO" id="mgA-sQ-2dm">
                                 <rect key="frame" x="0.0" y="42" width="510" height="471"/>
                             </customView>
                             <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="Uv4-HC-CEy">
@@ -993,7 +993,7 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="dyd-FQ-Cw3"/>
-                                    <constraint firstAttribute="height" constant="21" id="jQt-KI-lc5"/>
+                                    <constraint firstAttribute="height" priority="750" constant="21" id="jQt-KI-lc5"/>
                                 </constraints>
                                 <visibilityPriorities>
                                     <integer value="1000"/>

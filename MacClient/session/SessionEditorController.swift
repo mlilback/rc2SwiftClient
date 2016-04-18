@@ -138,12 +138,18 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		}
 		let change = note.userInfo?["change"] as! WorkspaceFileChange
 		//if it was a file change (content or metadata)
-		if change.changeType == .Change &&  currentDocument!.file.fileId == change.newFile?.fileId {
-			let progress = session.fileHandler.fileCache.flushCacheForFile(change.newFile!)
-			progress?.rc2_addCompletionHandler() {
+		if change.changeType == .Change {
+			if currentDocument?.file.fileId == change.newFile?.fileId && currentDocument?.file != change.newFile {
 				let newFile = change.newFile!
 				self.currentDocument?.updateFile(change.newFile!)
 				self.fileSelectionChanged(newFile)
+			} else if currentDocument!.file.fileId == change.newFile?.fileId {
+				let progress = session.fileHandler.fileCache.flushCacheForFile(change.newFile!)
+				progress?.rc2_addCompletionHandler() {
+					let newFile = change.newFile!
+					self.currentDocument?.updateFile(change.newFile!)
+					self.fileSelectionChanged(newFile)
+				}
 			}
 		}
 	}

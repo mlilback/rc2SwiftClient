@@ -53,7 +53,6 @@ class FileImporterTests: BaseTest, NSURLSessionDataDelegate {
 //		stub(uri(destUri), builder:json(expectedFiles.first!, status: 201))
 		stub(everything, builder:jsonData(expectedFiles.first!.dataUsingEncoding(NSUTF8StringEncoding)!, status: 201))
 		
-		testWorkspace.filesArray.removeAllObjects()
 		self.expect = self.expectationWithDescription("upload")
 		importer = FileImporter(filesToImport, workspace: testWorkspace, configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
 		{_ in

@@ -72,15 +72,15 @@ class DefaultSessionFileHandler: SessionFileHandler {
 		downloadPromise.success(true)
 	}
 
-	func updateFile(file:File, withData data:NSData?) {
+	func updateFile(file:File, withData data:NSData?) -> NSProgress? {
 		let idx = workspace.indexOfFilePassingTest() { (obj, idx, stop) -> Bool in
 			return (obj as! File).fileId == file.fileId
 		}
-		guard idx != NSNotFound else {
-			log.warning("got file update for non-existing file: \(file.fileId)")
-			return
+		if idx == NSNotFound { //insert
+			workspace.insertFile(file, atIndex: workspace.fileCount)
+		} else { //update
+			workspace.replaceFileAtIndex(idx, withFile: file)
 		}
-		workspace.replaceFileAtIndex(idx, withFile: file)
 		if let fileContents = data {
 			do {
 				try fileContents.writeToURL(fileCache.cachedFileUrl(file), options: [])
@@ -88,11 +88,13 @@ class DefaultSessionFileHandler: SessionFileHandler {
 				log.error("failed to write file \(file.fileId) update: \(err)")
 			}
 		} else {
-			workspace.replaceFileAtIndex(idx, withFile: file)
+			//TODO: test that this works properly for large files
 			if let prog = fileCache.flushCacheForFile(file) {
 				appStatus?.updateStatus(prog)
+				return prog
 			}
 		}
+		return nil
 	}
 	
 	func handleFileUpdate(file:File, change:FileChangeType) {
@@ -106,9 +108,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 				return
 			}
 			workspace.replaceFileAtIndex(idx, withFile: file)
-			if let prog = fileCache.flushCacheForFile(file) {
-				appStatus?.updateStatus(prog)
-			}
+			fileCache.flushCacheForFile(file)
 		case .Insert:
 			//TODO: implement file insert handling
 			break

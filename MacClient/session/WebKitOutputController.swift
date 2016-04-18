@@ -34,8 +34,7 @@ class WebKitOutputController: NSViewController, WKNavigationDelegate {
 		webView!.bottomAnchor.constraintEqualToAnchor(containerView?.bottomAnchor).active = true
 		webView!.leadingAnchor.constraintEqualToAnchor(containerView?.leadingAnchor).active = true
 		webView!.trailingAnchor.constraintEqualToAnchor(containerView?.trailingAnchor).active = true
-		webView!.widthAnchor.constraintEqualToAnchor(containerView?.widthAnchor).active = true
-		webView!.heightAnchor.constraintEqualToAnchor(view.heightAnchor).active = true
+//		webView!.widthAnchor.constraintEqualToAnchor(containerView?.widthAnchor).active = true
 	}
 	
 	@IBAction func navigateWebView(sender:AnyObject) {
@@ -51,10 +50,14 @@ class WebKitOutputController: NSViewController, WKNavigationDelegate {
 	
 	@IBAction func showShareSheet(sender:AnyObject) {
 		let sharepicker = NSSharingServicePicker(items: [webView!.URL!])
-		sharepicker.showRelativeToRect((shareButton?.frame)!, ofView: (shareButton?.superview)!, preferredEdge: .MinY)
+		sharepicker.showRelativeToRect((shareButton?.frame)!, ofView: (shareButton?.superview)!, preferredEdge: .MaxY)
 	}
 	
 	func loadLocalFile(url:NSURL) {
+		guard webView !=  nil else {
+			dispatch_async(dispatch_get_main_queue()) { self.loadLocalFile(url) }
+			return
+		}
 		webView?.loadFileURL(url, allowingReadAccessToURL: url)
 		
 	}
@@ -63,6 +66,7 @@ class WebKitOutputController: NSViewController, WKNavigationDelegate {
 	
 	func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!)
 	{
+		log.info("web nav complete")
 		navButtons?.setEnabled(webView.canGoBack, forSegment: 0)
 		navButtons?.setEnabled(webView.canGoForward, forSegment: 1)
 		titleLabel?.stringValue = webView.title!

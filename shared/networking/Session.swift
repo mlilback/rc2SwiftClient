@@ -69,6 +69,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 			self.delegate?.sessionClosed()
 		}
 		wsSource.event.message = { [unowned self] message in
+			log.info("got message:\(message)")
 			self.handleReceivedMessage(message)
 		}
 		wsSource.event.error = { [unowned self] error in
