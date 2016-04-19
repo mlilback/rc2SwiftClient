@@ -15,6 +15,7 @@ class WebKitOutputController: NSViewController, WKNavigationDelegate {
 	@IBOutlet var navButtons: NSSegmentedControl?
 	@IBOutlet var shareButton: NSSegmentedControl?
 	@IBOutlet var titleLabel: NSTextField?
+	var webConfig: WKWebViewConfiguration?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -26,7 +27,13 @@ class WebKitOutputController: NSViewController, WKNavigationDelegate {
 		config.preferences = prefs
 		config.applicationNameForUserAgent = "Rc2"
 		config.allowsAirPlayForMediaPlayback = true
-		webView = WKWebView(frame: CGRectInset(view.frame, 4, 4), configuration: config)
+		webConfig = config
+		setupWebView()
+	}
+
+	func setupWebView() {
+		webView?.removeFromSuperview()
+		webView = WKWebView(frame: CGRectInset(view.frame, 4, 4), configuration: webConfig!)
 		webView?.navigationDelegate = self
 		webView?.translatesAutoresizingMaskIntoConstraints = false
 		containerView?.addSubview(webView!)
@@ -34,7 +41,7 @@ class WebKitOutputController: NSViewController, WKNavigationDelegate {
 		webView!.bottomAnchor.constraintEqualToAnchor(containerView?.bottomAnchor).active = true
 		webView!.leadingAnchor.constraintEqualToAnchor(containerView?.leadingAnchor).active = true
 		webView!.trailingAnchor.constraintEqualToAnchor(containerView?.trailingAnchor).active = true
-//		webView!.widthAnchor.constraintEqualToAnchor(containerView?.widthAnchor).active = true
+		//		webView!.widthAnchor.constraintEqualToAnchor(containerView?.widthAnchor).active = true
 	}
 	
 	@IBAction func navigateWebView(sender:AnyObject) {
@@ -58,8 +65,10 @@ class WebKitOutputController: NSViewController, WKNavigationDelegate {
 			dispatch_async(dispatch_get_main_queue()) { self.loadLocalFile(url) }
 			return
 		}
-		webView?.loadFileURL(url, allowingReadAccessToURL: url)
-		
+		//it is utterly rediculous that we have to load a new webview every time, but it wasn't loading the second request
+		setupWebView()
+		let wkn = webView?.loadFileURL(url, allowingReadAccessToURL: url.URLByDeletingLastPathComponent!)
+		log.info("file nav: \(wkn)")
 	}
 	
 	//MARK -- WKNavigationDelegate
@@ -70,5 +79,13 @@ class WebKitOutputController: NSViewController, WKNavigationDelegate {
 		navButtons?.setEnabled(webView.canGoBack, forSegment: 0)
 		navButtons?.setEnabled(webView.canGoForward, forSegment: 1)
 		titleLabel?.stringValue = webView.title!
+	}
+	
+	func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
+		log.warning("failed to navigate:\(error)")
+	}
+	
+	func webView(webView: WKWebView, didCommitNavigation navigation: WKNavigation!) {
+		log.info("did commit")
 	}
 }

@@ -78,7 +78,8 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	func displayFileOrImage(fileWrapper: NSFileWrapper) {
 		log.info("told to display file \(fileWrapper.filename)")
-		if fileWrapper.filename?.hasPrefix("img") != nil,
+		guard let fname = fileWrapper.filename else { return }
+		if  fname.hasPrefix("img"),
 			let fdata = fileWrapper.regularFileContents,
 			let targetImg = NSKeyedUnarchiver.unarchiveObjectWithData(fdata) as? SessionImage,
 			let images = imageCache?.sessionImagesForBatch(targetImg.batchId),
