@@ -70,7 +70,6 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 	}
 	
 	///recaches the specified file if it has changed
-	//TODO: use an array of active downloads controlled by an NSLock. problem is when multiple files are updated faster than can be downloaded
 	func flushCacheForFile(file:File) -> NSProgress? {
 		if downloadingAllFiles {
 			log.warning("flushCacheForFile called while all files are being downloaded")
