@@ -124,6 +124,20 @@
 		089346061C7FB14B00100CF6 /* SyntaxColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089346051C7FB14B00100CF6 /* SyntaxColor.swift */; };
 		089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */; };
 		08A01FA91CBC07B0001EDFAA /* WebKitOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FA81CBC07B0001EDFAA /* WebKitOutputController.swift */; };
+		08A01FB11CC7FA28001EDFAA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FB01CC7FA28001EDFAA /* main.m */; settings = {COMPILER_FLAGS = "-D'DESTDIR=\"$(BUILT_PRODUCTS_DIR)\"' -D'SRCDIR=\"$(SRC_ROOT)/help/json\"'"; }; };
+		08A01FC21CC7FCA3001EDFAA /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FB71CC7FCA3001EDFAA /* FMDatabase.m */; };
+		08A01FC31CC7FCA3001EDFAA /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FB71CC7FCA3001EDFAA /* FMDatabase.m */; };
+		08A01FC41CC7FCA3001EDFAA /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FB91CC7FCA3001EDFAA /* FMDatabaseAdditions.m */; };
+		08A01FC51CC7FCA3001EDFAA /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FB91CC7FCA3001EDFAA /* FMDatabaseAdditions.m */; };
+		08A01FC61CC7FCA3001EDFAA /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FBB1CC7FCA3001EDFAA /* FMDatabasePool.m */; };
+		08A01FC71CC7FCA3001EDFAA /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FBB1CC7FCA3001EDFAA /* FMDatabasePool.m */; };
+		08A01FC81CC7FCA3001EDFAA /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FBD1CC7FCA3001EDFAA /* FMDatabaseQueue.m */; };
+		08A01FC91CC7FCA3001EDFAA /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FBD1CC7FCA3001EDFAA /* FMDatabaseQueue.m */; };
+		08A01FCA1CC7FCA3001EDFAA /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FC01CC7FCA3001EDFAA /* FMResultSet.m */; };
+		08A01FCB1CC7FCA3001EDFAA /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FC01CC7FCA3001EDFAA /* FMResultSet.m */; };
+		08A01FCE1CC80189001EDFAA /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A01FCD1CC80189001EDFAA /* libsqlite3.tbd */; };
+		08A01FD01CC81315001EDFAA /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A01FCD1CC80189001EDFAA /* libsqlite3.tbd */; };
+		08A01FD21CC81479001EDFAA /* helpindex.db in Resources */ = {isa = PBXBuildFile; fileRef = 08A01FD11CC81479001EDFAA /* helpindex.db */; };
 		08B036221C73B131005928B3 /* FileImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B036211C73B131005928B3 /* FileImporter.swift */; };
 		08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; };
 		08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -208,6 +222,15 @@
 				082FF1EA1C7F323800CCC27F /* XCGLogger.framework.dSYM in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
+		};
+		08A01FAC1CC7FA28001EDFAA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -327,6 +350,21 @@
 		089346051C7FB14B00100CF6 /* SyntaxColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxColor.swift; sourceTree = "<group>"; };
 		089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSStoryboard+TypeSaftey.swift"; sourceTree = "<group>"; };
 		08A01FA81CBC07B0001EDFAA /* WebKitOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebKitOutputController.swift; sourceTree = "<group>"; };
+		08A01FAE1CC7FA28001EDFAA /* createHelpIndex */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = createHelpIndex; sourceTree = BUILT_PRODUCTS_DIR; };
+		08A01FB01CC7FA28001EDFAA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		08A01FB61CC7FCA3001EDFAA /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
+		08A01FB71CC7FCA3001EDFAA /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
+		08A01FB81CC7FCA3001EDFAA /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		08A01FB91CC7FCA3001EDFAA /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		08A01FBA1CC7FCA3001EDFAA /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
+		08A01FBB1CC7FCA3001EDFAA /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
+		08A01FBC1CC7FCA3001EDFAA /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
+		08A01FBD1CC7FCA3001EDFAA /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
+		08A01FBE1CC7FCA3001EDFAA /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
+		08A01FBF1CC7FCA3001EDFAA /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
+		08A01FC01CC7FCA3001EDFAA /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
+		08A01FCD1CC80189001EDFAA /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		08A01FD11CC81479001EDFAA /* helpindex.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = helpindex.db; sourceTree = BUILT_PRODUCTS_DIR; };
 		08B036211C73B131005928B3 /* FileImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporter.swift; sourceTree = "<group>"; };
 		08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessagePackSwift.framework; path = Carthage/Build/Mac/MessagePackSwift.framework; sourceTree = "<group>"; };
 		08BFD3E71C90B5AC0041EB1C /* MessagePackSwift.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = MessagePackSwift.framework.dSYM; path = Carthage/Build/Mac/MessagePackSwift.framework.dSYM; sourceTree = "<group>"; };
@@ -355,6 +393,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08A01FD01CC81315001EDFAA /* libsqlite3.tbd in Frameworks */,
 				082FF1D11C7F321B00CCC27F /* SwiftyJSON.framework in Frameworks */,
 				089346031C7F661400100CF6 /* PEGKit.framework in Frameworks */,
 				08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */,
@@ -377,6 +416,14 @@
 				083A4B021C7F347E0007AC46 /* BrightFutures.framework in Frameworks */,
 				083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */,
 				083A4B041C7F347E0007AC46 /* Result.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		08A01FAB1CC7FA28001EDFAA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				08A01FCE1CC80189001EDFAA /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -468,6 +515,7 @@
 			children = (
 				088CE66B1C4B0AF400153414 /* MacClient */,
 				088CE6941C4B605D00153414 /* shared */,
+				08A01FAF1CC7FA28001EDFAA /* createHelpIndex */,
 				088CE6931C4B144800153414 /* Frameworks */,
 				088CE67D1C4B0AF500153414 /* MacClientTests */,
 				088CE66A1C4B0AF400153414 /* Products */,
@@ -479,6 +527,7 @@
 			children = (
 				088CE6691C4B0AF400153414 /* Rc².app */,
 				088CE67A1C4B0AF500153414 /* MacClientTests.xctest */,
+				08A01FAE1CC7FA28001EDFAA /* createHelpIndex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -539,6 +588,7 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				08A01FCD1CC80189001EDFAA /* libsqlite3.tbd */,
 				08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */,
 				089346021C7F661400100CF6 /* PEGKit.framework */,
 				089346001C7F660B00100CF6 /* PEGKit.framework.dSYM */,
@@ -574,6 +624,8 @@
 			children = (
 				088CE6B51C4B71F300153414 /* Constants.swift */,
 				08C484F71C9B159000FE824B /* server.cer */,
+				08A01FD11CC81479001EDFAA /* helpindex.db */,
+				08A01FB51CC7FCA3001EDFAA /* fmdb */,
 				088CE6961C4B605D00153414 /* model */,
 				088CE69D1C4B605D00153414 /* networking */,
 				0827A4D71C7ED9CE001F0AFB /* SyntaxHighlighting */,
@@ -627,6 +679,33 @@
 			path = networking;
 			sourceTree = "<group>";
 		};
+		08A01FAF1CC7FA28001EDFAA /* createHelpIndex */ = {
+			isa = PBXGroup;
+			children = (
+				08A01FB01CC7FA28001EDFAA /* main.m */,
+			);
+			path = createHelpIndex;
+			sourceTree = "<group>";
+		};
+		08A01FB51CC7FCA3001EDFAA /* fmdb */ = {
+			isa = PBXGroup;
+			children = (
+				08A01FB61CC7FCA3001EDFAA /* FMDatabase.h */,
+				08A01FB71CC7FCA3001EDFAA /* FMDatabase.m */,
+				08A01FB81CC7FCA3001EDFAA /* FMDatabaseAdditions.h */,
+				08A01FB91CC7FCA3001EDFAA /* FMDatabaseAdditions.m */,
+				08A01FBA1CC7FCA3001EDFAA /* FMDatabasePool.h */,
+				08A01FBB1CC7FCA3001EDFAA /* FMDatabasePool.m */,
+				08A01FBC1CC7FCA3001EDFAA /* FMDatabaseQueue.h */,
+				08A01FBD1CC7FCA3001EDFAA /* FMDatabaseQueue.m */,
+				08A01FBE1CC7FCA3001EDFAA /* FMDB.h */,
+				08A01FBF1CC7FCA3001EDFAA /* FMResultSet.h */,
+				08A01FC01CC7FCA3001EDFAA /* FMResultSet.m */,
+			);
+			name = fmdb;
+			path = vendor/fmdb/src/fmdb;
+			sourceTree = SOURCE_ROOT;
+		};
 		08ED575A1C7140C0002B2558 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -665,6 +744,7 @@
 				088CE6671C4B0AF400153414 /* Resources */,
 				082FF1D71C7F321B00CCC27F /* Embed Frameworks */,
 				082FF1D81C7F322500CCC27F /* CopyFiles */,
+				08A01FCF1CC80928001EDFAA /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -695,6 +775,23 @@
 			productReference = 088CE67A1C4B0AF500153414 /* MacClientTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		08A01FAD1CC7FA28001EDFAA /* createHelpIndex */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 08A01FB21CC7FA28001EDFAA /* Build configuration list for PBXNativeTarget "createHelpIndex" */;
+			buildPhases = (
+				08A01FAA1CC7FA28001EDFAA /* Sources */,
+				08A01FAB1CC7FA28001EDFAA /* Frameworks */,
+				08A01FAC1CC7FA28001EDFAA /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = createHelpIndex;
+			productName = createHelpIndex;
+			productReference = 08A01FAE1CC7FA28001EDFAA /* createHelpIndex */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -712,6 +809,9 @@
 					088CE6791C4B0AF500153414 = {
 						CreatedOnToolsVersion = 7.2;
 						TestTargetID = 088CE6681C4B0AF400153414;
+					};
+					08A01FAD1CC7FA28001EDFAA = {
+						CreatedOnToolsVersion = 7.3;
 					};
 				};
 			};
@@ -736,6 +836,7 @@
 			targets = (
 				088CE6681C4B0AF400153414 /* MacClient */,
 				088CE6791C4B0AF500153414 /* MacClientTests */,
+				08A01FAD1CC7FA28001EDFAA /* createHelpIndex */,
 			);
 		};
 /* End PBXProject section */
@@ -754,6 +855,7 @@
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
 				088CE6AB1C4B605D00153414 /* RestHosts.json in Resources */,
 				0827A4E51C7ED9CE001F0AFB /* RKeywords.txt in Resources */,
+				08A01FD21CC81479001EDFAA /* helpindex.db in Resources */,
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
 				088CE6A71C4B605D00153414 /* FileTypes.plist in Resources */,
 			);
@@ -788,6 +890,19 @@
 			shellPath = /bin/sh;
 			shellScript = "codesign --verify --force --sign \"$CODE_SIGN_IDENTITY\" \"$CODESIGNING_FOLDER_PATH\"\n";
 		};
+		08A01FCF1CC80928001EDFAA /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${BUILT_PRODUCTS_DIR}/createHelpIndex\" \"${SRCROOT}/help/json\" \"${BUILT_PRODUCTS_DIR}\"";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -801,6 +916,7 @@
 				08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */,
 				0868FC591C7789C3002386CB /* NSURL+Rc2.swift in Sources */,
 				088CE6A41C4B605D00153414 /* ColorEnums.swift in Sources */,
+				08A01FCA1CC7FCA3001EDFAA /* FMResultSet.m in Sources */,
 				0827A4E21C7ED9CE001F0AFB /* CodeHighlighter.swift in Sources */,
 				083382F31C653B6300D40EEB /* xattr.swift in Sources */,
 				083305E41C517FC000E27F66 /* SidebarVariableController.swift in Sources */,
@@ -844,12 +960,15 @@
 				088CE6AE1C4B605D00153414 /* Session.swift in Sources */,
 				080214881C693A69008B55D3 /* FileManager.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
+				08A01FC81CC7FCA3001EDFAA /* FMDatabaseQueue.m in Sources */,
 				0827A4E41C7ED9CE001F0AFB /* RCodeHighlighter.swift in Sources */,
 				088CE6BE1C4DAFA500153414 /* WorkspacesViewController.swift in Sources */,
 				0827A4E11C7ED9CE001F0AFB /* DocumentChunk.swift in Sources */,
 				083174161C587F7F00071408 /* ImageCache.swift in Sources */,
 				083174141C5828B400071408 /* ResultsView.swift in Sources */,
 				089346061C7FB14B00100CF6 /* SyntaxColor.swift in Sources */,
+				08A01FC21CC7FCA3001EDFAA /* FMDatabase.m in Sources */,
+				08A01FC41CC7FCA3001EDFAA /* FMDatabaseAdditions.m in Sources */,
 				088CE6AC1C4B605D00153414 /* RestServer.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,
 				083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */,
@@ -860,6 +979,7 @@
 				083174121C58014500071408 /* ServerResponseHandler.swift in Sources */,
 				088CE6B81C4C44A800153414 /* Keychain.swift in Sources */,
 				083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */,
+				08A01FC61CC7FCA3001EDFAA /* FMDatabasePool.m in Sources */,
 				086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */,
 				0827A4E91C7ED9CE001F0AFB /* SyntaxParser.swift in Sources */,
 			);
@@ -886,6 +1006,19 @@
 				081263211C87A9E8003E37A5 /* EditorDocumentTests.swift in Sources */,
 				083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */,
 				083305F01C519B4B00E27F66 /* ColorEnumTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		08A01FAA1CC7FA28001EDFAA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				08A01FCB1CC7FCA3001EDFAA /* FMResultSet.m in Sources */,
+				08A01FC91CC7FCA3001EDFAA /* FMDatabaseQueue.m in Sources */,
+				08A01FB11CC7FA28001EDFAA /* main.m in Sources */,
+				08A01FC71CC7FCA3001EDFAA /* FMDatabasePool.m in Sources */,
+				08A01FC31CC7FCA3001EDFAA /* FMDatabase.m in Sources */,
+				08A01FC51CC7FCA3001EDFAA /* FMDatabaseAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1087,6 +1220,22 @@
 			};
 			name = Release;
 		};
+		08A01FB31CC7FA28001EDFAA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		08A01FB41CC7FA28001EDFAA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1116,6 +1265,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		08A01FB21CC7FA28001EDFAA /* Build configuration list for PBXNativeTarget "createHelpIndex" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				08A01FB31CC7FA28001EDFAA /* Debug */,
+				08A01FB41CC7FA28001EDFAA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
