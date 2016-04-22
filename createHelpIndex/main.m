@@ -33,6 +33,11 @@ int main(int argc, const char * argv[]) {
 			NSLog(@"failed to create table");
 			abort();
 		}
+		[db executeUpdate:@"drop table helptopic"];
+		if (![db executeUpdate:@"create table helptopic (package, name, title, desc)"]) {
+			NSLog(@"failed to create topic table");
+			abort();
+		}
 		for (NSString *aFile in files) {
 			addJsonFile(aFile, db);
 		}
@@ -53,10 +58,12 @@ addJsonFile(NSString *filePath, FMDatabase *db)
 		return;
 	}
 	NSString *query = @"insert into helpidx values (?, ?, ?, ?)";
+	NSString *query2 = @"insert into helptopic values (?, ?, ?, ?)";
 	NSArray *topics = (NSArray*)[dict objectForKey:@"help"];
 	[db beginTransaction];
 	for (NSDictionary *aTopic in topics) {
 		[db executeUpdate:query, aTopic[@"package"], aTopic[@"name"], aTopic[@"title"], aTopic[@"desc"]];
+		[db executeUpdate:query2, aTopic[@"package"], aTopic[@"name"], aTopic[@"title"], aTopic[@"desc"]];
 	}
 	[db commit];
 }
