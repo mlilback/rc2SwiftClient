@@ -305,13 +305,13 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 				//need to refetch file from server, then show it
 				let prog = session.fileHandler.updateFile(updatedFile, withData: nil)
 				prog?.rc2_addCompletionHandler() {
-					self.outputHandler?.appendFormattedString(self.attributedStringWithFile(updatedFile))
+					self.outputHandler?.appendFormattedString(self.attributedStringWithFile(updatedFile), type:.Default)
 				}
 				return
 			}
 		}
 		if let astr = responseHandler?.handleResponse(response) {
-			outputHandler?.appendFormattedString(astr)
+			outputHandler?.appendFormattedString(astr, type: response.isEcho() ? .Input : .Default)
 		}
 	}
 	

@@ -29,12 +29,12 @@ int main(int argc, const char * argv[]) {
 			abort();
 		}
 		[db executeUpdate:@"drop table helpidx"];
-		if (![db executeUpdate:@"create virtual table helpidx using fts4(package,name,title,desc, tokenize=porter)"]) {
+		if (![db executeUpdate:@"create virtual table helpidx using fts4(package,name,title,aliases,desc, tokenize=porter)"]) {
 			NSLog(@"failed to create table");
 			abort();
 		}
 		[db executeUpdate:@"drop table helptopic"];
-		if (![db executeUpdate:@"create table helptopic (package, name, title, desc)"]) {
+		if (![db executeUpdate:@"create table helptopic (package, name, title, aliases, desc)"]) {
 			NSLog(@"failed to create topic table");
 			abort();
 		}
@@ -57,13 +57,23 @@ addJsonFile(NSString *filePath, FMDatabase *db)
 		NSLog(@"failed to parse '%@'", filePath);
 		return;
 	}
-	NSString *query = @"insert into helpidx values (?, ?, ?, ?)";
-	NSString *query2 = @"insert into helptopic values (?, ?, ?, ?)";
+	NSString *query = @"insert into helpidx values (?, ?, ?, ?, ?)";
+	NSString *query2 = @"insert into helptopic values (?, ?, ?, ?, ?)";
 	NSArray *topics = (NSArray*)[dict objectForKey:@"help"];
+	NSMutableCharacterSet *aliasChars = [NSMutableCharacterSet alphanumericCharacterSet];
+	[aliasChars addCharactersInString:@"."];
+	NSCharacterSet *invalidChars = [aliasChars invertedSet];
 	[db beginTransaction];
 	for (NSDictionary *aTopic in topics) {
-		[db executeUpdate:query, aTopic[@"package"], aTopic[@"name"], aTopic[@"title"], aTopic[@"desc"]];
-		[db executeUpdate:query2, aTopic[@"package"], aTopic[@"name"], aTopic[@"title"], aTopic[@"desc"]];
+		NSString *aliases = ((NSString*)aTopic[@"aliases"]);
+		NSMutableArray *validAliases = [NSMutableArray array];
+		for (NSString *anAlias in [aliases componentsSeparatedByString:@":"]) {
+			if ([anAlias rangeOfCharacterFromSet:invalidChars].location == NSNotFound)
+				[validAliases addObject:anAlias];
+		}
+		aliases = [validAliases componentsJoinedByString:@":"];
+		[db executeUpdate:query, aTopic[@"package"], aTopic[@"name"], aTopic[@"title"], aliases, aTopic[@"desc"]];
+		[db executeUpdate:query2, aTopic[@"package"], aTopic[@"name"], aTopic[@"title"], aliases, aTopic[@"desc"]];
 	}
 	[db commit];
 }

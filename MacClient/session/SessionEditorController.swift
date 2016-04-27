@@ -232,5 +232,13 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		if currentDocument != nil { return currentDocument!.undoManager }
 		return editor?.undoManager
 	}
+	
+	func textView(textView: NSTextView, clickedOnLink link: AnyObject, atIndex charIndex: Int) -> Bool {
+		if let pieces = (link as? String)?.componentsSeparatedByString(":") where pieces.count == 2 {
+			NSNotificationCenter.defaultCenter().postNotificationName(DisplayHelpTopicNotification, object:pieces[1], userInfo:nil)
+			return true
+		}
+		return false
+	}
 }
 

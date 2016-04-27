@@ -52,6 +52,10 @@ class CodeHighlighter: NSObject {
 				content.addAttribute(NSForegroundColorAttributeName, value: color, range: tokenRange)
 				
 			}
+			if token.tokenType == .Word && HelpController.sharedInstance.hasTopic(token.stringValue) {
+				//add tag marking as having help
+				content.addAttribute(NSLinkAttributeName, value: "help:\(token.stringValue)", range: tokenRange)
+			}
 			lastToken = token
 		}
 	}

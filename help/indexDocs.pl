@@ -30,9 +30,12 @@ foreach $path (@docPaths) {
 	$R->run(q`rtitle <- paste(unlist(rdata[[which(tags == "\\\\title")]]), collapse='')`);
 	$R->run(q`rname <- paste(unlist(rdata[[which(tags == "\\\\name")]]), collapse='')`);
 	$R->run(q`rdesc <- paste(unlist(rdata[[which(tags == "\\\\description")]]), collapse='')`);
+	$R->run(q`raliases <- paste(unlist(rdata[which(tags == "\\\\alias")]), collapse=' ')`);
 	my $rname = $R->get('rname');
 	my $rtitle = $R->get('rtitle');
 	my $rdesc = $R->get('rdesc');
+	my @aliases =  split(/ /, $R->get('raliases'));
+	shift(@aliases); #remove the actual name from the list
 	my @paths = split(/\//, $path);
 	my $rpack = splice @paths, -3, 1;
 	$rtitle =~ s#\\n# #g;
@@ -41,7 +44,7 @@ foreach $path (@docPaths) {
 	$rname =~ s#\s+# #g;
 	$rdesc =~ s#\\n# #g;
 	$rdesc =~ s#\s+# #g;
-	push(@json, { name => $rname, title => $rtitle, desc => $rdesc, package => $rpack });
+	push(@json, { name => $rname, title => $rtitle, aliases => join(':',@aliases), desc => $rdesc, package => $rpack });
 }
 #print encode_json(\@json) . "\n";
 $R->stop();

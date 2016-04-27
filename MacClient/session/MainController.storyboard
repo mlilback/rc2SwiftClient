@@ -93,6 +93,7 @@
                         <tabViewItem id="efd-Px-WGZ"/>
                         <tabViewItem id="j2a-HV-n5N"/>
                         <tabViewItem id="8vd-Ra-yNB"/>
+                        <tabViewItem id="QhP-0t-oU5"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="yzp-ro-Qov" customClass="OutputTopView" customModule="MacClient" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -104,6 +105,7 @@
                         <segue destination="cmA-J2-3x3" kind="relationship" relationship="tabItems" id="ZGF-RH-jDc"/>
                         <segue destination="cag-VX-0j2" kind="relationship" relationship="tabItems" id="hwK-qM-BN7"/>
                         <segue destination="q5U-HH-oqN" kind="relationship" relationship="tabItems" id="DYt-ys-YDI"/>
+                        <segue destination="p0J-JE-sdA" kind="relationship" relationship="tabItems" id="GSa-1R-8yz"/>
                     </connections>
                 </tabViewController>
                 <customObject id="aWp-lc-ahp" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -609,7 +611,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" autosaveExpandedItems="YES" autoresizesOutlineColumn="YES" outlineTableColumn="EEe-Mq-QDL" id="r0I-de-3Iv">
-                                            <rect key="frame" x="0.0" y="0.0" width="207" height="473"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="207" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -657,7 +659,7 @@
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="agD-L2-Dk4">
-                                    <rect key="frame" x="1" y="119" width="223" height="15"/>
+                                    <rect key="frame" x="1" y="458" width="207" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="ogu-ky-ghp">
@@ -665,19 +667,62 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
+                            <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1Bm-VS-iyJ">
+                                <rect key="frame" x="8" y="8" width="193" height="22"/>
+                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" alignment="left" placeholderString="Filter" usesSingleLineMode="YES" bezelStyle="round" sendsSearchStringImmediately="YES" maximumRecents="20" id="AtI-Qu-FIa">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <connections>
+                                        <outlet property="searchMenuTemplate" destination="7En-Ga-jia" id="5qK-5k-Q42"/>
+                                    </connections>
+                                </searchFieldCell>
+                                <connections>
+                                    <action selector="search:" target="lJM-BU-ZVt" id="WZE-0T-LxQ"/>
+                                </connections>
+                            </searchField>
                         </subviews>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="1Bm-VS-iyJ" secondAttribute="trailing" constant="8" id="Oce-9U-8aI"/>
                             <constraint firstAttribute="bottom" secondItem="mpd-21-g7M" secondAttribute="bottom" constant="38" id="alx-c2-VmL"/>
                             <constraint firstItem="mpd-21-g7M" firstAttribute="leading" secondItem="GGz-OC-pcD" secondAttribute="leading" id="d3a-lG-PaI"/>
                             <constraint firstItem="mpd-21-g7M" firstAttribute="top" secondItem="GGz-OC-pcD" secondAttribute="top" id="dbL-YC-Zd6"/>
                             <constraint firstAttribute="trailing" secondItem="mpd-21-g7M" secondAttribute="trailing" id="mEr-lZ-puK"/>
+                            <constraint firstItem="1Bm-VS-iyJ" firstAttribute="top" secondItem="mpd-21-g7M" secondAttribute="bottom" constant="8" id="pgE-LZ-Fei"/>
+                            <constraint firstItem="1Bm-VS-iyJ" firstAttribute="leading" secondItem="GGz-OC-pcD" secondAttribute="leading" constant="8" id="sza-bv-M7N"/>
+                            <constraint firstAttribute="bottom" secondItem="1Bm-VS-iyJ" secondAttribute="bottom" constant="8" id="xsf-cF-j29"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="outline" destination="r0I-de-3Iv" id="fKA-nX-KDs"/>
+                        <outlet property="searchField" destination="1Bm-VS-iyJ" id="6gi-Si-afp"/>
+                        <outlet property="searchMenu" destination="7En-Ga-jia" id="uls-zD-tb3"/>
                     </connections>
                 </viewController>
                 <customObject id="kyd-oB-FbD" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <menu title="Search Menu" id="7En-Ga-jia">
+                    <items>
+                        <menuItem title="Match Name Only" tag="1" id="BRp-bv-0Oa" userLabel="Match Name">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="adjustSearchOption:" target="lJM-BU-ZVt" id="25G-gI-Vm0"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem isSeparatorItem="YES" tag="1000" id="7Aa-Bu-90J"/>
+                        <menuItem title="previous search" tag="1001" id="Bww-Pm-ZiC" userLabel="Match Name or Description">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                        <menuItem title="No Recent Searches" tag="1003" enabled="NO" id="kwD-DE-0CM">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                        <menuItem title="Clear Recent Searches" tag="1002" id="leK-AZ-n5Q">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                    </items>
+                    <connections>
+                        <outlet property="delegate" destination="lJM-BU-ZVt" id="I7k-tl-RlZ"/>
+                    </connections>
+                </menu>
             </objects>
             <point key="canvasLocation" x="-194.5" y="850.5"/>
         </scene>
@@ -999,6 +1044,102 @@
                 <customObject id="BnK-Cz-OOn" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2662" y="-41.5"/>
+        </scene>
+        <!--help browser controller-->
+        <scene sceneID="A4f-dJ-mq9">
+            <objects>
+                <viewController title="help browser" id="p0J-JE-sdA" userLabel="help browser controller" customClass="HelpOutputController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="bos-Le-yOr">
+                        <rect key="frame" x="0.0" y="0.0" width="510" height="513"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <customView identifier="help container" translatesAutoresizingMaskIntoConstraints="NO" id="NCa-z0-vqI">
+                                <rect key="frame" x="0.0" y="42" width="510" height="471"/>
+                            </customView>
+                            <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="Cp3-lV-O2i">
+                                <rect key="frame" x="0.0" y="40" width="510" height="5"/>
+                                <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <font key="titleFont" metaFont="system"/>
+                            </box>
+                            <stackView distribution="fill" orientation="horizontal" alignment="baseline" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pYb-p9-pey">
+                                <rect key="frame" x="10" y="13" width="480" height="21"/>
+                                <subviews>
+                                    <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BpA-7Z-NUE">
+                                        <rect key="frame" x="-2" y="-2" width="71" height="24"/>
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="Apv-PS-IjF">
+                                            <font key="font" metaFont="system"/>
+                                            <segments>
+                                                <segment toolTip="Back" image="NSGoLeftTemplate" width="32" enabled="NO"/>
+                                                <segment toolTip="Forward" image="NSGoRightTemplate" width="32" enabled="NO" tag="1"/>
+                                            </segments>
+                                        </segmentedCell>
+                                        <accessibility description="Navigate"/>
+                                        <connections>
+                                            <action selector="navigateWebView:" target="p0J-JE-sdA" id="fXh-Py-6eO"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Bz6-tM-pBq">
+                                        <rect key="frame" x="73" y="3" width="367" height="18"/>
+                                        <textFieldCell key="cell" lineBreakMode="truncatingHead" sendsActionOnEndEditing="YES" alignment="center" title="Loading…" id="Xcp-uc-g2d">
+                                            <font key="font" metaFont="system" size="14"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BmN-Jc-kh4">
+                                        <rect key="frame" x="444" y="-2" width="38" height="24"/>
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="VJq-Tt-Czp">
+                                            <font key="font" metaFont="system"/>
+                                            <segments>
+                                                <segment toolTip="Share" image="NSShareTemplate" width="32"/>
+                                            </segments>
+                                        </segmentedCell>
+                                        <accessibility description="Share"/>
+                                        <connections>
+                                            <action selector="showShareSheet:" target="p0J-JE-sdA" id="5is-9Y-tKJ"/>
+                                        </connections>
+                                    </segmentedControl>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" priority="750" constant="21" id="qJt-eL-cZN"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="taU-0o-GIQ"/>
+                                </constraints>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="Cp3-lV-O2i" firstAttribute="leading" secondItem="bos-Le-yOr" secondAttribute="leading" id="1h3-bI-exB"/>
+                            <constraint firstAttribute="bottom" secondItem="pYb-p9-pey" secondAttribute="bottom" constant="13" id="9Dq-Yu-p6m"/>
+                            <constraint firstAttribute="trailing" secondItem="Cp3-lV-O2i" secondAttribute="trailing" id="Gpv-Qc-rrY"/>
+                            <constraint firstAttribute="trailing" secondItem="NCa-z0-vqI" secondAttribute="trailing" id="Mtc-Az-kYF"/>
+                            <constraint firstItem="NCa-z0-vqI" firstAttribute="leading" secondItem="bos-Le-yOr" secondAttribute="leading" id="cRQ-oH-04a"/>
+                            <constraint firstItem="NCa-z0-vqI" firstAttribute="top" secondItem="bos-Le-yOr" secondAttribute="top" id="fOh-mZ-ztf"/>
+                            <constraint firstAttribute="bottom" secondItem="Cp3-lV-O2i" secondAttribute="bottom" constant="42" id="g7M-r1-CW4"/>
+                            <constraint firstAttribute="bottom" secondItem="NCa-z0-vqI" secondAttribute="bottom" constant="42" id="ndt-y6-v1U"/>
+                            <constraint firstItem="pYb-p9-pey" firstAttribute="leading" secondItem="bos-Le-yOr" secondAttribute="leading" constant="10" id="vqR-o0-Uu7"/>
+                            <constraint firstAttribute="trailing" secondItem="pYb-p9-pey" secondAttribute="trailing" constant="20" id="zVn-uK-kdT"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="containerView" destination="NCa-z0-vqI" id="3iA-GZ-TXO"/>
+                        <outlet property="navButtons" destination="BpA-7Z-NUE" id="rms-GU-eYE"/>
+                        <outlet property="shareButton" destination="BmN-Jc-kh4" id="Jbo-WD-Zvs"/>
+                        <outlet property="titleLabel" destination="Bz6-tM-pBq" id="crN-pw-ya3"/>
+                    </connections>
+                </viewController>
+                <customObject id="dXN-rh-wuU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3198" y="-41.5"/>
         </scene>
         <!--Workspaces View Controller-->
         <scene sceneID="FZH-15-YFf">

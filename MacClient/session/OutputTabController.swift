@@ -6,30 +6,33 @@
 
 import Cocoa
 
+let ConsoleTabIndex = 0
+let ImageTabIndex = 1
+let WebKitTabIndex = 2
+let HelpTabIndex = 3
+
 class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandler {
 	var consoleController: SessionOutputController?
 	var imageController: ImageOutputController?
 	var webController: WebKitOutputController?
+	var helpController: HelpOutputController?
 	var imageCache: ImageCache?
 	var session: Session?
 	var consoleToolbarControl: NSSegmentedControl?
 	
-	override func awakeFromNib() {
-		super.awakeFromNib()
-//		if consoleController != nil {
-//			let titem = tabViewItemForViewController(consoleController!)!
-//			titem.initialFirstResponder = consoleController?.consoleTextField
-//		}
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(OutputTabController.showHelp(_:)), name: DisplayHelpTopicNotification, object: nil)
 	}
-	
 	override func viewWillAppear() {
 		super.viewWillAppear()
-		selectedTabViewItemIndex = 0
+		selectedTabViewItemIndex = ConsoleTabIndex
 		consoleController = firstChildViewController(self)
 		consoleController?.viewFileOrImage = displayFileOrImage
 		imageController = firstChildViewController(self)
 		imageController?.imageCache = imageCache
 		webController = firstChildViewController(self)
+		helpController = firstChildViewController(self)
 	}
 	
 	override func viewDidAppear() {
@@ -66,6 +69,25 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		}
 		return false
 	}
+	
+	func showHelp(note:NSNotification) {
+		var url:NSURL?
+		if let topic:HelpTopic = note.object as? HelpTopic {
+			url = HelpController.sharedInstance.urlForTopic(topic)
+		} else if let topicName:String = note.object as? String {
+			let topics = HelpController.sharedInstance.topicsWithName(topicName)
+			if topics.count > 0 {
+				//TODO: handle if more than one matching help target
+				url = HelpController.sharedInstance.urlForTopic(topics[0].subtopics![0])
+			}
+			if url != nil {
+				selectedTabViewItemIndex = HelpTabIndex
+				helpController?.loadUrl(url!)
+			}
+		} else {
+			selectedTabViewItemIndex = ConsoleTabIndex
+		}
+	}
 
 	func clearConsole(sender:AnyObject?) {
 		consoleController?.clearConsole(sender)
@@ -73,7 +95,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	}
 	
 	func consoleButtonClicked(sender:AnyObject?) {
-		selectedTabViewItemIndex = 0
+		selectedTabViewItemIndex = ConsoleTabIndex
 	}
 	
 	func displayFileOrImage(fileWrapper: NSFileWrapper) {
@@ -86,7 +108,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			let index = images.indexOf({$0.id == targetImg.id})
 		{
 			imageController?.displayImageAtIndex(index, images:images)
-			selectedTabViewItemIndex = 1
+			selectedTabViewItemIndex = ImageTabIndex
 			tabView.window?.toolbar?.validateVisibleItems()
 		} else if let fdata = fileWrapper.regularFileContents,
 			let fdict = NSKeyedUnarchiver.unarchiveObjectWithData(fdata) as? NSDictionary,
@@ -94,15 +116,15 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			let file = session?.workspace.fileWithId(fileId)
 		{
 			webController?.loadLocalFile(session!.fileHandler.fileCache.cachedFileUrl(file))
-			selectedTabViewItemIndex = 2
+			selectedTabViewItemIndex = WebKitTabIndex
 		}
 	}
 
-	func appendFormattedString(string:NSAttributedString) {
-		consoleController?.appendFormattedString(string)
+	func appendFormattedString(string:NSAttributedString, type:OutputStringType = .Default) {
+		consoleController?.appendFormattedString(string, type:type)
 		//switch back to console view
-		if selectedTabViewItemIndex != 0 {
-			selectedTabViewItemIndex = 0
+		if selectedTabViewItemIndex != ConsoleTabIndex {
+			selectedTabViewItemIndex = ConsoleTabIndex
 		}
 	}
 

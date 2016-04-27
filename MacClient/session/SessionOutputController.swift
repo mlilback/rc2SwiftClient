@@ -54,7 +54,7 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 	}
 	
 	//MARK: SessionOutputHandler
-	func appendFormattedString(string:NSAttributedString) {
+	func appendFormattedString(string:NSAttributedString, type:OutputStringType = .Default) {
 		let mutStr = string.mutableCopy() as! NSMutableAttributedString
 		mutStr.addAttributes([NSFontAttributeName:outputFont], range: NSMakeRange(0, string.length))
 		resultsView!.textStorage?.appendAttributedString(mutStr)

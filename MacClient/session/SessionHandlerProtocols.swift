@@ -13,10 +13,14 @@ import Cocoa
 	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String,AnyObject>)
 }
 
+@objc enum OutputStringType: Int {
+	case Default, Input
+}
+
 @objc protocol OutputHandler {
 	var imageCache: ImageCache? { get set }
 	var session: Session? { get set }
-	func appendFormattedString(string:NSAttributedString)
+	func appendFormattedString(string:NSAttributedString, type:OutputStringType)
 	func saveSessionState() -> AnyObject
 	func restoreSessionState(state:[String:AnyObject])
 	func prepareForSearch()

@@ -18,6 +18,11 @@ public enum ServerResponse : Equatable {
 	case ShowOutput(queryId:Int, updatedFile:File)
 	case Variable(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String, JSON>)
 	
+	func isEcho() -> Bool {
+		if case .EchoQuery(_, _, _) = self { return true }
+		return false
+	}
+	
 	static func parseResponse(jsonObj:JSON) -> ServerResponse? {
 		switch(jsonObj["msg"].stringValue) {
 			case "results":

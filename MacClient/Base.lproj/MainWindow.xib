@@ -42,7 +42,7 @@
                                     <segment image="variables" tag="1">
                                         <nil key="label"/>
                                     </segment>
-                                    <segment toolTip="Show/Hide Users" image="users" tag="2">
+                                    <segment toolTip="Show/Hide Packages" image="package" tag="2">
                                         <nil key="label"/>
                                     </segment>
                                 </segments>
@@ -193,8 +193,8 @@
         <image name="clear" width="16" height="16"/>
         <image name="console" width="20" height="20"/>
         <image name="files" width="20" height="20"/>
+        <image name="package" width="48" height="48"/>
         <image name="search" width="18" height="18"/>
-        <image name="users" width="16" height="16"/>
         <image name="variables" width="20" height="20"/>
     </resources>
 </document>

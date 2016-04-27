@@ -15,7 +15,7 @@ enum Rc2ErrorCode: Int {
 let RestLoginChangedNotification = "RestLoginChangedNotification"
 let SelectedWorkspaceChangedNotification = "SelectedWorkspaceChangedNotification"
 let CurrentSessionChangedNotification = "CurrentSessionChangedNotification"
-let DisplayHelpTopicNotification = "DisplayHelpTopicNotification" ///object is the HelpTopic
+let DisplayHelpTopicNotification = "DisplayHelpTopicNotification" ///object is a HelpTopic
 
 ///will always be posted on the main thread
 let AppStatusChangedNotification = "AppStatusChangedNotification"
@@ -24,3 +24,6 @@ let PrefMaxCommandHistory = "MaxCommandHistorySize"
 let PrefWordWrap = "WordWrapEnabled"
 
 let ConsoleAttachmentImageSize = CGSize(width: 48, height: 48)
+
+let HelpUrlBase = "http://stat.wvu.edu/rc2/library"
+let HelpUrlFuncSeperator = "/html"
