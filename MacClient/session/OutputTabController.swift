@@ -80,12 +80,12 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 				//TODO: handle if more than one matching help target
 				url = HelpController.sharedInstance.urlForTopic(topics[0].subtopics![0])
 			}
-			if url != nil {
-				selectedTabViewItemIndex = HelpTabIndex
-				helpController?.loadUrl(url!)
-			}
 		} else {
 			selectedTabViewItemIndex = ConsoleTabIndex
+		}
+		if url != nil {
+			selectedTabViewItemIndex = HelpTabIndex
+			helpController?.loadUrl(url!)
 		}
 	}
 

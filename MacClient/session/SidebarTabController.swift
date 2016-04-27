@@ -12,9 +12,5 @@ class SidebarTabController: NSTabViewController {
 	var selectedTabIndex: Int {
 		get { return tabView.indexOfTabViewItem((tabView.selectedTabViewItem)!) }
 	}
-	
-	func selectTabAtIndex(index: Int) {
-		tabView.selectTabViewItemAtIndex(index)
-	}
 }
 

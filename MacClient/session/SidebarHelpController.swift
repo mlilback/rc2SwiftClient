@@ -101,7 +101,7 @@ class SidebarHelpController : AbstractSessionViewController, NSOutlineViewDataSo
 	func outlineViewSelectionDidChange(notification: NSNotification) {
 		var obj:AnyObject? = nil
 		if let topic = outline!.itemAtRow(outline!.selectedRow) as? TopicWrapper {
-			obj = Box(topic.topic)
+			obj = topic.topic
 		}
 		NSNotificationCenter.defaultCenter().postNotificationName(DisplayHelpTopicNotification, object:obj, userInfo:nil)
 	}

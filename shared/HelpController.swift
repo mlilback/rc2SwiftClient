@@ -125,7 +125,6 @@ class HelpController {
 	func searchTopics(searchString:String) -> [HelpTopic] {
 		guard searchString.characters.count > 0 else { return packages }
 		var results:[HelpTopic] = []
-		log.info("filtering help on '\(searchString)'")
 		do {
 			let rs = try db.executeQuery("select * from helpidx where helpidx match ?", values: [searchString])
 			results = try parseResultSet(rs)
