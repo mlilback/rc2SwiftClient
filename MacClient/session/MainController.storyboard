@@ -553,6 +553,10 @@
                                                     </prototypeCellViews>
                                                 </tableColumn>
                                             </tableColumns>
+                                            <connections>
+                                                <outlet property="dataSource" destination="1Ce-Bb-cCN" id="EzR-nG-zb8"/>
+                                                <outlet property="delegate" destination="1Ce-Bb-cCN" id="xAh-2v-R4d"/>
+                                            </connections>
                                         </tableView>
                                     </subviews>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>

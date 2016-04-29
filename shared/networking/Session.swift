@@ -44,6 +44,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	private(set) var connectionOpen:Bool = false
 	private var keepAliveTimer:dispatch_source_t = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue())
 	private var waitingOnTransactions: [String:(String) -> Void] = [:]
+	private var watchingVariables:Bool = false
 	
 	init(_ wspace:Workspace,  source:WebSocketSource, appStatus:AppStatus, networkConfig config:NSURLSessionConfiguration, delegate:SessionDelegate?=nil)
 	{
@@ -130,6 +131,18 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	
 	func forceVariableRefresh() {
 		sendMessage(["msg":"watchVariables", "watch":true])
+	}
+	
+	func startWatchingVariables() {
+		if (watchingVariables) { return; }
+		sendMessage(["msg":"watchVariables", "watch":true])
+		watchingVariables = true
+	}
+
+	func stopWatchingVariables() {
+		if (!watchingVariables) { return }
+		sendMessage(["msg":"watchVariables", "watch":false])
+		watchingVariables = false
 	}
 	
 	//MARK: SessionFileHandlerDelegate methods

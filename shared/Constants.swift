@@ -27,3 +27,6 @@ let ConsoleAttachmentImageSize = CGSize(width: 48, height: 48)
 
 let HelpUrlBase = "http://stat.wvu.edu/rc2/library"
 let HelpUrlFuncSeperator = "/html"
+
+let VariableUpdatedBackgroundColor = PlatformColor.greenColor()
+let VariableNormalBackgroundColor = PlatformColor.whiteColor()

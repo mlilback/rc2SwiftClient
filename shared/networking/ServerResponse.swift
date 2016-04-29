@@ -16,7 +16,7 @@ public enum ServerResponse : Equatable {
 	case Results(queryId:Int, text:String)
 	case SaveResponse(transId:String)
 	case ShowOutput(queryId:Int, updatedFile:File)
-	case Variable(socketId:Int, delta:Bool, single:Bool, variables:Dictionary<String, JSON>)
+	case Variables(socketId:Int, delta:Bool, single:Bool, variables:[Variable])
 	
 	func isEcho() -> Bool {
 		if case .EchoQuery(_, _, _) = self { return true }
@@ -46,7 +46,7 @@ public enum ServerResponse : Equatable {
 			case "help":
 				return ServerResponse.Help(topic: jsonObj["topic"].stringValue, paths: jsonObj["paths"].arrayValue.map({ return HelpItem(dict: $0.dictionaryValue) }))
 			case "variables":
-				return ServerResponse.Variable(socketId: jsonObj["socketId"].intValue, delta: jsonObj["delta"].boolValue, single: jsonObj["singleValue"].boolValue, variables: jsonObj["variables"].dictionaryValue)
+				return ServerResponse.Variables(socketId: jsonObj["socketId"].intValue, delta: jsonObj["delta"].boolValue, single: jsonObj["singleValue"].boolValue, variables: Variable.variablesForJsonArray(jsonObj["variables"].dictionaryValue["values"]!.arrayValue))
 			case "saveResponse":
 				return ServerResponse.SaveResponse(transId: jsonObj["transId"].stringValue)
 			case "userid":
@@ -70,7 +70,7 @@ public func == (a:ServerResponse, b:ServerResponse) -> Bool {
 			return t1 == t2 && p1 == p2
 		case (.Results(let q1, let t1), .Results(let q2, let t2)):
 			return q1 == q2 && t1 == t2
-		case (.Variable(let s1, let d1, let sn1, let v1), .Variable(let s2, let d2, let sn2, let v2)):
+		case (.Variables(let s1, let d1, let sn1, let v1), .Variables(let s2, let d2, let sn2, let v2)):
 			return s1 == s2 && d1 == d2 && sn1 == sn2 && v1 == v2
 		case (.ShowOutput(let q1, let f1), .ShowOutput(let q2, let f2)):
 			return q1 == q2 && f1.fileId == f2.fileId && f1.version == f2.version

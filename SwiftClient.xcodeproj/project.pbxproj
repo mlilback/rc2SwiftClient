@@ -153,6 +153,8 @@
 		08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB554F1C5AC727002CB7EE /* SessionEditor.swift */; };
 		08CB55521C5C06B2002CB7EE /* OutputTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB55511C5C06B2002CB7EE /* OutputTabController.swift */; };
 		08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB55531C5C096E002CB7EE /* ImageOutputController.swift */; };
+		08D6106B1CD2444C00258D8E /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D6106A1CD2444C00258D8E /* Variable.swift */; };
+		08D6106F1CD2C53100258D8E /* listvars.json in Resources */ = {isa = PBXBuildFile; fileRef = 08D6106E1CD2C53100258D8E /* listvars.json */; };
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08EFF6031C7BB2E600AAF1D4 /* MultipartInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */; };
@@ -391,6 +393,8 @@
 		08CB554F1C5AC727002CB7EE /* SessionEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditor.swift; sourceTree = "<group>"; };
 		08CB55511C5C06B2002CB7EE /* OutputTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputTabController.swift; sourceTree = "<group>"; };
 		08CB55531C5C096E002CB7EE /* ImageOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageOutputController.swift; sourceTree = "<group>"; };
+		08D6106A1CD2444C00258D8E /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Variable.swift; path = ../Variable.swift; sourceTree = "<group>"; };
+		08D6106E1CD2C53100258D8E /* listvars.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = listvars.json; sourceTree = "<group>"; };
 		08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetActionBlock.swift; sourceTree = "<group>"; };
 		08ED575E1C724383002B2558 /* MacFileImportSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacFileImportSetup.swift; sourceTree = "<group>"; };
 		08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStream.swift; sourceTree = "<group>"; };
@@ -524,6 +528,7 @@
 				083305EE1C519B4B00E27F66 /* resultsWithImages.json */,
 				083305F41C519B8500E27F66 /* loginResults.json */,
 				083305F51C519B8500E27F66 /* lognormal.R */,
+				08D6106E1CD2C53100258D8E /* listvars.json */,
 			);
 			name = "test resources";
 			sourceTree = "<group>";
@@ -679,6 +684,7 @@
 				088CE69A1C4B605D00153414 /* LoginSession.swift */,
 				088CE69B1C4B605D00153414 /* User.swift */,
 				088CE69C1C4B605D00153414 /* Workspace.swift */,
+				08D6106A1CD2444C00258D8E /* Variable.swift */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -891,6 +897,7 @@
 				080214891C6A923D008B55D3 /* lognormal.R in Resources */,
 				083305F11C519B4B00E27F66 /* resultsWithImages.json in Resources */,
 				083305FA1C519B8500E27F66 /* loginResults.json in Resources */,
+				08D6106F1CD2C53100258D8E /* listvars.json in Resources */,
 				08FDB19B1C5917C3006FCD1A /* graph.png in Resources */,
 				083305F91C519B8500E27F66 /* createWorkspace.json in Resources */,
 			);
@@ -979,6 +986,7 @@
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
 				083305E61C517FE300E27F66 /* SidebarHelpController.swift in Sources */,
 				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,
+				08D6106B1CD2444C00258D8E /* Variable.swift in Sources */,
 				08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */,
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
 				083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */,
@@ -1306,6 +1314,7 @@
 				08A01FB41CC7FA28001EDFAA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
