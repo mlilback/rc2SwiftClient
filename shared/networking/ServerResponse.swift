@@ -46,7 +46,7 @@ public enum ServerResponse : Equatable {
 			case "help":
 				return ServerResponse.Help(topic: jsonObj["topic"].stringValue, paths: jsonObj["paths"].arrayValue.map({ return HelpItem(dict: $0.dictionaryValue) }))
 			case "variables":
-				return ServerResponse.Variables(socketId: jsonObj["socketId"].intValue, delta: jsonObj["delta"].boolValue, single: jsonObj["singleValue"].boolValue, variables: Variable.variablesForJsonArray(jsonObj["variables"].dictionaryValue["values"]!.arrayValue))
+				return ServerResponse.Variables(socketId: jsonObj["socketId"].intValue, delta: jsonObj["delta"].boolValue, single: jsonObj["singleValue"].boolValue, variables: Variable.variablesForJsonArray(jsonObj["variables"].dictionaryValue["values"]?.arrayValue))
 			case "saveResponse":
 				return ServerResponse.SaveResponse(transId: jsonObj["transId"].stringValue)
 			case "userid":

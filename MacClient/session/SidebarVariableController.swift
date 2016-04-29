@@ -10,7 +10,7 @@ import Cocoa
 class SidebarVariableController : AbstractSessionViewController, VariableHandler, NSTableViewDataSource, NSTableViewDelegate {
 	var rootVariables:[Variable] = []
 	var changedIndexes:Set<Int> = []
-	
+	@IBOutlet var varTableView:NSTableView?
 	
 	override func viewWillAppear() {
 		super.viewWillAppear()
@@ -35,8 +35,32 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 		session.startWatchingVariables()
 	}
 	
-	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:[Variable]) {
+	func variableNamed(name:String?) -> Variable? {
+		return rootVariables.filter({ $0.name == name }).first
+	}
 	
+	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:[Variable]) {
+		if single {
+			if let curVal = variableNamed(variables[0].name) {
+				rootVariables[rootVariables.indexOf(curVal)!] = curVal
+			} else {
+				rootVariables.append(variables.first!)
+			}
+		} else if delta {
+			for (_, variable) in variables.enumerate() {
+				if let curVal = variableNamed(variable.name) {
+					rootVariables[rootVariables.indexOf(curVal)!] = variable
+				} else {
+					rootVariables.append(variable)
+				}
+			}
+		} else {
+			rootVariables = variables
+		}
+		rootVariables.sortInPlace { (lhs, rhs) -> Bool in
+			return lhs.name < rhs.name
+		}
+		varTableView?.reloadData()
 	}
 	
 	//MARK: NSTableViewDataSource

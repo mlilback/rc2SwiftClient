@@ -60,8 +60,9 @@ public enum VariableType: Int {
 public class Variable: NSObject {
 	private let jsonData:JSON
 
-	public static func variablesForJsonArray(array:[JSON]) -> [Variable] {
-		return array.flatMap() { Variable.variableForJson($0) }
+	public static func variablesForJsonArray(array:[JSON]?) -> [Variable] {
+		if nil == array { return [] }
+		return array!.flatMap() { Variable.variableForJson($0) }
 	}
 	
 	public static func variableForJson(json:JSON) -> Variable {
@@ -160,6 +161,10 @@ public class BoolPrimitiveVariable: Variable {
 	override public func boolValueAtIndex(index: Int) -> Bool? {
 		return values[index]
 	}
+
+	override public var description: String {
+		return "[\((values.map() { String($0) }).joinWithSeparator(","))]"
+	}
 }
 
 public class IntPrimitiveVariable: Variable {
@@ -178,6 +183,10 @@ public class IntPrimitiveVariable: Variable {
 	
 	override public func doubleValueAtIndex(index: Int) -> Double? {
 		return Double(intValueAtIndex(index) ?? 0)
+	}
+
+	override public var description: String {
+		return "[\((values.map() { String($0) }).joinWithSeparator(","))]"
 	}
 }
 
@@ -201,6 +210,10 @@ public class DoublePrimitiveVariable: Variable {
 	override public func doubleValueAtIndex(index: Int) -> Double? {
 		return values[index]
 	}
+	
+	override public var description: String {
+		return "[\((values.map() { String($0) }).joinWithSeparator(","))]"
+	}
 }
 
 public class StringPrimitiveVariable: Variable {
@@ -215,5 +228,9 @@ public class StringPrimitiveVariable: Variable {
 	
 	override public func stringValueAtIndex(index: Int) -> String? {
 		return values[index]
+	}
+
+	override public var description: String {
+		return "[\((values.map() { String($0) }).joinWithSeparator("\", \""))]"
 	}
 }

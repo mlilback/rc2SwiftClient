@@ -595,6 +595,9 @@
                             <constraint firstAttribute="bottom" secondItem="NEv-qY-dh3" secondAttribute="bottom" constant="9" id="zr4-J7-LQi"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="varTableView" destination="6xa-i9-qGY" id="mbx-Jc-4pa"/>
+                    </connections>
                 </viewController>
                 <customObject id="d2m-5n-KXT" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
