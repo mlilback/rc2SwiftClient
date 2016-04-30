@@ -40,6 +40,15 @@ public enum VariableType: Int {
 	S3Object,
 	S4Object
 	
+	func isContainer() -> Bool {
+		switch (self) {
+		case .Array, .DataFrame, .Matrix, .List, .Environment:
+			return true
+		default:
+			return false
+		}
+	}
+	
 	static func forClass(name:String?) -> VariableType {
 		guard let cname = name else { return .Unknown }
 		switch (cname) {
@@ -47,10 +56,26 @@ public enum VariableType: Int {
 				return .DataFrame
 			case "matrix":
 				return .Matrix
+			case "array":
+				return .Array
 			case "list":
 				return .List
 			case "environment":
 				return .Environment
+			case "function":
+				return .Function
+			case "Date":
+				return .Date
+			case "POSIXct", "POSIXlt":
+				return .DateTime
+			case "factor", "ordered factor":
+				return .Factor
+			case "generic":
+				return .S3Object
+			case "S4":
+				return .S4Object
+			case "raw":
+				return .Primitive
 			default:
 				return .Unknown
 		}
@@ -74,11 +99,20 @@ public class Variable: NSObject {
 				return IntPrimitiveVariable(json: json)
 			case .Double:
 				return DoublePrimitiveVariable(json: json)
-			case .String:
+			case .String, .Complex:
 				return StringPrimitiveVariable(json: json)
 			default:
-				break
+				return Variable(json: json)
 			}
+		}
+		if json["generic"].boolValue || false {
+			return GenericVariable(json: json)
+		}
+		switch (json["type"]) {
+			case "f":
+				return FactorVariable(json:json)
+			default:
+				break
 		}
 		return Variable(json:json)
 	}
@@ -137,9 +171,13 @@ public class Variable: NSObject {
 			return nil
 		}
 	}
+	///if contains variables (list, array, S3, S4) returns nested variable
+	public func variableAtIndex(index:Int) -> Variable? { return nil }
 	
 	///if a function type, returns the source code for the function
-	var functionBody:String? { return nil }
+	public var functionBody:String? { return nil }
+	///if a factor, returns the levels
+	public var levels:[String]? { return nil }
 }
 
 public protocol PrimitiveValue {}
@@ -231,6 +269,53 @@ public class StringPrimitiveVariable: Variable {
 	}
 
 	override public var description: String {
-		return "[\((values.map() { String($0) }).joinWithSeparator("\", \""))]"
+		if primitiveType == .Complex {
+			return "[\((values.map() { String($0) }).joinWithSeparator(", "))]"
+		}
+		return "[\((values.map() { "\"\(String($0))\"" }).joinWithSeparator(", "))]"
 	}
+}
+
+public class FactorVariable: Variable {
+	private let values:[Int]
+	private let levelNames:[String]
+	
+	override init(json: JSON) {
+		self.values = json.dictionaryValue["value"]!.arrayValue.map() { $0.intValue - 1 }
+		self.levelNames = json.dictionaryValue["levels"]!.arrayValue.map() { $0.stringValue }
+		super.init(json: json)
+	}
+	
+	override var count:Int { return values.count }
+	
+	override public var levels:[String]? { return levelNames }
+
+	override public func intValueAtIndex(index: Int) -> Int? {
+		return values[index]
+	}
+	
+	override public func stringValueAtIndex(index: Int) -> String? {
+		return levelNames[values[index]]
+	}
+	
+	override public var description: String {
+		return "[\((values.map() { levelNames[$0] }).joinWithSeparator(","))]"
+	}
+}
+
+public class GenericVariable: Variable {
+	private let values:[Variable]
+	
+	override init(json: JSON) {
+		self.values = Variable.variablesForJsonArray(json.dictionaryValue["value"]!.arrayValue)
+		super.init(json: json)
+	}
+	
+	override var count:Int { return values.count }
+	
+	override public func stringValueAtIndex(index: Int) -> String? {
+		return values[index].description
+	}
+	
+	override public func variableAtIndex(index:Int) -> Variable? { return values[index] }
 }
