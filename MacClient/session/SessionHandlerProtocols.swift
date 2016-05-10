@@ -10,7 +10,8 @@ import Cocoa
 
 @objc protocol VariableHandler {
 	///parameter variables: key is a string, value is an ObjcBox of a JSON value
-	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:[Variable])
+	func handleVariableMessage(socketId:Int, single:Bool, variables:[Variable])
+	func handleVariableDeltaMessage(socketId:Int, assigned:[Variable], removed:[String])
 }
 
 @objc enum OutputStringType: Int {

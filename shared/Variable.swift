@@ -90,6 +90,15 @@ public class Variable: NSObject {
 		return array!.flatMap() { Variable.variableForJson($0) }
 	}
 	
+	public static func variablesForJsonDictionary(dict:[String:JSON]?) -> [Variable] {
+		if nil == dict { return [] }
+		var array:[Variable] = []
+		for (_,value) in dict! {
+			array.append(Variable.variableForJson(value))
+		}
+		return array
+	}
+	
 	public static func variableForJson(json:JSON) -> Variable {
 		if json["primitive"].boolValue ?? false {
 			switch (PrimitiveType.forString(json["type"].stringValue)) {
@@ -121,11 +130,21 @@ public class Variable: NSObject {
 	/// for nested values, the fully qualified name (e.g. foo[0][1][2])
 	public var fullyQualifiedName:String? { return name }
 	///from R
-	public var classNameR:String? { return jsonData["class"].string }
+	public var classNameR:String {
+		if let klass = jsonData["class"].string {
+			return klass
+		}
+		return "<unknown>"
+	}
 	/// a string representation of the value for display. e.g. for a factor, the name and number of possible values
-	override public var description: String { return "\(className)[\(length)]" }
+	override public var description: String { return "\(classNameR)[\(length)]" }
 	///a more descriptive description: e.g. for a factor, list all the values
-	public var summary:String { return description }
+	public var summary:String {
+		if let summ = jsonData["summary"].string where summ.utf8.count > 0 {
+			return summ
+		}
+		return description
+	}
 
 	///the type of the variable
 	let type:VariableType
@@ -201,7 +220,7 @@ public class BoolPrimitiveVariable: Variable {
 	}
 
 	override public var description: String {
-		return "[\((values.map() { String($0) }).joinWithSeparator(","))]"
+		return "[\((values.map() { String($0) }).joinWithSeparator(", "))]"
 	}
 }
 
@@ -224,7 +243,7 @@ public class IntPrimitiveVariable: Variable {
 	}
 
 	override public var description: String {
-		return "[\((values.map() { String($0) }).joinWithSeparator(","))]"
+		return "[\((values.map() { String($0) }).joinWithSeparator(", "))]"
 	}
 }
 
@@ -250,7 +269,7 @@ public class DoublePrimitiveVariable: Variable {
 	}
 	
 	override public var description: String {
-		return "[\((values.map() { String($0) }).joinWithSeparator(","))]"
+		return "[\((values.map() { String($0) }).joinWithSeparator(", "))]"
 	}
 }
 
@@ -299,7 +318,7 @@ public class FactorVariable: Variable {
 	}
 	
 	override public var description: String {
-		return "[\((values.map() { levelNames[$0] }).joinWithSeparator(","))]"
+		return "[\((values.map() { levelNames[$0] }).joinWithSeparator(", "))]"
 	}
 }
 

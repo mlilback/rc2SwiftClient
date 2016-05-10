@@ -223,13 +223,17 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		session.fileHandler.handleFileUpdate(file, change: change)
 	}
 	
-	func handleVariableMessage(socketId:Int, delta:Bool, single:Bool, variables:[Variable]) {
+	func handleVariableMessage(socketId:Int, single:Bool, variables:[Variable]) {
 		//need to convert to an objc-compatible dictionary by boxing JSON objects
 //		var newDict = [String:ObjcBox<JSON>]()
 //		for (key,value) in variables {
 //			newDict[key] = ObjcBox(value)
 //		}
-		variableHandler!.handleVariableMessage(socketId, delta: delta, single: single, variables: variables)
+		variableHandler!.handleVariableMessage(socketId, single: single, variables: variables)
+	}
+	
+	func handleVariableDeltaMessage(socketId: Int, assigned: [Variable], removed: [String]) {
+		variableHandler!.handleVariableDeltaMessage(socketId, assigned: assigned, removed: removed)
 	}
 
 	func attributedStringWithImage(image:SessionImage) -> NSAttributedString {
