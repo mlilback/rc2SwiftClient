@@ -23,6 +23,7 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	var parser:SyntaxParser?
 	private(set) var currentDocument:EditorDocument?
 	private var openDocuments:[Int:EditorDocument] = [:]
+	private var defaultAttributes:[String:AnyObject]! //set in viewDidLoad, never used unless loaded
 	
 	///allow dependency injection
 	var notificationCenter:NSNotificationCenter? {
@@ -63,6 +64,7 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		if font == nil {
 			font = NSFont.userFixedPitchFontOfSize(14.0)
 		}
+		defaultAttributes = [NSFontAttributeName:font!]
 		editor?.font = font
 		editor?.textContainer?.containerSize = NSMakeSize(CGFloat.max, CGFloat.max)
 		editor?.textContainer?.widthTracksTextView = true
@@ -175,15 +177,16 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		let oldDocument = currentDocument
 		let oldContents = editor!.textStorage!.string
 		currentDocument?.willBecomeInactive(oldContents)
-		if let theFile = file, theText = content {
+		if let theFile = file, theText = content, storage = editor?.textStorage {
 			currentDocument = openDocuments[theFile.fileId]
 			if currentDocument == nil {
 				currentDocument = EditorDocument(file: theFile, fileHandler: session.fileHandler)
 				openDocuments[theFile.fileId] = currentDocument!
 			}
 			currentDocument!.willBecomeActive()
-			parser = SyntaxParser.parserWithTextStorage(editor!.textStorage!, fileType: theFile.fileType)
-			editor!.replaceCharactersInRange(editor!.rangeOfAllText, withString: theText)
+			storage.deleteCharactersInRange(editor!.rangeOfAllText)
+			parser = SyntaxParser.parserWithTextStorage(storage, fileType: theFile.fileType)
+			storage.setAttributedString(NSAttributedString(string: theText, attributes: defaultAttributes))
 			if oldDocument?.dirty ?? false {
 				let prog = oldDocument!.saveContents()
 				appStatus?.updateStatus(prog)
