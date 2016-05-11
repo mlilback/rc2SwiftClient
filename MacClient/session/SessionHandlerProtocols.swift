@@ -26,6 +26,7 @@ import Cocoa
 	func restoreSessionState(state:[String:AnyObject])
 	func prepareForSearch()
 	func initialFirstResponder() -> NSResponder
+	//use fileId instead of file object because File is a swift struct and can't be used in an objc protocol
 	func showFile(fileId:Int)
 }
 

@@ -21,7 +21,6 @@ class WebKitOutputController: WebViewController {
 		}
 		//it is utterly rediculous that we have to load a new webview every time, but it wasn't loading the second request
 		setupWebView()
-		let wkn = webView?.loadFileURL(url, allowingReadAccessToURL: url.URLByDeletingLastPathComponent!)
-		log.info("file nav: \(wkn)")
+		webView?.loadFileURL(url, allowingReadAccessToURL: url.URLByDeletingLastPathComponent!)
 	}
 }

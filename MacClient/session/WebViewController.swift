@@ -61,7 +61,6 @@ class WebViewController: NSViewController, WKNavigationDelegate {
 	
 	func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!)
 	{
-		log.info("web nav complete")
 		navButtons?.setEnabled(webView.canGoBack, forSegment: 0)
 		navButtons?.setEnabled(webView.canGoForward, forSegment: 1)
 		titleLabel?.stringValue = webView.title!
@@ -72,6 +71,5 @@ class WebViewController: NSViewController, WKNavigationDelegate {
 	}
 	
 	func webView(webView: WKWebView, didCommitNavigation navigation: WKNavigation!) {
-		log.info("did commit")
 	}
 }
