@@ -89,7 +89,7 @@ class SyntaxParser: NSObject {
 				return false
 			}
 		}
-		return false
+		return true
 	}
 	
 	func parseRange(range:NSRange) {

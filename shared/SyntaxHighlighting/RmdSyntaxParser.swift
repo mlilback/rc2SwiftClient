@@ -104,7 +104,7 @@ class RmdSyntaxParser: SyntaxParser {
 		
 		colorChunks(chunks)
 		//set background of inline equations
-		var color = colorMap[.InlineBackground]!
+		let color = colorMap[.InlineBackground]!
 		inlineRegex.enumerateMatchesInString(str, options: [], range: range)
 		{ (results, _, _) -> Void in
 			self.textStorage.addAttribute(NSBackgroundColorAttributeName, value: color, range: results!.range)
@@ -114,9 +114,8 @@ class RmdSyntaxParser: SyntaxParser {
 			self.textStorage.addAttribute(NSBackgroundColorAttributeName, value: color, range: aRange)
 		}
 		//highlight latex code in display equation blocks
-		color = colorMap[.EquationBackground]!
 		for aChunk in chunks {
-			if aChunk.type == .Equation && aChunk.equationType == .Display {
+			if aChunk.type == .RCode {
 				self.latexHighlighter.highlightText(self.textStorage, range: aChunk.parsedRange)
 			}
 		}
