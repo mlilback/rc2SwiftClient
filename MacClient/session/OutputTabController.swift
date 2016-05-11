@@ -119,6 +119,14 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			selectedTabViewItemIndex = WebKitTabIndex
 		}
 	}
+	
+	func showFile(fileId:Int) {
+		if let file = session?.workspace.fileWithId(fileId) {
+			//TODO: need to specially handle images
+			webController?.loadLocalFile(session!.fileHandler.fileCache.cachedFileUrl(file))
+			selectedTabViewItemIndex = WebKitTabIndex
+		}
+	}
 
 	func appendFormattedString(string:NSAttributedString, type:OutputStringType = .Default) {
 		consoleController?.appendFormattedString(string, type:type)

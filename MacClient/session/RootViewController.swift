@@ -279,7 +279,13 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 
 	//MARK:- FileViewControllerDelegate
 	func fileSelectionChanged(file:File?) {
-		self.editor?.fileSelectionChanged(file)
+		if nil == file {
+			self.editor?.fileSelectionChanged(nil)
+		} else if file!.fileType.isSourceFile {
+			self.editor?.fileSelectionChanged(file)
+		} else {
+			self.outputHandler?.showFile(file!.fileId)
+		}
 	}
 	
 	func renameFile(file:File, to:String) {

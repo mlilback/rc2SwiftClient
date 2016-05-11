@@ -20,7 +20,9 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	///tried kvo, forced to use notifications
 	class Manager: NSObject {
 		dynamic var currentSession: Session? {
-			didSet { NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(CurrentSessionChangedNotification, object: currentSession!) }
+			didSet {
+				NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(CurrentSessionChangedNotification, object: currentSession!)
+			}
 		}
 	}
 	static var manager: Manager = Manager()

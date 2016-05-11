@@ -26,6 +26,7 @@ import Cocoa
 	func restoreSessionState(state:[String:AnyObject])
 	func prepareForSearch()
 	func initialFirstResponder() -> NSResponder
+	func showFile(fileId:Int)
 }
 
 @objc protocol FileHandler {
