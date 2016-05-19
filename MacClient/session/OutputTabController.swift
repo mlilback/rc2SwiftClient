@@ -19,6 +19,8 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	var imageCache: ImageCache?
 	var session: Session?
 	var consoleToolbarControl: NSSegmentedControl?
+	var segmentItem: NSToolbarItem?
+	var segmentControl: NSSegmentedControl?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -66,10 +68,33 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 				
 			}
 			return true
+		} else if item.itemIdentifier == "rightView" {
+			segmentItem = item
+			segmentControl = item.view as! NSSegmentedControl?
+			segmentControl?.target = self
+			segmentControl?.action = #selector(OutputTabController.tabSwitcherClicked(_:))
+			let lastSelection = 0 //NSUserDefaults.standardUserDefaults().integerForKey(LastSelectedSessionTabIndex)
+			segmentControl?.selectedSegment = lastSelection
+			selectedTabViewItemIndex = lastSelection
+			for idx in 0..<3 {
+				[segmentControl?.setEnabled(idx == lastSelection ? false : true, forSegment: idx)]
+			}
+			return true
 		}
 		return false
 	}
 	
+	dynamic func tabSwitcherClicked(sender:AnyObject?) {
+		let index = (segmentControl?.selectedSegment)!
+		guard index != selectedTabViewItemIndex else { return }
+		segmentControl?.animator().setSelected(true, forSegment: index)
+		for idx in 0..<3 {
+			[segmentControl?.setEnabled(idx == index ? false : true, forSegment: idx)]
+		}
+		selectedTabViewItemIndex = index
+//		NSUserDefaults.standardUserDefaults().setInteger(index, forKey: LastSelectedSessionTabIndex)
+	}
+
 	func showHelp(note:NSNotification) {
 		var url:NSURL?
 		if let topic:HelpTopic = note.object as? HelpTopic {

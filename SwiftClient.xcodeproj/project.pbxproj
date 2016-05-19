@@ -155,6 +155,8 @@
 		08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB55531C5C096E002CB7EE /* ImageOutputController.swift */; };
 		08D6106B1CD2444C00258D8E /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D6106A1CD2444C00258D8E /* Variable.swift */; };
 		08D6106F1CD2C53100258D8E /* listvars.json in Resources */ = {isa = PBXBuildFile; fileRef = 08D6106E1CD2C53100258D8E /* listvars.json */; };
+		08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */; };
+		08D610761CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */; };
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08EFF6031C7BB2E600AAF1D4 /* MultipartInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */; };
@@ -395,6 +397,10 @@
 		08CB55531C5C096E002CB7EE /* ImageOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageOutputController.swift; sourceTree = "<group>"; };
 		08D6106A1CD2444C00258D8E /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Variable.swift; path = ../Variable.swift; sourceTree = "<group>"; };
 		08D6106E1CD2C53100258D8E /* listvars.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = listvars.json; sourceTree = "<group>"; };
+		08D610711CE3CA3C00258D8E /* TAAdaptiveSpaceItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAAdaptiveSpaceItem.h; sourceTree = "<group>"; };
+		08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItem.m; sourceTree = "<group>"; };
+		08D610731CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAAdaptiveSpaceItemView.h; sourceTree = "<group>"; };
+		08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItemView.m; sourceTree = "<group>"; };
 		08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetActionBlock.swift; sourceTree = "<group>"; };
 		08ED575E1C724383002B2558 /* MacFileImportSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacFileImportSetup.swift; sourceTree = "<group>"; };
 		08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStream.swift; sourceTree = "<group>"; };
@@ -458,6 +464,7 @@
 				081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */,
 				081263171C85D2E0003E37A5 /* NoodleLineNumberView.h */,
 				081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */,
+				08D610701CE3CA3C00258D8E /* TAAdaptiveSpaceItem */,
 			);
 			name = "generic views";
 			path = MacClient/views;
@@ -732,6 +739,18 @@
 			path = vendor/fmdb/src/fmdb;
 			sourceTree = SOURCE_ROOT;
 		};
+		08D610701CE3CA3C00258D8E /* TAAdaptiveSpaceItem */ = {
+			isa = PBXGroup;
+			children = (
+				08D610711CE3CA3C00258D8E /* TAAdaptiveSpaceItem.h */,
+				08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */,
+				08D610731CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.h */,
+				08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */,
+			);
+			name = TAAdaptiveSpaceItem;
+			path = vendor/TAAdaptiveSpaceItem;
+			sourceTree = SOURCE_ROOT;
+		};
 		08ED575A1C7140C0002B2558 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -970,6 +989,7 @@
 				08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */,
 				0827A4E71C7ED9CE001F0AFB /* RnwSyntaxParser.swift in Sources */,
 				0816F89C1C6D2BA000A6120B /* SessionDelegates.swift in Sources */,
+				08D610761CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m in Sources */,
 				08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */,
 				08B036221C73B131005928B3 /* FileImporter.swift in Sources */,
 				083382F61C68E59300D40EEB /* FileCache.swift in Sources */,
@@ -984,6 +1004,7 @@
 				08A01FA91CBC07B0001EDFAA /* WebKitOutputController.swift in Sources */,
 				083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
+				08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */,
 				083305E61C517FE300E27F66 /* SidebarHelpController.swift in Sources */,
 				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,
 				08D6106B1CD2444C00258D8E /* Variable.swift in Sources */,

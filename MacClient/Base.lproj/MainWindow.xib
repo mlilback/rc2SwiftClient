@@ -18,13 +18,13 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="425" y="461" width="1000" height="600"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2048" height="1129"/>
             <value key="minSize" type="size" width="1000" height="600"/>
             <view key="contentView" id="e8q-bP-54d">
                 <rect key="frame" x="0.0" y="0.0" width="1000" height="600"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             </view>
-            <toolbar key="toolbar" implicitIdentifier="A77B95C8-BF1E-487A-B9F3-9BB37B92E7EB" displayMode="iconOnly" sizeMode="regular" id="GrO-iY-cKz">
+            <toolbar key="toolbar" implicitIdentifier="A77B95C8-BF1E-487A-B9F3-9BB37B92E7EB" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="GrO-iY-cKz">
                 <allowedToolbarItems>
                     <toolbarItem implicitItemIdentifier="45A7986F-AECA-4AD3-ACBE-F325C2AB72D7" explicitItemIdentifier="leftView" label="" paletteLabel="Left View" id="DRL-wf-hhl">
                         <nil key="toolTip"/>
@@ -50,27 +50,38 @@
                             <accessibility description="Left View Selector"/>
                         </segmentedControl>
                     </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="B485D81B-B017-4BC2-9576-633E636B25FC" explicitItemIdentifier="rightView" label="" paletteLabel="Right View" id="rTc-JD-E1f" userLabel="Right View">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="38" height="24"/>
+                        <size key="maxSize" width="200" height="32"/>
+                        <segmentedControl key="view" focusRingType="none" verticalHuggingPriority="750" id="qEC-FD-i7I">
+                            <rect key="frame" x="0.0" y="14" width="154" height="25"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <segmentedCell key="cell" borderStyle="border" focusRingType="none" alignment="left" style="texturedSquare" trackingMode="selectOne" id="OJ9-jP-7NI">
+                                <font key="font" metaFont="system" size="14"/>
+                                <segments>
+                                    <segment toolTip="Console" image="console-tbar" width="32">
+                                        <nil key="label"/>
+                                    </segment>
+                                    <segment toolTip="Image Viewer" image="image-tbar" tag="1">
+                                        <nil key="label"/>
+                                    </segment>
+                                    <segment toolTip="Content Viewer" image="content-tbar" tag="2">
+                                        <nil key="label"/>
+                                    </segment>
+                                    <segment toolTip="Help Viewer" image="help-tbar" tag="3">
+                                        <nil key="label"/>
+                                    </segment>
+                                </segments>
+                            </segmentedCell>
+                            <accessibility description="Right View Selector"/>
+                        </segmentedControl>
+                    </toolbarItem>
                     <toolbarItem implicitItemIdentifier="NSToolbarShowColorsItem" id="wlu-TO-E8j"/>
                     <toolbarItem implicitItemIdentifier="NSToolbarShowFontsItem" id="hUj-LR-ckc"/>
                     <toolbarItem implicitItemIdentifier="NSToolbarPrintItem" id="X7J-hS-Vn3"/>
                     <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="KBI-AJ-Jip"/>
                     <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="XZ3-bl-7lg"/>
-                    <toolbarItem implicitItemIdentifier="A4724AD7-7F00-4909-B3B7-52F0D2624460" explicitItemIdentifier="console" label="Console" paletteLabel="Console" id="HGt-Mf-tHp" customClass="OutputConsoleToolbarItem" customModule="MacClient" customModuleProvider="target">
-                        <nil key="toolTip"/>
-                        <size key="minSize" width="34" height="24"/>
-                        <size key="maxSize" width="34" height="25"/>
-                        <segmentedControl key="view" toolTip="Switch to Console" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" id="m62-c7-JQT">
-                            <rect key="frame" x="8" y="14" width="34" height="25"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="sQU-Db-CPN">
-                                <font key="font" metaFont="system" size="14"/>
-                                <segments>
-                                    <segment image="console" width="32"/>
-                                </segments>
-                            </segmentedCell>
-                            <accessibility description="console"/>
-                        </segmentedControl>
-                    </toolbarItem>
                     <toolbarItem implicitItemIdentifier="9AB083D9-F13B-424F-89B1-0F1C554532F3" explicitItemIdentifier="clear" label="Clear" paletteLabel="Clear Console" id="aJO-nq-Elj" customClass="ClearConsoleToolbarItem" customModule="MacClient" customModuleProvider="target">
                         <nil key="toolTip"/>
                         <size key="minSize" width="34" height="24"/>
@@ -169,14 +180,15 @@
                             </connections>
                         </customView>
                     </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="701F23C2-A60A-4F8E-90C7-635064F66E7A" label="Centering" paletteLabel="Centering Space" tag="-1" id="7AX-AY-0Vz" customClass="TAAdaptiveSpaceItem"/>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
                     <toolbarItem reference="DRL-wf-hhl"/>
-                    <toolbarItem reference="XZ3-bl-7lg"/>
+                    <toolbarItem reference="7AX-AY-0Vz"/>
                     <toolbarItem reference="FLu-mf-Dta"/>
                     <toolbarItem reference="XZ3-bl-7lg"/>
                     <toolbarItem reference="UXu-W5-loZ"/>
-                    <toolbarItem reference="HGt-Mf-tHp"/>
+                    <toolbarItem reference="rTc-JD-E1f"/>
                 </defaultToolbarItems>
                 <connections>
                     <outlet property="delegate" destination="-2" id="hgh-9A-n8M"/>
@@ -191,8 +203,11 @@
     <resources>
         <image name="NSStopProgressFreestandingTemplate" width="14" height="14"/>
         <image name="clear" width="16" height="16"/>
-        <image name="console" width="20" height="20"/>
+        <image name="console-tbar" width="40" height="40"/>
+        <image name="content-tbar" width="40" height="40"/>
         <image name="files" width="20" height="20"/>
+        <image name="help-tbar" width="40" height="40"/>
+        <image name="image-tbar" width="40" height="40"/>
         <image name="package" width="48" height="48"/>
         <image name="search" width="18" height="18"/>
         <image name="variables" width="20" height="20"/>

@@ -45,6 +45,7 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		view.wantsLayer = true
 		shareButton?.sendActionOn(Int(NSEventMask.LeftMouseDownMask.rawValue))
 		view.layer?.backgroundColor = PlatformColor.whiteColor().CGColor
+		labelField?.stringValue = ""
 	}
 	
 	override func viewWillAppear() {

@@ -27,6 +27,7 @@ class WebViewController: NSViewController, WKNavigationDelegate {
 		config.allowsAirPlayForMediaPlayback = true
 		webConfig = config
 		setupWebView()
+		titleLabel?.stringValue = ""
 	}
 	
 	func setupWebView() {
