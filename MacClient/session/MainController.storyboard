@@ -377,18 +377,22 @@
                                             </segments>
                                         </segmentedCell>
                                         <connections>
-                                            <action selector="segButtonClicked:" target="Qrx-Nw-UgA" id="slI-TC-HLC"/>
+                                            <action selector="segButtonClicked:" target="XJm-U6-51C" id="kih-D7-brA"/>
                                         </connections>
                                     </segmentedControl>
                                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wkm-KO-9pg" userLabel="action menu">
                                         <rect key="frame" x="158" y="-1" width="35" height="23"/>
-                                        <popUpButtonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" id="zUd-0F-7El">
+                                        <popUpButtonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" selectedItem="tg4-ie-6Et" id="zUd-0F-7El">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                             <menu key="menu" title="OtherViews" autoenablesItems="NO" id="FqJ-7k-WFf">
                                                 <items>
                                                     <menuItem state="on" image="NSActionTemplate" hidden="YES" id="VB5-fG-XHD"/>
-                                                    <menuItem title="Rename…" id="tg4-ie-6Et"/>
+                                                    <menuItem title="Rename…" id="tg4-ie-6Et">
+                                                        <connections>
+                                                            <action selector="renameFile:" target="XJm-U6-51C" id="bs4-Bz-SlS"/>
+                                                        </connections>
+                                                    </menuItem>
                                                     <menuItem title="Export…" id="SLT-dk-xdw">
                                                         <connections>
                                                             <action selector="exportSelectedFile:" target="XJm-U6-51C" id="dof-Uu-BD1"/>
@@ -400,9 +404,17 @@
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem isSeparatorItem="YES" id="f1B-5j-Bp6"/>
-                                                    <menuItem title="Duplicate" id="q4a-by-u1C"/>
+                                                    <menuItem title="Duplicate" id="q4a-by-u1C">
+                                                        <connections>
+                                                            <action selector="duplicateFile:" target="XJm-U6-51C" id="PXJ-Tn-4UN"/>
+                                                        </connections>
+                                                    </menuItem>
                                                     <menuItem isSeparatorItem="YES" id="DRo-bt-ToN"/>
-                                                    <menuItem title="Delete…" id="GRl-iM-dRs"/>
+                                                    <menuItem title="Delete…" id="GRl-iM-dRs">
+                                                        <connections>
+                                                            <action selector="deleteFile:" target="XJm-U6-51C" id="Pzc-Rq-l7N"/>
+                                                        </connections>
+                                                    </menuItem>
                                                 </items>
                                                 <connections>
                                                     <outlet property="delegate" destination="XJm-U6-51C" id="VU3-b2-MnQ"/>

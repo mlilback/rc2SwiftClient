@@ -148,14 +148,36 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		print("add file of type \(fileType.name)")
 	}
 	
-	func removeFileMenuItem(sender:AnyObject?) {
-		log.info("remove selcted file")
+	@IBAction func deleteFile(sender:AnyObject?) {
+		//TODO: implement deleteFile
+		log.info("remove selected file")
+	}
+	
+	@IBAction func duplicateFile(sender:AnyObject?) {
+		//TODO: implement duplicateFile
+		log.info("duplicate selected file")
+	}
+
+	@IBAction func renameFile(sender:AnyObject?) {
+		//TODO: implement renameFile
+		log.info("rename selcted file")
 	}
 	
 	@IBAction func addDocumentOfType(menuItem:NSMenuItem) {
-		
+		//TODO: implement addDocumentOfType
+		log.info("add file of type \(menuItem)")
 	}
 	
+	@IBAction func segButtonClicked(sender:AnyObject?) {
+		if addRemoveButtons?.selectedSegment == 0 {
+			//add file
+			//TODO: implement add file
+		} else {
+			//delete file
+			deleteFile(sender)
+		}
+	}
+
 	//MARK: - import/export
 	@IBAction func promptToImportFiles(sender:AnyObject?) {
 		if nil == importPrompter {
