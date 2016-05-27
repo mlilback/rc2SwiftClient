@@ -6,10 +6,9 @@
 
 import Cocoa
 
-let ConsoleTabIndex = 0
-let ImageTabIndex = 1
-let WebKitTabIndex = 2
-let HelpTabIndex = 3
+enum OutputTabType: Int {
+	 case Console = 0, Image, WebKit, Help
+}
 
 class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandler {
 	var consoleController: SessionOutputController?
@@ -21,6 +20,11 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	var consoleToolbarControl: NSSegmentedControl?
 	var segmentItem: NSToolbarItem?
 	var segmentControl: NSSegmentedControl?
+	var displayedFileId: Int?
+	var selectedOutputTab:OutputTabType {
+		get { return OutputTabType(rawValue: selectedTabViewItemIndex)! }
+		set { selectedTabViewItemIndex = newValue.rawValue ; adjustOutputTabSwitcher() }
+	}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -28,7 +32,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	}
 	override func viewWillAppear() {
 		super.viewWillAppear()
-		selectedTabViewItemIndex = ConsoleTabIndex
+		selectedOutputTab = .Console
 		consoleController = firstChildViewController(self)
 		consoleController?.viewFileOrImage = displayFileOrImage
 		imageController = firstChildViewController(self)
@@ -74,11 +78,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			segmentControl?.target = self
 			segmentControl?.action = #selector(OutputTabController.tabSwitcherClicked(_:))
 			let lastSelection = 0 //NSUserDefaults.standardUserDefaults().integerForKey(LastSelectedSessionTabIndex)
-			segmentControl?.selectedSegment = lastSelection
-			selectedTabViewItemIndex = lastSelection
-			for idx in 0..<3 {
-				[segmentControl?.setEnabled(idx == lastSelection ? false : true, forSegment: idx)]
-			}
+			selectedOutputTab = OutputTabType(rawValue: lastSelection)!
 			return true
 		}
 		return false
@@ -86,15 +86,19 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	dynamic func tabSwitcherClicked(sender:AnyObject?) {
 		let index = (segmentControl?.selectedSegment)!
-		guard index != selectedTabViewItemIndex else { return }
+		selectedOutputTab = OutputTabType(rawValue: index)!
+//		NSUserDefaults.standardUserDefaults().setInteger(index, forKey: LastSelectedSessionTabIndex)
+	}
+
+	func adjustOutputTabSwitcher() {
+		let index = selectedOutputTab.rawValue
+//		guard index != selectedTabViewItemIndex else { return }
 		segmentControl?.animator().setSelected(true, forSegment: index)
 		for idx in 0..<3 {
 			[segmentControl?.setEnabled(idx == index ? false : true, forSegment: idx)]
 		}
-		selectedTabViewItemIndex = index
-//		NSUserDefaults.standardUserDefaults().setInteger(index, forKey: LastSelectedSessionTabIndex)
 	}
-
+	
 	func showHelp(note:NSNotification) {
 		var url:NSURL?
 		if let topic:HelpTopic = note.object as? HelpTopic {
@@ -106,10 +110,10 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 				url = HelpController.sharedInstance.urlForTopic(topics[0].subtopics![0])
 			}
 		} else {
-			selectedTabViewItemIndex = ConsoleTabIndex
+			selectedOutputTab = .Console
 		}
 		if url != nil {
-			selectedTabViewItemIndex = HelpTabIndex
+			selectedOutputTab = .Help
 			helpController?.loadUrl(url!)
 		}
 	}
@@ -120,7 +124,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	}
 	
 	func consoleButtonClicked(sender:AnyObject?) {
-		selectedTabViewItemIndex = ConsoleTabIndex
+		selectedOutputTab = .Console
 	}
 	
 	func displayFileOrImage(fileWrapper: NSFileWrapper) {
@@ -133,31 +137,38 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			let index = images.indexOf({$0.id == targetImg.id})
 		{
 			imageController?.displayImageAtIndex(index, images:images)
-			selectedTabViewItemIndex = ImageTabIndex
+			selectedOutputTab = .Image
 			tabView.window?.toolbar?.validateVisibleItems()
 		} else if let fdata = fileWrapper.regularFileContents,
 			let fdict = NSKeyedUnarchiver.unarchiveObjectWithData(fdata) as? NSDictionary,
-			let fileId = fdict["id"] as? Int,
-			let file = session?.workspace.fileWithId(fileId)
+			let fileId = fdict["id"] as? Int
 		{
-			webController?.loadLocalFile(session!.fileHandler.fileCache.cachedFileUrl(file))
-			selectedTabViewItemIndex = WebKitTabIndex
+			if let file = session?.workspace.fileWithId(fileId) {
+				webController?.loadLocalFile(session!.fileHandler.fileCache.cachedFileUrl(file))
+				selectedOutputTab = .WebKit
+			} else {
+				//TODO: report error
+			}
 		}
 	}
 	
 	func showFile(fileId:Int) {
+		displayedFileId = fileId
 		if let file = session?.workspace.fileWithId(fileId) {
 			//TODO: need to specially handle images
 			webController?.loadLocalFile(session!.fileHandler.fileCache.cachedFileUrl(file))
-			selectedTabViewItemIndex = WebKitTabIndex
+			selectedOutputTab = .WebKit
+		} else {
+			webController?.clearContents()
+			selectedOutputTab = .Console
 		}
 	}
 
 	func appendFormattedString(string:NSAttributedString, type:OutputStringType = .Default) {
 		consoleController?.appendFormattedString(string, type:type)
 		//switch back to console view
-		if selectedTabViewItemIndex != ConsoleTabIndex {
-			selectedTabViewItemIndex = ConsoleTabIndex
+		if selectedOutputTab != .Console {
+			selectedOutputTab = .Console
 		}
 	}
 
