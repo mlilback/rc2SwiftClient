@@ -139,6 +139,13 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	//MARK: - actions
 	func addButtonClicked(sender:AnyObject?) {
 		log.info("called for \(addRemoveButtons?.selectedSegment)")
+		if addRemoveButtons?.selectedSegment == 0 {
+			//add file
+			//TODO: implement add file
+		} else {
+			//delete file
+			deleteFile(sender)
+		}
 	}
 	
 	func addFileMenuAction(note:NSNotification) {
@@ -149,7 +156,8 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	@IBAction func deleteFile(sender:AnyObject?) {
-		//TODO: implement deleteFile
+		assert(selectedFile != nil)
+		session.removeFile(selectedFile!)
 		log.info("remove selected file")
 	}
 	

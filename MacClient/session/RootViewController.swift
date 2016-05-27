@@ -281,6 +281,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	func fileSelectionChanged(file:File?) {
 		if nil == file {
 			self.editor?.fileSelectionChanged(nil)
+			self.outputHandler?.showFile(0)
 		} else if file!.fileType.isSourceFile {
 			self.editor?.fileSelectionChanged(file)
 		} else {
