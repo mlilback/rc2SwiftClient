@@ -17,6 +17,8 @@
 		0812631F1C862F4B003E37A5 /* EditorDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812631E1C862F4B003E37A5 /* EditorDocument.swift */; };
 		081263211C87A9E8003E37A5 /* EditorDocumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */; };
 		081468371C755A1E006DF8FC /* FileImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081468361C755A1E006DF8FC /* FileImporterTests.swift */; };
+		0814CB721CF894AC0008DE6B /* ConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814CB711CF894AC0008DE6B /* ConsoleAttachment.swift */; };
+		0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */; };
 		08159D1E1C77656C004A205A /* NSProgressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08159D1D1C77656C004A205A /* NSProgressTests.m */; };
 		0816F89A1C6D0F7D00A6120B /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
 		0816F89C1C6D2BA000A6120B /* SessionDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */; };
@@ -260,6 +262,8 @@
 		0812631E1C862F4B003E37A5 /* EditorDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorDocument.swift; sourceTree = "<group>"; };
 		081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorDocumentTests.swift; sourceTree = "<group>"; };
 		081468361C755A1E006DF8FC /* FileImporterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporterTests.swift; sourceTree = "<group>"; };
+		0814CB711CF894AC0008DE6B /* ConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleAttachment.swift; sourceTree = "<group>"; };
+		0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacConsoleAttachment.swift; sourceTree = "<group>"; };
 		08159D1D1C77656C004A205A /* NSProgressTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSProgressTests.m; sourceTree = "<group>"; };
 		0816F8991C6D0F7D00A6120B /* HTMLString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLString.swift; sourceTree = "<group>"; };
 		0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegates.swift; sourceTree = "<group>"; };
@@ -662,6 +666,7 @@
 				0827A4D71C7ED9CE001F0AFB /* SyntaxHighlighting */,
 				086BC9AE1C552D43006ABAE0 /* AppStatus.swift */,
 				088CE6951C4B605D00153414 /* ColorEnums.swift */,
+				0814CB711CF894AC0008DE6B /* ConsoleAttachment.swift */,
 				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
 				083382F51C68E59300D40EEB /* FileCache.swift */,
 				08B036211C73B131005928B3 /* FileImporter.swift */,
@@ -772,6 +777,7 @@
 				08A01FA81CBC07B0001EDFAA /* WebKitOutputController.swift */,
 				08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */,
 				08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */,
+				0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */,
 				0812631D1C862B94003E37A5 /* sidebar */,
 				0812631B1C8628D0003E37A5 /* session views */,
 				0812631C1C862918003E37A5 /* data/helpers */,
@@ -1005,6 +1011,7 @@
 				083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
 				08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */,
+				0814CB721CF894AC0008DE6B /* ConsoleAttachment.swift in Sources */,
 				083305E61C517FE300E27F66 /* SidebarHelpController.swift in Sources */,
 				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,
 				08D6106B1CD2444C00258D8E /* Variable.swift in Sources */,
@@ -1033,6 +1040,7 @@
 				088CE6AD1C4B605D00153414 /* ServerResponse.swift in Sources */,
 				083174121C58014500071408 /* ServerResponseHandler.swift in Sources */,
 				08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */,
+				0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */,
 				088CE6B81C4C44A800153414 /* Keychain.swift in Sources */,
 				083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */,
 				08A01FC61CC7FCA3001EDFAA /* FMDatabasePool.m in Sources */,

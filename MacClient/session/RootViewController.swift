@@ -236,36 +236,12 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		variableHandler!.handleVariableDeltaMessage(socketId, assigned: assigned, removed: removed)
 	}
 
-	func attributedStringWithImage(image:SessionImage) -> NSAttributedString {
-		let data = NSKeyedArchiver.archivedDataWithRootObject(image)
-		let file = NSFileWrapper(regularFileWithContents: data)
-		file.filename = image.name
-		file.preferredFilename = image.name
-		let attachment = NSTextAttachment(fileWrapper: file)
-		let cell = NSTextAttachmentCell(imageCell: NSImage(named: "graph"))
-		cell.image?.size = NSMakeSize(48, 48)
-		attachment.attachmentCell = cell
-		let str = NSMutableAttributedString(attributedString: NSAttributedString(attachment: attachment))
-		str.addAttribute(NSToolTipAttributeName, value: image.name, range: NSMakeRange(0,1))
-		return str
+	func consoleAttachment(forImage image:SessionImage) -> ConsoleAttachment {
+		return MacConsoleAttachment(image:image)
 	}
 	
-	func attributedStringWithFile(file:File) -> NSAttributedString {
-		let fileDict = ["id":file.fileId, "version":file.version, "ext":file.fileType.fileExtension]
-		let data = NSKeyedArchiver.archivedDataWithRootObject(fileDict)
-		let fw = NSFileWrapper(regularFileWithContents: data)
-		fw.filename = file.name
-		fw.preferredFilename = file.name
-		let attachment = NSTextAttachment(fileWrapper: fw)
-		let cell = NSTextAttachmentCell(imageCell: file.fileType.image())
-		cell.image?.size = ConsoleAttachmentImageSize
-		attachment.attachmentCell = cell
-		//we need to add a newline after cell or background color (of preceding text) gets exended over image
-		let str = NSMutableAttributedString(attributedString: NSAttributedString(attachment: attachment))
-		str.appendAttributedString(NSAttributedString(string:"\n"))
-		str.addAttribute(NSToolTipAttributeName, value: file.name, range: NSMakeRange(0,1))
-		log.info("showing file \(file)")
-		return str
+	func consoleAttachment(forFile file:File) -> ConsoleAttachment {
+		return MacConsoleAttachment(file:file)
 	}
 	
 	func attributedStringForInputFile(fileId:Int) -> NSAttributedString {
@@ -316,7 +292,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 				//need to refetch file from server, then show it
 				let prog = session.fileHandler.updateFile(updatedFile, withData: nil)
 				prog?.rc2_addCompletionHandler() {
-					self.outputHandler?.appendFormattedString(self.attributedStringWithFile(updatedFile), type:.Default)
+					self.outputHandler?.appendFormattedString(self.consoleAttachment(forFile:updatedFile).serializeToAttributedString(), type:.Default)
 				}
 				return
 			}

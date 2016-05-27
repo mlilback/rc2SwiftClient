@@ -20,8 +20,8 @@ protocol ResponseHandlerDelegate {
 	func handleFileUpdate(file:File, change:FileChangeType)
 	func handleVariableMessage(socketId:Int, single:Bool, variables:[Variable])
 	func handleVariableDeltaMessage(socketId:Int, assigned:[Variable], removed:[String])
-	func attributedStringWithImage(image:SessionImage) -> NSAttributedString
-	func attributedStringWithFile(file:File) -> NSAttributedString
+	func consoleAttachment(forImage image:SessionImage) -> ConsoleAttachment
+	func consoleAttachment(forFile file:File) -> ConsoleAttachment
 	func attributedStringForInputFile(fileId:Int) -> NSAttributedString
 	func cacheImages(images:[SessionImage])
 }
@@ -90,7 +90,7 @@ class ResponseHandler {
 	}
 
 	private func formatShowOutput(queryId:Int, file:File) -> NSAttributedString? {
-		return delegate.attributedStringWithFile(file)
+		return delegate.consoleAttachment(forFile:file).serializeToAttributedString()
 	}
 	
 	private func formatExecComplete(queryId:Int, batchId:Int, images:[SessionImage]) -> NSAttributedString? {
@@ -98,7 +98,7 @@ class ResponseHandler {
 		delegate.cacheImages(images)
 		let mstr = NSMutableAttributedString()
 		for image in images {
-			let aStr = delegate.attributedStringWithImage(image)
+			let aStr = delegate.consoleAttachment(forImage: image).serializeToAttributedString()
 			mstr.appendAttributedString(aStr)
 		}
 		mstr.appendAttributedString(NSAttributedString(string: "\n"))
