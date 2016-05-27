@@ -7,12 +7,12 @@
 import Foundation
 
 public class MacConsoleAttachment: NSObject, ConsoleAttachment {
-	private let type: ConsoleAttachmentType
-	private let image: SessionImage?
-	private let fileId:Int32
-	private let fileVersion:Int32
-	private let fileName:String?
-	private let fileExtension:String?
+	public let type: ConsoleAttachmentType
+	let image: SessionImage?
+	let fileId:Int32
+	let fileVersion:Int32
+	let fileName:String?
+	let fileExtension:String?
 	
 	public static func supportsSecureCoding() -> Bool {
 		return true
@@ -73,16 +73,16 @@ public class MacConsoleAttachment: NSObject, ConsoleAttachment {
 	}
 	
 	public func serializeToAttributedString() -> NSAttributedString {
-		var file:NSFileWrapper?
-		var image:NSImage?
+		var results:(NSFileWrapper, NSImage?)?
 		switch(type) {
 			case .File:
-				(file!, image) = fileAttachmentData()
+				results = fileAttachmentData()
 			case .Image:
-				(file!, image) = imageAttachmentData()
+				results = imageAttachmentData()
 		}
-		let attachment = NSTextAttachment(fileWrapper: file)
-		let cell = NSTextAttachmentCell(imageCell: image)
+		assert(results?.0 != nil)
+		let attachment = NSTextAttachment(fileWrapper: results!.0)
+		let cell = NSTextAttachmentCell(imageCell: results!.1)
 		cell.image?.size = NSMakeSize(48, 48)
 		attachment.attachmentCell = cell
 		let str = NSMutableAttributedString(attributedString: NSAttributedString(attachment: attachment))

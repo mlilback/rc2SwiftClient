@@ -34,7 +34,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		super.viewWillAppear()
 		selectedOutputTab = .Console
 		consoleController = firstChildViewController(self)
-		consoleController?.viewFileOrImage = displayFileOrImage
+		consoleController?.viewFileOrImage = displayFileAttachment
 		imageController = firstChildViewController(self)
 		imageController?.imageCache = imageCache
 		webController = firstChildViewController(self)
@@ -127,27 +127,29 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		selectedOutputTab = .Console
 	}
 	
-	func displayFileOrImage(fileWrapper: NSFileWrapper) {
+	func displayFileAttachment(fileWrapper: NSFileWrapper) {
 		log.info("told to display file \(fileWrapper.filename)")
-		guard let fname = fileWrapper.filename else { return }
-		if  fname.hasPrefix("img"),
-			let fdata = fileWrapper.regularFileContents,
-			let targetImg = NSKeyedUnarchiver.unarchiveObjectWithData(fdata) as? SessionImage,
-			let images = imageCache?.sessionImagesForBatch(targetImg.batchId),
-			let index = images.indexOf({$0.id == targetImg.id})
-		{
-			imageController?.displayImageAtIndex(index, images:images)
-			selectedOutputTab = .Image
-			tabView.window?.toolbar?.validateVisibleItems()
-		} else if let fdata = fileWrapper.regularFileContents,
-			let fdict = NSKeyedUnarchiver.unarchiveObjectWithData(fdata) as? NSDictionary,
-			let fileId = fdict["id"] as? Int
-		{
-			if let file = session?.workspace.fileWithId(fileId) {
-				webController?.loadLocalFile(session!.fileHandler.fileCache.cachedFileUrl(file))
-				selectedOutputTab = .WebKit
-			} else {
-				//TODO: report error
+		guard let attachment = NSKeyedUnarchiver.unarchiveObjectWithData(fileWrapper.regularFileContents!) as? MacConsoleAttachment else {
+			log.warning("asked to display invalid attachment")
+			return
+		}
+		switch (attachment.type) {
+			case .File:
+				if let file = session?.workspace.fileWithId(Int(attachment.fileId)) {
+					webController?.loadLocalFile(session!.fileHandler.fileCache.cachedFileUrl(file))
+					selectedOutputTab = .WebKit
+					//TODO: implement option to check by filename if not found by id
+				} else {
+					//TODO: report error
+				}
+			case .Image:
+				if let image = attachment.image,
+				let images = imageCache?.sessionImagesForBatch(image.batchId),
+				let index = images.indexOf({$0.id == image.id})
+			{
+				imageController?.displayImageAtIndex(index, images:images)
+				selectedOutputTab = .Image
+				tabView.window?.toolbar?.validateVisibleItems()
 			}
 		}
 	}
