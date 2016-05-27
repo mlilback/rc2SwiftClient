@@ -16,6 +16,10 @@ public enum ExecuteType: String {
 	case Run = "run", Source = "source", None = ""
 }
 
+public enum FileOperation: String {
+	case Remove = "rm", Rename = "rename", Duplicate = "duplicate"
+}
+
 public class Session : NSObject, SessionFileHandlerDelegate {
 	///tried kvo, forced to use notifications
 	class Manager: NSObject {
@@ -147,6 +151,12 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		watchingVariables = false
 	}
 	
+	func removeFile(file:File) {
+		let uniqueIdent = NSUUID().UUIDString
+		sendMessage(["msg":"fileop", "fileId":file.fileId, "fileVersion":file.version, "operation":"rm", "transId":uniqueIdent])
+		//TODO: should block UI until server sends a response
+	}
+	
 	//MARK: SessionFileHandlerDelegate methods
 	func filesLoaded() {
 		appStatus.updateStatus(nil)
@@ -241,11 +251,33 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		}
 	}
 	
+	private func handleFileResponse(transId:String, operation:FileOperation, file:File) {
+		switch(operation) {
+		case .Duplicate:
+			//TODO: support
+			break
+		case .Rename:
+			//TODO: support
+			break
+		case .Remove:
+			if let idx = workspace.indexOfFile(file) {
+				workspace.removeFileAtIndex(idx)
+			} else {
+				log.warning("got remove response for unknown file")
+			}
+			break
+		}
+	}
+	
 	private func handleReceivedMessage(message:Any) {
 		if let stringMessage = message as? String {
 			let jsonMessage = JSON.parse(stringMessage)
 			if let response = ServerResponse.parseResponse(jsonMessage) {
-				self.delegate?.sessionMessageReceived(response)
+				if case let .FileOperationResponse(transId, operation, file) = response {
+					handleFileResponse(transId, operation:operation, file:file)
+				} else {
+					self.delegate?.sessionMessageReceived(response)
+				}
 			}
 		} else if let _ = message as? NSData {
 			processBinaryResponse(message as! NSData)

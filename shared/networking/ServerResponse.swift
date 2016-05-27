@@ -18,6 +18,7 @@ public enum ServerResponse : Equatable {
 	case ShowOutput(queryId:Int, updatedFile:File)
 	case Variables(socketId:Int, single:Bool, variables:[Variable])
 	case VariablesDelta(socketId:Int, assigned:[Variable], removed:[String])
+	case FileOperationResponse(transId:String, operation:FileOperation, file:File)
 	
 	
 	func isEcho() -> Bool {
@@ -56,9 +57,12 @@ public enum ServerResponse : Equatable {
 				}
 				return ServerResponse.Variables(socketId: sid, single: jsonObj["single"].boolValue, variables: Variable.variablesForJsonDictionary(jsonObj["variables"].dictionaryValue))
 			case "saveResponse":
+				//TODO: not looking at "success" and handling "error"
 				return ServerResponse.SaveResponse(transId: jsonObj["transId"].stringValue)
 			case "userid":
 				return nil //TODO: need to implement
+			case "fileOpResponse":
+				return ServerResponse.FileOperationResponse(transId: jsonObj["transId"].stringValue, operation: FileOperation(rawValue:jsonObj["operation"].stringValue)!, file: File(json: jsonObj["file"]))
 			default:
 				log.warning("unknown message from server:\(jsonObj["msg"].stringValue)")
 				return nil

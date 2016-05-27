@@ -63,6 +63,9 @@ class ResponseHandler {
 			case .SaveResponse( _):
 				//handled by the session, never passed to delegate
 				return nil
+			case .FileOperationResponse(_, _, _):
+				//handled by the session, never passed to delegate
+				return nil
 		}
 		return nil
 	}
