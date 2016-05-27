@@ -99,6 +99,10 @@ public class Workspace: NSObject {
 		return filesArray.objectAtIndex(index) as? File
 	}
 	
+	public func indexOfFile(file:File) -> Int? {
+		return files.indexOf(file)
+	}
+	
 	public func insertFile(aFile:AnyObject, atIndex index:Int) {
 		filesArray.insertObject(aFile, atIndex: index)
 		let oldFile = filesArray.objectAtIndex(index) as! File
@@ -107,8 +111,8 @@ public class Workspace: NSObject {
 	}
 	
 	public func removeFileAtIndex(index:Int) {
-		filesArray.removeObjectAtIndex(index)
 		let oldFile = filesArray.objectAtIndex(index) as! File
+		filesArray.removeObjectAtIndex(index)
 		let change = WorkspaceFileChange(old: oldFile, new: nil, type: .Remove, indexes: NSIndexSet(index: index))
 		NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(WorkspaceFileChangedNotification, object: self, userInfo: ["change":change])
 	}

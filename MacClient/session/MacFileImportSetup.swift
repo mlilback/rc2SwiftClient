@@ -125,6 +125,10 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 		let pathExtension = nsname.pathExtension
 		var useableName = desiredName
 		let existingNames = workspace.files.map() { return $0.name }
+		//check if desiredName is ok
+		if !existingNames.contains(desiredName) {
+			return desiredName
+		}
 		while(true) {
 			let newName = baseName + " \(i)." + pathExtension
 			if !existingNames.contains(newName) {

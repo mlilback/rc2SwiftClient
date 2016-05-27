@@ -14,6 +14,10 @@ class WebKitOutputController: WebViewController {
 		super.viewDidLoad()
 	}
 
+	func clearContents() {
+		webView?.loadRequest(NSURLRequest(URL: NSURL(string: "about:blank")!));
+	}
+	
 	func loadLocalFile(url:NSURL) {
 		guard webView !=  nil else {
 			dispatch_async(dispatch_get_main_queue()) { self.loadLocalFile(url) }
