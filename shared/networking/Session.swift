@@ -23,7 +23,7 @@ public enum FileOperation: String {
 public class Session : NSObject, SessionFileHandlerDelegate {
 	///tried kvo, forced to use notifications
 	class Manager: NSObject {
-		dynamic var currentSession: Session? {
+		dynamic weak var currentSession: Session? {
 			didSet {
 				NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(CurrentSessionChangedNotification, object: currentSession!)
 			}
@@ -96,6 +96,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	}
 	
 	func close() {
+		dispatch_source_cancel(keepAliveTimer)
 		self.wsSource.close(1000, reason: "") //default values that can't be specified in a protocol
 	}
 	
