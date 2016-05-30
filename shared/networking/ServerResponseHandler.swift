@@ -11,6 +11,7 @@
 #endif
 import SwiftyJSON
 
+
 enum FileChangeType : String {
 	case Update, Insert, Delete
 }
@@ -24,6 +25,7 @@ protocol ResponseHandlerDelegate {
 	func consoleAttachment(forFile file:File) -> ConsoleAttachment
 	func attributedStringForInputFile(fileId:Int) -> NSAttributedString
 	func cacheImages(images:[SessionImage])
+	func showFile(fileId:Int)
 }
 
 class ResponseHandler {
@@ -59,7 +61,9 @@ class ResponseHandler {
 			case .VariablesDelta(let socketId, let assigned, let removed):
 				delegate.handleVariableDeltaMessage(socketId, assigned: assigned, removed: removed)
 			case .ShowOutput(let queryId, let updatedFile):
-				return formatShowOutput(queryId, file:updatedFile)
+				let str = formatShowOutput(queryId, file:updatedFile)
+				delegate.showFile(updatedFile.fileId)
+				return str
 			case .SaveResponse( _):
 				//handled by the session, never passed to delegate
 				return nil
@@ -90,7 +94,10 @@ class ResponseHandler {
 	}
 
 	private func formatShowOutput(queryId:Int, file:File) -> NSAttributedString? {
-		return delegate.consoleAttachment(forFile:file).serializeToAttributedString()
+		let str = delegate.consoleAttachment(forFile:file).serializeToAttributedString()
+		let mstr = str.mutableCopy() as! NSMutableAttributedString
+		mstr.appendAttributedString(NSAttributedString(string: "\n"))
+		return mstr
 	}
 	
 	private func formatExecComplete(queryId:Int, batchId:Int, images:[SessionImage]) -> NSAttributedString? {

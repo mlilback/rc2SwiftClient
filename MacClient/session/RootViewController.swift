@@ -252,6 +252,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	func cacheImages(images:[SessionImage]) {
 		imgCache.cacheImagesFromServer(images)
 	}
+	
+	func showFile(fileId:Int) {
+		outputHandler?.showFile(fileId)
+	}
 
 	//MARK:- FileViewControllerDelegate
 	func fileSelectionChanged(file:File?) {
@@ -292,7 +296,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 				//need to refetch file from server, then show it
 				let prog = session.fileHandler.updateFile(updatedFile, withData: nil)
 				prog?.rc2_addCompletionHandler() {
-					self.outputHandler?.appendFormattedString(self.consoleAttachment(forFile:updatedFile).serializeToAttributedString(), type:.Default)
+					if let astr = self.responseHandler?.handleResponse(response) {
+						self.outputHandler?.appendFormattedString(astr, type: response.isEcho() ? .Input : .Default)
+					}
+//					self.outputHandler?.appendFormattedString(self.consoleAttachment(forFile:updatedFile).serializeToAttributedString(), type:.Default)
 				}
 				return
 			}

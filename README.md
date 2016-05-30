@@ -20,6 +20,12 @@ Due to a bug in clang that causes crashes with [Carthage](https://github.com/Car
 
 * [Mockingjay](https://github.com/kylef/Mockingjay) for networking unit tests.
 
+# Building
+
+1. `carthage build --no-use-binaries --platform Mac .`
+
+2. Copy all files from Carthage/Build/Mac to the `Build/Products/Debug` folder in the project's folder in `~/Library/Developer/Xcode/DerivedData`.
+
 # Help support
 
 In the help directory, indexDocs.pl is a perl script to generate a json file with the help information necessary to make an index to search. These files are checked into git. The createHelpIndex target parses these files and creates an sqllite db that is embedded in the application for searching help.

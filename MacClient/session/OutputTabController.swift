@@ -158,8 +158,10 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		displayedFileId = fileId
 		if let file = session?.workspace.fileWithId(fileId) {
 			//TODO: need to specially handle images
-			webController?.loadLocalFile(session!.fileHandler.fileCache.cachedFileUrl(file))
-			selectedOutputTab = .WebKit
+			dispatch_async(dispatch_get_main_queue()) {
+				self.webController?.loadLocalFile(self.session!.fileHandler.fileCache.cachedFileUrl(file))
+				self.selectedOutputTab = .WebKit
+			}
 		} else {
 			webController?.clearContents()
 			selectedOutputTab = .Console
