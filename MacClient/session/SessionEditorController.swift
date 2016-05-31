@@ -145,7 +145,7 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 				let newFile = change.newFile!
 				self.currentDocument?.updateFile(change.newFile!)
 				self.fileSelectionChanged(newFile)
-			} else if currentDocument!.file.fileId == change.newFile?.fileId {
+			} else if currentDocument?.file.fileId == change.newFile?.fileId {
 				let progress = session.fileHandler.fileCache.flushCacheForFile(change.newFile!)
 				progress?.rc2_addCompletionHandler() {
 					let newFile = change.newFile!
