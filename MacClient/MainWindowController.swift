@@ -7,10 +7,13 @@
 import Cocoa
 
 class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolbarDelegate {
-	@IBOutlet var rootTabController: NSTabViewController?
+	///Object that lets us monitor the status of the application. Nededed to pass on to the statusView once setup is finished
 	dynamic weak var appStatus: AppStatus?
+	
+	///Custom view that shows the status of the application: progress, message, cancel button
 	var statusView: AppStatusView?
 	
+	/// Need to schedule setting up toolbar handlers, but don't want to do it more than once
 	private var toolbarSetupScheduled = false
 	
 	class func createFromNib() -> Self {
@@ -25,43 +28,15 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 	
 	func setupChildren() {
 		statusView?.appStatus = appStatus
-		rootTabController = firstRecursiveDescendent(contentViewController!,
-			children: { $0.childViewControllers },
-			filter: { $0 is NSTabViewController })  as? NSTabViewController
-//		showWorkspaceSelectTab()
-		let workspacesVC = firstRecursiveDescendent(rootTabController!, children: {$0.childViewControllers}, filter: {$0 is WorkspacesViewController}) as! WorkspacesViewController
-		dispatch_async(dispatch_get_main_queue(), {
-			workspacesVC.actionCallback = { (controller:WorkspacesViewController, workspaceName:String) in
-				self.showSessionTab()
-				self.window!.title = String.localizedStringWithFormat(NSLocalizedString("WindowTitleFormat", comment: ""), workspaceName)
-			}
-		})
-		let rootVC = self.rootTabController!.parentViewController! as! RootViewController
+		let rootVC = contentViewController as! RootViewController
 		rootVC.sessionClosedHandler = {
 			dispatch_async(dispatch_get_main_queue()) {
 				self.window?.close()
 			}
 		}
 	}
-	
-//	func showWorkspaceSelectTab() {
-//		rootTabController?.selectedTabViewItemIndex = (rootTabController?.tabView.indexOfTabViewItemWithIdentifier("workspaceSelect"))!
-//		let progress = NSProgress(totalUnitCount: 1)
-//		progress.rc2_addCompletionHandler() {
-//			self.appStatus!.updateStatus(nil)
-//			NSBeep()
-//		}
-//		progress.localizedDescription = "selecting workspace…"
-//	}
-	
-	func showSessionTab() {
-		let sessionIndex = (rootTabController?.tabView.indexOfTabViewItemWithIdentifier("session"))!
-		dispatch_async(dispatch_get_main_queue(), {
-			self.rootTabController?.selectedTabViewItemIndex = sessionIndex
-			self.appStatus?.updateStatus(nil)
-		})
-	}
-	
+
+	//When the first toolbar item is loaded, queue a closure to call assignHandlers from the ToolbarDelegatingOwner protocol(default implementation) that assigns each toolbar item to the appropriate ToolbarItemHandler (normally a view controller)
 	func toolbarWillAddItem(notification: NSNotification) {
 		//schedule assigning handlers after toolbar items are loaded
 		if !toolbarSetupScheduled {
