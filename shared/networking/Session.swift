@@ -78,6 +78,8 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		wsSource.event.close = { [unowned self] (code, reason, clear)in
 			self.connectionOpen = false
 			self.delegate?.sessionClosed()
+			//only release session once we have confirmed from remote server that it is closed
+			Session.manager.currentSession = nil
 		}
 		wsSource.event.message = { [unowned self] message in
 			log.info("got message:\(message)")
@@ -106,7 +108,6 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	}
 	
 	func close() {
-		Session.manager.currentSession = nil
 		dispatch_source_cancel(keepAliveTimer)
 		self.wsSource.close(1000, reason: "") //default values that can't be specified in a protocol
 	}
