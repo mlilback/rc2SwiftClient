@@ -23,17 +23,20 @@ public enum FileOperation: String {
 public class Session : NSObject, SessionFileHandlerDelegate {
 	///tried kvo, forced to use notifications
 	class Manager: NSObject {
-		dynamic weak var currentSession: Session? {
+		dynamic var currentSession: Session? {
 			didSet {
-				NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(CurrentSessionChangedNotification, object: currentSession!)
+				if let session = currentSession {
+					NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(CurrentSessionChangedNotification, object: session)
+				}
 			}
 		}
+		var sessionBeingOpened: Session?
 	}
 	static var manager: Manager = Manager()
 	
 	let workspace : Workspace
 	let wsSource : WebSocketSource
-	let appStatus: AppStatus
+	weak var appStatus: AppStatus?
 	let fileHandler: SessionFileHandler
 	weak var delegate : SessionDelegate?
 	var variablesVisible : Bool = false {
@@ -63,10 +66,11 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		super.init()
 		fileHandler.fileDelegate = self
 		wsSource.binaryType = .NSData
-		wsSource.event.open = {
-			dispatch_async(dispatch_get_main_queue()) { [unowned self] in
-				self.connectionOpen = true
+		wsSource.event.open = { [unowned self] in
+			dispatch_async(dispatch_get_main_queue()) {
 				Session.manager.currentSession = self
+				Session.manager.sessionBeingOpened = nil
+				self.connectionOpen = true
 				self.fileHandler.loadFiles()
 				self.delegate?.sessionOpened()
 			}
@@ -85,10 +89,16 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		//setup a timer to send keep alive messages every 2 minutes
 		let interval = 120 * NSEC_PER_SEC
 		dispatch_source_set_timer(keepAliveTimer, dispatch_time(DISPATCH_TIME_NOW, Int64(interval)), interval, NSEC_PER_SEC/10)
-		dispatch_source_set_event_handler(keepAliveTimer) {
+		dispatch_source_set_event_handler(keepAliveTimer) { [unowned self] in
 			self.sendMessage(["msg":"keepAlive"])
 		}
 		dispatch_resume(keepAliveTimer)
+		//need to keep a reference or ARC will dealloc while waiting on open response
+		Session.manager.sessionBeingOpened = self
+	}
+	
+	deinit {
+		log.info("session deallocated")
 	}
 	
 	func open(request:NSURLRequest) {
@@ -96,6 +106,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	}
 	
 	func close() {
+		Session.manager.currentSession = nil
 		dispatch_source_cancel(keepAliveTimer)
 		self.wsSource.close(1000, reason: "") //default values that can't be specified in a protocol
 	}
@@ -160,7 +171,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	
 	//MARK: SessionFileHandlerDelegate methods
 	func filesLoaded() {
-		appStatus.updateStatus(nil)
+		appStatus?.updateStatus(nil)
 		delegate?.sessionFilesLoaded(self)
 	}
 	

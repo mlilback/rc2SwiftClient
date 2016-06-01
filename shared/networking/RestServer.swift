@@ -54,7 +54,7 @@ import SwiftyJSON
 	private(set) public var loginSession : LoginSession?
 	private(set) var baseUrl : NSURL?
 	private var userAgent: String
-	private var appStatus:AppStatus?
+	private weak var appStatus:AppStatus?
 
 	var restHosts : [String] {
 		get {

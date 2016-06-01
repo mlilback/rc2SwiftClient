@@ -8,7 +8,7 @@ import Cocoa
 
 class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolbarDelegate {
 	@IBOutlet var rootTabController: NSTabViewController?
-	dynamic var appStatus: AppStatus?
+	dynamic weak var appStatus: AppStatus?
 	var statusView: AppStatusView?
 	
 	private var toolbarSetupScheduled = false

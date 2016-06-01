@@ -10,7 +10,7 @@ import BrightFutures
 class DefaultSessionFileHandler: SessionFileHandler {
 	var workspace:Workspace
 	let fileCache:FileCache
-	let appStatus:AppStatus?
+	weak var appStatus:AppStatus?
 	var baseUrl:NSURL
 	weak var fileDelegate:SessionFileHandlerDelegate?
 	private(set) var filesLoaded:Bool = false

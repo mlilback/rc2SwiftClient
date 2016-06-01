@@ -7,11 +7,11 @@
 import Cocoa
 
 class AbstractSessionViewController: NSViewController {
-	dynamic var sessionOptional: Session?
+	dynamic weak var sessionOptional: Session?
 	///convience accessor so don't have to constantly unwrap optional
 	var session: Session { get { return sessionOptional! } }
 	//injected by Swinject
-	dynamic var appStatus: AppStatus? { didSet {
+	dynamic weak var appStatus: AppStatus? { didSet {
 		appStatusChanged()
 	} }
 	

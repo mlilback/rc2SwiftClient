@@ -19,7 +19,7 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 	var baseUrl:NSURL
 	private let workspace:Workspace
 	private let urlConfig:NSURLSessionConfiguration
-	let appStatus:AppStatus?
+	weak var appStatus:AppStatus?
 	private(set) var currentProgress:NSProgress?
 	private var urlSession:NSURLSession?
 	private var tasks:[Int:DownloadTask] = [:] //key is task identifier

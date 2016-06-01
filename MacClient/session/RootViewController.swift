@@ -29,6 +29,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	var imgCache: ImageCache = ImageCache() { didSet { outputHandler?.imageCache = imgCache } }
 	var formerFirstResponder:NSResponder? //used to restore first responder when dimmingview goes away
 	
+	deinit {
+		sessionOptional?.close()
+	}
+	
 	//MARK: - Lifecycle
 	override func viewWillAppear() {
 		super.viewWillAppear()
@@ -51,12 +55,19 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	override func viewDidAppear() {
 		super.viewDidAppear()
 		self.hookupToToolbarItems(self, window: view.window!)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector:  #selector(RootViewController.windowWillClose(_:)), name: NSWindowWillCloseNotification, object:view.window!)
 		//create dimming view
 		dimmingView = DimmingView(frame: view.bounds)
 		view.addSubview(dimmingView!)
 		(view as! RootView).dimmingView = dimmingView //required to block clicks to subviews
 		//we have to wait until next time through event loop to set first responder
 		self.performSelectorOnMainThread(#selector(RootViewController.setupResponder), withObject: nil, waitUntilDone: false)
+	}
+	
+	func windowWillClose(note:NSNotification) {
+		if sessionOptional?.connectionOpen ?? false && (note.object as? NSWindow == view.window) {
+			session.close()
+		}
 	}
 	
 	func appWillTerminate() {
