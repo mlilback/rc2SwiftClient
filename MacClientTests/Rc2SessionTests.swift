@@ -118,12 +118,6 @@ class Rc2SessionTests: XCTestCase {
 		XCTAssertEqual(json["fileId"], 1)
 	}
 
-	func testUserList() {
-		session?.requestUserList();
-		let json = JSON.parse(wsSrc.stringsWritten.last!)
-		XCTAssertEqual(json["msg"], "userList")
-	}
-
 	func testForceVariableRefresh() {
 		session?.forceVariableRefresh();
 		let json = JSON.parse(wsSrc.stringsWritten.last!)
@@ -141,8 +135,6 @@ class Rc2SessionTests: XCTestCase {
 		}
 		func sessionMessageReceived(msg:JSON) {
 			lastMessage = msg
-		}
-		func loadHelpItems(topic: String, items: [HelpItem]) {
 		}
 	}
 	

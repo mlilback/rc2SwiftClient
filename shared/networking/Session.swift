@@ -21,6 +21,7 @@ public enum FileOperation: String {
 }
 
 public class Session : NSObject, SessionFileHandlerDelegate {
+	/// a static singleton for maintaining the current session. It is setable, so unit tests can use a mock session
 	///tried kvo, forced to use notifications
 	class Manager: NSObject {
 		dynamic var currentSession: Session? {
@@ -30,29 +31,38 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 				}
 			}
 		}
+		///need to keep a reference while open is in progress, as it is not yet assigned to currentSession
 		var sessionBeingOpened: Session?
 	}
 	static var manager: Manager = Manager()
 	
+	//the workspace this session represents
 	let workspace : Workspace
+	///the WebSocket for communicating with the server
 	let wsSource : WebSocketSource
+	///used to report progress on async operations
 	weak var appStatus: AppStatus?
+	///abstraction of file handling
 	let fileHandler: SessionFileHandler
+	///
 	weak var delegate : SessionDelegate?
-	var variablesVisible : Bool = false {
-		didSet {
-			if variablesVisible && variablesVisible != oldValue {
-				sendMessage(["cmd":"watchVariables", "watch":variablesVisible])
-			}
-		}
-	}
+
+	///regex used to catch user entered calls to help so we can hijack and display through our mechanism
 	var helpRegex : NSRegularExpression = {
 		return try! NSRegularExpression(pattern: "(help\\(\\\"?([\\w\\d]+)\\\"?\\))\\s*;?\\s?", options: [.DotMatchesLineSeparators])
 	}()
 	
 	private(set) var connectionOpen:Bool = false
 	private var keepAliveTimer:dispatch_source_t = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue())
-	private var waitingOnTransactions: [String:(String) -> Void] = [:]
+	
+	///closure syntax for a transaction complete callback
+	/// - parameter $0: the transaction id (key in the pendingTransaction dictionary)
+	/// - parameter $1: the message received from the server, if available
+	typealias TransactionCompletion = (String, JSON?) -> Void
+	
+	///a dictionary of transaction ids mapped to closures called when the server says the transaction is complete
+	private var pendingTransactions: [String:TransactionCompletion] = [:]
+	///if we are getting variable updates from the server
 	private var watchingVariables:Bool = false
 	
 	init(_ wspace:Workspace,  source:WebSocketSource, appStatus:AppStatus, networkConfig config:NSURLSessionConfiguration, delegate:SessionDelegate?=nil)
@@ -99,20 +109,23 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		Session.manager.sessionBeingOpened = self
 	}
 	
-	deinit {
-		log.info("session deallocated")
-	}
-	
+	///opens the websocket with the specified request
+	/// - parameter request: a ws:// or wss:// request to use for the websocket
 	func open(request:NSURLRequest) {
 		self.wsSource.open(request: request, subProtocols: [])
 	}
 	
+	///closes the websocket, which can not be reopened
 	func close() {
 		dispatch_source_cancel(keepAliveTimer)
 		self.wsSource.close(1000, reason: "") //default values that can't be specified in a protocol
 	}
 	
 	//MARK: public request methods
+	
+	///Sends an execute request to the server
+	/// - parameter srcScript: the script code to send to the server
+	/// - parameter type: whether to run or source the script
 	func executeScript(srcScript: String, type:ExecuteType = .Run) {
 		//don't send empty scripts
 		guard srcScript.characters.count > 0 else {
@@ -132,45 +145,59 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		sendMessage(["msg":"execute", "type":type.rawValue, "code":script])
 	}
 	
+	/// sends a request to execute a script file
+	/// - parameter fileId: the id of the file to execute
+	/// - parameter type: whether to run or source the file
 	func executeScriptFile(fileId:Int, type:ExecuteType = .Run) {
 		sendMessage(["msg":"execute", "type":type.rawValue, "fileId":fileId])
 	}
 	
+	/// clears all variables in the global environment
 	func clearVariables() {
 		executeScript("rc2.clearEnvironment()");
 	}
 	
+	/// sends a help request
+	/// - parameter str: The string to search for
 	func lookupInHelp(str:String) {
 		sendMessage(["msg":"help", "topic":str])
 	}
 	
-	func requestUserList() {
-		sendMessage(["msg":"userList"])
-	}
-	
+	/// asks the server for a refresh of all environment variables
 	func forceVariableRefresh() {
 		sendMessage(["msg":"watchVariables", "watch":true])
 	}
 	
+	/// ask the server to send a message with current variable values and delta messages as they change
 	func startWatchingVariables() {
 		if (watchingVariables) { return; }
 		sendMessage(["msg":"watchVariables", "watch":true])
 		watchingVariables = true
 	}
 
+	/// ask the server to stop sending environment delta messages
 	func stopWatchingVariables() {
 		if (!watchingVariables) { return }
 		sendMessage(["msg":"watchVariables", "watch":false])
 		watchingVariables = false
 	}
 	
+	/// asks the server to remove a file
+	/// - parameter file: The file to remove
 	func removeFile(file:File) {
-		let uniqueIdent = NSUUID().UUIDString
-		sendMessage(["msg":"fileop", "fileId":file.fileId, "fileVersion":file.version, "operation":"rm", "transId":uniqueIdent])
-		//TODO: should block UI until server sends a response
+		let transId = NSUUID().UUIDString
+		sendMessage(["msg":"fileop", "fileId":file.fileId, "fileVersion":file.version, "operation":"rm", "transId":transId])
+		let prog = NSProgress(parent: nil, userInfo: nil)
+		prog.localizedDescription = "Removing file '\(file.name)'"
+		appStatus?.updateStatus(prog)
+		pendingTransactions[transId] = { [weak self] (responseId, _) in
+			self?.appStatus?.updateStatus(nil)
+		}
 	}
 	
 	//MARK: SessionFileHandlerDelegate methods
+	
+	/// callback when the file handler has loaded all files
 	func filesLoaded() {
 		appStatus?.updateStatus(nil)
 		delegate?.sessionFilesLoaded(self)
@@ -181,17 +208,12 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	func sendSaveFileMessage(document:EditorDocument, executeType:ExecuteType = .None, completionHandler:(EditorDocument, NSError?) -> Void) {
 		let data = NSMutableData()
 		let transId = encodeDocumentSaveMessage(document, data: data)
-		waitingOnTransactions[transId] = { (responseId) in
+		pendingTransactions[transId] = { (responseId, _) in
 			completionHandler(document, nil)
 		}
 		self.wsSource.send(data)
 	}
 	
-	//MARK: other public methods
-//	func noHelpFoundString(topic:String) -> NSAttributedString {
-//		return NSAttributedString(string: "No help available for '\(topic)'\n", attributes: attrDictForColor(.Help))
-//	}
-//	
 	//MARK: private methods
 	
 	//assumes currentContents of document is what should be sent to the server
@@ -210,6 +232,8 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		return uniqueIdent
 	}
 	
+	///processes a binary response from the WebSocket
+	/// - parameter data: The MessagePack data
 	private func processBinaryResponse(data:NSData) {
 		var parsedValues:[MessageValue]? = nil
 		let decoder = MessagePackDecoder(data: data)
@@ -241,8 +265,8 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	//we've got a dictionary of the save response. keys should be transId, success, file, error
 	private func handleSaveResponse(rawDict:[String:AnyObject]) {
 		if let transId = rawDict["transId"] as? String {
-			waitingOnTransactions[transId]?(transId)
-			waitingOnTransactions.removeValueForKey(transId)
+			pendingTransactions[transId]?(transId, nil)
+			pendingTransactions.removeValueForKey(transId)
 		}
 		if let errorDict = rawDict["error"] as? Dictionary<String,AnyObject> {
 			//TODO: inform user
@@ -291,6 +315,10 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 				} else {
 					self.delegate?.sessionMessageReceived(response)
 				}
+			}
+			if let transId = jsonMessage["transId"].string {
+				pendingTransactions[transId]?(transId, jsonMessage)
+				pendingTransactions.removeValueForKey(transId)
 			}
 		} else if let _ = message as? NSData {
 			processBinaryResponse(message as! NSData)

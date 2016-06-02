@@ -8,11 +8,15 @@ import Foundation
 import BrightFutures
 
 protocol SessionDelegate : class {
+	///Called when the session is open, the currentSession is set, and file loading has started
 	func sessionOpened()
+	///called when the session is closed. Called when explicity or remotely closed. Not called on application termination
 	func sessionClosed()
+	///called when a server response is received and not handled internally by the session
 	func sessionMessageReceived(response:ServerResponse)
+	///called when the server has returned an error. Delegate needs to associate it with the cause and error.
 	func sessionErrorReceived(error:ErrorType)
-	func loadHelpItems(topic:String, items:[HelpItem])
+	///called when the initial caching/loading of files is complete
 	func sessionFilesLoaded(session:Session)
 }
 
@@ -20,6 +24,7 @@ protocol SessionFileHandlerDelegate: class {
 	func filesLoaded()
 }
 
+///Abstracts handling of files by the session to allow changes or DI
 protocol SessionFileHandler : class {
 	var workspace:Workspace { get set }
 	var fileCache:FileCache { get }

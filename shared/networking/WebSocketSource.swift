@@ -7,7 +7,7 @@
 import Foundation
 import SwiftWebSocket
 
-//wrapper protocol around WebSocket class to allow DI and mocking
+///wrapper protocol around WebSocket class to allow DI and mocking
 public protocol WebSocketSource : class {
 	var event: WebSocketEvents { get set }
 	var binaryType: WebSocketBinaryType { get set }
@@ -16,5 +16,5 @@ public protocol WebSocketSource : class {
 	func send(message : Any)
 }
 
-//declare Starscream's WebSocket as conforming to WebSocketSource
+///declare SwiftWebSocket's WebSocket as conforming to WebSocketSource
 extension WebSocket : WebSocketSource {}
