@@ -8,7 +8,7 @@ import Cocoa
 import CryptoSwift
 import SwiftyJSON
 
-class RootViewController: AbstractSessionViewController, SessionDelegate, ResponseHandlerDelegate, FileViewControllerDelegate, ToolbarItemHandler
+class RootViewController: AbstractSessionViewController, SessionDelegate, ResponseHandlerDelegate, FileViewControllerDelegate, ToolbarItemHandler, ManageFontMenu
 {
 	//MARK: - properties
 	@IBOutlet var progressView: NSProgressIndicator?
@@ -81,6 +81,13 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		switch(menuItem.action) {
 		case #selector(FileHandler.promptToImportFiles(_:)):
 			return fileHandler!.validateMenuItem(menuItem)
+		case #selector(ManageFontMenu.showFonts(_:)):
+			if let fontHandler = currentFontUser(view.window?.firstResponder) {
+				guard fontHandler.fontsEnabled() else { return false }
+				updateFontFaceMenu(menuItem.submenu!, fontUser:fontHandler)
+				return true
+			}
+			return false
 		default:
 			return false
 		}
@@ -220,6 +227,34 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 			}
 		} catch let err {
 			log.error("error restoring session state:\(err)")
+		}
+	}
+	
+	//MARK: - fonts
+	
+	func showFonts(sender: AnyObject) {
+		//do nothing, just a place holder for menu validation
+	}
+	
+	func updateFontFaceMenu(menu:NSMenu, fontUser:UsesAdjustableFont) {
+		menu.removeAllItems()
+		//we want regular weight monospaced fonts
+		let traits = [NSFontSymbolicTrait: NSFontMonoSpaceTrait, NSFontWeightTrait: 0]
+		let attrs = [NSFontTraitsAttribute: traits]
+		let filterDesc = NSFontDescriptor(fontAttributes: attrs)
+		//get matching fonts and sort them by name
+		let fonts = filterDesc.matchingFontDescriptorsWithMandatoryKeys(nil).sort {
+			($0.objectForKey(NSFontNameAttribute) as! String).lowercaseString < ($1.objectForKey(NSFontNameAttribute) as! String).lowercaseString
+		}
+		//now add menu items for them
+		for aFont in fonts {
+			let menuItem = NSMenuItem(title: aFont.visibleName, action: #selector(UsesAdjustableFont.fontChanged), keyEquivalent: "")
+			menuItem.representedObject = aFont
+			if fontUser.currentFontDescriptor.fontName == aFont.fontName {
+				menuItem.state = NSOnState
+				menuItem.enabled = false
+			}
+			menu.addItem(menuItem)
 		}
 	}
 	

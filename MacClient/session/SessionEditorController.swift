@@ -13,7 +13,8 @@ private extension Selector {
 	static let findPanelAction = #selector(NSTextView.performFindPanelAction(_:))
 }
 
-class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate, NSTextStorageDelegate {
+class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate, NSTextStorageDelegate, UsesAdjustableFont
+{
 	@IBOutlet var editor: SessionEditor?
 	@IBOutlet var runButton:NSButton?
 	@IBOutlet var sourceButton:NSButton?
@@ -24,6 +25,10 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	private(set) var currentDocument:EditorDocument?
 	private var openDocuments:[Int:EditorDocument] = [:]
 	private var defaultAttributes:[String:AnyObject]! //set in viewDidLoad, never used unless loaded
+	
+	private var myFontDescriptor:NSFontDescriptor?
+	
+	var currentFontDescriptor: NSFontDescriptor { return myFontDescriptor! }
 	
 	///allow dependency injection
 	var notificationCenter:NSNotificationCenter? {
@@ -59,9 +64,11 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		guard editor != nil else { return }
-		var font:NSFont? = NSFont(name: "Menlo", size: 14.0)
+		myFontDescriptor = NSFontDescriptor(name: "Menlo-Regular", size: 14.0)
+		var font:NSFont? = NSFont(descriptor: myFontDescriptor!, size: 14.0)
 		if font == nil {
 			font = NSFont.userFixedPitchFontOfSize(14.0)
+			myFontDescriptor = font?.fontDescriptor
 		}
 		defaultAttributes = [NSFontAttributeName:font!]
 		editor?.font = font
@@ -87,6 +94,18 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 //		}
 //		return super.validateMenuItem(menuItem)
 //	}
+	
+	func fontsEnabled() -> Bool {
+		return true
+	}
+	
+	func fontChanged(menuItem:NSMenuItem) {
+		log.info("font changed: \(menuItem.representedObject)")
+		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
+		let newDesc = newNameDesc.fontDescriptorWithSize(myFontDescriptor!.pointSize)
+		myFontDescriptor = newDesc
+		editor?.font = NSFont(descriptor: newDesc, size: newDesc.pointSize)
+	}
 	
 	@IBAction func runQuery(sender:AnyObject) {
 		executeQuery(type:.Run)
