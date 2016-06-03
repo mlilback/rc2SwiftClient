@@ -45,7 +45,6 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		}
 	}
 	
-	//TODO: allow DI of notification center
 	deinit {
 		NSWorkspace.sharedWorkspace().notificationCenter.removeObserver(self)
 		NSNotificationCenter.defaultCenter().removeObserver(self)

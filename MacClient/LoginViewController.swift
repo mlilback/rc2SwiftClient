@@ -42,7 +42,6 @@ class LoginViewController: NSViewController {
 	@IBOutlet weak var progressIndicator: NSProgressIndicator!
 	@IBOutlet weak var loginField: NSTextField!
 	
-	//TODO: autologin if have data from keychain
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		let defaults = NSUserDefaults.standardUserDefaults()

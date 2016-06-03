@@ -7,8 +7,6 @@
 import Cocoa
 import CoreServices
 
-//TODO: if splitter resizes us, the pagecontroller view does not adjust its frame
-//TODO: figure out how to support async image loading
 class DisplayableImage: NSObject {
 	let imageId:Int
 	let name:String
