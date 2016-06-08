@@ -8,7 +8,7 @@ import Cocoa
 import CryptoSwift
 import SwiftyJSON
 
-class RootViewController: AbstractSessionViewController, SessionDelegate, ResponseHandlerDelegate, FileViewControllerDelegate, ToolbarItemHandler, ManageFontMenu
+class RootViewController: AbstractSessionViewController, ToolbarItemHandler, ManageFontMenu
 {
 	//MARK: - properties
 	@IBOutlet var progressView: NSProgressIndicator?
@@ -62,6 +62,7 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		(view as! RootView).dimmingView = dimmingView //required to block clicks to subviews
 		//we have to wait until next time through event loop to set first responder
 		self.performSelectorOnMainThread(#selector(RootViewController.setupResponder), withObject: nil, waitUntilDone: false)
+
 	}
 	
 	func windowWillClose(note:NSNotification) {
@@ -171,8 +172,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	
 	func hideDimmingView() {
 	}
-	
-	//MARK: - actions
+}
+
+//MARK: - actions
+extension RootViewController {
 	@IBAction func clearFileCache(sender:AnyObject) {
 		session.fileHandler.fileCache.flushCacheForWorkspace(session.workspace)
 	}
@@ -180,8 +183,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	@IBAction func promptToImportFiles(sender:AnyObject?) {
 		fileHandler?.promptToImportFiles(sender)
 	}
+}
 
-	//MARK: - save/restore
+//MARK: - save/restore
+extension RootViewController {
 	func stateFileUrl() throws -> NSURL {
 		let appSupportUrl = try NSFileManager.defaultManager().URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
 		let dataDirUrl = NSURL(string: "Rc2/sessions/", relativeToURL: appSupportUrl)?.absoluteURL
@@ -229,9 +234,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 			log.error("error restoring session state:\(err)")
 		}
 	}
-	
-	//MARK: - fonts
-	
+}
+
+//MARK: - fonts
+extension RootViewController {
 	func showFonts(sender: AnyObject) {
 		//do nothing, just a place holder for menu validation
 	}
@@ -257,11 +263,12 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 			menu.addItem(menuItem)
 		}
 	}
-	
-	//MARK: - ResponseHandlerDelegate
-	//TODO: implement loadHelpItems
+}
+
+//MARK: ResponseHandlerDelegate
+extension RootViewController: ResponseHandlerDelegate {
 	func loadHelpItems(topic:String, items:[HelpItem]) {
-		
+		//TODO: implement loadHelpItems
 	}
 	
 	func handleFileUpdate(file:File, change:FileChangeType) {
@@ -269,17 +276,12 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 		session.fileHandler.handleFileUpdate(file, change: change)
 	}
 	
-	func handleVariableMessage(socketId:Int, single:Bool, variables:[Variable]) {
-		//need to convert to an objc-compatible dictionary by boxing JSON objects
-//		var newDict = [String:ObjcBox<JSON>]()
-//		for (key,value) in variables {
-//			newDict[key] = ObjcBox(value)
-//		}
-		variableHandler!.handleVariableMessage(socketId, single: single, variables: variables)
+	func handleVariableMessage(single:Bool, variables:[Variable]) {
+		variableHandler!.handleVariableMessage(single, variables: variables)
 	}
 	
-	func handleVariableDeltaMessage(socketId: Int, assigned: [Variable], removed: [String]) {
-		variableHandler!.handleVariableDeltaMessage(socketId, assigned: assigned, removed: removed)
+	func handleVariableDeltaMessage(assigned: [Variable], removed: [String]) {
+		variableHandler!.handleVariableDeltaMessage(assigned, removed: removed)
 	}
 
 	func consoleAttachment(forImage image:SessionImage) -> ConsoleAttachment {
@@ -302,8 +304,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	func showFile(fileId:Int) {
 		outputHandler?.showFile(fileId)
 	}
+}
 
-	//MARK:- FileViewControllerDelegate
+//MARK:FileViewControllerDelegate
+extension RootViewController: FileViewControllerDelegate {
 	func fileSelectionChanged(file:File?) {
 		if nil == file {
 			self.editor?.fileSelectionChanged(nil)
@@ -322,8 +326,10 @@ class RootViewController: AbstractSessionViewController, SessionDelegate, Respon
 	func importFiles(files:[NSURL]) {
 		
 	}
-	
-	//MARK: - SessionDelegate
+}
+
+//MARK: SessionDelegate
+extension RootViewController: SessionDelegate {
 	func sessionOpened() {
 		
 	}

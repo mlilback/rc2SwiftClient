@@ -19,8 +19,8 @@ enum FileChangeType : String {
 protocol ResponseHandlerDelegate {
 	func loadHelpItems(topic:String, items:[HelpItem])
 	func handleFileUpdate(file:File, change:FileChangeType)
-	func handleVariableMessage(socketId:Int, single:Bool, variables:[Variable])
-	func handleVariableDeltaMessage(socketId:Int, assigned:[Variable], removed:[String])
+	func handleVariableMessage(single:Bool, variables:[Variable])
+	func handleVariableDeltaMessage(assigned:[Variable], removed:[String])
 	func consoleAttachment(forImage image:SessionImage) -> ConsoleAttachment
 	func consoleAttachment(forFile file:File) -> ConsoleAttachment
 	func attributedStringForInputFile(fileId:Int) -> NSAttributedString
@@ -56,10 +56,10 @@ class ResponseHandler {
 				return formatExecComplete(queryId, batchId: batchId, images: images)
 			case .FileChanged(let changeType, let file):
 				delegate.handleFileUpdate(file, change: FileChangeType.init(rawValue: changeType)!)
-			case .Variables(let socketId, let single, let variables):
-				delegate.handleVariableMessage(socketId, single: single, variables: variables)
-			case .VariablesDelta(let socketId, let assigned, let removed):
-				delegate.handleVariableDeltaMessage(socketId, assigned: assigned, removed: removed)
+			case .Variables(let single, let variables):
+				delegate.handleVariableMessage(single, variables: variables)
+			case .VariablesDelta(let assigned, let removed):
+				delegate.handleVariableDeltaMessage(assigned, removed: removed)
 			case .ShowOutput(let queryId, let updatedFile):
 				let str = formatShowOutput(queryId, file:updatedFile)
 				delegate.showFile(updatedFile.fileId)

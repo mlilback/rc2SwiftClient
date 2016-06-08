@@ -16,8 +16,8 @@ public enum ServerResponse : Equatable {
 	case Results(queryId:Int, text:String)
 	case SaveResponse(transId:String)
 	case ShowOutput(queryId:Int, updatedFile:File)
-	case Variables(socketId:Int, single:Bool, variables:[Variable])
-	case VariablesDelta(socketId:Int, assigned:[Variable], removed:[String])
+	case Variables(single:Bool, variables:[Variable])
+	case VariablesDelta(assigned:[Variable], removed:[String])
 	case FileOperationResponse(transId:String, operation:FileOperation, file:File)
 	
 	
@@ -49,13 +49,12 @@ public enum ServerResponse : Equatable {
 			case "help":
 				return ServerResponse.Help(topic: jsonObj["topic"].stringValue, paths: jsonObj["paths"].arrayValue.map({ return HelpItem(dict: $0.dictionaryValue) }))
 			case "variables":
-				let sid = jsonObj["socketId"].intValue
 				if jsonObj["delta"].boolValue {
 					let assigned = Variable.variablesForJsonDictionary(jsonObj["variables"]["assigned"].dictionaryValue)
 					let removed = jsonObj["variables"].dictionaryValue["assigned"]?.arrayValue.map() { $0.stringValue } ?? []
-					return ServerResponse.VariablesDelta(socketId: sid, assigned: assigned, removed: removed)
+					return ServerResponse.VariablesDelta(assigned: assigned, removed: removed)
 				}
-				return ServerResponse.Variables(socketId: sid, single: jsonObj["single"].boolValue, variables: Variable.variablesForJsonDictionary(jsonObj["variables"].dictionaryValue))
+				return ServerResponse.Variables(single: jsonObj["single"].boolValue, variables: Variable.variablesForJsonDictionary(jsonObj["variables"].dictionaryValue))
 			case "saveResponse":
 				//TODO: not looking at "success" and handling "error"
 				return ServerResponse.SaveResponse(transId: jsonObj["transId"].stringValue)
@@ -82,10 +81,10 @@ public func == (a:ServerResponse, b:ServerResponse) -> Bool {
 			return t1 == t2 && p1 == p2
 		case (.Results(let q1, let t1), .Results(let q2, let t2)):
 			return q1 == q2 && t1 == t2
-		case (.Variables(let s1, let sn1, let v1), .Variables(let s2, let sn2, let v2)):
-			return s1 == s2 && sn1 == sn2 && v1 == v2
-		case (.VariablesDelta(let s1, let a1, let r1), .VariablesDelta(let s2, let a2, let r2)):
-			return s1 == s2 && r1 == r2 && a1 == a2
+		case (.Variables(let sn1, let v1), .Variables(let sn2, let v2)):
+			return sn1 == sn2 && v1 == v2
+		case (.VariablesDelta(let a1, let r1), .VariablesDelta(let a2, let r2)):
+			return r1 == r2 && a1 == a2
 		case (.ShowOutput(let q1, let f1), .ShowOutput(let q2, let f2)):
 			return q1 == q2 && f1.fileId == f2.fileId && f1.version == f2.version
 		default:

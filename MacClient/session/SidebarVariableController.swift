@@ -40,7 +40,7 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 		return rootVariables.filter({ $0.name == name }).first
 	}
 	
-	func handleVariableMessage(socketId:Int, single:Bool, variables:[Variable]) {
+	func handleVariableMessage(single:Bool, variables:[Variable]) {
 		if single {
 			if let curVal = variableNamed(variables[0].name) {
 				rootVariables[rootVariables.indexOf(curVal)!] = curVal
@@ -56,7 +56,7 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 		varTableView?.reloadData()
 	}
 	
-	func handleVariableDeltaMessage(socketId: Int, assigned: [Variable], removed: [String]) {
+	func handleVariableDeltaMessage(assigned: [Variable], removed: [String]) {
 		for (_, variable) in assigned.enumerate() {
 			if let curVal = variableNamed(variable.name) {
 				rootVariables[rootVariables.indexOf(curVal)!] = variable

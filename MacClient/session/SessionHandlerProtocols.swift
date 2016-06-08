@@ -8,10 +8,17 @@ import Cocoa
 
 ///These protocols exist to decouple various view controllers
 
+/// Abstracts the idea of processing variable messages
 @objc protocol VariableHandler {
 	///parameter variables: key is a string, value is an ObjcBox of a JSON value
-	func handleVariableMessage(socketId:Int, single:Bool, variables:[Variable])
-	func handleVariableDeltaMessage(socketId:Int, assigned:[Variable], removed:[String])
+	/// - parameter single: if this is an update for a single variable, or a delta
+	/// - paramter variables: the variable objects from the server
+	func handleVariableMessage(single:Bool, variables:[Variable])
+	
+	/// handle a delta change message
+	/// - parameter assigned: variabless that were assigned (insert or update)
+	/// - parameter: removed: variables that werer deleted
+	func handleVariableDeltaMessage(assigned:[Variable], removed:[String])
 }
 
 @objc enum OutputStringType: Int {
