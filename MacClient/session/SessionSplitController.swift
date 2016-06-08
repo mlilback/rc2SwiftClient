@@ -18,6 +18,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 		let splitItem = splitViewItems[0]
 		splitItem.minimumThickness = SidebarFixedWidth
 		splitItem.maximumThickness = SidebarFixedWidth
+		splitItem.springLoaded = false
 	}
 	
 	func handlesToolbarItem(item: NSToolbarItem) -> Bool {

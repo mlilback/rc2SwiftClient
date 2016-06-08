@@ -91,4 +91,7 @@ Session:
 	* support duplicate response handling
 	
 	* support rename response handling
-	
+
+Help
+
+	* unhardcode stat.wvu.edu from help urls, beable to work when demoing w/o a net
