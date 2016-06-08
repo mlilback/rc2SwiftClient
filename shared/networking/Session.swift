@@ -36,6 +36,8 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	}
 	static var manager: Manager = Manager()
 	
+	//MARK: properties
+	
 	//the workspace this session represents
 	let workspace : Workspace
 	///the WebSocket for communicating with the server
@@ -65,6 +67,8 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	///if we are getting variable updates from the server
 	private var watchingVariables:Bool = false
 	
+	
+	//MARK: init/open/close
 	init(_ wspace:Workspace,  source:WebSocketSource, appStatus:AppStatus, networkConfig config:NSURLSessionConfiguration, delegate:SessionDelegate?=nil)
 	{
 		workspace = wspace
@@ -194,8 +198,10 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 			self?.appStatus?.updateStatus(nil)
 		}
 	}
-	
-	//MARK: SessionFileHandlerDelegate methods
+}
+
+//MARK: SessionFileHandlerDelegate methods
+extension Session {
 	
 	/// callback when the file handler has loaded all files
 	func filesLoaded() {
@@ -213,12 +219,13 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		}
 		self.wsSource.send(data)
 	}
-	
-	//MARK: private methods
-	
+}
+
+//MARK: private methods
+private extension Session {
 	//assumes currentContents of document is what should be sent to the server
 	///returns a token to uniquely identify this transaction, encoded into the message data
-	private func encodeDocumentSaveMessage(document:EditorDocument, data:NSMutableData) -> String {
+	func encodeDocumentSaveMessage(document:EditorDocument, data:NSMutableData) -> String {
 		let uniqueIdent = NSUUID().UUIDString
 		let encoder = MessagePackEncoder()
 		var attrs = ["msg":MessageValue.forValue("save"), "apiVersion":MessageValue.forValue(Int(1))]
@@ -228,13 +235,13 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		attrs["content"] = MessageValue.forValue(document.currentContents)
 		encoder.encodeValue(MessageValue.DictionaryValue(MessageValueDictionary(attrs)))
 		data.appendData(encoder.data!)
-	data.writeToURL(NSURL(fileURLWithPath: "/tmp/lastSaveToServer"), atomically: true)
+		data.writeToURL(NSURL(fileURLWithPath: "/tmp/lastSaveToServer"), atomically: true)
 		return uniqueIdent
 	}
 	
 	///processes a binary response from the WebSocket
 	/// - parameter data: The MessagePack data
-	private func processBinaryResponse(data:NSData) {
+	func processBinaryResponse(data:NSData) {
 		var parsedValues:[MessageValue]? = nil
 		let decoder = MessagePackDecoder(data: data)
 		do {
@@ -263,7 +270,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	}
 	
 	//we've got a dictionary of the save response. keys should be transId, success, file, error
-	private func handleSaveResponse(rawDict:[String:AnyObject]) {
+	func handleSaveResponse(rawDict:[String:AnyObject]) {
 		if let transId = rawDict["transId"] as? String {
 			pendingTransactions[transId]?(transId, nil)
 			pendingTransactions.removeValueForKey(transId)
@@ -288,7 +295,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		}
 	}
 	
-	private func handleFileResponse(transId:String, operation:FileOperation, file:File) {
+	func handleFileResponse(transId:String, operation:FileOperation, file:File) {
 		switch(operation) {
 		case .Duplicate:
 			//TODO: support
@@ -306,7 +313,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		}
 	}
 	
-	private func handleReceivedMessage(message:Any) {
+	func handleReceivedMessage(message:Any) {
 		if let stringMessage = message as? String {
 			let jsonMessage = JSON.parse(stringMessage)
 			if let response = ServerResponse.parseResponse(jsonMessage) {
