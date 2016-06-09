@@ -86,14 +86,11 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 		view.window?.makeFirstResponder(outputHandler?.initialFirstResponder())
 	}
 	
-	override func sessionChanged() {
-	}
-	
 	func handlesToolbarItem(item: NSToolbarItem) -> Bool {
 		if item.itemIdentifier == "search" {
 			searchButton = item.view as! NSSegmentedControl?
 			TargetActionBlock() { [weak self] sender in
-				if self!.inResponderChain(self!.editor!)  {
+				if self!.responderChainContains(self!.editor!)  {
 					self!.editor?.performTextFinderAction(sender)
 				} else {
 					self!.outputHandler?.prepareForSearch()
@@ -101,23 +98,15 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 			}.installInControl(searchButton!)
 			if let myItem = item as? ValidatingToolbarItem {
 				myItem.validationHandler = { item in
-					item.enabled = self.inResponderChain(self)
+					item.enabled = self.responderChainContains(self)
 				}
 			}
 			return true
 		}
 		return false
 	}
-
-	func inResponderChain(responder:NSResponder) -> Bool {
-		var curResponder = view.window?.firstResponder
-		while curResponder != nil {
-			if curResponder == responder { return true }
-			curResponder = curResponder?.nextResponder
-		}
-		return false
-	}
 	
+	//MARK: - status display/timer
 	func startTimer() {
 		if statusTimer?.valid ?? false { statusTimer?.invalidate() }
 		statusTimer = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: #selector(RootViewController.clearStatus), userInfo: nil, repeats: false)
@@ -152,9 +141,6 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 	
 	override func appStatusChanged() {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootViewController.receivedStatusNotification(_:)), name: AppStatusChangedNotification, object: nil)
-	}
-	
-	func hideDimmingView() {
 	}
 }
 
@@ -198,7 +184,7 @@ extension RootViewController {
 	}
 }
 
-//MARK:FileViewControllerDelegate
+//MARK: - FileViewControllerDelegate
 extension RootViewController: FileViewControllerDelegate {
 	func fileSelectionChanged(file:File?) {
 		if nil == file {
@@ -220,6 +206,8 @@ extension RootViewController: FileViewControllerDelegate {
 	}
 }
 
+
+//MARK: -
 class DimmingView: NSView {
 	override required init(frame frameRect: NSRect) {
 		super.init(frame: frameRect)
