@@ -65,7 +65,19 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	func showSessionWindow() {
 		updateStatus(nil)
 		sessionWindowController = MainWindowController.createFromNib()
-		let sboard = SwinjectStoryboard.create(name: "MainController", bundle: nil)
+
+		let container = Container()
+		container.registerForStoryboard(RootViewController.self) { r, c in
+			c.appStatus = self as AppStatus
+		}
+		container.registerForStoryboard(SidebarFileController.self) { r, c in
+			c.appStatus = self as AppStatus
+		}
+		container.registerForStoryboard(AbstractSessionViewController.self) { r, c in
+			c.appStatus = self as AppStatus
+		}
+
+		let sboard = SwinjectStoryboard.create(name: "MainController", bundle: nil, container: container)
 		sessionWindowController?.window?.makeKeyAndOrderFront(self)
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window
 		let root = sboard.instantiateControllerWithIdentifier("rootController") as? RootViewController
@@ -116,17 +128,4 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 		}
 	}
 
-}
-
-extension SwinjectStoryboard {
-	class func setup() {
-		defaultContainer.registerForStoryboard(RootViewController.self) { r, c in
-			c.appStatus = r.resolve(AppStatus.self, name:"root")
-		}
-		defaultContainer.registerForStoryboard(SidebarFileController.self) { r, c in
-			c.appStatus = r.resolve(AppStatus.self, name:"file")
-		}
-		defaultContainer.register(AppStatus.self, name:"file") { _ in NSApp.delegate as! AppStatus }
-		defaultContainer.register(AppStatus.self, name:"root") { _ in NSApp.delegate as! AppStatus }
-	}
 }
