@@ -139,7 +139,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		if helpCheck?.numberOfRanges == 3 {
 			let topic = script.substringWithRange((helpCheck?.rangeAtIndex(2).toStringRange(script))!)
 			let adjScript = script.stringByReplacingCharactersInRange((helpCheck?.range.toStringRange(script))!, withString: "")
-			lookupInHelp(topic)
+			delegate?.respondToHelp(topic)
 			guard adjScript.utf16.count > 0 else {
 				return
 			}
@@ -158,12 +158,6 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	/// clears all variables in the global environment
 	func clearVariables() {
 		executeScript("rc2.clearEnvironment()");
-	}
-	
-	/// sends a help request
-	/// - parameter str: The string to search for
-	func lookupInHelp(str:String) {
-		sendMessage(["msg":"help", "topic":str])
 	}
 	
 	/// asks the server for a refresh of all environment variables

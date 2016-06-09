@@ -36,6 +36,7 @@ import Cocoa
 	//use fileId instead of file object because File is a swift struct and can't be used in an objc protocol
 	//also get weird compile errors if fileId is made Int?. so passing a zero is the same as nil
 	func showFile(fileId:Int)
+	func showHelp(topics:[HelpTopic])
 }
 
 @objc protocol FileHandler {

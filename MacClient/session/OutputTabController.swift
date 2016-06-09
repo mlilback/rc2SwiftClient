@@ -28,7 +28,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(OutputTabController.showHelp(_:)), name: DisplayHelpTopicNotification, object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(OutputTabController.handleDisplayHelp(_:)), name: DisplayHelpTopicNotification, object: nil)
 	}
 	override func viewWillAppear() {
 		super.viewWillAppear()
@@ -90,31 +90,22 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 //		NSUserDefaults.standardUserDefaults().setInteger(index, forKey: LastSelectedSessionTabIndex)
 	}
 
-	func adjustOutputTabSwitcher() {
-		let index = selectedOutputTab.rawValue
-//		guard index != selectedTabViewItemIndex else { return }
-		segmentControl?.animator().setSelected(true, forSegment: index)
-		for idx in 0..<3 {
-			[segmentControl?.setEnabled(idx == index ? false : true, forSegment: idx)]
+	func showHelp(topics: [HelpTopic]) {
+		if topics.count == 1 {
+			showHelpTopic(topics[0])
+			return
 		}
+		//TODO: handle prompt for selecting a topic out of topics
+		showHelpTopic(topics[0])
 	}
 	
-	func showHelp(note:NSNotification) {
-		var url:NSURL?
+	func handleDisplayHelp(note:NSNotification) {
 		if let topic:HelpTopic = note.object as? HelpTopic {
-			url = HelpController.sharedInstance.urlForTopic(topic)
+			showHelpTopic(topic)
 		} else if let topicName:String = note.object as? String {
-			let topics = HelpController.sharedInstance.topicsWithName(topicName)
-			if topics.count > 0 {
-				//TODO: handle if more than one matching help target
-				url = HelpController.sharedInstance.urlForTopic(topics[0].subtopics![0])
-			}
-		} else {
+			showHelp(HelpController.sharedInstance.topicsWithName(topicName))
+		} else { //told to show without a topic. switch back to console.
 			selectedOutputTab = .Console
-		}
-		if url != nil {
-			selectedOutputTab = .Help
-			helpController?.loadUrl(url!)
 		}
 	}
 
@@ -193,6 +184,25 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	}
 }
 
+//MARK: - private methods
+private extension OutputTabController {
+	func adjustOutputTabSwitcher() {
+		let index = selectedOutputTab.rawValue
+		//		guard index != selectedTabViewItemIndex else { return }
+		segmentControl?.animator().setSelected(true, forSegment: index)
+		for idx in 0..<3 {
+			[segmentControl?.setEnabled(idx == index ? false : true, forSegment: idx)]
+		}
+	}
+	
+	///actually shows the help page for the specified topic
+	func showHelpTopic(topic:HelpTopic) {
+		selectedOutputTab = .Help
+		helpController!.loadHelpTopic(topic)
+	}
+}
+
+//MARK: - helper classes
 class OutputTopView : NSTabView {
 	var windowSetCall: (() -> Void)?
 	override func viewDidMoveToWindow() {

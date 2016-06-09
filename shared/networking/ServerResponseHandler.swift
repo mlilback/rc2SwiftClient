@@ -17,7 +17,6 @@ enum FileChangeType : String {
 }
 
 protocol ServerResponseHandlerDelegate {
-	func loadHelpItems(topic:String, items:[HelpItem])
 	func handleFileUpdate(file:File, change:FileChangeType)
 	func handleVariableMessage(single:Bool, variables:[Variable])
 	func handleVariableDeltaMessage(assigned:[Variable], removed:[String])
@@ -48,8 +47,6 @@ class ServerResponseHandler {
 				return formatQueryEcho(query, queryId:queryId, fileId:fileId)
 			case .Results(let queryId, let text):
 				return formatResults(text, queryId: queryId)
-			case .Help(let topic, let items):
-				delegate.loadHelpItems(topic, items: items)
 			case .Error(let queryId, let error):
 				return formatError(error, queryId: queryId)
 			case .ExecComplete(let queryId, let batchId, let images):

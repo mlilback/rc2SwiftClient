@@ -19,6 +19,7 @@ import Cocoa
 	var responseHandler: ServerResponseHandler!
 	let outputHandler: OutputHandler
 	let varHandler: VariableHandler
+	///not a constant because it can be saved/loaded
 	var imgCache: ImageCache
 	///nothing should be called until we have a session
 	var session:Session!
@@ -72,10 +73,6 @@ import Cocoa
 }
 
 extension SessionController: ServerResponseHandlerDelegate {
-	func loadHelpItems(topic:String, items:[HelpItem]) {
-		//TODO: implement loadHelpItems
-	}
-	
 	func handleFileUpdate(file:File, change:FileChangeType) {
 		log.info("got file update \(file.fileId) v\(file.version)")
 		session.fileHandler.handleFileUpdate(file, change: change)
@@ -175,6 +172,11 @@ extension SessionController: SessionDelegate {
 	
 	func sessionFilesLoaded(session:Session) {
 		delegate?.filesRefreshed()
+	}
+	
+	func respondToHelp(helpTopic: String) {
+		//TODO: implement respondToHelp
+		log.info("user code asked for help \"\(helpTopic)\"")
 	}
 	
 	func sessionMessageReceived(response:ServerResponse) {

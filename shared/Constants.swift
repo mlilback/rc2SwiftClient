@@ -15,7 +15,8 @@ enum Rc2ErrorCode: Int {
 let RestLoginChangedNotification = "RestLoginChangedNotification"
 let SelectedWorkspaceChangedNotification = "SelectedWorkspaceChangedNotification"
 let CurrentSessionChangedNotification = "CurrentSessionChangedNotification"
-let DisplayHelpTopicNotification = "DisplayHelpTopicNotification" ///object is a HelpTopic
+///The object can be either a HelpTopic or a String
+let DisplayHelpTopicNotification = "DisplayHelpTopicNotification"
 
 ///will always be posted on the main thread
 let AppStatusChangedNotification = "AppStatusChangedNotification"

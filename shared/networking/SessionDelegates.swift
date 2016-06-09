@@ -18,6 +18,8 @@ protocol SessionDelegate : class {
 	func sessionErrorReceived(error:ErrorType)
 	///called when the initial caching/loading of files is complete
 	func sessionFilesLoaded(session:Session)
+	///a script/file had a call to help with the passed in arguments
+	func respondToHelp(helpTopic:String)
 }
 
 protocol SessionFileHandlerDelegate: class {

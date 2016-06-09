@@ -12,7 +12,6 @@ public enum ServerResponse : Equatable {
 	case EchoQuery(queryId:Int, fileId:Int, query:String)
 	case ExecComplete(queryId:Int, batchId:Int, images:[SessionImage])
 	case FileChanged(changeType:String, file:File)
-	case Help(topic:String, paths:[HelpItem])
 	case Results(queryId:Int, text:String)
 	case SaveResponse(transId:String)
 	case ShowOutput(queryId:Int, updatedFile:File)
@@ -46,8 +45,6 @@ public enum ServerResponse : Equatable {
 				return ServerResponse.EchoQuery(queryId: jsonObj["queryId"].intValue, fileId: jsonObj["fileId"].intValue, query: jsonObj["query"].stringValue)
 			case "filechanged":
 				return ServerResponse.FileChanged(changeType: jsonObj["type"].stringValue, file: File(json: jsonObj["file"]))
-			case "help":
-				return ServerResponse.Help(topic: jsonObj["topic"].stringValue, paths: jsonObj["paths"].arrayValue.map({ return HelpItem(dict: $0.dictionaryValue) }))
 			case "variables":
 				if jsonObj["delta"].boolValue {
 					let assigned = Variable.variablesForJsonDictionary(jsonObj["variables"]["assigned"].dictionaryValue)
@@ -77,8 +74,6 @@ public func == (a:ServerResponse, b:ServerResponse) -> Bool {
 			return q1 == q2 && f1 == f2 && s1 == s2
 		case (.ExecComplete(let q1, let b1, let i1), .ExecComplete(let q2, let b2, let i2)):
 			return q1 == q2 && b1 == b2 && i1 == i2
-		case (.Help(let t1, let p1), .Help(let t2, let p2)):
-			return t1 == t2 && p1 == p2
 		case (.Results(let q1, let t1), .Results(let q2, let t2)):
 			return q1 == q2 && t1 == t2
 		case (.Variables(let sn1, let v1), .Variables(let sn2, let v2)):
