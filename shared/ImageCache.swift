@@ -16,6 +16,8 @@ enum ImageCacheError: ErrorType {
 	case FailedToLoadFromNetwork
 }
 
+/// Handles caching of SessionImage(s)
+/// implements NSSecureCoding so can be saved
 public class ImageCache :NSObject, NSSecureCoding {
 	///to allow dependency injection
 	var fileManager:NSFileManager

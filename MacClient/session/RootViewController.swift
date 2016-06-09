@@ -11,6 +11,8 @@ import SwiftyJSON
 class RootViewController: AbstractSessionViewController, ToolbarItemHandler, ManageFontMenu
 {
 	//MARK: - properties
+	var sessionController: SessionController?
+	
 	@IBOutlet var progressView: NSProgressIndicator?
 	@IBOutlet var statusField: NSTextField?
 	var searchButton: NSSegmentedControl?
@@ -22,15 +24,11 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 	private var dimmingView:DimmingView?
 	weak var editor: SessionEditorController?
 	weak var outputHandler: OutputHandler?
-	weak var variableHandler: VariableHandler?
 	weak var fileHandler: FileHandler?
-	var responseHandler: ResponseHandler?
-	var savedStateHash: NSData?
-	var imgCache: ImageCache = ImageCache() { didSet { outputHandler?.imageCache = imgCache } }
 	var formerFirstResponder:NSResponder? //used to restore first responder when dimmingview goes away
 	
 	deinit {
-		sessionOptional?.close()
+		sessionController?.close()
 	}
 	
 	//MARK: - Lifecycle
@@ -39,23 +37,19 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 		guard editor == nil else { return } //only run once
 		editor = firstChildViewController(self)
 		outputHandler = firstChildViewController(self)
-		outputHandler?.imageCache = imgCache
-		variableHandler = firstChildViewController(self)
-		responseHandler = ResponseHandler(delegate: self)
 		fileHandler = firstChildViewController(self)
+		let variableHandler:VariableHandler = firstChildViewController(self)!
 		let concreteFH = fileHandler as? SidebarFileController
 		if concreteFH != nil {
 			concreteFH!.delegate = self
 		}
-		//save our state on quit and sleep
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootViewController.appWillTerminate), name: NSApplicationWillTerminateNotification, object: nil)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:  #selector(OutputHandler.saveSessionState), name: NSWorkspaceWillSleepNotification, object:nil)
+		sessionController = SessionController(rootController: self, outputHandler: outputHandler!, fileHandler: fileHandler!, variableHandler:variableHandler)
 	}
 	
 	override func viewDidAppear() {
 		super.viewDidAppear()
 		self.hookupToToolbarItems(self, window: view.window!)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:  #selector(RootViewController.windowWillClose(_:)), name: NSWindowWillCloseNotification, object:view.window!)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootViewController.windowWillClose(_:)), name: NSWindowWillCloseNotification, object:view.window!)
 		//create dimming view
 		dimmingView = DimmingView(frame: view.bounds)
 		view.addSubview(dimmingView!)
@@ -67,14 +61,8 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 	
 	func windowWillClose(note:NSNotification) {
 		if sessionOptional?.connectionOpen ?? false && (note.object as? NSWindow == view.window) {
-			session.close()
-		}
-	}
-	
-	func appWillTerminate() {
-		//can't save w/o a session (didn't leave workspace tab)
-		if sessionOptional != nil {
-			saveSessionState()
+			sessionController?.close()
+			sessionController = nil
 		}
 	}
 	
@@ -99,10 +87,6 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 	}
 	
 	override func sessionChanged() {
-		session.delegate = self
-		imgCache.workspace = session.workspace
-		outputHandler?.session = session
-		restoreSessionState()
 	}
 	
 	func handlesToolbarItem(item: NSToolbarItem) -> Bool {
@@ -185,57 +169,6 @@ extension RootViewController {
 	}
 }
 
-//MARK: - save/restore
-extension RootViewController {
-	func stateFileUrl() throws -> NSURL {
-		let appSupportUrl = try NSFileManager.defaultManager().URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-		let dataDirUrl = NSURL(string: "Rc2/sessions/", relativeToURL: appSupportUrl)?.absoluteURL
-		try NSFileManager.defaultManager().createDirectoryAtURL(dataDirUrl!, withIntermediateDirectories: true, attributes: nil)
-		let fname = "\(RestServer.sharedInstance.loginSession!.host)--\(session.workspace.userId)--\(session.workspace.wspaceId).plist"
-		let furl = NSURL(string:fname, relativeToURL: dataDirUrl)?.absoluteURL
-		return furl!
-	}
-	
-	func saveSessionState() {
-		//save data related to this session
-		var dict = [String:AnyObject]()
-		dict["outputController"] = outputHandler?.saveSessionState()
-		dict["imageCache"] = imgCache
-		do {
-			let data = NSKeyedArchiver.archivedDataWithRootObject(dict)
-			//only write to disk if has changed
-			let hash = data.sha256()
-			if hash != savedStateHash {
-				let furl = try stateFileUrl()
-				data.writeToURL(furl, atomically: true)
-				savedStateHash = hash
-			}
-		} catch let err {
-			log.error("Error saving session state:\(err)")
-		}
-	}
-	
-	private func restoreSessionState() {
-		do {
-			let furl = try stateFileUrl()
-			if furl.checkResourceIsReachableAndReturnError(nil) {
-				let data = NSData(contentsOfURL: furl)
-				if let dict = NSKeyedUnarchiver.unarchiveObjectWithData(data!) as! [String:AnyObject]? {
-					if let ostate = dict["outputController"] as! [String : AnyObject]? {
-						outputHandler?.restoreSessionState(ostate)
-					}
-					if let ic = dict["imageCache"] as! ImageCache? {
-						imgCache = ic
-					}
-					savedStateHash = data?.sha256()
-				}
-			}
-		} catch let err {
-			log.error("error restoring session state:\(err)")
-		}
-	}
-}
-
 //MARK: - fonts
 extension RootViewController {
 	func showFonts(sender: AnyObject) {
@@ -265,47 +198,6 @@ extension RootViewController {
 	}
 }
 
-//MARK: ResponseHandlerDelegate
-extension RootViewController: ResponseHandlerDelegate {
-	func loadHelpItems(topic:String, items:[HelpItem]) {
-		//TODO: implement loadHelpItems
-	}
-	
-	func handleFileUpdate(file:File, change:FileChangeType) {
-		log.info("got file update \(file.fileId) v\(file.version)")
-		session.fileHandler.handleFileUpdate(file, change: change)
-	}
-	
-	func handleVariableMessage(single:Bool, variables:[Variable]) {
-		variableHandler!.handleVariableMessage(single, variables: variables)
-	}
-	
-	func handleVariableDeltaMessage(assigned: [Variable], removed: [String]) {
-		variableHandler!.handleVariableDeltaMessage(assigned, removed: removed)
-	}
-
-	func consoleAttachment(forImage image:SessionImage) -> ConsoleAttachment {
-		return MacConsoleAttachment(image:image)
-	}
-	
-	func consoleAttachment(forFile file:File) -> ConsoleAttachment {
-		return MacConsoleAttachment(file:file)
-	}
-	
-	func attributedStringForInputFile(fileId:Int) -> NSAttributedString {
-		let file = session.workspace.fileWithId(fileId)
-		return NSAttributedString(string: "[\(file!.name)]")
-	}
-	
-	func cacheImages(images:[SessionImage]) {
-		imgCache.cacheImagesFromServer(images)
-	}
-	
-	func showFile(fileId:Int) {
-		outputHandler?.showFile(fileId)
-	}
-}
-
 //MARK:FileViewControllerDelegate
 extension RootViewController: FileViewControllerDelegate {
 	func fileSelectionChanged(file:File?) {
@@ -324,45 +216,6 @@ extension RootViewController: FileViewControllerDelegate {
 	}
 
 	func importFiles(files:[NSURL]) {
-		
-	}
-}
-
-//MARK: SessionDelegate
-extension RootViewController: SessionDelegate {
-	func sessionOpened() {
-		
-	}
-	
-	func sessionClosed() {
-		sessionClosedHandler?()
-	}
-	
-	func sessionFilesLoaded(session:Session) {
-		fileHandler?.filesRefreshed(nil)
-	}
-	
-	func sessionMessageReceived(response:ServerResponse) {
-		if case ServerResponse.ShowOutput( _, let updatedFile) = response {
-			if updatedFile != session.workspace.fileWithId(updatedFile.fileId) {
-				//need to refetch file from server, then show it
-				let prog = session.fileHandler.updateFile(updatedFile, withData: nil)
-				prog?.rc2_addCompletionHandler() {
-					if let astr = self.responseHandler?.handleResponse(response) {
-						self.outputHandler?.appendFormattedString(astr, type: response.isEcho() ? .Input : .Default)
-					}
-//					self.outputHandler?.appendFormattedString(self.consoleAttachment(forFile:updatedFile).serializeToAttributedString(), type:.Default)
-				}
-				return
-			}
-		}
-		if let astr = responseHandler?.handleResponse(response) {
-			outputHandler?.appendFormattedString(astr, type: response.isEcho() ? .Input : .Default)
-		}
-	}
-	
-	//TODO: impelment sessionErrorReceived
-	func sessionErrorReceived(error:ErrorType) {
 		
 	}
 }

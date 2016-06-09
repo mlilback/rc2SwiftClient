@@ -96,7 +96,6 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 			Session.manager.currentSession = nil
 		}
 		wsSource.event.message = { [unowned self] message in
-			log.info("got message:\(message)")
 			self.handleReceivedMessage(message)
 		}
 		wsSource.event.error = { [unowned self] error in
@@ -316,6 +315,7 @@ private extension Session {
 	func handleReceivedMessage(message:Any) {
 		if let stringMessage = message as? String {
 			let jsonMessage = JSON.parse(stringMessage)
+			log.info("got message \(jsonMessage["msg"].stringValue)")
 			if let response = ServerResponse.parseResponse(jsonMessage) {
 				if case let .FileOperationResponse(transId, operation, file) = response {
 					handleFileResponse(transId, operation:operation, file:file)
