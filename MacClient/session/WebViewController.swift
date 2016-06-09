@@ -7,7 +7,7 @@
 import Foundation
 import WebKit
 
-class WebViewController: NSViewController, WKNavigationDelegate {
+public class WebViewController: NSViewController, WKNavigationDelegate {
 	var webView:WKWebView?
 	@IBOutlet var containerView: NSView?
 	@IBOutlet var navButtons: NSSegmentedControl?
@@ -15,7 +15,7 @@ class WebViewController: NSViewController, WKNavigationDelegate {
 	@IBOutlet var titleLabel: NSTextField?
 	var webConfig: WKWebViewConfiguration?
 	
-	override func viewDidLoad() {
+	override public func viewDidLoad() {
 		super.viewDidLoad()
 		let prefs = WKPreferences()
 		prefs.minimumFontSize = 9.0;
@@ -57,20 +57,26 @@ class WebViewController: NSViewController, WKNavigationDelegate {
 		let sharepicker = NSSharingServicePicker(items: [webView!.URL!])
 		sharepicker.showRelativeToRect((shareButton?.frame)!, ofView: (shareButton?.superview)!, preferredEdge: .MaxY)
 	}
-	
+
+	func staticHmtlFolder() -> NSURL {
+		let pkg = NSBundle(forClass: self.dynamicType)
+		let url = pkg.URLForResource("help404", withExtension: "html", subdirectory: "static_html")
+		return url!.URLByDeletingLastPathComponent!
+	}
+
 	//MARK -- WKNavigationDelegate
 	
-	func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!)
+	public func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!)
 	{
 		navButtons?.setEnabled(webView.canGoBack, forSegment: 0)
 		navButtons?.setEnabled(webView.canGoForward, forSegment: 1)
 		titleLabel?.stringValue = webView.title!
 	}
 	
-	func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
+	public func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
 		log.warning("failed to navigate:\(error)")
 	}
 	
-	func webView(webView: WKWebView, didCommitNavigation navigation: WKNavigation!) {
+	public func webView(webView: WKWebView, didCommitNavigation navigation: WKNavigation!) {
 	}
 }

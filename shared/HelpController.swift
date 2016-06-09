@@ -150,6 +150,11 @@ class HelpController {
 			let package = HelpTopic(name: key, subtopics: ptopics.sort({ return $0.compare($1) }))
 			packs.append(package)
 		}
+		packs = packs.reduce([], combine: { (pks, ht) in
+			var myPacks = pks
+			if ht.subtopics != nil { myPacks.appendContentsOf(ht.subtopics!) }
+			return myPacks
+		})
 		packs = packs.sort({ return $0.compare($1) })
 		return packs
 	}
