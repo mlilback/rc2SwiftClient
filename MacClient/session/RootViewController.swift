@@ -43,7 +43,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 		if concreteFH != nil {
 			concreteFH!.delegate = self
 		}
-		sessionController = SessionController(rootController: self, outputHandler: outputHandler!, fileHandler: fileHandler!, variableHandler:variableHandler)
+		sessionController = SessionController(delegate: self, outputHandler: outputHandler!, variableHandler:variableHandler)
 	}
 	
 	override func viewDidAppear() {
@@ -147,7 +147,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 //MARK: - actions
 extension RootViewController {
 	@IBAction func clearFileCache(sender:AnyObject) {
-		session.fileHandler.fileCache.flushCacheForWorkspace(session.workspace)
+		sessionController?.clearFileCache()
 	}
 	
 	@IBAction func promptToImportFiles(sender:AnyObject?) {
@@ -181,6 +181,17 @@ extension RootViewController {
 			}
 			menu.addItem(menuItem)
 		}
+	}
+}
+
+//MARK: - SessionControllerDelegate
+extension RootViewController: SessionControllerDelegate {
+	func sessionClosed() {
+		self.sessionClosedHandler?()
+	}
+	
+	func filesRefreshed() {
+		fileHandler?.filesRefreshed(nil)
 	}
 }
 

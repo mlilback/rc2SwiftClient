@@ -6,13 +6,18 @@
 
 import Cocoa
 
+@objc protocol SessionControllerDelegate {
+	func filesRefreshed()
+	func sessionClosed()
+}
+
+/// manages a Session object
 @objc class SessionController: NSObject {
-	///only a var because it is required for weak attribute, and we don't want to cause a retain loop with the root controller (which we really shouldn't need to worry about)
-	private weak var rootController: RootViewController!
+	private weak var delegate: SessionControllerDelegate?
+
 	///var! used because we can't pass self as delegate in constructor until variables initialized
 	var responseHandler: ResponseHandler!
 	let outputHandler: OutputHandler
-	let fileHandler: FileHandler
 	let varHandler: VariableHandler
 	var imgCache: ImageCache
 	///nothing should be called until we have a session
@@ -21,11 +26,10 @@ import Cocoa
 	var savedStateHash: NSData?
 	private var properlyClosed:Bool = false
 
-	init(rootController root:RootViewController, outputHandler output:OutputHandler, fileHandler: FileHandler, variableHandler:VariableHandler)
+	init(delegate: SessionControllerDelegate, outputHandler output:OutputHandler, variableHandler:VariableHandler)
 	{
-		self.rootController = root
+		self.delegate = delegate
 		self.outputHandler = output
-		self.fileHandler = fileHandler
 		self.varHandler = variableHandler
 		self.imgCache = ImageCache()
 		super.init()
@@ -62,6 +66,9 @@ import Cocoa
 		saveSessionState()
 	}
 	
+	func clearFileCache() {
+		session.fileHandler.fileCache.flushCacheForWorkspace(session.workspace)
+	}
 }
 
 extension SessionController: ResponseHandlerDelegate {
@@ -163,11 +170,11 @@ extension SessionController: SessionDelegate {
 	}
 	
 	func sessionClosed() {
-		rootController.sessionClosedHandler?()
+		delegate?.sessionClosed()
 	}
 	
 	func sessionFilesLoaded(session:Session) {
-		fileHandler.filesRefreshed(nil)
+		delegate?.filesRefreshed()
 	}
 	
 	func sessionMessageReceived(response:ServerResponse) {
