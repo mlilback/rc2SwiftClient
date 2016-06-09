@@ -45,6 +45,7 @@ import Cocoa
 	}
 	
 	func close() {
+		saveSessionState()
 		session.close()
 		properlyClosed = true
 	}

@@ -771,10 +771,10 @@
 		08F448F31C4E244500C64706 /* session */ = {
 			isa = PBXGroup;
 			children = (
+				08F189A11D09AA0300866A05 /* SessionController.swift */,
 				0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */,
 				083305E71C51812300E27F66 /* AbstractSessionViewController.swift */,
 				083174031C5571D300071408 /* RootViewController.swift */,
-				08F189A11D09AA0300866A05 /* SessionController.swift */,
 				083174051C56BE7B00071408 /* SessionSplitController.swift */,
 				08F448F51C4E244500C64706 /* SessionEditorController.swift */,
 				08CB55511C5C06B2002CB7EE /* OutputTabController.swift */,

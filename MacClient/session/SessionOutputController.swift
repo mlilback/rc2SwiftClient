@@ -64,7 +64,8 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 	func saveSessionState() -> AnyObject {
 		var dict = [String:AnyObject]()
 		dict[SessionStateKey.History.rawValue] = cmdHistory.commands
-		dict[SessionStateKey.Results.rawValue] = resultsView?.textStorage?.RTFDFromRange(NSMakeRange(0, (resultsView?.textStorage?.length)!), documentAttributes: [NSDocumentTypeDocumentAttribute:NSRTFDTextDocumentType])
+		let rtfd = resultsView?.textStorage?.RTFDFromRange(NSMakeRange(0, (resultsView?.textStorage?.length)!), documentAttributes: [NSDocumentTypeDocumentAttribute:NSRTFDTextDocumentType])
+		dict[SessionStateKey.Results.rawValue] = rtfd
 		return dict
 	}
 
