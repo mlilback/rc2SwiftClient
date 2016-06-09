@@ -16,7 +16,7 @@ enum FileChangeType : String {
 	case Update, Insert, Delete
 }
 
-protocol ResponseHandlerDelegate {
+protocol ServerResponseHandlerDelegate {
 	func loadHelpItems(topic:String, items:[HelpItem])
 	func handleFileUpdate(file:File, change:FileChangeType)
 	func handleVariableMessage(single:Bool, variables:[Variable])
@@ -28,11 +28,11 @@ protocol ResponseHandlerDelegate {
 	func showFile(fileId:Int)
 }
 
-class ResponseHandler {
-	private let delegate:ResponseHandlerDelegate
+class ServerResponseHandler {
+	private let delegate:ServerResponseHandlerDelegate
 	private var outputColors: [OutputColors:PlatformColor]
 
-	required init(delegate:ResponseHandlerDelegate) {
+	required init(delegate:ServerResponseHandlerDelegate) {
 		self.delegate = delegate
 		let oldDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("OutputColors") as! Dictionary<String,String>
 		outputColors = oldDict.reduce([OutputColors:PlatformColor]()) { (dict, pair) in

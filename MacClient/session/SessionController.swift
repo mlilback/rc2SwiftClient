@@ -16,7 +16,7 @@ import Cocoa
 	private weak var delegate: SessionControllerDelegate?
 
 	///var! used because we can't pass self as delegate in constructor until variables initialized
-	var responseHandler: ResponseHandler!
+	var responseHandler: ServerResponseHandler!
 	let outputHandler: OutputHandler
 	let varHandler: VariableHandler
 	var imgCache: ImageCache
@@ -33,7 +33,7 @@ import Cocoa
 		self.varHandler = variableHandler
 		self.imgCache = ImageCache()
 		super.init()
-		self.responseHandler = ResponseHandler(delegate: self)
+		self.responseHandler = ServerResponseHandler(delegate: self)
 		let nc = NSNotificationCenter.defaultCenter()
 		nc.addObserver(self, selector: #selector(SessionController.sessionChanged), name: CurrentSessionChangedNotification, object: nil)
 		nc.addObserver(self, selector: #selector(SessionController.appWillTerminate), name: NSApplicationWillTerminateNotification, object: nil)
@@ -71,7 +71,7 @@ import Cocoa
 	}
 }
 
-extension SessionController: ResponseHandlerDelegate {
+extension SessionController: ServerResponseHandlerDelegate {
 	func loadHelpItems(topic:String, items:[HelpItem]) {
 		//TODO: implement loadHelpItems
 	}
