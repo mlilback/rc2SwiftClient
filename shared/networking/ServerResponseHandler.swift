@@ -29,16 +29,10 @@ protocol ServerResponseHandlerDelegate {
 
 class ServerResponseHandler {
 	private let delegate:ServerResponseHandlerDelegate
-	private var outputColors: [OutputColors:PlatformColor]
+	private let outputColors = OutputColors.colorMap()
 
 	required init(delegate:ServerResponseHandlerDelegate) {
 		self.delegate = delegate
-		let oldDict = NSUserDefaults.standardUserDefaults().dictionaryForKey("OutputColors") as! Dictionary<String,String>
-		outputColors = oldDict.reduce([OutputColors:PlatformColor]()) { (dict, pair) in
-			var aDict = dict
-			aDict[OutputColors(rawValue: pair.0)!] = PlatformColor.colorWithHexString(pair.1)
-			return aDict
-		}
 	}
 
 	func handleResponse(response:ServerResponse) -> NSAttributedString? {
@@ -47,8 +41,8 @@ class ServerResponseHandler {
 				return formatQueryEcho(query, queryId:queryId, fileId:fileId)
 			case .Results(let queryId, let text):
 				return formatResults(text, queryId: queryId)
-			case .Error(let queryId, let error):
-				return formatError(error, queryId: queryId)
+			case .Error(_, let error):
+				return formatError(error)
 			case .ExecComplete(let queryId, let batchId, let images):
 				return formatExecComplete(queryId, batchId: batchId, images: images)
 			case .FileChanged(let changeType, let file):
@@ -109,7 +103,7 @@ class ServerResponseHandler {
 		return mstr
 	}
 
-	private func formatError(error:String, queryId:Int) -> NSAttributedString? {
+	func formatError(error:String) -> NSAttributedString {
 		return NSAttributedString(string: "\(error)\n", attributes: [NSBackgroundColorAttributeName:outputColors[.Error]!])
 	}
 }

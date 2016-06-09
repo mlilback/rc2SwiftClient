@@ -8,9 +8,13 @@
 
 * add autologin if have data from keychain (LoginViewController)
 
-* ImageOutputController: if splitter resizes us, the pagecontroller view does not adjust its frame
+* change OutputColors to use a static array of colors that is updated if a color changes in NSUserDefaults
 
-* ImageOutputController: figure out how to support async image loading
+* ImageOutputController
+
+	* if splitter resizes us, the pagecontroller view does not adjust its frame
+
+	* figure out how to support async image loading
 
 * Output Tab Controller
 

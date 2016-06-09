@@ -59,7 +59,6 @@ import Cocoa
 		session = Session.manager.currentSession
 		session.delegate = self
 		imgCache.workspace = session.workspace
-		outputHandler.session = session
 		restoreSessionState()
 	}
 
@@ -69,6 +68,10 @@ import Cocoa
 	
 	func clearFileCache() {
 		session.fileHandler.fileCache.flushCacheForWorkspace(session.workspace)
+	}
+	
+	func formatErrorMessage(error:String) -> NSAttributedString {
+		return responseHandler!.formatError(error)
 	}
 }
 
@@ -175,8 +178,7 @@ extension SessionController: SessionDelegate {
 	}
 	
 	func respondToHelp(helpTopic: String) {
-		//TODO: implement respondToHelp
-		log.info("user code asked for help \"\(helpTopic)\"")
+		outputHandler.showHelp(HelpController.sharedInstance.topicsWithName(helpTopic))
 	}
 	
 	func sessionMessageReceived(response:ServerResponse) {

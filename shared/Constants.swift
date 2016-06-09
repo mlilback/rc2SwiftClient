@@ -23,6 +23,7 @@ let AppStatusChangedNotification = "AppStatusChangedNotification"
 
 let PrefMaxCommandHistory = "MaxCommandHistorySize"
 let PrefWordWrap = "WordWrapEnabled"
+let OutputColorsKey = "OutputColors"
 
 let ConsoleAttachmentImageSize = CGSize(width: 48, height: 48)
 

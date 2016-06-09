@@ -10,6 +10,16 @@ enum OutputColors: String {
 	case Input, Help, Status, Error, Note, Log
 	
 	static let allValues = [Input, Help, Status, Error, Note, Log]
+	
+	static func colorMap() -> [OutputColors:PlatformColor] {
+		let oldDict = NSUserDefaults.standardUserDefaults().dictionaryForKey(OutputColorsKey) as! Dictionary<String,String>
+		let outputColors = oldDict.reduce([OutputColors:PlatformColor]()) { (dict, pair) in
+			var aDict = dict
+			aDict[OutputColors(rawValue: pair.0)!] = PlatformColor.colorWithHexString(pair.1)
+			return aDict
+		}
+		return outputColors
+	}
 }
 
 enum SyntaxColors: String {

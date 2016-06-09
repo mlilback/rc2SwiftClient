@@ -44,6 +44,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 			concreteFH!.delegate = self
 		}
 		sessionController = SessionController(delegate: self, outputHandler: outputHandler!, variableHandler:variableHandler)
+		outputHandler?.sessionController = sessionController
 	}
 	
 	override func viewDidAppear() {

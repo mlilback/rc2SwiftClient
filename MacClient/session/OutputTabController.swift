@@ -16,7 +16,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	var webController: WebKitOutputController?
 	var helpController: HelpOutputController?
 	var imageCache: ImageCache?
-	weak var session: Session?
+	weak var sessionController: SessionController?
 	var consoleToolbarControl: NSSegmentedControl?
 	var segmentItem: NSToolbarItem?
 	var segmentControl: NSSegmentedControl?
@@ -91,6 +91,10 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	}
 
 	func showHelp(topics: [HelpTopic]) {
+		guard topics.count > 0 else {
+			consoleController?.appendFormattedString(sessionController!.formatErrorMessage("No help found"))
+			return
+		}
 		if topics.count == 1 {
 			showHelpTopic(topics[0])
 			return
@@ -126,8 +130,8 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		}
 		switch (attachment.type) {
 			case .File:
-				if let file = session?.workspace.fileWithId(Int(attachment.fileId)) {
-					webController?.loadLocalFile(session!.fileHandler.fileCache.cachedFileUrl(file))
+				if let file = sessionController?.session.workspace.fileWithId(Int(attachment.fileId)) {
+					webController?.loadLocalFile(sessionController!.session.fileHandler.fileCache.cachedFileUrl(file))
 					selectedOutputTab = .WebKit
 					//TODO: implement option to check by filename if not found by id
 				} else {
@@ -147,10 +151,10 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	func showFile(fileId:Int) {
 		displayedFileId = fileId
-		if let file = session?.workspace.fileWithId(fileId) {
+		if let file = sessionController?.session.workspace.fileWithId(fileId) {
 			//TODO: need to specially handle images
 			delay(0.5) { //delay is to give previous async file save time to actually write file to disk.
-				self.webController?.loadLocalFile(self.session!.fileHandler.fileCache.cachedFileUrl(file))
+				self.webController?.loadLocalFile(self.sessionController!.session.fileHandler.fileCache.cachedFileUrl(file))
 				self.selectedOutputTab = .WebKit
 			}
 		} else {
