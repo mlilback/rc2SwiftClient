@@ -24,13 +24,14 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	}
 
 	func applicationDidFinishLaunching(aNotification: NSNotification) {
-		if NSProcessInfo.processInfo().environment["TestBundleLocation"] == nil {
-			//skip login when running unit tests
-			let sboard = NSStoryboard(name: "Main", bundle: nil)
-			loginWindowController = sboard.instantiateControllerWithIdentifier("loginWindow") as? NSWindowController
-			loginController = loginWindowController?.window?.contentViewController as? LoginViewController
-			showLoginWindow()
+		//skip login when running unit tests
+		guard NSProcessInfo.processInfo().environment["TestBundleLocation"] == nil else {
+			return
 		}
+		let sboard = NSStoryboard(name: "Main", bundle: nil)
+		loginWindowController = sboard.instantiateControllerWithIdentifier("loginWindow") as? NSWindowController
+		loginController = loginWindowController?.window?.contentViewController as? LoginViewController
+		showLoginWindow()
 	}
 
 	func applicationWillTerminate(aNotification: NSNotification) {
@@ -49,7 +50,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	
 	func attemptLogin(controller: LoginViewController) {
 		RestServer.sharedInstance.selectHost(controller.selectedHost!)
-		RestServer.sharedInstance.login(controller.loginName!, password: controller.password!) { (success, results, error) -> Void in
+		RestServer.sharedInstance.login(controller.loginName!, password: controller.password!)
+		{ (success, results, error) in
 			if success {
 				NSApp.stopModal()
 				let wspace = RestServer.sharedInstance.loginSession!.workspaceWithName(controller.selectedWorkspace!)!
@@ -93,12 +95,11 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 	
 	func showLoginWindow() {
 		//will be nil when running unit tests
-		if loginController != nil {
-			loginController!.hosts = RestServer.sharedInstance.restHosts
-			loginController!.lookupWorkspaceArray = RestServer.sharedInstance.workspaceNamesForHostName
-			loginController!.completionHandler = attemptLogin
-			NSApp!.runModalForWindow((loginWindowController?.window)!)
-		}
+		guard loginController != nil else { return }
+		loginController!.hosts = RestServer.sharedInstance.restHosts
+		loginController!.lookupWorkspaceArray = RestServer.sharedInstance.workspaceNamesForHostName
+		loginController!.completionHandler = attemptLogin
+		NSApp!.runModalForWindow((loginWindowController?.window)!)
 	}
 	
 	//MARK: AppStatus implementation
