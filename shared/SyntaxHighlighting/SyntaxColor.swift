@@ -6,13 +6,16 @@
 
 import Foundation
 
-enum SyntaxColor: String {
+///values representing the possible token types that can have different colors mapped to them
+public enum SyntaxColor: String {
 	case Comment, Keyword, Function, Quote, Symbol, CodeBackground, InlineBackground, EquationBackground
 	
 	static let allValues = [Comment, Keyword, Function, Quote, Symbol, CodeBackground, InlineBackground, EquationBackground]
 }
 
-struct SyntaxColorMap {
+///A struct for mapping a SyntaxColor to a PlatformColor (NSColor, UIColor)
+public struct SyntaxColorMap {
+	///A singleton map loaded from user defaults Assumes a default map was installed (likely by the register domain).
 	static var standardMap:SyntaxColorMap = {
 		let srcMap = NSUserDefaults.standardUserDefaults().objectForKey(RCodeHighlighterColors) as! [String:String]
 		var dict: [SyntaxColor:PlatformColor] = [:]
@@ -24,10 +27,13 @@ struct SyntaxColorMap {
 	
 	private var colorMap:[SyntaxColor:PlatformColor] = [:]
 	
+	///initializes a SyntaxColorMap
+	/// - parameter colorDict: A dictionary of syntax colors mapped to platform colors
 	init(colorDict:[SyntaxColor:PlatformColor]) {
 		self.colorMap = colorDict;
 	}
 	
+	/// maps a SyntaxColor to a PlatformColor
 	subscript(key:SyntaxColor) -> PlatformColor? {
 		get { return colorMap[key] }
 		set { colorMap[key] = newValue }

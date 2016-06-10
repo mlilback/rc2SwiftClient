@@ -10,7 +10,7 @@ import Foundation
 #endif
 
 /** parses the contents of an NSTextStorage into an array of chunks that can be syntax colored */
-class SyntaxParser: NSObject {
+public class SyntaxParser: NSObject {
 	///returns the approprate syntax parser to use for fileType
 	class func parserWithTextStorage(storage:NSTextStorage, fileType:FileType) -> SyntaxParser?
 	{
@@ -32,13 +32,16 @@ class SyntaxParser: NSObject {
 	let textStorage: NSTextStorage
 	let fileType:  FileType
 	let colorMap:SyntaxColorMap
-	var chunks:[DocumentChunk] = []
+	internal(set) var chunks:[DocumentChunk] = []
 	private var lastSource:String = ""
 	var colorBackgrounds = false
 
-	var docHighlighter:CodeHighlighter?
-	var codeHighlighter:CodeHighlighter?
+	internal var docHighlighter:CodeHighlighter?
+	internal var codeHighlighter:CodeHighlighter?
 
+	/// - parameter storage: A text storage whose changes are tracked to keep chunks up to date
+	/// - parameter fileType: used to determine the proper highlighter(s) to use
+	/// - parameter colorMap: The map of token types to colors. Defaults to the singleton standardMap.
 	init(storage:NSTextStorage, fileType:FileType, colorMap:SyntaxColorMap = SyntaxColorMap.standardMap)
 	{
 		self.textStorage = storage
@@ -92,7 +95,7 @@ class SyntaxParser: NSObject {
 		return true
 	}
 	
-	func parseRange(range:NSRange) {
+	internal func parseRange(range:NSRange) {
 		preconditionFailure("subclass must implement")
 	}
 	
@@ -134,8 +137,8 @@ class SyntaxParser: NSObject {
 	}
 }
 
-class RSyntaxParser:SyntaxParser {
-	override func parseRange(range: NSRange) {
+public class RSyntaxParser:SyntaxParser {
+	internal override func parseRange(range: NSRange) {
 		chunks.removeAll()
 		let chunk = DocumentChunk(chunkType: .RCode, chunkNumber: 1)
 		chunk.parsedRange = NSMakeRange(0, textStorage.string.characters.count)

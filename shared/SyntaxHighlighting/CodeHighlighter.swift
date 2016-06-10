@@ -9,7 +9,7 @@ import Foundation
 	import AppKit
 #endif
 
-class CodeHighlighter: NSObject {
+public class CodeHighlighter: NSObject {
 	let colorMap:SyntaxColorMap = { return SyntaxColorMap.standardMap }()
 	
 	///subclass should override this to return the color to use and if the previous character should be colorized, too (for latex)

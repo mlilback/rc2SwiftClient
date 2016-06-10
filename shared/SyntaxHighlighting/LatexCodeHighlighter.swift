@@ -9,7 +9,7 @@ import Foundation
 	import AppKit
 #endif
 
-class LatexCodeHighlighter : CodeHighlighter {
+public class LatexCodeHighlighter : CodeHighlighter {
 	let commentRegex:NSRegularExpression
 	
 	override init()  {

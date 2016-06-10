@@ -6,23 +6,27 @@
 
 import Foundation
 
-enum ChunkType {
+public enum ChunkType {
 	case Documentation, RCode, Equation
 }
 
-enum EquationType: String {
+public enum EquationType: String {
 	case NotAnEquation = "invalid", Inline = "inline", Display = "display", MathML = "MathML"
 }
 
-class DocumentChunk: NSObject {
+///Represents a "chunk" of data. An R document has 1 chunk. 
+/// Rmd and Rnw documents can have multiple chunks of different types.
+public class DocumentChunk: NSObject {
+	///A unique, serial number for each chunk.
 	let chunkNumber:Int
 	let name:String?
+	///One of Documentation, RCode, or Equation
 	let type:ChunkType
 	
 	var equationType:EquationType = .NotAnEquation
 	var contentOffset:Int = 0
 	//should only be used by the parser/highlighter
-	var parsedRange:NSRange = NSRange(location: 0,length: 0)
+	internal(set) var parsedRange:NSRange = NSRange(location: 0,length: 0)
 	
 	init(chunkType:ChunkType, chunkNumber:Int, name:String?=nil) {
 		self.chunkNumber = chunkNumber
@@ -36,6 +40,7 @@ class DocumentChunk: NSObject {
 		self.equationType = equationType
 	}
 	
+	//duplicates a chunk that differs only in chunkNumber
 	func duplicateWithChunkNumber(newNum:Int) -> DocumentChunk {
 		let dup = DocumentChunk(chunkType: type, chunkNumber: newNum, name: name)
 		dup.parsedRange = parsedRange
@@ -44,18 +49,18 @@ class DocumentChunk: NSObject {
 		return dup
 	}
 	
-	override func isEqual(object: AnyObject?) -> Bool {
+	public override func isEqual(object: AnyObject?) -> Bool {
 		if let other = object as? DocumentChunk {
 			return other.chunkNumber == chunkNumber && other.type == type && other.name == name && NSEqualRanges(parsedRange, other.parsedRange)
 		}
 		return false
 	}
 	
-	override var hash:Int {
+	public override var hash:Int {
 		return chunkNumber.hashValue + type.hashValue + (name == nil ? 0 : name!.hashValue)
 	}
 	
-	override var description: String {
+	public override var description: String {
 		let range = NSStringFromRange(parsedRange)
 		switch(self.type) {
 			case .RCode:

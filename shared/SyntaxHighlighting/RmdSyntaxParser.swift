@@ -9,7 +9,7 @@ import Foundation
 	import AppKit
 #endif
 
-class RmdSyntaxParser: SyntaxParser {
+public class RmdSyntaxParser: SyntaxParser {
 	let latexHighlighter:LatexCodeHighlighter = LatexCodeHighlighter()
 	let rChunkRegex:NSRegularExpression
 	let blockEqRegex: NSRegularExpression

@@ -9,7 +9,7 @@ import Foundation
 	import AppKit
 #endif
 
-class RnwSyntaxParser: SyntaxParser {
+public class RnwSyntaxParser: SyntaxParser {
 	private let startExpression:NSRegularExpression
 	
 	override init(storage: NSTextStorage, fileType: FileType, colorMap: SyntaxColorMap)

@@ -11,7 +11,7 @@ import Foundation
 
 let RCodeHighlighterColors = "RCodeHighlighterColors"
 
-class RCodeHighlighter: CodeHighlighter {
+public class RCodeHighlighter: CodeHighlighter {
 	
 	let keywords:Set<String> = {
 		let url = NSBundle.mainBundle().URLForResource("RKeywords", withExtension: "txt")!
