@@ -19,7 +19,8 @@ public class RmdSyntaxParser: SyntaxParser {
 	override init(storage: NSTextStorage, fileType: FileType, colorMap: SyntaxColorMap)
 	{
 		try! rChunkRegex = NSRegularExpression(pattern: "\n```\\{r\\s*([^\\}]*)\\}\\s*\n+(.*?)\n```\n", options: .DotMatchesLineSeparators)
-		try! blockEqRegex = NSRegularExpression(pattern: "(\\$\\$\\s*\\n+(.*?)\\$\\$)", options:.DotMatchesLineSeparators)
+		//matches: $$
+		try! blockEqRegex = NSRegularExpression(pattern: "(\\$\\$\\p{blank}*\\n+(.*?)\\$\\$\\p{blank}*\n)", options:.DotMatchesLineSeparators)
 		try! inlineRegex = NSRegularExpression(pattern: "`r\\s+([^`]*)`", options: .DotMatchesLineSeparators)
 		try! mathRegex = NSRegularExpression(pattern: "(<math(\\s+[^>]*)(display\\s*=\\s*\"(block|inline)\")([^>]*)>)(.*?)</math>\\s*?\\n?", options: .DotMatchesLineSeparators)
 		
@@ -43,7 +44,9 @@ public class RmdSyntaxParser: SyntaxParser {
 			}
 			let codeChunk = DocumentChunk(chunkType: .RCode, chunkNumber: nextChunkIndex, name: cname)
 			nextChunkIndex += 1
-			codeChunk.parsedRange = result!.rangeAtIndex(2)
+			let mrng = result!.range //rangeAtIndex(0)
+			//skip the initial newline
+			codeChunk.parsedRange = NSMakeRange(mrng.location + 1, mrng.length - 1)
 			newChunks.append(codeChunk)
 		}
 		//add chunks for block equations
@@ -77,7 +80,7 @@ public class RmdSyntaxParser: SyntaxParser {
 			let docChunk = DocumentChunk(chunkType: .Documentation, chunkNumber: 1)
 			if index == 0 { //first chunk
 				if aChunk.parsedRange.location > 0 {
-					docChunk.parsedRange = NSMakeRange(0, aChunk.parsedRange.location-1)
+					docChunk.parsedRange = NSMakeRange(0, aChunk.parsedRange.location)
 				}
 			} else { //any other chunk
 				let startIdx = MaxNSRangeIndex(newChunks[index-1].parsedRange)+1
