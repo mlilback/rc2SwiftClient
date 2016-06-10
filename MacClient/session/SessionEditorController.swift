@@ -11,10 +11,13 @@ private extension Selector {
 	static let autoSave = #selector(SessionEditorController.autosaveCurrentDocument)
 	static let fileChangedNotification = #selector(SessionEditorController.fileChanged(_:))
 	static let findPanelAction = #selector(NSTextView.performFindPanelAction(_:))
+	static let previousChunkAction = #selector(SessionEditorController.previousChunkAction(_:))
+	static let nextChunkAction = #selector(SessionEditorController.nextChunkAction(_:))
 }
 
-class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate, NSTextStorageDelegate, UsesAdjustableFont
+class SessionEditorController: AbstractSessionViewController
 {
+	//MARK: properties
 	@IBOutlet var editor: SessionEditor?
 	@IBOutlet var runButton:NSButton?
 	@IBOutlet var sourceButton:NSButton?
@@ -25,6 +28,7 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	private(set) var currentDocument:EditorDocument?
 	private var openDocuments:[Int:EditorDocument] = [:]
 	private var defaultAttributes:[String:AnyObject]! //set in viewDidLoad, never used unless loaded
+	private var currentChunkIndex = 0
 	
 	private var myFontDescriptor:NSFontDescriptor?
 	
@@ -50,17 +54,13 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		}
 	}
 	
+	//MARK: init/deinit
 	deinit {
 		NSWorkspace.sharedWorkspace().notificationCenter.removeObserver(self)
 		NSNotificationCenter.defaultCenter().removeObserver(self)
 	}
 	
-	@IBAction override func performTextFinderAction(sender: AnyObject?) {
-		let menuItem = NSMenuItem(title: "foo", action: .findPanelAction, keyEquivalent: "")
-		menuItem.tag = Int(NSFindPanelAction.ShowFindPanel.rawValue)
-		editor?.performFindPanelAction(menuItem)
-	}
-	
+	//MARK: methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		guard editor != nil else { return }
@@ -84,52 +84,6 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		editor!.enclosingScrollView!.rulersVisible = true
 		if nil == notificationCenter {
 			notificationCenter = NSNotificationCenter.defaultCenter()
-		}
-	}
-	
-//	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
-//		if menuItem.action == #selector(SessionEditorController.runQuery(_:)) {
-//			print("setting run enabled state")
-//			return currentDocument != nil
-//		}
-//		return super.validateMenuItem(menuItem)
-//	}
-	
-	func fontsEnabled() -> Bool {
-		return true
-	}
-	
-	func fontChanged(menuItem:NSMenuItem) {
-		log.info("font changed: \(menuItem.representedObject)")
-		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
-		let newDesc = newNameDesc.fontDescriptorWithSize(myFontDescriptor!.pointSize)
-		myFontDescriptor = newDesc
-		editor?.font = NSFont(descriptor: newDesc, size: newDesc.pointSize)
-	}
-	
-	@IBAction func runQuery(sender:AnyObject) {
-		executeQuery(type:.Run)
-	}
-
-	@IBAction func sourceQuery(sender:AnyObject) {
-		executeQuery(type:.Source)
-	}
-
-	//actually implements running a query
-	func executeQuery(type type:ExecuteType) {
-		assert(currentDocument != nil, "runQuery called with no file selected")
-		if currentDocument!.dirty {
-			//not passing autosave param, so will always return progress
-			let progress = currentDocument!.saveContents()
-			progress!.rc2_addCompletionHandler() {
-				self.session.sendSaveFileMessage(self.currentDocument!, executeType: type) {doc, error in
-					//TODO notify user of error
-					self.session.executeScriptFile(doc.file.fileId, type: type)
-				}
-			}
-			appStatus?.updateStatus(progress)
-		} else {
-			session.executeScriptFile(currentDocument!.file.fileId, type: type)
 		}
 	}
 	
@@ -191,7 +145,148 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 		}
 	}
 	
-	private func adjustDocumentForFile(file:File?, content:String?) {
+}
+
+//MARK: Actions
+extension SessionEditorController {
+	@IBAction func previousChunkAction(sender:AnyObject) {
+		guard currentChunkIndex > 0 else {
+			log.warning("called with invalid currentChunkIndex");
+			assertionFailure() //called for debug builds only
+			return
+		}
+		currentChunkIndex -= 1
+		adjustUIForCurrentChunk()
+	}
+
+	@IBAction func nextChunkAction(sender:AnyObject) {
+		guard currentChunkIndex + 1 < parser!.chunks.count else {
+			log.warning("called with invalid currentChunkIndex");
+			assertionFailure() //called for debug builds only
+			return
+		}
+		currentChunkIndex += 1
+		adjustUIForCurrentChunk()
+	}
+
+	@IBAction override func performTextFinderAction(sender: AnyObject?) {
+		let menuItem = NSMenuItem(title: "foo", action: .findPanelAction, keyEquivalent: "")
+		menuItem.tag = Int(NSFindPanelAction.ShowFindPanel.rawValue)
+		editor?.performFindPanelAction(menuItem)
+	}
+	
+	@IBAction func runQuery(sender:AnyObject) {
+		executeQuery(type:.Run)
+	}
+	
+	@IBAction func sourceQuery(sender:AnyObject) {
+		executeQuery(type:.Source)
+	}
+}
+
+//MARK: UsesAdjustableFont
+extension SessionEditorController: UsesAdjustableFont {
+	func fontsEnabled() -> Bool {
+		return true
+	}
+	
+	func fontChanged(menuItem:NSMenuItem) {
+		log.info("font changed: \(menuItem.representedObject)")
+		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
+		let newDesc = newNameDesc.fontDescriptorWithSize(myFontDescriptor!.pointSize)
+		myFontDescriptor = newDesc
+		editor?.font = NSFont(descriptor: newDesc, size: newDesc.pointSize)
+	}
+}
+
+//Mark: NSUserInterfaceValidations
+extension SessionEditorController: NSUserInterfaceValidations {
+	func validateUserInterfaceItem(anItem: NSValidatedUserInterfaceItem) -> Bool {
+		switch anItem.action() as Selector {
+			case Selector.nextChunkAction:
+				return currentChunkIndex + 1 < (parser?.chunks.count ?? 0)
+			case Selector.previousChunkAction:
+				return currentChunkIndex > 0
+			default:
+				return false
+		}
+	}
+}
+
+//MARK: NSTextStorageDelegate
+extension SessionEditorController: NSTextStorageDelegate {
+	//called when text editing has ended
+	func textStorage(textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
+	{
+		//we don't care if attributes changed
+		guard editedMask.contains(.EditedCharacters) else { return }
+		guard parser != nil else { return }
+		//parse() return true if the chunks changed. in that case, we need to recolor all of them
+		if parser!.parse() {
+			parser!.colorChunks(parser!.chunks)
+		} else {
+			//only color chunks in the edited range
+			parser!.colorChunks(parser!.chunksForRange(editedRange))
+		}
+		currentChunkIndex = parser!.indexOfChunkForRange(range: editedRange)
+		if currentDocument?.editedContents != textStorage.string {
+			currentDocument?.editedContents = textStorage.string
+		}
+	}
+}
+
+//MARK: NSTextViewDelegate methods
+extension SessionEditorController: NSTextViewDelegate {
+	func undoManagerForTextView(view: NSTextView) -> NSUndoManager? {
+		if currentDocument != nil { return currentDocument!.undoManager }
+		return editor?.undoManager
+	}
+	
+	func textView(textView: NSTextView, clickedOnLink link: AnyObject, atIndex charIndex: Int) -> Bool {
+		if let pieces = (link as? String)?.componentsSeparatedByString(":") where pieces.count == 2 {
+			NSNotificationCenter.defaultCenter().postNotificationName(DisplayHelpTopicNotification, object:pieces[1], userInfo:nil)
+			return true
+		}
+		return false
+	}
+}
+
+//MARK: private methods
+private extension SessionEditorController {
+	///adjusts the UI to mark the current chunk
+	func adjustUIForCurrentChunk() {
+		//for now we will move the cursor and scroll so it is visible
+		let chunkRange = parser!.chunks[currentChunkIndex].parsedRange
+		var desiredRange = NSMakeRange(chunkRange.location, 0)
+		//adjust desired range so it advances past any newlines at start of chunk
+		let str = editor!.string!
+		let curIdx = str.startIndex.advancedBy(desiredRange.location)
+		if curIdx != str.endIndex && str.characters[curIdx] == "\n" {
+			desiredRange.location += 1
+		}
+		editor!.setSelectedRange(desiredRange)
+		editor!.scrollRangeToVisible(desiredRange)
+	}
+	
+	///actually implements running a query
+	func executeQuery(type type:ExecuteType) {
+		assert(currentDocument != nil, "runQuery called with no file selected")
+		if currentDocument!.dirty {
+			//not passing autosave param, so will always return progress
+			let progress = currentDocument!.saveContents()
+			progress!.rc2_addCompletionHandler() {
+				self.session.sendSaveFileMessage(self.currentDocument!, executeType: type) {doc, error in
+					//TODO notify user of error
+					self.session.executeScriptFile(doc.file.fileId, type: type)
+				}
+			}
+			appStatus?.updateStatus(progress)
+		} else {
+			session.executeScriptFile(currentDocument!.file.fileId, type: type)
+		}
+	}
+	
+	func adjustDocumentForFile(file:File?, content:String?) {
 		let oldDocument = currentDocument
 		let oldContents = editor!.textStorage!.string
 		currentDocument?.willBecomeInactive(oldContents)
@@ -221,45 +316,13 @@ class SessionEditorController: AbstractSessionViewController, NSTextViewDelegate
 	}
 	
 	//adjust our interface based on new file
-	private func adjustInterfaceForFile(file:File?) {
+	func adjustInterfaceForFile(file:File?) {
 		let selected = file != nil
 		runButton?.enabled = selected
 		sourceButton?.enabled = selected
 		fileNameField?.stringValue = selected ? file!.name : ""
 		editor?.editable = selected
 	}
-
-	//MARK: NSTextStorageDelegate methods
-	//called when text editing has ended
-	func textStorage(textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
-	{
-		//we don't care if attributes changed
-		guard editedMask.contains(.EditedCharacters) else { return }
-		guard parser != nil else { return }
-		//parse() return true if the chunks changed. in that case, we need to recolor all of them
-		if parser!.parse() {
-			parser!.colorChunks(parser!.chunks)
-		} else {
-			//only color chunks in the edited range
-			parser!.colorChunks(parser!.chunksForRange(editedRange))
-		}
-		if currentDocument?.editedContents != textStorage.string {
-			currentDocument?.editedContents = textStorage.string
-		}
-	}
-
-	//MARK: NSTextViewDelegate methods
-	func undoManagerForTextView(view: NSTextView) -> NSUndoManager? {
-		if currentDocument != nil { return currentDocument!.undoManager }
-		return editor?.undoManager
-	}
 	
-	func textView(textView: NSTextView, clickedOnLink link: AnyObject, atIndex charIndex: Int) -> Bool {
-		if let pieces = (link as? String)?.componentsSeparatedByString(":") where pieces.count == 2 {
-			NSNotificationCenter.defaultCenter().postNotificationName(DisplayHelpTopicNotification, object:pieces[1], userInfo:nil)
-			return true
-		}
-		return false
-	}
 }
 

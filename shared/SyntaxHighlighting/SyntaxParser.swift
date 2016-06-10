@@ -50,6 +50,11 @@ public class SyntaxParser: NSObject {
 		super.init()
 	}
 	
+	///returns the index of the chunk in the specified range
+	func indexOfChunkForRange(range inRange: NSRange) -> Int {
+		return chunks.indexOf(chunksForRange(inRange).first!)!
+	}
+	
 	func chunkForRange(inRange:NSRange) -> DocumentChunk? {
 		var range = inRange
 		if range.location == NSNotFound { return nil }

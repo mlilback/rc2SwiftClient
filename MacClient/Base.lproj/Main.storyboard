@@ -376,6 +376,19 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Session" id="HyV-fh-RgO">
                                     <items>
+                                        <menuItem title="Previous Chunk" keyEquivalent="" id="KTQ-tn-y0Z">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="previousChunkAction:" target="Ady-hI-5gd" id="bQd-JV-unH"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Next Chunk" keyEquivalent="" id="ZkB-MN-20C">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="nextChunkAction:" target="Ady-hI-5gd" id="dYA-fb-AhX"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="E1p-oe-6Rs"/>
                                         <menuItem title="Clear Console" id="ewc-iC-cVv">
                                             <string key="keyEquivalent" base64-UTF8="YES">
 CA
