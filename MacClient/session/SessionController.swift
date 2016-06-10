@@ -75,6 +75,7 @@ import Cocoa
 	}
 }
 
+//MARK: - ServerResponseHandlerDelegate
 extension SessionController: ServerResponseHandlerDelegate {
 	func handleFileUpdate(file:File, change:FileChangeType) {
 		log.info("got file update \(file.fileId) v\(file.version)")
@@ -163,7 +164,7 @@ extension SessionController {
 	}
 }
 
-//MARK: SessionDelegate
+//MARK: - SessionDelegate
 extension SessionController: SessionDelegate {
 	func sessionOpened() {
 		
