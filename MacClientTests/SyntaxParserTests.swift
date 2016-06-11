@@ -63,7 +63,7 @@ class SyntaxParserTests: XCTestCase {
 		//test inserting at start of second chunk
 		results = parser.chunksForRange(NSMakeRange(10, 1))
 		XCTAssertEqual(results.count, 1)
-		XCTAssertEqual(results[0], chunks[0])
+		XCTAssertEqual(results[0], chunks[1])
 		
 	}
 	

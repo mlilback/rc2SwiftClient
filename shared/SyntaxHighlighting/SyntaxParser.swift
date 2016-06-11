@@ -78,15 +78,19 @@ public class SyntaxParser: NSObject {
 		if NSEqualRanges(range, NSMakeRange(0, textStorage.length)) {
 			return chunks
 		}
-		//if empty range, return first chunk
-		if range.length == 0 && range.location == 0 {
-			return [chunks[0]]
+		if range.length == 0 {
+			guard range.length > 0 else { return [chunks[0]] }
+			for aChunk in chunks {
+				if NSLocationInRange(range.location-1, aChunk.parsedRange) {
+					return [aChunk]
+				}
+			}
 		}
 		log.info("looking for \(range)")
 		var outArray:[DocumentChunk] = []
 		for aChunk in chunks {
 			if NSIntersectionRange(aChunk.parsedRange, range).length > 0
-				|| NSLocationInRange(range.location-1, aChunk.parsedRange)
+//				|| NSLocationInRange(range.location-1, aChunk.parsedRange)
 			{
 				outArray.append(aChunk)
 			}
