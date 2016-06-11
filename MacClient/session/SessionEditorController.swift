@@ -30,6 +30,9 @@ class SessionEditorController: AbstractSessionViewController
 	private var defaultAttributes:[String:AnyObject]! //set in viewDidLoad, never used unless loaded
 	private var currentChunkIndex = 0
 	
+	///true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
+	private var ignoreTextStorageNotifications = false
+	
 	private var myFontDescriptor:NSFontDescriptor?
 	
 	var currentFontDescriptor: NSFontDescriptor { return myFontDescriptor! }
@@ -218,6 +221,7 @@ extension SessionEditorController: NSTextStorageDelegate {
 	//called when text editing has ended
 	func textStorage(textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
 	{
+		guard !ignoreTextStorageNotifications else { return }
 		//we don't care if attributes changed
 		guard editedMask.contains(.EditedCharacters) else { return }
 		guard parser != nil else { return }
@@ -297,8 +301,10 @@ private extension SessionEditorController {
 				openDocuments[theFile.fileId] = currentDocument!
 			}
 			currentDocument!.willBecomeActive()
+			ignoreTextStorageNotifications = true
 			storage.deleteCharactersInRange(editor!.rangeOfAllText)
 			parser = SyntaxParser.parserWithTextStorage(storage, fileType: theFile.fileType)
+			ignoreTextStorageNotifications = false
 			storage.setAttributedString(NSAttributedString(string: theText, attributes: defaultAttributes))
 			if oldDocument?.dirty ?? false {
 				let prog = oldDocument!.saveContents()
