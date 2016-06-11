@@ -27,8 +27,7 @@ class ServerResponseTests: XCTestCase {
 		let rsp = ServerResponse.parseResponse(srcJson)
 		XCTAssertNotNil(rsp)
 		switch (rsp!) {
-		case .Variables(_, let delta, let single, let variables):
-			XCTAssert(!delta)
+		case .Variables(let single, let variables):
 			XCTAssert(!single)
 			XCTAssertEqual(variables.count, 10)
 			XCTAssertEqual(variables[0].name, "str")

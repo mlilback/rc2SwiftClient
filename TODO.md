@@ -50,6 +50,8 @@
 	
 	* saveDocumentToServer needs to mark busy via appStatus
 	
+	* current chunk should have a a background of selection color @ 20%
+	
 * Sidebar File Controller
 
 	* Make sure our list is updated when delegate renames a file
@@ -100,4 +102,3 @@ Help
 
 	* unhardcode stat.wvu.edu from help urls, beable to work when demoing w/o a net
 	* keywords for help can include a '.' character: list.files is given separate links to list and files instead of one to "list.files"
-	
