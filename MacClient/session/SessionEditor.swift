@@ -6,7 +6,7 @@
 
 import Cocoa
 
-class SessionEditor: NSTextView {
+class SessionEditor: TextViewWithContextualMenu {
 	var wordWrapEnabled:Bool { return textContainer!.widthTracksTextView }
 	
 	override func awakeFromNib() {

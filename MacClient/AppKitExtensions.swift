@@ -11,3 +11,20 @@ extension NSFontDescriptor {
 	var visibleName:String { return objectForKey(NSFontVisibleNameAttribute) as? String ?? fontName }
 }
 
+extension NSMenu {
+	func itemWithAction(action:Selector, recursive:Bool = true) -> NSMenuItem? {
+		for anItem in itemArray {
+			if anItem.action == action {
+				return anItem
+			}
+		}
+		if recursive {
+			for anItem in itemArray {
+				if let theItem = anItem.submenu?.itemWithAction(action, recursive: true) {
+					return theItem
+				}
+			}
+		}
+		return nil
+	}
+}

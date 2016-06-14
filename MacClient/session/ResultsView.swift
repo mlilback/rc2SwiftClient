@@ -6,10 +6,9 @@
 
 import Cocoa
 
-class ResultsView : NSTextView {
+class ResultsView : TextViewWithContextualMenu {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		usesFindBar = true
 	}
-
 }
