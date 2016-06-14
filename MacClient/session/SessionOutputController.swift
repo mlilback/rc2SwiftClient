@@ -100,6 +100,8 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 				ts.insertAttributedString(NSAttributedString(string: " "), atIndex: $0)
 				ts.deleteCharactersInRange(NSMakeRange($0, 1))
 			}
+			//scroll to bottom
+			resultsView?.moveToEndOfDocument(self)
 		}
 	}
 	
