@@ -52,6 +52,7 @@ public class SyntaxParser: NSObject {
 	
 	///returns the index of the chunk in the specified range
 	func indexOfChunkForRange(range inRange: NSRange) -> Int {
+		assert(chunks.count > 0)
 		return chunks.indexOf(chunksForRange(inRange).first!)!
 	}
 	

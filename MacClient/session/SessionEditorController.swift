@@ -303,6 +303,13 @@ private extension SessionEditorController {
 	func adjustDocumentForFile(file:File?, content:String?) {
 		let oldDocument = currentDocument
 		let oldContents = editor!.textStorage!.string
+		if let doc = oldDocument {
+			//save the index of the character at the top left of the text container
+			let bnds = editor!.enclosingScrollView!.contentView.bounds
+			var partial:CGFloat = 1.0
+			let idx = editor!.layoutManager!.characterIndexForPoint(bnds.origin, inTextContainer: editor!.textContainer!, fractionOfDistanceBetweenInsertionPoints: &partial)
+			doc.topVisibleIndex = idx
+		}
 		currentDocument?.willBecomeInactive(oldContents)
 		if let theFile = file, theText = content, storage = editor?.textStorage {
 			currentDocument = openDocuments[theFile.fileId]
@@ -321,6 +328,15 @@ private extension SessionEditorController {
 				appStatus?.updateStatus(prog)
 				prog?.rc2_addCompletionHandler() {
 					self.saveDocumentToServer(oldDocument!)
+				}
+			}
+			if currentDocument?.topVisibleIndex > 0 {
+				//restore the scroll point to the saved character index
+				let idx = editor!.layoutManager!.glyphIndexForCharacterAtIndex(currentDocument!.topVisibleIndex)
+				let point = editor!.layoutManager!.boundingRectForGlyphRange(NSMakeRange(idx, 1), inTextContainer: editor!.textContainer!)
+				//postpone to next event loop cycle
+				dispatch_async(dispatch_get_main_queue()) {
+					self.editor?.enclosingScrollView?.contentView.scrollToPoint(point.origin)
 				}
 			}
 		} else {

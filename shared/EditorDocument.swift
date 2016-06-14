@@ -16,6 +16,7 @@ class EditorDocument: NSObject {
 	private(set) var savedContents:String!
 	var editedContents:String?
 	private(set) var lastSaveTime:NSTimeInterval = 0
+	var topVisibleIndex:Int = 0
 	
 	var currentContents:String { return editedContents != nil ? editedContents! : savedContents }
 	var dirty:Bool {
