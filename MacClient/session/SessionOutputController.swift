@@ -23,6 +23,12 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 	dynamic var consoleInputText = "" { didSet { canExecute = consoleInputText.characters.count > 0 } }
 	dynamic var canExecute = false
 	var viewFileOrImage: ((fileWrapper: NSFileWrapper) -> ())?
+	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFontOfSize(14.0)!.fontDescriptor {
+		didSet {
+			let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
+			resultsView?.font = font
+		}
+	}
 	
 	required init?(coder: NSCoder) {
 		cmdHistory = CommandHistory(target:nil, selector:#selector(SessionOutputController.displayHistoryItem(_:)))
@@ -37,6 +43,12 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 			return theMenu
 		}
 		resultsView?.textContainerInset = NSMakeSize(4, 4)
+		//try switching to Menlo instead of default monospaced font
+		let fdesc = NSFontDescriptor(name: "Menlo-Regular", size: 14.0)
+		if let _ =  NSFont(descriptor: fdesc, size: fdesc.pointSize)
+		{
+			currentFontDescriptor = fdesc
+		}
 	}
 	
 	//MARK: actions
@@ -66,6 +78,7 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 		dict[SessionStateKey.History.rawValue] = cmdHistory.commands
 		let rtfd = resultsView?.textStorage?.RTFDFromRange(NSMakeRange(0, (resultsView?.textStorage?.length)!), documentAttributes: [NSDocumentTypeDocumentAttribute:NSRTFDTextDocumentType])
 		dict[SessionStateKey.Results.rawValue] = rtfd
+		dict["font"] = NSKeyedArchiver.archivedDataWithRootObject(currentFontDescriptor)
 		return dict
 	}
 
@@ -99,6 +112,9 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 			fileIndexes.forEach() {
 				ts.insertAttributedString(NSAttributedString(string: " "), atIndex: $0)
 				ts.deleteCharactersInRange(NSMakeRange($0, 1))
+			}
+			if let fontData = state["font"] as? NSData, let fontDesc = NSKeyedUnarchiver.unarchiveObjectWithData(fontData) {
+				currentFontDescriptor = fontDesc as! NSFontDescriptor
 			}
 			//scroll to bottom
 			resultsView?.moveToEndOfDocument(self)
@@ -149,4 +165,20 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 		viewFileOrImage?(fileWrapper: fw)
 	}
 }
+
+//MARK: UsesAdjustableFont
+extension SessionOutputController: UsesAdjustableFont {
+	
+	func fontsEnabled() -> Bool {
+		return true
+	}
+	
+	func fontChanged(menuItem:NSMenuItem) {
+		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
+		let newDesc = newNameDesc.fontDescriptorWithSize(currentFontDescriptor.pointSize)
+		currentFontDescriptor = newDesc
+		resultsView?.font = NSFont(descriptor: newDesc, size: newDesc.pointSize)
+	}
+}
+
 

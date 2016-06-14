@@ -27,19 +27,17 @@ class SessionEditorController: AbstractSessionViewController
 	var parser:SyntaxParser?
 	private(set) var currentDocument:EditorDocument?
 	private var openDocuments:[Int:EditorDocument] = [:]
-	private var defaultAttributes:[String:AnyObject]! //set in viewDidLoad, never used unless loaded
+	private var defaultAttributes:[String:AnyObject] = [:]
 	private var currentChunkIndex = 0
 	
 	///true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
 	private var ignoreTextStorageNotifications = false
 	
-	private var myFontDescriptor:NSFontDescriptor!
-	
-	var currentFontDescriptor: NSFontDescriptor {
-		get { return myFontDescriptor }
-		set {
-			myFontDescriptor = newValue
-			editor?.font = NSFont(descriptor: myFontDescriptor, size: myFontDescriptor.pointSize)
+	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFontOfSize(14.0)!.fontDescriptor {
+		didSet {
+			let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
+			editor?.font = font
+			defaultAttributes[NSFontAttributeName] = font
 		}
 	}
 	
@@ -73,14 +71,12 @@ class SessionEditorController: AbstractSessionViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		guard editor != nil else { return }
-		myFontDescriptor = NSFontDescriptor(name: "Menlo-Regular", size: 14.0)
-		var font:NSFont? = NSFont(descriptor: myFontDescriptor, size: 14.0)
-		if font == nil {
-			font = NSFont.userFixedPitchFontOfSize(14.0)
-			myFontDescriptor = font?.fontDescriptor
+		//try switching to Menlo instead of default monospaced font
+		let fdesc = NSFontDescriptor(name: "Menlo-Regular", size: 14.0)
+		if let _ =  NSFont(descriptor: fdesc, size: fdesc.pointSize)
+		{
+			currentFontDescriptor = fdesc
 		}
-		defaultAttributes = [NSFontAttributeName:font!]
-		editor?.font = font
 		editor?.textContainer?.containerSize = NSMakeSize(CGFloat.max, CGFloat.max)
 		editor?.textContainer?.widthTracksTextView = true
 		editor?.horizontallyResizable = true
@@ -98,13 +94,13 @@ class SessionEditorController: AbstractSessionViewController
 	
 	func saveState() -> [String:AnyObject] {
 		var dict = [String:AnyObject]()
-		dict["font"] = NSKeyedArchiver.archivedDataWithRootObject(myFontDescriptor!)
+		dict["font"] = NSKeyedArchiver.archivedDataWithRootObject(currentFontDescriptor)
 		return dict
 	}
 	
 	func restoreState(state:[String:AnyObject]) {
 		if let fontData = state["font"] as? NSData, let fontDesc = NSKeyedUnarchiver.unarchiveObjectWithData(fontData) {
-			myFontDescriptor = fontDesc as? NSFontDescriptor
+			currentFontDescriptor = fontDesc as! NSFontDescriptor
 		}
 	}
 
@@ -214,8 +210,8 @@ extension SessionEditorController: UsesAdjustableFont {
 	func fontChanged(menuItem:NSMenuItem) {
 		log.info("font changed: \(menuItem.representedObject)")
 		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
-		let newDesc = newNameDesc.fontDescriptorWithSize(myFontDescriptor!.pointSize)
-		myFontDescriptor = newDesc
+		let newDesc = newNameDesc.fontDescriptorWithSize(currentFontDescriptor.pointSize)
+		currentFontDescriptor = newDesc
 		editor?.font = NSFont(descriptor: newDesc, size: newDesc.pointSize)
 	}
 }
@@ -366,7 +362,7 @@ private extension SessionEditorController {
 		sourceButton?.enabled = selected
 		fileNameField?.stringValue = selected ? file!.name : ""
 		editor?.editable = selected
-		editor?.font = NSFont(descriptor: myFontDescriptor, size: myFontDescriptor.pointSize)
+		editor?.font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
 	}
 	
 }
