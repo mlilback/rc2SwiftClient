@@ -90,6 +90,16 @@ class SessionEditorController: AbstractSessionViewController
 		}
 	}
 	
+	func saveState() -> [String:AnyObject] {
+		var dict = [String:AnyObject]()
+		
+		return dict
+	}
+	
+	func restoreState(state:[String:AnyObject]) {
+		
+	}
+
 	//called when file has changed in UI
 	func fileSelectionChanged(file:File?) {
 		var contents:String?

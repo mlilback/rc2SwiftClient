@@ -194,6 +194,16 @@ extension RootViewController: SessionControllerDelegate {
 	func filesRefreshed() {
 		fileHandler?.filesRefreshed(nil)
 	}
+
+	func saveState() -> [String:AnyObject] {
+		var dict = [String:AnyObject]()
+		dict["editor"] = editor?.saveState()
+		return dict
+	}
+	
+	func restoreState(state:[String:AnyObject]) {
+		editor?.restoreState(state["editor"] as! [String:AnyObject])
+	}
 }
 
 //MARK: - FileViewControllerDelegate

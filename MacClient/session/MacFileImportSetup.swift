@@ -103,7 +103,7 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 			alert.addButtonWithTitle(NSLocalizedString("Cancel", comment:""))
 			let uniqButton = alert.addButtonWithTitle(NSLocalizedString("Create Unique Names", comment:""))
 			uniqButton.keyEquivalent = "u"
-			//following is stupid conversion to bad swift conversion of property. field radar 24660685
+			//following is stupid conversion to bad swift conversion of property. filed radar 24660685
 			uniqButton.keyEquivalentModifierMask = Int(NSEventModifierFlags.CommandKeyMask.rawValue)
 			alert.beginSheetModalForWindow(window) { response in
 				guard response != NSAlertSecondButtonReturn else { return }

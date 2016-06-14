@@ -193,24 +193,29 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 		importPrompter!.performFileImport(view.window!, workspace: session.workspace) { files in
 			guard files != nil else { return } //user canceled import
-			//perform the import
-			let importer = FileImporter(files!, workspace:self.session.workspace, configuration: RestServer.sharedInstance.urlConfig)
-			{ (progress:NSProgress) in
-				if progress.rc2_error != nil {
-					//TODO: handle error
-					log.error("got import error \(progress.rc2_error)")
-				}
-				self.appStatus?.updateStatus(nil)
-			}
-			self.appStatus?.updateStatus(importer.progress)
-			do {
-				try importer.startImport()
-			} catch let err {
-				log.error("failed to start import: \(err)")
-				//TODO: report error to user
-			}
-			self.fileImporter = importer
+			self.importFiles(files!)
 		}
+	}
+	
+	func importFiles(files:[FileToImport]) {
+		let importer = FileImporter(files, fileHandler:self.session.fileHandler, configuration: RestServer.sharedInstance.urlConfig)
+		{ (progress:NSProgress) in
+			if progress.rc2_error != nil {
+				//TODO: handle error
+				log.error("got import error \(progress.rc2_error)")
+			}
+			self.appStatus?.updateStatus(nil)
+			self.fileImporter = nil //free up importer
+		}
+		self.appStatus?.updateStatus(importer.progress)
+		do {
+			try importer.startImport()
+		} catch let err {
+			log.error("failed to start import: \(err)")
+			//TODO: report error to user
+		}
+		//save reference so ARC does not dealloc importer
+		self.fileImporter = importer
 	}
 	
 	@IBAction func exportSelectedFile(sender:AnyObject?) {
@@ -301,7 +306,8 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	func tableView(tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableViewDropOperation) -> Bool
 	{
 		importPrompter!.acceptTableViewDrop(info, workspace: session.workspace, window: view.window!) { (files) in
-			//TODO: implement update of table view after drop import
+			//TODO: import the files
+			self.importFiles(files)
 		}
 		return true
 	}

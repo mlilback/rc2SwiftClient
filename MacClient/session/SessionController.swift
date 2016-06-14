@@ -9,6 +9,8 @@ import Cocoa
 @objc protocol SessionControllerDelegate {
 	func filesRefreshed()
 	func sessionClosed()
+	func saveState() -> [String:AnyObject]
+	func restoreState(state:[String:AnyObject])
 }
 
 /// manages a Session object
@@ -129,6 +131,7 @@ extension SessionController {
 		var dict = [String:AnyObject]()
 		dict["outputController"] = outputHandler.saveSessionState()
 		dict["imageCache"] = imgCache
+		dict["delegate"] = delegate?.saveState()
 		do {
 			let data = NSKeyedArchiver.archivedDataWithRootObject(dict)
 			//only write to disk if has changed
@@ -148,12 +151,18 @@ extension SessionController {
 			let furl = try stateFileUrl()
 			if furl.checkResourceIsReachableAndReturnError(nil) {
 				let data = NSData(contentsOfURL: furl)
-				if let dict = NSKeyedUnarchiver.unarchiveObjectWithData(data!) as! [String:AnyObject]? {
-					if let ostate = dict["outputController"] as! [String : AnyObject]? {
+				if let dict = NSKeyedUnarchiver.unarchiveObjectWithData(data!) as! [String:AnyObject]?
+				{
+					if let ostate = dict["outputController"] as? [String : AnyObject] {
 						outputHandler.restoreSessionState(ostate)
 					}
+					if let edict = dict["delegate"] as? [String : AnyObject] {
+						delegate?.restoreState(edict)
+					}
 					if let ic = dict["imageCache"] as! ImageCache? {
+						ic.workspace = self.session.workspace
 						imgCache = ic
+						outputHandler.imageCache = ic
 					}
 					savedStateHash = data?.sha256()
 				}

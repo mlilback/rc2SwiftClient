@@ -39,7 +39,7 @@ struct ImportData {
 */
 class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 	dynamic var progress:NSProgress
-	private var workspace:Workspace
+	private var fileHandler:SessionFileHandler
 	private var files:[FileToImport]
 	private var uploadSession: NSURLSession!
 	private var tasks:[Int:ImportData] = [:]
@@ -52,10 +52,10 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 		parameter workspace: the workspace to import the files into
 		urlSession: the session to use. Defaults to creating a new one using the config from RestServer
 	*/
-	init(_ files:[FileToImport], workspace:Workspace, configuration config:NSURLSessionConfiguration?, completionHandler:((progress:NSProgress)->Void))
+	init(_ files:[FileToImport], fileHandler:SessionFileHandler, configuration config:NSURLSessionConfiguration?, completionHandler:((progress:NSProgress)->Void))
 	{
 		self.files = files
-		self.workspace = workspace
+		self.fileHandler = fileHandler
 		self.completionHandler = completionHandler
 		var myConfig = config
 		let totalFileSize:Int64 = files.map({ $0.fileUrl }).reduce(0) { (size, url) -> Int64 in
@@ -88,7 +88,7 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 				log.error("failed to create link for upload: \(err)")
 				throw err
 			}
-			let destUrl = NSURL(string: "/workspaces/\(workspace.wspaceId)/files/upload", relativeToURL: RestServer.sharedInstance.baseUrl)!
+			let destUrl = NSURL(string: "/workspaces/\(fileHandler.workspace.wspaceId)/files/upload", relativeToURL: RestServer.sharedInstance.baseUrl)!
 			let request = NSMutableURLRequest(URL: destUrl)
 			request.HTTPMethod = "POST"
 			request.setValue(aFileToImport.uniqueFileName, forHTTPHeaderField: "Rc2-Filename")
@@ -105,7 +105,9 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 	func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?)
 	{
 		log.info("session said complete")
-		do { try NSFileManager.defaultManager().removeItemAtURL(tmpDir) } catch _ {}
+		defer {
+			do { try NSFileManager.defaultManager().removeItemAtURL(tmpDir) } catch _ {}
+		}
 		if error != nil {
 			log.error("error uploading file \(error)")
 			return
@@ -121,8 +123,7 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 		} else { //got a proper 201 status code
 			let json = JSON(data:importData.data)
 			let newFile = File(json: json)
-			workspace.insertFile(newFile, atIndex: workspace.fileCount)
-			//TODO: need to move file from importData.srcUrl to the cache directory via FileCache and/or FileManager
+			fileHandler.updateFile(newFile, withData: NSData(contentsOfURL: importData.srcFile)!)
 			importData.progress.completedUnitCount = importData.progress.totalUnitCount
 			importData.progress.rc2_complete(nil)
 		}
