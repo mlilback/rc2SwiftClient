@@ -33,9 +33,15 @@ class SessionEditorController: AbstractSessionViewController
 	///true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
 	private var ignoreTextStorageNotifications = false
 	
-	private var myFontDescriptor:NSFontDescriptor?
+	private var myFontDescriptor:NSFontDescriptor!
 	
-	var currentFontDescriptor: NSFontDescriptor { return myFontDescriptor! }
+	var currentFontDescriptor: NSFontDescriptor {
+		get { return myFontDescriptor }
+		set {
+			myFontDescriptor = newValue
+			editor?.font = NSFont(descriptor: myFontDescriptor, size: myFontDescriptor.pointSize)
+		}
+	}
 	
 	///allow dependency injection
 	var notificationCenter:NSNotificationCenter? {
@@ -68,7 +74,7 @@ class SessionEditorController: AbstractSessionViewController
 		super.viewDidLoad()
 		guard editor != nil else { return }
 		myFontDescriptor = NSFontDescriptor(name: "Menlo-Regular", size: 14.0)
-		var font:NSFont? = NSFont(descriptor: myFontDescriptor!, size: 14.0)
+		var font:NSFont? = NSFont(descriptor: myFontDescriptor, size: 14.0)
 		if font == nil {
 			font = NSFont.userFixedPitchFontOfSize(14.0)
 			myFontDescriptor = font?.fontDescriptor
@@ -92,12 +98,14 @@ class SessionEditorController: AbstractSessionViewController
 	
 	func saveState() -> [String:AnyObject] {
 		var dict = [String:AnyObject]()
-		
+		dict["font"] = NSKeyedArchiver.archivedDataWithRootObject(myFontDescriptor!)
 		return dict
 	}
 	
 	func restoreState(state:[String:AnyObject]) {
-		
+		if let fontData = state["font"] as? NSData, let fontDesc = NSKeyedUnarchiver.unarchiveObjectWithData(fontData) {
+			myFontDescriptor = fontDesc as? NSFontDescriptor
+		}
 	}
 
 	//called when file has changed in UI
@@ -220,6 +228,10 @@ extension SessionEditorController: NSUserInterfaceValidations {
 				return currentChunkIndex + 1 < (parser?.chunks.count ?? 0)
 			case Selector.previousChunkAction:
 				return currentChunkIndex > 0
+			case #selector(ManageFontMenu.adjustFontSize(_:)):
+				return true
+			case #selector(UsesAdjustableFont.fontChanged(_:)):
+				return true
 			default:
 				return false
 		}
@@ -354,6 +366,7 @@ private extension SessionEditorController {
 		sourceButton?.enabled = selected
 		fileNameField?.stringValue = selected ? file!.name : ""
 		editor?.editable = selected
+		editor?.font = NSFont(descriptor: myFontDescriptor, size: myFontDescriptor.pointSize)
 	}
 	
 }

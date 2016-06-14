@@ -78,6 +78,15 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 				return true
 			}
 			return false
+		case #selector(ManageFontMenu.showFontSizes(_:)):
+			if let fontHandler = currentFontUser(view.window?.firstResponder) {
+				guard fontHandler.fontsEnabled() else { return false }
+				updateFontSizeMenu(menuItem.submenu!, fontUser:fontHandler)
+				return true
+			}
+			return false
+		case #selector(ManageFontMenu.adjustFontSize(_:)):
+			return true
 		default:
 			return false
 		}
@@ -158,8 +167,22 @@ extension RootViewController {
 
 //MARK: - fonts
 extension RootViewController {
-	func showFonts(sender: AnyObject) {
+	@IBAction func showFonts(sender: AnyObject) {
 		//do nothing, just a place holder for menu validation
+	}
+	
+	@IBAction func showFontSizes(sender: AnyObject) {
+		//do nothing. just placeholder for menu validation
+	}
+	
+	@IBAction func adjustFontSize(sender: NSMenuItem) {
+		let fsize = sender.tag
+		if fsize < 9 {
+			//TODO: implement custom font size dialog
+		} else {
+			let fontUser = currentFontUser(view.window!.firstResponder)
+			fontUser?.currentFontDescriptor = fontUser!.currentFontDescriptor.fontDescriptorWithSize(CGFloat(fsize))
+		}
 	}
 	
 	func updateFontFaceMenu(menu:NSMenu, fontUser:UsesAdjustableFont) {
@@ -181,6 +204,25 @@ extension RootViewController {
 				menuItem.enabled = false
 			}
 			menu.addItem(menuItem)
+		}
+	}
+
+	func updateFontSizeMenu(menu:NSMenu, fontUser:UsesAdjustableFont) {
+		var markedCurrent = false
+		var customItem:NSMenuItem?
+		let curSize = Int(fontUser.currentFontDescriptor.pointSize)
+		for anItem in menu.itemArray {
+			anItem.state = NSOffState
+			if anItem.tag == curSize {
+				anItem.state = NSOnState
+				markedCurrent = true
+			} else if anItem.tag == 0 {
+				customItem = anItem
+			}
+			anItem.enabled = true
+		}
+		if !markedCurrent {
+			customItem?.state = NSOnState
 		}
 	}
 }

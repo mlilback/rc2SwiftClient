@@ -200,6 +200,52 @@
                                                 <action selector="showFonts:" target="Ady-hI-5gd" id="tEq-Ia-taH"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Size" id="kdF-mX-LDY">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Size" id="5HS-Jr-cjG">
+                                                <items>
+                                                    <menuItem title="9" tag="9" id="Nph-pm-F5v">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="adjustFontSize:" target="Ady-hI-5gd" id="obx-CH-R08"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="10" tag="10" id="vKt-4V-Iak">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="adjustFontSize:" target="Ady-hI-5gd" id="EQT-2e-YjM"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="11" tag="11" id="feR-0Z-e9k">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="adjustFontSize:" target="Ady-hI-5gd" id="nXd-wN-Efi"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="12" tag="12" id="4Ji-a2-mBI">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="adjustFontSize:" target="Ady-hI-5gd" id="N4K-7a-a2n"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="14" tag="14" id="m6n-iP-EmE">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="adjustFontSize:" target="Ady-hI-5gd" id="tzv-Do-8Hu"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Custom…" id="0fb-yO-gKN">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="adjustFontSize:" target="Ady-hI-5gd" id="vcy-dW-Y61"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                            <connections>
+                                                <action selector="showFontSizes:" target="Ady-hI-5gd" id="eM8-2x-MZT"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="r4S-Tn-iDu"/>
                                         <menuItem title="Find" id="4EN-yA-p0u">
                                             <modifierMask key="keyEquivalentModifierMask"/>
