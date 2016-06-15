@@ -10,18 +10,16 @@
 
 * change OutputColors to use a static array of colors that is updated if a color changes in NSUserDefaults
 
+* a second save of edits isn't being sent to the compute engine (or maybe app server)
+
 * SessionController
 
 	* if no image cached saved, need to recreate from cache files (is this possible?)
 
 * ImageOutputController
 
-	* if splitter resizes us, the pagecontroller view does not adjust its frame
-
 	* figure out how to support async image loading
 	
-	* back/forward buttons not properly adjusted when only 1 image
-
 * Output Tab Controller
 
 	* showHelp: handle selection if more than 1 help topic is returned

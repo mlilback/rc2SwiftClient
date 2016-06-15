@@ -101,7 +101,7 @@ public class ImageCache :NSObject, NSSecureCoding {
 				matches.append(anImage)
 			}
 		}
-		return matches
+		return matches.sort({ $0.id < $1.id })
 	}
 	
 	func clearCache() {

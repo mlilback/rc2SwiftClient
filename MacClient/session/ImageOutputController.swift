@@ -23,7 +23,7 @@ class DisplayableImage: NSObject {
 }
 
 class ImageOutputController: NSViewController, NSPageControllerDelegate, NSSharingServicePickerDelegate {
-	@IBOutlet var imageView: NSImageView?
+	@IBOutlet var containerView: NSView?
 	@IBOutlet var labelField: NSTextField?
 	@IBOutlet var shareButton: NSSegmentedControl?
 	@IBOutlet var navigateButton: NSSegmentedControl?
@@ -39,11 +39,13 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		pageController = NSPageController()
 		pageController?.delegate = self
 		pageController?.transitionStyle = .StackBook
-		pageController?.view = imageView!
+		pageController?.view = containerView!
 		view.wantsLayer = true
 		shareButton?.sendActionOn(Int(NSEventMask.LeftMouseDownMask.rawValue))
 		view.layer?.backgroundColor = PlatformColor.whiteColor().CGColor
 		labelField?.stringValue = ""
+		navigateButton?.setEnabled(false, forSegment: 0)
+		navigateButton?.setEnabled(false, forSegment: 1)
 	}
 	
 	override func viewWillAppear() {
@@ -66,6 +68,8 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		firstIndex = index
 		pageController?.arrangedObjects = batchImages
 		pageController?.selectedIndex = index
+		navigateButton?.setEnabled(index > 0, forSegment: 0)
+		navigateButton?.setEnabled(index + 1 < images.count, forSegment: 1)
 	}
 	
 	@IBAction func navigateClicked(sender:AnyObject?) {
@@ -122,31 +126,37 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 	
 	func pageController(pageController: NSPageController, viewControllerForIdentifier identifier: String) -> NSViewController
 	{
-		let vc = NSViewController()
-		let iv = NSImageView(frame: (imageView?.frame)!)
+		let vc = ImageViewController()
+		let iv = NSImageView(frame: (containerView?.frame)!)
 		iv.imageFrameStyle = .None
+		iv.translatesAutoresizingMaskIntoConstraints = false
+		iv.setContentHuggingPriority(200, forOrientation: .Horizontal)
+		iv.setContentCompressionResistancePriority(200, forOrientation: .Horizontal)
+		iv.imageScaling = .ScaleProportionallyDown
 		let index = Int(identifier)!
 		let displayedImage = batchImages[index]
-		if displayedImage.image != nil {
-			iv.image = displayedImage.image
+		if let img = displayedImage.image {
+			iv.image = img
 		} else {
 			displayedImage.image = imageCache?.imageWithId(displayedImage.imageId)
 			iv.image = displayedImage.image
-			//pagecontroller does not handle the image being specified after displaying the page/vc
-//			imageCache?.imageWithId(displayedImage.imageId).onSuccess { nsimg in
-//				displayedImage.image = nsimg
-//				iv.image = nsimg
-//				iv.needsDisplay = true
-//				log.info("image \(displayedImage.name) loaded")
-//				if self.firstIndex == index {
-//					self.pageController?.selectedIndex = index
-//				}
-//			}.onFailure { error in
-//				log.warning("error loading image \(displayedImage.imageId): \(error)")
-//			}
 		}
 		vc.view = iv
 		return vc
+	}
+	
+	func pageController(pageController: NSPageController, prepareViewController viewController: NSViewController, withObject object: AnyObject)
+	{
+		let iview = viewController.view as? NSImageView
+		guard let dimg = object as? DisplayableImage else {
+			iview?.image = nil
+			return
+		}
+		if dimg.image == nil {
+			dimg.image = imageCache?.imageWithId(dimg.imageId)
+		}
+		iview?.image = dimg.image
+		labelField?.stringValue = dimg.name
 	}
 	
 	func pageControllerDidEndLiveTransition(pageController: NSPageController) {
@@ -154,3 +164,18 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 	}
 }
 
+class ImageViewController: NSViewController {
+	var didAddConstraints = false
+	override func viewWillAppear() {
+		super.viewWillAppear()
+		guard !didAddConstraints else { return }
+		if let sv = view.superview, ssv = sv.superview {
+			ssv.addConstraint(view.widthAnchor.constraintEqualToAnchor(sv.widthAnchor, multiplier: 1))
+			ssv.addConstraint(view.heightAnchor.constraintEqualToAnchor(sv.heightAnchor, multiplier: 1))
+			ssv.addConstraint(view.centerXAnchor.constraintEqualToAnchor(sv.centerXAnchor, constant: 0))
+			ssv.addConstraint(view.centerYAnchor.constraintEqualToAnchor(sv.centerYAnchor, constant: 0))
+			ssv.needsLayout = true
+			didAddConstraints = true
+		}
+	}
+}

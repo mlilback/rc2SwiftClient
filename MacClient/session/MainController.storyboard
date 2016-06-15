@@ -907,36 +907,34 @@
                                     <real value="3.4028234663852886e+38"/>
                                 </customSpacing>
                             </stackView>
-                            <imageView focusRingType="none" horizontalHuggingPriority="249" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="I7j-Nd-lJp">
-                                <rect key="frame" x="20" y="51" width="473" height="442"/>
-                                <imageCell key="cell" refusesFirstResponder="YES" focusRingType="none" alignment="left" imageScaling="proportionallyDown" id="lcX-6G-KMf"/>
-                            </imageView>
                             <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="50G-Ve-ajM">
                                 <rect key="frame" x="0.0" y="40" width="513" height="5"/>
                                 <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                 <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <font key="titleFont" metaFont="system"/>
                             </box>
+                            <customView horizontalHuggingPriority="200" verticalHuggingPriority="300" translatesAutoresizingMaskIntoConstraints="NO" id="Gpd-DQ-6DW">
+                                <rect key="frame" x="20" y="51" width="473" height="442"/>
+                            </customView>
                         </subviews>
                         <constraints>
                             <constraint firstItem="CJw-iA-83I" firstAttribute="leading" secondItem="KUd-VP-W3w" secondAttribute="leading" constant="20" id="5my-C8-Vb9"/>
-                            <constraint firstItem="CJw-iA-83I" firstAttribute="top" secondItem="I7j-Nd-lJp" secondAttribute="bottom" constant="21" id="6JK-kx-oqG"/>
                             <constraint firstItem="50G-Ve-ajM" firstAttribute="leading" secondItem="KUd-VP-W3w" secondAttribute="leading" id="CQN-Hl-hF5"/>
-                            <constraint firstItem="I7j-Nd-lJp" firstAttribute="top" secondItem="KUd-VP-W3w" secondAttribute="top" constant="20" symbolic="YES" id="FIP-wc-iVz"/>
                             <constraint firstAttribute="trailing" secondItem="CJw-iA-83I" secondAttribute="trailing" constant="20" id="NvF-vu-h16"/>
                             <constraint firstAttribute="trailing" secondItem="50G-Ve-ajM" secondAttribute="trailing" id="Tvp-BN-VJP"/>
-                            <constraint firstAttribute="trailing" secondItem="I7j-Nd-lJp" secondAttribute="trailing" constant="20" symbolic="YES" id="i6C-4s-S0p"/>
+                            <constraint firstItem="50G-Ve-ajM" firstAttribute="top" secondItem="Gpd-DQ-6DW" secondAttribute="bottom" constant="8" id="b4Y-AM-aCb"/>
+                            <constraint firstAttribute="trailing" secondItem="Gpd-DQ-6DW" secondAttribute="trailing" constant="20" symbolic="YES" id="kvI-6Y-cob"/>
                             <constraint firstAttribute="bottom" secondItem="CJw-iA-83I" secondAttribute="bottom" constant="9" id="mY4-AH-LO3"/>
-                            <constraint firstItem="I7j-Nd-lJp" firstAttribute="leading" secondItem="KUd-VP-W3w" secondAttribute="leading" constant="20" symbolic="YES" id="qkd-qt-hgB"/>
+                            <constraint firstItem="Gpd-DQ-6DW" firstAttribute="top" secondItem="KUd-VP-W3w" secondAttribute="top" constant="20" symbolic="YES" id="o8V-gB-ilr"/>
+                            <constraint firstItem="Gpd-DQ-6DW" firstAttribute="leading" secondItem="KUd-VP-W3w" secondAttribute="leading" constant="20" symbolic="YES" id="rXO-Cy-x8Z"/>
                             <constraint firstAttribute="bottom" secondItem="50G-Ve-ajM" secondAttribute="bottom" constant="42" id="tmZ-d6-QRS"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="imageView" destination="I7j-Nd-lJp" id="4fR-ar-kub"/>
+                        <outlet property="containerView" destination="Gpd-DQ-6DW" id="5FH-PI-MaQ"/>
                         <outlet property="labelField" destination="yDu-X6-HrR" id="hoL-jk-7d4"/>
                         <outlet property="navigateButton" destination="oGJ-LH-kvq" id="am5-2x-sqT"/>
                         <outlet property="shareButton" destination="tFy-qc-1rE" id="b7J-TL-EyC"/>
-                        <outlet property="sourceItemView" destination="I7j-Nd-lJp" id="Xj0-u1-h44"/>
                     </connections>
                 </viewController>
                 <customObject id="W1T-z3-tEv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
