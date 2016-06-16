@@ -29,7 +29,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 	func loadFiles() {
 		filesLoaded = false //can be called to cache any new files
 		fileCache.cacheAllFiles() { (progress) in
-			self.appStatus?.updateStatus(progress)
+			self.appStatus?.currentProgress = progress
 			progress.rc2_addCompletionHandler() {
 				if let error = progress.rc2_error {
 					self.downloadPromise.failure(error)
@@ -37,7 +37,6 @@ class DefaultSessionFileHandler: SessionFileHandler {
 					self.filesLoaded = true
 					self.downloadPromise.success(true)
 				}
-				self.appStatus?.updateStatus(nil)
 			}
 		}
 	}
@@ -90,7 +89,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 		} else {
 			//TODO: test that this works properly for large files
 			if let prog = fileCache.flushCacheForFile(file) {
-				appStatus?.updateStatus(prog)
+				self.appStatus?.currentProgress = prog
 				return prog
 			}
 		}

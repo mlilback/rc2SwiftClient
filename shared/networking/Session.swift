@@ -186,9 +186,9 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		sendMessage(["msg":"fileop", "fileId":file.fileId, "fileVersion":file.version, "operation":"rm", "transId":transId])
 		let prog = NSProgress(parent: nil, userInfo: nil)
 		prog.localizedDescription = "Removing file '\(file.name)'"
-		appStatus?.updateStatus(prog)
+		appStatus?.currentProgress = prog
 		pendingTransactions[transId] = { [weak self] (responseId, _) in
-			self?.appStatus?.updateStatus(nil)
+			self?.appStatus?.currentProgress = nil
 		}
 	}
 }
@@ -198,7 +198,7 @@ extension Session {
 	
 	/// callback when the file handler has loaded all files
 	func filesLoaded() {
-		appStatus?.updateStatus(nil)
+		appStatus?.currentProgress = nil
 		delegate?.sessionFilesLoaded(self)
 	}
 	

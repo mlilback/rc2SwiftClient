@@ -7,8 +7,34 @@
 import Cocoa
 
 @objc protocol AppStatus {
-	var currentProgress: NSProgress? { get }
-	var busy: Bool { get }
-	var statusMessage: NSString { get }
-	func updateStatus(progress: NSProgress?)
+	///The NSProgress that is blocking the app. The AppStatus will observe the progress and when it is complete, set the current status to nil. Posts AppStatusChangedNotification when changed
+	var currentProgress: NSProgress? { get set }
+	///presents an error via NSAlert/UIAlert
+	func presentError(error: NSError)
+	///prsents a NSAlert/UIAlert with an optional callback. The handler is expect to set the currentProgress to nil if error finished an operation
+	func presentAlert(message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
+}
+
+extension AppStatus {
+	///convience property
+	var busy:Bool { return currentProgress != nil }
+	
+	///convience property for localized description of current progress
+	var statusMessage:String? { return currentProgress?.localizedDescription }
+	
+	///prsents a NSAlert/UIAlert with an optional callback
+	func presentAlert(message:String, details:String, handler:((Int) -> Void)? = nil) {
+		presentAlert(message, details:details, buttons:[], defaultButtonIndex:0, isCritical:false, handler:handler)
+	}
+
+	///prsents a NSAlert/UIAlert with an optional callback
+	func presentAlert(message:String, details:String, buttons:[String], handler:((Int) -> Void)? = nil) {
+		presentAlert(message, details:details, buttons:buttons, defaultButtonIndex:0, isCritical:false, handler: handler)
+	}
+
+	///prsents a NSAlert/UIAlert with an optional callback
+	func presentAlert(message:String, details:String, buttons:[String], defaultButtonIndex:Int, handler:((Int) -> Void)? = nil) {
+		presentAlert(message, details:details, buttons:buttons, defaultButtonIndex:defaultButtonIndex, isCritical:false, handler:handler)
+	}
+
 }

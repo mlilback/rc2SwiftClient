@@ -11,11 +11,14 @@ import Swinject
 let log = XCGLogger.defaultInstance()
 
 @NSApplicationMain
-class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
+class MacAppDelegate: NSObject, NSApplicationDelegate {
 	var loginWindowController: NSWindowController?
 	var loginController: LoginViewController?
 	var sessionWindowController: MainWindowController?
-	
+
+	private dynamic var _currentProgress: NSProgress?
+	private var _statusLock: Spinlock = Spinlock()
+
 	func applicationWillFinishLaunching(notification: NSNotification) {
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
 		let cdUrl = NSBundle.mainBundle().URLForResource("CommonDefaults", withExtension: "plist")
@@ -101,13 +104,14 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 		loginController!.completionHandler = attemptLogin
 		NSApp!.runModalForWindow((loginWindowController?.window)!)
 	}
-	
-	//MARK: AppStatus implementation
-	private dynamic var _currentProgress: NSProgress?
-	private var _statusLock: Spinlock = Spinlock()
+}
+
+//MARK: AppStatus implementation
+extension MacAppDelegate: AppStatus {
 	
 	dynamic  var currentProgress: NSProgress? {
 		get { return _statusLock.around({ return self._currentProgress }) }
+		set { updateStatus(newValue) }
 	}
 	
 	dynamic var busy: Bool {
@@ -126,6 +130,33 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, AppStatus {
 		NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(AppStatusChangedNotification, object: self)
 		currentProgress?.rc2_addCompletionHandler() {
 			self.updateStatus(nil)
+		}
+	}
+
+	func presentError(error: NSError) {
+		let alert = NSAlert(error: error)
+		alert.beginSheetModalForWindow(sessionWindowController!.window!, completionHandler:nil)
+	}
+	
+	func presentAlert(message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
+	{
+		let alert = NSAlert()
+		alert.messageText = message
+		alert.informativeText = details
+		if buttons.count == 0 {
+			alert.addButtonWithTitle(NSLocalizedString("Ok", comment: ""))
+		} else {
+			for aButton in buttons {
+				alert.addButtonWithTitle(aButton)
+			}
+		}
+		alert.alertStyle = isCritical ? .CriticalAlertStyle : .WarningAlertStyle
+		alert.beginSheetModalForWindow(sessionWindowController!.window!) { (rsp) in
+			guard buttons.count > 1 else { return }
+			dispatch_async(dispatch_get_main_queue()) {
+				//convert rsp to an index to buttons
+				handler?(rsp - NSAlertFirstButtonReturn)
+			}
 		}
 	}
 

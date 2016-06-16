@@ -45,7 +45,7 @@ class AppStatusView: NSView {
 	}
 
 	func statusChanged(sender:AnyObject?) {
-		if let txt = appStatus?.statusMessage as? String {
+		if let txt = appStatus?.statusMessage {
 			textField?.stringValue = txt
 		}
 		if let isBusy = appStatus?.busy where isBusy {
@@ -60,7 +60,7 @@ class AppStatusView: NSView {
 						self.textField?.stringValue = prog.localizedDescription
 						if self.determinateProgress?.doubleValue >= 1.0 {
 							dispatch_async(dispatch_get_main_queue()) {
-								self.appStatus?.updateStatus(nil)
+								self.appStatus?.currentProgress = nil
 							}
 						}
 					}

@@ -204,10 +204,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				//TODO: handle error
 				log.error("got import error \(progress.rc2_error)")
 			}
-			self.appStatus?.updateStatus(nil)
+			self.appStatus?.currentProgress = nil
 			self.fileImporter = nil //free up importer
 		}
-		self.appStatus?.updateStatus(importer.progress)
+		self.appStatus?.currentProgress = importer.progress
 		do {
 			try importer.startImport()
 		} catch let err {

@@ -302,7 +302,7 @@ private extension SessionEditorController {
 					self.session.executeScriptFile(doc.file.fileId, type: type)
 				}
 			}
-			appStatus?.updateStatus(progress)
+			self.appStatus?.currentProgress = progress
 		} else {
 			session.executeScriptFile(currentDocument!.file.fileId, type: type)
 		}
@@ -333,7 +333,7 @@ private extension SessionEditorController {
 			storage.setAttributedString(NSAttributedString(string: theText, attributes: defaultAttributes))
 			if oldDocument?.dirty ?? false {
 				let prog = oldDocument!.saveContents()
-				appStatus?.updateStatus(prog)
+				self.appStatus?.currentProgress = prog
 				prog?.rc2_addCompletionHandler() {
 					self.saveDocumentToServer(oldDocument!)
 				}

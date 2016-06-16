@@ -133,7 +133,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 			return
 		}
 		self.busy = (self.appStatus?.busy)!
-		self.statusMessage = (self.appStatus?.statusMessage)! as String
+		self.statusMessage = (self.appStatus?.statusMessage) ?? ""
 		//hide/show dimmingView only if
 		if self.editor?.view.hiddenOrHasHiddenAncestor == false {
 			if self.busy {
