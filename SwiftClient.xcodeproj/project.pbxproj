@@ -417,6 +417,9 @@
 		08F189A51D09EE4000866A05 /* NSViewController+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSViewController+Rc2.swift"; sourceTree = "<group>"; };
 		08F189A71D0A0E7200866A05 /* static_html */ = {isa = PBXFileReference; lastKnownFileType = folder; name = static_html; path = resources/static_html; sourceTree = "<group>"; };
 		08F189A91D109A4F00866A05 /* TextViewWithContextualMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewWithContextualMenu.swift; sourceTree = "<group>"; };
+		08F189AB1D18816A00866A05 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = config/Debug.xcconfig; sourceTree = "<group>"; };
+		08F189AC1D18817E00866A05 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = config/Release.xcconfig; sourceTree = "<group>"; };
+		08F189AD1D18818700866A05 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Shared.xcconfig; path = config/Shared.xcconfig; sourceTree = "<group>"; };
 		08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Mockingjay.framework.dSYM; path = Carthage/Build/Mac/Mockingjay.framework.dSYM; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* SessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditorController.swift; sourceTree = "<group>"; };
 		08F448F61C4E244500C64706 /* SidebarTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarTabController.swift; sourceTree = "<group>"; };
@@ -558,6 +561,9 @@
 		088CE6601C4B0AF400153414 = {
 			isa = PBXGroup;
 			children = (
+				08F189AB1D18816A00866A05 /* Debug.xcconfig */,
+				08F189AC1D18817E00866A05 /* Release.xcconfig */,
+				08F189AD1D18818700866A05 /* Shared.xcconfig */,
 				088CE66B1C4B0AF400153414 /* MacClient */,
 				088CE6941C4B605D00153414 /* shared */,
 				08A01FAF1CC7FA28001EDFAA /* createHelpIndex */,
@@ -1153,6 +1159,7 @@
 /* Begin XCBuildConfiguration section */
 		088CE6811C4B0AF500153414 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 08F189AB1D18816A00866A05 /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1177,26 +1184,20 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		088CE6821C4B0AF500153414 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 08F189AC1D18817E00866A05 /* Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1225,9 +1226,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -1248,7 +1247,6 @@
 				PRODUCT_MODULE_NAME = MacClient;
 				PRODUCT_NAME = "Rc²";
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "MacClient/MacClient-Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -1269,7 +1267,6 @@
 				PRODUCT_MODULE_NAME = MacClient;
 				PRODUCT_NAME = "Rc²";
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "MacClient/MacClient-Bridging-Header.h";
 			};
 			name = Release;
 		};

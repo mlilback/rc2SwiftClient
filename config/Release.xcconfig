@@ -1,0 +1,9 @@
+//
+//  Release.xcconfig
+//  SwiftClient
+//
+//  Created by Mark Lilback on 6/20/16.
+//  Copyright © 2016 Rc2. All rights reserved.
+//
+
+#include "Shared.xcconfig"
