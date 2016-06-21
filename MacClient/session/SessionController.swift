@@ -34,7 +34,7 @@ import Cocoa
 		self.delegate = delegate
 		self.outputHandler = output
 		self.varHandler = variableHandler
-		self.imgCache = ImageCache()
+		self.imgCache = ImageCache(NSFileManager(), hostIdentifier: NSUUID().UUIDString)
 		super.init()
 		self.responseHandler = ServerResponseHandler(delegate: self)
 		let nc = NSNotificationCenter.defaultCenter()
@@ -60,6 +60,8 @@ import Cocoa
 	func sessionChanged(note:NSNotification) {
 		session = Session.manager.currentSession
 		session.delegate = self
+		//image cache requires a host identifier at initialization, so we have to recreate it once we have a session
+		imgCache = ImageCache(NSFileManager(), hostIdentifier: session.hostIdentifier)
 		imgCache.workspace = session.workspace
 		restoreSessionState()
 	}

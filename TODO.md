@@ -6,6 +6,8 @@
 
 * change OutputColors to use a static array of colors that is updated if a color changes in NSUserDefaults
 
+* clean up old images
+
 * a second save of edits isn't being sent to the compute engine (or maybe app server)
 
 * SessionController

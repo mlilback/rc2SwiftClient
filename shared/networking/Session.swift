@@ -46,6 +46,8 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	weak var appStatus: AppStatus?
 	///abstraction of file handling
 	let fileHandler: SessionFileHandler
+	///a unique per-host identifier
+	let hostIdentifier: String
 	///
 	weak var delegate : SessionDelegate?
 
@@ -69,12 +71,13 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	
 	
 	//MARK: init/open/close
-	init(_ wspace:Workspace,  source:WebSocketSource, appStatus:AppStatus, networkConfig config:NSURLSessionConfiguration, delegate:SessionDelegate?=nil)
+	init(_ wspace:Workspace, source:WebSocketSource, appStatus:AppStatus, networkConfig config:NSURLSessionConfiguration, hostIdentifier:String, delegate:SessionDelegate?=nil)
 	{
 		workspace = wspace
 		self.delegate = delegate
 		self.wsSource = source
 		self.appStatus = appStatus
+		self.hostIdentifier = hostIdentifier
 		self.fileHandler = DefaultSessionFileHandler(wspace: workspace, baseUrl: RestServer.sharedInstance.baseUrl!, config: config, appStatus: appStatus)
 
 		super.init()

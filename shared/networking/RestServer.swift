@@ -159,7 +159,7 @@ import SwiftyJSON
 		request.addValue(loginSession!.authToken, forHTTPHeaderField: "Rc2-Auth")
 		request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
 		let ws = WebSocket()
-		let session = Session(wspace, source:ws, appStatus:appStatus, networkConfig:urlConfig)
+		let session = Session(wspace, source:ws, appStatus:appStatus, networkConfig:urlConfig, hostIdentifier: selectedHost.host)
 		session.open(request)
 		return session
 	}

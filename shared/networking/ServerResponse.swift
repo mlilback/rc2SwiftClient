@@ -100,6 +100,7 @@ public func ==(a:HelpItem, b:HelpItem) -> Bool {
 	return a.title == b.title && a.url == b.url
 }
 
+///an immutable class representing an image stored on the server and serializable for local caching
 public class SessionImage: NSObject, NSSecureCoding, NSCopying {
 	let id:Int
 	let batchId:Int

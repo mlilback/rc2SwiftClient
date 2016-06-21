@@ -21,7 +21,11 @@ enum ImageCacheError: ErrorType {
 public class ImageCache :NSObject, NSSecureCoding {
 	///to allow dependency injection
 	var fileManager:NSFileManager
+	///to allow dependency injection
 	var workspace: Workspace?
+	///caching needs to be unique for each server. we don't care what the identifier is, just that it is unique per host
+	///mutable because we need to be able to read it from an archive
+	private(set) var hostIdentifier: String
 	
 	private var cache: NSCache
 	private var metaCache: [Int:SessionImage]
@@ -31,29 +35,33 @@ public class ImageCache :NSObject, NSSecureCoding {
 			var result: NSURL?
 			do {
 				let fm = self.fileManager
-				let baseDir = try fm.URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-				let imgDirUrl = NSURL(fileURLWithPath: "Rc2/images/", isDirectory: true, relativeToURL: baseDir).absoluteURL
-				try fm.createDirectoryAtURL(imgDirUrl, withIntermediateDirectories:true, attributes:nil)
-				imgDirUrl.checkResourceIsReachableAndReturnError(nil) //throws instead of returning error
-				result = imgDirUrl
+				let cacheDir = try fm.URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
+				let ourDir = cacheDir.URLByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!, isDirectory:true)
+				let imgDir = ourDir.URLByAppendingPathComponent("\(self.hostIdentifier)/images", isDirectory: true)
+				if !imgDir.checkResourceIsReachableAndReturnError(nil) {
+					try self.fileManager.createDirectoryAtURL(imgDir, withIntermediateDirectories: true, attributes: nil)
+				}
+				result = imgDir
 			} catch let error {
 				log.error("got error creating image cache direcctory:\(error)")
-				assertionFailure("failed to create response handler")
+				assertionFailure("failed to create image cache dir")
 			}
 			return result!
 		}()
 	
 	public static func supportsSecureCoding() -> Bool { return true }
 	
-	init(_ fm:NSFileManager=NSFileManager()) {
+	init(_ fm:NSFileManager=NSFileManager(), hostIdentifier hostIdent:String) {
 		fileManager = fm
 		cache = NSCache()
 		metaCache = [:]
+		hostIdentifier = hostIdent
 	}
 	
 	public required init?(coder decoder:NSCoder) {
 		fileManager = NSFileManager.defaultManager()
 		cache = NSCache()
+		hostIdentifier = decoder.decodeObjectOfClass(NSString.self, forKey: "hostIdentifier") as! String
 		metaCache = decoder.decodeObjectOfClasses([NSArray.self, SessionImage.self, NSNumber.self], forKey: "metaCache") as! [Int:SessionImage]
 	}
 	
