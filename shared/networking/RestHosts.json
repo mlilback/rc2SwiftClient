@@ -1,9 +1,10 @@
 {
 	"hosts": [
 		{"name": "Rc2", "host":"rc2.stat.wvu.edu", "port":8443, "secure":true},
-		{"name": "Barney", "host":"barney.stat.wvu.edu", "port":8443, "secure":true},
 		{"name": "localhost", "host":"localhost", "port":8088, "secure":false},
 		{"name": "fester", "host":"192.168.1.5", "port":8088, "secure":false},
-		{"name": "rc2devTLS", "host":"10.0.1.9", "port":8088, "secure":false}
+		{"name": "rc2d", "host":"rc2d.rc2.io", "port":8443, "secure":true},
+		{"name": "rc2x", "host":"rc2x.rc2.io", "port":8088, "secure":false},
+		{"name": "rc2x-secure", "host":"rc2x.rc2.io", "port":8443, "secure":true}
 	]
 }
