@@ -32,25 +32,12 @@ import SwiftyJSON
 	//for dependency injection
 	var fileManager:FileManager = NSFileManager.defaultManager()
 	
-	public struct Host {
-		let name:String
-		let host:String
-		let port:Int
-		let secure:Bool
-		init(dict:JSON) {
-			self.name = dict["name"].stringValue
-			self.host = dict["host"].stringValue
-			self.port = dict["port"].intValue
-			self.secure = dict["secure"].boolValue
-		}
-	}
-	
 	public typealias Rc2RestCompletionHandler = (success:Bool, results:Any?, error:NSError?) -> Void
 	
 	private(set) var urlConfig : NSURLSessionConfiguration!
 	private var urlSession : NSURLSession!
-	private(set) public var hosts : [Host]
-	private(set) public var selectedHost : Host
+	private(set) public var hosts : [ServerHost]
+	private(set) public var selectedHost : ServerHost
 	private(set) public var loginSession : LoginSession?
 	private(set) var baseUrl : NSURL?
 	private var userAgent: String
@@ -83,11 +70,7 @@ import SwiftyJSON
 		//load hosts info from resource file
 		let hostFileUrl = NSBundle.mainBundle().URLForResource("RestHosts", withExtension: "json")
 		assert(hostFileUrl != nil, "failed to get RestHosts.json URL")
-		let jsonData = NSData(contentsOfURL: hostFileUrl!)
-		let json = JSON(data:jsonData!)
-		let theHosts = json["hosts"].arrayValue
-		assert(theHosts.count > 0, "invalid hosts data")
-		hosts = theHosts.map() { Host(dict: $0) }
+		hosts = ServerHost.loadHosts(hostFileUrl!)
 		selectedHost = hosts.first!
 		super.init()
 		urlConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
