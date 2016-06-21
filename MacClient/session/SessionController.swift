@@ -151,23 +151,24 @@ extension SessionController {
 	private func restoreSessionState() {
 		do {
 			let furl = try stateFileUrl()
-			if furl.checkResourceIsReachableAndReturnError(nil) {
+			if furl.checkResourceIsReachableAndReturnError(nil),
 				let data = NSData(contentsOfURL: furl)
-				if let dict = NSKeyedUnarchiver.unarchiveObjectWithData(data!) as! [String:AnyObject]?
-				{
-					if let ostate = dict["outputController"] as? [String : AnyObject] {
-						outputHandler.restoreSessionState(ostate)
-					}
-					if let edict = dict["delegate"] as? [String : AnyObject] {
-						delegate?.restoreState(edict)
-					}
-					if let ic = dict["imageCache"] as! ImageCache? {
-						ic.workspace = self.session.workspace
-						imgCache = ic
-						outputHandler.imageCache = ic
-					}
-					savedStateHash = data?.sha256()
+			{
+				guard let dict = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? [String:AnyObject] else {
+					return
 				}
+				if let ostate = dict["outputController"] as? [String : AnyObject] {
+					outputHandler.restoreSessionState(ostate)
+				}
+				if let edict = dict["delegate"] as? [String : AnyObject] {
+					delegate?.restoreState(edict)
+				}
+				if let ic = dict["imageCache"] as! ImageCache? {
+					ic.workspace = self.session.workspace
+					imgCache = ic
+					outputHandler.imageCache = ic
+				}
+				savedStateHash = data.sha256()
 			}
 		} catch let err {
 			log.error("error restoring session state:\(err)")

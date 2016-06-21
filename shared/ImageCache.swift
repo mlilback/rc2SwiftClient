@@ -59,13 +59,17 @@ public class ImageCache :NSObject, NSSecureCoding {
 	}
 	
 	public required init?(coder decoder:NSCoder) {
+		guard let host = decoder.decodeObjectOfClass(NSString.self, forKey: "hostIdentifier") as? String else {
+			return nil
+		}
+		hostIdentifier = host
 		fileManager = NSFileManager.defaultManager()
 		cache = NSCache()
-		hostIdentifier = decoder.decodeObjectOfClass(NSString.self, forKey: "hostIdentifier") as! String
 		metaCache = decoder.decodeObjectOfClasses([NSArray.self, SessionImage.self, NSNumber.self], forKey: "metaCache") as! [Int:SessionImage]
 	}
 	
 	public func encodeWithCoder(coder: NSCoder) {
+		coder.encodeObject(hostIdentifier, forKey:"hostIdentifier")
 		coder.encodeObject(metaCache, forKey: "metaCache")
 	}
 	
