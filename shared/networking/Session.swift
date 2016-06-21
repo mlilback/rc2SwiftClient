@@ -285,7 +285,7 @@ private extension Session {
 				return (obj as! File).fileId == file.fileId
 			}
 			assert(idx != NSNotFound)
-			workspace.replaceFileAtIndex(idx, withFile: file)
+			workspace.replaceFile(at:idx, withFile: file)
 		} catch let err {
 			log.error("error parsing binary message: \(err)")
 		}
@@ -301,7 +301,7 @@ private extension Session {
 			break
 		case .Remove:
 			if let idx = workspace.indexOfFile(file) {
-				workspace.removeFileAtIndex(idx)
+				workspace.removeFile(at:idx)
 			} else {
 				log.warning("got remove response for unknown file")
 			}

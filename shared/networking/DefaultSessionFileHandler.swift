@@ -76,9 +76,9 @@ class DefaultSessionFileHandler: SessionFileHandler {
 			return (obj as! File).fileId == file.fileId
 		}
 		if idx == NSNotFound { //insert
-			workspace.insertFile(file, atIndex: workspace.fileCount)
+			workspace.insertFile(file, at: workspace.fileCount)
 		} else { //update
-			workspace.replaceFileAtIndex(idx, withFile: file)
+			workspace.replaceFile(at:idx, withFile: file)
 		}
 		if let fileContents = data {
 			do {
@@ -106,7 +106,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 				log.warning("got file update for non-existing file: \(file.fileId)")
 				return
 			}
-			workspace.replaceFileAtIndex(idx, withFile: file)
+			workspace.replaceFile(at:idx, withFile: file)
 			fileCache.flushCacheForFile(file)
 		case .Insert:
 			//TODO: implement file insert handling

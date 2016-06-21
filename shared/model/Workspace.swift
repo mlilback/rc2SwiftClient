@@ -92,10 +92,10 @@ public class Workspace: NSObject {
 	public func fileWithId(fileId:Int) -> File? {
 		let idx = indexOfFilePassingTest() { (obj, curIdx, _) in (obj as! File).fileId == fileId }
 		if idx == NSNotFound { return nil }
-		return fileAtIndex(idx)
+		return file(at:idx)
 	}
 	
-	public func fileAtIndex(index:Int) -> File? {
+	public func file(at index:Int) -> File? {
 		return filesArray.objectAtIndex(index) as? File
 	}
 	
@@ -103,21 +103,21 @@ public class Workspace: NSObject {
 		return files.indexOf(file)
 	}
 	
-	public func insertFile(aFile:AnyObject, atIndex index:Int) {
+	public func insertFile(aFile:AnyObject, at index:Int) {
 		filesArray.insertObject(aFile, atIndex: index)
 		let oldFile = filesArray.objectAtIndex(index) as! File
 		let change = WorkspaceFileChange(old: oldFile, new: nil, type: .Insert, indexes: NSIndexSet(index: index))
 		NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(WorkspaceFileChangedNotification, object: self, userInfo: ["change":change])
 	}
 	
-	public func removeFileAtIndex(index:Int) {
+	public func removeFile(at index:Int) {
 		let oldFile = filesArray.objectAtIndex(index) as! File
 		filesArray.removeObjectAtIndex(index)
 		let change = WorkspaceFileChange(old: oldFile, new: nil, type: .Remove, indexes: NSIndexSet(index: index))
 		NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(WorkspaceFileChangedNotification, object: self, userInfo: ["change":change])
 	}
 	
-	public func replaceFileAtIndex(index:Int, withFile newFile:File) {
+	public func replaceFile(at index:Int, withFile newFile:File) {
 		let oldFile = filesArray.objectAtIndex(index) as! File
 		assert(oldFile.fileId == newFile.fileId)
 		filesArray.replaceObjectAtIndex(index, withObject: newFile)
