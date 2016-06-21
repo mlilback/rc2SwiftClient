@@ -17,7 +17,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	var sessionWindowController: MainWindowController?
 
 	private dynamic var _currentProgress: NSProgress?
-	private var _statusLock: Spinlock = Spinlock()
+	private let _statusQueue = dispatch_queue_create("io.rc2.statusQueue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))
 
 	func applicationWillFinishLaunching(notification: NSNotification) {
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
@@ -110,27 +110,39 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 extension MacAppDelegate: AppStatus {
 	
 	dynamic  var currentProgress: NSProgress? {
-		get { return _statusLock.around({ return self._currentProgress }) }
+		get {
+			var result: NSProgress? = nil
+			dispatch_sync(_statusQueue) { result = self._currentProgress }
+			return result
+		}
 		set { updateStatus(newValue) }
 	}
 	
 	dynamic var busy: Bool {
-		get { return _statusLock.around({ return self._currentProgress != nil }) }
+		get {
+			var result = false
+			dispatch_sync(_statusQueue) { result = self._currentProgress != nil }
+			return result
+		}
 	}
 	
 	dynamic var statusMessage: NSString {
-		get { return _statusLock.around({ return self._currentProgress != nil ? self._currentProgress?.localizedDescription! : "" })! }
+		get {
+			var status = ""
+			dispatch_sync(_statusQueue) { status = self._currentProgress?.localizedDescription ?? "" }
+			return status
+		}
 	}
 
 	func updateStatus(progress: NSProgress?) {
-		if _currentProgress != nil && progress != nil {
-			fatalError("can't set progress when there already is one")
+		assert(_currentProgress == nil || progress == nil, "can't set progress when there already is one")
+		dispatch_sync(_statusQueue) {
+			self._currentProgress = progress
+			self._currentProgress?.rc2_addCompletionHandler() {
+				self.updateStatus(nil)
+			}
 		}
-		_statusLock.around({ self._currentProgress = progress })
 		NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(AppStatusChangedNotification, object: self)
-		currentProgress?.rc2_addCompletionHandler() {
-			self.updateStatus(nil)
-		}
 	}
 
 	func presentError(error: NSError) {
