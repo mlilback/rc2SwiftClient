@@ -2,10 +2,6 @@
 
 # when disabling window while async task is executing, need to save and restore the first responder
 
-* Clear console command should only available with console visible
-
-* after clearing the console and quitting, the next launch has the old contents
-
 * add autologin if have data from keychain (LoginViewController)
 
 * change OutputColors to use a static array of colors that is updated if a color changes in NSUserDefaults

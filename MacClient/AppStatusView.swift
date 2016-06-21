@@ -45,9 +45,7 @@ class AppStatusView: NSView {
 	}
 
 	func statusChanged(sender:AnyObject?) {
-		if let txt = appStatus?.statusMessage {
-			textField?.stringValue = txt
-		}
+		textField?.stringValue = appStatus?.statusMessage ?? ""
 		if let isBusy = appStatus?.busy where isBusy {
 			if appStatus?.currentProgress?.indeterminate ?? true {
 				progress?.startAnimation(self)
