@@ -166,6 +166,7 @@
 		08F189A81D0A0E7200866A05 /* static_html in Resources */ = {isa = PBXBuildFile; fileRef = 08F189A71D0A0E7200866A05 /* static_html */; };
 		08F189AA1D109A4F00866A05 /* TextViewWithContextualMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189A91D109A4F00866A05 /* TextViewWithContextualMenu.swift */; };
 		08F189B11D19B0D600866A05 /* ServerHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B01D19B0D500866A05 /* ServerHost.swift */; };
+		08F189B31D1B0BBE00866A05 /* ShellCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B21D1B0BBE00866A05 /* ShellCommands.swift */; };
 		08F2A85E1C7F36EC00A803A0 /* Mockingjay.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */; };
 		08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* SessionEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* SidebarTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* SidebarTabController.swift */; };
@@ -422,6 +423,7 @@
 		08F189AC1D18817E00866A05 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = config/Release.xcconfig; sourceTree = "<group>"; };
 		08F189AD1D18818700866A05 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Shared.xcconfig; path = config/Shared.xcconfig; sourceTree = "<group>"; };
 		08F189B01D19B0D500866A05 /* ServerHost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerHost.swift; sourceTree = "<group>"; };
+		08F189B21D1B0BBE00866A05 /* ShellCommands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShellCommands.swift; sourceTree = "<group>"; };
 		08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Mockingjay.framework.dSYM; path = Carthage/Build/Mac/Mockingjay.framework.dSYM; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* SessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditorController.swift; sourceTree = "<group>"; };
 		08F448F61C4E244500C64706 /* SidebarTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarTabController.swift; sourceTree = "<group>"; };
@@ -605,6 +607,7 @@
 				088CE6751C4B0AF400153414 /* Info.plist */,
 				083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */,
 				08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */,
+				08F189B21D1B0BBE00866A05 /* ShellCommands.swift */,
 				083305DE1C51571500E27F66 /* Localizable.strings */,
 				083306061C51A0B200E27F66 /* CommonDefaults.plist */,
 				087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */,
@@ -1060,6 +1063,7 @@
 				08A01FC21CC7FCA3001EDFAA /* FMDatabase.m in Sources */,
 				08A01FC41CC7FCA3001EDFAA /* FMDatabaseAdditions.m in Sources */,
 				088CE6AC1C4B605D00153414 /* RestServer.swift in Sources */,
+				08F189B31D1B0BBE00866A05 /* ShellCommands.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,
 				08A01FD61CC95C58001EDFAA /* HelpController.swift in Sources */,
 				083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */,
