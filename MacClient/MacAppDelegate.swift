@@ -51,7 +51,25 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		return true
 	}
 	
-	func attemptLogin(controller: LoginViewController) {
+	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
+		switch(menuItem.action) {
+			case #selector(MacAppDelegate.newDocument(_:)):
+				return NSApp.modalWindow == nil
+			default:
+				return false
+		}
+	}
+	
+	@IBAction func newDocument(sender:AnyObject) {
+		showLoginWindow()
+	}
+	
+	func attemptLogin(controller: LoginViewController, userCanceled:Bool) {
+		guard !userCanceled else {
+			NSApp.stopModal()
+			loginWindowController?.window?.orderOut(self)
+			return
+		}
 		RestServer.sharedInstance.selectHost(controller.selectedHost!)
 		RestServer.sharedInstance.login(controller.loginName!, password: controller.password!)
 		{ (success, results, error) in

@@ -24,7 +24,7 @@ class LoginViewController: NSViewController {
 	///When true, controls are disabled and spinning progress indicator is enabled
 	dynamic var isBusy : Bool = false
 	///Closure called when the user presses the login button
-	var completionHandler : ((controller: LoginViewController) -> Void)?
+	var completionHandler : ((controller: LoginViewController, userCanceled:Bool) -> Void)?
 	///An array of host names to display to the user
 	var hosts : [String] = ["localhost"] {
 		didSet { selectedHost = hosts.first; hostArrayController?.content = hosts }
@@ -103,11 +103,15 @@ class LoginViewController: NSViewController {
 		}
 	}
 	
+	@IBAction func cancel(sender:AnyObject) {
+		completionHandler?(controller:self, userCanceled:true)
+	}
+	
 	/// action used by the login button
 	@IBAction func attemptLogin(sender:AnyObject) {
 		isBusy = true
 		progressIndicator.startAnimation(self)
-		completionHandler!(controller: self)
+		completionHandler!(controller: self, userCanceled:false)
 	}
 }
 

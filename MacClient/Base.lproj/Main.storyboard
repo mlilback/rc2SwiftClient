@@ -704,8 +704,23 @@ DQ
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dpd-Zh-IXA" userLabel="Login Button">
+                                <rect key="frame" x="109" y="13" width="82" height="32"/>
+                                <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Ses-PQ-qEr">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                </buttonCell>
+                                <accessibility description="Login"/>
+                                <connections>
+                                    <action selector="cancel:" target="XfG-lQ-9wD" id="5vq-qH-OqP"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
+                            <constraint firstAttribute="bottom" secondItem="dpd-Zh-IXA" secondAttribute="bottom" constant="20" id="0Ue-21-4SF"/>
                             <constraint firstItem="E72-Dw-zn0" firstAttribute="width" secondItem="zYQ-LN-KTl" secondAttribute="width" id="4hI-A9-HmM"/>
                             <constraint firstAttribute="bottom" secondItem="8ja-Ur-bfw" secondAttribute="bottom" constant="20" id="52P-zy-5WG"/>
                             <constraint firstItem="HwZ-1D-idY" firstAttribute="top" secondItem="XkW-yS-zTZ" secondAttribute="bottom" constant="8" id="94G-3C-uw3"/>
@@ -736,6 +751,7 @@ DQ
                             <constraint firstItem="XkW-yS-zTZ" firstAttribute="leading" secondItem="laX-gx-RKx" secondAttribute="trailing" constant="8" id="ljF-5k-ISR"/>
                             <constraint firstItem="0BF-sZ-e8D" firstAttribute="trailing" secondItem="zYQ-LN-KTl" secondAttribute="trailing" id="oKV-d8-xFR"/>
                             <constraint firstItem="zYQ-LN-KTl" firstAttribute="top" secondItem="fAh-t1-AKK" secondAttribute="bottom" constant="8" id="tHU-z1-9wb"/>
+                            <constraint firstItem="I7w-6X-muo" firstAttribute="leading" secondItem="dpd-Zh-IXA" secondAttribute="trailing" constant="12" id="uJi-B3-EJW"/>
                             <constraint firstItem="HwZ-1D-idY" firstAttribute="trailing" secondItem="zYQ-LN-KTl" secondAttribute="trailing" id="xtt-mj-dAH"/>
                         </constraints>
                     </view>
