@@ -80,7 +80,7 @@ class SessionEditor: TextViewWithContextualMenu {
 	@IBAction func toggleWordWrap(sender:AnyObject?) {
 		let wordWrap = !wordWrapEnabled
 		let defaults = NSUserDefaults.standardUserDefaults()
-		defaults.setBool(wordWrap, forKey: PrefWordWrap)
+		defaults.setBool(wordWrap, forKey: PrefKeys.WordWrapEnabled)
 		adjustWordWrap(wordWrap)
 	}
 	

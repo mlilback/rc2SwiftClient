@@ -266,7 +266,7 @@ extension SessionEditorController: NSTextViewDelegate {
 	
 	func textView(textView: NSTextView, clickedOnLink link: AnyObject, atIndex charIndex: Int) -> Bool {
 		if let pieces = (link as? String)?.componentsSeparatedByString(":") where pieces.count == 2 {
-			NSNotificationCenter.defaultCenter().postNotificationName(DisplayHelpTopicNotification, object:pieces[1], userInfo:nil)
+			NSNotificationCenter.defaultCenter().postNotificationName(Notifications.DisplayHelpTopic, object:pieces[1], userInfo:nil)
 			return true
 		}
 		return false

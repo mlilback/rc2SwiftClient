@@ -22,7 +22,7 @@ class CommandHistory {
 	}
 	
 	func addToCommandHistory(origQuery:String) {
-		var maxLen = NSUserDefaults.standardUserDefaults().integerForKey(PrefMaxCommandHistory)
+		var maxLen = NSUserDefaults.standardUserDefaults().integerForKey(PrefKeys.MaxCommandHistorySize)
 		if (maxLen < MinHistoryLength) { maxLen = DefaultHistoryLength; }
 		if (maxLen > MaxHistoryLength) { maxLen = MaxHistoryLength; }
 		let query = origQuery.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())

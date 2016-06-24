@@ -71,7 +71,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			return
 		}
 		RestServer.sharedInstance.selectHost(controller.selectedHost!)
-		RestServer.sharedInstance.login(controller.loginName!, password: controller.password!)
+		RestServer.sharedInstance.login(controller.loginName, password: controller.password)
 		{ (success, results, error) in
 			if success {
 				NSApp.stopModal()
@@ -118,7 +118,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		//will be nil when running unit tests
 		guard loginController != nil else { return }
 		loginController!.hosts = RestServer.sharedInstance.restHosts
-		loginController!.lookupWorkspaceArray = RestServer.sharedInstance.workspaceNamesForHostName
 		loginController!.completionHandler = attemptLogin
 		NSApp!.runModalForWindow((loginWindowController?.window)!)
 	}
@@ -160,7 +159,7 @@ extension MacAppDelegate: AppStatus {
 				self.updateStatus(nil)
 			}
 		}
-		NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(AppStatusChangedNotification, object: self)
+		NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(Notifications.AppStatusChanged, object: self)
 	}
 
 	func presentError(error: NSError) {

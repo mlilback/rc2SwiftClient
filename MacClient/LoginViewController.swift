@@ -7,22 +7,34 @@
 import Cocoa
 
 class LoginViewController: NSViewController {
-	///key for bool value in NSUserDefaults
-	let AutoLoginPrefKey = "AutomaticallyLogin"
-	let LastLoginNamePrefKey = "LastLoginName"
-	let LastHostPrefKey = "LastHost"
-	let LastWorkspacePrefKey = "LastWorkspace"
-	
+	///specify keys that should trigger KVO notification for canConnect property
+	class func keyPathsForValuesAffectingCanConnect() -> Set<String>
+	{
+		return Set(["isLocalConnection", "selectedHost", "loginName", "password"])
+	}
+
 	private let keychain = Keychain()
 	
+	///is the connection to the local server
+	dynamic var isLocalConnection: Bool = true {
+		didSet { adjustWorkspacePopUp() }
+	}
 	///The user specified login name
-	dynamic var loginName : String? { didSet { adjustWorkspacePopUp() } }
+	dynamic var loginName : String = "" { didSet { adjustWorkspacePopUp() } }
 	///The user specified password
-	dynamic var password : String?
+	dynamic var password : String = ""
 	///Value is save/restored to NSUserDefaults
 	dynamic var autoSignIn : Bool = false
 	///When true, controls are disabled and spinning progress indicator is enabled
 	dynamic var isBusy : Bool = false
+	///computed property to know if enough information is available to make a connection
+	dynamic var canConnect: Bool {
+		get {
+			if isLocalConnection { return true }
+			return selectedHost?.characters.count > 0 && loginName.characters.count > 0 && password.characters.count > 0
+		}
+	}
+
 	///Closure called when the user presses the login button
 	var completionHandler : ((controller: LoginViewController, userCanceled:Bool) -> Void)?
 	///An array of host names to display to the user
@@ -34,8 +46,6 @@ class LoginViewController: NSViewController {
 	///The user selected host. Defaults to first host in hosts array
 	dynamic var selectedHost : String? { didSet { adjustWorkspacePopUp() } }
 	dynamic var selectedWorkspace: String?
-	//used to lookup the values to show in the workspace popup
-	var lookupWorkspaceArray: ((String, String) -> [String])?
 	
 	@IBOutlet var hostArrayController: NSArrayController!
 	@IBOutlet var workspaceArrayController: NSArrayController!
@@ -45,24 +55,36 @@ class LoginViewController: NSViewController {
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		let defaults = NSUserDefaults.standardUserDefaults()
-		if defaults.boolForKey(AutoLoginPrefKey) {
-			autoSignIn = true
-		}
-		if let lastHost = defaults.stringForKey(LastHostPrefKey) {
+		if let lastHost = defaults.stringForKey(PrefKeys.LastHost) {
 			if hosts.contains(lastHost) { selectedHost = lastHost }
 		}
-		if let lastLogin = defaults.stringForKey(LastLoginNamePrefKey) {
+		if let lastLogin = defaults.stringForKey(PrefKeys.LastLogin) {
 			loginName = lastLogin
-			password = keychain.getString("\(loginName!)@\(selectedHost!)")
+			password = keychain.getString("\(loginName)@\(selectedHost!)") ?? ""
 		}
 	}
 	
+	func workspaceNamesForSelectedHost() -> [String] {
+		let defaults = NSUserDefaults.standardUserDefaults()
+		var key = PrefKeys.LocalServerWorkspaces
+		if !isLocalConnection {
+			key = "ws//\(selectedHost!)//\(loginName)"
+		}
+		if let names = defaults.objectForKey(key) as? [String] where names.count > 0 {
+			return names
+		}
+		return ["Default"]
+	}
+
 	//adjusts the workspace popup based on selectedHost and login
 	func adjustWorkspacePopUp() {
-		workspaces = lookupWorkspaceArray?(selectedHost!, loginName ?? "") ?? ["Default"]
+		workspaces = workspaceNamesForSelectedHost()
 		workspaceArrayController.content = workspaces
-		let lastWspace = "\(LastWorkspacePrefKey).\(selectedHost).\(loginName)"
-		if let lastWspace = NSUserDefaults.standardUserDefaults().objectForKey(lastWspace) as? String where workspaces.contains(lastWspace) {
+		var lastWspaceKey = PrefKeys.LastWorkspace
+		if !isLocalConnection {
+			lastWspaceKey = "\(lastWspaceKey).\(selectedHost).\(loginName)"
+		}
+		if let lastWspace = NSUserDefaults.standardUserDefaults().objectForKey(lastWspaceKey) as? String where workspaces.contains(lastWspace) {
 			selectedWorkspace = lastWspace
 		} else {
 			selectedWorkspace = workspaces.first
@@ -81,16 +103,22 @@ class LoginViewController: NSViewController {
 			isBusy = false
 			self.view.window?.orderOut(self)
 			let defaults = NSUserDefaults.standardUserDefaults()
-			defaults.setBool(autoSignIn, forKey: AutoLoginPrefKey)
-			defaults.setObject(loginName, forKey: LastLoginNamePrefKey)
-			defaults.setObject(selectedHost, forKey: LastHostPrefKey)
-			defaults.setObject(selectedWorkspace, forKey: "\(LastWorkspacePrefKey).\(selectedHost).\(loginName)")
-			do {
-				try keychain.setString("\(loginName!)@\(selectedHost!)", value: password)
-			} catch let error {
-				log.warning("got error saving to keychain: \(error)")
+			defaults.setBool(isLocalConnection, forKey: PrefKeys.LastWasLocal)
+			if isLocalConnection {
+				defaults.removeObjectForKey(PrefKeys.LastLogin)
+				defaults.removeObjectForKey(PrefKeys.LastHost)
+				defaults.setObject(selectedWorkspace, forKey: PrefKeys.LastWorkspace)
+			} else {
+				defaults.setObject(loginName, forKey: PrefKeys.LastLogin)
+				defaults.setObject(selectedHost, forKey: PrefKeys.LastHost)
+				defaults.setObject(selectedWorkspace, forKey: "\(PrefKeys.LastWorkspace).\(selectedHost).\(loginName)")
+				do {
+					try keychain.setString("\(loginName)@\(selectedHost!)", value: password)
+				} catch let error {
+					log.warning("got error saving to keychain: \(error)")
+				}
 			}
-			password = nil
+			password = ""
 		} else {
 			log.error(error)
 			let alert = NSAlert()

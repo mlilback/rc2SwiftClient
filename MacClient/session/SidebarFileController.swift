@@ -90,7 +90,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	override func appStatusChanged() {
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SidebarFileController.receivedStatusChange(_:)), name: AppStatusChangedNotification, object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SidebarFileController.receivedStatusChange(_:)), name: Notifications.AppStatusChanged, object: nil)
 	}
 	
 	func loadData() {

@@ -179,7 +179,6 @@ import SwiftyJSON
 					self.urlConfig.HTTPAdditionalHeaders!["Rc2-Auth"] = self.loginSession!.authToken
 					dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: self.loginSession!, error: nil) })
 					NSUserDefaults.standardUserDefaults().setObject(self.loginSession!.host, forKey: self.kServerHostKey)
-					NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(RestLoginChangedNotification, object: self)
 				case 401:
 					let error = self.createError(401, description: "Invalid login or password")
 					log.verbose("got a \(response!.statusCode)")

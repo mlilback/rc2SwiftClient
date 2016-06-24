@@ -150,7 +150,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 	}
 	
 	override func appStatusChanged() {
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootViewController.receivedStatusNotification(_:)), name: AppStatusChangedNotification, object: nil)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(RootViewController.receivedStatusNotification(_:)), name: Notifications.AppStatusChanged, object: nil)
 	}
 }
 

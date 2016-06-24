@@ -12,18 +12,29 @@ enum Rc2ErrorCode: Int {
 	case ServerError = 101
 }
 
-let RestLoginChangedNotification = "RestLoginChangedNotification"
 let SelectedWorkspaceChangedNotification = "SelectedWorkspaceChangedNotification"
 let CurrentSessionChangedNotification = "CurrentSessionChangedNotification"
-///The object can be either a HelpTopic or a String
-let DisplayHelpTopicNotification = "DisplayHelpTopicNotification"
 
-///will always be posted on the main thread
-let AppStatusChangedNotification = "AppStatusChangedNotification"
+struct Notifications {
+	///will always be posted on the main thread
+	static let AppStatusChanged = "AppStatusChangedNotification"
+	///The object can be either a HelpTopic or a String
+	static let DisplayHelpTopic = "DisplayHelpTopicNotification"
+}
 
-let PrefMaxCommandHistory = "MaxCommandHistorySize"
-let PrefWordWrap = "WordWrapEnabled"
-let OutputColorsKey = "OutputColors"
+
+
+struct PrefKeys {
+	static let LastWorkspace = "LastWorkspace"
+	static let LocalServerWorkspaces = "LocalServerWorkspaces"
+	static let LastHost = "LastHost"
+	static let LastLogin = "LastLoginName"
+	static let LastWasLocal = "LastWasLocal"
+	
+	static let MaxCommandHistorySize = "MaxCommandHistorySize"
+	static let WordWrapEnabled = "WordWrapEnabled"
+	static let OutputColors = "OutputColors"
+}
 
 let ConsoleAttachmentImageSize = CGSize(width: 48, height: 48)
 
