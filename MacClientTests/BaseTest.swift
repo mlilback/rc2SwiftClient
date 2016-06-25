@@ -22,7 +22,7 @@ class BaseTest: XCTestCase {
 		
 		let path : String = NSBundle(forClass: RestServerTest.self).pathForResource("loginResults", ofType: "json")!
 		let resultData = NSData(contentsOfFile: path)!
-		sessionData = LoginSession(json: JSON.init(data: resultData), host: RestServer.sharedInstance.restHosts.first!)
+		sessionData = LoginSession(json: JSON.init(data: resultData), host: "test")
 	}
 	
 	override func tearDown() {

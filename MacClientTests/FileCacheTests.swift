@@ -51,7 +51,7 @@ class FileCacheTests: BaseTest {
 		fileData = NSData(contentsOfURL: wordsUrl)!
 		let fakeFile = File(json: JSON.parse("{\"id\" : 1,\"wspaceId\" : 1,\"name\" : \"sample.R\",\"version\" : 0,\"dateCreated\" : 1439407405827,\"lastModified\" : 1439407405827,\"etag\": \"f/1/0\", \"fileSize\":\(fileData.length) }"))
 		file = fakeFile
-		wspace.replaceFileAtIndex(0, withFile: fakeFile)
+		wspace.replaceFile(at:0, withFile: fakeFile)
 		//stub out download of both files
 		stub(uri("/workspaces/\(wspace.wspaceId)/files/\(wspace.files[0].fileId)"), builder: http(200, headers:[:], data:fileData))
 		let file1Data = fileData.subdataWithRange(NSMakeRange(0, wspace.files[1].fileSize))

@@ -57,10 +57,13 @@ class MockAppStatus: NSObject, AppStatus {
 	var statusMessage: NSString = ""
 	var setCount:Int = 0
 	
-	func updateStatus(progress: NSProgress?) {
-		currentProgress = progress
-		setCount += 1
-		busy = currentProgress != nil
+	func presentError(error: NSError, session:Session) {
+		
+	}
+	
+	func presentAlert(session:Session, message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
+	{
+		
 	}
 	
 }

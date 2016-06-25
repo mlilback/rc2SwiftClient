@@ -130,8 +130,12 @@ class DummyAppStatus: NSObject, AppStatus {
 		super.init()
 	}
 	
-	func updateStatus(progress: NSProgress?) {
+	func presentError(error: NSError, session:Session) {
 		
+	}
+	
+	func presentAlert(session:Session, message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
+	{
 	}
 	
 }
