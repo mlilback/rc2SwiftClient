@@ -23,6 +23,7 @@ public class ImageCache :NSObject, NSSecureCoding {
 	var fileManager:NSFileManager
 	///to allow dependency injection
 	var workspace: Workspace?
+	weak var restServer:RestServer?
 	///caching needs to be unique for each server. we don't care what the identifier is, just that it is unique per host
 	///mutable because we need to be able to read it from an archive
 	private(set) var hostIdentifier: String
@@ -51,7 +52,8 @@ public class ImageCache :NSObject, NSSecureCoding {
 	
 	public static func supportsSecureCoding() -> Bool { return true }
 	
-	init(_ fm:NSFileManager=NSFileManager(), hostIdentifier hostIdent:String) {
+	init(restServer:RestServer, fileManager fm:NSFileManager=NSFileManager(), hostIdentifier hostIdent:String) {
+		self.restServer = restServer
 		fileManager = fm
 		cache = NSCache()
 		metaCache = [:]
@@ -136,7 +138,7 @@ public class ImageCache :NSObject, NSSecureCoding {
 				return
 			}
 			//need to fetch from server
-			RestServer.sharedInstance.downloadImage(self.workspace!, imageId: imageId, destination: fileUrl).onSuccess
+			self.restServer!.downloadImage(self.workspace!, imageId: imageId, destination: fileUrl).onSuccess
 			{ _ in
 				if let pimg = PlatformImage(contentsOfURL: fileUrl) {
 					return promise.success(pimg)

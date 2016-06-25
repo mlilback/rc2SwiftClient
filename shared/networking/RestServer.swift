@@ -12,22 +12,7 @@ import SwiftyJSON
 
 @objc public class RestServer : NSObject, NSURLSessionTaskDelegate {
 
-	private static var _sInstance:RestServer?? = nil
-	private static var sInstance:RestServer? { get { return _sInstance! } set { _sInstance = newValue } }
 	private let kServerHostKey = "ServerHostKey"
-	
-	static func createServer(appStatus appStatus:AppStatus) {
-		sInstance = RestServer()
-		sInstance!.appStatus = appStatus
-	}
-	
-	///singleton accessor
-	static var sharedInstance : RestServer {
-		get {
-			assert(sInstance != nil)
-			return sInstance!
-		}
-	}
 	
 	//for dependency injection
 	var fileManager:FileManager = NSFileManager.defaultManager()
@@ -41,7 +26,8 @@ import SwiftyJSON
 	private(set) public var loginSession : LoginSession?
 	private(set) var baseUrl : NSURL?
 	private var userAgent: String
-	private weak var appStatus:AppStatus?
+	weak var appStatus:AppStatus?
+	private(set) var session:Session?
 
 	var restHosts : [String] {
 		get {
@@ -60,7 +46,6 @@ import SwiftyJSON
 		}
 	}
 	
-	//private init so instance is unique
 	override init() {
 		userAgent = "Rc2 iOSClient"
 		#if os(OSX)
@@ -79,13 +64,8 @@ import SwiftyJSON
 		if let previousHostName = NSUserDefaults.standardUserDefaults().stringForKey(self.kServerHostKey) {
 			selectHost(previousHostName)
 		}
-		NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(RestServer.workspaceChanged(_:)), name:SelectedWorkspaceChangedNotification, object: nil)
 	}
 
-	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
-	}
-	
 	///give a hostname from hosts property, the list of last known workspace names
 	func workspaceNamesForHostName(hostName:String, userName:String) -> [String] {
 		let defaults = NSUserDefaults.standardUserDefaults()
@@ -94,11 +74,6 @@ import SwiftyJSON
 			return names
 		}
 		return ["Default"]
-	}
-	
-	func workspaceChanged(note:NSNotification) {
-		let wspace = note.object as! Box<Workspace>
-		createSession(wspace.unbox, appStatus: appStatus!)
 	}
 	
 	private func createError(err:FileError, description:String) -> NSError {
@@ -142,9 +117,9 @@ import SwiftyJSON
 		request.addValue(loginSession!.authToken, forHTTPHeaderField: "Rc2-Auth")
 		request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
 		let ws = WebSocket()
-		let session = Session(wspace, source:ws, appStatus:appStatus, networkConfig:urlConfig, hostIdentifier: selectedHost.host)
-		session.open(request)
-		return session
+		session = Session(wspace, source:ws, restServer:self, appStatus:appStatus, networkConfig:urlConfig, hostIdentifier: selectedHost.host)
+		session!.open(request)
+		return session!
 	}
 	
 	func createWebsocketUrl(wspaceId:Int32) -> NSURL {
@@ -254,7 +229,7 @@ import SwiftyJSON
 		task.resume()
 	}
 	
-	///parameter destination: the directory to save the image in, overwriting any existing file
+	/// - parameter destination: the directory to save the image in, overwriting any existing file
 	public func downloadImage(wspace:Workspace, imageId:Int, destination:NSURL, handler:Rc2RestCompletionHandler) {
 		let req = request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET", jsonDict:[:])
 		let (task, f) = urlSession.downloadWithPromise(req)
@@ -348,28 +323,6 @@ public class LoginHandler: NSObject, NSURLSessionDataDelegate {
 
 		let task = urlSession.dataTaskWithRequest(req);
 		task.resume()
-	}
-
-	public func URLSession(session: NSURLSession, didReceiveChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void)
-	{
-		log.info("challenge 1")
-		guard challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-			let serverTrust = challenge.protectionSpace.serverTrust,
-			let serverCert = SecTrustGetCertificateAtIndex(serverTrust, 0),
-			let certPath = NSBundle.mainBundle().URLForResource("server", withExtension: "cer"),
-			let storedData = NSData(contentsOfURL: certPath) where
-			storedData.isEqualToData(SecCertificateCopyData(serverCert))  else
-		{
-			completionHandler(NSURLSessionAuthChallengeDisposition.CancelAuthenticationChallenge, nil)
-			return
-		}
-		completionHandler(NSURLSessionAuthChallengeDisposition.UseCredential, nil)
-	}
-	
-	public func URLSession(session: NSURLSession, task: NSURLSessionTask, didReceiveChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void)
-	{
-		log.info("challenge 2")
-		completionHandler(NSURLSessionAuthChallengeDisposition.UseCredential, nil)
 	}
 
 	public func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveResponse response: NSURLResponse, completionHandler: (NSURLSessionResponseDisposition) -> Void)

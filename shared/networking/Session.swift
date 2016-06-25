@@ -21,21 +21,6 @@ public enum FileOperation: String {
 }
 
 public class Session : NSObject, SessionFileHandlerDelegate {
-	/// a static singleton for maintaining the current session. It is setable, so unit tests can use a mock session
-	///tried kvo, forced to use notifications
-	class Manager: NSObject {
-		dynamic var currentSession: Session? {
-			didSet {
-				if let session = currentSession {
-					NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(CurrentSessionChangedNotification, object: session)
-				}
-			}
-		}
-		///need to keep a reference while open is in progress, as it is not yet assigned to currentSession
-		var sessionBeingOpened: Session?
-	}
-	static var manager: Manager = Manager()
-	
 	//MARK: properties
 	
 	//the workspace this session represents
@@ -50,6 +35,7 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	let hostIdentifier: String
 	///
 	weak var delegate : SessionDelegate?
+	weak var restServer: RestServer?
 
 	///regex used to catch user entered calls to help so we can hijack and display through our mechanism
 	var helpRegex : NSRegularExpression = {
@@ -71,22 +57,21 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	
 	
 	//MARK: init/open/close
-	init(_ wspace:Workspace, source:WebSocketSource, appStatus:AppStatus, networkConfig config:NSURLSessionConfiguration, hostIdentifier:String, delegate:SessionDelegate?=nil)
+	init(_ wspace:Workspace, source:WebSocketSource, restServer rserver:RestServer, appStatus:AppStatus, networkConfig config:NSURLSessionConfiguration, hostIdentifier:String, delegate:SessionDelegate?=nil)
 	{
 		workspace = wspace
 		self.delegate = delegate
 		self.wsSource = source
 		self.appStatus = appStatus
 		self.hostIdentifier = hostIdentifier
-		self.fileHandler = DefaultSessionFileHandler(wspace: workspace, baseUrl: RestServer.sharedInstance.baseUrl!, config: config, appStatus: appStatus)
+		self.restServer = rserver
+		self.fileHandler = DefaultSessionFileHandler(wspace: workspace, baseUrl: restServer!.baseUrl!, config: config, appStatus: appStatus)
 
 		super.init()
 		fileHandler.fileDelegate = self
 		wsSource.binaryType = .NSData
 		wsSource.event.open = { [unowned self] in
 			dispatch_async(dispatch_get_main_queue()) {
-				Session.manager.currentSession = self
-				Session.manager.sessionBeingOpened = nil
 				self.connectionOpen = true
 				self.fileHandler.loadFiles()
 				self.delegate?.sessionOpened()
@@ -95,8 +80,6 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 		wsSource.event.close = { [unowned self] (code, reason, clear)in
 			self.connectionOpen = false
 			self.delegate?.sessionClosed()
-			//only release session once we have confirmed from remote server that it is closed
-			Session.manager.currentSession = nil
 		}
 		wsSource.event.message = { [unowned self] message in
 			self.handleReceivedMessage(message)
@@ -111,8 +94,10 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 			self.sendMessage(["msg":"keepAlive"])
 		}
 		dispatch_resume(keepAliveTimer)
-		//need to keep a reference or ARC will dealloc while waiting on open response
-		Session.manager.sessionBeingOpened = self
+	}
+	
+	deinit {
+		log.info("session dealloc")
 	}
 	
 	///opens the websocket with the specified request

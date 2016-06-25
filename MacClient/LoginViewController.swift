@@ -13,6 +13,19 @@ class LoginViewController: NSViewController {
 		return Set(["isLocalConnection", "selectedHost", "loginName", "password"])
 	}
 
+	class func checkForDocker() -> Bool {
+		do {
+			if let versionStr = try ShellCommands.stdout(for: "/usr/local/bin/docker-compose", arguments:["-v"], pattern:"version (.*), build (.*)", matchNumber:1)
+			{
+				let version = (versionStr as NSString).doubleValue
+				if version >= 1.8 && version < 2.0 { return true }
+			}
+		} catch let err {
+			print("got error \(err)")
+		}
+		return false
+	}
+
 	private let keychain = Keychain()
 	
 	///is the connection to the local server
@@ -47,6 +60,8 @@ class LoginViewController: NSViewController {
 	dynamic var selectedHost : String? { didSet { adjustWorkspacePopUp() } }
 	dynamic var selectedWorkspace: String?
 	
+	var dockerIsInstalled:Bool = { LoginViewController.checkForDocker() }()
+	
 	@IBOutlet var hostArrayController: NSArrayController!
 	@IBOutlet var workspaceArrayController: NSArrayController!
 	@IBOutlet weak var progressIndicator: NSProgressIndicator!
@@ -55,6 +70,11 @@ class LoginViewController: NSViewController {
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		let defaults = NSUserDefaults.standardUserDefaults()
+		if dockerIsInstalled {
+			isLocalConnection = defaults.boolForKey(PrefKeys.LastWasLocal)
+		} else {
+			isLocalConnection = false
+		}
 		if let lastHost = defaults.stringForKey(PrefKeys.LastHost) {
 			if hosts.contains(lastHost) { selectedHost = lastHost }
 		}

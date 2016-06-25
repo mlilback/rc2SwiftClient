@@ -10,6 +10,8 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 	///Object that lets us monitor the status of the application. Nededed to pass on to the statusView once setup is finished
 	dynamic weak var appStatus: AppStatus?
 	
+	weak var session: Session?
+	
 	///Custom view that shows the status of the application: progress, message, cancel button
 	var statusView: AppStatusView?
 	
@@ -26,13 +28,18 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 		window!.titleVisibility = .Hidden
 	}
 	
-	func setupChildren() {
+	func setupChildren(restServer:RestServer) {
 		statusView?.appStatus = appStatus
 		let rootVC = contentViewController as! RootViewController
+		rootVC.restServer = restServer
 		rootVC.sessionClosedHandler = {
 			dispatch_async(dispatch_get_main_queue()) {
 				self.window?.close()
 			}
+		}
+		let viewControllers = recursiveFlatMap(rootVC, transform: { $0 as? AbstractSessionViewController }, children: { $0.childViewControllers })
+		for aController in viewControllers {
+			aController.sessionOptional = restServer.session
 		}
 	}
 

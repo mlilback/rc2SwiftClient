@@ -44,6 +44,7 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 	private var uploadSession: NSURLSession!
 	private var tasks:[Int:ImportData] = [:]
 	private var tmpDir:NSURL
+	private var baseUrl:NSURL
 	///ultimately called from completion handler added to root NSProgress
 	private var completionHandler:((NSProgress)->Void)
 	
@@ -52,10 +53,11 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 		parameter workspace: the workspace to import the files into
 		urlSession: the session to use. Defaults to creating a new one using the config from RestServer
 	*/
-	init(_ files:[FileToImport], fileHandler:SessionFileHandler, configuration config:NSURLSessionConfiguration?, completionHandler:((progress:NSProgress)->Void))
+	init(_ files:[FileToImport], fileHandler:SessionFileHandler, baseUrl:NSURL, configuration config:NSURLSessionConfiguration?, completionHandler:((progress:NSProgress)->Void))
 	{
 		self.files = files
 		self.fileHandler = fileHandler
+		self.baseUrl = baseUrl
 		self.completionHandler = completionHandler
 		var myConfig = config
 		let totalFileSize:Int64 = files.map({ $0.fileUrl }).reduce(0) { (size, url) -> Int64 in
@@ -88,7 +90,7 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 				log.error("failed to create link for upload: \(err)")
 				throw err
 			}
-			let destUrl = NSURL(string: "/workspaces/\(fileHandler.workspace.wspaceId)/files/upload", relativeToURL: RestServer.sharedInstance.baseUrl)!
+			let destUrl = NSURL(string: "/workspaces/\(fileHandler.workspace.wspaceId)/files/upload", relativeToURL:baseUrl)!
 			let request = NSMutableURLRequest(URL: destUrl)
 			request.HTTPMethod = "POST"
 			request.setValue(aFileToImport.uniqueFileName, forHTTPHeaderField: "Rc2-Filename")

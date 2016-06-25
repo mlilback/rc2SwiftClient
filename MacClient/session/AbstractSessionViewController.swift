@@ -7,7 +7,7 @@
 import Cocoa
 
 class AbstractSessionViewController: NSViewController {
-	dynamic weak var sessionOptional: Session?
+	dynamic weak var sessionOptional: Session? { didSet { sessionChanged() } }
 	///convience accessor so don't have to constantly unwrap optional
 	var session: Session { get { return sessionOptional! } }
 	//injected by Swinject
@@ -21,11 +21,6 @@ class AbstractSessionViewController: NSViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		NSNotificationCenter.defaultCenter().addObserverForName(CurrentSessionChangedNotification, object: nil, queue: nil) {
-			[unowned self] in 
-			self.sessionOptional = $0.object as! Session?
-			self.sessionChanged()
-		}
 	}
 	
 	///for subclasses

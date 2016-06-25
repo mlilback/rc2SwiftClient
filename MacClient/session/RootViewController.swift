@@ -11,6 +11,11 @@ import SwiftyJSON
 class RootViewController: AbstractSessionViewController, ToolbarItemHandler, ManageFontMenu
 {
 	//MARK: - properties
+	var restServer: RestServer? { didSet {
+		let variableHandler:VariableHandler = firstChildViewController(self)!
+		sessionController = SessionController(session: restServer!.session!, delegate: self, outputHandler: outputHandler!, variableHandler:variableHandler)
+		outputHandler?.sessionController = sessionController
+	} }
 	var sessionController: SessionController?
 	
 	@IBOutlet var progressView: NSProgressIndicator?
@@ -38,13 +43,10 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 		editor = firstChildViewController(self)
 		outputHandler = firstChildViewController(self)
 		fileHandler = firstChildViewController(self)
-		let variableHandler:VariableHandler = firstChildViewController(self)!
 		let concreteFH = fileHandler as? SidebarFileController
 		if concreteFH != nil {
 			concreteFH!.delegate = self
 		}
-		sessionController = SessionController(delegate: self, outputHandler: outputHandler!, variableHandler:variableHandler)
-		outputHandler?.sessionController = sessionController
 	}
 	
 	override func viewDidAppear() {

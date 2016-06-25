@@ -516,6 +516,7 @@ CA
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
+                                    <binding destination="FSl-T3-cAk" name="enabled" keyPath="dockerIsInstalled" id="aYq-Fj-RSa"/>
                                     <binding destination="FSl-T3-cAk" name="value" keyPath="isLocalConnection" id="rJZ-yD-X1m"/>
                                 </connections>
                             </button>

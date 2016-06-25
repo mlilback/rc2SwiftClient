@@ -12,9 +12,6 @@ enum Rc2ErrorCode: Int {
 	case ServerError = 101
 }
 
-let SelectedWorkspaceChangedNotification = "SelectedWorkspaceChangedNotification"
-let CurrentSessionChangedNotification = "CurrentSessionChangedNotification"
-
 struct Notifications {
 	///will always be posted on the main thread
 	static let AppStatusChanged = "AppStatusChangedNotification"

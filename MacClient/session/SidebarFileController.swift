@@ -198,7 +198,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	func importFiles(files:[FileToImport]) {
-		let importer = FileImporter(files, fileHandler:self.session.fileHandler, configuration: RestServer.sharedInstance.urlConfig)
+		let importer = FileImporter(files, fileHandler:self.session.fileHandler, baseUrl:session.restServer!.baseUrl!, configuration: session.restServer!.urlConfig)
 		{ (progress:NSProgress) in
 			if progress.rc2_error != nil {
 				//TODO: handle error

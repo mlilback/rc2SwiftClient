@@ -14,7 +14,7 @@ let log = XCGLogger.defaultInstance()
 class MacAppDelegate: NSObject, NSApplicationDelegate {
 	var loginWindowController: NSWindowController?
 	var loginController: LoginViewController?
-	var sessionWindowController: MainWindowController?
+	var sessionWindowControllers: [MainWindowController] = []
 
 	private dynamic var _currentProgress: NSProgress?
 	private let _statusQueue = dispatch_queue_create("io.rc2.statusQueue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))
@@ -23,18 +23,17 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
 		let cdUrl = NSBundle.mainBundle().URLForResource("CommonDefaults", withExtension: "plist")
 		NSUserDefaults.standardUserDefaults().registerDefaults(NSDictionary(contentsOfURL: cdUrl!)! as! [String : AnyObject])
-		RestServer.createServer(appStatus:self)
 	}
 
 	func applicationDidFinishLaunching(aNotification: NSNotification) {
 		//skip login when running unit tests
-		guard NSProcessInfo.processInfo().environment["TestBundleLocation"] == nil else {
+		guard NSProcessInfo.processInfo().environment["XCTestConfigurationFilePath"] == nil else {
 			return
 		}
 		let sboard = NSStoryboard(name: "Main", bundle: nil)
 		loginWindowController = sboard.instantiateControllerWithIdentifier("loginWindow") as? NSWindowController
 		loginController = loginWindowController?.window?.contentViewController as? LoginViewController
-		showLoginWindow()
+		showLoginWindow(RestServer())
 	}
 
 	func applicationWillTerminate(aNotification: NSNotification) {
@@ -47,7 +46,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func applicationOpenUntitledFile(sender: NSApplication) -> Bool {
-		showLoginWindow()
+		showLoginWindow(RestServer())
 		return true
 	}
 	
@@ -61,7 +60,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	@IBAction func newDocument(sender:AnyObject) {
-		showLoginWindow()
+		showLoginWindow(RestServer())
 	}
 	
 	func attemptLogin(controller: LoginViewController, userCanceled:Bool) {
@@ -70,25 +69,27 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			loginWindowController?.window?.orderOut(self)
 			return
 		}
-		RestServer.sharedInstance.selectHost(controller.selectedHost!)
-		RestServer.sharedInstance.login(controller.loginName, password: controller.password)
+		let restServer = RestServer()
+		restServer.selectHost(controller.selectedHost!)
+		restServer.login(controller.loginName, password: controller.password)
 		{ (success, results, error) in
 			if success {
 				NSApp.stopModal()
-				let wspace = RestServer.sharedInstance.loginSession!.workspaceWithName(controller.selectedWorkspace!)!
-				NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(SelectedWorkspaceChangedNotification, object: Box(wspace))
+				let wspace = restServer.loginSession!.workspaceWithName(controller.selectedWorkspace!)!
+				restServer.createSession(wspace, appStatus: self)
 				self.loginController!.loginAttemptComplete(nil)
-				self.showSessionWindow()
+				self.showSessionWindow(restServer)
 			} else {
 				self.loginController!.loginAttemptComplete(error!.localizedDescription)
 			}
 		}
 	}
 	
-	func showSessionWindow() {
+	func showSessionWindow(restServer:RestServer) {
 		updateStatus(nil)
-		sessionWindowController = MainWindowController.createFromNib()
-
+		let wc = MainWindowController.createFromNib()
+		sessionWindowControllers.append(wc)
+		
 		let container = Container()
 		container.registerForStoryboard(RootViewController.self) { r, c in
 			c.appStatus = self as AppStatus
@@ -101,25 +102,32 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		}
 
 		let sboard = SwinjectStoryboard.create(name: "MainController", bundle: nil, container: container)
-		sessionWindowController?.window?.makeKeyAndOrderFront(self)
+		wc.window?.makeKeyAndOrderFront(self)
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window
 		let root = sboard.instantiateControllerWithIdentifier("rootController") as? RootViewController
-		sessionWindowController?.contentViewController = root
-		sessionWindowController?.appStatus = self
-		sessionWindowController?.setupChildren()
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MacAppDelegate.sessionWindowWillClose), name: NSWindowWillCloseNotification, object: sessionWindowController!.window!)
+		wc.contentViewController = root
+		wc.appStatus = self
+		wc.setupChildren(restServer)
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MacAppDelegate.sessionWindowWillClose), name: NSWindowWillCloseNotification, object: wc.window!)
 	}
 	
 	func sessionWindowWillClose() {
-		performSelector(#selector(MacAppDelegate.showLoginWindow), withObject: nil, afterDelay: 0.2)
+		performSelector(#selector(MacAppDelegate.showLoginWindow), withObject: RestServer(), afterDelay: 0.2)
 	}
 	
-	func showLoginWindow() {
+	func showLoginWindow(restServer:RestServer) {
 		//will be nil when running unit tests
 		guard loginController != nil else { return }
-		loginController!.hosts = RestServer.sharedInstance.restHosts
+		loginController!.hosts = restServer.restHosts
 		loginController!.completionHandler = attemptLogin
 		NSApp!.runModalForWindow((loginWindowController?.window)!)
+	}
+	
+	func windowControllerForSession(session:Session) -> MainWindowController? {
+		for wc in sessionWindowControllers {
+			if wc.session == session { return wc }
+		}
+		return nil
 	}
 }
 
@@ -162,12 +170,12 @@ extension MacAppDelegate: AppStatus {
 		NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(Notifications.AppStatusChanged, object: self)
 	}
 
-	func presentError(error: NSError) {
+	func presentError(error: NSError, session:Session) {
 		let alert = NSAlert(error: error)
-		alert.beginSheetModalForWindow(sessionWindowController!.window!, completionHandler:nil)
+		alert.beginSheetModalForWindow(windowControllerForSession(session)!.window!, completionHandler:nil)
 	}
 	
-	func presentAlert(message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
+	func presentAlert(session:Session, message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
 	{
 		let alert = NSAlert()
 		alert.messageText = message
@@ -180,7 +188,7 @@ extension MacAppDelegate: AppStatus {
 			}
 		}
 		alert.alertStyle = isCritical ? .CriticalAlertStyle : .WarningAlertStyle
-		alert.beginSheetModalForWindow(sessionWindowController!.window!) { (rsp) in
+		alert.beginSheetModalForWindow(windowControllerForSession(session)!.window!) { (rsp) in
 			guard buttons.count > 1 else { return }
 			dispatch_async(dispatch_get_main_queue()) {
 				//convert rsp to an index to buttons

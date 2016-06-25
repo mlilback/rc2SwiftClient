@@ -22,26 +22,29 @@ import Cocoa
 	let outputHandler: OutputHandler
 	let varHandler: VariableHandler
 	///not a constant because it can be saved/loaded
-	var imgCache: ImageCache
-	///nothing should be called until we have a session
-	var session:Session!
+	var imgCache: ImageCache!
+
+	let session:Session
 
 	var savedStateHash: NSData?
 	private var properlyClosed:Bool = false
 
-	init(delegate: SessionControllerDelegate, outputHandler output:OutputHandler, variableHandler:VariableHandler)
+	init(session:Session, delegate: SessionControllerDelegate, outputHandler output:OutputHandler, variableHandler:VariableHandler)
 	{
 		self.delegate = delegate
 		self.outputHandler = output
 		self.varHandler = variableHandler
-		self.imgCache = ImageCache(NSFileManager(), hostIdentifier: NSUUID().UUIDString)
+		self.session = session
 		super.init()
+		session.delegate = self
+		imgCache = ImageCache(restServer: session.restServer!, fileManager:NSFileManager(), hostIdentifier: NSUUID().UUIDString)
+		imgCache.workspace = session.workspace
 		self.responseHandler = ServerResponseHandler(delegate: self)
 		let nc = NSNotificationCenter.defaultCenter()
-		nc.addObserver(self, selector: #selector(SessionController.sessionChanged), name: CurrentSessionChangedNotification, object: nil)
 		nc.addObserver(self, selector: #selector(SessionController.appWillTerminate), name: NSApplicationWillTerminateNotification, object: nil)
 		nc.addObserver(self, selector:  #selector(SessionController.saveSessionState), name: NSWorkspaceWillSleepNotification, object:nil)
 		outputHandler.imageCache = imgCache
+		restoreSessionState()
 	}
 	
 	deinit {
@@ -57,15 +60,6 @@ import Cocoa
 		properlyClosed = true
 	}
 	
-	func sessionChanged(note:NSNotification) {
-		session = Session.manager.currentSession
-		session.delegate = self
-		//image cache requires a host identifier at initialization, so we have to recreate it once we have a session
-		imgCache = ImageCache(NSFileManager(), hostIdentifier: session.hostIdentifier)
-		imgCache.workspace = session.workspace
-		restoreSessionState()
-	}
-
 	func appWillTerminate(note: NSNotification) {
 		saveSessionState()
 	}
@@ -123,7 +117,7 @@ extension SessionController {
 		let appSupportUrl = try fileManager.URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
 		let dataDirUrl = NSURL(string: "Rc2/sessions/", relativeToURL: appSupportUrl)?.absoluteURL
 		try fileManager.createDirectoryAtURL(dataDirUrl!, withIntermediateDirectories: true, attributes: nil)
-		let fname = "\(RestServer.sharedInstance.loginSession!.host)--\(session.workspace.userId)--\(session.workspace.wspaceId).plist"
+		let fname = "\(session.restServer!.selectedHost.name)--\(session.workspace.userId)--\(session.workspace.wspaceId).plist"
 		let furl = NSURL(string:fname, relativeToURL: dataDirUrl)?.absoluteURL
 		return furl!
 	}

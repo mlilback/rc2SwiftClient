@@ -51,7 +51,7 @@ public enum ServerResponse : Equatable {
 					let removed = jsonObj["variables"].dictionaryValue["assigned"]?.arrayValue.map() { $0.stringValue } ?? []
 					return ServerResponse.VariablesDelta(assigned: assigned, removed: removed)
 				}
-				return ServerResponse.Variables(single: jsonObj["single"].boolValue, variables: Variable.variablesForJsonDictionary(jsonObj["variables"].dictionaryValue))
+				return ServerResponse.Variables(single: jsonObj["single"].boolValue, variables: Variable.variablesForJsonDictionary(jsonObj["variables"].dictionary))
 			case "saveResponse":
 				//TODO: not looking at "success" and handling "error"
 				return ServerResponse.SaveResponse(transId: jsonObj["transId"].stringValue)

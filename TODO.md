@@ -10,6 +10,12 @@
 
 * a second save of edits isn't being sent to the compute engine (or maybe app server)
 
+* Unit tests
+
+	* fix FileImporterTests.testSessionMock
+	
+	* add test Rmd/Rnw files for SyntaxParserTests
+
 * SessionController
 
 	* if no image cached saved, need to recreate from cache files (is this possible?)
