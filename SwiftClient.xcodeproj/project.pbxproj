@@ -167,6 +167,10 @@
 		08F189AA1D109A4F00866A05 /* TextViewWithContextualMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189A91D109A4F00866A05 /* TextViewWithContextualMenu.swift */; };
 		08F189B11D19B0D600866A05 /* ServerHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B01D19B0D500866A05 /* ServerHost.swift */; };
 		08F189B31D1B0BBE00866A05 /* ShellCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B21D1B0BBE00866A05 /* ShellCommands.swift */; };
+		08F189B61D2157CF00866A05 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B51D2157CF00866A05 /* Project.swift */; };
+		08F189B91D216E5400866A05 /* Bookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B81D216E5400866A05 /* Bookmark.swift */; };
+		08F189BB1D21826D00866A05 /* JSONSerializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BA1D21826D00866A05 /* JSONSerializable.swift */; };
+		08F189BD1D2184EB00866A05 /* BookmarkTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BC1D2184EB00866A05 /* BookmarkTest.swift */; };
 		08F2A85E1C7F36EC00A803A0 /* Mockingjay.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */; };
 		08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* SessionEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* SidebarTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* SidebarTabController.swift */; };
@@ -424,6 +428,10 @@
 		08F189AD1D18818700866A05 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Shared.xcconfig; path = config/Shared.xcconfig; sourceTree = "<group>"; };
 		08F189B01D19B0D500866A05 /* ServerHost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerHost.swift; sourceTree = "<group>"; };
 		08F189B21D1B0BBE00866A05 /* ShellCommands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShellCommands.swift; sourceTree = "<group>"; };
+		08F189B51D2157CF00866A05 /* Project.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
+		08F189B81D216E5400866A05 /* Bookmark.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bookmark.swift; sourceTree = "<group>"; };
+		08F189BA1D21826D00866A05 /* JSONSerializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerializable.swift; sourceTree = "<group>"; };
+		08F189BC1D2184EB00866A05 /* BookmarkTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarkTest.swift; sourceTree = "<group>"; };
 		08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Mockingjay.framework.dSYM; path = Carthage/Build/Mac/Mockingjay.framework.dSYM; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* SessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditorController.swift; sourceTree = "<group>"; };
 		08F448F61C4E244500C64706 /* SidebarTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarTabController.swift; sourceTree = "<group>"; };
@@ -620,6 +628,7 @@
 			children = (
 				083382F41C68E43400D40EEB /* test resources */,
 				083382F91C68F2A900D40EEB /* BaseTest.swift */,
+				08F189BC1D2184EB00866A05 /* BookmarkTest.swift */,
 				083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */,
 				0845CB1D1C616E060090267C /* CommonMocks.swift */,
 				0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */,
@@ -690,6 +699,7 @@
 				088CE69D1C4B605D00153414 /* networking */,
 				0827A4D71C7ED9CE001F0AFB /* SyntaxHighlighting */,
 				086BC9AE1C552D43006ABAE0 /* AppStatus.swift */,
+				08F189B81D216E5400866A05 /* Bookmark.swift */,
 				088CE6951C4B605D00153414 /* ColorEnums.swift */,
 				0814CB711CF894AC0008DE6B /* ConsoleAttachment.swift */,
 				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
@@ -699,6 +709,7 @@
 				08A01FD51CC95C58001EDFAA /* HelpController.swift */,
 				0816F8991C6D0F7D00A6120B /* HTMLString.swift */,
 				083174151C587F7F00071408 /* ImageCache.swift */,
+				08F189BA1D21826D00866A05 /* JSONSerializable.swift */,
 				088CE6B71C4C44A800153414 /* Keychain.swift */,
 				08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */,
 				083550CB1C760F050013E2B5 /* NSProgress+Rc2.h */,
@@ -719,6 +730,7 @@
 				088CE6981C4B605D00153414 /* FileType.swift */,
 				088CE6991C4B605D00153414 /* FileTypes.plist */,
 				088CE69A1C4B605D00153414 /* LoginSession.swift */,
+				08F189B51D2157CF00866A05 /* Project.swift */,
 				088CE69B1C4B605D00153414 /* User.swift */,
 				088CE69C1C4B605D00153414 /* Workspace.swift */,
 				08D6106A1CD2444C00258D8E /* Variable.swift */,
@@ -1000,6 +1012,7 @@
 				08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */,
 				0868FC591C7789C3002386CB /* NSURL+Rc2.swift in Sources */,
 				088CE6A41C4B605D00153414 /* ColorEnums.swift in Sources */,
+				08F189B61D2157CF00866A05 /* Project.swift in Sources */,
 				08A01FCA1CC7FCA3001EDFAA /* FMResultSet.m in Sources */,
 				08F189A61D09EE4000866A05 /* NSViewController+Rc2.swift in Sources */,
 				0827A4E21C7ED9CE001F0AFB /* CodeHighlighter.swift in Sources */,
@@ -1034,6 +1047,7 @@
 				08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */,
 				08CB55521C5C06B2002CB7EE /* OutputTabController.swift in Sources */,
 				0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */,
+				08F189BB1D21826D00866A05 /* JSONSerializable.swift in Sources */,
 				0827A4E31C7ED9CE001F0AFB /* LatexCodeHighlighter.swift in Sources */,
 				088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */,
 				0816F89A1C6D0F7D00A6120B /* HTMLString.swift in Sources */,
@@ -1070,6 +1084,7 @@
 				088CE6A91C4B605D00153414 /* User.swift in Sources */,
 				083174101C57B2E200071408 /* CommandHistory.swift in Sources */,
 				089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */,
+				08F189B91D216E5400866A05 /* Bookmark.swift in Sources */,
 				088CE6AD1C4B605D00153414 /* ServerResponse.swift in Sources */,
 				083174121C58014500071408 /* ServerResponseHandler.swift in Sources */,
 				08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */,
@@ -1092,6 +1107,7 @@
 				08A01FD81CC965F8001EDFAA /* HelpControllerTests.swift in Sources */,
 				08FDB1991C591409006FCD1A /* ImageCacheTests.swift in Sources */,
 				08159D1E1C77656C004A205A /* NSProgressTests.m in Sources */,
+				08F189BD1D2184EB00866A05 /* BookmarkTest.swift in Sources */,
 				083382F81C68EBC200D40EEB /* FileCacheTests.swift in Sources */,
 				083305FD1C519B8500E27F66 /* RestServerTest.swift in Sources */,
 				080214861C692CA1008B55D3 /* xattrTests.swift in Sources */,
