@@ -13,7 +13,7 @@ class ImageCacheTests: BaseTest {
 
 	func testExistingImageForId() {
 		let cache = ImageCache(restServer:RestServer(), fileManager:mockFM, hostIdentifier: NSUUID().UUIDString)
-		cache.workspace = sessionData.workspaces.first
+		cache.workspace = sessionData.projects.first!.workspaces.first
 		let srcImage : NSURL = NSBundle(forClass: ImageCacheTests.self).URLForResource("graph", withExtension: "png")!
 		let destUrl = NSURL(string: "1.png", relativeToURL: cache.cacheUrl)!
 		if destUrl.checkPromisedItemIsReachableAndReturnError(nil) {

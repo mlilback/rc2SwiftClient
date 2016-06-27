@@ -75,7 +75,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		{ (success, results, error) in
 			if success {
 				NSApp.stopModal()
-				let wspace = restServer.loginSession!.workspaceWithName(controller.selectedWorkspace!)!
+				let wspace = restServer.loginSession!.projects[0].workspaceWithName(controller.selectedWorkspace!)!
 				restServer.createSession(wspace, appStatus: self)
 				self.loginController!.loginAttemptComplete(nil)
 				self.showSessionWindow(restServer)

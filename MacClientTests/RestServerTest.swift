@@ -92,7 +92,7 @@ class RestServerTest: XCTestCase {
 		let session = server!.createSession(wspace, appStatus: DummyAppStatus())
 		XCTAssertEqual(session.workspace, wspace)
 	}
-	
+	/*
 	func testCreateWorkspace() {
 		doLogin()
 		let path : String = NSBundle(forClass: RestServerTest.self).pathForResource("createWorkspace", ofType: "json")!
@@ -118,7 +118,7 @@ class RestServerTest: XCTestCase {
 			wspaceEx.fulfill()
 		})
 		self.waitForExpectationsWithTimeout(2){ (error) in }
-	}
+	} */
 }
 
 class DummyAppStatus: NSObject, AppStatus {

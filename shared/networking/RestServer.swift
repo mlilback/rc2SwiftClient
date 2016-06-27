@@ -148,8 +148,8 @@ import SwiftyJSON
 				case 200:
 					self.loginSession = LoginSession(json: json, host: self.selectedHost.name)
 					//store list of workspace names for this session
-					let wspaceListKey = "ws//\(self.selectedHost.name)//\(login)"
-					NSUserDefaults.standardUserDefaults().setObject(self.loginSession!.workspaces.map() { $0.name }, forKey: wspaceListKey)
+//					let wspaceListKey = "ws//\(self.selectedHost.name)//\(login)"
+//					NSUserDefaults.standardUserDefaults().setObject(self.loginSession!.workspaces.map() { $0.name }, forKey: wspaceListKey)
 					//for anyone that copies our session config later, include the auth token
 					self.urlConfig.HTTPAdditionalHeaders!["Rc2-Auth"] = self.loginSession!.authToken
 					dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: self.loginSession!, error: nil) })
@@ -165,7 +165,7 @@ import SwiftyJSON
 			}
 		}
 	}
-	
+	/*
 	public func createWorkspace(wspaceName:String, handler:Rc2RestCompletionHandler) {
 		let req = request("workspaces", method:"POST", jsonDict: ["name":wspaceName])
 		let task = urlSession.dataTaskWithRequest(req) { (data, response, error) -> Void in
@@ -227,7 +227,7 @@ import SwiftyJSON
 			}
 		}
 		task.resume()
-	}
+	} */
 	
 	/// - parameter destination: the directory to save the image in, overwriting any existing file
 	public func downloadImage(wspace:Workspace, imageId:Int, destination:NSURL, handler:Rc2RestCompletionHandler) {

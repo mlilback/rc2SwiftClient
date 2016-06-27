@@ -51,6 +51,7 @@ private var fileKvoKey:UInt8 = 0
 
 public class Workspace: NSObject {
 	let wspaceId : Int32
+	let projectId : Int32
 	let userId : Int32
 	let name : String
 	let version : Int32
@@ -81,6 +82,7 @@ public class Workspace: NSObject {
 	init(json:JSON) {
 		wspaceId = json["id"].int32Value
 		userId = json["userId"].int32Value
+		projectId = json["projectId"].int32Value
 		version = json["version"].int32Value
 		name = json["name"].stringValue
 		filesArray.addObjectsFromArray(File.filesFromJsonArray(json["files"]))

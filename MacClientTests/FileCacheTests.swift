@@ -29,7 +29,7 @@ class FileCacheTests: BaseTest {
 	
 	override func setUp() {
 		super.setUp()
-		wspace = sessionData.workspaces.first!
+		wspace = sessionData.projects.first!.workspaces.first!
 		cache = FileCache(workspace: wspace, baseUrl: baseUrl, config: NSURLSessionConfiguration.defaultSessionConfiguration())
 		file = (wspace.files.first)!
 		filePath = NSBundle(forClass: self.dynamicType).pathForResource("lognormal", ofType: "R")!
