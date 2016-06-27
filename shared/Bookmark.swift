@@ -2,8 +2,7 @@
 //  Bookmark.swift
 //  SwiftClient
 //
-//  Created by Mark Lilback on 6/27/16.
-//  Copyright © 2016 Rc2. All rights reserved.
+//  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
 import Foundation
@@ -18,6 +17,14 @@ public struct Bookmark: JSONSerializable, CustomStringConvertible, Equatable {
 	let projectName:String
 	let workspaceName:String?
 	let isSecure:Bool
+	
+	static func bookmarksFromJsonArray(jsonArray:[JSON]) -> [Bookmark] {
+		var bmarks = [Bookmark]()
+		for aJsonObj in jsonArray {
+			bmarks.append(Bookmark(json: aJsonObj)!)
+		}
+		return bmarks
+	}
 	
 	init(name:String, host:String, port:Int, user:String, project:String, workspace:String?, secure:Bool = false) {
 		self.name = name

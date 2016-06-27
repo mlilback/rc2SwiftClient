@@ -2,8 +2,7 @@
 //  ShellCommands.swift
 //  SwiftClient
 //
-//  Created by Mark Lilback on 6/22/16.
-//  Copyright © 2016 Rc2. All rights reserved.
+//  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
 import Cocoa

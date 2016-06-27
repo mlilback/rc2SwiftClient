@@ -1,9 +1,8 @@
 //
 //  Rc2FileTypeTest.swift
-//  Rc2Client
+//  SwiftClient
 //
-//  Created by Mark Lilback on 12/18/15.
-//  Copyright © 2015 West Virginia University. All rights reserved.
+//  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
 import XCTest

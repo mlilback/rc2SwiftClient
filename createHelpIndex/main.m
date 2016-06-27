@@ -2,8 +2,7 @@
 //  main.m
 //  createHelpIndex
 //
-//  Created by Mark Lilback on 4/20/16.
-//  Copyright © 2016 Rc2. All rights reserved.
+//  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
 #import <Foundation/Foundation.h>

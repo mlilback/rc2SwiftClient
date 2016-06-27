@@ -1,9 +1,8 @@
 //
 //  Rc2SessionTests.swift
-//  Rc2Client
+//  SwiftClient
 //
-//  Created by Mark Lilback on 1/9/16.
-//  Copyright © 2016 West Virginia University. All rights reserved.
+//  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
 import XCTest

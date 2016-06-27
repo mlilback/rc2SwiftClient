@@ -2,8 +2,7 @@
 //  HelpControllerTests.swift
 //  SwiftClient
 //
-//  Created by Mark Lilback on 4/21/16.
-//  Copyright © 2016 Rc2. All rights reserved.
+//  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
 import XCTest
