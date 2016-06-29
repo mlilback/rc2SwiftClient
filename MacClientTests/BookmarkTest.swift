@@ -13,7 +13,8 @@ import SwiftyJSON
 class BookmarkTest: XCTestCase {
 	
 	func testBookmarkSerialization() {
-		let original = Bookmark(name: "test", host: "rc2.io", port: 8080, user: "tuser", project: "proj", workspace: "wspace", secure:true)
+		let server = ServerHost(name: "festus", host:"festus.rc2.io", port: 8088, user: "test", secure: false)
+		let original = Bookmark(name: "test", server: server, project: "proj", workspace: "wspace")
 		let odict = try! original.serialize()
 		let ostr = odict.rawString()
 		XCTAssertNotNil(ostr)

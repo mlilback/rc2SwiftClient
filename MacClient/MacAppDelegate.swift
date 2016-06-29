@@ -15,6 +15,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	var loginWindowController: NSWindowController?
 	var loginController: LoginViewController?
 	var sessionWindowControllers: [MainWindowController] = []
+	var bookmarkWindowController: NSWindowController?
 
 	private dynamic var _currentProgress: NSProgress?
 	private let _statusQueue = dispatch_queue_create("io.rc2.statusQueue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))
@@ -33,7 +34,9 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		let sboard = NSStoryboard(name: "Main", bundle: nil)
 		loginWindowController = sboard.instantiateControllerWithIdentifier("loginWindow") as? NSWindowController
 		loginController = loginWindowController?.window?.contentViewController as? LoginViewController
-		showLoginWindow(RestServer())
+		bookmarkWindowController = sboard.instantiateControllerWithIdentifier("bookmarkWindow") as? NSWindowController
+		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
+//		showLoginWindow(RestServer())
 	}
 
 	func applicationWillTerminate(aNotification: NSNotification) {
@@ -46,7 +49,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func applicationOpenUntitledFile(sender: NSApplication) -> Bool {
-		showLoginWindow(RestServer())
+		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
+//		showLoginWindow(RestServer())
 		return true
 	}
 	

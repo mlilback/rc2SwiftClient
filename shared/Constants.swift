@@ -31,6 +31,8 @@ struct PrefKeys {
 	static let MaxCommandHistorySize = "MaxCommandHistorySize"
 	static let WordWrapEnabled = "WordWrapEnabled"
 	static let OutputColors = "OutputColors"
+	
+	static let Bookmarks = "Bookmarks"
 }
 
 let ConsoleAttachmentImageSize = CGSize(width: 48, height: 48)

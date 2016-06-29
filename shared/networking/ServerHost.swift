@@ -9,43 +9,48 @@ import Foundation
 import SwiftyJSON
 
 ///Represents a remote host
-public struct ServerHost: CustomStringConvertible, Hashable {
-	///load array of josts from a json file with a dictionary with an array stored under the key of "hosts"
-	public static func loadHosts(fromUrl:NSURL) -> [ServerHost] {
-		let jsonData = NSData(contentsOfURL: fromUrl)
-		let json = JSON(data:jsonData!)
-		let theHosts = json["hosts"].arrayValue
-		assert(theHosts.count > 0, "invalid hosts data")
-		return theHosts.map() { ServerHost(dict: $0) }
-	}
+public struct ServerHost: JSONSerializable, CustomStringConvertible, Hashable {
 	
 	///user-friendly name for the host
 	let name:String
 	let host:String
+	let user:String
 	let port:Int
 	let secure:Bool
 	
-	init(name:String, host:String, port:Int, secure:Bool) {
+	init(name:String, host:String, port:Int=8088, user:String="test", secure:Bool=false) {
 		self.name = name
 		self.host = host
+		self.user = user
 		self.port = port
 		self.secure = secure
 	}
 	
-	init(dict:JSON) {
+	public init?(json dict:JSON) {
 		self.name = dict["name"].stringValue
 		self.host = dict["host"].stringValue
+		self.user = dict["user"].stringValue
 		self.port = dict["port"].intValue
 		self.secure = dict["secure"].boolValue
 	}
-	
+
+	public func serialize() throws -> JSON {
+		var dict = [String:AnyObject]()
+		dict["name"] = name
+		dict["host"] = host
+		dict["port"] = port
+		dict["user"] = user
+		dict["secure"] = secure
+		return JSON(dict)
+	}
+
 	public var description: String {
-		return "ServerHost \(name) (\(host):\(port) \(secure ? "secure" : ""))"
+		return "ServerHost \(name) \(user ?? "")@(\(host):\(port) \(secure ? "secure" : ""))"
 	}
 	
 	public var hashValue: Int { return name.hashValue ^ host.hashValue ^ port.hashValue ^ secure.hashValue }
 }
 
 public func ==(left:ServerHost, right:ServerHost) -> Bool {
-	return left.name == right.name && left.host == right.host && left.port == right.port && left.secure == right.secure
+	return left.name == right.name && left.host == right.host && left.port == right.port && left.secure == right.secure && left.user == right.user
 }

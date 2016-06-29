@@ -55,7 +55,8 @@ import SwiftyJSON
 		//load hosts info from resource file
 		let hostFileUrl = NSBundle.mainBundle().URLForResource("RestHosts", withExtension: "json")
 		assert(hostFileUrl != nil, "failed to get RestHosts.json URL")
-		hosts = ServerHost.loadHosts(hostFileUrl!)
+//		hosts = ServerHost.loadHosts(hostFileUrl!)
+		hosts = [ServerHost(name:"default", host:"fester.rc2.io", port: 8088, user: "test", secure: false)]
 		selectedHost = hosts.first!
 		super.init()
 		urlConfig = NSURLSessionConfiguration.defaultSessionConfiguration()

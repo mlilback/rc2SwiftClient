@@ -11,12 +11,10 @@ import SwiftyJSON
 /// represents a bookmark to an rc2 server
 public struct Bookmark: JSONSerializable, CustomStringConvertible, Equatable {
 	let name:String
-	let host:String
-	let port:Int
-	let user:String
+	let server:ServerHost?
 	let projectName:String
 	let workspaceName:String?
-	let isSecure:Bool
+	var lastUsed:NSTimeInterval
 	
 	static func bookmarksFromJsonArray(jsonArray:[JSON]) -> [Bookmark] {
 		var bmarks = [Bookmark]()
@@ -26,34 +24,35 @@ public struct Bookmark: JSONSerializable, CustomStringConvertible, Equatable {
 		return bmarks
 	}
 	
-	init(name:String, host:String, port:Int, user:String, project:String, workspace:String?, secure:Bool = false) {
+	init(name:String, server:ServerHost?, project:String, workspace:String?) {
 		self.name = name
-		self.host = host
-		self.port = port
-		self.user = user
+		self.server = server
 		self.projectName = project
 		self.workspaceName = workspace
-		self.isSecure = secure
+		lastUsed = 0
 	}
 	
-	init?(json:JSON) {
-		do {
-			let dict = try JSONDserializer.deserialize(json)
-			self.name = dict["name"] as! String
-			self.host = dict["host"] as! String
-			self.port = dict["port"] as! Int
-			self.user = dict["user"] as! String
-			self.projectName = dict["projectName"] as! String
-			self.workspaceName = dict["workspaceName"] as? String
-			self.isSecure = dict["isSecure"] as! Bool
-		} catch _ {
-			return nil
-		}
+	public init?(json:JSON) {
+		name = json["name"].stringValue
+		projectName = json["project"].stringValue
+		workspaceName = json["workspace"].stringValue
+		lastUsed = json["lastUsed"].doubleValue
+		server = ServerHost(json: json["server"])
+	}
+	
+	public func serialize() throws -> JSON {
+		var dict = [String:JSON]()
+		dict["name"] = JSON(name)
+		dict["project"] = JSON(projectName)
+		dict["workspace"] = JSON(workspaceName == nil ? NSNull() : workspaceName!)
+		dict["lastUsed"] = JSON(lastUsed)
+		dict["server"] = try server?.serialize()
+		return JSON(dict)
 	}
 	
 	public var description:String { return "<Bookmark: \(name)" }
 }
 
 public func ==(lhs:Bookmark, rhs:Bookmark) -> Bool {
-	return lhs.name == rhs.name && lhs.host == rhs.host && lhs.port == rhs.port && lhs.projectName == rhs.projectName && lhs.workspaceName == rhs.workspaceName
+	return lhs.name == rhs.name && lhs.server == rhs.server && lhs.projectName == rhs.projectName && lhs.workspaceName == rhs.workspaceName && lhs.lastUsed == rhs.lastUsed
 }
