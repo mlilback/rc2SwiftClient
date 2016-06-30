@@ -97,6 +97,7 @@
 		083A56711D24722C009D3091 /* ProjectManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56701D24722C009D3091 /* ProjectManagerViewController.swift */; };
 		083A56731D247B52009D3091 /* AddBookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56721D247B52009D3091 /* AddBookmarkViewController.swift */; };
 		083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */; };
+		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
 		0845CB1E1C616E060090267C /* CommonMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* CommonMocks.swift */; };
 		086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */; };
 		0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086659991CA1F3E5007AC555 /* MainWindow.xib */; };
@@ -353,6 +354,7 @@
 		083A56701D24722C009D3091 /* ProjectManagerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectManagerViewController.swift; sourceTree = "<group>"; };
 		083A56721D247B52009D3091 /* AddBookmarkViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddBookmarkViewController.swift; sourceTree = "<group>"; };
 		083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbeddedDialogController.swift; sourceTree = "<group>"; };
+		083A567C1D25AFE7009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/BookmarkManager.storyboard; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* CommonMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonMocks.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemExtensionsTests.swift; sourceTree = "<group>"; };
@@ -615,6 +617,7 @@
 				088CE6701C4B0AF400153414 /* Assets.xcassets */,
 				083305D81C501B7300E27F66 /* MainWindowController.swift */,
 				088CE6721C4B0AF400153414 /* Main.storyboard */,
+				083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */,
 				083A56701D24722C009D3091 /* ProjectManagerViewController.swift */,
 				083A566D1D246D85009D3091 /* ProjectManagement.storyboard */,
 				08F189BE1D21938F00866A05 /* BookmarkViewController.swift */,
@@ -970,6 +973,7 @@
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
 				08F189A81D0A0E7200866A05 /* static_html in Resources */,
 				088CE6A71C4B605D00153414 /* FileTypes.plist in Resources */,
+				083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */,
 				083A566F1D246D85009D3091 /* ProjectManagement.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1191,6 +1195,14 @@
 				083A566E1D246D85009D3091 /* Base */,
 			);
 			name = ProjectManagement.storyboard;
+			sourceTree = "<group>";
+		};
+		083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				083A567C1D25AFE7009D3091 /* Base */,
+			);
+			name = BookmarkManager.storyboard;
 			sourceTree = "<group>";
 		};
 		086659991CA1F3E5007AC555 /* MainWindow.xib */ = {

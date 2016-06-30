@@ -12,9 +12,7 @@ let log = XCGLogger.defaultInstance()
 
 @NSApplicationMain
 class MacAppDelegate: NSObject, NSApplicationDelegate {
-	var loginWindowController: NSWindowController?
-	var loginController: LoginViewController?
-	var sessionWindowControllers: [MainWindowController] = []
+	var sessionWindowControllers = Set<MainWindowController>()
 	var bookmarkWindowController: NSWindowController?
 
 	private dynamic var _currentProgress: NSProgress?
@@ -24,24 +22,17 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
 		let cdUrl = NSBundle.mainBundle().URLForResource("CommonDefaults", withExtension: "plist")
 		NSUserDefaults.standardUserDefaults().registerDefaults(NSDictionary(contentsOfURL: cdUrl!)! as! [String : AnyObject])
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MacAppDelegate.windowWillClose), name: NSWindowWillCloseNotification, object: nil)
 	}
 
 	func applicationDidFinishLaunching(aNotification: NSNotification) {
-		//skip login when running unit tests
-		guard NSProcessInfo.processInfo().environment["XCTestConfigurationFilePath"] == nil else {
-			return
-		}
-		let sboard = NSStoryboard(name: "Main", bundle: nil)
-		loginWindowController = sboard.instantiateControllerWithIdentifier("loginWindow") as? NSWindowController
-		loginController = loginWindowController?.window?.contentViewController as? LoginViewController
-		bookmarkWindowController = sboard.instantiateControllerWithIdentifier("bookmarkWindow") as? NSWindowController
-		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
-//		showLoginWindow(RestServer())
+		//skip showing bookmarks when running unit tests
+		guard NSProcessInfo.processInfo().environment["XCTestConfigurationFilePath"] == nil else { return }
+		showBookmarkWindow(nil)
 	}
 
 	func applicationWillTerminate(aNotification: NSNotification) {
-		// Insert code here to tear down your application
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowWillCloseNotification, object: nil)
 	}
 
 	func applicationShouldOpenUntitledFile(sender: NSApplication) -> Bool {
@@ -50,49 +41,41 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	
 	func applicationOpenUntitledFile(sender: NSApplication) -> Bool {
 		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
-//		showLoginWindow(RestServer())
 		return true
 	}
 	
 	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
 		switch(menuItem.action) {
-			case #selector(MacAppDelegate.newDocument(_:)):
-				return NSApp.modalWindow == nil
+			case #selector(MacAppDelegate.showBookmarkWindow(_:)):
+				return NSApp.mainWindow != bookmarkWindowController?.window
 			default:
 				return false
 		}
 	}
 	
 	@IBAction func newDocument(sender:AnyObject) {
-//		showLoginWindow(RestServer())
 	}
 	
-	func attemptLogin(controller: LoginViewController, userCanceled:Bool) {
-//		guard !userCanceled else {
-			NSApp.stopModal()
-			loginWindowController?.window?.orderOut(self)
-//			return
-//		}
-//		let restServer = RestServer()
-//		restServer.selectHost(controller.selectedHost!)
-//		restServer.login(controller.loginName, password: controller.password)
-//		{ (success, results, error) in
-//			if success {
-//				NSApp.stopModal()
-//				let wspace = restServer.loginSession!.projects[0].workspaceWithName(controller.selectedWorkspace!)!
-//				restServer.createSession(wspace, appStatus: self)
-//				self.loginController!.loginAttemptComplete(nil)
-//				self.showSessionWindow(restServer)
-//			} else {
-//				self.loginController!.loginAttemptComplete(error!.localizedDescription)
-//			}
-//		}
+	@IBAction func showBookmarkWindow(sender:AnyObject?) {
+		if nil == bookmarkWindowController {
+			let container = Container()
+			container.registerForStoryboard(BookmarkViewController.self) { r, c in
+//				c.appStatus = self as AppStatus
+			}
+			container.registerForStoryboard(SelectServerViewController.self) { r, c in
+//				c.appStatus = self as AppStatus
+			}
+
+			let sboard = SwinjectStoryboard.create(name: "BookmarkManager", bundle: nil, container: container)
+			bookmarkWindowController = sboard.instantiateControllerWithIdentifier("bookmarkWindow") as? NSWindowController
+		}
+		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
 	}
 	
 	func showSessionWindow(restServer:RestServer) {
 		updateStatus(nil)
 		let wc = MainWindowController.createFromNib()
-		sessionWindowControllers.append(wc)
+		sessionWindowControllers.insert(wc)
 		
 		let container = Container()
 		container.registerForStoryboard(RootViewController.self) { r, c in
@@ -112,19 +95,16 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		wc.contentViewController = root
 		wc.appStatus = self
 		wc.setupChildren(restServer)
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MacAppDelegate.sessionWindowWillClose), name: NSWindowWillCloseNotification, object: wc.window!)
 	}
 	
-	func sessionWindowWillClose() {
-//		performSelector(#selector(MacAppDelegate.showLoginWindow), withObject: RestServer(), afterDelay: 0.2)
-	}
-	
-	func showLoginWindow(restServer:RestServer) {
-		//will be nil when running unit tests
-		guard loginController != nil else { return }
-//		loginController!.hosts = restServer.restHosts
-		loginController!.completionHandler = attemptLogin
-		NSApp!.runModalForWindow((loginWindowController?.window)!)
+	func windowWillClose(note:NSNotification) {
+		//if no windows will be visible, acitvate/show bookmark window
+		if let sessionWC = (note.object as! NSWindow).windowController as? MainWindowController {
+			sessionWindowControllers.remove(sessionWC)
+			if sessionWindowControllers.count < 1 {
+				performSelector(#selector(MacAppDelegate.showBookmarkWindow), withObject: nil, afterDelay: 0.2)
+			}
+		}
 	}
 	
 	func windowControllerForSession(session:Session) -> MainWindowController? {
