@@ -16,14 +16,6 @@ public struct Bookmark: JSONSerializable, CustomStringConvertible, Equatable {
 	let workspaceName:String?
 	var lastUsed:NSTimeInterval
 	
-	static func bookmarksFromJsonArray(jsonArray:[JSON]) -> [Bookmark] {
-		var bmarks = [Bookmark]()
-		for aJsonObj in jsonArray {
-			bmarks.append(Bookmark(json: aJsonObj)!)
-		}
-		return bmarks
-	}
-	
 	init(name:String, server:ServerHost?, project:String, workspace:String?) {
 		self.name = name
 		self.server = server

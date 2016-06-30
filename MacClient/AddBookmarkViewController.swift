@@ -12,6 +12,7 @@ class AddBookmarkViewController: NSViewController {
 	var tabViewController:NSTabViewController?
 	var selectServerController: SelectServerViewController?
 	var projectManagerController: ProjectManagerViewController?
+	var bookmarkManager:BookmarkManager?
 	
 	dynamic var isBusy:Bool = false
 	dynamic var canContinue:Bool = false

@@ -46,8 +46,6 @@
 		082FF1D01C7F321B00CCC27F /* SwiftWebSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C11C7F321B00CCC27F /* SwiftWebSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082FF1D11C7F321B00CCC27F /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */; };
 		082FF1D21C7F321B00CCC27F /* SwiftyJSON.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		082FF1D31C7F321B00CCC27F /* Swinject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C31C7F321B00CCC27F /* Swinject.framework */; };
-		082FF1D41C7F321B00CCC27F /* Swinject.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C31C7F321B00CCC27F /* Swinject.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082FF1D51C7F321B00CCC27F /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C41C7F321B00CCC27F /* XCGLogger.framework */; };
 		082FF1D61C7F321B00CCC27F /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C41C7F321B00CCC27F /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082FF1E21C7F323800CCC27F /* BrightFutures.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1D91C7F323800CCC27F /* BrightFutures.framework.dSYM */; };
@@ -98,6 +96,8 @@
 		083A56731D247B52009D3091 /* AddBookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56721D247B52009D3091 /* AddBookmarkViewController.swift */; };
 		083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */; };
 		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
+		083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
+		083A56B51D25CE0E009D3091 /* Swinject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 083A56B41D25CE0E009D3091 /* Swinject.framework */; };
 		0845CB1E1C616E060090267C /* CommonMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* CommonMocks.swift */; };
 		086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */; };
 		0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086659991CA1F3E5007AC555 /* MainWindow.xib */; };
@@ -230,7 +230,6 @@
 				082FF1D21C7F321B00CCC27F /* SwiftyJSON.framework in Embed Frameworks */,
 				08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */,
 				089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */,
-				082FF1D41C7F321B00CCC27F /* Swinject.framework in Embed Frameworks */,
 				082FF1C61C7F321B00CCC27F /* BrightFutures.framework in Embed Frameworks */,
 				082FF1C81C7F321B00CCC27F /* CryptoSwift.framework in Embed Frameworks */,
 				082FF1D61C7F321B00CCC27F /* XCGLogger.framework in Embed Frameworks */,
@@ -304,7 +303,6 @@
 		082FF1C01C7F321B00CCC27F /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/Mac/Result.framework; sourceTree = "<group>"; };
 		082FF1C11C7F321B00CCC27F /* SwiftWebSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftWebSocket.framework; path = Carthage/Build/Mac/SwiftWebSocket.framework; sourceTree = "<group>"; };
 		082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/Mac/SwiftyJSON.framework; sourceTree = "<group>"; };
-		082FF1C31C7F321B00CCC27F /* Swinject.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Swinject.framework; path = Carthage/Build/Mac/Swinject.framework; sourceTree = "<group>"; };
 		082FF1C41C7F321B00CCC27F /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCGLogger.framework; path = Carthage/Build/Mac/XCGLogger.framework; sourceTree = "<group>"; };
 		082FF1D91C7F323800CCC27F /* BrightFutures.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = BrightFutures.framework.dSYM; path = Carthage/Build/Mac/BrightFutures.framework.dSYM; sourceTree = "<group>"; };
 		082FF1DA1C7F323800CCC27F /* CryptoSwift.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = CryptoSwift.framework.dSYM; path = Carthage/Build/Mac/CryptoSwift.framework.dSYM; sourceTree = "<group>"; };
@@ -355,6 +353,8 @@
 		083A56721D247B52009D3091 /* AddBookmarkViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddBookmarkViewController.swift; sourceTree = "<group>"; };
 		083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbeddedDialogController.swift; sourceTree = "<group>"; };
 		083A567C1D25AFE7009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/BookmarkManager.storyboard; sourceTree = "<group>"; };
+		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarkManager.swift; sourceTree = "<group>"; };
+		083A56B41D25CE0E009D3091 /* Swinject.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Swinject.framework; path = Carthage/Build/Mac/Swinject.framework; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* CommonMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonMocks.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemExtensionsTests.swift; sourceTree = "<group>"; };
@@ -464,6 +464,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				08A01FD01CC81315001EDFAA /* libsqlite3.tbd in Frameworks */,
+				083A56B51D25CE0E009D3091 /* Swinject.framework in Frameworks */,
 				082FF1D11C7F321B00CCC27F /* SwiftyJSON.framework in Frameworks */,
 				089346031C7F661400100CF6 /* PEGKit.framework in Frameworks */,
 				08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */,
@@ -473,7 +474,6 @@
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
 				082FF1D51C7F321B00CCC27F /* XCGLogger.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
-				082FF1D31C7F321B00CCC27F /* Swinject.framework in Frameworks */,
 				082FF1C51C7F321B00CCC27F /* BrightFutures.framework in Frameworks */,
 				082FF1CF1C7F321B00CCC27F /* SwiftWebSocket.framework in Frameworks */,
 			);
@@ -693,6 +693,7 @@
 				082FF1DD1C7F323800CCC27F /* Result.framework.dSYM */,
 				082FF1DE1C7F323800CCC27F /* SwiftWebSocket.framework.dSYM */,
 				082FF1DF1C7F323800CCC27F /* SwiftyJSON.framework.dSYM */,
+				083A56B41D25CE0E009D3091 /* Swinject.framework */,
 				082FF1E01C7F323800CCC27F /* Swinject.framework.dSYM */,
 				082FF1E11C7F323800CCC27F /* XCGLogger.framework.dSYM */,
 				082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */,
@@ -701,7 +702,6 @@
 				082FF1C01C7F321B00CCC27F /* Result.framework */,
 				082FF1C11C7F321B00CCC27F /* SwiftWebSocket.framework */,
 				082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */,
-				082FF1C31C7F321B00CCC27F /* Swinject.framework */,
 				082FF1C41C7F321B00CCC27F /* XCGLogger.framework */,
 				088CE6B91C4C44BD00153414 /* Security.framework */,
 			);
@@ -721,6 +721,7 @@
 				0827A4D71C7ED9CE001F0AFB /* SyntaxHighlighting */,
 				086BC9AE1C552D43006ABAE0 /* AppStatus.swift */,
 				08F189B81D216E5400866A05 /* Bookmark.swift */,
+				083A567E1D25B818009D3091 /* BookmarkManager.swift */,
 				088CE6951C4B605D00153414 /* ColorEnums.swift */,
 				0814CB711CF894AC0008DE6B /* ConsoleAttachment.swift */,
 				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
@@ -1093,6 +1094,7 @@
 				08F189A21D09AA0300866A05 /* SessionController.swift in Sources */,
 				080214881C693A69008B55D3 /* FileManager.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
+				083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */,
 				08A01FC81CC7FCA3001EDFAA /* FMDatabaseQueue.m in Sources */,
 				0827A4E41C7ED9CE001F0AFB /* RCodeHighlighter.swift in Sources */,
 				0827A4E11C7ED9CE001F0AFB /* DocumentChunk.swift in Sources */,

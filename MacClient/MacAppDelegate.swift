@@ -14,6 +14,7 @@ let log = XCGLogger.defaultInstance()
 class MacAppDelegate: NSObject, NSApplicationDelegate {
 	var sessionWindowControllers = Set<MainWindowController>()
 	var bookmarkWindowController: NSWindowController?
+	let bookmarkManager = BookmarkManager()
 
 	private dynamic var _currentProgress: NSProgress?
 	private let _statusQueue = dispatch_queue_create("io.rc2.statusQueue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))
@@ -53,17 +54,17 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		}
 	}
 	
-	@IBAction func newDocument(sender:AnyObject) {
-	}
-	
 	@IBAction func showBookmarkWindow(sender:AnyObject?) {
 		if nil == bookmarkWindowController {
 			let container = Container()
 			container.registerForStoryboard(BookmarkViewController.self) { r, c in
-//				c.appStatus = self as AppStatus
+				c.bookmarkManager = self.bookmarkManager
+			}
+			container.registerForStoryboard(AddBookmarkViewController.self) { r, c in
+				c.bookmarkManager = self.bookmarkManager
 			}
 			container.registerForStoryboard(SelectServerViewController.self) { r, c in
-//				c.appStatus = self as AppStatus
+				c.bookmarkManager = self.bookmarkManager
 			}
 
 			let sboard = SwinjectStoryboard.create(name: "BookmarkManager", bundle: nil, container: container)

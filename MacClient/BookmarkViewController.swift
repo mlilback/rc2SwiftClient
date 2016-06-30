@@ -8,47 +8,43 @@
 import Cocoa
 import SwiftyJSON
 
-struct BookmarkGroup {
-	let key:String
-	var bookmarks:[Bookmark] = []
-	
-	init(key:String, firstBookmark:Bookmark? = nil) {
-		self.key = key
-		if firstBookmark != nil { bookmarks.append(firstBookmark!) }
-	}
-	
-	init(original:BookmarkGroup) {
-		self.key = original.key
-		self.bookmarks = original.bookmarks
-	}
-	
-	func addBookmark(bmark:Bookmark) -> BookmarkGroup {
-		return BookmarkGroup(original: self).addBookmark(bmark)
-	}
-}
-
 enum BookmarkEntry {
 	case Group(String)
 	case Mark(Bookmark)
 }
 
-//MARK: -
 public class BookmarkViewController: NSViewController {
 	@IBOutlet var tableView:NSTableView?
 	@IBOutlet var addRemoveButtons: NSSegmentedControl?
 	private let dateFormatter: NSDateFormatter = NSDateFormatter()
-	let localName = NSLocalizedString("Local Server", comment: "")
 	var addController: AddBookmarkViewController?
+	var bookmarkManager: BookmarkManager?
 	
 	var entries: [BookmarkEntry] = []
 	var existingHosts: [ServerHost] = []
 	
 	override public func viewDidLoad() {
 		super.viewDidLoad()
-		loadBookmarks()
-		tableView?.reloadData()
 		dateFormatter.dateStyle = .ShortStyle
 		dateFormatter.timeStyle = .ShortStyle
+	}
+	
+	override public func viewWillAppear() {
+		super.viewWillAppear()
+		loadBookmarkEntries()
+		tableView?.reloadData()
+	}
+	
+	func loadBookmarkEntries() {
+		//turn into entries
+		entries.removeAll()
+		for aGroup in bookmarkManager!.bookmarkGroups.values.sort({ (g1, g2) in g1.key < g2.key }) {
+			entries.append(BookmarkEntry.Group(aGroup.key))
+			for aMark in aGroup.bookmarks.sort({ (b1, b2) in b1.name < b2.name }) {
+				entries.append(BookmarkEntry.Mark(aMark))
+			}
+		}
+		existingHosts = bookmarkManager!.hosts
 	}
 	
 	@IBAction func addRemoveBookmark(sender:AnyObject?) {
@@ -69,48 +65,6 @@ public class BookmarkViewController: NSViewController {
 		dispatch_async(dispatch_get_main_queue()) {
 			self.presentViewControllerAsSheet(self.addController!)
 		}
-	}
-	
-	func loadBookmarks() {
-		var groups = [String:BookmarkGroup]()
-		let defaults = NSUserDefaults.standardUserDefaults()
-		var bmarks = [Bookmark]()
-		//load them, or create default ones
-		if let bmstr = defaults.stringForKey(PrefKeys.Bookmarks) {
-			bmarks = Bookmark.bookmarksFromJsonArray(JSON.parse(bmstr).arrayValue)
-		}
-		if bmarks.count < 1 {
-			bmarks = createDefaultBookmarks()
-		}
-		//group them
-		for aMark in bmarks {
-			if let grp = groups[aMark.server?.host ?? "local"] {
-				groups[grp.key] = grp.addBookmark(aMark)
-			} else {
-				groups["local"] = BookmarkGroup(key: aMark.server == nil ? localName : aMark.server!.name, firstBookmark: aMark)
-			}
-		}
-		//turn into entries
-		entries.removeAll()
-		for aGroup in groups.values.sort({ (g1, g2) in g1.key < g2.key }) {
-			entries.append(BookmarkEntry.Group(aGroup.key))
-			for aMark in aGroup.bookmarks.sort({ (b1, b2) in b1.name < b2.name }) {
-				entries.append(BookmarkEntry.Mark(aMark))
-			}
-		}
-		
-		//add hosts
-		var hostSet = Set<ServerHost>()
-		for aMark in bmarks {
-			if aMark.server != nil { hostSet.insert(aMark.server!) }
-		}
-		existingHosts.appendContentsOf(hostSet)
-		existingHosts.sortInPlace() { $0.name < $1.name }
-	}
-	
-	func createDefaultBookmarks() -> [Bookmark] {
-		let bmark = Bookmark(name:"starter", server: nil, project: "default", workspace: "default")
-		return [bmark]
 	}
 }
 

@@ -29,6 +29,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	@IBOutlet var tabView:NSTabView?
 	@IBOutlet var serverNameField: NSTextField?
 	
+	var bookmarkManager: BookmarkManager?
 	dynamic var canContinue:Bool = false
 	dynamic var valuesEditable:Bool = false
 	dynamic var busy:Bool = false

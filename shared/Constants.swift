@@ -33,6 +33,14 @@ struct PrefKeys {
 	static let OutputColors = "OutputColors"
 	
 	static let Bookmarks = "Bookmarks"
+	static let Hosts = "ServerHosts"
+}
+
+struct Constants {
+	static let DefaultProjectName = "default"
+	static let DefaultWorkspaceName = "default"
+	static let DefaultBookmarkName = "starter"
+	static let LocalBookmarkGroupName = NSLocalizedString("Local Server", comment: "")
 }
 
 let ConsoleAttachmentImageSize = CGSize(width: 48, height: 48)
