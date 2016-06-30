@@ -8,7 +8,7 @@
         <!--Project Manager-->
         <scene sceneID="Ibo-xy-aej">
             <objects>
-                <viewController title="Project Manager" storyboardIdentifier="projectManager" id="Cyu-TW-asS" customClass="ProjectManager" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Project Manager" storyboardIdentifier="projectManager" id="Cyu-TW-asS" customClass="ProjectManagerViewController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="px9-I5-7dQ">
                         <rect key="frame" x="0.0" y="0.0" width="397" height="275"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -59,6 +59,9 @@
                                                     </prototypeCellViews>
                                                 </tableColumn>
                                             </tableColumns>
+                                            <connections>
+                                                <outlet property="dataSource" destination="Cyu-TW-asS" id="Usg-1l-Ghs"/>
+                                            </connections>
                                         </outlineView>
                                     </subviews>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>

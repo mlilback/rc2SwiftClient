@@ -11,7 +11,7 @@ class AddBookmarkViewController: NSViewController {
 	@IBOutlet var containerView: NSView?
 	var tabViewController:NSTabViewController?
 	var selectServerController: SelectServerViewController?
-	var projectManagerController: ProjectManager?
+	var projectManagerController: ProjectManagerViewController?
 	
 	dynamic var isBusy:Bool = false
 	dynamic var canContinue:Bool = false
@@ -49,8 +49,10 @@ class AddBookmarkViewController: NSViewController {
 		log.error("got error: \(error)")
 	}
 	
-	func switchToProjectManager(host:ServerHost) {
+	func switchToProjectManager(serverInfo:SelectServerResponse) {
 		tabViewController?.selectedTabViewItemIndex = 1
+		projectManagerController!.host = serverInfo.server
+		projectManagerController!.loginSession = serverInfo.loginSession
 	}
 	
 	@IBAction func continueAction(sender:AnyObject?) {
@@ -61,7 +63,7 @@ class AddBookmarkViewController: NSViewController {
 					return
 				}
 				let serverResponse = value as! SelectServerResponse
-				self.switchToProjectManager(serverResponse.server)
+				self.switchToProjectManager(serverResponse)
 			}
 		}
 	}

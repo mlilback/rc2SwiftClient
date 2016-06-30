@@ -27,6 +27,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	@IBOutlet var serverDetailsView: NSStackView?
 	@IBOutlet var spinner:NSProgressIndicator?
 	@IBOutlet var tabView:NSTabView?
+	@IBOutlet var serverNameField: NSTextField?
 	
 	dynamic var canContinue:Bool = false
 	dynamic var valuesEditable:Bool = false
@@ -40,9 +41,10 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	dynamic var selectedServerIndex:Int = 0 { didSet {
 		serverDetailsView?.animator().hidden = selectedServerIndex == 0
 		adjustCanContinue()
-		valuesEditable = selectedServerIndex == (((serverMenu?.menu?.itemArray.count)! - 1) ?? 0)
-		}
-	}
+		let serverCount = (serverMenu?.menu?.itemArray.count)!
+		valuesEditable = selectedServerIndex == ((serverCount - 1) ?? 0)
+		if selectedServerIndex == serverCount - 1 { view.window?.makeFirstResponder(serverNameField) }
+	} }
 	
 	var existingHosts:[ServerHost]?
 	
