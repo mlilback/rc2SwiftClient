@@ -16,3 +16,9 @@ extension NSViewController {
 		return false
 	}
 }
+
+extension NSTabViewController {
+	var currentTabItemViewController: NSViewController {
+		return tabViewItems[selectedTabViewItemIndex].viewController!
+	}
+}

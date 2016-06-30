@@ -117,7 +117,7 @@ extension SessionController {
 		let appSupportUrl = try fileManager.URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
 		let dataDirUrl = NSURL(string: "Rc2/sessions/", relativeToURL: appSupportUrl)?.absoluteURL
 		try fileManager.createDirectoryAtURL(dataDirUrl!, withIntermediateDirectories: true, attributes: nil)
-		let fname = "\(session.restServer!.selectedHost.name)--\(session.workspace.userId)--\(session.workspace.wspaceId).plist"
+		let fname = "\(session.restServer!.host.name)--\(session.workspace.userId)--\(session.workspace.wspaceId).plist"
 		let furl = NSURL(string:fname, relativeToURL: dataDirUrl)?.absoluteURL
 		return furl!
 	}

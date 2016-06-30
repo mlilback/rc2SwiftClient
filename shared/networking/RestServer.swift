@@ -21,20 +21,21 @@ import SwiftyJSON
 	
 	private(set) var urlConfig : NSURLSessionConfiguration!
 	private var urlSession : NSURLSession!
-	private(set) public var hosts : [ServerHost]
-	private(set) public var selectedHost : ServerHost
+//	private(set) public var hosts : [ServerHost]
+	//private(set) public var selectedHost : ServerHost
+	let host:ServerHost
 	private(set) public var loginSession : LoginSession?
 	private(set) var baseUrl : NSURL?
 	private var userAgent: String
 	weak var appStatus:AppStatus?
 	private(set) var session:Session?
 
-	var restHosts : [String] {
-		get {
-			let hmap = hosts.map({ $0.name })
-			return hmap
-		}
-	}
+//	var restHosts : [String] {
+//		get {
+//			let hmap = hosts.map({ $0.name })
+//			return hmap
+//		}
+//	}
 	var connectionDescription : String {
 		get {
 			let login = loginSession?.currentUser.login
@@ -46,25 +47,25 @@ import SwiftyJSON
 		}
 	}
 	
-	override init() {
+	init(host:ServerHost) {
 		userAgent = "Rc2 iOSClient"
 		#if os(OSX)
 			userAgent = "Rc2 MacClient"
 		#endif
-		
+		self.host = host
 		//load hosts info from resource file
-		let hostFileUrl = NSBundle.mainBundle().URLForResource("RestHosts", withExtension: "json")
-		assert(hostFileUrl != nil, "failed to get RestHosts.json URL")
+//		let hostFileUrl = NSBundle.mainBundle().URLForResource("RestHosts", withExtension: "json")
+//		assert(hostFileUrl != nil, "failed to get RestHosts.json URL")
 //		hosts = ServerHost.loadHosts(hostFileUrl!)
-		hosts = [ServerHost(name:"default", host:"fester.rc2.io", port: 8088, user: "test", secure: false)]
-		selectedHost = hosts.first!
+//		hosts = [ServerHost(name:"default", host:"fester.rc2.io", port: 8088, user: "test", secure: false)]
+//		selectedHost = hosts.first!
 		super.init()
 		urlConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
 		urlConfig.HTTPAdditionalHeaders = ["User-Agent": userAgent, "Accept": "application/json"]
 		urlSession = NSURLSession(configuration: urlConfig, delegate: self, delegateQueue:NSOperationQueue.mainQueue())
-		if let previousHostName = NSUserDefaults.standardUserDefaults().stringForKey(self.kServerHostKey) {
-			selectHost(previousHostName)
-		}
+//		if let previousHostName = NSUserDefaults.standardUserDefaults().stringForKey(self.kServerHostKey) {
+//			selectHost(previousHostName)
+//		}
 	}
 
 	///give a hostname from hosts property, the list of last known workspace names
@@ -104,21 +105,21 @@ import SwiftyJSON
 		return request
 	}
 	
-	func selectHost(hostName:String) {
-		if let host = hosts.filter({ return $0.name == hostName }).first {
-			selectedHost = host
-			let hprotocol = host.secure ? "https" : "http"
-			let hoststr = "\(hprotocol)://\(host.host):\(host.port)/"
-			baseUrl = NSURL(string: hoststr)!
-		}
-	}
+//	func selectHost(hostName:String) {
+//		if let host = hosts.filter({ return $0.name == hostName }).first {
+//			selectedHost = host
+//			let hprotocol = host.secure ? "https" : "http"
+//			let hoststr = "\(hprotocol)://\(host.host):\(host.port)/"
+//			baseUrl = NSURL(string: hoststr)!
+//		}
+//	}
 	
 	func createSession(wspace:Workspace, appStatus:AppStatus) -> Session {
 		let request = NSMutableURLRequest(URL: createWebsocketUrl(wspace.wspaceId))
 		request.addValue(loginSession!.authToken, forHTTPHeaderField: "Rc2-Auth")
 		request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
 		let ws = WebSocket()
-		session = Session(wspace, source:ws, restServer:self, appStatus:appStatus, networkConfig:urlConfig, hostIdentifier: selectedHost.host)
+		session = Session(wspace, source:ws, restServer:self, appStatus:appStatus, networkConfig:urlConfig, hostIdentifier: host.host)
 		session!.open(request)
 		return session!
 	}
@@ -130,41 +131,46 @@ import SwiftyJSON
 		#else
 			let client = "ios"
 		#endif
-		let prot = selectedHost.secure ? "wss" : "ws"
-		let urlStr = "\(prot)://\(selectedHost.host):\(selectedHost.port)/ws/\(wspaceId)?client=\(client)&build=\(build)"
+		let prot = host.secure ? "wss" : "ws"
+		let urlStr = "\(prot)://\(host.host):\(host.port)/ws/\(wspaceId)?client=\(client)&build=\(build)"
 		return NSURL(string: urlStr)!
 	}
 	
-	public func login(login:String, password:String, handler:Rc2RestCompletionHandler) {
+	public func login(password:String) -> Future<LoginSession,NSError> {
+		let hprotocol = host.secure ? "https" : "http"
+		let hoststr = "\(hprotocol)://\(host.host):\(host.port)/"
+		baseUrl = NSURL(string: hoststr)!
 		assert(baseUrl != nil, "baseUrl not specified")
+		let promise = Promise<LoginSession,NSError>()
 		let loginObj = LoginHandler(config: urlConfig, baseUrl: baseUrl!)
-		loginObj.login(login, password:password) { (data, response, error) -> Void in
+		loginObj.login(host.user, password:password) { (data, response, error) -> Void in
 			guard error == nil else {
 				let appError = self.createError(404, description: (error?.localizedDescription)!)
-				dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: appError) })
+				promise.failure(appError)
 				return
 			}
 			let json = JSON(data:data!)
 			switch(response!.statusCode) {
 				case 200:
-					self.loginSession = LoginSession(json: json, host: self.selectedHost.name)
+					self.loginSession = LoginSession(json: json, host: self.host.host)
 					//store list of workspace names for this session
 //					let wspaceListKey = "ws//\(self.selectedHost.name)//\(login)"
 //					NSUserDefaults.standardUserDefaults().setObject(self.loginSession!.workspaces.map() { $0.name }, forKey: wspaceListKey)
 					//for anyone that copies our session config later, include the auth token
 					self.urlConfig.HTTPAdditionalHeaders!["Rc2-Auth"] = self.loginSession!.authToken
-					dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: self.loginSession!, error: nil) })
+					promise.success(self.loginSession!)
 					NSUserDefaults.standardUserDefaults().setObject(self.loginSession!.host, forKey: self.kServerHostKey)
 				case 401:
 					let error = self.createError(401, description: "Invalid login or password")
 					log.verbose("got a \(response!.statusCode)")
-					dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
+					promise.failure(error)
 				default:
 					let error = self.createError(response!.statusCode, description: "")
 					log.warning("got unknown status code: \(response!.statusCode)")
-					dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
+					promise.failure(error)
 			}
 		}
+		return promise.future
 	}
 	/*
 	public func createWorkspace(wspaceName:String, handler:Rc2RestCompletionHandler) {

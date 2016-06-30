@@ -11,7 +11,7 @@ import SwiftyJSON
 struct BookmarkGroup {
 	let key:String
 	var bookmarks:[Bookmark] = []
-
+	
 	init(key:String, firstBookmark:Bookmark? = nil) {
 		self.key = key
 		if firstBookmark != nil { bookmarks.append(firstBookmark!) }
@@ -38,8 +38,10 @@ public class BookmarkViewController: NSViewController {
 	@IBOutlet var addRemoveButtons: NSSegmentedControl?
 	private let dateFormatter: NSDateFormatter = NSDateFormatter()
 	let localName = NSLocalizedString("Local Server", comment: "")
+	var addController: AddBookmarkViewController?
 	
 	var entries: [BookmarkEntry] = []
+	var existingHosts: [ServerHost] = []
 	
 	override public func viewDidLoad() {
 		super.viewDidLoad()
@@ -62,7 +64,11 @@ public class BookmarkViewController: NSViewController {
 	}
 	
 	@IBAction func addBookmark(sender:AnyObject?) {
-		
+		addController = storyboard?.instantiateControllerWithIdentifier("addBookmark") as? AddBookmarkViewController
+		addController?.existingHosts = existingHosts
+		dispatch_async(dispatch_get_main_queue()) {
+			self.presentViewControllerAsSheet(self.addController!)
+		}
 	}
 	
 	func loadBookmarks() {
@@ -92,6 +98,14 @@ public class BookmarkViewController: NSViewController {
 				entries.append(BookmarkEntry.Mark(aMark))
 			}
 		}
+		
+		//add hosts
+		var hostSet = Set<ServerHost>()
+		for aMark in bmarks {
+			if aMark.server != nil { hostSet.insert(aMark.server!) }
+		}
+		existingHosts.appendContentsOf(hostSet)
+		existingHosts.sortInPlace() { $0.name < $1.name }
 	}
 	
 	func createDefaultBookmarks() -> [Bookmark] {

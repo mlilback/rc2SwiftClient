@@ -64,29 +64,29 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	@IBAction func newDocument(sender:AnyObject) {
-		showLoginWindow(RestServer())
+//		showLoginWindow(RestServer())
 	}
 	
 	func attemptLogin(controller: LoginViewController, userCanceled:Bool) {
-		guard !userCanceled else {
+//		guard !userCanceled else {
 			NSApp.stopModal()
 			loginWindowController?.window?.orderOut(self)
-			return
-		}
-		let restServer = RestServer()
-		restServer.selectHost(controller.selectedHost!)
-		restServer.login(controller.loginName, password: controller.password)
-		{ (success, results, error) in
-			if success {
-				NSApp.stopModal()
-				let wspace = restServer.loginSession!.projects[0].workspaceWithName(controller.selectedWorkspace!)!
-				restServer.createSession(wspace, appStatus: self)
-				self.loginController!.loginAttemptComplete(nil)
-				self.showSessionWindow(restServer)
-			} else {
-				self.loginController!.loginAttemptComplete(error!.localizedDescription)
-			}
-		}
+//			return
+//		}
+//		let restServer = RestServer()
+//		restServer.selectHost(controller.selectedHost!)
+//		restServer.login(controller.loginName, password: controller.password)
+//		{ (success, results, error) in
+//			if success {
+//				NSApp.stopModal()
+//				let wspace = restServer.loginSession!.projects[0].workspaceWithName(controller.selectedWorkspace!)!
+//				restServer.createSession(wspace, appStatus: self)
+//				self.loginController!.loginAttemptComplete(nil)
+//				self.showSessionWindow(restServer)
+//			} else {
+//				self.loginController!.loginAttemptComplete(error!.localizedDescription)
+//			}
+//		}
 	}
 	
 	func showSessionWindow(restServer:RestServer) {
@@ -116,13 +116,13 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func sessionWindowWillClose() {
-		performSelector(#selector(MacAppDelegate.showLoginWindow), withObject: RestServer(), afterDelay: 0.2)
+//		performSelector(#selector(MacAppDelegate.showLoginWindow), withObject: RestServer(), afterDelay: 0.2)
 	}
 	
 	func showLoginWindow(restServer:RestServer) {
 		//will be nil when running unit tests
 		guard loginController != nil else { return }
-		loginController!.hosts = restServer.restHosts
+//		loginController!.hosts = restServer.restHosts
 		loginController!.completionHandler = attemptLogin
 		NSApp!.runModalForWindow((loginWindowController?.window)!)
 	}
