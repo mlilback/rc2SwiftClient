@@ -6,36 +6,14 @@
 
 import Cocoa
 
-class ProjectWrapper: NSObject {
-	static func wrappersForProjects(projects:[Project]) -> [ProjectWrapper] {
-		var wrappers = [ProjectWrapper]()
-		for aProject in projects {
-			wrappers.append(ProjectWrapper(project: aProject))
-		}
-		return wrappers
-	}
-	
-	var project:Project
-	var workspaces:[Box<Workspace>]
-	init(project:Project) {
-		self.project = project
-		self.workspaces = []
-		super.init()
-		for aWorkspace in project.workspaces {
-			workspaces.append(Box(aWorkspace))
-		}
-	}
-}
-
 public class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
 	@IBOutlet var projectOutline:NSOutlineView?
 	@IBOutlet var addRemoveButtons:NSSegmentedControl?
 	
 	dynamic var canContinue:Bool = false
-	private var projectWrappers:[ProjectWrapper] = []
 	
 	var host:ServerHost?
-	var loginSession:LoginSession? { didSet { projectWrappers = ProjectWrapper.wrappersForProjects(loginSession!.projects) } }
+	var loginSession:LoginSession?
 
 	override public func viewDidAppear() {
 		super.viewDidAppear()
@@ -56,22 +34,22 @@ extension ProjectManagerViewController: NSOutlineViewDataSource {
 	
 	public func outlineView(outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int {
 		if nil == item {
-			return projectWrappers.count
-		} else if let proj = item as? ProjectWrapper {
+			return loginSession?.projects.count ?? 0
+		} else if let proj = item as? Project {
 			return proj.workspaces.count
 		}
 		return 0
 	}
 	
 	public func outlineView(outlineView: NSOutlineView, isItemExpandable item: AnyObject) -> Bool {
-		return item is ProjectWrapper
+		return item is Project
 	}
 	
 	public func outlineView(outlineView: NSOutlineView, child index: Int, ofItem item: AnyObject?) -> AnyObject {
-		if let proj = item as? ProjectWrapper {
+		if let proj = item as? Project {
 			return proj.workspaces[index]
 		}
-		return projectWrappers[index]
+		return loginSession!.projects[index]
 	}
 }
 
@@ -79,10 +57,10 @@ extension ProjectManagerViewController: NSOutlineViewDelegate {
 	public func outlineView(outlineView: NSOutlineView, viewForTableColumn tableColumn: NSTableColumn?, item: AnyObject) -> NSView?
 	{
 		var val = "";
-		if let proj = item as? ProjectWrapper {
-			val = proj.project.name
-		} else if let wspace = item as? Box<Workspace> {
-			val = wspace.unbox.name
+		if let proj = item as? Project {
+			val = proj.name
+		} else if let wspace = item as? Workspace {
+			val = wspace.name
 		}
 		let view = outlineView.makeViewWithIdentifier("string", owner: nil) as? NSTableCellView
 		view?.textField?.stringValue = val
