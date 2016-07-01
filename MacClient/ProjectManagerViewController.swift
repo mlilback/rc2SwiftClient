@@ -37,14 +37,10 @@ public class ProjectManagerViewController: NSViewController, EmbeddedDialogContr
 	var host:ServerHost?
 	var loginSession:LoginSession? { didSet { projectWrappers = ProjectWrapper.wrappersForProjects(loginSession!.projects) } }
 
-	override public func viewWillAppear() {
-		super.viewWillAppear()
-		projectOutline?.expandItem(nil, expandChildren: true)
-	}
-	
 	override public func viewDidAppear() {
 		super.viewDidAppear()
 		projectOutline?.reloadData()
+		projectOutline?.expandItem(nil, expandChildren: true)
 	}
 	
 	func continueAction(callback:(value:Any?, error:NSError?) -> Void) {
@@ -61,6 +57,8 @@ extension ProjectManagerViewController: NSOutlineViewDataSource {
 	public func outlineView(outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int {
 		if nil == item {
 			return projectWrappers.count
+		} else if let proj = item as? ProjectWrapper {
+			return proj.workspaces.count
 		}
 		return 0
 	}
@@ -71,18 +69,23 @@ extension ProjectManagerViewController: NSOutlineViewDataSource {
 	
 	public func outlineView(outlineView: NSOutlineView, child index: Int, ofItem item: AnyObject?) -> AnyObject {
 		if let proj = item as? ProjectWrapper {
-			return proj.workspaces.count
+			return proj.workspaces[index]
 		}
 		return projectWrappers[index]
 	}
-	
-	public func outlineView(outlineView: NSOutlineView, objectValueForTableColumn tableColumn: NSTableColumn?, byItem item: AnyObject?) -> AnyObject?
+}
+
+extension ProjectManagerViewController: NSOutlineViewDelegate {
+	public func outlineView(outlineView: NSOutlineView, viewForTableColumn tableColumn: NSTableColumn?, item: AnyObject) -> NSView?
 	{
+		var val = "";
 		if let proj = item as? ProjectWrapper {
-			return proj.project.name
+			val = proj.project.name
 		} else if let wspace = item as? Box<Workspace> {
-			return wspace.unbox.name
+			val = wspace.unbox.name
 		}
-		return nil
+		let view = outlineView.makeViewWithIdentifier("string", owner: nil) as? NSTableCellView
+		view?.textField?.stringValue = val
+		return view
 	}
 }

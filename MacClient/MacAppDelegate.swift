@@ -6,6 +6,7 @@
 
 import Cocoa
 import XCGLogger
+import SwinjectStoryboard
 import Swinject
 
 let log = XCGLogger.defaultInstance()
@@ -57,6 +58,9 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	@IBAction func showBookmarkWindow(sender:AnyObject?) {
 		if nil == bookmarkWindowController {
 			let container = Container()
+			container.registerForStoryboard(NSWindowController.self, name: "bmarkWindow") { r,c in
+				log.info("wc registered")
+			}
 			container.registerForStoryboard(BookmarkViewController.self) { r, c in
 				c.bookmarkManager = self.bookmarkManager
 			}

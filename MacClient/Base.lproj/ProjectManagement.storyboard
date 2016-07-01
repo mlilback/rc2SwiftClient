@@ -39,7 +39,7 @@
                                                     </textFieldCell>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
-                                                        <tableCellView id="KfY-C3-CMg">
+                                                        <tableCellView identifier="string" id="KfY-C3-CMg">
                                                             <rect key="frame" x="1" y="1" width="352" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
@@ -61,6 +61,7 @@
                                             </tableColumns>
                                             <connections>
                                                 <outlet property="dataSource" destination="Cyu-TW-asS" id="Usg-1l-Ghs"/>
+                                                <outlet property="delegate" destination="Cyu-TW-asS" id="XUv-d9-q0N"/>
                                             </connections>
                                         </outlineView>
                                     </subviews>
