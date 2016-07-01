@@ -29,7 +29,11 @@ public struct Bookmark: JSONSerializable, CustomStringConvertible, Equatable {
 		projectName = json["project"].stringValue
 		workspaceName = json["workspace"].stringValue
 		lastUsed = json["lastUsed"].doubleValue
-		server = ServerHost(json: json["server"])
+		if let _ = json["server"].dictionary {
+			server = ServerHost(json: json["server"])
+		} else {
+			server = nil
+		}
 	}
 	
 	public func serialize() throws -> JSON {
