@@ -8,7 +8,7 @@ import Cocoa
 import BrightFutures
 
 struct SelectServerResponse {
-	let server:ServerHost
+	let server:ServerHost?
 	let loginSession:LoginSession
 }
 
@@ -100,10 +100,10 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 			if !(self.bookmarkManager!.hosts.contains(self.selectedServer!)) {
 				self.bookmarkManager?.addHost(self.selectedServer!)
 				self.bookmarkManager?.save()
-				self.savePassword()
+				self.savePassword(self.selectedServer!)
 			}
 			//for some reason, Xcode 7 compiler crashes if the result tuple is defined in the callback() call
-			let result = SelectServerResponse(server: self.selectedServer!, loginSession: loginsession)
+			let result = SelectServerResponse(server: self.selectedServer, loginSession: loginsession)
 			callback(value:result, error:nil)
 			self.busy = false
 		}.onFailure { (error) in
@@ -112,9 +112,9 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		}
 	}
 	
-	func savePassword() {
+	func savePassword(host:ServerHost) {
 		do {
-			try keychain.setString("\(self.login)@\(self.hostName)", value: self.password)
+			try keychain.setString(host.keychainKey, value: self.password)
 		} catch let err as NSError {
 			log.info("error saving password: \(err)")
 		}
@@ -124,15 +124,18 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		valuesEditable = false
 		busy = true
 		var pass = password
+		var server:ServerHost? = nil
 		if let boxedServer = serverMenu?.itemArray[selectedServerIndex].representedObject as? Box<ServerHost> {
 			selectedServer = boxedServer.unbox
+			server = selectedServer
 		} else if selectedServerIndex + 1 == serverMenu?.menu?.itemArray.count {
 			selectedServer = ServerHost(name: serverName, host: hostName, port: 8088, user: login, secure: false)
+			server = selectedServer
 		} else {
-			selectedServer = ServerHost(name: "Local Server", host: "localhost", port: 8088, user: "test", secure: false)
-			pass = "beavis"
+			server = ServerHost.localHost
+			pass = Constants.LocalServerPassword
 		}
-		let restServer = RestServer(host: selectedServer!)
+		let restServer = RestServer(host: server!)
 		return restServer.login(pass)
 	}
 }

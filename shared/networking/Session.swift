@@ -11,6 +11,7 @@ import XCGLogger
 #endif
 import SwiftyJSON
 import MessagePackSwift
+import BrightFutures
 
 public enum ExecuteType: String {
 	case Run = "run", Source = "source", None = ""
@@ -36,6 +37,11 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	///
 	weak var delegate : SessionDelegate?
 	weak var restServer: RestServer?
+	private var openPromise: Promise<Session, NSError>? {
+		didSet {
+			log.info("promise set")
+		}
+	}
 
 	///regex used to catch user entered calls to help so we can hijack and display through our mechanism
 	var helpRegex : NSRegularExpression = {
@@ -74,7 +80,9 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 			dispatch_async(dispatch_get_main_queue()) {
 				self.connectionOpen = true
 				self.fileHandler.loadFiles()
-				self.delegate?.sessionOpened()
+				assert(self.openPromise != nil)
+				self.openPromise?.success(self)
+				self.openPromise = nil
 			}
 		}
 		wsSource.event.close = { [unowned self] (code, reason, clear)in
@@ -85,7 +93,12 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 			self.handleReceivedMessage(message)
 		}
 		wsSource.event.error = { [unowned self] error in
-			self.delegate?.sessionErrorReceived(error)
+			if self.openPromise != nil {
+				self.openPromise!.failure(error as NSError)
+				self.openPromise = nil
+			} else {
+				self.delegate?.sessionErrorReceived(error)
+			}
 		}
 		//setup a timer to send keep alive messages every 2 minutes
 		let interval = 120 * NSEC_PER_SEC
@@ -102,8 +115,13 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	
 	///opens the websocket with the specified request
 	/// - parameter request: a ws:// or wss:// request to use for the websocket
-	func open(request:NSURLRequest) {
-		self.wsSource.open(request: request, subProtocols: [])
+	/// - returns: future for the open session (with file loading started) or an error
+	func open(request:NSURLRequest) -> Future<Session, NSError> {
+		assert(openPromise == nil)
+		let promise = Promise<Session, NSError>()
+		openPromise = promise
+		wsSource.open(request: request, subProtocols: [])
+		return promise.future
 	}
 	
 	///closes the websocket, which can not be reopened

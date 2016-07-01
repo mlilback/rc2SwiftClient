@@ -1,6 +1,10 @@
 # rc2SwiftClient TODO
 
-# when disabling window while async task is executing, need to save and restore the first responder
+* fix Session memory leak (not dealloc'd when window closed)
+
+* add unit tests for BookmarkManager
+
+* when disabling window while async task is executing, need to save and restore the first responder
 
 * add autologin if have data from keychain (LoginViewController)
 

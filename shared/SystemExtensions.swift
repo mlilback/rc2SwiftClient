@@ -88,6 +88,16 @@ extension NSNotificationCenter {
 	}
 }
 
+extension NSError {
+	static func error(withCode code:Rc2ErrorCode, description:String?) -> NSError {
+		var userInfo:[String:AnyObject]?
+		if let desc = description {
+			userInfo = [NSLocalizedDescriptionKey:desc]
+		}
+		return NSError(domain: Rc2ErrorDomain, code: code.rawValue, userInfo: userInfo)
+	}
+}
+
 extension NSRange {
 	func toStringRange(str:String) -> Range<String.Index>? {
 		let fromIdx = str.utf16.startIndex.advancedBy(self.location)

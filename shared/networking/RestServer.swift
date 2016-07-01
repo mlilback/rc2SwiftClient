@@ -21,8 +21,6 @@ import SwiftyJSON
 	
 	private(set) var urlConfig : NSURLSessionConfiguration!
 	private var urlSession : NSURLSession!
-//	private(set) public var hosts : [ServerHost]
-	//private(set) public var selectedHost : ServerHost
 	let host:ServerHost
 	private(set) public var loginSession : LoginSession?
 	private(set) var baseUrl : NSURL?
@@ -30,12 +28,6 @@ import SwiftyJSON
 	weak var appStatus:AppStatus?
 	private(set) var session:Session?
 
-//	var restHosts : [String] {
-//		get {
-//			let hmap = hosts.map({ $0.name })
-//			return hmap
-//		}
-//	}
 	var connectionDescription : String {
 		get {
 			let login = loginSession?.currentUser.login
@@ -53,19 +45,10 @@ import SwiftyJSON
 			userAgent = "Rc2 MacClient"
 		#endif
 		self.host = host
-		//load hosts info from resource file
-//		let hostFileUrl = NSBundle.mainBundle().URLForResource("RestHosts", withExtension: "json")
-//		assert(hostFileUrl != nil, "failed to get RestHosts.json URL")
-//		hosts = ServerHost.loadHosts(hostFileUrl!)
-//		hosts = [ServerHost(name:"default", host:"fester.rc2.io", port: 8088, user: "test", secure: false)]
-//		selectedHost = hosts.first!
 		super.init()
 		urlConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
 		urlConfig.HTTPAdditionalHeaders = ["User-Agent": userAgent, "Accept": "application/json"]
 		urlSession = NSURLSession(configuration: urlConfig, delegate: self, delegateQueue:NSOperationQueue.mainQueue())
-//		if let previousHostName = NSUserDefaults.standardUserDefaults().stringForKey(self.kServerHostKey) {
-//			selectHost(previousHostName)
-//		}
 	}
 
 	///give a hostname from hosts property, the list of last known workspace names
@@ -105,23 +88,13 @@ import SwiftyJSON
 		return request
 	}
 	
-//	func selectHost(hostName:String) {
-//		if let host = hosts.filter({ return $0.name == hostName }).first {
-//			selectedHost = host
-//			let hprotocol = host.secure ? "https" : "http"
-//			let hoststr = "\(hprotocol)://\(host.host):\(host.port)/"
-//			baseUrl = NSURL(string: hoststr)!
-//		}
-//	}
-	
-	func createSession(wspace:Workspace, appStatus:AppStatus) -> Session {
+	func createSession(wspace:Workspace, appStatus:AppStatus) -> Future<Session, NSError> {
 		let request = NSMutableURLRequest(URL: createWebsocketUrl(wspace.wspaceId))
 		request.addValue(loginSession!.authToken, forHTTPHeaderField: "Rc2-Auth")
 		request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
 		let ws = WebSocket()
 		session = Session(wspace, source:ws, restServer:self, appStatus:appStatus, networkConfig:urlConfig, hostIdentifier: host.host)
-		session!.open(request)
-		return session!
+		return session!.open(request)
 	}
 	
 	func createWebsocketUrl(wspaceId:Int32) -> NSURL {

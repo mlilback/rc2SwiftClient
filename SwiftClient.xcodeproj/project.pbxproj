@@ -126,6 +126,8 @@
 		088CE6B81C4C44A800153414 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6B71C4C44A800153414 /* Keychain.swift */; };
 		088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 088CE6B91C4C44BD00153414 /* Security.framework */; };
 		088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6BB1C4C508000153414 /* KeychainTests.swift */; };
+		089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BE1D21938F00866A05 /* BookmarkViewController.swift */; };
+		0890650B1D26F59300C7CA5D /* MacAppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0890650A1D26F59300C7CA5D /* MacAppStatus.swift */; };
 		089346011C7F660B00100CF6 /* PEGKit.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 089346001C7F660B00100CF6 /* PEGKit.framework.dSYM */; };
 		089346031C7F661400100CF6 /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; };
 		089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -178,7 +180,6 @@
 		08F189B91D216E5400866A05 /* Bookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B81D216E5400866A05 /* Bookmark.swift */; };
 		08F189BB1D21826D00866A05 /* JSONSerializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BA1D21826D00866A05 /* JSONSerializable.swift */; };
 		08F189BD1D2184EB00866A05 /* BookmarkTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BC1D2184EB00866A05 /* BookmarkTest.swift */; };
-		08F189BF1D21938F00866A05 /* BookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BE1D21938F00866A05 /* BookmarkViewController.swift */; };
 		08F2A85E1C7F36EC00A803A0 /* Mockingjay.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */; };
 		08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* SessionEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* SidebarTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* SidebarTabController.swift */; };
@@ -439,6 +440,7 @@
 		088CE6B71C4C44A800153414 /* Keychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		088CE6B91C4C44BD00153414 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		088CE6BB1C4C508000153414 /* KeychainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
+		0890650A1D26F59300C7CA5D /* MacAppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacAppStatus.swift; sourceTree = "<group>"; };
 		089346001C7F660B00100CF6 /* PEGKit.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = PEGKit.framework.dSYM; path = Carthage/Build/Mac/PEGKit.framework.dSYM; sourceTree = "<group>"; };
 		089346021C7F661400100CF6 /* PEGKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PEGKit.framework; path = Carthage/Build/Mac/PEGKit.framework; sourceTree = "<group>"; };
 		089346051C7FB14B00100CF6 /* SyntaxColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxColor.swift; sourceTree = "<group>"; };
@@ -678,6 +680,7 @@
 			isa = PBXGroup;
 			children = (
 				088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */,
+				0890650A1D26F59300C7CA5D /* MacAppStatus.swift */,
 				088CE66E1C4B0AF400153414 /* LoginViewController.swift */,
 				088CE6701C4B0AF400153414 /* Assets.xcassets */,
 				083305D81C501B7300E27F66 /* MainWindowController.swift */,
@@ -1189,6 +1192,7 @@
 				0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */,
 				08F189BB1D21826D00866A05 /* JSONSerializable.swift in Sources */,
 				0827A4E31C7ED9CE001F0AFB /* LatexCodeHighlighter.swift in Sources */,
+				0890650B1D26F59300C7CA5D /* MacAppStatus.swift in Sources */,
 				088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */,
 				0816F89A1C6D0F7D00A6120B /* HTMLString.swift in Sources */,
 				08A01FA91CBC07B0001EDFAA /* WebKitOutputController.swift in Sources */,
@@ -1219,6 +1223,7 @@
 				08A01FC41CC7FCA3001EDFAA /* FMDatabaseAdditions.m in Sources */,
 				088CE6AC1C4B605D00153414 /* RestServer.swift in Sources */,
 				08F189B31D1B0BBE00866A05 /* ShellCommands.swift in Sources */,
+				089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,
 				08A01FD61CC95C58001EDFAA /* HelpController.swift in Sources */,
 				083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */,
@@ -1235,7 +1240,6 @@
 				083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */,
 				08A01FC61CC7FCA3001EDFAA /* FMDatabasePool.m in Sources */,
 				083A56711D24722C009D3091 /* ProjectManagerViewController.swift in Sources */,
-				08F189BF1D21938F00866A05 /* BookmarkViewController.swift in Sources */,
 				086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */,
 				08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */,
 				0827A4E91C7ED9CE001F0AFB /* SyntaxParser.swift in Sources */,

@@ -463,16 +463,21 @@ Gw
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="gNM-kr-xEo">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="97" height="17"/>
-                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="gbt-Fr-eQ9">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="150" height="17"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="gbt-Fr-eQ9">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
+                                                                    <connections>
+                                                                        <action selector="bookmarkNameEditedAction:" target="be5-kP-qby" id="eP9-RT-OL7"/>
+                                                                        <outlet property="delegate" destination="be5-kP-qby" id="0id-ep-8jc"/>
+                                                                    </connections>
                                                                 </textField>
                                                             </subviews>
                                                             <constraints>
                                                                 <constraint firstItem="gNM-kr-xEo" firstAttribute="leading" secondItem="Pka-p5-jcf" secondAttribute="leading" constant="2" id="c1J-hC-hD7"/>
+                                                                <constraint firstAttribute="trailing" secondItem="gNM-kr-xEo" secondAttribute="trailing" constant="2" id="fBH-dp-F9K"/>
                                                                 <constraint firstItem="gNM-kr-xEo" firstAttribute="centerY" secondItem="Pka-p5-jcf" secondAttribute="centerY" id="l7H-PD-nic"/>
                                                             </constraints>
                                                             <connections>

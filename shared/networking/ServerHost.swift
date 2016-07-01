@@ -11,12 +11,15 @@ import SwiftyJSON
 ///Represents a remote host
 public struct ServerHost: JSONSerializable, CustomStringConvertible, Hashable {
 	
+	static let localHost:ServerHost = { return ServerHost(name: "Local Server", host: "localhost", port: 8088, user: "test", secure: false) }()
 	///user-friendly name for the host
 	let name:String
 	let host:String
 	let user:String
 	let port:Int
 	let secure:Bool
+	
+	var keychainKey:String { return "\(self.user)@\(self.host)" }
 	
 	init(name:String, host:String, port:Int=8088, user:String="test", secure:Bool=false) {
 		self.name = name

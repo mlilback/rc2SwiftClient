@@ -13,6 +13,8 @@ class AddBookmarkViewController: NSViewController {
 	var selectServerController: SelectServerViewController?
 	var projectManagerController: ProjectManagerViewController?
 	var bookmarkManager:BookmarkManager?
+	private var selectedServer: ServerHost?
+	var bookmarkAddedClosure:((ServerHost, ProjectAndWorkspace) -> Void)?
 	
 	dynamic var isBusy:Bool = false
 	dynamic var canContinue:Bool = false
@@ -51,6 +53,7 @@ class AddBookmarkViewController: NSViewController {
 		tabViewController?.selectedTabViewItemIndex = 1
 		projectManagerController!.host = serverInfo.server
 		projectManagerController!.loginSession = serverInfo.loginSession
+		canContinue = projectManagerController!.canContinue
 	}
 	
 	@IBAction func continueAction(sender:AnyObject?) {
@@ -61,7 +64,14 @@ class AddBookmarkViewController: NSViewController {
 					return
 				}
 				let serverResponse = value as! SelectServerResponse
+				self.selectedServer = serverResponse.server
 				self.switchToProjectManager(serverResponse)
+			}
+		} else if projectManagerController == tabViewController?.currentTabItemViewController {
+			projectManagerController!.continueAction() { (value, error) in
+				guard error == nil else { self.displayError(error!); return }
+				
+				self.bookmarkAddedClosure?(self.selectedServer!, value as! ProjectAndWorkspace)
 			}
 		}
 	}

@@ -8,8 +8,6 @@ import Foundation
 import BrightFutures
 
 protocol SessionDelegate : class {
-	///Called when the session is open, the currentSession is set, and file loading has started
-	func sessionOpened()
 	///called when the session is closed. Called when explicity or remotely closed. Not called on application termination
 	func sessionClosed()
 	///called when a server response is received and not handled internally by the session

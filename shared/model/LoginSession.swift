@@ -20,6 +20,10 @@ public class LoginSession: CustomStringConvertible {
 		projects = Project.projectsFromJsonArray(json["projects"])
 	}
 	
+	func projectWithId(projectId:Int32) -> Project? {
+		return projects.filter({ $0.projectId == projectId }).first
+	}
+	
 	func projectWithName(name:String) -> Project? {
 		if let found = projects.indexOf({$0.name == name}) {
 			return projects[found]

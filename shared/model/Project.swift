@@ -42,8 +42,8 @@ public class Project: NSObject {
 		userId = json["userId"].int32Value
 		version = json["version"].int32Value
 		name = json["name"].stringValue
-		wspaceArray.addObjectsFromArray(Workspace.workspacesFromJsonArray(json["workspaces"]))
 		super.init()
+		wspaceArray.addObjectsFromArray(Workspace.workspacesFromJsonArray(json["workspaces"], project:self))
 	}
 	
 	var workspaceCount:Int { return wspaceArray.count }

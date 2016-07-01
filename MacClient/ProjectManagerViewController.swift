@@ -6,6 +6,11 @@
 
 import Cocoa
 
+struct ProjectAndWorkspace {
+	let project:String
+	let workspace:String
+}
+
 public class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
 	@IBOutlet var projectOutline:NSOutlineView?
 	@IBOutlet var addRemoveButtons:NSSegmentedControl?
@@ -22,7 +27,14 @@ public class ProjectManagerViewController: NSViewController, EmbeddedDialogContr
 	}
 	
 	func continueAction(callback:(value:Any?, error:NSError?) -> Void) {
-		callback(value: nil, error: NSError(domain: Rc2ErrorDomain, code: 111, userInfo: [NSLocalizedDescriptionKey:"project selection not implemented"]))
+		if let wspace = projectOutline?.itemAtRow(projectOutline!.selectedRow) as? Workspace,
+			let project = loginSession?.projectWithId(wspace.projectId)
+		{
+			let pw = ProjectAndWorkspace(project: project.name, workspace: wspace.name)
+			callback(value: pw, error: nil)
+		} else {
+			callback(value: nil, error: NSError.error(withCode: .Impossible, description: "should not be able to continue w/o a workspace selected"))
+		}
 	}
 	
 	@IBAction func addRemoveAction(sender:AnyObject?) {
@@ -65,5 +77,13 @@ extension ProjectManagerViewController: NSOutlineViewDelegate {
 		let view = outlineView.makeViewWithIdentifier("string", owner: nil) as? NSTableCellView
 		view?.textField?.stringValue = val
 		return view
+	}
+	
+	public func outlineView(outlineView: NSOutlineView, shouldSelectItem item: AnyObject) -> Bool {
+		return item is Workspace
+	}
+	
+	public func outlineViewSelectionDidChange(notification: NSNotification) {
+		canContinue = projectOutline?.selectedRow >= 0
 	}
 }

@@ -10,6 +10,7 @@ let Rc2ErrorDomain = "Rc2ErrorDomain"
 
 enum Rc2ErrorCode: Int {
 	case ServerError = 101
+	case Impossible = 102
 }
 
 struct Notifications {
@@ -41,6 +42,7 @@ struct Constants {
 	static let DefaultWorkspaceName = "default"
 	static let DefaultBookmarkName = "starter"
 	static let LocalBookmarkGroupName = NSLocalizedString("Local Server", comment: "")
+	static let LocalServerPassword = "beavis"
 }
 
 let ConsoleAttachmentImageSize = CGSize(width: 48, height: 48)

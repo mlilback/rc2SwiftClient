@@ -52,36 +52,37 @@ private var fileKvoKey:UInt8 = 0
 public class Workspace: NSObject {
 	let wspaceId : Int32
 	let projectId : Int32
-	let userId : Int32
 	let name : String
 	let version : Int32
 	///have to use a dynamic NSMutableArray so KVO via mutableArrayValueForKey will work properly
 	private let filesArray : NSMutableArray = NSMutableArray() //can use kvo to monitor changes to contents
 	///properly casts the fileArray as native swift array of File objects so swift code can ignore the fact that it is really a NSMutableArray set up for KVO
 	var files:[File] { return filesArray as AnyObject as! [File] }
+	///weak reference to parent project
+	private(set) weak var project:Project?
 	
-	static func workspacesFromJsonArray(jsonArray : AnyObject) -> [Workspace] {
+	static func workspacesFromJsonArray(jsonArray : AnyObject, project:Project) -> [Workspace] {
 		let array = JSON(jsonArray)
-		return workspacesFromJsonArray(array)
+		return workspacesFromJsonArray(array, project: project)
 	}
 
-	static func workspacesFromJsonArray(json : JSON) -> [Workspace] {
+	static func workspacesFromJsonArray(json : JSON, project:Project) -> [Workspace] {
 		var wspaces = [Workspace]()
 		for (_,subJson):(String, JSON) in json {
-			wspaces.append(Workspace(json:subJson))
+			wspaces.append(Workspace(json:subJson, project: project))
 		}
 		wspaces.sortInPlace { return $0.name.localizedCompare($1.name) == .OrderedAscending }
 		return wspaces
 	}
 	
-	convenience init (jsonData:AnyObject) {
+	convenience init (jsonData:AnyObject, project:Project) {
 		let json = JSON(jsonData)
-		self.init(json: json)
+		self.init(json: json, project: project)
 	}
 	
-	init(json:JSON) {
+	init(json:JSON, project:Project) {
+		self.project = project
 		wspaceId = json["id"].int32Value
-		userId = json["userId"].int32Value
 		projectId = json["projectId"].int32Value
 		version = json["version"].int32Value
 		name = json["name"].stringValue

@@ -16,12 +16,12 @@ public struct Bookmark: JSONSerializable, CustomStringConvertible, Equatable {
 	let workspaceName:String?
 	var lastUsed:NSTimeInterval
 	
-	init(name:String, server:ServerHost?, project:String, workspace:String?) {
+	init(name:String, server:ServerHost?, project:String, workspace:String?, lastUsed:NSTimeInterval = 0) {
 		self.name = name
 		self.server = server
 		self.projectName = project
 		self.workspaceName = workspace
-		lastUsed = 0
+		self.lastUsed = lastUsed
 	}
 	
 	public init?(json:JSON) {
@@ -44,6 +44,10 @@ public struct Bookmark: JSONSerializable, CustomStringConvertible, Equatable {
 		dict["lastUsed"] = JSON(lastUsed)
 		dict["server"] = try server?.serialize()
 		return JSON(dict)
+	}
+	
+	public func withChangedName(newName:String) -> Bookmark {
+		return Bookmark(name: newName, server: server, project: projectName, workspace: workspaceName, lastUsed: lastUsed)
 	}
 	
 	public var description:String { return "<Bookmark: \(name)" }

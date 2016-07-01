@@ -10,9 +10,9 @@ import Cocoa
 	///The NSProgress that is blocking the app. The AppStatus will observe the progress and when it is complete, set the current status to nil. Posts AppStatusChangedNotification when changed
 	var currentProgress: NSProgress? { get set }
 	///presents an error via NSAlert/UIAlert
-	func presentError(error: NSError, session:Session)
+	func presentError(error: NSError, session:Session?)
 	///prsents a NSAlert/UIAlert with an optional callback. The handler is expect to set the currentProgress to nil if error finished an operation
-	func presentAlert(session:Session, message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
+	func presentAlert(session:Session?, message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
 }
 
 extension AppStatus {
