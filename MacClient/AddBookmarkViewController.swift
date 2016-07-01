@@ -17,8 +17,6 @@ class AddBookmarkViewController: NSViewController {
 	dynamic var isBusy:Bool = false
 	dynamic var canContinue:Bool = false
 	
-	var existingHosts:[ServerHost]?
-
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		tabViewController = self.storyboard?.instantiateControllerWithIdentifier("bookmarkTabController") as? NSTabViewController
@@ -29,7 +27,6 @@ class AddBookmarkViewController: NSViewController {
 		tabViewController?.view.leftAnchor.constraintEqualToAnchor(containerView!.leftAnchor)
 		tabViewController?.view.rightAnchor.constraintEqualToAnchor(containerView!.rightAnchor)
 		selectServerController = firstChildViewController(self)
-		selectServerController?.existingHosts = existingHosts
 		projectManagerController = firstChildViewController(self)
 	}
 	

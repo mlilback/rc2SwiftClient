@@ -38,16 +38,21 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	dynamic var login:String = "" { didSet { adjustCanContinue() } }
 	dynamic var password:String = "" { didSet { adjustCanContinue() } }
 	var selectedServer:ServerHost?
+	private let keychain = Keychain()
 	
 	dynamic var selectedServerIndex:Int = 0 { didSet {
 		serverDetailsView?.animator().hidden = selectedServerIndex == 0
 		adjustCanContinue()
 		let serverCount = (serverMenu?.menu?.itemArray.count)!
 		valuesEditable = selectedServerIndex == ((serverCount - 1) ?? 0)
-		if selectedServerIndex == serverCount - 1 { view.window?.makeFirstResponder(serverNameField) }
+		if customServerSelected {
+			view.window?.makeFirstResponder(serverNameField)
+		}
+		loadServerHost((serverMenu?.selectedItem?.representedObject as? Box<ServerHost>)?.unbox)
 	} }
 	
-	var existingHosts:[ServerHost]?
+	var customServerSelected:Bool { return selectedServerIndex == (serverMenu?.menu?.itemArray.count ?? 0) - 1 }
+	var localServerSelected:Bool { return selectedServerIndex == 0 }
 	
 	override func viewWillAppear() {
 		super.viewWillAppear()
@@ -55,7 +60,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		if let menu = serverMenu?.menu {
 			menu.removeAllItems()
 			menu.addItem(NSMenuItem(title: "Local Server", action: nil, keyEquivalent: ""))
-			for aHost in existingHosts! {
+			for aHost in bookmarkManager!.hosts {
 				let mi = NSMenuItem(title: aHost.name, action: nil, keyEquivalent: "")
 				mi.representedObject = Box<ServerHost>(aHost)
 				menu.addItem(mi)
@@ -77,6 +82,13 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		adjustCanContinue()
 	}
 	
+	func loadServerHost(host:ServerHost?) {
+		serverName = host?.name ?? ""
+		hostName = host?.host ?? ""
+		login = host?.user ?? ""
+		password = keychain.getString("\(login)@\(hostName)") ?? ""
+	}
+	
 	func adjustCanContinue() {
 		canContinue = selectedServerIndex == 0 || (serverName.characters.count > 0 && hostName.characters.count > 0 && login.characters.count > 0 && password.characters.count > 0)
 	}
@@ -85,6 +97,11 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		let future = attemptLogin()
 		future.onSuccess { (loginsession) in
 			log.info("logged in successfully")
+			if !(self.bookmarkManager!.hosts.contains(self.selectedServer!)) {
+				self.bookmarkManager?.addHost(self.selectedServer!)
+				self.bookmarkManager?.save()
+				self.savePassword()
+			}
 			//for some reason, Xcode 7 compiler crashes if the result tuple is defined in the callback() call
 			let result = SelectServerResponse(server: self.selectedServer!, loginSession: loginsession)
 			callback(value:result, error:nil)
@@ -92,6 +109,14 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		}.onFailure { (error) in
 			callback(value: nil, error: error)
 			self.busy = false
+		}
+	}
+	
+	func savePassword() {
+		do {
+			try keychain.setString("\(self.login)@\(self.hostName)", value: self.password)
+		} catch let err as NSError {
+			log.info("error saving password: \(err)")
 		}
 	}
 	

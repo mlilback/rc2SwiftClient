@@ -70,6 +70,12 @@ public class BookmarkManager {
 		}
 	}
 	
+	///add a server host
+	func addHost(host:ServerHost) {
+		hosts.append(host)
+		hosts.sortInPlace() { $0.name < $1.name }
+	}
+	
 	///loads hosts from NSUserDefaults
 	private func loadHosts() {
 		let defaults = NSUserDefaults.standardUserDefaults()

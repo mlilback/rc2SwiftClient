@@ -21,7 +21,6 @@ public class BookmarkViewController: NSViewController {
 	var bookmarkManager: BookmarkManager?
 	
 	var entries: [BookmarkEntry] = []
-	var existingHosts: [ServerHost] = []
 	
 	override public func viewDidLoad() {
 		super.viewDidLoad()
@@ -44,7 +43,6 @@ public class BookmarkViewController: NSViewController {
 				entries.append(BookmarkEntry.Mark(aMark))
 			}
 		}
-		existingHosts = bookmarkManager!.hosts
 	}
 	
 	@IBAction func addRemoveBookmark(sender:AnyObject?) {
@@ -61,7 +59,6 @@ public class BookmarkViewController: NSViewController {
 	
 	@IBAction func addBookmark(sender:AnyObject?) {
 		addController = storyboard?.instantiateControllerWithIdentifier("addBookmark") as? AddBookmarkViewController
-		addController?.existingHosts = existingHosts
 		dispatch_async(dispatch_get_main_queue()) {
 			self.presentViewControllerAsSheet(self.addController!)
 		}
