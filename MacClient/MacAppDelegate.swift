@@ -17,11 +17,13 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	var bookmarkWindowController: NSWindowController?
 	let bookmarkManager = BookmarkManager()
 	private var appStatus: MacAppStatus?
+	private var dockerManager: DockerManager?
 
 	private dynamic var _currentProgress: NSProgress?
 	private let _statusQueue = dispatch_queue_create("io.rc2.statusQueue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))
 
 	func applicationWillFinishLaunching(notification: NSNotification) {
+		dockerManager = DockerManager()
 		appStatus = MacAppStatus(windowAccessor: windowForAppStatus)
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
 		let cdUrl = NSBundle.mainBundle().URLForResource("CommonDefaults", withExtension: "plist")
@@ -75,6 +77,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			}
 			container.registerForStoryboard(SelectServerViewController.self) { r, c in
 				c.bookmarkManager = self.bookmarkManager
+				c.docker = self.dockerManager
 			}
 
 			let sboard = SwinjectStoryboard.create(name: "BookmarkManager", bundle: nil, container: container)

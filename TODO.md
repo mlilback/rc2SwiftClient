@@ -14,6 +14,12 @@
 
 * a second save of edits isn't being sent to the compute engine (or maybe app server)
 
+* after import, two files in file list
+
+* for jim, not clearing text when selecting non-file
+
+* for jim, image display not showing after plot command
+
 * Unit tests
 
 	* fix FileImporterTests.testSessionMock

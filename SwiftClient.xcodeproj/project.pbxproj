@@ -87,6 +87,7 @@
 		083382F61C68E59300D40EEB /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F51C68E59300D40EEB /* FileCache.swift */; };
 		083382F81C68EBC200D40EEB /* FileCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F71C68EBC200D40EEB /* FileCacheTests.swift */; };
 		083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F91C68F2A900D40EEB /* BaseTest.swift */; };
+		0833A8131D2D630F0033654B /* DockerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0833A8121D2D630F0033654B /* DockerManager.swift */; };
 		083550CD1C760F050013E2B5 /* NSProgress+Rc2.m in Sources */ = {isa = PBXBuildFile; fileRef = 083550CC1C760F050013E2B5 /* NSProgress+Rc2.m */; };
 		083A4B021C7F347E0007AC46 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
 		083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
@@ -106,7 +107,6 @@
 		086BC9AD1C552AA0006ABAE0 /* SpinLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */; };
 		086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086BC9AE1C552D43006ABAE0 /* AppStatus.swift */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
-		088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66E1C4B0AF400153414 /* LoginViewController.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
 		088CE6741C4B0AF400153414 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6721C4B0AF400153414 /* Main.storyboard */; };
 		088CE6A41C4B605D00153414 /* ColorEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6951C4B605D00153414 /* ColorEnums.swift */; };
@@ -128,6 +128,8 @@
 		088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6BB1C4C508000153414 /* KeychainTests.swift */; };
 		089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BE1D21938F00866A05 /* BookmarkViewController.swift */; };
 		0890650B1D26F59300C7CA5D /* MacAppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0890650A1D26F59300C7CA5D /* MacAppStatus.swift */; };
+		0890650D1D2C3F9300C7CA5D /* Swinject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0890650C1D2C3F9300C7CA5D /* Swinject.framework */; };
+		0890650E1D2C3F9300C7CA5D /* Swinject.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0890650C1D2C3F9300C7CA5D /* Swinject.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		089346011C7F660B00100CF6 /* PEGKit.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 089346001C7F660B00100CF6 /* PEGKit.framework.dSYM */; };
 		089346031C7F661400100CF6 /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; };
 		089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -284,6 +286,7 @@
 				082FF1C61C7F321B00CCC27F /* BrightFutures.framework in Embed Frameworks */,
 				082FF1C81C7F321B00CCC27F /* CryptoSwift.framework in Embed Frameworks */,
 				083A56D21D25CFC4009D3091 /* SwinjectStoryboard.framework in Embed Frameworks */,
+				0890650E1D2C3F9300C7CA5D /* Swinject.framework in Embed Frameworks */,
 				082FF1D61C7F321B00CCC27F /* XCGLogger.framework in Embed Frameworks */,
 				082FF1EF1C7F339400CCC27F /* URITemplate.framework in Embed Frameworks */,
 			);
@@ -398,6 +401,7 @@
 		083382F71C68EBC200D40EEB /* FileCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCacheTests.swift; sourceTree = "<group>"; };
 		083382F91C68F2A900D40EEB /* BaseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseTest.swift; sourceTree = "<group>"; };
 		083382FB1C69189300D40EEB /* xattrTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = xattrTests.swift; sourceTree = "<group>"; };
+		0833A8121D2D630F0033654B /* DockerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerManager.swift; sourceTree = "<group>"; };
 		083550CB1C760F050013E2B5 /* NSProgress+Rc2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSProgress+Rc2.h"; sourceTree = "<group>"; };
 		083550CC1C760F050013E2B5 /* NSProgress+Rc2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSProgress+Rc2.m"; sourceTree = "<group>"; };
 		083A566E1D246D85009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/ProjectManagement.storyboard; sourceTree = "<group>"; };
@@ -417,7 +421,6 @@
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		088CE6691C4B0AF400153414 /* Rc².app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Rc².app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppDelegate.swift; sourceTree = "<group>"; };
-		088CE66E1C4B0AF400153414 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		088CE6701C4B0AF400153414 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		088CE6731C4B0AF400153414 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		088CE6751C4B0AF400153414 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -441,6 +444,7 @@
 		088CE6B91C4C44BD00153414 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		088CE6BB1C4C508000153414 /* KeychainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
 		0890650A1D26F59300C7CA5D /* MacAppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacAppStatus.swift; sourceTree = "<group>"; };
+		0890650C1D2C3F9300C7CA5D /* Swinject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Swinject.framework; path = "/Users/mlilback/Library/Developer/Xcode/DerivedData/SwiftClient-flhxnafpxhvxevacsbyttnqkhmkv/Build/Products/Debug/Swinject.framework"; sourceTree = "<absolute>"; };
 		089346001C7F660B00100CF6 /* PEGKit.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = PEGKit.framework.dSYM; path = Carthage/Build/Mac/PEGKit.framework.dSYM; sourceTree = "<group>"; };
 		089346021C7F661400100CF6 /* PEGKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PEGKit.framework; path = Carthage/Build/Mac/PEGKit.framework; sourceTree = "<group>"; };
 		089346051C7FB14B00100CF6 /* SyntaxColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxColor.swift; sourceTree = "<group>"; };
@@ -517,6 +521,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				083A56D01D25CFB7009D3091 /* SwinjectStoryboard.framework in Frameworks */,
+				0890650D1D2C3F9300C7CA5D /* Swinject.framework in Frameworks */,
 				08A01FD01CC81315001EDFAA /* libsqlite3.tbd in Frameworks */,
 				082FF1D11C7F321B00CCC27F /* SwiftyJSON.framework in Frameworks */,
 				089346031C7F661400100CF6 /* PEGKit.framework in Frameworks */,
@@ -653,6 +658,7 @@
 		088CE6601C4B0AF400153414 = {
 			isa = PBXGroup;
 			children = (
+				0890650C1D2C3F9300C7CA5D /* Swinject.framework */,
 				08F189AB1D18816A00866A05 /* Debug.xcconfig */,
 				08F189AC1D18817E00866A05 /* Release.xcconfig */,
 				08F189AD1D18818700866A05 /* Shared.xcconfig */,
@@ -681,7 +687,6 @@
 			children = (
 				088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */,
 				0890650A1D26F59300C7CA5D /* MacAppStatus.swift */,
-				088CE66E1C4B0AF400153414 /* LoginViewController.swift */,
 				088CE6701C4B0AF400153414 /* Assets.xcassets */,
 				083305D81C501B7300E27F66 /* MainWindowController.swift */,
 				088CE6721C4B0AF400153414 /* Main.storyboard */,
@@ -705,6 +710,7 @@
 				083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */,
 				08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */,
 				08F189B21D1B0BBE00866A05 /* ShellCommands.swift */,
+				0833A8121D2D630F0033654B /* DockerManager.swift */,
 				083305DE1C51571500E27F66 /* Localizable.strings */,
 				083306061C51A0B200E27F66 /* CommonDefaults.plist */,
 				087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */,
@@ -1168,7 +1174,6 @@
 				088CE6A61C4B605D00153414 /* FileType.swift in Sources */,
 				083A56731D247B52009D3091 /* AddBookmarkViewController.swift in Sources */,
 				083174041C5571D300071408 /* RootViewController.swift in Sources */,
-				088CE66F1C4B0AF400153414 /* LoginViewController.swift in Sources */,
 				088CE6A81C4B605D00153414 /* LoginSession.swift in Sources */,
 				0816F8A01C6D3A4500A6120B /* SessionHandlerProtocols.swift in Sources */,
 				0812631F1C862F4B003E37A5 /* EditorDocument.swift in Sources */,
@@ -1235,6 +1240,7 @@
 				083174121C58014500071408 /* ServerResponseHandler.swift in Sources */,
 				08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */,
 				0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */,
+				0833A8131D2D630F0033654B /* DockerManager.swift in Sources */,
 				080314231D2412ED006D668F /* SelectServerViewController.swift in Sources */,
 				088CE6B81C4C44A800153414 /* Keychain.swift in Sources */,
 				083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */,
