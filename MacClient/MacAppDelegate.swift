@@ -35,6 +35,10 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		//skip showing bookmarks when running unit tests
 		guard NSProcessInfo.processInfo().environment["XCTestConfigurationFilePath"] == nil else { return }
 		showBookmarkWindow(nil)
+		BITHockeyManager.sharedHockeyManager().configureWithIdentifier("7574682489924a239272b421546d00f8")
+		BITHockeyManager.sharedHockeyManager().debugLogEnabled = true
+		// Do some additional configuration if needed here
+		BITHockeyManager.sharedHockeyManager().startManager()
 	}
 
 	func applicationWillTerminate(aNotification: NSNotification) {
@@ -77,7 +81,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			}
 			container.registerForStoryboard(SelectServerViewController.self) { r, c in
 				c.bookmarkManager = self.bookmarkManager
-				c.docker = self.dockerManager
+//				c.docker = self.dockerManager
 			}
 
 			let sboard = SwinjectStoryboard.create(name: "BookmarkManager", bundle: nil, container: container)

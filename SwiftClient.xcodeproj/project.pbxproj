@@ -88,6 +88,10 @@
 		083382F81C68EBC200D40EEB /* FileCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F71C68EBC200D40EEB /* FileCacheTests.swift */; };
 		083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F91C68F2A900D40EEB /* BaseTest.swift */; };
 		0833A8131D2D630F0033654B /* DockerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0833A8121D2D630F0033654B /* DockerManager.swift */; };
+		0833A8221D2D7E770033654B /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8211D2D7E770033654B /* HockeySDK.framework */; };
+		0833A8231D2D7EAD0033654B /* HockeySDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8211D2D7E770033654B /* HockeySDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; };
+		0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		083550CD1C760F050013E2B5 /* NSProgress+Rc2.m in Sources */ = {isa = PBXBuildFile; fileRef = 083550CC1C760F050013E2B5 /* NSProgress+Rc2.m */; };
 		083A4B021C7F347E0007AC46 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
 		083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
@@ -277,6 +281,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */,
+				0833A8231D2D7EAD0033654B /* HockeySDK.framework in Embed Frameworks */,
 				082FF1CC1C7F321B00CCC27F /* PMKVObserver.framework in Embed Frameworks */,
 				082FF1D01C7F321B00CCC27F /* SwiftWebSocket.framework in Embed Frameworks */,
 				082FF1CE1C7F321B00CCC27F /* Result.framework in Embed Frameworks */,
@@ -402,6 +408,8 @@
 		083382F91C68F2A900D40EEB /* BaseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseTest.swift; sourceTree = "<group>"; };
 		083382FB1C69189300D40EEB /* xattrTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = xattrTests.swift; sourceTree = "<group>"; };
 		0833A8121D2D630F0033654B /* DockerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerManager.swift; sourceTree = "<group>"; };
+		0833A8211D2D7E770033654B /* HockeySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HockeySDK.framework; path = "HockeySDK-Mac/HockeySDK.framework"; sourceTree = "<group>"; };
+		0833A8251D2D87120033654B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = vendor/Sparkle.framework; sourceTree = "<group>"; };
 		083550CB1C760F050013E2B5 /* NSProgress+Rc2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSProgress+Rc2.h"; sourceTree = "<group>"; };
 		083550CC1C760F050013E2B5 /* NSProgress+Rc2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSProgress+Rc2.m"; sourceTree = "<group>"; };
 		083A566E1D246D85009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/ProjectManagement.storyboard; sourceTree = "<group>"; };
@@ -528,12 +536,14 @@
 				08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */,
 				082FF1CB1C7F321B00CCC27F /* PMKVObserver.framework in Frameworks */,
 				082FF1EE1C7F339400CCC27F /* URITemplate.framework in Frameworks */,
+				0833A8221D2D7E770033654B /* HockeySDK.framework in Frameworks */,
 				082FF1C71C7F321B00CCC27F /* CryptoSwift.framework in Frameworks */,
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
 				082FF1D51C7F321B00CCC27F /* XCGLogger.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				082FF1C51C7F321B00CCC27F /* BrightFutures.framework in Frameworks */,
 				082FF1CF1C7F321B00CCC27F /* SwiftWebSocket.framework in Frameworks */,
+				0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -658,7 +668,6 @@
 		088CE6601C4B0AF400153414 = {
 			isa = PBXGroup;
 			children = (
-				0890650C1D2C3F9300C7CA5D /* Swinject.framework */,
 				08F189AB1D18816A00866A05 /* Debug.xcconfig */,
 				08F189AC1D18817E00866A05 /* Release.xcconfig */,
 				08F189AD1D18818700866A05 /* Shared.xcconfig */,
@@ -752,6 +761,9 @@
 			isa = PBXGroup;
 			children = (
 				08A01FCD1CC80189001EDFAA /* libsqlite3.tbd */,
+				0890650C1D2C3F9300C7CA5D /* Swinject.framework */,
+				0833A8251D2D87120033654B /* Sparkle.framework */,
+				0833A8211D2D7E770033654B /* HockeySDK.framework */,
 				08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */,
 				089346021C7F661400100CF6 /* PEGKit.framework */,
 				089346001C7F660B00100CF6 /* PEGKit.framework.dSYM */,
@@ -926,12 +938,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 088CE6831C4B0AF500153414 /* Build configuration list for PBXNativeTarget "MacClient" */;
 			buildPhases = (
-				08A01FCF1CC80928001EDFAA /* ShellScript */,
+				08A01FCF1CC80928001EDFAA /* create help index */,
 				088CE6651C4B0AF400153414 /* Sources */,
 				088CE6661C4B0AF400153414 /* Frameworks */,
+				0833A8241D2D853B0033654B /* increment build number */,
 				088CE6671C4B0AF400153414 /* Resources */,
 				082FF1D71C7F321B00CCC27F /* Embed Frameworks */,
 				082FF1D81C7F322500CCC27F /* CopyFiles */,
+				0833A81B1D2D7E210033654B /* hockey app */,
 			);
 			buildRules = (
 			);
@@ -1118,6 +1132,35 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0833A81B1D2D7E210033654B /* hockey app */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "hockey app";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "FILE=\"${SRCROOT}/HockeySDK-Mac/BuildAgent\"\nif [ -f \"$FILE\" ]; then\n\"$FILE\"\nfi";
+		};
+		0833A8241D2D853B0033654B /* increment build number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "increment build number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\"";
+			showEnvVarsInLog = 0;
+		};
 		085846CC1C7A883600F92EFE /* codesign unit tests for keychain */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1132,13 +1175,14 @@
 			shellPath = /bin/sh;
 			shellScript = "codesign --verify --force --sign \"$CODE_SIGN_IDENTITY\" \"$CODESIGNING_FOLDER_PATH\"\n";
 		};
-		08A01FCF1CC80928001EDFAA /* ShellScript */ = {
+		08A01FCF1CC80928001EDFAA /* create help index */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "create help index";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1440,6 +1484,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)/HockeySDK-Mac",
+					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MacClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -1461,6 +1507,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)/HockeySDK-Mac",
+					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MacClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
