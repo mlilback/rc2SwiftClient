@@ -105,6 +105,9 @@
 		083A56D01D25CFB7009D3091 /* SwinjectStoryboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 083A56C91D25CF32009D3091 /* SwinjectStoryboard.framework */; };
 		083A56D21D25CFC4009D3091 /* SwinjectStoryboard.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 083A56C91D25CF32009D3091 /* SwinjectStoryboard.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0845CB1E1C616E060090267C /* CommonMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* CommonMocks.swift */; };
+		08634DB21D2DA33F00445462 /* DockerManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08634DB11D2DA33F00445462 /* DockerManagerTests.swift */; };
+		08634DB91D2DA93A00445462 /* syntax2.Rmd in Resources */ = {isa = PBXBuildFile; fileRef = 08634DB81D2DA93A00445462 /* syntax2.Rmd */; };
+		08634DBB1D2DA9CB00445462 /* syntax1.Rnw in Resources */ = {isa = PBXBuildFile; fileRef = 08634DBA1D2DA9CB00445462 /* syntax1.Rnw */; };
 		086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */; };
 		0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086659991CA1F3E5007AC555 /* MainWindow.xib */; };
 		0868FC591C7789C3002386CB /* NSURL+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0868FC581C7789C3002386CB /* NSURL+Rc2.swift */; };
@@ -421,6 +424,9 @@
 		083A56B61D25CF32009D3091 /* SwinjectStoryboard.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwinjectStoryboard.xcodeproj; path = vendor/SwinjectStoryboard/SwinjectStoryboard.xcodeproj; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* CommonMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonMocks.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
+		08634DB11D2DA33F00445462 /* DockerManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerManagerTests.swift; sourceTree = "<group>"; };
+		08634DB81D2DA93A00445462 /* syntax2.Rmd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syntax2.Rmd; sourceTree = "<group>"; };
+		08634DBA1D2DA9CB00445462 /* syntax1.Rnw */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syntax1.Rnw; sourceTree = "<group>"; };
 		086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemExtensionsTests.swift; sourceTree = "<group>"; };
 		0866599A1CA1F3E5007AC555 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/MainWindow.xib; sourceTree = SOURCE_ROOT; };
 		0868FC581C7789C3002386CB /* NSURL+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+Rc2.swift"; sourceTree = "<group>"; };
@@ -641,6 +647,8 @@
 		083382F41C68E43400D40EEB /* test resources */ = {
 			isa = PBXGroup;
 			children = (
+				08634DBA1D2DA9CB00445462 /* syntax1.Rnw */,
+				08634DB81D2DA93A00445462 /* syntax2.Rmd */,
 				088CE6801C4B0AF500153414 /* Info.plist */,
 				083305F31C519B8500E27F66 /* createWorkspace.json */,
 				08FDB19A1C5917C3006FCD1A /* graph.png */,
@@ -735,6 +743,7 @@
 				08F189BC1D2184EB00866A05 /* BookmarkTest.swift */,
 				083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */,
 				0845CB1D1C616E060090267C /* CommonMocks.swift */,
+				08634DB11D2DA33F00445462 /* DockerManagerTests.swift */,
 				0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */,
 				081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */,
 				083382F71C68EBC200D40EEB /* FileCacheTests.swift */,
@@ -1124,8 +1133,10 @@
 				083305F11C519B4B00E27F66 /* resultsWithImages.json in Resources */,
 				083305FA1C519B8500E27F66 /* loginResults.json in Resources */,
 				08D6106F1CD2C53100258D8E /* listvars.json in Resources */,
+				08634DBB1D2DA9CB00445462 /* syntax1.Rnw in Resources */,
 				08FDB19B1C5917C3006FCD1A /* graph.png in Resources */,
 				083305F91C519B8500E27F66 /* createWorkspace.json in Resources */,
+				08634DB91D2DA93A00445462 /* syntax2.Rmd in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1317,6 +1328,7 @@
 				086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */,
 				080834561C84C13300F5A190 /* SyntaxParserTests.swift in Sources */,
 				081263211C87A9E8003E37A5 /* EditorDocumentTests.swift in Sources */,
+				08634DB21D2DA33F00445462 /* DockerManagerTests.swift in Sources */,
 				083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */,
 				083305F01C519B4B00E27F66 /* ColorEnumTests.swift in Sources */,
 			);
@@ -1528,6 +1540,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)/vendor",
+					"$(PROJECT_DIR)/HockeySDK-Mac",
 				);
 				INFOPLIST_FILE = MacClientTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(BUILT_PRODUCTS_DIR)";
@@ -1547,6 +1561,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)/vendor",
+					"$(PROJECT_DIR)/HockeySDK-Mac",
 				);
 				INFOPLIST_FILE = MacClientTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(BUILT_PRODUCTS_DIR)";

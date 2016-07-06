@@ -23,7 +23,7 @@ class SyntaxParserTests: XCTestCase {
 
 	func loadStorageWith(filename:String, suffix:String) {
 		parser = SyntaxParser.parserWithTextStorage(storage, fileType: FileType.fileTypeWithExtension(suffix)!)
-		let fileUrl = NSBundle(forClass: self.dynamicType).URLForResource(filename, withExtension: suffix, subdirectory: "testFiles")!
+		let fileUrl = NSBundle(forClass: self.dynamicType).URLForResource(filename, withExtension: suffix, subdirectory: nil)!
 		let contents = try! String(contentsOfURL: fileUrl, encoding: NSUTF8StringEncoding)
 		storage.replaceCharactersInRange(NSMakeRange(0, storage.string.utf8.count), withString: contents)
 	}

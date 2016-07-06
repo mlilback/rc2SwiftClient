@@ -13,6 +13,7 @@ class BaseTest: XCTestCase {
 
 	var sessionData:LoginSession!
 	var mockFM:MockFileManager!
+	let serverHost:ServerHost = ServerHost(name: "local", host: "localhost", port: 8088, user: "local")
 	
 	override func setUp() {
 		super.setUp()
@@ -33,7 +34,8 @@ class BaseTest: XCTestCase {
 		let path : String = NSBundle(forClass: self.dynamicType).pathForResource("createWorkspace", ofType: "json")!
 		let json = try! String(contentsOfFile: path)
 		let parsedJson = JSON.parse(json)
-		return Workspace(json:parsedJson)
+		let project = Project(json: parsedJson["projects"][0])
+		return project.workspaces.first!
 	}
 	
 	func fileUrlsForTesting() -> [NSURL] {

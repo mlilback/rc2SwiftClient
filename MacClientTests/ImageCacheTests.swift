@@ -11,7 +11,7 @@ import XCTest
 class ImageCacheTests: BaseTest {
 
 	func testExistingImageForId() {
-		let cache = ImageCache(restServer:RestServer(), fileManager:mockFM, hostIdentifier: NSUUID().UUIDString)
+		let cache = ImageCache(restServer:RestServer(host:serverHost), fileManager:mockFM, hostIdentifier: "blah")
 		cache.workspace = sessionData.projects.first!.workspaces.first
 		let srcImage : NSURL = NSBundle(forClass: ImageCacheTests.self).URLForResource("graph", withExtension: "png")!
 		let destUrl = NSURL(string: "1.png", relativeToURL: cache.cacheUrl)!

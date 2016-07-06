@@ -1,7 +1,26 @@
 {
+	"projects" : [ {
+				  "id" : 100,
+				  "version" : 1,
+				  "userId" : 100,
+				  "name" : "default",
+				  "workspaces" : [ {
 	"id" : 1,
 	"version" : 1,
-	"userId" : 1,
+								  "projectId" : 1,
 	"name" : "foofy",
-	"files" : []
+								  "files" : [ ]
+								  } ]
+				  } ],
+	"token" : "100_-7403875190602125547_-3606670007811684995",
+	"user" : {
+		"id" : 100,
+		"version" : 1,
+		"login" : "local",
+		"firstName" : "Local",
+		"lastName" : "Account",
+		"email" : "singlesignin@rc2.io",
+		"admin" : false,
+		"enabled" : true
+	}
 }
