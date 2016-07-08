@@ -15,6 +15,8 @@ class AddBookmarkViewController: NSViewController {
 	var bookmarkManager:BookmarkManager?
 	private var selectedServer: ServerHost?
 	var bookmarkAddedClosure:((ServerHost, ProjectAndWorkspace) -> Void)?
+	private var selectServerKVO:PMKVObserver?
+	private var projectKVO:PMKVObserver?
 	
 	dynamic var isBusy:Bool = false
 	dynamic var canContinue:Bool = false
@@ -35,14 +37,26 @@ class AddBookmarkViewController: NSViewController {
 	override func viewDidAppear() {
 		super.viewDidAppear()
 		self.view.window?.preventsApplicationTerminationWhenModal = false
-		selectServerController!.addObserver(self, forKeyPath: "canContinue", options: [.Initial], context: nil)
-		projectManagerController!.addObserver(self, forKeyPath: "canContinue", options: [], context: nil)
+		selectServerKVO = KVObserver(object: selectServerController!, keyPath:"canContinue", options: [.Initial])
+		{ (object, _, _) in
+			self.adjustCanContinue(object as SelectServerViewController)
+		}
+		projectKVO =  KVObserver(object: projectManagerController!, keyPath:"canContinue", options: [])
+		{ (object, _, _) in
+			self.adjustCanContinue(object as ProjectManagerViewController)
+		}
+	}
+	
+	func adjustCanContinue<T where T:NSViewController, T:EmbeddedDialogController>(controller:T) {
+		if controller == tabViewController?.currentTabItemViewController {
+			canContinue = controller.canContinue
+		}
 	}
 
 	override func viewDidDisappear() {
 		super.viewDidDisappear()
-		selectServerController!.removeObserver(self, forKeyPath: "canContinue")
-		projectManagerController!.removeObserver(self, forKeyPath: "canContinue")
+		selectServerKVO?.cancel()
+		projectKVO?.cancel()
 	}
 
 	func displayError(error:NSError) {
@@ -78,18 +92,5 @@ class AddBookmarkViewController: NSViewController {
 	
 	@IBAction func cancelAction(sender:AnyObject?) {
 		self.presentingViewController?.dismissViewController(self)
-	}
-	
-	override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>)
-	{
-		if keyPath == "canContinue" {
-			//if object is the current view controller, adjust canContinue to its canContinue value
-			if let embedded = object as? EmbeddedDialogController, let controller = object as? NSViewController where controller == tabViewController?.currentTabItemViewController
-			{
-				canContinue = embedded.canContinue
-			}
-		} else {
-			super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
-		}
 	}
 }

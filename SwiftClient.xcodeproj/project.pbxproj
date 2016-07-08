@@ -374,7 +374,6 @@
 		082FF1C41C7F321B00CCC27F /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCGLogger.framework; path = Carthage/Build/Mac/XCGLogger.framework; sourceTree = "<group>"; };
 		082FF1D91C7F323800CCC27F /* BrightFutures.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = BrightFutures.framework.dSYM; path = Carthage/Build/Mac/BrightFutures.framework.dSYM; sourceTree = "<group>"; };
 		082FF1DA1C7F323800CCC27F /* CryptoSwift.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = CryptoSwift.framework.dSYM; path = Carthage/Build/Mac/CryptoSwift.framework.dSYM; sourceTree = "<group>"; };
-		082FF1DB1C7F323800CCC27F /* Mockingjay.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Mockingjay.framework.dSYM; path = Carthage/Build/Mac/Mockingjay.framework.dSYM; sourceTree = "<group>"; };
 		082FF1DC1C7F323800CCC27F /* PMKVObserver.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = PMKVObserver.framework.dSYM; path = Carthage/Build/Mac/PMKVObserver.framework.dSYM; sourceTree = "<group>"; };
 		082FF1DD1C7F323800CCC27F /* Result.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Result.framework.dSYM; path = Carthage/Build/Mac/Result.framework.dSYM; sourceTree = "<group>"; };
 		082FF1DE1C7F323800CCC27F /* SwiftWebSocket.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = SwiftWebSocket.framework.dSYM; path = Carthage/Build/Mac/SwiftWebSocket.framework.dSYM; sourceTree = "<group>"; };
@@ -793,34 +792,34 @@
 			isa = PBXGroup;
 			children = (
 				08A01FCD1CC80189001EDFAA /* libsqlite3.tbd */,
-				0890650C1D2C3F9300C7CA5D /* Swinject.framework */,
-				0833A8251D2D87120033654B /* Sparkle.framework */,
+				082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */,
+				082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */,
 				0833A8211D2D7E770033654B /* HockeySDK.framework */,
 				08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */,
-				089346021C7F661400100CF6 /* PEGKit.framework */,
-				089346001C7F660B00100CF6 /* PEGKit.framework.dSYM */,
-				08BFD3E71C90B5AC0041EB1C /* MessagePackSwift.framework.dSYM */,
-				082FF1DB1C7F323800CCC27F /* Mockingjay.framework.dSYM */,
 				082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */,
-				08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */,
+				089346021C7F661400100CF6 /* PEGKit.framework */,
+				082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */,
+				082FF1C01C7F321B00CCC27F /* Result.framework */,
+				088CE6B91C4C44BD00153414 /* Security.framework */,
+				0833A8251D2D87120033654B /* Sparkle.framework */,
+				082FF1C11C7F321B00CCC27F /* SwiftWebSocket.framework */,
+				082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */,
+				0890650C1D2C3F9300C7CA5D /* Swinject.framework */,
 				082FF1ED1C7F339400CCC27F /* URITemplate.framework */,
+				082FF1C41C7F321B00CCC27F /* XCGLogger.framework */,
 				082FF1EB1C7F338C00CCC27F /* URITemplate.framework.dSYM */,
+				08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */,
+				08BFD3E71C90B5AC0041EB1C /* MessagePackSwift.framework.dSYM */,
+				08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */,
 				082FF1D91C7F323800CCC27F /* BrightFutures.framework.dSYM */,
 				082FF1DA1C7F323800CCC27F /* CryptoSwift.framework.dSYM */,
 				082FF1DC1C7F323800CCC27F /* PMKVObserver.framework.dSYM */,
+				089346001C7F660B00100CF6 /* PEGKit.framework.dSYM */,
 				082FF1DD1C7F323800CCC27F /* Result.framework.dSYM */,
 				082FF1DE1C7F323800CCC27F /* SwiftWebSocket.framework.dSYM */,
 				082FF1DF1C7F323800CCC27F /* SwiftyJSON.framework.dSYM */,
 				082FF1E01C7F323800CCC27F /* Swinject.framework.dSYM */,
 				082FF1E11C7F323800CCC27F /* XCGLogger.framework.dSYM */,
-				082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */,
-				082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */,
-				082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */,
-				082FF1C01C7F321B00CCC27F /* Result.framework */,
-				082FF1C11C7F321B00CCC27F /* SwiftWebSocket.framework */,
-				082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */,
-				082FF1C41C7F321B00CCC27F /* XCGLogger.framework */,
-				088CE6B91C4C44BD00153414 /* Security.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
