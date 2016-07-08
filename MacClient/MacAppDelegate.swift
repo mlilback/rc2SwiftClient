@@ -36,7 +36,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		guard NSProcessInfo.processInfo().environment["XCTestConfigurationFilePath"] == nil else { return }
 		showBookmarkWindow(nil)
 		BITHockeyManager.sharedHockeyManager().configureWithIdentifier("7574682489924a239272b421546d00f8")
-		BITHockeyManager.sharedHockeyManager().debugLogEnabled = true
+		//BITHockeyManager.sharedHockeyManager().debugLogEnabled = true
 		// Do some additional configuration if needed here
 		BITHockeyManager.sharedHockeyManager().startManager()
 	}

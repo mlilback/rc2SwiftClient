@@ -11,6 +11,7 @@ let Rc2ErrorDomain = "Rc2ErrorDomain"
 enum Rc2ErrorCode: Int {
 	case ServerError = 101
 	case Impossible = 102
+	case DockerError = 103
 }
 
 struct Notifications {

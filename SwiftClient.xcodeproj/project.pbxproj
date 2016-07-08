@@ -105,6 +105,10 @@
 		083A56D01D25CFB7009D3091 /* SwinjectStoryboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 083A56C91D25CF32009D3091 /* SwinjectStoryboard.framework */; };
 		083A56D21D25CFC4009D3091 /* SwinjectStoryboard.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 083A56C91D25CF32009D3091 /* SwinjectStoryboard.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0845CB1E1C616E060090267C /* CommonMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* CommonMocks.swift */; };
+		084FEA771D2FD3D600060A7D /* DockerUrlProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA761D2FD3D600060A7D /* DockerUrlProtocol.swift */; };
+		084FEA7A1D2FE97700060A7D /* String+Rc2Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA791D2FE97700060A7D /* String+Rc2Extensions.swift */; };
+		084FEA7C1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA7B1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift */; };
+		084FEA7E1D30029A00060A7D /* DockerUrlProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA7D1D30029900060A7D /* DockerUrlProtocolTests.swift */; };
 		08634DB21D2DA33F00445462 /* DockerManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08634DB11D2DA33F00445462 /* DockerManagerTests.swift */; };
 		08634DB91D2DA93A00445462 /* syntax2.Rmd in Resources */ = {isa = PBXBuildFile; fileRef = 08634DB81D2DA93A00445462 /* syntax2.Rmd */; };
 		08634DBB1D2DA9CB00445462 /* syntax1.Rnw in Resources */ = {isa = PBXBuildFile; fileRef = 08634DBA1D2DA9CB00445462 /* syntax1.Rnw */; };
@@ -424,6 +428,10 @@
 		083A56B61D25CF32009D3091 /* SwinjectStoryboard.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwinjectStoryboard.xcodeproj; path = vendor/SwinjectStoryboard/SwinjectStoryboard.xcodeproj; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* CommonMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonMocks.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
+		084FEA761D2FD3D600060A7D /* DockerUrlProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerUrlProtocol.swift; sourceTree = "<group>"; };
+		084FEA791D2FE97700060A7D /* String+Rc2Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Rc2Extensions.swift"; sourceTree = "<group>"; };
+		084FEA7B1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSTextCheckingResult+Rc2.swift"; sourceTree = "<group>"; };
+		084FEA7D1D30029900060A7D /* DockerUrlProtocolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerUrlProtocolTests.swift; sourceTree = "<group>"; };
 		08634DB11D2DA33F00445462 /* DockerManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerManagerTests.swift; sourceTree = "<group>"; };
 		08634DB81D2DA93A00445462 /* syntax2.Rmd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syntax2.Rmd; sourceTree = "<group>"; };
 		08634DBA1D2DA9CB00445462 /* syntax1.Rnw */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syntax1.Rnw; sourceTree = "<group>"; };
@@ -504,7 +512,7 @@
 		08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStream.swift; sourceTree = "<group>"; };
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
 		08F189A11D09AA0300866A05 /* SessionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionController.swift; sourceTree = "<group>"; };
-		08F189A51D09EE4000866A05 /* NSViewController+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSViewController+Rc2.swift"; sourceTree = "<group>"; };
+		08F189A51D09EE4000866A05 /* NSViewController+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSViewController+Rc2.swift"; path = "../NSViewController+Rc2.swift"; sourceTree = "<group>"; };
 		08F189A71D0A0E7200866A05 /* static_html */ = {isa = PBXFileReference; lastKnownFileType = folder; name = static_html; path = resources/static_html; sourceTree = "<group>"; };
 		08F189A91D109A4F00866A05 /* TextViewWithContextualMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextViewWithContextualMenu.swift; sourceTree = "<group>"; };
 		08F189AB1D18816A00866A05 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = config/Debug.xcconfig; sourceTree = "<group>"; };
@@ -524,7 +532,7 @@
 		08F448F81C4E244500C64706 /* MainController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainController.storyboard; path = session/MainController.storyboard; sourceTree = "<group>"; };
 		08F448FF1C4EBEF100C64706 /* MacSplitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSplitter.swift; sourceTree = "<group>"; };
 		08F673CF1D020B2700B87049 /* MiscProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MiscProtocols.swift; path = MacClient/MiscProtocols.swift; sourceTree = SOURCE_ROOT; };
-		08F673D11D0214C700B87049 /* AppKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppKitExtensions.swift; sourceTree = "<group>"; };
+		08F673D11D0214C700B87049 /* AppKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppKitExtensions.swift; path = ../AppKitExtensions.swift; sourceTree = "<group>"; };
 		08FDB1981C591409006FCD1A /* ImageCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCacheTests.swift; sourceTree = "<group>"; };
 		08FDB19A1C5917C3006FCD1A /* graph.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graph.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -639,7 +647,9 @@
 		083305D11C4FC76C00E27F66 /* extensions */ = {
 			isa = PBXGroup;
 			children = (
+				08F673D11D0214C700B87049 /* AppKitExtensions.swift */,
 				089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */,
+				08F189A51D09EE4000866A05 /* NSViewController+Rc2.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -671,6 +681,19 @@
 				083A56CF1D25CF32009D3091 /* SwinjectStoryboardTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		084FEA781D2FE95600060A7D /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				083550CB1C760F050013E2B5 /* NSProgress+Rc2.h */,
+				083550CC1C760F050013E2B5 /* NSProgress+Rc2.m */,
+				084FEA7B1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift */,
+				0868FC581C7789C3002386CB /* NSURL+Rc2.swift */,
+				084FEA791D2FE97700060A7D /* String+Rc2Extensions.swift */,
+				088CE6A31C4B605D00153414 /* SystemExtensions.swift */,
+			);
+			name = extensions;
 			sourceTree = "<group>";
 		};
 		088CE6601C4B0AF400153414 = {
@@ -718,8 +741,6 @@
 				083382F01C64341C00D40EEB /* AppStatusView.swift */,
 				083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */,
 				08F673CF1D020B2700B87049 /* MiscProtocols.swift */,
-				08F673D11D0214C700B87049 /* AppKitExtensions.swift */,
-				08F189A51D09EE4000866A05 /* NSViewController+Rc2.swift */,
 				08F448F31C4E244500C64706 /* session */,
 				081263141C85D2E0003E37A5 /* generic views */,
 				083305D11C4FC76C00E27F66 /* extensions */,
@@ -728,6 +749,7 @@
 				08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */,
 				08F189B21D1B0BBE00866A05 /* ShellCommands.swift */,
 				0833A8121D2D630F0033654B /* DockerManager.swift */,
+				084FEA761D2FD3D600060A7D /* DockerUrlProtocol.swift */,
 				083305DE1C51571500E27F66 /* Localizable.strings */,
 				083306061C51A0B200E27F66 /* CommonDefaults.plist */,
 				087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */,
@@ -744,6 +766,7 @@
 				083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */,
 				0845CB1D1C616E060090267C /* CommonMocks.swift */,
 				08634DB11D2DA33F00445462 /* DockerManagerTests.swift */,
+				084FEA7D1D30029900060A7D /* DockerUrlProtocolTests.swift */,
 				0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */,
 				081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */,
 				083382F71C68EBC200D40EEB /* FileCacheTests.swift */,
@@ -809,6 +832,7 @@
 				08C484F71C9B159000FE824B /* server.cer */,
 				08A01FD11CC81479001EDFAA /* helpindex.db */,
 				08F189A71D0A0E7200866A05 /* static_html */,
+				084FEA781D2FE95600060A7D /* extensions */,
 				08A01FB51CC7FCA3001EDFAA /* fmdb */,
 				088CE6961C4B605D00153414 /* model */,
 				088CE69D1C4B605D00153414 /* networking */,
@@ -828,12 +852,8 @@
 				08F189BA1D21826D00866A05 /* JSONSerializable.swift */,
 				088CE6B71C4C44A800153414 /* Keychain.swift */,
 				08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */,
-				083550CB1C760F050013E2B5 /* NSProgress+Rc2.h */,
-				083550CC1C760F050013E2B5 /* NSProgress+Rc2.m */,
-				0868FC581C7789C3002386CB /* NSURL+Rc2.swift */,
 				083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */,
 				086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */,
-				088CE6A31C4B605D00153414 /* SystemExtensions.swift */,
 				083382F21C653B6300D40EEB /* xattr.swift */,
 			);
 			path = shared;
@@ -1264,6 +1284,7 @@
 				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,
 				08D6106B1CD2444C00258D8E /* Variable.swift in Sources */,
 				08F189B11D19B0D600866A05 /* ServerHost.swift in Sources */,
+				084FEA771D2FD3D600060A7D /* DockerUrlProtocol.swift in Sources */,
 				08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */,
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
 				083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */,
@@ -1288,6 +1309,7 @@
 				08A01FD61CC95C58001EDFAA /* HelpController.swift in Sources */,
 				083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */,
 				088CE6A91C4B605D00153414 /* User.swift in Sources */,
+				084FEA7A1D2FE97700060A7D /* String+Rc2Extensions.swift in Sources */,
 				083174101C57B2E200071408 /* CommandHistory.swift in Sources */,
 				089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */,
 				08F189B91D216E5400866A05 /* Bookmark.swift in Sources */,
@@ -1297,6 +1319,7 @@
 				0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */,
 				0833A8131D2D630F0033654B /* DockerManager.swift in Sources */,
 				080314231D2412ED006D668F /* SelectServerViewController.swift in Sources */,
+				084FEA7C1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift in Sources */,
 				088CE6B81C4C44A800153414 /* Keychain.swift in Sources */,
 				083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */,
 				08A01FC61CC7FCA3001EDFAA /* FMDatabasePool.m in Sources */,
@@ -1311,6 +1334,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				084FEA7E1D30029A00060A7D /* DockerUrlProtocolTests.swift in Sources */,
 				083305F21C519B4B00E27F66 /* ServerResponseTests.swift in Sources */,
 				083305FB1C519B8500E27F66 /* Rc2FileTypeTest.swift in Sources */,
 				08A01FD81CC965F8001EDFAA /* HelpControllerTests.swift in Sources */,

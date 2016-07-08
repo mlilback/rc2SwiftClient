@@ -26,7 +26,7 @@ class DockerManagerTests: XCTestCase {
 	}
 
 	func testDockerNotInstalled() {
-		let docker = DockerManager(binaryPath: "/usr/local/foo/bar")
+		let docker = DockerManager(path: "/usr/local/foo/bar")
 		XCTAssertFalse(docker.isInstalled)
 	}
 	
