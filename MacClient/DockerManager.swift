@@ -14,9 +14,11 @@ public class DockerManager {
 	private(set) var primaryVersion:Int = 0
 	private(set) var secondaryVersion:Int = 0
 	private(set) var fixVersion = 0
+	private(set) var apiVersion:Double = 0
 	let sessionConfig: NSURLSessionConfiguration
 	let session: NSURLSession
 	let isInstalled:Bool
+	private var versionLoaded:Bool = false
 	
 	init(path:String = "/var/run/docker.sock") {
 		socketPath = path
@@ -30,8 +32,26 @@ public class DockerManager {
 		}
 	}
 	
-	private func fetchVersion() {
+	/// returns a future for knowing if we can use this user's docker installation
+	func hasAcceptableDockerInstallation() -> Future<Bool,NSError> {
+		let promise = Promise<Bool,NSError>()
 		let future = dockerRequest("/version")
+		future.onSuccess { json in
+			promise.success(self.apiVersion >= 1.24)
+		}.onFailure { error in
+			promise.failure(error)
+		}
+		return promise.future
+	}
+	
+	///asynchronously fetch version information
+	func fetchVersion() {
+		let future = dockerRequest("/version")
+		processVersionFuture(future)
+	}
+	
+	///parses the future returned from asking docker for version info
+	func processVersionFuture(future:Future<JSON,NSError>) {
 		future.onSuccess { json in
 			do {
 				let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
@@ -40,10 +60,11 @@ public class DockerManager {
 					self.primaryVersion = Int((verStr as NSString).substringWithRange(match.rangeAtIndex(1)))!
 					self.secondaryVersion = Int((verStr as NSString).substringWithRange(match.rangeAtIndex(2)))!
 					self.fixVersion = Int((verStr as NSString).substringWithRange(match.rangeAtIndex(3)))!
-					log.info("docker ver \(self.primaryVersion).\(self.secondaryVersion).\(self.fixVersion)")
+					self.versionLoaded = true
 				} else {
 					log.info("failed to parser version string")
 				}
+				self.apiVersion = Double(json["ApiVersion"].stringValue)!
 			} catch let err as NSError {
 				log.error("error getting docker version \(err)")
 			}
