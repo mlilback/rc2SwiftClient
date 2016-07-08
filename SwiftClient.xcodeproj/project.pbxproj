@@ -109,6 +109,7 @@
 		084FEA7A1D2FE97700060A7D /* String+Rc2Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA791D2FE97700060A7D /* String+Rc2Extensions.swift */; };
 		084FEA7C1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA7B1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift */; };
 		084FEA7E1D30029A00060A7D /* DockerUrlProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA7D1D30029900060A7D /* DockerUrlProtocolTests.swift */; };
+		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08634DB21D2DA33F00445462 /* DockerManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08634DB11D2DA33F00445462 /* DockerManagerTests.swift */; };
 		08634DB91D2DA93A00445462 /* syntax2.Rmd in Resources */ = {isa = PBXBuildFile; fileRef = 08634DB81D2DA93A00445462 /* syntax2.Rmd */; };
 		08634DBB1D2DA9CB00445462 /* syntax1.Rnw in Resources */ = {isa = PBXBuildFile; fileRef = 08634DBA1D2DA9CB00445462 /* syntax1.Rnw */; };
@@ -431,6 +432,8 @@
 		084FEA791D2FE97700060A7D /* String+Rc2Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Rc2Extensions.swift"; sourceTree = "<group>"; };
 		084FEA7B1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSTextCheckingResult+Rc2.swift"; sourceTree = "<group>"; };
 		084FEA7D1D30029900060A7D /* DockerUrlProtocolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerUrlProtocolTests.swift; sourceTree = "<group>"; };
+		084FEA7F1D3044E700060A7D /* ObjcConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcConstants.h; sourceTree = "<group>"; };
+		084FEA801D3045D800060A7D /* ObjcConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjcConstants.m; sourceTree = "<group>"; };
 		08634DB11D2DA33F00445462 /* DockerManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerManagerTests.swift; sourceTree = "<group>"; };
 		08634DB81D2DA93A00445462 /* syntax2.Rmd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syntax2.Rmd; sourceTree = "<group>"; };
 		08634DBA1D2DA9CB00445462 /* syntax1.Rnw */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syntax1.Rnw; sourceTree = "<group>"; };
@@ -808,7 +811,6 @@
 				082FF1ED1C7F339400CCC27F /* URITemplate.framework */,
 				082FF1C41C7F321B00CCC27F /* XCGLogger.framework */,
 				082FF1EB1C7F338C00CCC27F /* URITemplate.framework.dSYM */,
-				08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */,
 				08BFD3E71C90B5AC0041EB1C /* MessagePackSwift.framework.dSYM */,
 				08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */,
 				082FF1D91C7F323800CCC27F /* BrightFutures.framework.dSYM */,
@@ -828,6 +830,8 @@
 			isa = PBXGroup;
 			children = (
 				088CE6B51C4B71F300153414 /* Constants.swift */,
+				084FEA7F1D3044E700060A7D /* ObjcConstants.h */,
+				084FEA801D3045D800060A7D /* ObjcConstants.m */,
 				08C484F71C9B159000FE824B /* server.cer */,
 				08A01FD11CC81479001EDFAA /* helpindex.db */,
 				08F189A71D0A0E7200866A05 /* static_html */,
@@ -1174,7 +1178,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "FILE=\"${SRCROOT}/HockeySDK-Mac/BuildAgent\"\nif [ -f \"$FILE\" ]; then\n\"$FILE\"\nfi";
+			shellScript = "if [ -n $HOCKEYAPP_ENABLED ]; then\n    FWORK=\"${SRCROOT}/HockeySDK-Mac/HockeySDK.framework\"\n    if [ -d \"$FWORK\" ]; then\n    rsync -rC --exclude .DS_Store --copy-links /svn/MyProject/MyResources/myLog.json /Users/benjamin.flynn/Library/Developer/Xcode/DerivedData/MyApp-gocyhvchxrohmbbg‌​mgbzzxtztbku/Build/Products/Debug-iphoneos/MyApp.app\n\n    fi\n    FILE=\"${SRCROOT}/HockeySDK-Mac/BuildAgent\"\n    if [ -f \"$FILE\" ]; then\n    \"$FILE\"\n    fi\nfi\n";
 		};
 		0833A8241D2D853B0033654B /* increment build number */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1288,6 +1292,7 @@
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
 				083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */,
 				08F673D01D020B2700B87049 /* MiscProtocols.swift in Sources */,
+				084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */,
 				088CE6AE1C4B605D00153414 /* Session.swift in Sources */,
 				08F189A21D09AA0300866A05 /* SessionController.swift in Sources */,
 				080214881C693A69008B55D3 /* FileManager.swift in Sources */,

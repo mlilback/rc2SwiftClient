@@ -35,10 +35,13 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		//skip showing bookmarks when running unit tests
 		guard NSProcessInfo.processInfo().environment["XCTestConfigurationFilePath"] == nil else { return }
 		showBookmarkWindow(nil)
-		BITHockeyManager.sharedHockeyManager().configureWithIdentifier("7574682489924a239272b421546d00f8")
+	#if HOCKEYAPP_ENABLED
+		log.info("key is \(kHockeyAppIdentifier)")
+		BITHockeyManager.sharedHockeyManager().configureWithIdentifier(kHockeyAppIdentifier)
 		//BITHockeyManager.sharedHockeyManager().debugLogEnabled = true
 		// Do some additional configuration if needed here
 		BITHockeyManager.sharedHockeyManager().startManager()
+	#endif
 	}
 
 	func applicationWillTerminate(aNotification: NSNotification) {

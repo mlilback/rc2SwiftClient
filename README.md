@@ -6,19 +6,37 @@ This version is a complete rewrite in Swift, though where possible it is a prett
 
 ## Dependencies
 
-The OSX client requires 10.11 El Capitan. Development is being done with Xcode 7.2.
+The OSX client requires 10.11 El Capitan. Development is being done with Xcode 7.3.
 
-Due to a bug in clang that causes crashes with [Carthage](https://github.com/Carthage/Carthage) dependency management is done via git submodules. Dependencies include:
+* [Bright Futures](https://github.com/Thomvis/BrightFutures.git) a promise/future library to make async code look a lot cleaner
+
+* [CryptoSwift](https://github.com/krzyzanowskim/CryptoSwift.git) a pure swift implementation of cryptographic functions
+
+* [HockeySDK](https://hockeyapp.net/) used for feedback beta distribution. All files are included in the git repository
+
+* [MessagePackSwift](https://github.com/mlilback/MessagePackSwift.git) a Swift implementation of [MessagePack](http://msgpack.org/)
+
+* [Mockingjay](https://github.com/kylef/Mockingjay) for networking unit tests
+
+* [PEGKit](https://github.com/itod/pegkit.git) a parsing expression grammar used for syntax highlighting
+
+* [PMKVObserver](https://github.com/postmates/PMKVObserver.git) a wrapper around KVO to make it thread-safe and type-safe
+
+* [Result] used by BrightFutures
+
+* [Sparkle](https://sparkle-project.org/) enables update notification
 
 * [SwiftWebSocket](https://github.com/tidwall/SwiftWebSocket) for websocket support
 
-* [XCGLogger](https://github.com/DaveWoodCom/XCGLogger) for logging.
+* [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) for simplified JSON parsing
 
-* [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) for simplified JSON parsing.
+* [Swinject](https://github.com/Swinject/Swinject) for dependency injection
 
-* [Swinject](https://github.com/Swinject/Swinject) for dependency injection into objects loaded from a storyboard (since container seques don't call prepareForSeque)
+* [URITemplate] used by Mockingjay
 
-* [Mockingjay](https://github.com/kylef/Mockingjay) for networking unit tests.
+* [SwinjectStoryboard](https://github.com/Swinject/SwinjectStoryboard) for dependency injection into objects loaded from a storyboard (since container segues don't call prepareForSegue)
+
+* [XCGLogger](https://github.com/DaveWoodCom/XCGLogger) for logging
 
 # Building
 
@@ -32,3 +50,18 @@ In the help directory, indexDocs.pl is a perl script to generate a json file wit
 
 The perl script requires `Cpanel::JSON::XS` and `Statistics::R`.
 
+# xcconfig usage
+
+The two main config files are `Debug.xcconfig` and `Release.xcconfig`. Both include `Shared.xcconfig`, which includes `Local.config`. The local file is in .gitignore so you need to create an empty one if you don't want warnings about the file being missing.
+
+Therefore the local config file can be used to supply settings that shouldn't be included in git, like API keys and secrets.
+
+# HockeyApp support
+
+All apps will link with the HockeyApp SDK, but it is only activated if certain preprocessor macros are set in Local.xcconfig. Here is an example:
+
+```C
+OTHER_SWIFT_FLAGS = $(inherited) -DHOCKEYAPP_ENABLED
+ 
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) HOCKEYAPP_ENABLED=1 HOCKEY_IDENTIFIER='@"7574682489924a239272b421546d00f8"'
+```

@@ -16,5 +16,5 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-
+config/Local.xcconfig
 Carthage/

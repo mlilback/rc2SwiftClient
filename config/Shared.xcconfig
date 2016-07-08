@@ -5,6 +5,8 @@
 //  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
+#include "Local.xcconfig"
+
 SDKROOT = macosx
 
 SWIFT_OBJC_BRIDGING_HEADER = MacClient/MacClient-Bridging-Header.h
