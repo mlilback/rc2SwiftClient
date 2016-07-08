@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import MacClient
+import SwiftyJSON
 
 class DockerManagerTests: XCTestCase {
 	
@@ -27,5 +28,19 @@ class DockerManagerTests: XCTestCase {
 	func testDockerNotInstalled() {
 		let docker = DockerManager(binaryPath: "/usr/local/foo/bar")
 		XCTAssertFalse(docker.isInstalled)
+	}
+	
+	func testVersionCommand() {
+		let docker = DockerManager()
+		do {
+			let json = try docker.dockerRequest("version")
+			XCTAssert(Double(json["ApiVersion"].stringValue)! > 1.2)
+		} catch let err as NSError {
+			XCTFail("execption while getting version: \(err)")
+		}
+	}
+
+	private func sockaddr_cast(p: UnsafePointer<sockaddr_un>) -> UnsafePointer<sockaddr> {
+		return UnsafePointer<sockaddr>(p)
 	}
 }
