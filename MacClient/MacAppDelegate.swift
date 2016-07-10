@@ -17,7 +17,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	var bookmarkWindowController: NSWindowController?
 	let bookmarkManager = BookmarkManager()
 	private var appStatus: MacAppStatus?
-	private var dockerManager: DockerManager?
+	dynamic var dockerManager: DockerManager?
 
 	private dynamic var _currentProgress: NSProgress?
 	private let _statusQueue = dispatch_queue_create("io.rc2.statusQueue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))

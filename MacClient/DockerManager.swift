@@ -9,7 +9,7 @@ import SwiftyJSON
 import BrightFutures
 
 ///manages communicating with the local docker engine
-public class DockerManager {
+public class DockerManager : NSObject {
 	private let socketPath:String
 	private(set) var primaryVersion:Int = 0
 	private(set) var secondaryVersion:Int = 0
@@ -17,7 +17,7 @@ public class DockerManager {
 	private(set) var apiVersion:Double = 0
 	let sessionConfig: NSURLSessionConfiguration
 	let session: NSURLSession
-	let isInstalled:Bool
+	private(set) var isInstalled:Bool = false
 	private var versionLoaded:Bool = false
 	
 	init(path:String = "/var/run/docker.sock") {
@@ -25,7 +25,7 @@ public class DockerManager {
 		sessionConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
 		sessionConfig.protocolClasses = [DockerUrlProtocol.self]
 		session = NSURLSession(configuration: sessionConfig)
-
+		super.init()
 		isInstalled = NSFileManager().fileExistsAtPath(socketPath)
 		if isInstalled {
 			fetchVersion()

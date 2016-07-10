@@ -438,9 +438,9 @@ CA
                                         <menuItem title="Reset Server Install" id="nP0-f3-vsj">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <binding destination="Voe-Tx-rLC" name="target" keyPath="dockerManager" id="qtd-9g-1lb">
+                                                <binding destination="Voe-Tx-rLC" name="target" keyPath="dockerManager" id="t4l-5f-yXj">
                                                     <dictionary key="options">
-                                                        <string key="NSSelectorName">resetServerInstall</string>
+                                                        <string key="NSSelectorName">resetServerInstall:</string>
                                                     </dictionary>
                                                 </binding>
                                             </connections>
@@ -448,9 +448,9 @@ CA
                                         <menuItem title="Prompt for Initial Server Install" id="5fM-E3-AbK">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <binding destination="Voe-Tx-rLC" name="target" keyPath="dockerManager" id="U4o-sp-YMv">
+                                                <binding destination="Voe-Tx-rLC" name="target" keyPath="dockerManager" id="XhC-xV-3nI">
                                                     <dictionary key="options">
-                                                        <string key="NSSelectorName">promptToInstallServer</string>
+                                                        <string key="NSSelectorName">promptToInstallServer:</string>
                                                     </dictionary>
                                                 </binding>
                                             </connections>
