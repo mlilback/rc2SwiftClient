@@ -1,1 +1,5 @@
 "WindowTitleFormat" = "Rc² — %@";
+
+"InitialServerPromptOk" = "Install"
+"InitialServerPromptMessage" = "Install a local server?"
+"InitialServerPromptInfo" = "Rc2 can download and install a local copy of the server."

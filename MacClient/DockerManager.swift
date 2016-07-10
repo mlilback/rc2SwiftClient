@@ -92,4 +92,44 @@ public class DockerManager {
 		task.resume()
 		return promise.future
 	}
+	
+	///prompt user to install server
+	func promptToInstallServer() {
+		let defaults = NSUserDefaults.standardUserDefaults()
+		guard defaults.boolForKey(DockerPrefKey.DidInstallPrompt) == false else { return }
+		defer { defaults.setBool(true, forKey: DockerPrefKey.DidInstallPrompt) }
+		
+		let alert = NSAlert()
+		alert.messageText = localizedString(.InitialPromptMessage)
+		alert.informativeText = localizedString(.InitialPromptInfo)
+		alert.addButtonWithTitle(localizedString(.InitalPromptOk))
+		alert.addButtonWithTitle(NSLocalizedString("Cancel", comment: ""))
+		let response = alert.runModal()
+		guard response == NSAlertFirstButtonReturn else { return }
+		beginInstallProcess(nil)
+	}
+	
+	///begins local server install process
+	@IBAction func beginInstallProcess(sender:AnyObject?) {
+		
+	}
+	
+	@IBAction func resetServerInstall(sender:AnyObject?) {
+		
+	}
+	
+	private func localizedString(key : DockerString) -> String {
+		return NSLocalizedString("LocalServer.\(key.rawValue)", comment: "")
+	}
+	
+	struct DockerPrefKey {
+		static let DidInstallPrompt = "LocalServer.DidInitialPrompt"
+	}
+	
+	private enum DockerString: String {
+		case InitialPromptMessage
+		case InitialPromptInfo
+		case InitalPromptOk
+	}
 }
+

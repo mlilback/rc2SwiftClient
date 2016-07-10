@@ -36,6 +36,8 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
-	<string>https://rink.hockeyapp.net/api/2/apps/7574682489924a239272b421546d00f8</string>
+	<string>SPARKLE_FEED_URL</string>
+	<key>LocalServerUpdateURL</key>
+	<string>LSERVER_UPDATE_URL</string>
 </dict>
 </plist>

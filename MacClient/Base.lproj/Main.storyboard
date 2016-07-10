@@ -431,6 +431,33 @@ CA
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="Debug" id="cnH-Ve-KTo">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Debug" id="fK2-IA-Ey6" userLabel="Debug Menu">
+                                    <items>
+                                        <menuItem title="Reset Server Install" id="nP0-f3-vsj">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <binding destination="Voe-Tx-rLC" name="target" keyPath="dockerManager" id="qtd-9g-1lb">
+                                                    <dictionary key="options">
+                                                        <string key="NSSelectorName">resetServerInstall</string>
+                                                    </dictionary>
+                                                </binding>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Prompt for Initial Server Install" id="5fM-E3-AbK">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <binding destination="Voe-Tx-rLC" name="target" keyPath="dockerManager" id="U4o-sp-YMv">
+                                                    <dictionary key="options">
+                                                        <string key="NSSelectorName">promptToInstallServer</string>
+                                                    </dictionary>
+                                                </binding>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem title="Window" id="aUF-d1-5bR">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Window" systemMenu="window" id="Td7-aD-5lo">
@@ -498,7 +525,7 @@ CA
                 </customObject>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-324.5" y="66"/>
+            <point key="canvasLocation" x="-229" y="65"/>
         </scene>
     </scenes>
 </document>
