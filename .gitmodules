@@ -3,4 +3,4 @@
 	url = https://github.com/ccgus/fmdb
 [submodule "vendor/SwinjectStoryboard"]
 	path = vendor/SwinjectStoryboard
-url=git@github.com:mlilback/SwinjectStoryboard.git
+url=https://github.com/Swinject/SwinjectStoryboard.git
