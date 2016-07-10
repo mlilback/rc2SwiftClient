@@ -38,11 +38,11 @@ The OSX client requires 10.11 El Capitan. Development is being done with Xcode 7
 
 * [XCGLogger](https://github.com/DaveWoodCom/XCGLogger) for logging
 
-# Building
+# Preparing to build
 
-1. `carthage build --no-use-binaries --platform Mac .`
+1. `carthage bootstrap --no-use-binaries --platform Mac`
 
-2. Copy all files from Carthage/Build/Mac to the `Build/Products/Debug` folder in the project's folder in `~/Library/Developer/Xcode/DerivedData`.
+2. `git submodule update --init`
 
 # Help support
 
