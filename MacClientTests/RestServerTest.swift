@@ -79,7 +79,7 @@ class RestServerTest: XCTestCase {
 		let build = NSBundle(forClass: RestServer.self).infoDictionary!["CFBundleVersion"]!
 		let queryStr = "client=osx&build=\(build)"
 		XCTAssertEqual(url.query!, queryStr)
-		XCTAssertEqual(url.host, "localhost")
+		XCTAssertEqual(url.host, "local")
 		XCTAssertEqual(url.scheme, "ws")
 		XCTAssertEqual(url.path, "/ws/2")
 		XCTAssertEqual(url.port, 8088)

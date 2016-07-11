@@ -31,13 +31,13 @@ class DockerManagerTests: XCTestCase {
 	}
 	
 	func testVersionCommand() {
+		let expect = expectationWithDescription("test version")
 		let docker = DockerManager()
-		do {
-			let json = try docker.dockerRequest("version")
+		docker.dockerRequest("/version").onSuccess { json in
+			expect.fulfill()
 			XCTAssert(Double(json["ApiVersion"].stringValue)! > 1.2)
-		} catch let err as NSError {
-			XCTFail("execption while getting version: \(err)")
 		}
+		waitForExpectationsWithTimeout(2, handler: nil)
 	}
 
 	private func sockaddr_cast(p: UnsafePointer<sockaddr_un>) -> UnsafePointer<sockaddr> {
