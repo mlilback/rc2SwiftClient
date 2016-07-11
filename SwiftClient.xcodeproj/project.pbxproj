@@ -101,7 +101,7 @@
 		083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */; };
 		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
 		083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
-		0845CB1E1C616E060090267C /* CommonMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* CommonMocks.swift */; };
+		0845CB1E1C616E060090267C /* MockFileManagers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* MockFileManagers.swift */; };
 		084FEA771D2FD3D600060A7D /* DockerUrlProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA761D2FD3D600060A7D /* DockerUrlProtocol.swift */; };
 		084FEA7A1D2FE97700060A7D /* String+Rc2Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA791D2FE97700060A7D /* String+Rc2Extensions.swift */; };
 		084FEA7C1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA7B1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift */; };
@@ -377,7 +377,7 @@
 		083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbeddedDialogController.swift; sourceTree = "<group>"; };
 		083A567C1D25AFE7009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/BookmarkManager.storyboard; sourceTree = "<group>"; };
 		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarkManager.swift; sourceTree = "<group>"; };
-		0845CB1D1C616E060090267C /* CommonMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonMocks.swift; sourceTree = "<group>"; };
+		0845CB1D1C616E060090267C /* MockFileManagers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManagers.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		084FEA761D2FD3D600060A7D /* DockerUrlProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerUrlProtocol.swift; sourceTree = "<group>"; };
 		084FEA791D2FE97700060A7D /* String+Rc2Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Rc2Extensions.swift"; sourceTree = "<group>"; };
@@ -708,7 +708,6 @@
 				083382F91C68F2A900D40EEB /* BaseTest.swift */,
 				08F189BC1D2184EB00866A05 /* BookmarkTest.swift */,
 				083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */,
-				0845CB1D1C616E060090267C /* CommonMocks.swift */,
 				08634DB11D2DA33F00445462 /* DockerManagerTests.swift */,
 				084FEA7D1D30029900060A7D /* DockerUrlProtocolTests.swift */,
 				0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */,
@@ -717,6 +716,7 @@
 				081468361C755A1E006DF8FC /* FileImporterTests.swift */,
 				08FDB1981C591409006FCD1A /* ImageCacheTests.swift */,
 				088CE6BB1C4C508000153414 /* KeychainTests.swift */,
+				0845CB1D1C616E060090267C /* MockFileManagers.swift */,
 				08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */,
 				08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */,
 				08159D1D1C77656C004A205A /* NSProgressTests.m */,
@@ -1252,7 +1252,7 @@
 				081468371C755A1E006DF8FC /* FileImporterTests.swift in Sources */,
 				08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */,
 				0825475B1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift in Sources */,
-				0845CB1E1C616E060090267C /* CommonMocks.swift in Sources */,
+				0845CB1E1C616E060090267C /* MockFileManagers.swift in Sources */,
 				086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */,
 				080834561C84C13300F5A190 /* SyntaxParserTests.swift in Sources */,
 				081263211C87A9E8003E37A5 /* EditorDocumentTests.swift in Sources */,
