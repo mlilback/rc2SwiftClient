@@ -12,9 +12,23 @@ enum FileCacheError: ErrorType {
 	case DownloadAlreadyInProgress
 }
 
+protocol FileCache {
+	var fileManager:FileManager { get }
+
+	func isFileCached(file:File) -> Bool
+	func flushCacheForWorkspace(wspace:Workspace)
+	///recaches the specified file if it has changed
+	func flushCacheForFile(file:File) -> NSProgress?
+	///caches all the files in the workspace that aren't already cached with the current version of the file
+	//observer fractionCompleted on returned progress for completion handling
+	func cacheAllFiles(setupHandler:((NSProgress)-> Void)) -> NSProgress?
+	///returns the file system url where the file is/will be stored
+	func cachedFileUrl(file:File) -> NSURL
+}
+
 //MARK: FileCache implementation
 
-public class FileCache: NSObject, NSURLSessionDownloadDelegate {
+public class DefaultFileCache: NSObject, FileCache, NSURLSessionDownloadDelegate {
 	var fileManager:FileManager
 	var baseUrl:NSURL
 	private let workspace:Workspace
@@ -214,13 +228,13 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 }
 
 public class DownloadTask {
-	weak var fileCache:FileCache?
+	weak var fileCache:DefaultFileCache?
 	let file:File
 	let task:NSURLSessionDownloadTask
 	let progress:NSProgress
 	let parent:NSProgress?
 	
-	init(file aFile:File, cache:FileCache, parentProgress:NSProgress?) {
+	init(file aFile:File, cache:DefaultFileCache, parentProgress:NSProgress?) {
 		file = aFile
 		fileCache = cache
 		parent = parentProgress

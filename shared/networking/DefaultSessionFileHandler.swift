@@ -20,7 +20,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 	init(wspace:Workspace, baseUrl:NSURL, config:NSURLSessionConfiguration, appStatus:AppStatus?) {
 		self.workspace = wspace
 		self.appStatus = appStatus
-		self.fileCache = FileCache(workspace: workspace, baseUrl: baseUrl, config: config, appStatus:appStatus)
+		self.fileCache = DefaultFileCache(workspace: workspace, baseUrl: baseUrl, config: config, appStatus:appStatus)
 		self.baseUrl = baseUrl
 		self.downloadPromise = Promise<Bool,NSError>()
 		self.saveQueue = dispatch_queue_create("fileHandlerSerial", DISPATCH_QUEUE_SERIAL)
