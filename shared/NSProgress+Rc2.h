@@ -13,5 +13,7 @@
 //sets the error and sets the completedUnitCount equal to the totalUnitCount, which should fire a KVO for fractionCompleted
 -(void)rc2_complete:(nullable NSError*) error;
 
+///when rc2_complete is called, compleition handlers are immediately execute (if on main queue), otherwise
+// they are dispatched to the main queue
 -(void)rc2_addCompletionHandler:( void (^ _Nonnull )())handler;
 @end

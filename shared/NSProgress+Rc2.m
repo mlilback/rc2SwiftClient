@@ -15,6 +15,7 @@ NSString* FractionTokenKey = @"rc.fractionToken";
 @interface ProgressKVOProxy : NSObject
 @property (nonatomic, nullable, weak) NSProgress *progress;
 @property (nonatomic, strong) NSMutableSet *completionBlocks;
+@property (nonatomic) BOOL executedCallbacks;
 -(instancetype)initWithProgress:(NSProgress*)prog;
 @end
 
@@ -32,16 +33,27 @@ typedef  void (^ _Nonnull ProgressCompleteCallback)();
 
 -(void)progressComplete
 {
-	for (ProgressCompleteCallback block in self.completionBlocks) {
-		dispatch_async(dispatch_get_main_queue(), ^{
-			block(self);
-		});
+	BOOL onMain = strcmp(dispatch_queue_get_label(dispatch_get_main_queue()), dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL)) == 0;
+
+	dispatch_block_t ourBlock = ^{
+		for (ProgressCompleteCallback block in self.completionBlocks)
+			block(self.progress);
+	};
+	if (onMain) {
+		ourBlock();
+	} else {
+		dispatch_async(dispatch_get_main_queue(), ourBlock);
 	}
 	[self.completionBlocks removeAllObjects];
+	self.executedCallbacks = YES;
 }
 
 -(void)addCompletionHandler:( void (^ _Nonnull )())handler
 {
+	if (self.executedCallbacks) {
+		handler(self.progress);
+		return;
+	}
 	dispatch_block_t block = [handler copy];
 	[self.completionBlocks addObject:block];
 }
