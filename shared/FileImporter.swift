@@ -64,7 +64,7 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 			return size + url.fileSize()
 		}
 		progress = NSProgress(totalUnitCount: totalFileSize)
-		tmpDir = NSURL(fileURLWithPath: NSUUID().UUIDString, relativeToURL: NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)).absoluteURL
+		tmpDir = NSURL(fileURLWithPath: NSUUID().UUIDString, relativeToURL: NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)).absoluteURL!
 		do {
 			try NSFileManager.defaultManager().createDirectoryAtURL(tmpDir, withIntermediateDirectories: true, attributes: [:])
 		} catch let err {
@@ -85,7 +85,7 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 		for (index, aFileToImport) in files.enumerate() {
 			let srcUrl = tmpDir.URLByAppendingPathComponent(aFileToImport.actualFileName)
 			do {
-				try fm.linkItemAtURL(aFileToImport.fileUrl, toURL: srcUrl)
+				try fm.linkItemAtURL(aFileToImport.fileUrl, toURL: srcUrl!)
 			} catch let err {
 				log.error("failed to create link for upload: \(err)")
 				throw err
@@ -96,9 +96,9 @@ class FileImporter: NSObject, NSProgressReporting, NSURLSessionDataDelegate {
 			request.setValue(aFileToImport.uniqueFileName, forHTTPHeaderField: "Rc2-Filename")
 			request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
 			request.setValue("application/json", forHTTPHeaderField: "Accept")
-			let task = uploadSession.uploadTaskWithRequest(request, fromFile: srcUrl)
+			let task = uploadSession.uploadTaskWithRequest(request, fromFile: srcUrl!)
 			let cprogress = NSProgress(totalUnitCount: aFileToImport.fileUrl.fileSize())
-			tasks[index] = ImportData(task: task, srcFile: srcUrl, progress: cprogress)
+			tasks[index] = ImportData(task: task, srcFile: srcUrl!, progress: cprogress)
 			progress.addChild(cprogress, withPendingUnitCount: cprogress.totalUnitCount)
 			task.resume()
 		}

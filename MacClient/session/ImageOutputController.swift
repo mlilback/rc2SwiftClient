@@ -41,7 +41,7 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		pageController?.transitionStyle = .StackBook
 		pageController?.view = containerView!
 		view.wantsLayer = true
-		shareButton?.sendActionOn(Int(NSEventMask.LeftMouseDownMask.rawValue))
+		shareButton?.sendActionOn(NSEventMask.LeftMouseDown)
 		view.layer?.backgroundColor = PlatformColor.whiteColor().CGColor
 		labelField?.stringValue = ""
 		navigateButton?.setEnabled(false, forSegment: 0)
@@ -145,7 +145,7 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		return vc
 	}
 	
-	func pageController(pageController: NSPageController, prepareViewController viewController: NSViewController, withObject object: AnyObject)
+	func pageController(pageController: NSPageController, prepareViewController viewController: NSViewController, withObject object: AnyObject?)
 	{
 		let iview = viewController.view as? NSImageView
 		guard let dimg = object as? DisplayableImage else {

@@ -30,11 +30,11 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 		do {
 			let cacheDir = try self.fileManager.URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
 			let ourDir = cacheDir.URLByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!, isDirectory:true)
-			let fileDir = ourDir.URLByAppendingPathComponent("FileCache", isDirectory: true)
-			if !fileDir.checkResourceIsReachableAndReturnError(nil) {
-				try self.fileManager.createDirectoryAtURL(fileDir, withIntermediateDirectories: true, attributes: nil)
+			let fileDir = ourDir!.URLByAppendingPathComponent("FileCache", isDirectory: true)
+			if !fileDir!.checkResourceIsReachableAndReturnError(nil) {
+				try self.fileManager.createDirectoryAtURL(fileDir!, withIntermediateDirectories: true, attributes: nil)
 			}
-			return fileDir
+			return fileDir!
 		} catch let err {
 			log.error("failed to create file cache dir:\(err)")
 		}
@@ -139,7 +139,7 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 	///returns the file system url where the file is/will be stored
 	func cachedFileUrl(file:File) -> NSURL {
 		let fileUrl = NSURL(fileURLWithPath: "\(file.fileId).\(file.fileType.fileExtension)", relativeToURL: fileCacheUrl).absoluteURL
-		return fileUrl
+		return fileUrl!
 	}
 	
 	private func prepareUrlSession() {
@@ -225,7 +225,7 @@ public class DownloadTask {
 		fileCache = cache
 		parent = parentProgress
 		let fileUrl = NSURL(string: "workspaces/\(cache.workspace.wspaceId)/files/\(file.fileId)", relativeToURL: cache.baseUrl)!
-		let request = NSMutableURLRequest(URL: fileUrl.absoluteURL)
+		let request = NSMutableURLRequest(URL: fileUrl.absoluteURL!)
 		let cacheUrl = cache.cachedFileUrl(file)
 		if cacheUrl.checkResourceIsReachableAndReturnError(nil) {
 			request.addValue("\"f/\(file.fileId)/\(file.version)\"", forHTTPHeaderField: "If-None-Match")

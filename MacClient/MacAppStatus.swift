@@ -70,7 +70,7 @@ class MacAppStatus: NSObject, AppStatus {
 				alert.addButtonWithTitle(aButton)
 			}
 		}
-		alert.alertStyle = isCritical ? .CriticalAlertStyle : .WarningAlertStyle
+		alert.alertStyle = isCritical ? .Critical : .Warning
 		alert.beginSheetModalForWindow(getWindow(session)) { (rsp) in
 			guard buttons.count > 1 else { return }
 			dispatch_async(dispatch_get_main_queue()) {

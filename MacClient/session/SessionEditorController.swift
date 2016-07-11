@@ -219,7 +219,7 @@ extension SessionEditorController: UsesAdjustableFont {
 //Mark: NSUserInterfaceValidations
 extension SessionEditorController: NSUserInterfaceValidations {
 	func validateUserInterfaceItem(anItem: NSValidatedUserInterfaceItem) -> Bool {
-		switch anItem.action() as Selector {
+		switch anItem.action as Selector {
 			case Selector.nextChunkAction:
 				return currentChunkIndex + 1 < (parser?.chunks.count ?? 0)
 			case Selector.previousChunkAction:

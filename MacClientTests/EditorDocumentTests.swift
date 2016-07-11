@@ -19,8 +19,8 @@ class EditorDocumentTests: BaseTest {
 		super.setUp()
 		let wspace = sessionData!.projects.first!.workspaces[0]
 		file = wspace.files[0]
-		let cacheDir = mockFM.tempDirUrl.URLByAppendingPathComponent("io.rc2.MacClient", isDirectory: true).URLByAppendingPathComponent("FileCache", isDirectory: true).absoluteURL
-		try! mockFM.createDirectoryAtURL(cacheDir, withIntermediateDirectories: true, attributes: nil)
+		let cacheDir = mockFM.tempDirUrl.URLByAppendingPathComponent("io.rc2.MacClient", isDirectory: true)!.URLByAppendingPathComponent("FileCache", isDirectory: true)!.absoluteURL
+		try! mockFM.createDirectoryAtURL(cacheDir!, withIntermediateDirectories: true, attributes: nil)
 		fileUrl = NSURL(fileURLWithPath: "\(file!.fileId).R", relativeToURL: cacheDir).absoluteURL
 		try! startFileContents.writeToURL(fileUrl, atomically: true, encoding: NSUTF8StringEncoding)
 		fileHandler = DefaultSessionFileHandler(wspace: wspace, baseUrl: mockFM.tempDirUrl, config: NSURLSessionConfiguration.defaultSessionConfiguration(), appStatus: appStatus)

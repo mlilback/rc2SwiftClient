@@ -35,7 +35,7 @@ extension FileManager {
 	/// (i.e. it is not in our sandbox/app support/cache directories)
 	func copyURLToTemporaryLocation(url:NSURL) throws -> NSURL {
 		let tmpDir = NSURL(fileURLWithPath:NSTemporaryDirectory()).URLByAppendingPathComponent("Rc2", isDirectory: true)
-		_ = try? createDirectoryAtURL(tmpDir, withIntermediateDirectories: true, attributes: nil)
+		_ = try? createDirectoryAtURL(tmpDir!, withIntermediateDirectories: true, attributes: nil)
 		let destUrl = NSURL(fileURLWithPath: url.lastPathComponent!, relativeToURL: tmpDir)
 		_ = try? removeItemAtURL(destUrl)
 		try copyItemAtURL(url, toURL: destUrl)

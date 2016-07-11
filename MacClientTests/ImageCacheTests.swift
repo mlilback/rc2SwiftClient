@@ -21,7 +21,7 @@ class ImageCacheTests: BaseTest {
 		let expect = expectationWithDescription("fetch image from cache")
 		try! mockFM.copyItemAtURL(srcImage, toURL: destUrl)
 		cache.imageWithId(1).onSuccess { image in
-			XCTAssert(self.mockFM.contentsEqualAtPath(srcImage.absoluteURL.path!, andPath: destUrl.absoluteURL.path!))
+			XCTAssert(self.mockFM.contentsEqualAtPath(srcImage.absoluteURL!.path!, andPath: destUrl.absoluteURL!.path!))
 			expect.fulfill()
 		}.onFailure { error in
 			XCTFail("test failed: \(error)")

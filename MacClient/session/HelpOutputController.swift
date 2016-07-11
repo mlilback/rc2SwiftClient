@@ -24,7 +24,7 @@ public class HelpOutputController: WebViewController {
 				dispatch_async(dispatch_get_main_queue()) {
 					let furl = self.staticHmtlFolder()
 					let purl = furl.URLByAppendingPathComponent("help404.html")
-					self.webView?.loadFileURL(purl, allowingReadAccessToURL: furl)
+					self.webView?.loadFileURL(purl!, allowingReadAccessToURL: furl)
 				}
 				decisionHandler(.Cancel)
 			}

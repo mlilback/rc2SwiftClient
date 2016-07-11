@@ -38,9 +38,9 @@ public class ImageCache :NSObject, NSSecureCoding {
 				let fm = self.fileManager
 				let cacheDir = try fm.URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
 				let ourDir = cacheDir.URLByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!, isDirectory:true)
-				let imgDir = ourDir.URLByAppendingPathComponent("\(self.hostIdentifier)/images", isDirectory: true)
-				if !imgDir.checkResourceIsReachableAndReturnError(nil) {
-					try self.fileManager.createDirectoryAtURL(imgDir, withIntermediateDirectories: true, attributes: nil)
+				let imgDir = ourDir!.URLByAppendingPathComponent("\(self.hostIdentifier)/images", isDirectory: true)
+				if !imgDir!.checkResourceIsReachableAndReturnError(nil) {
+					try self.fileManager.createDirectoryAtURL(imgDir!, withIntermediateDirectories: true, attributes: nil)
 				}
 				result = imgDir
 			} catch let error {
@@ -125,7 +125,7 @@ public class ImageCache :NSObject, NSSecureCoding {
 	
 	///imageWithId: should have been called at some point to make sure the image is cached
 	func urlForCachedImage(imageId:Int) -> NSURL {
-		return NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: self.cacheUrl).absoluteURL
+		return NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: self.cacheUrl).absoluteURL!
 	}
 	
 	func imageWithId(imageId:Int) -> Future<PlatformImage, ImageCacheError> {

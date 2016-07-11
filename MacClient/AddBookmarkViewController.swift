@@ -26,7 +26,7 @@ class AddBookmarkViewController: NSViewController {
 		tabViewController = self.storyboard?.instantiateControllerWithIdentifier("bookmarkTabController") as? NSTabViewController
 		addChildViewController(tabViewController!)
 		containerView?.addSubview(tabViewController!.view)
-		tabViewController?.view.topAnchor.constraintEqualToAnchor(containerView?.topAnchor)
+		tabViewController?.view.topAnchor.constraintEqualToAnchor(containerView!.topAnchor)
 		tabViewController?.view.bottomAnchor.constraintEqualToAnchor(containerView!.bottomAnchor)
 		tabViewController?.view.leftAnchor.constraintEqualToAnchor(containerView!.leftAnchor)
 		tabViewController?.view.rightAnchor.constraintEqualToAnchor(containerView!.rightAnchor)

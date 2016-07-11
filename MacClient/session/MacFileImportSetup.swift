@@ -42,7 +42,7 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 		panel.treatsFilePackagesAsDirectories = true
 		panel.allowedFileTypes = FileType.importableFileTypes.map { $0.fileExtension }
 		let accessoryView = NSButton(frame: NSZeroRect)
-		accessoryView.setButtonType(.SwitchButton)
+		accessoryView.setButtonType(.Switch)
 		accessoryView.title = NSLocalizedString("Replace existing files", comment: "")
 		let replace = defaults.boolForKey(ReplaceFilesKey)
 		accessoryView.state = replace ? NSOffState : NSOnState
@@ -104,7 +104,7 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 			let uniqButton = alert.addButtonWithTitle(NSLocalizedString("Create Unique Names", comment:""))
 			uniqButton.keyEquivalent = "u"
 			//following is stupid conversion to bad swift conversion of property. filed radar 24660685
-			uniqButton.keyEquivalentModifierMask = Int(NSEventModifierFlags.CommandKeyMask.rawValue)
+			uniqButton.keyEquivalentModifierMask =  NSEventModifierFlags.Command
 			alert.beginSheetModalForWindow(window) { response in
 				guard response != NSAlertSecondButtonReturn else { return }
 				let files = urls!.map() { url in

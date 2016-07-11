@@ -36,10 +36,10 @@ public class WebViewController: NSViewController, WKNavigationDelegate {
 		webView?.navigationDelegate = self
 		webView?.translatesAutoresizingMaskIntoConstraints = false
 		containerView?.addSubview(webView!)
-		webView!.topAnchor.constraintEqualToAnchor(containerView?.topAnchor).active = true
-		webView!.bottomAnchor.constraintEqualToAnchor(containerView?.bottomAnchor).active = true
-		webView!.leadingAnchor.constraintEqualToAnchor(containerView?.leadingAnchor).active = true
-		webView!.trailingAnchor.constraintEqualToAnchor(containerView?.trailingAnchor).active = true
+		webView!.topAnchor.constraintEqualToAnchor(containerView!.topAnchor).active = true
+		webView!.bottomAnchor.constraintEqualToAnchor(containerView!.bottomAnchor).active = true
+		webView!.leadingAnchor.constraintEqualToAnchor(containerView!.leadingAnchor).active = true
+		webView!.trailingAnchor.constraintEqualToAnchor(containerView!.trailingAnchor).active = true
 	}
 	
 	@IBAction func navigateWebView(sender:AnyObject) {
