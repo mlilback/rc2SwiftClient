@@ -109,6 +109,9 @@ class SessionEditorController: AbstractSessionViewController
 		if let theFile = file {
 			if currentDocument?.file.fileId == theFile.fileId && currentDocument?.file.version == theFile.version { return } //same file
 			self.adjustCurrentDocumentForFile(file)
+		} else {
+			currentDocument = nil
+			self.adjustCurrentDocumentForFile(nil)
 		}
 	}
 	
