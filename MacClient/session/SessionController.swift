@@ -43,7 +43,6 @@ import Cocoa
 		let nc = NSNotificationCenter.defaultCenter()
 		nc.addObserver(self, selector: #selector(SessionController.appWillTerminate), name: NSApplicationWillTerminateNotification, object: nil)
 		nc.addObserver(self, selector:  #selector(SessionController.saveSessionState), name: NSWorkspaceWillSleepNotification, object:nil)
-		outputHandler.imageCache = imgCache
 		restoreSessionState()
 	}
 	
@@ -160,7 +159,6 @@ extension SessionController {
 				if let ic = dict["imageCache"] as! ImageCache? {
 					ic.workspace = self.session.workspace
 					imgCache = ic
-					outputHandler.imageCache = ic
 				}
 				savedStateHash = data.sha256()
 			}
