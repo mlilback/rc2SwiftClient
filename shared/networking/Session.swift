@@ -231,7 +231,7 @@ private extension Session {
 		attrs["transId"] = MessageValue.forValue(uniqueIdent)
 		attrs["fileId"] = MessageValue.forValue(document.file.fileId)
 		attrs["fileVersion"] = MessageValue.forValue(document.file.version)
-		attrs["content"] = MessageValue.forValue(document.currentContents)
+		attrs["content"] = MessageValue.forValue(document.savedContents!)
 		encoder.encodeValue(MessageValue.DictionaryValue(MessageValueDictionary(attrs)))
 		data.appendData(encoder.data!)
 		data.writeToURL(NSURL(fileURLWithPath: "/tmp/lastSaveToServer"), atomically: true)

@@ -5,20 +5,27 @@
 //
 
 import Foundation
+import BrightFutures
 
 let MinTimeBetweenAutoSaves:NSTimeInterval = 2
 
 class EditorDocument: NSObject {
+	let oldContentsUserInfoKey = "OldContentsUserInfoKey"
+
 	private(set) var file:File
 	let fileUrl:NSURL
 	let fileHandler:SessionFileHandler
 	let undoManager:NSUndoManager
-	private(set) var savedContents:String!
+	private(set) var savedContents:String?
 	var editedContents:String?
 	private(set) var lastSaveTime:NSTimeInterval = 0
 	var topVisibleIndex:Int = 0
+	private(set) var isLoaded:Bool = false
 	
-	var currentContents:String { return editedContents != nil ? editedContents! : savedContents }
+	var currentContents:String {
+		assert(isLoaded);
+		return editedContents != nil ? editedContents! : savedContents!
+	}
 	var dirty:Bool {
 		if nil == editedContents { return false }
 		return editedContents != savedContents
@@ -30,9 +37,22 @@ class EditorDocument: NSObject {
 		self.fileUrl = fileHandler.fileCache.cachedFileUrl(file)
 		self.undoManager = NSUndoManager()
 		super.init()
-		fileHandler.contentsOfFile(file).onSuccess { fileData in
-			self.savedContents = String(data: fileData!, encoding: NSUTF8StringEncoding)
+	}
+	
+	func loadContents() -> Future<String, NSError> {
+		let promise = Promise<String, NSError>()
+		if nil == savedContents {
+			fileHandler.contentsOfFile(file).onSuccess { fileData in
+				self.savedContents = String(data: fileData!, encoding: NSUTF8StringEncoding)
+				self.isLoaded = true
+				promise.success(self.savedContents!)
+			}.onFailure { error in
+				//TODO: handle error
+				log.error("failed to load contents of \(self.file.name): \(error)")
+				promise.failure(error as NSError)
+			}
 		}
+		return promise.future
 	}
 	
 	func willBecomeActive() {
@@ -44,6 +64,7 @@ class EditorDocument: NSObject {
 	}
 	
 	func updateFile(newFile:File) {
+		precondition(isLoaded)
 		self.editedContents = nil
 		self.file = newFile
 	}
@@ -53,6 +74,7 @@ class EditorDocument: NSObject {
 	///this allows observers to access the previous and new content
 	///@returns nil if autosave and has been a while since last save, else progress
 	func saveContents(isAutoSave autosave:Bool=false) -> NSProgress? {
+		precondition(isLoaded)
 		if autosave {
 			let curTime = NSDate.timeIntervalSinceReferenceDate()
 			guard curTime - lastSaveTime < MinTimeBetweenAutoSaves else { return nil }
@@ -60,18 +82,16 @@ class EditorDocument: NSObject {
 		self.lastSaveTime = NSDate.timeIntervalSinceReferenceDate()
 		let prog = NSProgress(totalUnitCount: -1) //indeterminate
 		fileHandler.saveFile(file, contents: editedContents!) { err in
+			//only mark self as saved if no error
+			if err == nil {
+				self.savedContents = self.editedContents
+				self.editedContents = nil
+				self.lastSaveTime = NSDate.timeIntervalSinceReferenceDate()
+			}
 			//mark progress complete, reporting error if there was one
 			prog.totalUnitCount = 1 //makes it determinate so it can be completed
+			prog.setUserInfoObject(self.savedContents, forKey: self.oldContentsUserInfoKey)
 			prog.rc2_complete(err) //complete with an error
-			//only mark self as saved if no error
-			if nil == err {
-				//add to main queue to let progress handler blocks execute first
-				dispatch_async(dispatch_get_main_queue()) {
-					self.savedContents = self.editedContents
-					self.editedContents = nil
-					self.lastSaveTime = NSDate.timeIntervalSinceReferenceDate()
-				}
-			}
 		}
 		return prog
 	}

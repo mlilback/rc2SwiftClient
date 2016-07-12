@@ -106,18 +106,9 @@ class SessionEditorController: AbstractSessionViewController
 
 	//called when file has changed in UI
 	func fileSelectionChanged(file:File?) {
-		var contents:String?
 		if let theFile = file {
 			if currentDocument?.file.fileId == theFile.fileId && currentDocument?.file.version == theFile.version { return } //same file
-			session.fileHandler.contentsOfFile(theFile).onComplete { result in
-				switch(result) {
-				case .Success(let val):
-					contents = String(data: val!, encoding: NSUTF8StringEncoding)
-				case .Failure(let err):
-					log.warning("got error \(err)")
-				}
-				self.adjustDocumentForFile(file, content: contents)
-			}
+			self.adjustCurrentDocumentForFile(file)
 		}
 	}
 	
@@ -308,59 +299,78 @@ private extension SessionEditorController {
 		}
 	}
 	
-	func adjustDocumentForFile(file:File?, content:String?) {
-		let oldDocument = currentDocument
-		let oldContents = editor!.textStorage!.string
-		if let doc = oldDocument {
-			//save the index of the character at the top left of the text container
-			let bnds = editor!.enclosingScrollView!.contentView.bounds
-			var partial:CGFloat = 1.0
-			let idx = editor!.layoutManager!.characterIndexForPoint(bnds.origin, inTextContainer: editor!.textContainer!, fractionOfDistanceBetweenInsertionPoints: &partial)
-			doc.topVisibleIndex = idx
+	func adjustCurrentDocumentForFile(file:File?) {
+		let editor = self.editor!
+		//save old document
+		if let oldDocument = currentDocument {
+			saveDocument(oldDocument, contents: editor.textStorage!.string)
 		}
-		currentDocument?.willBecomeInactive(oldContents)
-		if let theFile = file, theText = content, storage = editor?.textStorage {
-			currentDocument = openDocuments[theFile.fileId]
-			if currentDocument == nil {
-				currentDocument = EditorDocument(file: theFile, fileHandler: session.fileHandler)
-				openDocuments[theFile.fileId] = currentDocument!
-			}
-			currentDocument!.willBecomeActive()
-			ignoreTextStorageNotifications = true
-			storage.deleteCharactersInRange(editor!.rangeOfAllText)
-			parser = SyntaxParser.parserWithTextStorage(storage, fileType: theFile.fileType)
-			ignoreTextStorageNotifications = false
-			storage.setAttributedString(NSAttributedString(string: theText, attributes: defaultAttributes))
-			if oldDocument?.dirty ?? false {
-				let prog = oldDocument!.saveContents()
-				self.appStatus?.currentProgress = prog
-				prog?.rc2_addCompletionHandler() {
-					self.saveDocumentToServer(oldDocument!)
-				}
-			}
-			if currentDocument?.topVisibleIndex > 0 {
-				//restore the scroll point to the saved character index
-				let idx = editor!.layoutManager!.glyphIndexForCharacterAtIndex(currentDocument!.topVisibleIndex)
-				let point = editor!.layoutManager!.boundingRectForGlyphRange(NSMakeRange(idx, 1), inTextContainer: editor!.textContainer!)
-				//postpone to next event loop cycle
-				dispatch_async(dispatch_get_main_queue()) {
-					self.editor?.enclosingScrollView?.contentView.scrollToPoint(point.origin)
-				}
-			}
-		} else {
+		guard let theFile = file else {
 			parser = nil
 			currentDocument = nil
-			editor?.textStorage?.deleteCharactersInRange(editor!.rangeOfAllText)
+			editor.textStorage?.deleteCharactersInRange(editor.rangeOfAllText)
+			updateUIForCurrentDocument()
+			return
 		}
-		adjustInterfaceForFile(file)
+		currentDocument = openDocuments[theFile.fileId]
+		if currentDocument == nil {
+			currentDocument = EditorDocument(file: theFile, fileHandler: session.fileHandler)
+			openDocuments[theFile.fileId] = currentDocument!
+		}
+		let doc = currentDocument!
+		doc.loadContents().onSuccess { theText in
+			self.documentContentsLoaded(doc, content: theText)
+		}.onFailure { error in
+			//TODO: handle error
+			log.error("error loading document contents \(error)")
+		}
 	}
 	
-	//adjust our interface based on new file
-	func adjustInterfaceForFile(file:File?) {
-		let selected = file != nil
+	func documentContentsLoaded(doc:EditorDocument, content:String) {
+		let editor = self.editor!
+		let lm = editor.layoutManager!
+		doc.willBecomeActive()
+		let storage = editor.textStorage!
+		self.ignoreTextStorageNotifications = true
+		storage.deleteCharactersInRange(editor.rangeOfAllText)
+		self.parser = SyntaxParser.parserWithTextStorage(storage, fileType: doc.file.fileType)
+		self.ignoreTextStorageNotifications = false
+		storage.setAttributedString(NSAttributedString(string: content, attributes: self.defaultAttributes))
+		if doc.topVisibleIndex > 0 {
+			//restore the scroll point to the saved character index
+			let idx = lm.glyphIndexForCharacterAtIndex(doc.topVisibleIndex)
+			let point = lm.boundingRectForGlyphRange(NSMakeRange(idx, 1), inTextContainer: editor.textContainer!)
+			//postpone to next event loop cycle
+			dispatch_async(dispatch_get_main_queue()) {
+				editor.enclosingScrollView?.contentView.scrollToPoint(point.origin)
+			}
+		}
+		self.updateUIForCurrentDocument()
+	}
+	
+	func saveDocument(doc:EditorDocument, contents:String) {
+		let editor = self.editor!
+		let lm = editor.layoutManager!
+		//save the index of the character at the top left of the text container
+		let bnds = editor.enclosingScrollView!.contentView.bounds
+		var partial:CGFloat = 1.0
+		let idx = lm.characterIndexForPoint(bnds.origin, inTextContainer: editor.textContainer!, fractionOfDistanceBetweenInsertionPoints: &partial)
+		doc.topVisibleIndex = idx
+		doc.willBecomeInactive(contents)
+		if doc.dirty {
+			let prog = doc.saveContents()
+			self.appStatus?.currentProgress = prog
+			prog?.rc2_addCompletionHandler() {
+				self.saveDocumentToServer(doc)
+			}
+		}
+	}
+	
+	func updateUIForCurrentDocument() {
+		let selected = currentDocument?.file != nil
 		runButton?.enabled = selected
 		sourceButton?.enabled = selected
-		fileNameField?.stringValue = selected ? file!.name : ""
+		fileNameField?.stringValue = selected ? currentDocument!.file.name : ""
 		editor?.editable = selected
 		editor?.font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
 	}

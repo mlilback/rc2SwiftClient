@@ -30,7 +30,7 @@ protocol SessionFileHandler : class {
 	var fileCache:FileCache { get }
 	var fileDelegate:SessionFileHandlerDelegate? { get set }
 	
-	func loadFiles()
+	func loadFiles() -> Future<SessionFileHandler, NSError>
 	///handle file change that requires refetching contents
 	func handleFileUpdate(file:File, change:FileChangeType)
 	//handle file change that might contain the file's contents

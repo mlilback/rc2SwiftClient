@@ -14,7 +14,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 	var baseUrl:NSURL
 	weak var fileDelegate:SessionFileHandlerDelegate?
 	private(set) var filesLoaded:Bool = false
-	private var downloadPromise: Promise <Bool,NSError>
+	private var downloadPromise: Promise <SessionFileHandler,NSError>
 	private var saveQueue:dispatch_queue_t
 	
 	init(wspace:Workspace, baseUrl:NSURL, config:NSURLSessionConfiguration, appStatus:AppStatus?) {
@@ -22,11 +22,11 @@ class DefaultSessionFileHandler: SessionFileHandler {
 		self.appStatus = appStatus
 		self.fileCache = DefaultFileCache(workspace: workspace, baseUrl: baseUrl, config: config, appStatus:appStatus)
 		self.baseUrl = baseUrl
-		self.downloadPromise = Promise<Bool,NSError>()
+		self.downloadPromise = Promise<SessionFileHandler,NSError>()
 		self.saveQueue = dispatch_queue_create("fileHandlerSerial", DISPATCH_QUEUE_SERIAL)
 	}
 	
-	func loadFiles() {
+	func loadFiles() -> Future<SessionFileHandler, NSError> {
 		filesLoaded = false //can be called to cache any new files
 		fileCache.cacheAllFiles() { (progress) in
 			self.appStatus?.currentProgress = progress
@@ -35,10 +35,12 @@ class DefaultSessionFileHandler: SessionFileHandler {
 					self.downloadPromise.failure(error)
 				} else {
 					self.filesLoaded = true
-					self.downloadPromise.success(true)
+					self.downloadPromise.success(self)
 				}
+				self.loadComplete()
 			}
 		}
+		return downloadPromise.future
 	}
 
 	func contentsOfFile(file:File) -> Future<NSData?,FileError> {
@@ -68,7 +70,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 	func loadComplete() {
 		fileDelegate?.filesLoaded()
 		filesLoaded = true
-		downloadPromise.success(true)
+		downloadPromise.success(self)
 	}
 
 	func updateFile(file:File, withData data:NSData?) -> NSProgress? {
