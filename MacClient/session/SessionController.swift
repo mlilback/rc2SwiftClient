@@ -22,7 +22,7 @@ import Cocoa
 	let outputHandler: OutputHandler
 	let varHandler: VariableHandler
 	///not a constant because it can be saved/loaded
-	var imgCache: ImageCache!
+	var imageCache: ImageCache!
 
 	let session:Session
 
@@ -37,8 +37,8 @@ import Cocoa
 		self.session = session
 		super.init()
 		session.delegate = self
-		imgCache = ImageCache(restServer: session.restServer!, fileManager:NSFileManager(), hostIdentifier: NSUUID().UUIDString)
-		imgCache.workspace = session.workspace
+		imageCache = ImageCache(restServer: session.restServer!, fileManager:NSFileManager(), hostIdentifier: NSUUID().UUIDString)
+		imageCache.workspace = session.workspace
 		self.responseHandler = ServerResponseHandler(delegate: self)
 		let nc = NSNotificationCenter.defaultCenter()
 		nc.addObserver(self, selector: #selector(SessionController.appWillTerminate), name: NSApplicationWillTerminateNotification, object: nil)
@@ -101,7 +101,7 @@ extension SessionController: ServerResponseHandlerDelegate {
 	}
 	
 	func cacheImages(images:[SessionImage]) {
-		imgCache.cacheImagesFromServer(images)
+		imageCache.cacheImagesFromServer(images)
 	}
 	
 	func showFile(fileId:Int) {
@@ -125,7 +125,7 @@ extension SessionController {
 		//save data related to this session
 		var dict = [String:AnyObject]()
 		dict["outputController"] = outputHandler.saveSessionState()
-		dict["imageCache"] = imgCache
+		dict["imageCache"] = imageCache
 		dict["delegate"] = delegate?.saveState()
 		do {
 			let data = NSKeyedArchiver.archivedDataWithRootObject(dict)
@@ -158,7 +158,7 @@ extension SessionController {
 				}
 				if let ic = dict["imageCache"] as! ImageCache? {
 					ic.workspace = self.session.workspace
-					imgCache = ic
+					imageCache = ic
 				}
 				savedStateHash = data.sha256()
 			}

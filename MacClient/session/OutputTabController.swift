@@ -17,9 +17,9 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	var helpController: HelpOutputController?
 	weak var sessionController: SessionController? { didSet {
 		_ = KVObserver(object: sessionController!, keyPath:"imageCache") { object, _, _ in
-			self.imageController?.imageCache = object.imgCache
+			self.imageController?.imageCache = object.imageCache
 		}
-		imageController?.imageCache = sessionController?.imgCache
+		imageController?.imageCache = sessionController?.imageCache
 	}}
 
 	var consoleToolbarControl: NSSegmentedControl?
@@ -119,7 +119,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 
 	func clearConsole(sender:AnyObject?) {
 		consoleController?.clearConsole(sender)
-		sessionController?.imgCache?.clearCache()
+		sessionController?.imageCache?.clearCache()
 	}
 	
 	func consoleButtonClicked(sender:AnyObject?) {
@@ -143,7 +143,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 				}
 			case .Image:
 				if let image = attachment.image,
-				let images = sessionController!.imgCache?.sessionImagesForBatch(image.batchId),
+				let images = sessionController!.imageCache?.sessionImagesForBatch(image.batchId),
 				let index = images.indexOf({$0.id == image.id})
 			{
 				imageController?.displayImageAtIndex(index, images:images)
