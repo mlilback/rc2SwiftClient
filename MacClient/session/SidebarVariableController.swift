@@ -11,6 +11,7 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 	var rootVariables:[Variable] = []
 	var changedIndexes:Set<Int> = []
 	var variablePopover:NSPopover?
+	var isVisible = false
 	@IBOutlet var varTableView:NSTableView?
 	
 	override func viewWillAppear() {
@@ -18,6 +19,7 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 		if sessionOptional != nil {
 			session.startWatchingVariables()
 		}
+		isVisible = true
 	}
 	
 	override func viewWillDisappear() {
@@ -25,6 +27,7 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 		if sessionOptional != nil {
 			session.stopWatchingVariables()
 		}
+		isVisible = false
 	}
 	
 	override func viewDidLoad() {
@@ -33,7 +36,9 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 	}
 	
 	override func sessionChanged() {
-		session.startWatchingVariables()
+		if isVisible {
+			session.startWatchingVariables()
+		}
 	}
 	
 	func variableNamed(name:String?) -> Variable? {
