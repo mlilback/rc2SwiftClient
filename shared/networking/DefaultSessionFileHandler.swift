@@ -11,7 +11,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 	var workspace:Workspace
 	let fileCache:FileCache
 	weak var appStatus:AppStatus?
-	var baseUrl:NSURL
+	private var baseUrl:NSURL
 	weak var fileDelegate:SessionFileHandlerDelegate?
 	private(set) var filesLoaded:Bool = false
 	private var downloadPromise: Promise <SessionFileHandler,NSError>
@@ -70,7 +70,6 @@ class DefaultSessionFileHandler: SessionFileHandler {
 	func loadComplete() {
 		fileDelegate?.filesLoaded()
 		filesLoaded = true
-		downloadPromise.success(self)
 	}
 
 	func updateFile(file:File, withData data:NSData?) -> NSProgress? {
