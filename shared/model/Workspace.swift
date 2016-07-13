@@ -52,6 +52,7 @@ private var fileKvoKey:UInt8 = 0
 public class Workspace: NSObject {
 	let wspaceId : Int32
 	let projectId : Int32
+	let uniqueId : String
 	let name : String
 	let version : Int32
 	///have to use a dynamic NSMutableArray so KVO via mutableArrayValueForKey will work properly
@@ -84,6 +85,7 @@ public class Workspace: NSObject {
 		self.project = project
 		wspaceId = json["id"].int32Value
 		projectId = json["projectId"].int32Value
+		self.uniqueId = json["uniqueId"].stringValue
 		version = json["version"].int32Value
 		name = json["name"].stringValue
 		filesArray.addObjectsFromArray(File.filesFromJsonArray(json["files"]))

@@ -30,7 +30,7 @@ protocol FileCache {
 
 public class DefaultFileCache: NSObject, FileCache, NSURLSessionDownloadDelegate {
 	var fileManager:FileManager
-	var baseUrl:NSURL
+	private var baseUrl:NSURL
 	private let workspace:Workspace
 	private let urlConfig:NSURLSessionConfiguration
 	weak var appStatus:AppStatus?
@@ -44,7 +44,7 @@ public class DefaultFileCache: NSObject, FileCache, NSURLSessionDownloadDelegate
 		do {
 			let cacheDir = try self.fileManager.URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
 			let ourDir = cacheDir.URLByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!, isDirectory:true)
-			let fileDir = ourDir!.URLByAppendingPathComponent("FileCache", isDirectory: true)
+			let fileDir = ourDir!.URLByAppendingPathComponent(self.workspace.uniqueId, isDirectory: true)
 			if !fileDir!.checkResourceIsReachableAndReturnError(nil) {
 				try self.fileManager.createDirectoryAtURL(fileDir!, withIntermediateDirectories: true, attributes: nil)
 			}
