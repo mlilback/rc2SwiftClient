@@ -197,6 +197,7 @@
 		08F189BD1D2184EB00866A05 /* BookmarkTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BC1D2184EB00866A05 /* BookmarkTest.swift */; };
 		08F2A85E1C7F36EC00A803A0 /* Mockingjay.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */; };
 		08F42FA21D33F47000A1EE8D /* MockSessionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F42FA11D33F47000A1EE8D /* MockSessionHelpers.swift */; };
+		08F42FA61D367A5800A1EE8D /* NSError+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F42FA51D367A5800A1EE8D /* NSError+Rc2.swift */; };
 		08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* SessionEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* SidebarTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* SidebarTabController.swift */; };
 		08F448FC1C4E244500C64706 /* SessionOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F71C4E244500C64706 /* SessionOutputController.swift */; };
@@ -482,6 +483,7 @@
 		08F189BE1D21938F00866A05 /* BookmarkViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarkViewController.swift; sourceTree = "<group>"; };
 		08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Mockingjay.framework.dSYM; path = Carthage/Build/Mac/Mockingjay.framework.dSYM; sourceTree = "<group>"; };
 		08F42FA11D33F47000A1EE8D /* MockSessionHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockSessionHelpers.swift; sourceTree = "<group>"; };
+		08F42FA51D367A5800A1EE8D /* NSError+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+Rc2.swift"; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* SessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditorController.swift; sourceTree = "<group>"; };
 		08F448F61C4E244500C64706 /* SidebarTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarTabController.swift; sourceTree = "<group>"; };
 		08F448F71C4E244500C64706 /* SessionOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionOutputController.swift; sourceTree = "<group>"; };
@@ -629,6 +631,7 @@
 		084FEA781D2FE95600060A7D /* extensions */ = {
 			isa = PBXGroup;
 			children = (
+				08F42FA51D367A5800A1EE8D /* NSError+Rc2.swift */,
 				083550CB1C760F050013E2B5 /* NSProgress+Rc2.h */,
 				083550CC1C760F050013E2B5 /* NSProgress+Rc2.m */,
 				084FEA7B1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift */,
@@ -1214,6 +1217,7 @@
 				088CE6A91C4B605D00153414 /* User.swift in Sources */,
 				084FEA7A1D2FE97700060A7D /* String+Rc2Extensions.swift in Sources */,
 				083174101C57B2E200071408 /* CommandHistory.swift in Sources */,
+				08F42FA61D367A5800A1EE8D /* NSError+Rc2.swift in Sources */,
 				089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */,
 				08F189B91D216E5400866A05 /* Bookmark.swift in Sources */,
 				088CE6AD1C4B605D00153414 /* ServerResponse.swift in Sources */,
