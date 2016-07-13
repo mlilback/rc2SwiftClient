@@ -105,8 +105,12 @@ public class BookmarkViewController: NSViewController {
 			}
 			let restServer = RestServer(host: host)
 			restServer.login(password).onSuccess { loginsession in
-				let wspace = loginsession.projectWithName(aMark.projectName)?.workspaceWithName(aMark.workspaceName!)
-				restServer.createSession(wspace!, appStatus: self.appStatus!).onSuccess { _ in
+				guard let wspace = loginsession.projectWithName(aMark.projectName)?.workspaceWithName(aMark.workspaceName!) else
+				{
+					self.displayError(NSError.error(withCode: .NoSuchProject, description: nil))
+					return
+				}
+				restServer.createSession(wspace, appStatus: self.appStatus!).onSuccess { _ in
 					self.openSession?(restServer)
 				}.onFailure { error in
 					self.displayError(error)
