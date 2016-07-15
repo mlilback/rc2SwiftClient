@@ -8,6 +8,7 @@ import Cocoa
 import XCGLogger
 import SwinjectStoryboard
 import Swinject
+import SwiftyJSON
 
 let log = XCGLogger.defaultInstance()
 
@@ -42,10 +43,26 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		// Do some additional configuration if needed here
 		BITHockeyManager.sharedHockeyManager().startManager()
 	#endif
+		restoreSessions()
 	}
 
 	func applicationWillTerminate(aNotification: NSNotification) {
 		NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowWillCloseNotification, object: nil)
+		let defaults = NSUserDefaults.standardUserDefaults()
+		//save info to restore open sessions
+		var reopen = [Bookmark]()
+		for controller in sessionWindowControllers {
+			if let session = controller.session, let rest = session.restServer, let proj = session.workspace.project {
+				let bmark = Bookmark(name: "irrelevant", server: rest.host, project: proj.name, workspace: session.workspace.name)
+				reopen.append(bmark)
+			}
+		}
+		do {
+			let bmarks = try JSON(reopen.map() { try $0.serialize() })
+			defaults.setObject(bmarks.rawString(), forKey: PrefKeys.OpenSessions)
+		} catch let err {
+			log.error("failed to serialize bookmarks: \(err)")
+		}
 	}
 
 	func applicationShouldOpenUntitledFile(sender: NSApplication) -> Bool {
@@ -63,6 +80,26 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 				return NSApp.mainWindow != bookmarkWindowController?.window
 			default:
 				return false
+		}
+	}
+	
+	func restoreSessions() {
+		let defaults = NSUserDefaults.standardUserDefaults()
+		//load them, or create default ones
+		var bookmarks = [Bookmark]()
+		if let bmstr = defaults.stringForKey(PrefKeys.OpenSessions) {
+			for aJsonObj in JSON.parse(bmstr).arrayValue {
+				bookmarks.append(Bookmark(json: aJsonObj)!)
+			}
+		}
+		guard let bmarkController = bookmarkWindowController?.contentViewController as? BookmarkViewController else
+		{
+			log.error("failed to get bookmarkViewController to restore sessions")
+			return
+		}
+		//TODO: show progress dialog
+		for bmark in bookmarks {
+			bmarkController.openSession(withBookmark: bmark, password: nil)
 		}
 	}
 	
@@ -90,7 +127,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			let sboard = SwinjectStoryboard.create(name: "BookmarkManager", bundle: nil, container: container)
 			bookmarkWindowController = sboard.instantiateControllerWithIdentifier("bookmarkWindow") as? NSWindowController
 			let bvc = bookmarkWindowController!.contentViewController as! BookmarkViewController
-			bvc.openSession = openSession
+			bvc.openSessionCallback = openSession
 		}
 		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
 	}
@@ -117,6 +154,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		let root = sboard.instantiateControllerWithIdentifier("rootController") as? RootViewController
 		wc.contentViewController = root
 		wc.appStatus = self.appStatus
+		wc.session = restServer.session
 		wc.setupChildren(restServer)
 	}
 	

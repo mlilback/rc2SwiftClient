@@ -19,7 +19,7 @@ public class BookmarkViewController: NSViewController {
 	private let dateFormatter: NSDateFormatter = NSDateFormatter()
 	var addController: AddBookmarkViewController?
 	var bookmarkManager: BookmarkManager?
-	var openSession:((RestServer) -> Void)?
+	var openSessionCallback:((RestServer) -> Void)?
 	private var appStatus: MacAppStatus?
 
 	var entries: [BookmarkEntry] = []
@@ -107,20 +107,48 @@ public class BookmarkViewController: NSViewController {
 			restServer.login(password).onSuccess { loginsession in
 				guard let wspace = loginsession.projectWithName(aMark.projectName)?.workspaceWithName(aMark.workspaceName!) else
 				{
-					self.displayError(NSError.error(withCode: .NoSuchProject, description: nil))
+					self.appStatus?.presentError(NSError.error(withCode: .NoSuchProject, description: nil), session:nil)
 					return
 				}
 				restServer.createSession(wspace, appStatus: self.appStatus!).onSuccess { _ in
-					self.openSession?(restServer)
+					self.openSessionCallback?(restServer)
 				}.onFailure { error in
-					self.displayError(error)
+					self.appStatus?.presentError(error, session:nil)
 				}
 			}.onFailure { error in
-				self.displayError(error)
+				self.appStatus?.presentError(error, session:nil)
 			}
 		}
 	}
 	
+	func openSession(withBookmark bookmark:Bookmark, password:String?) {
+		var host = ServerHost.localHost
+		var pass = Constants.LocalServerPassword
+		if let bmserver = bookmark.server {
+			host = bmserver
+			if nil == password {
+				pass = Keychain().getString(bmserver.keychainKey)!
+			} else {
+				pass = password!
+			}
+		}
+		let restServer = RestServer(host: host)
+		restServer.login(pass).onSuccess { loginsession in
+		guard let wspace = loginsession.projectWithName(bookmark.projectName)?.workspaceWithName(bookmark.workspaceName!) else
+		{
+			self.presentError(NSError.error(withCode: .NoSuchProject, description: nil))
+			return
+		}
+		restServer.createSession(wspace, appStatus: self.appStatus!).onSuccess { _ in
+			self.openSessionCallback?(restServer)
+			}.onFailure { error in
+				self.appStatus?.presentError(error, session:nil)
+		}
+		}.onFailure { error in
+			self.appStatus?.presentError(error, session:nil)
+		}
+	}
+
 	func entryIndexForBookmark(bmark:Bookmark) -> Int? {
 		for idx in 0..<entries.count {
 			if case .Mark(let aMark) = entries[idx] where aMark == bmark {

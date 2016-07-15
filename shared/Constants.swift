@@ -26,6 +26,7 @@ struct Notifications {
 
 
 struct PrefKeys {
+	static let OpenSessions = "OpenSessions"
 	static let LastWorkspace = "LastWorkspace"
 	static let LocalServerWorkspaces = "LocalServerWorkspaces"
 	static let LastHost = "LastHost"

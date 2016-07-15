@@ -1,5 +1,9 @@
 # rc2SwiftClient TODO
 
+* restore session:
+
+	* need to show progress while restoring sessions
+
 * fix Session memory leak (not dealloc'd when window closed)
 
 * need to show progress while opening a session

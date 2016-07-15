@@ -21,9 +21,11 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>LocalServerUpdateURL</key>
+	<string>LSERVER_UPDATE_URL</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -37,7 +39,5 @@
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
 	<string>SPARKLE_FEED_URL</string>
-	<key>LocalServerUpdateURL</key>
-	<string>LSERVER_UPDATE_URL</string>
 </dict>
 </plist>
