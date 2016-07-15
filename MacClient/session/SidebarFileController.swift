@@ -156,8 +156,8 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	@IBAction func deleteFile(sender:AnyObject?) {
-		assert(selectedFile != nil)
-		session.removeFile(selectedFile!)
+		guard let file = selectedFile else { return }
+		session.removeFile(file)
 		log.info("remove selected file")
 	}
 	

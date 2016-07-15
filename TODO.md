@@ -2,6 +2,8 @@
 
 * fix Session memory leak (not dealloc'd when window closed)
 
+* need to show progress while opening a session
+
 * add unit tests for BookmarkManager
 
 * when disabling window while async task is executing, need to save and restore the first responder
@@ -13,8 +15,6 @@
 * clean up old images
 
 * a second save of edits isn't being sent to the compute engine (or maybe app server)
-
-* after import, two files in file list
 
 * for jim, not clearing text when selecting non-file
 
@@ -69,6 +69,8 @@
 	* saveDocumentToServer needs to mark busy via appStatus
 	
 	* current chunk should have a a background of selection color @ 20%
+	
+	* didn't empty when file was deleted
 		
 * Sidebar File Controller
 
