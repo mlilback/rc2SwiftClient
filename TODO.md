@@ -84,6 +84,8 @@
 	
 	* implement add document of type
 	
+	* why is delete button some times enabled when no file is selected
+	
 	* promptToImportFiles: report error to user if failed to start import
 	
 	* filesRefreshed:

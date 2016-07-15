@@ -38,6 +38,13 @@ struct PrefKeys {
 	
 	static let Bookmarks = "Bookmarks"
 	static let Hosts = "ServerHosts"
+	
+	static let SupressDeleteFileWarning = "SupressDeleteFileWarning"
+}
+
+struct LStrings {
+	static let DeleteFileWarning = "DeleteFileWarning"
+	static let DeleteFileWarningInfo = "DeleteFileWarningInfo"
 }
 
 struct Constants {

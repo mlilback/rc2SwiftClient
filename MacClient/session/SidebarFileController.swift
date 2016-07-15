@@ -157,8 +157,24 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	@IBAction func deleteFile(sender:AnyObject?) {
 		guard let file = selectedFile else { return }
-		session.removeFile(file)
-		log.info("remove selected file")
+		let defaults = NSUserDefaults.standardUserDefaults()
+		if defaults.boolForKey(PrefKeys.SupressDeleteFileWarning) {
+			session.removeFile(file)
+			return
+		}
+		let alert = NSAlert()
+		alert.showsSuppressionButton = true
+		alert.messageText = NSLocalizedString(LStrings.DeleteFileWarning, comment: "")
+		alert.informativeText = NSLocalizedString(LStrings.DeleteFileWarningInfo, comment: "")
+		alert.addButtonWithTitle(NSLocalizedString("Delete", comment: ""))
+		alert.addButtonWithTitle(NSLocalizedString("Cancel", comment: ""))
+		alert.beginSheetModalForWindow(self.view.window!) { [weak alert] response in
+			if let state = alert?.suppressionButton?.state where state == NSOnState {
+				defaults.setBool(true, forKey: PrefKeys.SupressDeleteFileWarning)
+			}
+			if response != NSAlertFirstButtonReturn { return }
+			self.session.removeFile(file)
+		}
 	}
 	
 	@IBAction func duplicateFile(sender:AnyObject?) {

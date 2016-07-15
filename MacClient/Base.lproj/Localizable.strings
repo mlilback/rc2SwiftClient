@@ -5,3 +5,6 @@
 "InitialServerPromptInfo" = "Rc2 can download and install a local copy of the server.";
 
 "Rc2ErrorCode.NoSuchProject" = "There is no project/workspace with that name";
+
+"DeleteFileWarning" = "Confirm Delete File";
+"DeleteFileWarningInfo" = "This action can not be undone.";
