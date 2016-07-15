@@ -73,12 +73,13 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 	*/
 	func validateTableViewDrop(info:NSDraggingInfo) -> NSDragOperation {
 		guard info.draggingSource() == nil else  { return NSDragOperation.None } //don't allow local drags
-		let urls = info.draggingPasteboard().readObjectsForClasses([NSURL.self], options: pboardReadOptions)
+		let urls = info.draggingPasteboard().readObjectsForClasses([NSURL.self], options: pboardReadOptions) as? [NSURL]
 		guard urls?.count > 0 else { return NSDragOperation.None } //must have a url
 		let acceptableTypes = FileType.importableFileTypes.map() { $0.fileExtension }
 		for aUrl in urls! {
-			//if not a valid filetype extension, return .None
-			if !acceptableTypes.contains(aUrl.pathExtension) { return NSDragOperation.None }
+			if !acceptableTypes.contains(aUrl.pathExtension ?? "") {
+				return NSDragOperation.None
+			}
 		}
 		//must be good
 		return NSDragOperation.Copy
