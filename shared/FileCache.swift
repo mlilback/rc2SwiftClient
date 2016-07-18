@@ -118,21 +118,25 @@ public class DefaultFileCache: NSObject, FileCache, NSURLSessionDownloadDelegate
 	
 	///caches all the files in the workspace that aren't already cached with the current version of the file
 	//observer fractionCompleted on returned progress for completion handling
+	/// - parameter setupHandler: called once all download tasks are created, but before they are resumed
+	/// if the progress parameter is nil, caching was not necessary
 	func cacheAllFiles(setupHandler:((NSProgress)-> Void)) -> NSProgress? {
-		if downloadingAllFiles {
-			log.warning("cacheAllFiles called while already in progress")
-			return nil
-		}
+		let promise = Promise<NSProgress?, NSError>()
+		precondition(!downloadingAllFiles)
 		taskLock.lock()
 		defer { taskLock.unlock() }
-		if tasks.count > 0 {
-			log.warning("cacheAllFiles called with tasks in progress")
-			return nil
-		}
+		assert(tasks.count == 0)
 		if nil == urlSession {
 			prepareUrlSession()
 		}
 		currentProgress = NSProgress(totalUnitCount: Int64(workspace.files.count))
+		if workspace.files.count < 1 {
+			//if no files to cache, fire off progress complete on next iteration of main loop
+			dispatch_async(dispatch_get_main_queue()) {
+				self.currentProgress?.rc2_complete(nil)
+			}
+			return currentProgress
+		}
 		for aFile in workspace.files {
 			let theTask = DownloadTask(file: aFile, cache: self, parentProgress: currentProgress)
 			tasks[theTask.task.taskIdentifier] = theTask
