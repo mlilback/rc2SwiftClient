@@ -110,7 +110,7 @@ public class BookmarkViewController: NSViewController {
 					self.appStatus?.presentError(NSError.error(withCode: .NoSuchProject, description: nil), session:nil)
 					return
 				}
-				restServer.createSession(wspace, appStatus: self.appStatus!).onSuccess { _ in
+				restServer.createSession(wspace).onSuccess { _ in
 					self.openSessionCallback?(restServer)
 				}.onFailure { error in
 					self.appStatus?.presentError(error, session:nil)
@@ -139,7 +139,7 @@ public class BookmarkViewController: NSViewController {
 			self.presentError(NSError.error(withCode: .NoSuchProject, description: nil))
 			return
 		}
-		restServer.createSession(wspace, appStatus: self.appStatus!).onSuccess { _ in
+		restServer.createSession(wspace).onSuccess { _ in
 			self.openSessionCallback?(restServer)
 			}.onFailure { error in
 				self.appStatus?.presentError(error, session:nil)

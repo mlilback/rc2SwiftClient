@@ -25,7 +25,7 @@ import SwiftyJSON
 	private(set) public var loginSession : LoginSession?
 	private(set) var baseUrl : NSURL?
 	private var userAgent: String
-	weak var appStatus:AppStatus?
+	weak var appStatus:AppStatus? { didSet { session?.appStatus = appStatus } }
 	private(set) var session:Session?
 
 	var connectionDescription : String {
@@ -88,12 +88,12 @@ import SwiftyJSON
 		return request
 	}
 	
-	func createSession(wspace:Workspace, appStatus:AppStatus) -> Future<Session, NSError> {
+	func createSession(wspace:Workspace) -> Future<Session, NSError> {
 		let request = NSMutableURLRequest(URL: createWebsocketUrl(wspace.wspaceId))
 		request.addValue(loginSession!.authToken, forHTTPHeaderField: "Rc2-Auth")
 		request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
 		let ws = WebSocket()
-		session = Session(wspace, source:ws, restServer:self, appStatus:appStatus, networkConfig:urlConfig, hostIdentifier: host.host)
+		session = Session(wspace, source:ws, restServer:self, networkConfig:urlConfig, hostIdentifier: host.host)
 		return session!.open(request)
 	}
 	

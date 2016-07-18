@@ -17,7 +17,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	var sessionWindowControllers = Set<MainWindowController>()
 	var bookmarkWindowController: NSWindowController?
 	let bookmarkManager = BookmarkManager()
-	private var appStatus: MacAppStatus?
 	dynamic var dockerManager: DockerManager?
 
 	private dynamic var _currentProgress: NSProgress?
@@ -25,7 +24,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 
 	func applicationWillFinishLaunching(notification: NSNotification) {
 		dockerManager = DockerManager()
-		appStatus = MacAppStatus(windowAccessor: windowForAppStatus)
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
 		let cdUrl = NSBundle.mainBundle().URLForResource("CommonDefaults", withExtension: "plist")
 		NSUserDefaults.standardUserDefaults().registerDefaults(NSDictionary(contentsOfURL: cdUrl!)! as! [String : AnyObject])
@@ -133,19 +131,19 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func openSession(restServer:RestServer) {
-		appStatus!.updateStatus(nil)
+		let appStatus = MacAppStatus(windowAccessor: windowForAppStatus)
 		let wc = MainWindowController.createFromNib()
 		sessionWindowControllers.insert(wc)
 		
 		let container = Container()
 		container.registerForStoryboard(RootViewController.self) { r, c in
-			c.appStatus = self.appStatus
+			c.appStatus = appStatus
 		}
 		container.registerForStoryboard(SidebarFileController.self) { r, c in
-			c.appStatus = self.appStatus
+			c.appStatus = appStatus
 		}
 		container.registerForStoryboard(AbstractSessionViewController.self) { r, c in
-			c.appStatus = self.appStatus
+			c.appStatus = appStatus
 		}
 
 		let sboard = SwinjectStoryboard.create(name: "MainController", bundle: nil, container: container)
@@ -153,7 +151,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window
 		let root = sboard.instantiateControllerWithIdentifier("rootController") as? RootViewController
 		wc.contentViewController = root
-		wc.appStatus = self.appStatus
+		wc.appStatus = appStatus
+		restServer.appStatus = appStatus
 		wc.session = restServer.session
 		wc.setupChildren(restServer)
 	}

@@ -63,12 +63,11 @@ public class Session : NSObject, SessionFileHandlerDelegate {
 	
 	
 	//MARK: init/open/close
-	init(_ wspace:Workspace, source:WebSocketSource, restServer rserver:RestServer, appStatus:AppStatus, networkConfig config:NSURLSessionConfiguration, hostIdentifier:String, delegate:SessionDelegate?=nil)
+	init(_ wspace:Workspace, source:WebSocketSource, restServer rserver:RestServer, networkConfig config:NSURLSessionConfiguration, hostIdentifier:String, delegate:SessionDelegate?=nil)
 	{
 		workspace = wspace
 		self.delegate = delegate
 		self.wsSource = source
-		self.appStatus = appStatus
 		self.hostIdentifier = hostIdentifier
 		self.restServer = rserver
 		self.fileHandler = DefaultSessionFileHandler(wspace: workspace, baseUrl: restServer!.baseUrl!, config: config, appStatus: appStatus)
