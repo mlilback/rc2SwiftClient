@@ -101,6 +101,7 @@ public class Workspace: NSObject {
 	}
 	
 	public func file(at index:Int) -> File? {
+		precondition(index >= 0 && index < filesArray.count)
 		return filesArray.objectAtIndex(index) as? File
 	}
 	

@@ -174,6 +174,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			}
 			if response != NSAlertFirstButtonReturn { return }
 			self.session.removeFile(file)
+			self.delegate?.fileSelectionChanged(nil)
 		}
 	}
 	
@@ -322,7 +323,6 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	func tableView(tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableViewDropOperation) -> Bool
 	{
 		importPrompter!.acceptTableViewDrop(info, workspace: session.workspace, window: view.window!) { (files) in
-			//TODO: import the files
 			self.importFiles(files)
 		}
 		return true

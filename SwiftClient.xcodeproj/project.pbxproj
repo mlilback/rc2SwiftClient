@@ -917,9 +917,9 @@
 			buildConfigurationList = 088CE6831C4B0AF500153414 /* Build configuration list for PBXNativeTarget "MacClient" */;
 			buildPhases = (
 				08A01FCF1CC80928001EDFAA /* create help index */,
+				0833A8241D2D853B0033654B /* increment build number */,
 				088CE6651C4B0AF400153414 /* Sources */,
 				088CE6661C4B0AF400153414 /* Frameworks */,
-				0833A8241D2D853B0033654B /* increment build number */,
 				088CE6671C4B0AF400153414 /* Resources */,
 				082FF1D71C7F321B00CCC27F /* Embed Frameworks */,
 				082FF1D81C7F322500CCC27F /* CopyFiles */,

@@ -136,6 +136,12 @@ class SessionEditorController: AbstractSessionViewController
 					self.fileSelectionChanged(newFile)
 				}
 			}
+		} else if change.changeType == .Remove {
+			if change.oldFile?.fileId == currentDocument?.file.fileId
+			{
+				//document being editied was removed
+				fileSelectionChanged(nil)
+			}
 		}
 	}
 	

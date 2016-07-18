@@ -1,5 +1,7 @@
 # rc2SwiftClient TODO
 
+* don't allow two windows to same session
+
 * restore session:
 
 	* need to show progress while restoring sessions

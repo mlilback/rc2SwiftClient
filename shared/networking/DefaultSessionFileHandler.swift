@@ -28,6 +28,11 @@ class DefaultSessionFileHandler: SessionFileHandler {
 	
 	func loadFiles() -> Future<SessionFileHandler, NSError> {
 		filesLoaded = false //can be called to cache any new files
+		guard workspace.files.count > 0 else {
+			downloadPromise.success(self)
+			loadComplete()
+			return downloadPromise.future
+		}
 		fileCache.cacheAllFiles() { (progress) in
 			self.appStatus?.currentProgress = progress
 			progress.rc2_addCompletionHandler() {
@@ -76,14 +81,18 @@ class DefaultSessionFileHandler: SessionFileHandler {
 		let idx = workspace.indexOfFilePassingTest() { (obj, idx, stop) -> Bool in
 			return (obj as! File).fileId == file.fileId
 		}
-		if idx == NSNotFound { //insert
-			workspace.insertFile(file, at: workspace.fileCount)
-		} else { //update
-			workspace.replaceFile(at:idx, withFile: file)
+		//we don't want notification sent until the file is actually written
+		defer {
+			if idx == NSNotFound { //insert
+				workspace.insertFile(file, at: workspace.fileCount)
+			} else { //update
+				workspace.replaceFile(at:idx, withFile: file)
+			}
 		}
 		if let fileContents = data {
 			do {
 				try fileContents.writeToURL(fileCache.cachedFileUrl(file), options: [])
+				log.info("file \(file.fileId) contents written to disk")
 			} catch let err {
 				log.error("failed to write file \(file.fileId) update: \(err)")
 			}
