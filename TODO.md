@@ -2,6 +2,8 @@
 
 * don't allow two windows to same session
 
+* don't try to open a session that is already being opened
+
 * restore session:
 
 	* need to show progress while restoring sessions

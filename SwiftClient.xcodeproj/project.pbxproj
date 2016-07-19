@@ -101,8 +101,12 @@
 		083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */; };
 		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
 		083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
+		084525A91D3D56E500E99F9D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084525A81D3D56E500E99F9D /* main.swift */; };
+		084525AD1D3D56E500E99F9D /* LocalServer.app in Embed XPC Services */ = {isa = PBXBuildFile; fileRef = 084525A21D3D56E500E99F9D /* LocalServer.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		084525B31D3D5AAC00E99F9D /* LocalServerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084525B21D3D5AAC00E99F9D /* LocalServerProtocol.swift */; };
+		084525B41D3D5AAC00E99F9D /* LocalServerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084525B21D3D5AAC00E99F9D /* LocalServerProtocol.swift */; };
+		084525B61D3D5CA400E99F9D /* LocalDockerServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084525B51D3D5CA400E99F9D /* LocalDockerServer.swift */; };
 		0845CB1E1C616E060090267C /* MockFileManagers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* MockFileManagers.swift */; };
-		084FEA771D2FD3D600060A7D /* DockerUrlProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA761D2FD3D600060A7D /* DockerUrlProtocol.swift */; };
 		084FEA7A1D2FE97700060A7D /* String+Rc2Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA791D2FE97700060A7D /* String+Rc2Extensions.swift */; };
 		084FEA7C1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA7B1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift */; };
 		084FEA7E1D30029A00060A7D /* DockerUrlProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA7D1D30029900060A7D /* DockerUrlProtocolTests.swift */; };
@@ -162,6 +166,17 @@
 		08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FD91CC9692C001EDFAA /* BasicOutlineDataSource.swift */; };
 		08A01FDC1CCA8B2F001EDFAA /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */; };
 		08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */; };
+		08A7C8911D3EA10300CD84F5 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C41C7F321B00CCC27F /* XCGLogger.framework */; };
+		08A7C8931D3EAF2000CD84F5 /* DockerUrlProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA761D2FD3D600060A7D /* DockerUrlProtocol.swift */; };
+		08A7C8941D3EB00400CD84F5 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
+		08A7C8951D3EB01500CD84F5 /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */; };
+		08A7C8961D3EBAC400CD84F5 /* NSError+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F42FA51D367A5800A1EE8D /* NSError+Rc2.swift */; };
+		08A7C8971D3EBACC00CD84F5 /* String+Rc2Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA791D2FE97700060A7D /* String+Rc2Extensions.swift */; };
+		08A7C8981D3EBACF00CD84F5 /* SystemExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6A31C4B605D00153414 /* SystemExtensions.swift */; };
+		08A7C8991D3EBADB00CD84F5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6B51C4B71F300153414 /* Constants.swift */; };
+		08A7C89A1D3EBAE300CD84F5 /* NSTextCheckingResult+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA7B1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift */; };
+		08A7C89B1D3EBAE700CD84F5 /* NSURL+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0868FC581C7789C3002386CB /* NSURL+Rc2.swift */; };
+		08A7C89C1D3EBB2100CD84F5 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		08B036221C73B131005928B3 /* FileImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B036211C73B131005928B3 /* FileImporter.swift */; };
 		08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; };
 		08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -182,6 +197,7 @@
 		08DB1A9D1D32EFC10079DA6B /* SwinjectStoryboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */; };
 		08DB1A9E1D32EFC10079DA6B /* SwinjectStoryboard.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08DB1AA01D32EFC70079DA6B /* Swinject.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A971D32EF930079DA6B /* Swinject.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08E8E2F51D3E94AC003F60C2 /* LocalServerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8E2F41D3E94AC003F60C2 /* LocalServerService.swift */; };
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08EFF6031C7BB2E600AAF1D4 /* MultipartInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */; };
@@ -210,6 +226,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		084525AB1D3D56E500E99F9D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 084525A11D3D56E500E99F9D;
+			remoteInfo = LocalServer;
+		};
 		088CE67B1C4B0AF500153414 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
@@ -278,6 +301,17 @@
 				082FF1EC1C7F338C00CCC27F /* URITemplate.framework.dSYM in CopyFiles */,
 				082FF1EA1C7F323800CCC27F /* XCGLogger.framework.dSYM in CopyFiles */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		084525B11D3D56E500E99F9D /* Embed XPC Services */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LoginItems;
+			dstSubfolderSpec = 1;
+			files = (
+				084525AD1D3D56E500E99F9D /* LocalServer.app in Embed XPC Services */,
+			);
+			name = "Embed XPC Services";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		08A01FAC1CC7FA28001EDFAA /* CopyFiles */ = {
@@ -377,6 +411,11 @@
 		083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbeddedDialogController.swift; sourceTree = "<group>"; };
 		083A567C1D25AFE7009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/BookmarkManager.storyboard; sourceTree = "<group>"; };
 		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarkManager.swift; sourceTree = "<group>"; };
+		084525A21D3D56E500E99F9D /* LocalServer.app */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = LocalServer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		084525A81D3D56E500E99F9D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		084525AA1D3D56E500E99F9D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		084525B21D3D5AAC00E99F9D /* LocalServerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalServerProtocol.swift; sourceTree = "<group>"; };
+		084525B51D3D5CA400E99F9D /* LocalDockerServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDockerServer.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* MockFileManagers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManagers.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		084FEA761D2FD3D600060A7D /* DockerUrlProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerUrlProtocol.swift; sourceTree = "<group>"; };
@@ -463,6 +502,7 @@
 		08DB1A971D32EF930079DA6B /* Swinject.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Swinject.framework; path = Carthage/Build/Mac/Swinject.framework; sourceTree = "<group>"; };
 		08DB1A991D32EFA10079DA6B /* Swinject.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Swinject.framework.dSYM; path = Carthage/Build/Mac/Swinject.framework.dSYM; sourceTree = "<group>"; };
 		08DB1A9A1D32EFA10079DA6B /* SwinjectStoryboard.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = SwinjectStoryboard.framework.dSYM; path = Carthage/Build/Mac/SwinjectStoryboard.framework.dSYM; sourceTree = "<group>"; };
+		08E8E2F41D3E94AC003F60C2 /* LocalServerService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalServerService.swift; sourceTree = "<group>"; };
 		08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetActionBlock.swift; sourceTree = "<group>"; };
 		08ED575E1C724383002B2558 /* MacFileImportSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacFileImportSetup.swift; sourceTree = "<group>"; };
 		08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStream.swift; sourceTree = "<group>"; };
@@ -496,6 +536,17 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0845259F1D3D56E500E99F9D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				08A7C8911D3EA10300CD84F5 /* XCGLogger.framework in Frameworks */,
+				08A7C8941D3EB00400CD84F5 /* BrightFutures.framework in Frameworks */,
+				08A7C8951D3EB01500CD84F5 /* SwiftyJSON.framework in Frameworks */,
+				08A7C89C1D3EBB2100CD84F5 /* Result.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		088CE6661C4B0AF400153414 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -628,6 +679,18 @@
 			name = "test resources";
 			sourceTree = "<group>";
 		};
+		084525A31D3D56E500E99F9D /* LocalServer */ = {
+			isa = PBXGroup;
+			children = (
+				084525B51D3D5CA400E99F9D /* LocalDockerServer.swift */,
+				084FEA761D2FD3D600060A7D /* DockerUrlProtocol.swift */,
+				084525A81D3D56E500E99F9D /* main.swift */,
+				08E8E2F41D3E94AC003F60C2 /* LocalServerService.swift */,
+				084525AA1D3D56E500E99F9D /* Info.plist */,
+			);
+			path = LocalServer;
+			sourceTree = "<group>";
+		};
 		084FEA781D2FE95600060A7D /* extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -651,6 +714,7 @@
 				088CE66B1C4B0AF400153414 /* MacClient */,
 				088CE6941C4B605D00153414 /* shared */,
 				08A01FAF1CC7FA28001EDFAA /* createHelpIndex */,
+				084525A31D3D56E500E99F9D /* LocalServer */,
 				088CE6931C4B144800153414 /* Frameworks */,
 				088CE67D1C4B0AF500153414 /* MacClientTests */,
 				088CE66A1C4B0AF400153414 /* Products */,
@@ -663,6 +727,7 @@
 				088CE6691C4B0AF400153414 /* Rc².app */,
 				088CE67A1C4B0AF500153414 /* MacClientTests.xctest */,
 				08A01FAE1CC7FA28001EDFAA /* createHelpIndex */,
+				084525A21D3D56E500E99F9D /* LocalServer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -694,7 +759,6 @@
 				08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */,
 				08F189B21D1B0BBE00866A05 /* ShellCommands.swift */,
 				0833A8121D2D630F0033654B /* DockerManager.swift */,
-				084FEA761D2FD3D600060A7D /* DockerUrlProtocol.swift */,
 				083305DE1C51571500E27F66 /* Localizable.strings */,
 				083306061C51A0B200E27F66 /* CommonDefaults.plist */,
 				087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */,
@@ -778,6 +842,7 @@
 				088CE6B51C4B71F300153414 /* Constants.swift */,
 				084FEA7F1D3044E700060A7D /* ObjcConstants.h */,
 				084FEA801D3045D800060A7D /* ObjcConstants.m */,
+				084525B21D3D5AAC00E99F9D /* LocalServerProtocol.swift */,
 				08C484F71C9B159000FE824B /* server.cer */,
 				08A01FD11CC81479001EDFAA /* helpindex.db */,
 				08F189A71D0A0E7200866A05 /* static_html */,
@@ -912,23 +977,43 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		084525A11D3D56E500E99F9D /* LocalServer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 084525B01D3D56E500E99F9D /* Build configuration list for PBXNativeTarget "LocalServer" */;
+			buildPhases = (
+				0845259E1D3D56E500E99F9D /* Sources */,
+				0845259F1D3D56E500E99F9D /* Frameworks */,
+				084525A01D3D56E500E99F9D /* Resources */,
+				08A7C8921D3EA97D00CD84F5 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LocalServer;
+			productName = LocalServer;
+			productReference = 084525A21D3D56E500E99F9D /* LocalServer.app */;
+			productType = "com.apple.product-type.xpc-service";
+		};
 		088CE6681C4B0AF400153414 /* MacClient */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 088CE6831C4B0AF500153414 /* Build configuration list for PBXNativeTarget "MacClient" */;
 			buildPhases = (
-				08A01FCF1CC80928001EDFAA /* create help index */,
 				0833A8241D2D853B0033654B /* increment build number */,
+				08A01FCF1CC80928001EDFAA /* create help index */,
 				088CE6651C4B0AF400153414 /* Sources */,
 				088CE6661C4B0AF400153414 /* Frameworks */,
 				088CE6671C4B0AF400153414 /* Resources */,
 				082FF1D71C7F321B00CCC27F /* Embed Frameworks */,
 				082FF1D81C7F322500CCC27F /* CopyFiles */,
 				0833A81B1D2D7E210033654B /* hockey app */,
+				084525B11D3D56E500E99F9D /* Embed XPC Services */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				08A01FD41CC82323001EDFAA /* PBXTargetDependency */,
+				084525AC1D3D56E500E99F9D /* PBXTargetDependency */,
 			);
 			name = MacClient;
 			productName = MacClient;
@@ -982,6 +1067,13 @@
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = Rc2;
 				TargetAttributes = {
+					084525A11D3D56E500E99F9D = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = V97NV337TR;
+						DevelopmentTeamName = "Mark Lilback";
+						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
+					};
 					088CE6681C4B0AF400153414 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = V97NV337TR;
@@ -1021,11 +1113,19 @@
 				088CE6681C4B0AF400153414 /* MacClient */,
 				088CE6791C4B0AF500153414 /* MacClientTests */,
 				08A01FAD1CC7FA28001EDFAA /* createHelpIndex */,
+				084525A11D3D56E500E99F9D /* LocalServer */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		084525A01D3D56E500E99F9D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		088CE6671C4B0AF400153414 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1125,9 +1225,40 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${BUILT_PRODUCTS_DIR}/createHelpIndex\" \"${SRCROOT}/help/json\" \"${BUILT_PRODUCTS_DIR}\"";
 		};
+		08A7C8921D3EA97D00CD84F5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "fworks=(XCGLogger Result SwiftyJSON BrightFutures)\nfor aFwork in ${fworks[@]}; do\necho \"changing ${aFwork}\"\ninstall_name_tool -change @rpath/${aFwork}.framework/Versions/A/${aFwork} @executable_path/../../../../../Frameworks/${aFwork}.framework/Versions/A/${aFwork} \"${BUILT_PRODUCTS_DIR}/${EXECUTABLE_PATH}\"\ndone";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0845259E1D3D56E500E99F9D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				08A7C8971D3EBACC00CD84F5 /* String+Rc2Extensions.swift in Sources */,
+				084525B61D3D5CA400E99F9D /* LocalDockerServer.swift in Sources */,
+				08A7C89A1D3EBAE300CD84F5 /* NSTextCheckingResult+Rc2.swift in Sources */,
+				08A7C8961D3EBAC400CD84F5 /* NSError+Rc2.swift in Sources */,
+				08A7C8931D3EAF2000CD84F5 /* DockerUrlProtocol.swift in Sources */,
+				08A7C89B1D3EBAE700CD84F5 /* NSURL+Rc2.swift in Sources */,
+				084525B41D3D5AAC00E99F9D /* LocalServerProtocol.swift in Sources */,
+				08E8E2F51D3E94AC003F60C2 /* LocalServerService.swift in Sources */,
+				08A7C8981D3EBACF00CD84F5 /* SystemExtensions.swift in Sources */,
+				084525A91D3D56E500E99F9D /* main.swift in Sources */,
+				08A7C8991D3EBADB00CD84F5 /* Constants.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		088CE6651C4B0AF400153414 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1160,6 +1291,7 @@
 				0816F89E1C6D320D00A6120B /* DefaultSessionFileHandler.swift in Sources */,
 				083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */,
 				0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */,
+				084525B31D3D5AAC00E99F9D /* LocalServerProtocol.swift in Sources */,
 				0827A4E61C7ED9CE001F0AFB /* RmdSyntaxParser.swift in Sources */,
 				08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */,
 				083550CD1C760F050013E2B5 /* NSProgress+Rc2.m in Sources */,
@@ -1189,7 +1321,6 @@
 				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,
 				08D6106B1CD2444C00258D8E /* Variable.swift in Sources */,
 				08F189B11D19B0D600866A05 /* ServerHost.swift in Sources */,
-				084FEA771D2FD3D600060A7D /* DockerUrlProtocol.swift in Sources */,
 				08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */,
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
 				083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */,
@@ -1282,6 +1413,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		084525AC1D3D56E500E99F9D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 084525A11D3D56E500E99F9D /* LocalServer */;
+			targetProxy = 084525AB1D3D56E500E99F9D /* PBXContainerItemProxy */;
+		};
 		088CE67C1C4B0AF500153414 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 088CE6681C4B0AF400153414 /* MacClient */;
@@ -1339,6 +1475,68 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		084525AE1D3D56E500E99F9D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				INFOPLIST_FILE = LocalServer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks @rpath/../../../../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient.LocalServer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		084525AF1D3D56E500E99F9D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				INFOPLIST_FILE = LocalServer/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks @rpath/../../../../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				OTHER_SWIFT_FLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient.LocalServer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 2.3;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 		088CE6811C4B0AF500153414 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 08F189AB1D18816A00866A05 /* Debug.xcconfig */;
@@ -1417,6 +1615,7 @@
 		088CE6841C4B0AF500153414 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
@@ -1440,6 +1639,7 @@
 		088CE6851C4B0AF500153414 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
@@ -1526,6 +1726,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		084525B01D3D56E500E99F9D /* Build configuration list for PBXNativeTarget "LocalServer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				084525AE1D3D56E500E99F9D /* Debug */,
+				084525AF1D3D56E500E99F9D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		088CE6641C4B0AF400153414 /* Build configuration list for PBXProject "SwiftClient" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

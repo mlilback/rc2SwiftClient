@@ -24,6 +24,9 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 
 	func applicationWillFinishLaunching(notification: NSNotification) {
 		dockerManager = DockerManager()
+		dockerManager?.isDockerRunning() { isRunning in
+			log.info("docker is running \(isRunning ? "yes" : "no")")
+		}
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
 		let cdUrl = NSBundle.mainBundle().URLForResource("CommonDefaults", withExtension: "plist")
 		NSUserDefaults.standardUserDefaults().registerDefaults(NSDictionary(contentsOfURL: cdUrl!)! as! [String : AnyObject])
