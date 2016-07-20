@@ -9,6 +9,7 @@ import SwiftyJSON
 import BrightFutures
 
 @objc class LocalDockerServer: NSObject, LocalServerProtocol, NSXPCListenerDelegate {
+	let requiredApiVersion = 1.24
 	private let socketPath = "/var/run/docker.sock"
 	private(set) var primaryVersion:Int = 0
 	private(set) var secondaryVersion:Int = 0
@@ -18,6 +19,7 @@ import BrightFutures
 	let session: NSURLSession
 	private(set) var isInstalled:Bool = false
 	private var versionLoaded:Bool = false
+	private weak var currentConnection: NSXPCConnection?
 	
 	override init() {
 		sessionConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
@@ -25,20 +27,11 @@ import BrightFutures
 		session = NSURLSession(configuration: sessionConfig)
 		super.init()
 		isInstalled = NSFileManager().fileExistsAtPath(socketPath)
-//		if isInstalled {
-//			fetchVersion()
-//		}
 		log.info("server initialized")
 	}
 	
-	///asynchronously fetch version information
-	func fetchVersion() {
-		let future = dockerRequest("/version")
-		processVersionFuture(future)
-	}
-
 	///parses the future returned from asking docker for version info
-	func processVersionFuture(future:Future<JSON,NSError>) {
+	func processVersionFuture(future:Future<JSON,NSError>, handler:(Bool)->Void) {
 		future.onSuccess { json in
 			do {
 				let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
@@ -55,8 +48,11 @@ import BrightFutures
 			} catch let err as NSError {
 				log.error("error getting docker version \(err)")
 			}
+			log.info("docker is version \(self.primaryVersion).\(self.secondaryVersion).\(self.fixVersion):\(self.apiVersion)")
+			handler(self.apiVersion >= self.requiredApiVersion)
 		}.onFailure { error in
 			log.warning("error getting docker version: \(error)")
+			handler(false)
 		}
 	}
 
@@ -81,15 +77,19 @@ import BrightFutures
 	}
 
 	func listener(listener: NSXPCListener, shouldAcceptNewConnection newConnection: NSXPCConnection) -> Bool {
+		//only allow 1 connection
+		guard nil == currentConnection else { log.error("request for second connection"); return false }
 		newConnection.exportedInterface = NSXPCInterface(withProtocol: LocalServerProtocol.self)
-		let exportedObject = LocalDockerServer()
-		newConnection.exportedObject = exportedObject
+		newConnection.exportedObject = self
+		currentConnection = newConnection
 		newConnection.resume()
 		return true
 	}
 	
 	func isDockerRunning(handler: (Bool) -> Void) {
-		handler(true)
+		guard !versionLoaded else { handler(apiVersion > 0); return }
+		let future = dockerRequest("/version")
+		processVersionFuture(future, handler: handler)
 	}
 	
 	func runLoopNotification(activity:CFRunLoopActivity) {
