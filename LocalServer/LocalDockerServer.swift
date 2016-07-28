@@ -31,7 +31,7 @@ import BrightFutures
 	}
 	
 	///parses the future returned from asking docker for version info
-	func processVersionFuture(future:Future<JSON,NSError>, handler:(Bool)->Void) {
+	func processVersionFuture(future:Future<JSON,NSError>, handler:SimpleServerCallback) {
 		future.onSuccess { json in
 			do {
 				let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
@@ -49,10 +49,10 @@ import BrightFutures
 				log.error("error getting docker version \(err)")
 			}
 			log.info("docker is version \(self.primaryVersion).\(self.secondaryVersion).\(self.fixVersion):\(self.apiVersion)")
-			handler(self.apiVersion >= self.requiredApiVersion)
+			handler(success: self.apiVersion >= self.requiredApiVersion, error: nil)
 		}.onFailure { error in
 			log.warning("error getting docker version: \(error)")
-			handler(false)
+			handler(success: false, error: error as NSError)
 		}
 	}
 
@@ -86,10 +86,26 @@ import BrightFutures
 		return true
 	}
 	
-	func isDockerRunning(handler: (Bool) -> Void) {
-		guard !versionLoaded else { handler(apiVersion > 0); return }
+	func isDockerRunning(handler: SimpleServerCallback) {
+		guard !versionLoaded else { handler(success: apiVersion > 0, error: nil); return }
 		let future = dockerRequest("/version")
 		processVersionFuture(future, handler: handler)
+	}
+	
+	func checkForUpdates(baseUrl:String, requiredVersion:Int, callback:SimpleServerCallback) {
+		let url = NSURL(string: baseUrl)?.URLByAppendingPathComponent("/localServer.json")
+		session.dataTaskWithURL(url!) { (data, response, error) in
+			guard let rawData = data where error == nil else {
+				callback(success: false, error: NSError.error(withCode: .NetworkError, description: "failed to connect to update server", underlyingError: error))
+				return
+			}
+			let json = JSON(rawData)
+			guard let latestVersion = json["latestVersion"].string else {
+				callback(success: false, error: NSError.error(withCode: .ServerError, description: "update server returned invalid data"))
+				return
+			}
+			
+		}
 	}
 	
 	func runLoopNotification(activity:CFRunLoopActivity) {

@@ -11,15 +11,17 @@ extension NSError {
 	/// - parameter withCode: the Rc2 error code for this error
 	/// - parameter description: if nil, will be looked up with NSLocalizedString using Rc2ErrorCode.[code]
 	/// - returns: the new error object
-	static func error(withCode code:Rc2ErrorCode, description:String?) -> NSError {
-		var userInfo:[String:AnyObject]?
+	static func error(withCode code:Rc2ErrorCode, description:String?, underlyingError:NSError? = nil) -> NSError {
+		var userInfo:[String:AnyObject]? = [:]
 		var localDescription = description
 		if localDescription == nil {
 			localDescription = NSLocalizedString("Rc2ErrorCode.\(code)", comment: "")
 		}
 		if let desc = localDescription {
-			userInfo = [NSLocalizedDescriptionKey:desc]
+			userInfo?[NSLocalizedDescriptionKey] = desc
 		}
+		if underlyingError != nil { userInfo?[NSUnderlyingErrorKey] = underlyingError }
+		if userInfo?.count ?? 0 < 1 { userInfo = nil }
 		return NSError(domain: Rc2ErrorDomain, code: code.rawValue, userInfo: userInfo)
 	}
 }

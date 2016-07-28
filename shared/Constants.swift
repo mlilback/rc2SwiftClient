@@ -14,6 +14,7 @@ enum Rc2ErrorCode: Int {
 	case Impossible = 102
 	case DockerError = 103
 	case NoSuchProject = 104
+	case NetworkError = 105
 }
 
 struct Notifications {
