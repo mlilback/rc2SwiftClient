@@ -36,7 +36,7 @@ public class DockerManager : NSObject {
 	}
 	
 	func isDockerRunning(handler:(Bool) -> Void) {
-		server.isDockerRunning() { rsp in handler(rsp) }
+		server.isDockerRunning() { rsp, error in handler(rsp) }
 	}
 	
 //	private let socketPath:String

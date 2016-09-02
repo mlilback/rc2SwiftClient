@@ -6,6 +6,9 @@
 
 import Foundation
 
+///DockerUrlProtocol is a subclass of NSURLProtocol for dealing with "unix" URLs
+/// This is used to communicate with the local Docker daemon using a REST-like syntax
+
 public class DockerUrlProtocol: NSURLProtocol, NSURLSessionDelegate {
 	private let socketPath = "/var/run/docker.sock"
 	
@@ -18,6 +21,7 @@ public class DockerUrlProtocol: NSURLProtocol, NSURLSessionDelegate {
 	}
 	
 	override public func startLoading() {
+		//setup a unix domain socket
 		let fd = Darwin.socket(AF_UNIX, SOCK_STREAM, 0)
 		guard fd >= 0 else {
 			client?.URLProtocol(self, didFailWithError: NSError(domain: NSPOSIXErrorDomain, code: Int(Darwin.errno), userInfo: nil))
@@ -31,6 +35,7 @@ public class DockerUrlProtocol: NSURLProtocol, NSURLSessionDelegate {
 				strcpy(UnsafeMutablePointer(spath), cpath)
 			}
 		}
+		//connect, make the request, and fetch result data
 		let code = Darwin.connect(fd, sockaddr_cast(&addr), socklen_t(strideof(sockaddr_un)))
 		guard code >= 0 else { reportBadResponse(); return }
 		let fh = NSFileHandle(fileDescriptor: fd)
@@ -39,10 +44,12 @@ public class DockerUrlProtocol: NSURLProtocol, NSURLSessionDelegate {
 		fh.writeData(outStr.dataUsingEncoding(NSUTF8StringEncoding)!)
 		let inData = fh.readDataToEndOfFile()
 		
+		//split the response into headers and content, create a response object
 		guard let (headersString, contentString) = splitResponseData(inData) else { reportBadResponse(); return }
 		guard let (statusCode, httpVersion, headers) = extractHeaders(headersString) else { reportBadResponse(); return }
 		guard let response = NSHTTPURLResponse(URL: request.URL!, statusCode: statusCode, HTTPVersion: httpVersion, headerFields: headers) else { reportBadResponse(); return }
-
+		
+		//report success to client
 		client?.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: .NotAllowed)
 		client?.URLProtocol(self, didLoadData: contentString.dataUsingEncoding(NSUTF8StringEncoding)!)
 		client?.URLProtocolDidFinishLoading(self)
@@ -51,10 +58,15 @@ public class DockerUrlProtocol: NSURLProtocol, NSURLSessionDelegate {
 	override public func stopLoading() {
 	}
 
+	//convience wrapper for sending an error message to the client
 	private func reportBadResponse() {
 		client?.URLProtocol(self, didFailWithError: NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey:request.URL!]))
 	}
 	
+	///splits raw data into headers and content
+	///
+	/// - parameter data: raw data to split
+	/// - returns: a tuple of the header and content strings
 	private func splitResponseData(data:NSData) -> (String,String)? {
 		guard let responseString = String(data:data, encoding: NSUTF8StringEncoding),
 			let endFirstLineRange = responseString.rangeOfString("\r\n\r\n")
@@ -64,6 +76,9 @@ public class DockerUrlProtocol: NSURLProtocol, NSURLSessionDelegate {
 		return (headersString, contentString)
 	}
 	
+	///extracts headers into a dictionary
+	/// - parameter headerString: the raw headers from an HTTP response
+	/// - returns: tuple of the HTTP status code, HTTP version, and a dictionary of headers
 	func extractHeaders(headerString:String) -> (Int,String,[String:String])? {
 		let responseRegex = try! NSRegularExpression(pattern: "^(HTTP/1.\\d) (\\d+)", options: [.AnchorsMatchLines])
 		guard let matchResult = responseRegex.firstMatchInString(headerString, options: [], range: headerString.toNSRange) where matchResult.numberOfRanges == 3,
@@ -85,6 +100,7 @@ public class DockerUrlProtocol: NSURLProtocol, NSURLSessionDelegate {
 		return (statusCode, versionString, headers)
 	}
 	
+	///convience wrapper of a sockaddr_un to a sockaddr
 	private func sockaddr_cast(p: UnsafePointer<sockaddr_un>) -> UnsafePointer<sockaddr> {
 		return UnsafePointer<sockaddr>(p)
 	}
