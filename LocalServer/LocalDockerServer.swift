@@ -92,6 +92,7 @@ import BrightFutures
 		processVersionFuture(future, handler: handler)
 	}
 	
+	//test document available at fester.rc2.io
 	func checkForUpdates(baseUrl:String, requiredVersion:Int, callback:SimpleServerCallback) {
 		let url = NSURL(string: baseUrl)?.URLByAppendingPathComponent("/localServer.json")
 		session.dataTaskWithURL(url!) { (data, response, error) in
@@ -100,11 +101,13 @@ import BrightFutures
 				return
 			}
 			let json = JSON(rawData)
-			guard let latestVersion = json["latestVersion"].string else {
+			guard let latestVersion = json["latestVersion"].int else {
 				callback(success: false, error: NSError.error(withCode: .ServerError, description: "update server returned invalid data"))
 				return
 			}
-			
+			if latestVersion > requiredVersion {
+				
+			}
 		}
 	}
 	

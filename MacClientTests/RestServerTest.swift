@@ -88,9 +88,15 @@ class RestServerTest: XCTestCase {
 	func testCreateSession() {
 		doLogin()
 		let wspace = dummyWorkspace()
-		server!.createSession(wspace, appStatus: DummyAppStatus()).onSuccess { session in
-		XCTAssertEqual(session.workspace, wspace)
-	}
+		let exp = expectationWithDescription("session creation")
+		server!.createSession(wspace).onSuccess { session in
+			exp.fulfill()
+			XCTAssertEqual(session.workspace, wspace)
+		}.onFailure { error in
+			exp.fulfill()
+			XCTFail("failed to create test session")
+		}
+		self.waitForExpectationsWithTimeout(2) { (error) in XCTFail("create session timeout") }
 	}
 	/*
 	func testCreateWorkspace() {

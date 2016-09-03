@@ -20,6 +20,11 @@
 		081468371C755A1E006DF8FC /* FileImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081468361C755A1E006DF8FC /* FileImporterTests.swift */; };
 		0814CB721CF894AC0008DE6B /* ConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814CB711CF894AC0008DE6B /* ConsoleAttachment.swift */; };
 		0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */; };
+		0814F1E81D79ED560093C0C1 /* DockerImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814F1E71D79ED560093C0C1 /* DockerImage.swift */; };
+		0814F1E91D79ED560093C0C1 /* DockerImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814F1E71D79ED560093C0C1 /* DockerImage.swift */; };
+		0814F1EB1D7A2E290093C0C1 /* DockerImageTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814F1EA1D7A2E290093C0C1 /* DockerImageTest.swift */; };
+		0814F1ED1D7A2E960093C0C1 /* dockerImages.json in Resources */ = {isa = PBXBuildFile; fileRef = 0814F1EC1D7A2E960093C0C1 /* dockerImages.json */; };
+		0814F1EE1D7B4B6C0093C0C1 /* JSONSerializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BA1D21826D00866A05 /* JSONSerializable.swift */; };
 		08159D1E1C77656C004A205A /* NSProgressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08159D1D1C77656C004A205A /* NSProgressTests.m */; };
 		0816F89A1C6D0F7D00A6120B /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
 		0816F89C1C6D2BA000A6120B /* SessionDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */; };
@@ -111,7 +116,6 @@
 		084FEA7C1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA7B1D2FEEA700060A7D /* NSTextCheckingResult+Rc2.swift */; };
 		084FEA7E1D30029A00060A7D /* DockerUrlProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA7D1D30029900060A7D /* DockerUrlProtocolTests.swift */; };
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
-		08634DB21D2DA33F00445462 /* DockerManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08634DB11D2DA33F00445462 /* DockerManagerTests.swift */; };
 		08634DB91D2DA93A00445462 /* syntax2.Rmd in Resources */ = {isa = PBXBuildFile; fileRef = 08634DB81D2DA93A00445462 /* syntax2.Rmd */; };
 		08634DBB1D2DA9CB00445462 /* syntax1.Rnw in Resources */ = {isa = PBXBuildFile; fileRef = 08634DBA1D2DA9CB00445462 /* syntax1.Rnw */; };
 		086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */; };
@@ -338,6 +342,9 @@
 		081468361C755A1E006DF8FC /* FileImporterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporterTests.swift; sourceTree = "<group>"; };
 		0814CB711CF894AC0008DE6B /* ConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleAttachment.swift; sourceTree = "<group>"; };
 		0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacConsoleAttachment.swift; sourceTree = "<group>"; };
+		0814F1E71D79ED560093C0C1 /* DockerImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerImage.swift; sourceTree = "<group>"; };
+		0814F1EA1D7A2E290093C0C1 /* DockerImageTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerImageTest.swift; sourceTree = "<group>"; };
+		0814F1EC1D7A2E960093C0C1 /* dockerImages.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = dockerImages.json; sourceTree = "<group>"; };
 		08159D1D1C77656C004A205A /* NSProgressTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSProgressTests.m; sourceTree = "<group>"; };
 		0816F8991C6D0F7D00A6120B /* HTMLString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLString.swift; sourceTree = "<group>"; };
 		0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegates.swift; sourceTree = "<group>"; };
@@ -637,6 +644,15 @@
 			name = sidebar;
 			sourceTree = "<group>";
 		};
+		0814F1E61D79ECD70093C0C1 /* Docker */ = {
+			isa = PBXGroup;
+			children = (
+				084525B21D3D5AAC00E99F9D /* LocalServerProtocol.swift */,
+				0814F1E71D79ED560093C0C1 /* DockerImage.swift */,
+			);
+			path = Docker;
+			sourceTree = "<group>";
+		};
 		0827A4D71C7ED9CE001F0AFB /* SyntaxHighlighting */ = {
 			isa = PBXGroup;
 			children = (
@@ -670,6 +686,7 @@
 				08634DB81D2DA93A00445462 /* syntax2.Rmd */,
 				088CE6801C4B0AF500153414 /* Info.plist */,
 				083305F31C519B8500E27F66 /* createWorkspace.json */,
+				0814F1EC1D7A2E960093C0C1 /* dockerImages.json */,
 				08FDB19A1C5917C3006FCD1A /* graph.png */,
 				083305EE1C519B4B00E27F66 /* resultsWithImages.json */,
 				083305F41C519B8500E27F66 /* loginResults.json */,
@@ -795,6 +812,7 @@
 				083382FB1C69189300D40EEB /* xattrTests.swift */,
 				086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */,
 				08A01FD71CC965F8001EDFAA /* HelpControllerTests.swift */,
+				0814F1EA1D7A2E290093C0C1 /* DockerImageTest.swift */,
 			);
 			path = MacClientTests;
 			sourceTree = "<group>";
@@ -842,7 +860,7 @@
 				088CE6B51C4B71F300153414 /* Constants.swift */,
 				084FEA7F1D3044E700060A7D /* ObjcConstants.h */,
 				084FEA801D3045D800060A7D /* ObjcConstants.m */,
-				084525B21D3D5AAC00E99F9D /* LocalServerProtocol.swift */,
+				0814F1E61D79ECD70093C0C1 /* Docker */,
 				08C484F71C9B159000FE824B /* server.cer */,
 				08A01FD11CC81479001EDFAA /* helpindex.db */,
 				08F189A71D0A0E7200866A05 /* static_html */,
@@ -1159,6 +1177,7 @@
 				083305FA1C519B8500E27F66 /* loginResults.json in Resources */,
 				08D6106F1CD2C53100258D8E /* listvars.json in Resources */,
 				08634DBB1D2DA9CB00445462 /* syntax1.Rnw in Resources */,
+				0814F1ED1D7A2E960093C0C1 /* dockerImages.json in Resources */,
 				08FDB19B1C5917C3006FCD1A /* graph.png in Resources */,
 				083305F91C519B8500E27F66 /* createWorkspace.json in Resources */,
 				08634DB91D2DA93A00445462 /* syntax2.Rmd in Resources */,
@@ -1252,6 +1271,8 @@
 				08A7C8931D3EAF2000CD84F5 /* DockerUrlProtocol.swift in Sources */,
 				08A7C89B1D3EBAE700CD84F5 /* NSURL+Rc2.swift in Sources */,
 				084525B41D3D5AAC00E99F9D /* LocalServerProtocol.swift in Sources */,
+				0814F1EE1D7B4B6C0093C0C1 /* JSONSerializable.swift in Sources */,
+				0814F1E91D79ED560093C0C1 /* DockerImage.swift in Sources */,
 				08E8E2F51D3E94AC003F60C2 /* LocalServerService.swift in Sources */,
 				08A7C8981D3EBACF00CD84F5 /* SystemExtensions.swift in Sources */,
 				084525A91D3D56E500E99F9D /* main.swift in Sources */,
@@ -1276,6 +1297,7 @@
 				0827A4E21C7ED9CE001F0AFB /* CodeHighlighter.swift in Sources */,
 				083382F31C653B6300D40EEB /* xattr.swift in Sources */,
 				083305E41C517FC000E27F66 /* SidebarVariableController.swift in Sources */,
+				0814F1E81D79ED560093C0C1 /* DockerImage.swift in Sources */,
 				088CE6AA1C4B605D00153414 /* Workspace.swift in Sources */,
 				086BC9AD1C552AA0006ABAE0 /* SpinLock.swift in Sources */,
 				088CE6A51C4B605D00153414 /* File.swift in Sources */,
@@ -1391,7 +1413,7 @@
 				086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */,
 				080834561C84C13300F5A190 /* SyntaxParserTests.swift in Sources */,
 				081263211C87A9E8003E37A5 /* EditorDocumentTests.swift in Sources */,
-				08634DB21D2DA33F00445462 /* DockerManagerTests.swift in Sources */,
+				0814F1EB1D7A2E290093C0C1 /* DockerImageTest.swift in Sources */,
 				083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */,
 				083305F01C519B4B00E27F66 /* ColorEnumTests.swift in Sources */,
 			);

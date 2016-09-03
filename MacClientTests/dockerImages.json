@@ -1,0 +1,16 @@
+[
+  {
+    "Created": 1472835241, 
+    "Id": "sha256:afd4ffa22e4043f501ff8c11c6bc793cb9b7ea942521a3dc8f867dda2c9e771b", 
+    "Labels": {
+      "io.rc2.type": "app"
+    }, 
+    "ParentId": "sha256:5cb9fe35ba5b1b83b7b5dd2e2a0d2a5094dfbd346ce98f2e616b1577193c3811", 
+    "RepoDigests": null, 
+    "RepoTags": [
+      "rc2server/dbserver:latest"
+    ], 
+    "Size": 440203696, 
+    "VirtualSize": 440203696
+  }
+]
