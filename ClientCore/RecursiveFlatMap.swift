@@ -10,7 +10,7 @@ import Foundation
 //
 //ideally transform and children weould be @noescape, but you can't call another 
 // noescape function, even though it should be fine with the same functiuon
-func recursiveFlatMap<T, TResult>(root: T, transform: (T) -> TResult?, children: (T) -> [T]) -> [TResult]
+public func recursiveFlatMap<T, TResult>(root: T, transform: (T) -> TResult?, children: (T) -> [T]) -> [TResult]
 {
 	var result = [TResult]()
 	if let value = transform(root) {
@@ -21,7 +21,7 @@ func recursiveFlatMap<T, TResult>(root: T, transform: (T) -> TResult?, children:
 }
 
 ///breadth-first
-func  firstRecursiveDescendent<T>(root: T, @noescape children:(T) -> [T], @noescape filter:(T) -> Bool) -> T?
+public func  firstRecursiveDescendent<T>(root: T, @noescape children:(T) -> [T], @noescape filter:(T) -> Bool) -> T?
 {
 	if filter(root) { return root }
 	for aChild in children(root) {

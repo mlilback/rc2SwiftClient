@@ -26,6 +26,7 @@
 		08037C321D7C5CC900006E9E /* dockerImages.json in Resources */ = {isa = PBXBuildFile; fileRef = 0814F1EC1D7A2E960093C0C1 /* dockerImages.json */; };
 		08037C331D7C5D2200006E9E /* SwiftyJSON.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08037C341D7C5D3400006E9E /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */; };
+		08037C351D7C5E2200006E9E /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */; };
 		0803FCBE1C84C47400F17E4A /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		080834561C84C13300F5A190 /* SyntaxParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080834551C84C13300F5A190 /* SyntaxParserTests.swift */; };
 		081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */; };
@@ -82,7 +83,6 @@
 		083174161C587F7F00071408 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174151C587F7F00071408 /* ImageCache.swift */; };
 		083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */; };
 		083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D81C501B7300E27F66 /* MainWindowController.swift */; };
-		083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */; };
 		083305E01C51571500E27F66 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 083305DE1C51571500E27F66 /* Localizable.strings */; };
 		083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E11C517F8900E27F66 /* SidebarFileController.swift */; };
 		083305E41C517FC000E27F66 /* SidebarVariableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E31C517FC000E27F66 /* SidebarVariableController.swift */; };
@@ -124,7 +124,6 @@
 		08634DBB1D2DA9CB00445462 /* syntax1.Rnw in Resources */ = {isa = PBXBuildFile; fileRef = 08634DBA1D2DA9CB00445462 /* syntax1.Rnw */; };
 		086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */; };
 		0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086659991CA1F3E5007AC555 /* MainWindow.xib */; };
-		086BC9AD1C552AA0006ABAE0 /* SpinLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */; };
 		086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086BC9AE1C552D43006ABAE0 /* AppStatus.swift */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
@@ -518,7 +517,6 @@
 		08634DBA1D2DA9CB00445462 /* syntax1.Rnw */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syntax1.Rnw; sourceTree = "<group>"; };
 		086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemExtensionsTests.swift; sourceTree = "<group>"; };
 		0866599A1CA1F3E5007AC555 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/MainWindow.xib; sourceTree = SOURCE_ROOT; };
-		086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpinLock.swift; sourceTree = "<group>"; };
 		086BC9AE1C552D43006ABAE0 /* AppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStatus.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		088CE6691C4B0AF400153414 /* Rc².app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Rc².app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1012,8 +1010,6 @@
 				083174151C587F7F00071408 /* ImageCache.swift */,
 				088CE6B71C4C44A800153414 /* Keychain.swift */,
 				08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */,
-				083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */,
-				086BC9AC1C552AA0006ABAE0 /* SpinLock.swift */,
 				083382F21C653B6300D40EEB /* xattr.swift */,
 			);
 			path = shared;
@@ -1075,6 +1071,7 @@
 			children = (
 				089794531D7B6C91003339EE /* ClientCore.h */,
 				089794411D7B6A0F003339EE /* SharedConstants.swift */,
+				083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */,
 				08F189BA1D21826D00866A05 /* JSONSerializable.swift */,
 				0814F1E61D79ECD70093C0C1 /* Docker */,
 				089794431D7B6A8F003339EE /* extensions */,
@@ -1624,7 +1621,6 @@
 				083382F31C653B6300D40EEB /* xattr.swift in Sources */,
 				083305E41C517FC000E27F66 /* SidebarVariableController.swift in Sources */,
 				088CE6AA1C4B605D00153414 /* Workspace.swift in Sources */,
-				086BC9AD1C552AA0006ABAE0 /* SpinLock.swift in Sources */,
 				088CE6A51C4B605D00153414 /* File.swift in Sources */,
 				08A01FDC1CCA8B2F001EDFAA /* WebViewController.swift in Sources */,
 				08EFF6031C7BB2E600AAF1D4 /* MultipartInputStream.swift in Sources */,
@@ -1688,7 +1684,6 @@
 				089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,
 				08A01FD61CC95C58001EDFAA /* HelpController.swift in Sources */,
-				083305DD1C511F4700E27F66 /* RecursiveFlatMap.swift in Sources */,
 				088CE6A91C4B605D00153414 /* User.swift in Sources */,
 				083174101C57B2E200071408 /* CommandHistory.swift in Sources */,
 				089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */,
@@ -1762,6 +1757,7 @@
 				0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */,
 				08037C2E1D7C5B0E00006E9E /* LocalServerProtocol.swift in Sources */,
 				0897944F1D7B6A8F003339EE /* NSURL+Rc2.swift in Sources */,
+				08037C351D7C5E2200006E9E /* RecursiveFlatMap.swift in Sources */,
 				089794501D7B6A8F003339EE /* String+Rc2Extensions.swift in Sources */,
 				08037C2D1D7C5AF400006E9E /* JSONSerializable.swift in Sources */,
 				0897944D1D7B6A8F003339EE /* NSProgress+Rc2.m in Sources */,

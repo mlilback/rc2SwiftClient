@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import  ClientCore
 
 class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolbarDelegate {
 	///Object that lets us monitor the status of the application. Nededed to pass on to the statusView once setup is finished

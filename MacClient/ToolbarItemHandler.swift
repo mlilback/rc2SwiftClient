@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import ClientCore
 
 protocol ToolbarItemHandler : class {
 	///called by a top level controller for each toolbar item no one has claimed

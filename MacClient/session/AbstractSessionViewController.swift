@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import ClientCore
 
 class AbstractSessionViewController: NSViewController {
 	dynamic weak var sessionOptional: Session? { didSet { sessionChanged() } }
