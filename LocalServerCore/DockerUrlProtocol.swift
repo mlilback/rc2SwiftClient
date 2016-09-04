@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import ClientCore
 
 ///DockerUrlProtocol is a subclass of NSURLProtocol for dealing with "unix" URLs
 /// This is used to communicate with the local Docker daemon using a REST-like syntax

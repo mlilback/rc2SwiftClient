@@ -8,6 +8,7 @@ import Foundation
 import SwiftyJSON
 import BrightFutures
 import ServiceManagement
+import ClientCore
 
 ///manages communicating with the local docker engine
 public class DockerManager : NSObject {

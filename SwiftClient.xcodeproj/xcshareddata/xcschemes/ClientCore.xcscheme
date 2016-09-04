@@ -14,23 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
-               BuildableName = "createHelpIndex"
-               BlueprintName = "createHelpIndex"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "088CE6681C4B0AF400153414"
-               BuildableName = "Rc&#xb2;.app"
-               BlueprintName = "MacClient"
+               BlueprintIdentifier = "089794191D7B68F0003339EE"
+               BuildableName = "ClientCore.framework"
+               BlueprintName = "ClientCore"
                ReferencedContainer = "container:SwiftClient.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -42,9 +28,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "088CE6791C4B0AF500153414"
-               BuildableName = "MacClientTests.xctest"
-               BlueprintName = "MacClientTests"
+               BlueprintIdentifier = "088CE6681C4B0AF400153414"
+               BuildableName = "Rc&#xb2;.app"
+               BlueprintName = "MacClient"
                ReferencedContainer = "container:SwiftClient.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -60,26 +46,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "088CE6791C4B0AF500153414"
-               BuildableName = "MacClientTests.xctest"
-               BlueprintName = "MacClientTests"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "089793FA1D7B6625003339EE"
-               BuildableName = "LocalServerCoreTests.xctest"
-               BlueprintName = "LocalServerCoreTests"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "089794211D7B68F0003339EE"
                BuildableName = "ClientCoreTests.xctest"
                BlueprintName = "ClientCoreTests"
@@ -90,9 +56,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "088CE6681C4B0AF400153414"
-            BuildableName = "Rc&#xb2;.app"
-            BlueprintName = "MacClient"
+            BlueprintIdentifier = "089794191D7B68F0003339EE"
+            BuildableName = "ClientCore.framework"
+            BlueprintName = "ClientCore"
             ReferencedContainer = "container:SwiftClient.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -109,42 +75,33 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "088CE6681C4B0AF400153414"
-            BuildableName = "Rc&#xb2;.app"
-            BlueprintName = "MacClient"
+            BlueprintIdentifier = "089794191D7B68F0003339EE"
+            BuildableName = "ClientCore.framework"
+            BlueprintName = "ClientCore"
             ReferencedContainer = "container:SwiftClient.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "CFNETWORK_DIAGNOSTICS"
-            value = "3"
-            isEnabled = "NO">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "088CE6681C4B0AF400153414"
-            BuildableName = "Rc&#xb2;.app"
-            BlueprintName = "MacClient"
+            BlueprintIdentifier = "089794191D7B68F0003339EE"
+            BuildableName = "ClientCore.framework"
+            BlueprintName = "ClientCore"
             ReferencedContainer = "container:SwiftClient.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
@@ -152,14 +109,5 @@
    <ArchiveAction
       buildConfiguration = "Release"
       revealArchiveInOrganizer = "YES">
-      <PostActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "/usr/local/bin/puck &quot;${ARCHIVE_PATH}&quot;">
-            </ActionContent>
-         </ExecutionAction>
-      </PostActions>
    </ArchiveAction>
 </Scheme>

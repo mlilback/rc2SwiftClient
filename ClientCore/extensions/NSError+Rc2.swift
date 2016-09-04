@@ -6,7 +6,7 @@
 
 import Foundation
 
-extension NSError {
+public extension NSError {
 	///returns a NSError with the domain of Rc2ErrorDomain
 	/// - parameter withCode: the Rc2 error code for this error
 	/// - parameter description: if nil, will be looked up with NSLocalizedString using Rc2ErrorCode.[code]

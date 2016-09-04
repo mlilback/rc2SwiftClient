@@ -8,6 +8,7 @@ import Foundation
 #if os(OSX)
 	import AppKit
 #endif
+import ClientCore
 
 public class LatexCodeHighlighter : CodeHighlighter {
 	let commentRegex:NSRegularExpression

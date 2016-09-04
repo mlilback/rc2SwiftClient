@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import ClientCore
 
 enum OutputTabType: Int {
 	 case Console = 0, Image, WebKit, Help

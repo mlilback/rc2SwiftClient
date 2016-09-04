@@ -8,7 +8,7 @@ import Foundation
 import BrightFutures
 import CryptoSwift
 
-func delay(delay:Double, _ closure:()->()) {
+public func delay(delay:Double, _ closure:()->()) {
 	dispatch_after(
 		dispatch_time(
 			DISPATCH_TIME_NOW,
@@ -17,7 +17,7 @@ func delay(delay:Double, _ closure:()->()) {
 		dispatch_get_main_queue(), closure)
 }
 
-enum ColorInputError : ErrorType {
+public enum ColorInputError : ErrorType {
 	case InvalidHexString
 }
 
@@ -32,20 +32,20 @@ enum ColorInputError : ErrorType {
 #endif
 
 public final class Box<T> {
-	let unbox: T
-	init(_ value:T) {
+	public let unbox: T
+	public init(_ value:T) {
 		self.unbox = value
 	}
 }
 
 public final class ObjcBox<T>: NSObject {
-	let unbox: T
-	init(_ value:T) {
+	public let unbox: T
+	public init(_ value:T) {
 		self.unbox = value
 	}
 }
 
-extension PlatformColor {
+public extension PlatformColor {
 	public static func colorWithHexString(hex:String, alpha:CGFloat = 1.0) -> PlatformColor? {
 		do {
 			return try PlatformColor(hex:hex, alpha:alpha)
@@ -73,7 +73,7 @@ extension PlatformColor {
 	}
 }
 
-extension NSNotificationCenter {
+public extension NSNotificationCenter {
 	func postNotificationNameOnMainThread(noteName:String, object:AnyObject, userInfo:[NSObject:AnyObject]?=nil) {
 		if !NSThread.isMainThread() {
 			postAsyncNotificationNameOnMainThread(noteName, object: object, userInfo:userInfo)
@@ -88,7 +88,7 @@ extension NSNotificationCenter {
 	}
 }
 
-extension NSRange {
+public extension NSRange {
 	func toStringRange(str:String) -> Range<String.Index>? {
 		let fromIdx = str.utf16.startIndex.advancedBy(self.location)
 		let toIdx = fromIdx.advancedBy(self.length, limit: str.utf16.endIndex)
@@ -101,7 +101,7 @@ extension NSRange {
 	}
 }
 
-func MaxNSRangeIndex(range:NSRange) -> Int {
+public func MaxNSRangeIndex(range:NSRange) -> Int {
 	return range.location + range.length - 1
 }
 

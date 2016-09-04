@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftyJSON
+import ClientCore
 
 /// represents a bookmark to an rc2 server
 public struct Bookmark: JSONSerializable, CustomStringConvertible, Equatable {

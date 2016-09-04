@@ -6,7 +6,7 @@
 
 import Foundation
 
-extension NSURL {
+public extension NSURL {
 	func localizedName() -> String {
 		var appName: String = (self.URLByDeletingPathExtension?.lastPathComponent!)!
 		var appNameObj: AnyObject?

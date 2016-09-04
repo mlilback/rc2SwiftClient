@@ -7,6 +7,7 @@
 
 import XCTest
 import MacClient
+import ClientCore
 
 class SystemExtensionsTests: XCTestCase {
 	func testPlatformColor() {

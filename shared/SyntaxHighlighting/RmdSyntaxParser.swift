@@ -8,6 +8,7 @@ import Foundation
 #if os(OSX)
 	import AppKit
 #endif
+import ClientCore
 
 public class RmdSyntaxParser: SyntaxParser {
 	let latexHighlighter:LatexCodeHighlighter = LatexCodeHighlighter()

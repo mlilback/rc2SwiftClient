@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import ClientCore
 
 ///values representing the possible token types that can have different colors mapped to them
 public enum SyntaxColor: String {

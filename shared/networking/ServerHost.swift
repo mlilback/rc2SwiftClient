@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftyJSON
+import ClientCore
 
 ///Represents a remote host
 public struct ServerHost: JSONSerializable, CustomStringConvertible, Hashable {

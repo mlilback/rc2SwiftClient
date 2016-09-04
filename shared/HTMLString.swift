@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import ClientCore
 
 ///Class that takes a string of basic html and converts it to an NSAttributedString
 /// support tags are: b, i, color(hex="XXXXXX")

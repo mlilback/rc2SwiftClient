@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import ClientCore
 
 class LocalServerService : NSObject, NSXPCListenerDelegate {
 	func listener(listener: NSXPCListener, shouldAcceptNewConnection newConnection: NSXPCConnection) -> Bool {

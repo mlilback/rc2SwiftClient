@@ -7,6 +7,8 @@
 import Foundation
 import SwiftyJSON
 import BrightFutures
+import LocalServerCore
+import ClientCore
 
 @objc class LocalDockerServer: NSObject, LocalServerProtocol, NSXPCListenerDelegate {
 	let requiredApiVersion = 1.24

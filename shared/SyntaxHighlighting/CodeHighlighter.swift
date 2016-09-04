@@ -8,6 +8,7 @@ import Foundation
 #if os(OSX)
 	import AppKit
 #endif
+import ClientCore
 
 public class CodeHighlighter: NSObject {
 	let colorMap:SyntaxColorMap = { return SyntaxColorMap.standardMap }()

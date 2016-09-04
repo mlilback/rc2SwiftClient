@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import MacClient
+@testable import LocalServerCore
 import SwiftyJSON
 import Darwin
 
@@ -48,7 +48,7 @@ class DockerUrlProtocolTests: XCTestCase {
 		let json = JSON.parse(String(data:fetchedData!, encoding: NSUTF8StringEncoding)!)
 		XCTAssertNotNil(json.dictionary)
 		XCTAssertNotNil(json["Version"].string)
-		XCTAssertNotNil(json["Experimental"].bool)
+		XCTAssertNotNil(json["KernelVersion"].string)
 	}
 
 }

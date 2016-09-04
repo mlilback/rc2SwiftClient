@@ -6,7 +6,7 @@
 
 import Foundation
 
-extension NSTextCheckingResult {
+public extension NSTextCheckingResult {
 	///returns the substring of inputString at the specified range
 	func stringAtIndex(index:Int, forString inputString:String) -> String? {
 		guard let strRange = rangeAtIndex(index).toStringRange(inputString) else { return nil }

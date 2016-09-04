@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import ClientCore
 
 enum OutputColors: String {
 	case Input, Help, Status, Error, Note, Log

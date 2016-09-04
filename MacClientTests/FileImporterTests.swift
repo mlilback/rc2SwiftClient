@@ -8,6 +8,7 @@
 import XCTest
 @testable import MacClient
 import Mockingjay
+import ClientCore
 
 var kvoContext:UInt8 = 1
 

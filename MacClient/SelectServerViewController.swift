@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import ClientCore
 import BrightFutures
 
 struct SelectServerResponse {

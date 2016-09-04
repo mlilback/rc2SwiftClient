@@ -7,6 +7,7 @@
 
 import XCTest
 @testable import MacClient
+import ClientCore
 
 class ColorEnumTests: XCTestCase {
 	func testOutputColors() {

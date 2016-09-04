@@ -6,7 +6,7 @@
 
 import Foundation
 
-extension String {
+public extension String {
 	///convience property equal to the range of entire string
 	public var fullRange:Range<Index> { return self.startIndex..<self.endIndex }
 	///convience property equal to the NSRange of the entire string

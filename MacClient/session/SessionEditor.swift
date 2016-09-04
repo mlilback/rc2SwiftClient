@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import ClientCore
 
 class SessionEditor: TextViewWithContextualMenu {
 	var wordWrapEnabled:Bool { return textContainer!.widthTracksTextView }

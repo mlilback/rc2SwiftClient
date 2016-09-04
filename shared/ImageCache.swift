@@ -9,6 +9,7 @@
 #else
 	import UIKit
 #endif
+import ClientCore
 import BrightFutures
 
 enum ImageCacheError: ErrorType {
