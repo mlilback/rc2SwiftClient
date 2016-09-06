@@ -24,9 +24,9 @@ public class BookmarkManager {
 	func save() {
 		let defaults = NSUserDefaults.standardUserDefaults()
 		do {
-			let bmarks = try JSON(bookmarks.map() { try $0.serialize() })
+			let bmarks = try JSON(bookmarks.map() { try $0.toJson() })
 			defaults.setObject(bmarks.rawString(), forKey: PrefKeys.Bookmarks)
-			let jhosts = try JSON(hosts.map() { try $0.serialize() })
+			let jhosts = try JSON(hosts.map() { try $0.toJson() })
 			defaults.setObject(jhosts.rawString(), forKey: PrefKeys.Hosts)
 		} catch let err {
 			log.error("failed to serialize bookmarks: \(err)")

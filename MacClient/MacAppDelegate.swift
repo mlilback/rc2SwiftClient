@@ -59,7 +59,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			}
 		}
 		do {
-			let bmarks = try JSON(reopen.map() { try $0.serialize() })
+			let bmarks = try JSON(reopen.map() { try $0.toJson() })
 			defaults.setObject(bmarks.rawString(), forKey: PrefKeys.OpenSessions)
 		} catch let err {
 			log.error("failed to serialize bookmarks: \(err)")

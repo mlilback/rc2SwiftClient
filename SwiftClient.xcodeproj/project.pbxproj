@@ -27,6 +27,7 @@
 		08037C331D7C5D2200006E9E /* SwiftyJSON.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08037C341D7C5D3400006E9E /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */; };
 		08037C351D7C5E2200006E9E /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */; };
+		08037C391D7D712800006E9E /* DockerTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08037C381D7D712800006E9E /* DockerTag.swift */; };
 		0803FCBE1C84C47400F17E4A /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		080834561C84C13300F5A190 /* SyntaxParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080834551C84C13300F5A190 /* SyntaxParserTests.swift */; };
 		081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */; };
@@ -417,6 +418,7 @@
 		080314221D2412ED006D668F /* SelectServerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectServerViewController.swift; sourceTree = "<group>"; };
 		08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = EmbeddedFrameworkDebug.xcconfig; path = config/EmbeddedFrameworkDebug.xcconfig; sourceTree = "<group>"; };
 		08037C211D7B74A100006E9E /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = App.xcconfig; path = config/App.xcconfig; sourceTree = "<group>"; };
+		08037C381D7D712800006E9E /* DockerTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerTag.swift; sourceTree = "<group>"; };
 		080834551C84C13300F5A190 /* SyntaxParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxParserTests.swift; sourceTree = "<group>"; };
 		081263151C85D2E0003E37A5 /* NoodleLineNumberMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoodleLineNumberMarker.h; sourceTree = "<group>"; };
 		081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoodleLineNumberMarker.m; sourceTree = "<group>"; };
@@ -786,6 +788,7 @@
 			children = (
 				084525B21D3D5AAC00E99F9D /* LocalServerProtocol.swift */,
 				0814F1E71D79ED560093C0C1 /* DockerImage.swift */,
+				08037C381D7D712800006E9E /* DockerTag.swift */,
 			);
 			path = Docker;
 			sourceTree = "<group>";
@@ -1762,6 +1765,7 @@
 				08037C2D1D7C5AF400006E9E /* JSONSerializable.swift in Sources */,
 				0897944D1D7B6A8F003339EE /* NSProgress+Rc2.m in Sources */,
 				08037C2C1D7C5ADB00006E9E /* DockerImage.swift in Sources */,
+				08037C391D7D712800006E9E /* DockerTag.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

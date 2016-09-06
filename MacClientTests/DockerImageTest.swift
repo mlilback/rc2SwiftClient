@@ -25,7 +25,7 @@ class DockerImageTest: XCTestCase {
 		super.tearDown()
 	}
 
-	func testImages() {
+	func testReadImages() {
 		var images:[DockerImage] = []
 		for anImageJson in jsonArray!.arrayValue {
 			images.append(DockerImage(json: anImageJson)!)
@@ -33,5 +33,18 @@ class DockerImageTest: XCTestCase {
 		XCTAssertEqual(images.count, 1)
 		XCTAssertEqual(images[0].tags.count, 1)
 		XCTAssertEqual(images[0].tags.first?.name, "dbserver")
+	}
+	
+	func testImageSerialization() {
+		let original:[DockerImage] = (jsonArray?.arrayValue.map() { return DockerImage(json: $0)! })!
+		let json = JSON(original.map() { try! $0.toJson() })
+		var images:[DockerImage] = []
+		for anImageJson in json.arrayValue {
+			images.append(DockerImage(json: anImageJson)!)
+		}
+		XCTAssertEqual(original.count, images.count)
+		for (idx, obj) in images.enumerate() {
+			XCTAssertEqual(obj, original[idx])
+		}
 	}
 }

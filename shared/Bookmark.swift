@@ -37,13 +37,14 @@ public struct Bookmark: JSONSerializable, CustomStringConvertible, Equatable {
 		}
 	}
 	
-	public func serialize() throws -> JSON {
-		var dict = [String:JSON]()
-		dict["name"] = JSON(name)
-		dict["project"] = JSON(projectName)
-		dict["workspace"] = JSON(workspaceName == nil ? NSNull() : workspaceName!)
-		dict["lastUsed"] = JSON(lastUsed)
-		dict["server"] = try server?.serialize()
+	public func toJson() throws -> JSON {
+		var dict = [String:AnyObject]()
+		dict["name"] = name
+		dict["project"] = projectName
+		if workspaceName != nil {
+			dict["workspace"] = workspaceName!
+		}
+		dict["lastUsed"] = lastUsed
 		return JSON(dict)
 	}
 	

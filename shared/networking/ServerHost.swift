@@ -38,7 +38,7 @@ public struct ServerHost: JSONSerializable, CustomStringConvertible, Hashable {
 		self.secure = dict["secure"].boolValue
 	}
 
-	public func serialize() throws -> JSON {
+	public func toJson() throws -> JSON {
 		var dict = [String:AnyObject]()
 		dict["name"] = name
 		dict["host"] = host
