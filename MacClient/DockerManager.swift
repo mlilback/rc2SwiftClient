@@ -29,7 +29,7 @@ public class DockerManager : NSObject {
 		connection.resume()
 		server = connection.remoteObjectProxyWithErrorHandler() { error in
 			dispatch_async(dispatch_get_main_queue()) {
-				log.info("docker connection failed")
+				log.info("docker connection failed \(error)")
 			}
 		} as! LocalServerProtocol
 		//let connection = NSXPCConnection(
@@ -37,7 +37,7 @@ public class DockerManager : NSObject {
 	}
 	
 	func isDockerRunning(handler:(Bool) -> Void) {
-		server.isDockerRunning() { rsp, error in handler(rsp) }
+		server.initializeConnection("http://10.0.1.9:2375/") { rsp, error in handler(rsp) }
 	}
 	
 //	private let socketPath:String

@@ -13,6 +13,7 @@ import ClientCore
 @objc class LocalDockerServer: NSObject, LocalServerProtocol, NSXPCListenerDelegate {
 	let requiredApiVersion = 1.24
 	private let socketPath = "/var/run/docker.sock"
+	private(set) var hostUrl: String?
 	private(set) var primaryVersion:Int = 0
 	private(set) var secondaryVersion:Int = 0
 	private(set) var fixVersion = 0
@@ -51,10 +52,10 @@ import ClientCore
 				log.error("error getting docker version \(err)")
 			}
 			log.info("docker is version \(self.primaryVersion).\(self.secondaryVersion).\(self.fixVersion):\(self.apiVersion)")
-			handler(success: self.apiVersion >= self.requiredApiVersion, error: nil)
+			handler(self.apiVersion >= self.requiredApiVersion, nil)
 		}.onFailure { error in
 			log.warning("error getting docker version: \(error)")
-			handler(success: false, error: error as NSError)
+			handler(false, error as NSError)
 		}
 	}
 
@@ -62,7 +63,11 @@ import ClientCore
 	/// - parameter command: The api command to send. Should include initial slash.
 	func dockerRequest(command:String) -> Future<JSON,NSError> {
 		precondition(command.hasPrefix("/"))
-		let url = NSURL(string: "unix://\(command)")!
+		var urlStr = "unix://\(command)"
+		if nil != hostUrl {
+			urlStr = "\(hostUrl)\(command)"
+		}
+		let url = NSURL(string: urlStr)!
 		let promise = Promise<JSON,NSError>()
 		let task = session.dataTaskWithRequest(NSURLRequest(URL: url)) { data, response, error in
 			guard let response = response as? NSHTTPURLResponse else { promise.failure(error!); return }
@@ -70,7 +75,8 @@ import ClientCore
 				promise.failure(NSError.error(withCode: .DockerError, description:nil))
 				return
 			}
-			let json = JSON.parse(String(data:data!, encoding: NSUTF8StringEncoding)!)
+			let jsonStr = String(data:data!, encoding: NSUTF8StringEncoding)!
+			let json = JSON.parse(jsonStr)
 			guard json.dictionary != nil else { return promise.failure(NSError.error(withCode: .DockerError, description:"")) }
 			return promise.success(json)
 		}
@@ -88,23 +94,24 @@ import ClientCore
 		return true
 	}
 	
-	func isDockerRunning(handler: SimpleServerCallback) {
-		guard !versionLoaded else { handler(success: apiVersion > 0, error: nil); return }
+	func initializeConnection(url:String?, handler: SimpleServerCallback) {
+		if nil == hostUrl { hostUrl = url }
+		guard !versionLoaded else { handler(apiVersion > 0, nil); return }
 		let future = dockerRequest("/version")
 		processVersionFuture(future, handler: handler)
 	}
 	
 	//test document available at fester.rc2.io
-	func checkForUpdates(baseUrl:String, requiredVersion:Int, callback:SimpleServerCallback) {
+	func checkForUpdates(baseUrl:String, requiredVersion:Int, handler:SimpleServerCallback) {
 		let url = NSURL(string: baseUrl)?.URLByAppendingPathComponent("/localServer.json")
 		session.dataTaskWithURL(url!) { (data, response, error) in
 			guard let rawData = data where error == nil else {
-				callback(success: false, error: NSError.error(withCode: .NetworkError, description: "failed to connect to update server", underlyingError: error))
+				handler(false, NSError.error(withCode: .NetworkError, description: "failed to connect to update server", underlyingError: error))
 				return
 			}
 			let json = JSON(rawData)
 			guard let latestVersion = json["latestVersion"].int else {
-				callback(success: false, error: NSError.error(withCode: .ServerError, description: "update server returned invalid data"))
+				handler(false, NSError.error(withCode: .ServerError, description: "update server returned invalid data"))
 				return
 			}
 			if latestVersion > requiredVersion {
