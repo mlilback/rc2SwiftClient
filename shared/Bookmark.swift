@@ -38,13 +38,16 @@ public struct Bookmark: JSONSerializable, CustomStringConvertible, Equatable {
 	}
 	
 	public func toJson() throws -> JSON {
-		var dict = [String:AnyObject]()
-		dict["name"] = name
-		dict["project"] = projectName
+		var dict = [String:JSON]()
+		dict["name"] = JSON(name)
+		dict["project"] = JSON(projectName)
 		if workspaceName != nil {
-			dict["workspace"] = workspaceName!
+			dict["workspace"] = JSON(workspaceName!)
 		}
-		dict["lastUsed"] = lastUsed
+		if server != nil {
+			dict["server"] = try server!.toJson()
+		}
+		dict["lastUsed"] = JSON(lastUsed)
 		return JSON(dict)
 	}
 	

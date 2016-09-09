@@ -6,7 +6,7 @@
 
 import Foundation
 
-public typealias SimpleServerCallback = (_ success:Bool, _ error:NSError?) -> Void
+public typealias SimpleServerCallback = (success:Bool, error:NSError?) -> Void
 
 @objc public protocol LocalServerProtocol {
 
@@ -18,6 +18,6 @@ public typealias SimpleServerCallback = (_ success:Bool, _ error:NSError?) -> Vo
 	///checks to see if there are updates required for the docker engine
 	/// - parameter baseUrl: the base url string to check for updates in
 	/// - parameter requiredVersion: the version required to properly interact with the client
-	/// - parameter callback: after the check returns if an update is required an an error if one ocurred
-	func checkForUpdates(baseUrl:String, requiredVersion:Int, callback:SimpleServerCallback)
+	/// - parameter handler: after the check returns if an update is required an an error if one ocurred
+	func checkForUpdates(baseUrl:String, requiredVersion:Int, handler:SimpleServerCallback)
 }

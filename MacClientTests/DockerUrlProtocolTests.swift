@@ -7,9 +7,9 @@
 //
 
 import XCTest
-@testable import LocalServerCore
 import SwiftyJSON
 import Darwin
+@testable import MacClient
 
 class DockerUrlProtocolTests: XCTestCase {
 	var sessionConfig: NSURLSessionConfiguration?

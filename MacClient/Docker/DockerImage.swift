@@ -6,6 +6,7 @@
 
 import Foundation
 import SwiftyJSON
+import ClientCore
 
 public struct DockerImage: JSONSerializable, Equatable {
 	let id:String
