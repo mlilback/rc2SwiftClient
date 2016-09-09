@@ -5,7 +5,6 @@
 //
 
 import Cocoa
-import ClientCore
 
 ///Class that takes a string of basic html and converts it to an NSAttributedString
 /// support tags are: b, i, color(hex="XXXXXX")
@@ -58,7 +57,7 @@ public class HTMLString {
 					let attrs = self.parseColorAttrs(srcString, attrString:srcString.substringWithRange((result?.rangeAtIndex(2))!))
 					destStr = NSAttributedString(string: content, attributes: attrs)
 				default:
-					log.warning("unsupported tag: '\(tagName)'")
+					NSLog("unsupported tag: '\(tagName)'")
 					destStr = NSAttributedString(string: srcString.substringWithRange((result?.rangeAtIndex(0))!))
 			}
 			outString.appendAttributedString(destStr!)
@@ -78,7 +77,7 @@ public class HTMLString {
 				case "hex":
 					dict[NSForegroundColorAttributeName] = try! PlatformColor(hex: attrValue)
 				default:
-					log.warning("unsupport color attribute '\(attrName)'")
+					NSLog("unsupport color attribute '\(attrName)'")
 			}
 		}
 		return dict
