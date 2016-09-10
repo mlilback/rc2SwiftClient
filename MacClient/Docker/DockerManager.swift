@@ -114,6 +114,12 @@ public class DockerManager : NSObject {
 		return promise.future
 	}
 	
+	func pullImage(imageName:String) -> Future<Bool, NSError> {
+		let pullTask = DockerPullOperation(baseUrl: NSURL(string: hostUrl!)!, imageName: imageName)
+		pullTask.start()
+		return pullTask.promise.future
+	}
+	
 //	private let socketPath:String
 //	private(set) var primaryVersion:Int = 0
 //	private(set) var secondaryVersion:Int = 0

@@ -26,6 +26,12 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		dockerManager = DockerManager()
 		dockerManager?.isDockerRunning() { isRunning in
 			log.info("docker is running \(isRunning ? "yes" : "no")")
+			let f = self.dockerManager!.pullImage("rc2server/dbserver")
+			f.onSuccess {_ in 
+				log.info("pulll should be good")
+			}.onFailure { err in
+				log.error("got \(err)")
+			}
 		}
 		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
 		let cdUrl = NSBundle.mainBundle().URLForResource("CommonDefaults", withExtension: "plist")
@@ -38,11 +44,11 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		guard NSProcessInfo.processInfo().environment["XCTestConfigurationFilePath"] == nil else { return }
 		showBookmarkWindow(nil)
 	#if HOCKEYAPP_ENABLED
-		log.info("key is \(kHockeyAppIdentifier)")
-		BITHockeyManager.sharedHockeyManager().configureWithIdentifier(kHockeyAppIdentifier)
+//		log.info("key is \(kHockeyAppIdentifier)")
+//		BITHockeyManager.sharedHockeyManager().configureWithIdentifier(kHockeyAppIdentifier)
 		//BITHockeyManager.sharedHockeyManager().debugLogEnabled = true
 		// Do some additional configuration if needed here
-		BITHockeyManager.sharedHockeyManager().startManager()
+//		BITHockeyManager.sharedHockeyManager().startManager()
 	#endif
 		restoreSessions()
 	}
