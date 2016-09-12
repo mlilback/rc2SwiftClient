@@ -7,26 +7,27 @@
 import Foundation
 import SwiftyJSON
 import BrightFutures
+import os
 
 ///manages communicating with the local docker engine
-public class DockerManager : NSObject {
-	private let socketPath:String
-	private(set) var primaryVersion:Int = 0
-	private(set) var secondaryVersion:Int = 0
-	private(set) var fixVersion = 0
-	private(set) var apiVersion:Double = 0
-	let sessionConfig: NSURLSessionConfiguration
-	let session: NSURLSession
-	private(set) var isInstalled:Bool = false
-	private var versionLoaded:Bool = false
+open class DockerManager : NSObject {
+	fileprivate let socketPath:String
+	fileprivate(set) var primaryVersion:Int = 0
+	fileprivate(set) var secondaryVersion:Int = 0
+	fileprivate(set) var fixVersion = 0
+	fileprivate(set) var apiVersion:Double = 0
+	let sessionConfig: URLSessionConfiguration
+	let session: URLSession
+	fileprivate(set) var isInstalled:Bool = false
+	fileprivate var versionLoaded:Bool = false
 	
 	init(path:String = "/var/run/docker.sock") {
 		socketPath = path
-		sessionConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
+		sessionConfig = URLSessionConfiguration.default
 		sessionConfig.protocolClasses = [DockerUrlProtocol.self]
-		session = NSURLSession(configuration: sessionConfig)
+		session = URLSession(configuration: sessionConfig)
 		super.init()
-		isInstalled = NSFileManager().fileExistsAtPath(socketPath)
+		isInstalled = Foundation.FileManager().fileExists(atPath: socketPath)
 		if isInstalled {
 			fetchVersion()
 		}
@@ -51,42 +52,42 @@ public class DockerManager : NSObject {
 	}
 	
 	///parses the future returned from asking docker for version info
-	func processVersionFuture(future:Future<JSON,NSError>) {
+	func processVersionFuture(_ future:Future<JSON,NSError>) {
 		future.onSuccess { json in
 			do {
 				let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
 				let verStr = json["Version"].stringValue
-				if let match = regex.firstMatchInString(verStr, options: [], range: NSMakeRange(0, verStr.characters.count)) {
-					self.primaryVersion = Int((verStr as NSString).substringWithRange(match.rangeAtIndex(1)))!
-					self.secondaryVersion = Int((verStr as NSString).substringWithRange(match.rangeAtIndex(2)))!
-					self.fixVersion = Int((verStr as NSString).substringWithRange(match.rangeAtIndex(3)))!
+				if let match = regex.firstMatch(in: verStr, options: [], range: NSMakeRange(0, verStr.characters.count)) {
+					self.primaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(1)))!
+					self.secondaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(2)))!
+					self.fixVersion = Int((verStr as NSString).substring(with: match.rangeAt(3)))!
 					self.versionLoaded = true
 				} else {
-					log.info("failed to parser version string")
+					os_log("failed to parser version string", type:.info)
 				}
 				self.apiVersion = Double(json["ApiVersion"].stringValue)!
 			} catch let err as NSError {
-				log.error("error getting docker version \(err)")
+				os_log("error getting docker version %@", err)
 			}
 		}.onFailure { error in
-			log.warning("error getting docker version: \(error)")
+			os_log("error getting docker version: %@", error)
 		}
 	}
 	
 	///makes a simple GET api request and returns the parsed results
 	/// - parameter command: The api command to send. Should include initial slash.
-	func dockerRequest(command:String) -> Future<JSON,NSError> {
+	func dockerRequest(_ command:String) -> Future<JSON,NSError> {
 		precondition(command.hasPrefix("/"))
-		let url = NSURL(string: "unix://\(command)")!
+		let url = URL(string: "unix://\(command)")!
 		let promise = Promise<JSON,NSError>()
-		let task = session.dataTaskWithRequest(NSURLRequest(URL: url)) { data, response, error in
-			guard let response = response as? NSHTTPURLResponse else { promise.failure(error!); return }
+		let task = session.dataTask(with: URLRequest(url: url)) { data, response, error in
+			guard let response = response as? HTTPURLResponse else { promise.failure(error! as NSError); return }
 			if response.statusCode != 200 {
-				promise.failure(NSError.error(withCode: .DockerError, description:nil))
+				promise.failure(NSError.error(withCode: .dockerError, description:nil))
 				return
 			}
-			let json = JSON.parse(String(data:data!, encoding: NSUTF8StringEncoding)!)
-			guard json.dictionary != nil else { return promise.failure(NSError.error(withCode: .DockerError, description:"")) }
+			let json = JSON.parse(String(data:data!, encoding: String.Encoding.utf8)!)
+			guard json.dictionary != nil else { return promise.failure(NSError.error(withCode: .dockerError, description:"")) }
 			return promise.success(json)
 		}
 		task.resume()
@@ -95,30 +96,30 @@ public class DockerManager : NSObject {
 	
 	///prompt user to install server
 	func promptToInstallServer() {
-		let defaults = NSUserDefaults.standardUserDefaults()
-		guard defaults.boolForKey(DockerPrefKey.DidInstallPrompt) == false else { return }
-		defer { defaults.setBool(true, forKey: DockerPrefKey.DidInstallPrompt) }
+		let defaults = UserDefaults.standard
+		guard defaults.bool(forKey: DockerPrefKey.DidInstallPrompt) == false else { return }
+		defer { defaults.set(true, forKey: DockerPrefKey.DidInstallPrompt) }
 		
 		let alert = NSAlert()
 		alert.messageText = localizedString(.InitialPromptMessage)
 		alert.informativeText = localizedString(.InitialPromptInfo)
-		alert.addButtonWithTitle(localizedString(.InitalPromptOk))
-		alert.addButtonWithTitle(NSLocalizedString("Cancel", comment: ""))
+		alert.addButton(withTitle: localizedString(.InitalPromptOk))
+		alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
 		let response = alert.runModal()
 		guard response == NSAlertFirstButtonReturn else { return }
 		beginInstallProcess(nil)
 	}
 	
 	///begins local server install process
-	@IBAction func beginInstallProcess(sender:AnyObject?) {
+	@IBAction func beginInstallProcess(_ sender:AnyObject?) {
 		
 	}
 	
-	@IBAction func resetServerInstall(sender:AnyObject?) {
+	@IBAction func resetServerInstall(_ sender:AnyObject?) {
 		
 	}
 	
-	private func localizedString(key : DockerString) -> String {
+	fileprivate func localizedString(_ key : DockerString) -> String {
 		return NSLocalizedString("LocalServer.\(key.rawValue)", comment: "")
 	}
 	
@@ -126,7 +127,7 @@ public class DockerManager : NSObject {
 		static let DidInstallPrompt = "LocalServer.DidInitialPrompt"
 	}
 	
-	private enum DockerString: String {
+	fileprivate enum DockerString: String {
 		case InitialPromptMessage
 		case InitialPromptInfo
 		case InitalPromptOk

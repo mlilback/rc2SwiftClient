@@ -7,21 +7,21 @@
 import Foundation
 import SwiftyJSON
 
-public class File: CustomStringConvertible, Equatable {
+open class File: CustomStringConvertible, Equatable {
 	let fileId : Int
 	let name : String
 	let version : Int
 	let fileSize : Int
-	let dateCreated : NSDate
-	let lastModified : NSDate
+	let dateCreated : Date
+	let lastModified : Date
 	let fileType: FileType
 	
-	static func filesFromJsonArray(jsonArray : AnyObject) -> [File] {
+	static func filesFromJsonArray(_ jsonArray : AnyObject) -> [File] {
 		let array = JSON(jsonArray)
 		return filesFromJsonArray(array)
 	}
 
-	static func filesFromJsonArray(json : JSON) -> [File] {
+	static func filesFromJsonArray(_ json : JSON) -> [File] {
 		var array = [File]()
 		for (_,subJson):(String, JSON) in json {
 			array.append(File(json:subJson))
@@ -39,8 +39,8 @@ public class File: CustomStringConvertible, Equatable {
 		name = json["name"].stringValue
 		version = json["version"].intValue
 		fileSize = json["fileSize"].intValue
-		dateCreated = NSDate(timeIntervalSince1970: json["dateCreated"].doubleValue/1000.0)
-		lastModified = NSDate(timeIntervalSince1970: json["lastModified"].doubleValue/1000.0)
+		dateCreated = NSDate(timeIntervalSince1970: json["dateCreated"].doubleValue/1000.0) as Date
+		lastModified = NSDate(timeIntervalSince1970: json["lastModified"].doubleValue/1000.0) as Date
 		if let ft = FileType.fileTypeWithExtension((name as NSString).pathExtension) {
 			self.fileType = ft
 		} else {
@@ -56,8 +56,8 @@ public class File: CustomStringConvertible, Equatable {
 		name = dict["name"] as! String
 		version = dict["version"] as! Int
 		fileSize = dict["fileSize"] as! Int!
-		dateCreated = NSDate(timeIntervalSince1970: (dict["dateCreated"] as! Double)/1000.0)
-		lastModified = NSDate(timeIntervalSince1970: (dict["lastModified"] as! Double)/1000.0)
+		dateCreated = Date(timeIntervalSince1970: (dict["dateCreated"] as! Double)/1000.0)
+		lastModified = Date(timeIntervalSince1970: (dict["lastModified"] as! Double)/1000.0)
 		if let ft = FileType.fileTypeWithExtension((name as NSString).pathExtension) {
 			self.fileType = ft
 		} else {
@@ -67,7 +67,7 @@ public class File: CustomStringConvertible, Equatable {
 		}
 	}
 	
-	public var description : String {
+	open var description : String {
 		return "<File: \(name) (\(fileId) v\(version))>";
 	}
 

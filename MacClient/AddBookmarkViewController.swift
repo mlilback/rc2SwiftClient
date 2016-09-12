@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import os
 
 class AddBookmarkViewController: NSViewController {
 	@IBOutlet var continueButton:NSButton?
@@ -13,23 +14,23 @@ class AddBookmarkViewController: NSViewController {
 	var selectServerController: SelectServerViewController?
 	var projectManagerController: ProjectManagerViewController?
 	var bookmarkManager:BookmarkManager?
-	private var selectedServer: ServerHost?
+	fileprivate var selectedServer: ServerHost?
 	var bookmarkAddedClosure:((ServerHost, ProjectAndWorkspace) -> Void)?
-	private var selectServerKVO:PMKVObserver?
-	private var projectKVO:PMKVObserver?
+	fileprivate var selectServerKVO:PMKVObserver?
+	fileprivate var projectKVO:PMKVObserver?
 	
 	dynamic var isBusy:Bool = false
 	dynamic var canContinue:Bool = false
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		tabViewController = self.storyboard?.instantiateControllerWithIdentifier("bookmarkTabController") as? NSTabViewController
+		tabViewController = self.storyboard?.instantiateController(withIdentifier: "bookmarkTabController") as? NSTabViewController
 		addChildViewController(tabViewController!)
 		containerView?.addSubview(tabViewController!.view)
-		tabViewController?.view.topAnchor.constraintEqualToAnchor(containerView?.topAnchor)
-		tabViewController?.view.bottomAnchor.constraintEqualToAnchor(containerView!.bottomAnchor)
-		tabViewController?.view.leftAnchor.constraintEqualToAnchor(containerView!.leftAnchor)
-		tabViewController?.view.rightAnchor.constraintEqualToAnchor(containerView!.rightAnchor)
+		tabViewController?.view.topAnchor.constraint(equalTo: (containerView?.topAnchor)!)
+		tabViewController?.view.bottomAnchor.constraint(equalTo: containerView!.bottomAnchor)
+		tabViewController?.view.leftAnchor.constraint(equalTo: containerView!.leftAnchor)
+		tabViewController?.view.rightAnchor.constraint(equalTo: containerView!.rightAnchor)
 		selectServerController = firstChildViewController(self)
 		projectManagerController = firstChildViewController(self)
 	}
@@ -37,7 +38,7 @@ class AddBookmarkViewController: NSViewController {
 	override func viewDidAppear() {
 		super.viewDidAppear()
 		self.view.window?.preventsApplicationTerminationWhenModal = false
-		selectServerKVO = KVObserver(object: selectServerController!, keyPath:"canContinue", options: [.Initial])
+		selectServerKVO = KVObserver(object: selectServerController!, keyPath:"canContinue", options: [.initial])
 		{ (object, _, _) in
 			self.adjustCanContinue(object as SelectServerViewController)
 		}
@@ -47,7 +48,7 @@ class AddBookmarkViewController: NSViewController {
 		}
 	}
 	
-	func adjustCanContinue<T where T:NSViewController, T:EmbeddedDialogController>(controller:T) {
+	func adjustCanContinue<T>(_ controller:T) where T:NSViewController, T:EmbeddedDialogController {
 		if controller == tabViewController?.currentTabItemViewController {
 			canContinue = controller.canContinue
 		}
@@ -59,18 +60,18 @@ class AddBookmarkViewController: NSViewController {
 		projectKVO?.cancel()
 	}
 
-	func displayError(error:NSError) {
-		log.error("got error: \(error)")
+	func displayError(_ error:NSError) {
+		os_log("error: %@", type:.error, error)
 	}
 	
-	func switchToProjectManager(serverInfo:SelectServerResponse) {
+	func switchToProjectManager(_ serverInfo:SelectServerResponse) {
 		tabViewController?.selectedTabViewItemIndex = 1
 		projectManagerController!.host = serverInfo.server
 		projectManagerController!.loginSession = serverInfo.loginSession
 		canContinue = projectManagerController!.canContinue
 	}
 	
-	@IBAction func continueAction(sender:AnyObject?) {
+	@IBAction func continueAction(_ sender:AnyObject?) {
 		if selectServerController == tabViewController?.currentTabItemViewController {
 			selectServerController!.continueAction() { (value, error) in
 				guard error == nil else {
@@ -90,7 +91,7 @@ class AddBookmarkViewController: NSViewController {
 		}
 	}
 	
-	@IBAction func cancelAction(sender:AnyObject?) {
-		self.presentingViewController?.dismissViewController(self)
+	@IBAction func cancelAction(_ sender:AnyObject?) {
+		self.presenting?.dismissViewController(self)
 	}
 }

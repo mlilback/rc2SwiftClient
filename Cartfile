@@ -1,12 +1,14 @@
-github "DaveWoodCom/XCGLogger" >= 3.2
-github "kylef/Mockingjay"
-github "SwiftyJSON/SwiftyJSON"
-github "tidwall/SwiftWebSocket" >= 2.6
-github "Swinject/SwinjectStoryboard" "HEAD"
-github "Thomvis/BrightFutures"
-github "antitypical/Result"
-github "krzyzanowskim/CryptoSwift"
-github "postmates/PMKVObserver"
-github "kylef/URITemplate.swift"
+github "BaiduHiDeviOS/SwiftyJSON" "swift3"
+github "DaveWoodCom/XCGLogger" ~> 4.0.0
+github "mlilback/SwiftWebSocket" "swift/3.0"
 github "mlilback/pegkit"
-github "mlilback/MessagePackSwift"  >= 0.2.2
+github "mlilback/MessagePackSwift"  "swift3.0"
+github "krzyzanowskim/CryptoSwift" "swift3"
+github "postmates/PMKVObserver" "swift-3.0"
+github "mlilback/BrightFutures" "swift3.0"
+github "Swinject/Swinject" "c6db56b20da87def2aa0265b6b0aad472dfa9f3d"
+github "mlilback/SwinjectStoryboard" "fd96f6f09d9e9cdb6faf8cb473df1f47021eefcd"
+github "sebskuse/Mockingjay" "d47440a3518297a53914dc179c95bb6799c444a6"
+
+#github "kylef/URITemplate.swift"
+#github "antitypical/Result"

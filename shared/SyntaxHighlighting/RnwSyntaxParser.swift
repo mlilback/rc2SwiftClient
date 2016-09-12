@@ -7,44 +7,64 @@
 import Foundation
 #if os(OSX)
 	import AppKit
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 #endif
 
-public class RnwSyntaxParser: SyntaxParser {
-	private let startExpression:NSRegularExpression
+open class RnwSyntaxParser: SyntaxParser {
+	fileprivate let startExpression:NSRegularExpression
 	
 	override init(storage: NSTextStorage, fileType: FileType, colorMap: SyntaxColorMap)
 	{
-		startExpression = try! NSRegularExpression(pattern: "(?:@( \\s*|\\n))|(?:<<([^>]*)>>= ?.*?)", options: [.AnchorsMatchLines])
+		startExpression = try! NSRegularExpression(pattern: "(?:@( \\s*|\\n))|(?:<<([^>]*)>>= ?.*?)", options: [.anchorsMatchLines])
 		super.init(storage: storage, fileType: fileType, colorMap: colorMap)
 		codeHighlighter = RCodeHighlighter()
 		docHighlighter = LatexCodeHighlighter()
 		colorBackgrounds = true
 	}
 	
-	override func parseRange(fullRange: NSRange) {
+	override func parseRange(_ fullRange: NSRange) {
 		let str = textStorage.string
-		let numChunks = startExpression.numberOfMatchesInString(str, options: [], range: fullRange)
+		let numChunks = startExpression.numberOfMatches(in: str, options: [], range: fullRange)
 		guard numChunks > 0 else { return }
 		var curChunkNum = 1
 		chunks = []
-		startExpression.enumerateMatchesInString(str, options: [], range: fullRange)
+		startExpression.enumerateMatches(in: str, options: [], range: fullRange)
 		{ (result, flags, _) -> Void in
 			var newChunk:DocumentChunk?
 			if curChunkNum == 1 && result!.range.location > 0 { //first chunk
-				newChunk = DocumentChunk(chunkType: .Documentation, chunkNumber: curChunkNum)
+				newChunk = DocumentChunk(chunkType: .documentation, chunkNumber: curChunkNum)
 				newChunk?.parsedRange = NSMakeRange(0, result!.range.location)
 				self.chunks.append(newChunk!)
 				curChunkNum += 1
 			}
-			let matchStr:String = str.substringWithRange(result!.range.toStringRange(str)!)
+			let matchStr:String = str.substring(with: result!.range.toStringRange(str)!)
 			if matchStr[matchStr.startIndex] == "@" {
-				newChunk = DocumentChunk(chunkType: .Documentation, chunkNumber: curChunkNum)
+				newChunk = DocumentChunk(chunkType: .documentation, chunkNumber: curChunkNum)
 			} else  {
 				var cname:String?
-				if result?.rangeAtIndex(2).length > 0 {
-					cname = str.substringWithRange((result?.rangeAtIndex(2).toStringRange(str))!)
+				if result?.rangeAt(2).length > 0 {
+					cname = str.substring(with: (result?.rangeAt(2).toStringRange(str))!)
 				}
-				newChunk = DocumentChunk(chunkType: .RCode, chunkNumber: curChunkNum, name: cname)
+				newChunk = DocumentChunk(chunkType: .rCode, chunkNumber: curChunkNum, name: cname)
 			}
 			if let chunkToAdd = newChunk {
 				chunkToAdd.parsedRange = result!.range

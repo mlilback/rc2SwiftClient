@@ -6,43 +6,44 @@
 
 import Foundation
 import BrightFutures
+import os
 
-enum FileCacheError: ErrorType {
-	case FailedToCreateURL(file:File)
-	case DownloadAlreadyInProgress
+enum FileCacheError: Error {
+	case failedToCreateURL(file:File)
+	case downloadAlreadyInProgress
 }
 
 //MARK: FileCache implementation
 
-public class FileCache: NSObject, NSURLSessionDownloadDelegate {
-	var fileManager:FileManager
-	var baseUrl:NSURL
-	private let workspace:Workspace
-	private let urlConfig:NSURLSessionConfiguration
+open class FileCache: NSObject, URLSessionDownloadDelegate {
+	let fileManager: Rc2FileManager
+	var baseUrl:URL
+	fileprivate let workspace:Workspace
+	fileprivate let urlConfig:URLSessionConfiguration
 	weak var appStatus:AppStatus?
-	private(set) var currentProgress:NSProgress?
-	private var urlSession:NSURLSession?
-	private var tasks:[Int:DownloadTask] = [:] //key is task identifier
-	private let taskLock: NSLock = NSLock()
-	private var downloadingAllFiles:Bool = false
+	fileprivate(set) var currentProgress:Progress?
+	fileprivate var urlSession:Foundation.URLSession?
+	fileprivate var tasks:[Int:DownloadTask] = [:] //key is task identifier
+	fileprivate let taskLock: NSLock = NSLock()
+	fileprivate var downloadingAllFiles:Bool = false
 	
-	lazy var fileCacheUrl: NSURL = { () -> NSURL in
+	lazy var fileCacheUrl: URL = { () -> URL in
 		do {
-			let cacheDir = try self.fileManager.URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-			let ourDir = cacheDir.URLByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!, isDirectory:true)
-			let fileDir = ourDir.URLByAppendingPathComponent("FileCache", isDirectory: true)
-			if !fileDir.checkResourceIsReachableAndReturnError(nil) {
-				try self.fileManager.createDirectoryAtURL(fileDir, withIntermediateDirectories: true, attributes: nil)
+			let cacheDir = try self.fileManager.Url(for: .cachesDirectory, domain: .userDomainMask, appropriateFor: nil, create: true)
+			let ourDir = cacheDir.appendingPathComponent(Bundle.main.bundleIdentifier!, isDirectory:true)
+			let fileDir = ourDir.appendingPathComponent("FileCache", isDirectory: true)
+			if (try fileDir.checkResourceIsReachable()) {
+				try self.fileManager.createDirectoryHierarchy(at: fileDir)
 			}
 			return fileDir
 		} catch let err {
-			log.error("failed to create file cache dir:\(err)")
+			os_log("failed to create file cache dir: %@", type:.error, err as NSError)
 		}
 		fatalError("failed to create file cache")
 	}()
 	
-	init(workspace:Workspace, baseUrl:NSURL, config:NSURLSessionConfiguration, appStatus:AppStatus?=nil) {
-		self.fileManager = NSFileManager.defaultManager()
+	init(workspace:Workspace, baseUrl:URL, config:URLSessionConfiguration, appStatus:AppStatus?=nil) {
+		self.fileManager = Rc2DefaultFileManager()
 		self.workspace = workspace
 		self.baseUrl = baseUrl
 		urlConfig = config
@@ -54,25 +55,25 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 		urlSession?.invalidateAndCancel()
 	}
 	
-	func downloadTaskWithFileId(fileId:Int) -> DownloadTask? {
+	func downloadTaskWithFileId(_ fileId:Int) -> DownloadTask? {
 		for aTask in tasks {
 			if aTask.1.file.fileId == fileId { return aTask.1 }
 		}
 		return nil
 	}
 	
-	func isFileCached(file:File) -> Bool {
-		return cachedFileUrl(file).checkResourceIsReachableAndReturnError(nil)
+	func isFileCached(_ file:File) -> Bool {
+		return (cachedFileUrl(file) as NSURL).checkResourceIsReachableAndReturnError(nil)
 	}
 
-	func flushCacheForWorkspace(wspace:Workspace) {
+	func flushCacheForWorkspace(_ wspace:Workspace) {
 		
 	}
 	
 	///recaches the specified file if it has changed
-	func flushCacheForFile(file:File) -> NSProgress? {
+	@discardableResult func flushCacheForFile(_ file:File) -> Progress? {
 		if downloadingAllFiles {
-			log.warning("flushCacheForFile called while all files are being downloaded")
+			os_log("flushCacheForFile called while all files are being downloaded")
 			return nil
 		}
 		taskLock.lock()
@@ -85,18 +86,18 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 			prepareUrlSession()
 		}
 		do {
-			try fileManager.removeItemAtURL(cachedFileUrl(file))
+			try fileManager.removeItem(at:cachedFileUrl(file))
 		} catch let err as NSError {
 			//don't care if doesn't exist
 			if !(err.domain == NSCocoaErrorDomain && err.code == 4) {
-				log.info("got err removing file in flushCacheForFile:\(err)")
+				os_log("got err removing file in flushCacheForFile: %@", type:.info, err)
 			}
 		}
 		let task = DownloadTask(file: file, cache: self, parentProgress: nil)
 		if currentProgress == nil { currentProgress = task.progress }
 		tasks[task.task.taskIdentifier] = task
 		//want to trigger next time through event loop
-		dispatch_async(dispatch_get_main_queue()) {
+		DispatchQueue.main.async {
 			task.task.resume()
 		}
 		return task.progress
@@ -104,28 +105,28 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 	
 	///caches all the files in the workspace that aren't already cached with the current version of the file
 	//observer fractionCompleted on returned progress for completion handling
-	func cacheAllFiles(setupHandler:((NSProgress)-> Void)) -> NSProgress? {
+	@discardableResult func cacheAllFiles(_ setupHandler:(@escaping (Progress)-> Void)) -> Progress? {
 		if downloadingAllFiles {
-			log.warning("cacheAllFiles called while already in progress")
+			os_log("cacheAllFiles called while already in progress")
 			return nil
 		}
 		taskLock.lock()
 		defer { taskLock.unlock() }
 		if tasks.count > 0 {
-			log.warning("cacheAllFiles called with tasks in progress")
+			os_log("cacheAllFiles called with tasks in progress")
 			return nil
 		}
 		if nil == urlSession {
 			prepareUrlSession()
 		}
-		currentProgress = NSProgress(totalUnitCount: Int64(workspace.files.count))
+		currentProgress = Progress(totalUnitCount: Int64(workspace.files.count))
 		for aFile in workspace.files {
 			let theTask = DownloadTask(file: aFile, cache: self, parentProgress: currentProgress)
 			tasks[theTask.task.taskIdentifier] = theTask
 		}
 		setupHandler(currentProgress!)
 		//only start after all tasks are created
-		dispatch_async(dispatch_get_main_queue()) {
+		DispatchQueue.main.async {
 			self.taskLock.lock()
 			defer { self.taskLock.unlock() }
 			for aTask in self.tasks.values {
@@ -137,22 +138,22 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 	}
 	
 	///returns the file system url where the file is/will be stored
-	func cachedFileUrl(file:File) -> NSURL {
-		let fileUrl = NSURL(fileURLWithPath: "\(file.fileId).\(file.fileType.fileExtension)", relativeToURL: fileCacheUrl).absoluteURL
+	func cachedFileUrl(_ file:File) -> URL {
+		let fileUrl = URL(fileURLWithPath: "\(file.fileId).\(file.fileType.fileExtension)", relativeTo: fileCacheUrl).absoluteURL
 		return fileUrl
 	}
 	
-	private func prepareUrlSession() {
+	fileprivate func prepareUrlSession() {
 		guard urlSession == nil else { return }
 		let config = urlConfig
-		if config.HTTPAdditionalHeaders == nil {
-			config.HTTPAdditionalHeaders = [:]
+		if config.httpAdditionalHeaders == nil {
+			config.httpAdditionalHeaders = [:]
 		}
-		config.HTTPAdditionalHeaders!["Accept"] = "application/octet-stream"
-		self.urlSession = NSURLSession(configuration: config, delegate: self, delegateQueue: NSOperationQueue.mainQueue())
+		config.httpAdditionalHeaders!["Accept"] = "application/octet-stream"
+		self.urlSession = Foundation.URLSession(configuration: config, delegate: self, delegateQueue: OperationQueue.main)
 	}
 	
-	public func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
+	open func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
 	{
 		guard let task = tasks[downloadTask.taskIdentifier] else { fatalError("no cacheTask for task that thinks we are its delegate") }
 		task.progress.completedUnitCount = totalBytesWritten
@@ -162,13 +163,13 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 		}
 	}
 	
-	public func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?)
+	open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
 	{
 		taskLock.lock()
 		defer { taskLock.unlock() }
 		if downloadingAllFiles {
 			if tasks.count > 1 {
-				tasks.removeValueForKey(task.taskIdentifier)
+				tasks.removeValue(forKey: task.taskIdentifier)
 				return
 			}
 			downloadingAllFiles = false
@@ -177,16 +178,16 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 			guard let _ = tasks[task.taskIdentifier] else {
 				fatalError("no DownloadTask for Session Task")
 			}
-			tasks.removeValueForKey(task.taskIdentifier)
+			tasks.removeValue(forKey: task.taskIdentifier)
 		}
 		currentProgress?.rc2_complete(error)
-		dispatch_async(dispatch_get_main_queue()) {
+		DispatchQueue.main.async {
 			self.currentProgress = nil
 		}
 	}
 	
 	//called when a task has finished downloading a file
-	public func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL location: NSURL)
+	open func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL)
 	{
 		taskLock.lock()
 		defer { taskLock.unlock() }
@@ -195,16 +196,16 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 		}
 		
 		let cacheUrl = cachedFileUrl(cacheTask.file)
-		if let status = (downloadTask.response as? NSHTTPURLResponse)?.statusCode where status == 304
+		if let status = (downloadTask.response as? HTTPURLResponse)?.statusCode , status == 304
 		{
 			cacheTask.progress.completedUnitCount = cacheTask.progress.totalUnitCount
 			if downloadingAllFiles {
 				return
 			}
 		}
-		var p = Promise<NSURL?,FileError>()
+		var p = Promise<URL?,FileError>()
 		///move the file to the appropriate local cache url
-		fileManager.moveTempFile(location, toUrl: cacheUrl, file: cacheTask.file, promise: &p)
+		fileManager.move(tempFile: location, to: cacheUrl, file: cacheTask.file, promise: &p)
 		//wait for move to finish
 		p.future.onSuccess() { _ in
 			cacheTask.progress.completedUnitCount = cacheTask.progress.totalUnitCount
@@ -213,28 +214,28 @@ public class FileCache: NSObject, NSURLSessionDownloadDelegate {
 	
 }
 
-public class DownloadTask {
+open class DownloadTask {
 	weak var fileCache:FileCache?
 	let file:File
-	let task:NSURLSessionDownloadTask
-	let progress:NSProgress
-	let parent:NSProgress?
+	let task:URLSessionDownloadTask
+	let progress:Progress
+	let parent:Progress?
 	
-	init(file aFile:File, cache:FileCache, parentProgress:NSProgress?) {
+	init(file aFile:File, cache:FileCache, parentProgress:Progress?) {
 		file = aFile
 		fileCache = cache
 		parent = parentProgress
-		let fileUrl = NSURL(string: "workspaces/\(cache.workspace.wspaceId)/files/\(file.fileId)", relativeToURL: cache.baseUrl)!
-		let request = NSMutableURLRequest(URL: fileUrl.absoluteURL)
+		let fileUrl = URL(string: "workspaces/\(cache.workspace.wspaceId)/files/\(file.fileId)", relativeTo: cache.baseUrl)!
+		var request = URLRequest(url: fileUrl.absoluteURL)
 		let cacheUrl = cache.cachedFileUrl(file)
-		if cacheUrl.checkResourceIsReachableAndReturnError(nil) {
+		if (cacheUrl as NSURL).checkResourceIsReachableAndReturnError(nil) {
 			request.addValue("\"f/\(file.fileId)/\(file.version)\"", forHTTPHeaderField: "If-None-Match")
 		}
-		task = cache.urlSession!.downloadTaskWithRequest(request)
+		task = cache.urlSession!.downloadTask(with: request)
 		if parentProgress != nil {
-			progress = NSProgress(totalUnitCount: Int64(file.fileSize), parent: parentProgress!, pendingUnitCount: 1)
+			progress = Progress(totalUnitCount: Int64(file.fileSize), parent: parentProgress!, pendingUnitCount: 1)
 		} else {
-			progress = NSProgress.discreteProgressWithTotalUnitCount(Int64(file.fileSize))
+			progress = Progress.discreteProgress(totalUnitCount: Int64(file.fileSize))
 		}
 	}
 }

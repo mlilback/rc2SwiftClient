@@ -13,33 +13,33 @@ class BasicOutlineDataSource<T: AnyObject>: NSObject, NSOutlineViewDataSource {
 	var viewFactory: OutlineViewFactory
 	var childAccessor: (T) -> [T]?
 	
-	init(data:[T], childAccessor:(T) -> [T]?, viewFactory:OutlineViewFactory) {
+	init(data:[T], childAccessor:@escaping (T) -> [T]?, viewFactory:@escaping OutlineViewFactory) {
 		self.data = data
 		self.viewFactory = viewFactory
 		self.childAccessor = childAccessor
 		super.init()
 	}
 	
-	func outlineView(outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int {
+	func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
 		if let topic = item as? T {
 			return childAccessor(topic)?.count ?? 0
 		}
 		return data.count
 	}
 	
-	func outlineView(outlineView: NSOutlineView, child index: Int, ofItem item: AnyObject?) -> AnyObject {
-		if nil === item { return data[index] }
+	func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
+		if nil == item { return data[index] }
 		return childAccessor(item as! T)![index]
 	}
 	
-	func outlineView(outlineView: NSOutlineView, isItemExpandable item: AnyObject) -> Bool {
+	func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
 		if let topic = item as? T, let topics = childAccessor(topic) {
 			return topics.count > 0
 		}
 		return false
 	}
 	
-	func outlineView(outlineView: NSOutlineView, viewForTableColumn tableColumn: NSTableColumn?, item: AnyObject) -> NSView? {
+	public func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
 		return viewFactory(item as! T)
 	}
 

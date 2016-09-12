@@ -20,8 +20,8 @@ class ServerResponseTests: XCTestCase {
 	}
 
 	func testListVariables() {
-		let path : String = NSBundle(forClass: self.dynamicType).pathForResource("listvars", ofType: "json")!
-		let resultData = NSData(contentsOfFile: path)
+		let path : String = Bundle(for: type(of: self)).path(forResource: "listvars", ofType: "json")!
+		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
 		let srcJson = JSON(data:resultData!)
 		let rsp = ServerResponse.parseResponse(srcJson)
 		XCTAssertNotNil(rsp)
@@ -76,8 +76,8 @@ class ServerResponseTests: XCTestCase {
 	}
 	
 	func testSessionImageFromJSON() {
-		let path : String = NSBundle(forClass: self.dynamicType).pathForResource("resultsWithImages", ofType: "json")!
-		let resultData = NSData(contentsOfFile: path)
+		let path : String = Bundle(for: type(of: self)).path(forResource: "resultsWithImages", ofType: "json")!
+		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
 		let srcJson = JSON(data:resultData!)
 		let rsp = ServerResponse.parseResponse(srcJson)
 		XCTAssertNotNil(rsp)
@@ -92,7 +92,7 @@ class ServerResponseTests: XCTestCase {
 		}
 	}
 	
-	func sessionImageCodingTest(image:SessionImage) {
+	func sessionImageCodingTest(_ image:SessionImage) {
 		let data = NSKeyedArchiver.archivedDataWithRootObject(image)
 		let obj = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! SessionImage
 		XCTAssertEqual(image, obj)

@@ -9,5 +9,5 @@ import Cocoa
 protocol EmbeddedDialogController {
 	var canContinue:Bool { get }
 	
-	func continueAction(callback:(value:Any?, error:NSError?) -> Void)
+	func continueAction(_ callback: @escaping (_ value:Any?, _ error:NSError?) -> Void)
 }

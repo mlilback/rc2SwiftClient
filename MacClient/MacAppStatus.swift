@@ -8,14 +8,14 @@ import Cocoa
 
 class MacAppStatus: NSObject, AppStatus {
 
-	private dynamic var _currentProgress: NSProgress?
-	private let _statusQueue = dispatch_queue_create("io.rc2.statusQueue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))
-	private let getWindow: (Session?) -> NSWindow
+	fileprivate dynamic var _currentProgress: Progress?
+	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
+	fileprivate let getWindow: (Session?) -> NSWindow
 	
-	dynamic  var currentProgress: NSProgress? {
+	dynamic  var currentProgress: Progress? {
 		get {
-			var result: NSProgress? = nil
-			dispatch_sync(_statusQueue) { result = self._currentProgress }
+			var result: Progress? = nil
+			_statusQueue.sync { result = self._currentProgress }
 			return result
 		}
 		set { updateStatus(newValue) }
@@ -24,7 +24,7 @@ class MacAppStatus: NSObject, AppStatus {
 	dynamic var busy: Bool {
 		get {
 			var result = false
-			dispatch_sync(_statusQueue) { result = self._currentProgress != nil }
+			_statusQueue.sync { result = self._currentProgress != nil }
 			return result
 		}
 	}
@@ -32,52 +32,52 @@ class MacAppStatus: NSObject, AppStatus {
 	dynamic var statusMessage: NSString {
 		get {
 			var status = ""
-			dispatch_sync(_statusQueue) { status = self._currentProgress?.localizedDescription ?? "" }
-			return status
+			_statusQueue.sync { status = self._currentProgress?.localizedDescription ?? "" }
+			return status as NSString
 		}
 	}
 	
-	init(windowAccessor:(Session?) -> NSWindow) {
+	init(windowAccessor:@escaping (Session?) -> NSWindow) {
 		getWindow = windowAccessor
 		super.init()
 	}
 	
-	func updateStatus(progress: NSProgress?) {
+	func updateStatus(_ progress: Progress?) {
 		assert(_currentProgress == nil || progress == nil, "can't set progress when there already is one")
-		dispatch_sync(_statusQueue) {
+		_statusQueue.sync {
 			self._currentProgress = progress
 			self._currentProgress?.rc2_addCompletionHandler() {
 				self.updateStatus(nil)
 			}
 		}
-		NSNotificationCenter.defaultCenter().postNotificationNameOnMainThread(Notifications.AppStatusChanged, object: self)
+		NotificationCenter.default.postNotificationNameOnMainThread(Notifications.AppStatusChanged, object: self)
 	}
 	
-	func presentError(error: NSError, session:Session?) {
+	func presentError(_ error: NSError, session:Session?) {
 		let alert = NSAlert(error: error)
-		alert.beginSheetModalForWindow(getWindow(session), completionHandler:nil)
+		alert.beginSheetModal(for: getWindow(session), completionHandler:nil)
 	}
 	
-	func presentAlert(session:Session?, message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
+	func presentAlert(_ session:Session?, message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
 	{
 		let alert = NSAlert()
 		alert.messageText = message
 		alert.informativeText = details
 		if buttons.count == 0 {
-			alert.addButtonWithTitle(NSLocalizedString("Ok", comment: ""))
+			alert.addButton(withTitle: NSLocalizedString("Ok", comment: ""))
 		} else {
 			for aButton in buttons {
-				alert.addButtonWithTitle(aButton)
+				alert.addButton(withTitle: aButton)
 			}
 		}
-		alert.alertStyle = isCritical ? .CriticalAlertStyle : .WarningAlertStyle
-		alert.beginSheetModalForWindow(getWindow(session)) { (rsp) in
+		alert.alertStyle = isCritical ? .critical : .warning
+		alert.beginSheetModal(for: getWindow(session), completionHandler: { (rsp) in
 			guard buttons.count > 1 else { return }
-			dispatch_async(dispatch_get_main_queue()) {
+			DispatchQueue.main.async {
 				//convert rsp to an index to buttons
 				handler?(rsp - NSAlertFirstButtonReturn)
 			}
-		}
+		}) 
 	}
 
 }

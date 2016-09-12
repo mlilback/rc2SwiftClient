@@ -7,7 +7,7 @@
 import Foundation
 
 public enum ChunkType {
-	case Documentation, RCode, Equation
+	case documentation, rCode, equation
 }
 
 public enum EquationType: String {
@@ -16,7 +16,7 @@ public enum EquationType: String {
 
 ///Represents a "chunk" of data. An R document has 1 chunk. 
 /// Rmd and Rnw documents can have multiple chunks of different types.
-public class DocumentChunk: NSObject {
+open class DocumentChunk: NSObject {
 	///A unique, serial number for each chunk.
 	let chunkNumber:Int
 	let name:String?
@@ -36,12 +36,12 @@ public class DocumentChunk: NSObject {
 	}
 	
 	convenience init(equationType:EquationType, chunkNumber:Int) {
-		self.init(chunkType: .Equation, chunkNumber:chunkNumber)
+		self.init(chunkType: .equation, chunkNumber:chunkNumber)
 		self.equationType = equationType
 	}
 	
 	//duplicates a chunk that differs only in chunkNumber
-	func duplicateWithChunkNumber(newNum:Int) -> DocumentChunk {
+	func duplicateWithChunkNumber(_ newNum:Int) -> DocumentChunk {
 		let dup = DocumentChunk(chunkType: type, chunkNumber: newNum, name: name)
 		dup.parsedRange = parsedRange
 		dup.contentOffset = contentOffset
@@ -49,25 +49,25 @@ public class DocumentChunk: NSObject {
 		return dup
 	}
 	
-	public override func isEqual(object: AnyObject?) -> Bool {
+	open override func isEqual(_ object: Any?) -> Bool {
 		if let other = object as? DocumentChunk {
 			return other.chunkNumber == chunkNumber && other.type == type && other.name == name && NSEqualRanges(parsedRange, other.parsedRange)
 		}
 		return false
 	}
 	
-	public override var hash:Int {
+	open override var hash:Int {
 		return chunkNumber.hashValue + type.hashValue + (name == nil ? 0 : name!.hashValue)
 	}
 	
-	public override var description: String {
+	open override var description: String {
 		let range = NSStringFromRange(parsedRange)
 		switch(self.type) {
-			case .RCode:
+			case .rCode:
 				return "R chunk \(chunkNumber) \"\((name == nil ? "" : name!))\" (\(range))"
-			case .Documentation:
+			case .documentation:
 				return "documentation chunk \(chunkNumber) (\(range))"
-			case .Equation:
+			case .equation:
 				return "\(equationType.rawValue) equation chunk \(chunkNumber) (\(range))"
 		}
 	}

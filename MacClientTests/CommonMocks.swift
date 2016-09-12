@@ -8,60 +8,60 @@ import Foundation
 @testable import MacClient
 
 @objc class DefaultFileManager:NSObject, FileManager {
-	func URLForDirectory(directory: NSSearchPathDirectory, inDomain domain: NSSearchPathDomainMask, appropriateForURL url: NSURL?, create shouldCreate: Bool) throws -> NSURL
+	func URLForDirectory(_ directory: FileManager.SearchPathDirectory, inDomain domain: FileManager.SearchPathDomainMask, appropriateForURL url: URL?, create shouldCreate: Bool) throws -> URL
 	{
-		return try NSFileManager.defaultManager().URLForDirectory(directory, inDomain: domain, appropriateForURL: url, create: shouldCreate)
+		return try FileManager.default.url(for: directory, in: domain, appropriateFor: url, create: shouldCreate)
 	}
 	
-	func moveItemAtURL(srcURL: NSURL, toURL dstURL: NSURL) throws {
-		return try NSFileManager.defaultManager().moveItemAtURL(srcURL, toURL: dstURL)
+	func moveItemAtURL(_ srcURL: URL, toURL dstURL: URL) throws {
+		return try FileManager.default.moveItem(at: srcURL, to: dstURL)
 	}
 	
-	func copyItemAtURL(srcURL: NSURL, toURL dstURL: NSURL) throws {
-		return try NSFileManager.defaultManager().copyItemAtURL(srcURL, toURL: dstURL)
+	func copyItemAtURL(_ srcURL: URL, toURL dstURL: URL) throws {
+		return try FileManager.default.copyItem(at: srcURL, to: dstURL)
 	}
 	
-	func removeItemAtURL(URL: NSURL) throws {
-		try NSFileManager.defaultManager().removeItemAtURL(URL)
+	func removeItemAtURL(_ URL: Foundation.URL) throws {
+		try FileManager.default.removeItem(at: URL)
 	}
 	
-	func createDirectoryAtURL(url: NSURL, withIntermediateDirectories createIntermediates: Bool, attributes: [String : AnyObject]?) throws
+	func createDirectoryAtURL(_ url: URL, withIntermediateDirectories createIntermediates: Bool, attributes: [String : AnyObject]?) throws
 	{
-		try NSFileManager.defaultManager().createDirectoryAtURL(url, withIntermediateDirectories: createIntermediates, attributes: attributes)
+		try FileManager.default.createDirectory(at: url, withIntermediateDirectories: createIntermediates, attributes: attributes)
 	}
 }
 
-class MockFileManager: NSFileManager {
-	let tempDirUrl: NSURL
+class MockFileManager: FileManager {
+	let tempDirUrl: URL
 	
 	override init() {
-		tempDirUrl = NSURL(fileURLWithPath: NSTemporaryDirectory().stringByAppendingFormat("/%@", NSUUID().UUIDString))
+		tempDirUrl = URL(fileURLWithPath: NSTemporaryDirectory().appendingFormat("/%@", UUID().uuidString))
 		super.init()
-		try! createDirectoryAtURL(tempDirUrl, withIntermediateDirectories: true, attributes: nil)
+		try! createDirectory(at: tempDirUrl, withIntermediateDirectories: true, attributes: nil)
 
 	}
 	
 	deinit {
-		if tempDirUrl.checkResourceIsReachableAndReturnError(nil) {
+		if (tempDirUrl as NSURL).checkResourceIsReachableAndReturnError(nil) {
 			do {
-				try removeItemAtURL(tempDirUrl)
+				try removeItem(at: tempDirUrl)
 			} catch _ {
 			}
 		}
 	}
 	
-	override func contentsEqualAtPath(path1: String, andPath path2: String) -> Bool {
+	override func contentsEqual(atPath path1: String, andPath path2: String) -> Bool {
 		log.info("compare files: \(path1) and \(path2)")
-		return super.contentsEqualAtPath(path1, andPath: path2)
+		return super.contentsEqual(atPath: path1, andPath: path2)
 	}
 	
-	override func URLForDirectory(directory: NSSearchPathDirectory, inDomain domain: NSSearchPathDomainMask, appropriateForURL url: NSURL?, create shouldCreate: Bool) throws -> NSURL
+	override func url(for directory: FileManager.SearchPathDirectory, in domain: FileManager.SearchPathDomainMask, appropriateFor url: URL?, create shouldCreate: Bool) throws -> URL
 	{
 		switch(directory) {
-			case .CachesDirectory:
+			case .cachesDirectory:
 				return tempDirUrl
 			default:
-				return try super.URLForDirectory(directory, inDomain: domain, appropriateForURL: url, create: shouldCreate)
+				return try super.url(for: directory, in: domain, appropriateFor: url, create: shouldCreate)
 		}
 	}
 }

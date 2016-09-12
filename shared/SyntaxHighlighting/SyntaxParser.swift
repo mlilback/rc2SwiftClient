@@ -8,11 +8,12 @@ import Foundation
 #if os(OSX)
 	import AppKit
 #endif
+import os
 
 /** parses the contents of an NSTextStorage into an array of chunks that can be syntax colored */
-public class SyntaxParser: NSObject {
+open class SyntaxParser: NSObject {
 	///returns the approprate syntax parser to use for fileType
-	class func parserWithTextStorage(storage:NSTextStorage, fileType:FileType) -> SyntaxParser?
+	class func parserWithTextStorage(_ storage:NSTextStorage, fileType:FileType) -> SyntaxParser?
 	{
 		var parser:SyntaxParser?
 		var highlighter:CodeHighlighter?
@@ -33,7 +34,7 @@ public class SyntaxParser: NSObject {
 	let fileType:  FileType
 	let colorMap:SyntaxColorMap
 	internal(set) var chunks:[DocumentChunk] = []
-	private var lastSource:String = ""
+	fileprivate var lastSource:String = ""
 	var colorBackgrounds = false
 
 	internal var docHighlighter:CodeHighlighter?
@@ -53,10 +54,10 @@ public class SyntaxParser: NSObject {
 	///returns the index of the chunk in the specified range
 	func indexOfChunkForRange(range inRange: NSRange) -> Int {
 		assert(chunks.count > 0)
-		return chunks.indexOf(chunksForRange(inRange).first!)!
+		return chunks.index(of: chunksForRange(inRange).first!)!
 	}
 	
-	func chunkForRange(inRange:NSRange) -> DocumentChunk? {
+	func chunkForRange(_ inRange:NSRange) -> DocumentChunk? {
 		var range = inRange
 		if range.location == NSNotFound { return nil }
 		if range.location == 0 && range.length == 0 {
@@ -74,7 +75,7 @@ public class SyntaxParser: NSObject {
 		return nil
 	}
 	
-	func chunksForRange(range:NSRange) -> [DocumentChunk] {
+	func chunksForRange(_ range:NSRange) -> [DocumentChunk] {
 		//if full range of textstorage, just return all chunks
 		if NSEqualRanges(range, NSMakeRange(0, textStorage.length)) {
 			return chunks
@@ -87,7 +88,7 @@ public class SyntaxParser: NSObject {
 				}
 			}
 		}
-		log.info("looking for \(range)")
+		os_log("looking for %@", type:.debug, NSStringFromRange(range))
 		var outArray:[DocumentChunk] = []
 		for aChunk in chunks {
 			if NSIntersectionRange(aChunk.parsedRange, range).length > 0
@@ -113,18 +114,18 @@ public class SyntaxParser: NSObject {
 		return true
 	}
 	
-	internal func parseRange(range:NSRange) {
+	internal func parseRange(_ range:NSRange) {
 		preconditionFailure("subclass must implement")
 	}
 	
-	func syntaxHighlightChunksInRange(range:NSRange) {
+	func syntaxHighlightChunksInRange(_ range:NSRange) {
 		colorChunks(chunksForRange(range))
 	}
 
 	///should be called when the textstorage contents have changed, ideally by the NSTextStorageDelegate call textStorage:didProcessEditing:range:changeInLength:
-	func adjustParseRanges(fullRangeLength:Int) {
+	func adjustParseRanges(_ fullRangeLength:Int) {
 		guard chunks.count > 0 else { return }
-		for (index,chunk) in chunks.enumerate() {
+		for (index,chunk) in chunks.enumerated() {
 			guard index+1 < chunks.count - 1 else { break }
 			let nextChunk = chunks[index+1]
 			var rng = chunk.parsedRange
@@ -137,16 +138,16 @@ public class SyntaxParser: NSObject {
 		chunks.last!.parsedRange = finalRange
 	}
 	
-	func colorChunks(chunksToColor:[DocumentChunk]) {
+	func colorChunks(_ chunksToColor:[DocumentChunk]) {
 		for chunk in chunksToColor {
-			if chunk.type == .RCode {
+			if chunk.type == .rCode {
 				if colorBackgrounds, let bgcolor = colorMap[.CodeBackground] {
 					textStorage.addAttribute(NSBackgroundColorAttributeName, value: bgcolor, range: chunk.parsedRange)
 				}
 				codeHighlighter?.highlightText(textStorage, range: chunk.parsedRange)
-			} else if chunk.type == .Documentation {
+			} else if chunk.type == .documentation {
 				docHighlighter?.highlightText(textStorage, range: chunk.parsedRange)
-			} else if chunk.type == .Equation, let bgcolor = colorMap[.EquationBackground] {
+			} else if chunk.type == .equation, let bgcolor = colorMap[.EquationBackground] {
 				if colorBackgrounds {
 					textStorage.addAttribute(NSBackgroundColorAttributeName, value: bgcolor, range: chunk.parsedRange)
 				}
@@ -155,10 +156,10 @@ public class SyntaxParser: NSObject {
 	}
 }
 
-public class RSyntaxParser:SyntaxParser {
-	internal override func parseRange(range: NSRange) {
+open class RSyntaxParser:SyntaxParser {
+	internal override func parseRange(_ range: NSRange) {
 		chunks.removeAll()
-		let chunk = DocumentChunk(chunkType: .RCode, chunkNumber: 1)
+		let chunk = DocumentChunk(chunkType: .rCode, chunkNumber: 1)
 		chunk.parsedRange = NSMakeRange(0, textStorage.string.characters.count)
 		chunks.append(chunk)
 	}

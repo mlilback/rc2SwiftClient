@@ -7,32 +7,52 @@
 
 import Cocoa
 import SwiftyJSON
-
-enum BookmarkEntry {
-	case Group(String)
-	case Mark(Bookmark)
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
 }
 
-public class BookmarkViewController: NSViewController {
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
+
+enum BookmarkEntry {
+	case group(String)
+	case mark(Bookmark)
+}
+
+open class BookmarkViewController: NSViewController {
 	@IBOutlet var tableView:NSTableView?
 	@IBOutlet var addRemoveButtons: NSSegmentedControl?
-	private let dateFormatter: NSDateFormatter = NSDateFormatter()
+	fileprivate let dateFormatter: DateFormatter = DateFormatter()
 	var addController: AddBookmarkViewController?
 	var bookmarkManager: BookmarkManager?
 	var openSession:((RestServer) -> Void)?
-	private var appStatus: MacAppStatus?
+	fileprivate var appStatus: MacAppStatus?
 
 	var entries: [BookmarkEntry] = []
 
-	override public func viewDidLoad() {
+	override open func viewDidLoad() {
 		super.viewDidLoad()
 		appStatus = MacAppStatus(windowAccessor: { [unowned self] _ in self.view.window! })
-		dateFormatter.dateStyle = .ShortStyle
-		dateFormatter.timeStyle = .ShortStyle
+		dateFormatter.dateStyle = .short
+		dateFormatter.timeStyle = .short
 		tableView?.doubleAction = #selector(BookmarkViewController.openBookmark(_:))
 	}
 	
-	override public func viewWillAppear() {
+	override open func viewWillAppear() {
 		super.viewWillAppear()
 		loadBookmarkEntries()
 		tableView?.reloadData()
@@ -41,15 +61,15 @@ public class BookmarkViewController: NSViewController {
 	func loadBookmarkEntries() {
 		//turn into entries
 		entries.removeAll()
-		for aGroup in bookmarkManager!.bookmarkGroups.values.sort({ (g1, g2) in g1.key < g2.key }) {
-			entries.append(BookmarkEntry.Group(aGroup.key))
-			for aMark in aGroup.bookmarks.sort({ (b1, b2) in b1.name < b2.name }) {
-				entries.append(BookmarkEntry.Mark(aMark))
+		for aGroup in bookmarkManager!.bookmarkGroups.values.sorted(by: { (g1, g2) in g1.key < g2.key }) {
+			entries.append(BookmarkEntry.group(aGroup.key))
+			for aMark in aGroup.bookmarks.sorted(by: { (b1, b2) in b1.name < b2.name }) {
+				entries.append(BookmarkEntry.mark(aMark))
 			}
 		}
 	}
 	
-	@IBAction func addRemoveBookmark(sender:AnyObject?) {
+	@IBAction func addRemoveBookmark(_ sender:AnyObject?) {
 		if addRemoveButtons?.selectedSegment == 0 {
 			addBookmark(sender)
 		} else {
@@ -57,12 +77,12 @@ public class BookmarkViewController: NSViewController {
 		}
 	}
 
-	@IBAction func removeBookmark(sender:AnyObject?) {
+	@IBAction func removeBookmark(_ sender:AnyObject?) {
 		
 	}
 	
-	@IBAction func addBookmark(sender:AnyObject?) {
-		addController = storyboard?.instantiateControllerWithIdentifier("addBookmark") as? AddBookmarkViewController
+	@IBAction func addBookmark(_ sender:AnyObject?) {
+		addController = storyboard?.instantiateController(withIdentifier: "addBookmark") as? AddBookmarkViewController
 		addController?.bookmarkAddedClosure = { (host, pw) in
 			let bookmark = Bookmark(name: "untitled", server: host, project: pw.project, workspace: pw.workspace)
 			self.bookmarkManager?.addBookmark(bookmark)
@@ -70,33 +90,33 @@ public class BookmarkViewController: NSViewController {
 			self.loadBookmarkEntries()
 			self.tableView?.reloadData()
 			let idx = self.entryIndexForBookmark(bookmark)!
-			self.tableView?.selectRowIndexes(NSIndexSet(index:idx), byExtendingSelection: false)
+			self.tableView?.selectRowIndexes(IndexSet(integer:idx), byExtendingSelection: false)
 			self.dismissViewController(self.addController!)
-			dispatch_async(dispatch_get_main_queue()) {
+			DispatchQueue.main.async {
 				//start editing of name
-				if let cellView = self.tableView?.viewAtColumn(0, row: idx, makeIfNecessary: true) as? NSTableCellView
+				if let cellView = self.tableView?.view(atColumn: 0, row: idx, makeIfNecessary: true) as? NSTableCellView
 				{
 					cellView.window!.makeFirstResponder(cellView.textField)
 				}
 			}
 		}
-		dispatch_async(dispatch_get_main_queue()) {
+		DispatchQueue.main.async {
 			self.presentViewControllerAsSheet(self.addController!)
 		}
 	}
 	
-	@IBAction func bookmarkNameEditedAction(textField:NSTextField)
+	@IBAction func bookmarkNameEditedAction(_ textField:NSTextField)
 	{
 		assert(tableView!.selectedRow >= 0)
-		if case .Mark(let aMark) = entries[tableView!.selectedRow] {
+		if case .mark(let aMark) = entries[tableView!.selectedRow] {
 			let nbmark = aMark.withChangedName(textField.stringValue)
 			bookmarkManager!.replaceBookmark(aMark, with:nbmark)
 			bookmarkManager!.save()
 		}
 	}
 	
-	@IBAction func openBookmark(sender:AnyObject?) {
-		if case .Mark(let aMark) = entries[tableView!.selectedRow] {
+	@IBAction func openBookmark(_ sender:AnyObject?) {
+		if case .mark(let aMark) = entries[tableView!.selectedRow] {
 			var host = ServerHost.localHost
 			var password = Constants.LocalServerPassword
 			if let bmserver = aMark.server {
@@ -105,7 +125,7 @@ public class BookmarkViewController: NSViewController {
 			}
 			let restServer = RestServer(host: host)
 			restServer.login(password).onSuccess { loginsession in
-				let wspace = loginsession.projectWithName(aMark.projectName)?.workspaceWithName(aMark.workspaceName!)
+				let wspace = loginsession.project(withName:aMark.projectName)?.workspace(withName:aMark.workspaceName!)
 				restServer.createSession(wspace!, appStatus: self.appStatus!).onSuccess { _ in
 					self.openSession?(restServer)
 				}.onFailure { error in
@@ -117,33 +137,33 @@ public class BookmarkViewController: NSViewController {
 		}
 	}
 	
-	func entryIndexForBookmark(bmark:Bookmark) -> Int? {
+	func entryIndexForBookmark(_ bmark:Bookmark) -> Int? {
 		for idx in 0..<entries.count {
-			if case .Mark(let aMark) = entries[idx] where aMark == bmark {
+			if case .mark(let aMark) = entries[idx] , aMark == bmark {
 				return idx
 			}
 		}
 		return nil
 	}
 	
-	func displayError(error:NSError) {
+	func displayError(_ error:NSError) {
 		appStatus?.presentError(error, session: nil)
 	}
 }
 
 extension BookmarkViewController: NSTableViewDataSource {
-	public func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+	public func numberOfRows(in tableView: NSTableView) -> Int {
 		return entries.count
 	}
 }
 
 extension BookmarkViewController: NSTableViewDelegate {
-	public func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+	public func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 		var str = ""
 		switch(entries[row]) {
-			case .Group(let name):
+			case .group(let name):
 				str = name
-			case .Mark(let mark):
+			case .mark(let mark):
 				switch(tableColumn!.identifier) {
 					case "name":
 						str = mark.name
@@ -151,7 +171,7 @@ extension BookmarkViewController: NSTableViewDelegate {
 						if mark.lastUsed < 1 {
 							str = ""
 						} else {
-							str = dateFormatter.stringFromDate(NSDate(timeIntervalSinceReferenceDate: mark.lastUsed))
+							str = dateFormatter.string(from: Date(timeIntervalSinceReferenceDate: mark.lastUsed))
 						}
 					case "project":
 						str = mark.projectName
@@ -163,37 +183,37 @@ extension BookmarkViewController: NSTableViewDelegate {
 						str = ""
 				}
 		}
-		let cellView = tableView.makeViewWithIdentifier("name", owner: nil) as! NSTableCellView
+		let cellView = tableView.make(withIdentifier: "name", owner: nil) as! NSTableCellView
 		cellView.textField?.stringValue = str
 		return cellView
 	}
 	
-	public func tableView(tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
+	public func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
 		switch(entries[row]) {
-			case .Group(_):
+			case .group(_):
 				return false
-			case .Mark(_):
+			case .mark(_):
 				return true
 		}
 	}
 	
-	public func tableView(tableView: NSTableView, isGroupRow row: Int) -> Bool {
+	public func tableView(_ tableView: NSTableView, isGroupRow row: Int) -> Bool {
 		switch(entries[row]) {
-			case .Group(_):
+			case .group(_):
 				return true
-			case .Mark(_):
+			case .mark(_):
 				return false
 		}
 	}
 	
-	public func tableViewSelectionDidChange(notification: NSNotification) {
+	public func tableViewSelectionDidChange(_ notification: Notification) {
 		let noSelection = tableView!.selectedRow == -1
 		addRemoveButtons?.setEnabled(!noSelection && entries.count > 2, forSegment: 1) //1 bookmark + 1 group row
 	}
 }
 
 extension BookmarkViewController: NSTextFieldDelegate {
-	public func control(control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+	public func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
 		return fieldEditor.string?.characters.count > 0
 	}
 }

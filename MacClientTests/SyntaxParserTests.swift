@@ -21,17 +21,17 @@ class SyntaxParserTests: XCTestCase {
 		super.tearDown()
 	}
 
-	func loadStorageWith(filename:String, suffix:String) {
+	func loadStorageWith(_ filename:String, suffix:String) {
 		parser = SyntaxParser.parserWithTextStorage(storage, fileType: FileType.fileTypeWithExtension(suffix)!)
-		let fileUrl = NSBundle(forClass: self.dynamicType).URLForResource(filename, withExtension: suffix, subdirectory: nil)!
-		let contents = try! String(contentsOfURL: fileUrl, encoding: NSUTF8StringEncoding)
-		storage.replaceCharactersInRange(NSMakeRange(0, storage.string.utf8.count), withString: contents)
+		let fileUrl = Bundle(for: type(of: self)).url(forResource: filename, withExtension: suffix, subdirectory: nil)!
+		let contents = try! String(contentsOf: fileUrl, encoding: String.Encoding.utf8)
+		storage.replaceCharacters(in: NSMakeRange(0, storage.string.utf8.count), with: contents)
 	}
 	
 	func testChunkBreaks() {
 		//storage must be non-empty and not the same length as the range
 		// we are testing. "foo" should do
-		storage.appendAttributedString(NSAttributedString(string: "foo"))
+		storage.append(NSAttributedString(string: "foo"))
 		let chunks = [
 			DocumentChunk(chunkType: .Equation, chunkNumber: 1),
 			DocumentChunk(chunkType: .Documentation, chunkNumber: 2),

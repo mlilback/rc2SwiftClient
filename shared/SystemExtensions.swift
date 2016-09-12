@@ -8,17 +8,13 @@ import Foundation
 import BrightFutures
 import CryptoSwift
 
-func delay(delay:Double, _ closure:()->()) {
-	dispatch_after(
-		dispatch_time(
-			DISPATCH_TIME_NOW,
-			Int64(delay * Double(NSEC_PER_SEC))
-		),
-		dispatch_get_main_queue(), closure)
+func delay(_ delay:Double, _ closure:@escaping ()->()) {
+	DispatchQueue.main.asyncAfter(
+		deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
 }
 
-enum ColorInputError : ErrorType {
-	case InvalidHexString
+enum ColorInputError : Error {
+	case invalidHexString
 }
 
 #if os(OSX)
@@ -46,7 +42,7 @@ public final class ObjcBox<T>: NSObject {
 }
 
 extension PlatformColor {
-	public static func colorWithHexString(hex:String, alpha:CGFloat = 1.0) -> PlatformColor? {
+	public static func colorWithHexString(_ hex:String, alpha:CGFloat = 1.0) -> PlatformColor? {
 		do {
 			return try PlatformColor(hex:hex, alpha:alpha)
 		} catch _ {
@@ -56,34 +52,34 @@ extension PlatformColor {
 	public convenience init(hex:String, alpha:CGFloat = 1.0) throws {
 		var hcode = hex
 		if hcode.hasPrefix("#") {
-			hcode = hcode.substringFromIndex(hcode.characters.startIndex.advancedBy(1))
+			hcode = hcode.substring(from: hcode.characters.index(hcode.characters.startIndex, offsetBy: 1))
 		}
-		let redHex = hex.substringToIndex(hex.startIndex.advancedBy(2))
-		let greenHex = hex.substringWithRange(hex.startIndex.advancedBy(2) ..< hex.startIndex.advancedBy(4))
-		let blueHex = hex.substringWithRange(hex.startIndex.advancedBy(4) ..< hex.startIndex.advancedBy(6))
+		let redHex = hex.substring(to: hex.characters.index(hex.startIndex, offsetBy: 2))
+		let greenHex = hex.substring(with: hex.characters.index(hex.startIndex, offsetBy: 2) ..< hex.characters.index(hex.startIndex, offsetBy: 4))
+		let blueHex = hex.substring(with: hex.characters.index(hex.startIndex, offsetBy: 4) ..< hex.characters.index(hex.startIndex, offsetBy: 6))
 		var redInt: CUnsignedInt = 0
 		var greenInt: CUnsignedInt = 0
 		var blueInt: CUnsignedInt = 0
-		NSScanner(string: redHex).scanHexInt(&redInt)
-		NSScanner(string: greenHex).scanHexInt(&greenInt)
-		NSScanner(string: blueHex).scanHexInt(&blueInt)
+		Scanner(string: redHex).scanHexInt32(&redInt)
+		Scanner(string: greenHex).scanHexInt32(&greenInt)
+		Scanner(string: blueHex).scanHexInt32(&blueInt)
 		let divisor: CGFloat = 255.0
 		
 		self.init(red:CGFloat(redInt) / divisor, green:CGFloat(greenInt) / divisor, blue:CGFloat(blueInt) / divisor, alpha:alpha)
 	}
 }
 
-extension NSNotificationCenter {
-	func postNotificationNameOnMainThread(noteName:String, object:AnyObject, userInfo:[NSObject:AnyObject]?=nil) {
-		if !NSThread.isMainThread() {
+extension NotificationCenter {
+	func postNotificationNameOnMainThread(_ noteName:String, object:AnyObject, userInfo:[AnyHashable: Any]?=nil) {
+		if !Thread.isMainThread {
 			postAsyncNotificationNameOnMainThread(noteName, object: object, userInfo:userInfo)
 		} else {
-			postNotificationName(noteName, object: object, userInfo: userInfo)
+			post(name: Notification.Name(rawValue: noteName), object: object, userInfo: userInfo)
 		}
 	}
-	func postAsyncNotificationNameOnMainThread(noteName:String, object:AnyObject, userInfo:[NSObject:AnyObject]?=nil) {
-		dispatch_async(dispatch_get_main_queue(), {
-			self.postNotificationName(noteName, object: object, userInfo: userInfo)
+	func postAsyncNotificationNameOnMainThread(_ noteName:String, object:AnyObject, userInfo:[AnyHashable: Any]?=nil) {
+		DispatchQueue.main.async(execute: {
+			self.post(name: Notification.Name(rawValue: noteName), object: object, userInfo: userInfo)
 		})
 	}
 }
@@ -92,26 +88,22 @@ extension NSError {
 	static func error(withCode code:Rc2ErrorCode, description:String?) -> NSError {
 		var userInfo:[String:AnyObject]?
 		if let desc = description {
-			userInfo = [NSLocalizedDescriptionKey:desc]
+			userInfo = [NSLocalizedDescriptionKey:desc as AnyObject]
 		}
 		return NSError(domain: Rc2ErrorDomain, code: code.rawValue, userInfo: userInfo)
 	}
 }
 
 extension NSRange {
-	func toStringRange(str:String) -> Range<String.Index>? {
-		let fromIdx = str.utf16.startIndex.advancedBy(self.location)
-		let toIdx = fromIdx.advancedBy(self.length, limit: str.utf16.endIndex)
-		if let from = String.Index(fromIdx, within: str),
-			let to = String.Index(toIdx, within: str)
-		{
-			return from ..< to
-		}
-		return nil
+	func toStringRange(_ str:String) -> Range<String.Index>? {
+		guard str.characters.count >= length - location else { return nil }
+		let fromIdx = str.characters.index(str.startIndex, offsetBy: self.location)
+		let toIdx = str.characters.index(fromIdx, offsetBy: self.length)
+		return fromIdx..<toIdx
 	}
 }
 
-func MaxNSRangeIndex(range:NSRange) -> Int {
+func MaxNSRangeIndex(_ range:NSRange) -> Int {
 	return range.location + range.length - 1
 }
 

@@ -5,6 +5,7 @@
 //
 
 import AppKit
+import os
 
 class TextViewWithContextualMenu: NSTextView {
 	
@@ -13,23 +14,23 @@ class TextViewWithContextualMenu: NSTextView {
 		usesFindBar = true
 	}
 	
-	override func menuForEvent(event: NSEvent) -> NSMenu? {
-		let defaultMenu = super.menuForEvent(event)
+	override func menu(for event: NSEvent) -> NSMenu? {
+		let defaultMenu = super.menu(for: event)
 		let menu = NSMenu(title: "")
-		for anItem in (defaultMenu?.itemArray)! {
-			log.info("\(anItem.title) = \(anItem.target).\(anItem.action) (\(anItem.tag))")
+		for anItem in (defaultMenu?.items)! {
+			os_log("context item %@ = %@.%@ (%@)", type:.info, anItem.title, anItem.target as! NSObject, anItem.action?.description ?? "<noaction>", anItem.tag)
 		}
 		//copy look up xxx and search with Google menu items
-		if let lookupItem = defaultMenu?.itemArray.filter({ $0.title.hasPrefix("Look Up") }).first {
+		if let lookupItem = defaultMenu?.items.filter({ $0.title.hasPrefix("Look Up") }).first {
 			menu.addItem(lookupItem.copy() as! NSMenuItem)
-			if let searchItem = defaultMenu?.itemArray.filter({ $0.title.hasPrefix("Search with") }).first {
+			if let searchItem = defaultMenu?.items.filter({ $0.title.hasPrefix("Search with") }).first {
 				menu.addItem(searchItem.copy() as! NSMenuItem)
 			}
-			menu.addItem(NSMenuItem.separatorItem())
+			menu.addItem(NSMenuItem.separator())
 		}
-		let preEditCount = menu.itemArray.count
+		let preEditCount = menu.items.count
 		//add the cut/copy/paste menu items
-		if self.editable, let item = defaultMenu?.itemWithAction(#selector(NSText.cut(_:)), recursive: false) {
+		if self.isEditable, let item = defaultMenu?.itemWithAction(#selector(NSText.cut(_:)), recursive: false) {
 			menu.addItem(item.copy() as! NSMenuItem)
 		}
 		if let item = defaultMenu?.itemWithAction(#selector(NSText.copy(_:)), recursive: false) {
@@ -38,8 +39,8 @@ class TextViewWithContextualMenu: NSTextView {
 		if let item = defaultMenu?.itemWithAction(#selector(NSText.paste(_:)), recursive: false) {
 			menu.addItem(item.copy() as! NSMenuItem)
 		}
-		if menu.itemArray.count > preEditCount {
-			menu.addItem(NSMenuItem.separatorItem())
+		if menu.items.count > preEditCount {
+			menu.addItem(NSMenuItem.separator())
 		}
 		//add our font and size menus
 		if let fontItem = NSApp.mainMenu?.itemWithAction(#selector(ManageFontMenu.showFonts(_:)), recursive: true) {
@@ -51,8 +52,8 @@ class TextViewWithContextualMenu: NSTextView {
 		}
 		//add speak menu if there
 		if let speak = defaultMenu?.itemWithAction(#selector(NSTextView.startSpeaking(_:)), recursive: true) {
-			menu.addItem(NSMenuItem.separatorItem())
-			menu.addItem(speak.parentItem!.copy() as! NSMenuItem)
+			menu.addItem(NSMenuItem.separator())
+			menu.addItem(speak.parent!.copy() as! NSMenuItem)
 		}
 		return menu
 	}

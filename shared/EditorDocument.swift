@@ -6,16 +6,16 @@
 
 import Foundation
 
-let MinTimeBetweenAutoSaves:NSTimeInterval = 2
+let MinTimeBetweenAutoSaves:TimeInterval = 2
 
 class EditorDocument: NSObject {
-	private(set) var file:File
-	let fileUrl:NSURL
+	fileprivate(set) var file:File
+	let fileUrl:URL
 	let fileHandler:SessionFileHandler
-	let undoManager:NSUndoManager
-	private(set) var savedContents:String!
+	let undoManager:UndoManager
+	fileprivate(set) var savedContents:String!
 	var editedContents:String?
-	private(set) var lastSaveTime:NSTimeInterval = 0
+	fileprivate(set) var lastSaveTime:TimeInterval = 0
 	var topVisibleIndex:Int = 0
 	
 	var currentContents:String { return editedContents != nil ? editedContents! : savedContents }
@@ -28,10 +28,10 @@ class EditorDocument: NSObject {
 		self.file = file
 		self.fileHandler = fileHandler
 		self.fileUrl = fileHandler.fileCache.cachedFileUrl(file)
-		self.undoManager = NSUndoManager()
+		self.undoManager = UndoManager()
 		super.init()
 		fileHandler.contentsOfFile(file).onSuccess { fileData in
-			self.savedContents = String(data: fileData!, encoding: NSUTF8StringEncoding)
+			self.savedContents = String(data: fileData!, encoding: String.Encoding.utf8)
 		}
 	}
 	
@@ -39,11 +39,11 @@ class EditorDocument: NSObject {
 		
 	}
 	
-	func willBecomeInactive(text:String?) {
+	func willBecomeInactive(_ text:String?) {
 		editedContents = text
 	}
 	
-	func updateFile(newFile:File) {
+	func updateFile(_ newFile:File) {
 		self.editedContents = nil
 		self.file = newFile
 	}
@@ -52,13 +52,13 @@ class EditorDocument: NSObject {
 	///save is complete, but before the document replaces the savedContents with the editedContents
 	///this allows observers to access the previous and new content
 	///@returns nil if autosave and has been a while since last save, else progress
-	func saveContents(isAutoSave autosave:Bool=false) -> NSProgress? {
+	func saveContents(isAutoSave autosave:Bool=false) -> Progress? {
 		if autosave {
-			let curTime = NSDate.timeIntervalSinceReferenceDate()
+			let curTime = Date.timeIntervalSinceReferenceDate
 			guard curTime - lastSaveTime < MinTimeBetweenAutoSaves else { return nil }
 		}
-		self.lastSaveTime = NSDate.timeIntervalSinceReferenceDate()
-		let prog = NSProgress(totalUnitCount: -1) //indeterminate
+		self.lastSaveTime = Date.timeIntervalSinceReferenceDate
+		let prog = Progress(totalUnitCount: -1) //indeterminate
 		fileHandler.saveFile(file, contents: editedContents!) { err in
 			//mark progress complete, reporting error if there was one
 			prog.totalUnitCount = 1 //makes it determinate so it can be completed
@@ -66,10 +66,10 @@ class EditorDocument: NSObject {
 			//only mark self as saved if no error
 			if nil == err {
 				//add to main queue to let progress handler blocks execute first
-				dispatch_async(dispatch_get_main_queue()) {
+				DispatchQueue.main.async {
 					self.savedContents = self.editedContents
 					self.editedContents = nil
-					self.lastSaveTime = NSDate.timeIntervalSinceReferenceDate()
+					self.lastSaveTime = Date.timeIntervalSinceReferenceDate
 				}
 			}
 		}

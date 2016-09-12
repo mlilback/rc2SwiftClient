@@ -6,15 +6,16 @@
 
 import Foundation
 import SwiftyJSON
+import os
 
 ///manages access to Bookmarks and ServerHosts
-public class BookmarkManager {
+open class BookmarkManager {
 	///all existing bookmarks
-	private(set) var bookmarks: [Bookmark] = []
+	fileprivate(set) var bookmarks: [Bookmark] = []
 	///bookmarks grouped by ServerHost.name
-	private(set) var bookmarkGroups: [String:BookmarkGroup] = [:]
+	fileprivate(set) var bookmarkGroups: [String:BookmarkGroup] = [:]
 	///all known ServerHosts
-	private(set) var hosts: [ServerHost] = []
+	fileprivate(set) var hosts: [ServerHost] = []
 	
 	init() {
 		loadBookmarks()
@@ -22,31 +23,31 @@ public class BookmarkManager {
 
 	///saves bookmarks and hosts to NSUserDefaults
 	func save() {
-		let defaults = NSUserDefaults.standardUserDefaults()
+		let defaults = UserDefaults.standard
 		do {
 			let bmarks = try JSON(bookmarks.map() { try $0.serialize() })
-			defaults.setObject(bmarks.rawString(), forKey: PrefKeys.Bookmarks)
+			defaults.set(bmarks.rawString(), forKey: PrefKeys.Bookmarks)
 			let jhosts = try JSON(hosts.map() { try $0.serialize() })
-			defaults.setObject(jhosts.rawString(), forKey: PrefKeys.Hosts)
-		} catch let err {
-			log.error("failed to serialize bookmarks: \(err)")
+			defaults.set(jhosts.rawString(), forKey: PrefKeys.Hosts)
+		} catch let err as NSError {
+			os_log("failed to serialize bookmarks: %@", type:.error, err)
 		}
 	}
 	
 	///adds a new bookmark to bookmarks array
 	/// - parameter bookmark: the bookmark to add
-	func addBookmark(bookmark:Bookmark) {
+	func addBookmark(_ bookmark:Bookmark) {
 		bookmarks.append(bookmark)
 		addBookmarkToAppropriateGroup(bookmark)
-		bookmarks.sortInPlace() { $0.name < $1.name }
+		bookmarks.sort() { $0.name < $1.name }
 	}
 	
 	///replaces an existing bookmark (when edited)
 	/// - parameter old: the bookmark to replace
 	/// - parameter with: the replacement bookmark
 	/// - returns: true if old was found and replaced
-	func replaceBookmark(old:Bookmark, with new:Bookmark) -> Bool {
-		if let idx = bookmarks.indexOf(old) {
+	@discardableResult func replaceBookmark(_ old:Bookmark, with new:Bookmark) -> Bool {
+		if let idx = bookmarks.index(of: old) {
 			bookmarks[idx] = new
 			groupBookmarks()
 			return true
@@ -55,11 +56,11 @@ public class BookmarkManager {
 	}
 	
 	///loads bookmarks and hosts from NSUserDefaults
-	private func loadBookmarks() {
-		let defaults = NSUserDefaults.standardUserDefaults()
+	fileprivate func loadBookmarks() {
+		let defaults = UserDefaults.standard
 		bookmarks.removeAll()
 		//load them, or create default ones
-		if let bmstr = defaults.stringForKey(PrefKeys.Bookmarks) {
+		if let bmstr = defaults.string(forKey: PrefKeys.Bookmarks) {
 			for aJsonObj in JSON.parse(bmstr).arrayValue {
 				bookmarks.append(Bookmark(json: aJsonObj)!)
 			}
@@ -67,19 +68,19 @@ public class BookmarkManager {
 		if bookmarks.count < 1 {
 			bookmarks = createDefaultBookmarks()
 		}
-		bookmarks.sortInPlace() { $0.name < $1.name }
+		bookmarks.sort() { $0.name < $1.name }
 		groupBookmarks()
 		loadHosts()
 	}
 
-	private func groupBookmarks() {
+	fileprivate func groupBookmarks() {
 		bookmarkGroups.removeAll()
 		for aMark in bookmarks {
 			addBookmarkToAppropriateGroup(aMark)
 		}
 	}
 
-	private func addBookmarkToAppropriateGroup(bookmark:Bookmark) {
+	fileprivate func addBookmarkToAppropriateGroup(_ bookmark:Bookmark) {
 		let localKey:String = bookmark.server?.name ?? Constants.LocalBookmarkGroupName
 		if let _ = bookmarkGroups[localKey] {
 			bookmarkGroups[localKey]!.addBookmark(bookmark)
@@ -90,17 +91,17 @@ public class BookmarkManager {
 	
 	///add a server host
 	/// - parameter host: the host to add
-	func addHost(host:ServerHost) {
+	func addHost(_ host:ServerHost) {
 		hosts.append(host)
-		hosts.sortInPlace() { $0.name < $1.name }
+		hosts.sort() { $0.name < $1.name }
 	}
 	
 	///loads hosts from NSUserDefaults
-	private func loadHosts() {
-		let defaults = NSUserDefaults.standardUserDefaults()
+	fileprivate func loadHosts() {
+		let defaults = UserDefaults.standard
 		var hostSet = Set<ServerHost>()
 		hosts.removeAll()
-		if let hostsStr = defaults.stringForKey(PrefKeys.Hosts) {
+		if let hostsStr = defaults.string(forKey: PrefKeys.Hosts) {
 			for aJsonObj in JSON.parse(hostsStr).arrayValue {
 				hostSet.insert(ServerHost(json: aJsonObj)!)
 			}
@@ -108,12 +109,12 @@ public class BookmarkManager {
 		for aMark in bookmarks {
 			if aMark.server != nil { hostSet.insert(aMark.server!) }
 		}
-		hosts.appendContentsOf(hostSet)
-		hosts.sortInPlace() { $0.name < $1.name }
+		hosts.append(contentsOf: hostSet)
+		hosts.sort() { $0.name < $1.name }
 	}
 	
 	///returns an array of default bookmarks
-	private func createDefaultBookmarks() -> [Bookmark] {
+	fileprivate func createDefaultBookmarks() -> [Bookmark] {
 		let bmark = Bookmark(name:Constants.DefaultBookmarkName, server: nil, project: Constants.DefaultProjectName, workspace: Constants.DefaultWorkspaceName)
 		return [bmark]
 	}
@@ -134,7 +135,7 @@ struct BookmarkGroup {
 		self.bookmarks = original.bookmarks
 	}
 	
-	mutating func addBookmark(bmark:Bookmark) {
+	mutating func addBookmark(_ bmark:Bookmark) {
 		bookmarks.append(bmark)
 	}
 }

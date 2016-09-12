@@ -9,26 +9,26 @@ import Cocoa
 class TargetActionBlock: NSObject {
 	typealias ActionBlock = ((AnyObject) -> Void)
 	let actionBlock:ActionBlock
-	private struct Keys {
+	fileprivate struct Keys {
 		static var SelfName = "rc2_SelfName"
 	}
 	
-	init(action:ActionBlock) {
+	init(action:@escaping ActionBlock) {
 		self.actionBlock = action
 		super.init()
 	}
 	
-	func performAction(sender:AnyObject?) {
+	func performAction(_ sender:AnyObject?) {
 		actionBlock(sender == nil ? self : sender!)
 	}
 	
-	func installInToolbarItem(item:NSToolbarItem) {
+	func installInToolbarItem(_ item:NSToolbarItem) {
 		item.target = self
 		item.action = #selector(TargetActionBlock.performAction(_:))
 		objc_setAssociatedObject(item, &Keys.SelfName, self, .OBJC_ASSOCIATION_RETAIN)
 	}
 	
-	func installInControl(item:NSControl) {
+	func installInControl(_ item:NSControl) {
 		item.target = self
 		item.action = #selector(TargetActionBlock.performAction(_:))
 		objc_setAssociatedObject(item, &Keys.SelfName, self, .OBJC_ASSOCIATION_RETAIN)

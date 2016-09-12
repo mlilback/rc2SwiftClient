@@ -13,12 +13,12 @@ class ImageCacheTests: BaseTest {
 	func testExistingImageForId() {
 		let cache = ImageCache(restServer:RestServer(host:serverHost), fileManager:mockFM, hostIdentifier: "blah")
 		cache.workspace = sessionData.projects.first!.workspaces.first
-		let srcImage : NSURL = NSBundle(forClass: ImageCacheTests.self).URLForResource("graph", withExtension: "png")!
-		let destUrl = NSURL(string: "1.png", relativeToURL: cache.cacheUrl)!
+		let srcImage : URL = Bundle(for: ImageCacheTests.self).url(forResource: "graph", withExtension: "png")!
+		let destUrl = URL(string: "1.png", relativeToURL: cache.cacheUrl)!
 		if destUrl.checkPromisedItemIsReachableAndReturnError(nil) {
 			try! mockFM.removeItemAtURL(destUrl)
 		}
-		let expect = expectationWithDescription("fetch image from cache")
+		let expect = expectation(description: "fetch image from cache")
 		try! mockFM.copyItemAtURL(srcImage, toURL: destUrl)
 		cache.imageWithId(1).onSuccess { image in
 			XCTAssert(self.mockFM.contentsEqualAtPath(srcImage.absoluteURL.path!, andPath: destUrl.absoluteURL.path!))
@@ -27,7 +27,7 @@ class ImageCacheTests: BaseTest {
 			XCTFail("test failed: \(error)")
 			expect.fulfill()
 		}
-		self.waitForExpectationsWithTimeout(2) { (err) -> Void in }
+		self.waitForExpectations(timeout: 2) { (err) -> Void in }
 	}
 
 }

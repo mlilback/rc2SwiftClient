@@ -15,7 +15,7 @@ class RestServerTest: XCTestCase {
 	
 	override func setUp() {
 		super.setUp()
-		NSURLSessionConfiguration.mockingjaySwizzleDefaultSessionConfiguration()
+		URLSessionConfiguration.mockingjaySwizzleDefaultSessionConfiguration()
 		server = RestServer(host: ServerHost(name: "local", host: "local", port: 8088, user: "local"))
 	}
 	
@@ -24,21 +24,21 @@ class RestServerTest: XCTestCase {
 	}
 
 	func doLogin() {
-		let path : String = NSBundle(forClass: RestServerTest.self).pathForResource("loginResults", ofType: "json")!
-		let resultData = NSData(contentsOfFile: path)
+		let path : String = Bundle(for: RestServerTest.self).path(forResource: "loginResults", ofType: "json")!
+		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
 		stub(http(.POST, uri: "/login"), builder: jsonData(resultData!))
-		let loginEx = expectationWithDescription("login")
+		let loginEx = expectation(description: "login")
 		let future = server?.login("local")
 		future!.onSuccess { result in
 			loginEx.fulfill()
 		}.onFailure { error in
 			XCTFail("login failed:\(error)")
 		}
-		self.waitForExpectationsWithTimeout(2) { (err) -> Void in }
+		self.waitForExpectations(timeout: 2) { (err) -> Void in }
 	}
 	
 	func dummyWorkspace() -> Workspace {
-		let path : String = NSBundle(forClass: self.dynamicType).pathForResource("createWorkspace", ofType: "json")!
+		let path : String = Bundle(for: type(of: self)).path(forResource: "createWorkspace", ofType: "json")!
 		let json = try! String(contentsOfFile: path)
 		let parsedJson = JSON.parse(json)
 		let project = Project(json: parsedJson["projects"][0])
@@ -76,7 +76,7 @@ class RestServerTest: XCTestCase {
 	
 	func testCreateWebsocketUrl() {
 		let url = server!.createWebsocketUrl(2)
-		let build = NSBundle(forClass: RestServer.self).infoDictionary!["CFBundleVersion"]!
+		let build = Bundle(forClass: RestServer.self).infoDictionary!["CFBundleVersion"]!
 		let queryStr = "client=osx&build=\(build)"
 		XCTAssertEqual(url.query!, queryStr)
 		XCTAssertEqual(url.host, "localhost")
@@ -122,7 +122,7 @@ class RestServerTest: XCTestCase {
 }
 
 class DummyAppStatus: NSObject, AppStatus {
-	var currentProgress: NSProgress?
+	var currentProgress: Progress?
 	var busy:Bool { return currentProgress != nil }
 	var statusMessage: NSString = ""
 	
@@ -130,11 +130,11 @@ class DummyAppStatus: NSObject, AppStatus {
 		super.init()
 	}
 	
-	func presentError(error: NSError, session:Session?) {
+	func presentError(_ error: NSError, session:Session?) {
 		
 	}
 	
-	func presentAlert(session:Session?, message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
+	func presentAlert(_ session:Session?, message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
 	{
 	}
 	

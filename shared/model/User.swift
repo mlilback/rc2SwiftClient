@@ -7,7 +7,7 @@
 import Foundation
 import SwiftyJSON
 
-public class User: CustomStringConvertible, Equatable {
+open class User: CustomStringConvertible, Equatable {
 	let userId : Int32;
 	let login : String;
 	let version : Int32;
@@ -31,7 +31,7 @@ public class User: CustomStringConvertible, Equatable {
 		admin = json["admin"].boolValue
 	}
 	
-	public var description : String {
+	open var description : String {
 		return "<User: \(login) (\(userId))";
 	}
 }

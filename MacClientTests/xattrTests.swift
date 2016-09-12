@@ -9,14 +9,14 @@ import XCTest
 @testable import MacClient
 
 class xattrTests: BaseTest {
-	var fileUrl: NSURL!
+	var fileUrl: URL!
 	let contentString = "foo\nbar\nbaz"
 	let testAttr1Name = "io.rc2.XAttrTest.attr1"
 	
 	override func setUp() {
 		super.setUp()
-		fileUrl = NSURL(string: NSUUID().UUIDString, relativeToURL: mockFM.tempDirUrl)!.absoluteURL
-		contentString.dataUsingEncoding(NSUTF8StringEncoding)?.writeToURL(fileUrl, atomically: false)
+		fileUrl = URL(string: UUID().uuidString, relativeTo: mockFM.tempDirUrl as URL)!.absoluteURL
+		try? contentString.data(using: String.Encoding.utf8)?.write(to: fileUrl, options: [])
 	}
 	
 	override func tearDown() {
@@ -24,10 +24,10 @@ class xattrTests: BaseTest {
 	}
 
 	func testXAttrs() {
-		let attrValue = "foo".dataUsingEncoding(NSUTF8StringEncoding)!
+		let attrValue = "foo".data(using: String.Encoding.utf8)!
 		var getRsp = dataForXAttributeNamed(testAttr1Name, atURL:fileUrl)
 		XCTAssertNil(getRsp.data)
-		attrValue.writeToURL(fileUrl, atomically: false)
+		try? attrValue.write(to: fileUrl, options: [])
 		let setRsp = setXAttributeWithName(testAttr1Name, data: attrValue, atURL: fileUrl)
 		XCTAssertNil(setRsp)
 		getRsp = dataForXAttributeNamed(testAttr1Name, atURL: fileUrl)

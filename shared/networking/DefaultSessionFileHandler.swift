@@ -6,24 +6,25 @@
 
 import Foundation
 import BrightFutures
+import os
 
 class DefaultSessionFileHandler: SessionFileHandler {
 	var workspace:Workspace
 	let fileCache:FileCache
 	weak var appStatus:AppStatus?
-	var baseUrl:NSURL
+	var baseUrl:URL
 	weak var fileDelegate:SessionFileHandlerDelegate?
-	private(set) var filesLoaded:Bool = false
-	private var downloadPromise: Promise <Bool,NSError>
-	private var saveQueue:dispatch_queue_t
+	fileprivate(set) var filesLoaded:Bool = false
+	fileprivate var downloadPromise: Promise <Bool,NSError>
+	fileprivate var saveQueue:DispatchQueue
 	
-	init(wspace:Workspace, baseUrl:NSURL, config:NSURLSessionConfiguration, appStatus:AppStatus?) {
+	init(wspace:Workspace, baseUrl:URL, config:URLSessionConfiguration, appStatus:AppStatus?) {
 		self.workspace = wspace
 		self.appStatus = appStatus
 		self.fileCache = FileCache(workspace: workspace, baseUrl: baseUrl, config: config, appStatus:appStatus)
 		self.baseUrl = baseUrl
 		self.downloadPromise = Promise<Bool,NSError>()
-		self.saveQueue = dispatch_queue_create("fileHandlerSerial", DISPATCH_QUEUE_SERIAL)
+		self.saveQueue = DispatchQueue(label: "fileHandlerSerial", attributes: [])
 	}
 	
 	func loadFiles() {
@@ -32,7 +33,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 			self.appStatus?.currentProgress = progress
 			progress.rc2_addCompletionHandler() {
 				if let error = progress.rc2_error {
-					self.downloadPromise.failure(error)
+					self.downloadPromise.failure(error as NSError)
 				} else {
 					self.filesLoaded = true
 					self.downloadPromise.success(true)
@@ -41,24 +42,26 @@ class DefaultSessionFileHandler: SessionFileHandler {
 		}
 	}
 
-	func contentsOfFile(file:File) -> Future<NSData?,FileError> {
-		let p = Promise<NSData?,FileError>()
+	func contentsOfFile(_ file:File) -> Future<Data?,FileError> {
+		let p = Promise<Data?,FileError>()
 		if !filesLoaded {
 			//still downloading
-			downloadPromise.future.onSuccess { _ in
-				if let data = NSData(contentsOfURL: self.fileCache.cachedFileUrl(file)) {
+			downloadPromise.future.onSuccess {_ in 
+				do {
+					let data = try Data(contentsOf: self.fileCache.cachedFileUrl(file))
 					p.success(data)
-				} else {
-					p.failure(FileError.FoundationError(error: self.downloadPromise.future.error!))
+				} catch {
+					p.failure(FileError.foundationError(error: self.downloadPromise.future.error!))
 				}
 			}.onFailure() { err in
-				p.failure(FileError.FoundationError(error: err))
+				p.failure(FileError.foundationError(error: err))
 			}
 		} else {
-			if let data = NSData(contentsOfURL: fileCache.cachedFileUrl(file)) {
+			do {
+				let data = try Data(contentsOf: fileCache.cachedFileUrl(file))
 				p.success(data)
-			} else {
-				p.failure(.ReadError)
+			} catch {
+				p.failure(.readError)
 			}
 		}
 		return p.future
@@ -71,20 +74,17 @@ class DefaultSessionFileHandler: SessionFileHandler {
 		downloadPromise.success(true)
 	}
 
-	func updateFile(file:File, withData data:NSData?) -> NSProgress? {
-		let idx = workspace.indexOfFilePassingTest() { (obj, idx, stop) -> Bool in
-			return (obj as! File).fileId == file.fileId
-		}
-		if idx == NSNotFound { //insert
-			workspace.insertFile(file, at: workspace.fileCount)
-		} else { //update
+	func updateFile(_ file:File, withData data:Data?) -> Progress? {
+		if let idx = workspace.indexOfFilePassingTest({ return $0.fileId == file.fileId }) {
 			workspace.replaceFile(at:idx, withFile: file)
+		} else {
+			workspace.insertFile(file, at: workspace.fileCount)
 		}
 		if let fileContents = data {
 			do {
-				try fileContents.writeToURL(fileCache.cachedFileUrl(file), options: [])
+				try fileContents.write(to: fileCache.cachedFileUrl(file), options: [])
 			} catch let err {
-				log.error("failed to write file \(file.fileId) update: \(err)")
+				os_log("failed to write file %@ update: %@", type:.error, file.fileId, err as NSError)
 			}
 		} else {
 			//TODO: test that this works properly for large files
@@ -96,18 +96,15 @@ class DefaultSessionFileHandler: SessionFileHandler {
 		return nil
 	}
 	
-	func handleFileUpdate(file:File, change:FileChangeType) {
+	func handleFileUpdate(_ file:File, change:FileChangeType) {
 		switch(change) {
 		case .Update:
-			let idx = workspace.indexOfFilePassingTest() { (obj, idx, stop) -> Bool in
-				return (obj as! File).fileId == file.fileId
+			if let idx = workspace.indexOfFilePassingTest({ return $0.fileId == file.fileId }) {
+				workspace.replaceFile(at:idx, withFile: file)
+				fileCache.flushCacheForFile(file)
+			} else {
+				os_log("got file update for non-existing file: %@", file.fileId)
 			}
-			guard idx != NSNotFound else {
-				log.warning("got file update for non-existing file: \(file.fileId)")
-				return
-			}
-			workspace.replaceFile(at:idx, withFile: file)
-			fileCache.flushCacheForFile(file)
 		case .Insert:
 			//TODO: implement file insert handling
 			break
@@ -118,17 +115,17 @@ class DefaultSessionFileHandler: SessionFileHandler {
 	}
 
 	//the following will add the save operation to a serial queue to be executed immediately
-	func saveFile(file:File, contents:String, completionHandler:(NSError?) -> Void) {
+	func saveFile(_ file:File, contents:String, completionHandler:@escaping (NSError?) -> Void) {
 		let url = fileCache.cachedFileUrl(file)
-		dispatch_async(saveQueue) {
+		saveQueue.async {
 			do {
-				try contents.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding)
-				dispatch_async(dispatch_get_main_queue()) {
+				try contents.write(to: url, atomically: true, encoding: String.Encoding.utf8)
+				DispatchQueue.main.async {
 					completionHandler(nil)
 				}
-			} catch let err as NSError? {
-				log.error("error saving file \(file): \(err)")
-				dispatch_async(dispatch_get_main_queue()) {
+			} catch let err as NSError {
+				os_log("error saving file %@:%@", type:.error, file.name, err)
+				DispatchQueue.main.async {
 					completionHandler(err)
 				}
 			}

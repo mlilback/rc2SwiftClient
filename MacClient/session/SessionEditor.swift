@@ -12,9 +12,9 @@ class SessionEditor: TextViewWithContextualMenu {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		usesFindBar = true
-		automaticSpellingCorrectionEnabled = false
-		automaticQuoteSubstitutionEnabled = false
-		automaticDashSubstitutionEnabled = false
+		isAutomaticSpellingCorrectionEnabled = false
+		isAutomaticQuoteSubstitutionEnabled = false
+		isAutomaticDashSubstitutionEnabled = false
 		
 	}
 	
@@ -23,7 +23,7 @@ class SessionEditor: TextViewWithContextualMenu {
 	}
 	
 	//with this version, if the close paren was at the end of the line, the blank space at the end of the line was colored, too. this did not happen in the old version of the client with similar code in objective-c. so we don't flash the close paren they just typed
-	override func insertText(aString: AnyObject, replacementRange: NSRange) {
+	override func insertText(_ aString: Any, replacementRange: NSRange) {
 		super.insertText(aString, replacementRange: replacementRange)
 		guard let str = aString as? NSString else { return }
 		guard str == ")" else { return }
@@ -43,12 +43,12 @@ class SessionEditor: TextViewWithContextualMenu {
 	}
 	
 	//can't figure out an easy was to compare with a character constant '(', so use ascii code for comparison
-	func findMatchingParenthesis(closeLocation:Int, str:NSString) -> Int {
+	func findMatchingParenthesis(_ closeLocation:Int, str:NSString) -> Int {
 		var stackCount = 0
 		var curLocation = closeLocation
 		let contentStr = textStorage!.string as NSString
 		while curLocation > 0 {
-			let prospectiveChar = contentStr.characterAtIndex(curLocation)
+			let prospectiveChar = contentStr.character(at: curLocation)
 			if prospectiveChar == 40 /* ( */ {
 				if stackCount == 0 { return curLocation }
 				stackCount -= 1
@@ -61,38 +61,38 @@ class SessionEditor: TextViewWithContextualMenu {
 		return NSNotFound
 	}
 
-	func findMatchingParenthesisNative(closeLocation:Int, str:String) -> Int {
+	func findMatchingParenthesisNative(_ closeLocation:Int, str:String) -> Int {
 		var stackCount = 0
-		var curLocation = str.startIndex.advancedBy(closeLocation)
-		while str.startIndex.distanceTo(curLocation) > 0 {
+		var curLocation = str.characters.index(str.startIndex, offsetBy: closeLocation)
+		while str.characters.distance(from: str.startIndex, to: curLocation) > 0 {
 			if str[curLocation] == Character("(") {
-				if stackCount == 0 { return str.startIndex.distanceTo(curLocation) }
+				if stackCount == 0 { return str.characters.distance(from: str.startIndex, to: curLocation) }
 				stackCount -= 1
 			} else if str[curLocation] == Character(")") {
 				stackCount += 1
 				guard stackCount >= 0 else { return NSNotFound }
 			}
-			curLocation = curLocation.advancedBy(-1)
+			curLocation = str.characters.index(curLocation, offsetBy: -1)
 		}
 		return NSNotFound
 	}
 	
-	@IBAction func toggleWordWrap(sender:AnyObject?) {
+	@IBAction func toggleWordWrap(_ sender:AnyObject?) {
 		let wordWrap = !wordWrapEnabled
-		let defaults = NSUserDefaults.standardUserDefaults()
-		defaults.setBool(wordWrap, forKey: PrefKeys.WordWrapEnabled)
+		let defaults = UserDefaults.standard
+		defaults.set(wordWrap, forKey: PrefKeys.WordWrapEnabled)
 		adjustWordWrap(wordWrap)
 	}
 	
-	func adjustWordWrap(wrap:Bool) {
+	func adjustWordWrap(_ wrap:Bool) {
 		let container = textContainer!
 		if wrap {
 			container.widthTracksTextView = false
-			container.containerSize = CGSizeMake(CGFloat.max, CGFloat.max)
-			horizontallyResizable = true
+			container.containerSize = CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+			isHorizontallyResizable = true
 		} else {
 			container.widthTracksTextView = true
-			container.containerSize = CGSizeMake(200, CGFloat.max)
+			container.containerSize = CGSize(width: 200, height: CGFloat.greatestFiniteMagnitude)
 		}
 		didChangeText()
 		enclosingScrollView?.verticalRulerView?.needsDisplay = true

@@ -9,9 +9,9 @@ import Foundation
 let Rc2ErrorDomain = "Rc2ErrorDomain"
 
 enum Rc2ErrorCode: Int {
-	case ServerError = 101
-	case Impossible = 102
-	case DockerError = 103
+	case serverError = 101
+	case impossible = 102
+	case dockerError = 103
 }
 
 struct Notifications {
@@ -51,5 +51,5 @@ let ConsoleAttachmentImageSize = CGSize(width: 48, height: 48)
 let HelpUrlBase = "http://stat.wvu.edu/rc2/library"
 let HelpUrlFuncSeperator = "/html"
 
-let VariableUpdatedBackgroundColor = PlatformColor.greenColor()
-let VariableNormalBackgroundColor = PlatformColor.whiteColor()
+let VariableUpdatedBackgroundColor = PlatformColor.green
+let VariableNormalBackgroundColor = PlatformColor.white

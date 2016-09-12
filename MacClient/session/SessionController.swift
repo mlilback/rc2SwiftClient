@@ -5,17 +5,18 @@
 //
 
 import Cocoa
+import os
 
 @objc protocol SessionControllerDelegate {
 	func filesRefreshed()
 	func sessionClosed()
 	func saveState() -> [String:AnyObject]
-	func restoreState(state:[String:AnyObject])
+	func restoreState(_ state:[String:AnyObject])
 }
 
 /// manages a Session object
 @objc class SessionController: NSObject {
-	private weak var delegate: SessionControllerDelegate?
+	fileprivate weak var delegate: SessionControllerDelegate?
 
 	///var! used because we can't pass self as delegate in constructor until variables initialized
 	var responseHandler: ServerResponseHandler!
@@ -26,8 +27,8 @@ import Cocoa
 
 	let session:Session
 
-	var savedStateHash: NSData?
-	private var properlyClosed:Bool = false
+	var savedStateHash: Data?
+	fileprivate var properlyClosed:Bool = false
 
 	init(session:Session, delegate: SessionControllerDelegate, outputHandler output:OutputHandler, variableHandler:VariableHandler)
 	{
@@ -37,19 +38,19 @@ import Cocoa
 		self.session = session
 		super.init()
 		session.delegate = self
-		imgCache = ImageCache(restServer: session.restServer!, fileManager:NSFileManager(), hostIdentifier: NSUUID().UUIDString)
+		imgCache = ImageCache(restServer: session.restServer!, fileManager:Foundation.FileManager(), hostIdentifier: UUID().uuidString)
 		imgCache.workspace = session.workspace
 		self.responseHandler = ServerResponseHandler(delegate: self)
-		let nc = NSNotificationCenter.defaultCenter()
-		nc.addObserver(self, selector: #selector(SessionController.appWillTerminate), name: NSApplicationWillTerminateNotification, object: nil)
-		nc.addObserver(self, selector:  #selector(SessionController.saveSessionState), name: NSWorkspaceWillSleepNotification, object:nil)
+		let nc = NotificationCenter.default
+		nc.addObserver(self, selector: #selector(SessionController.appWillTerminate), name: NSNotification.Name.NSApplicationWillTerminate, object: nil)
+		nc.addObserver(self, selector:  #selector(SessionController.saveSessionState), name: NSNotification.Name.NSWorkspaceWillSleep, object:nil)
 		outputHandler.imageCache = imgCache
 		restoreSessionState()
 	}
 	
 	deinit {
 		if !properlyClosed {
-			log.error("not properly closed")
+			os_log("not properly closed", type:.error)
 			close()
 		}
 	}
@@ -60,7 +61,7 @@ import Cocoa
 		properlyClosed = true
 	}
 	
-	func appWillTerminate(note: NSNotification) {
+	func appWillTerminate(_ note: Notification) {
 		saveSessionState()
 	}
 	
@@ -68,23 +69,23 @@ import Cocoa
 		session.fileHandler.fileCache.flushCacheForWorkspace(session.workspace)
 	}
 	
-	func formatErrorMessage(error:String) -> NSAttributedString {
+	func formatErrorMessage(_ error:String) -> NSAttributedString {
 		return responseHandler!.formatError(error)
 	}
 }
 
 //MARK: - ServerResponseHandlerDelegate
 extension SessionController: ServerResponseHandlerDelegate {
-	func handleFileUpdate(file:File, change:FileChangeType) {
-		log.info("got file update \(file.fileId) v\(file.version)")
+	func handleFileUpdate(_ file:File, change:FileChangeType) {
+		os_log("got file update %@ v%@", type:.info, file.fileId, file.version)
 		session.fileHandler.handleFileUpdate(file, change: change)
 	}
 	
-	func handleVariableMessage(single:Bool, variables:[Variable]) {
+	func handleVariableMessage(_ single:Bool, variables:[Variable]) {
 		varHandler.handleVariableMessage(single, variables: variables)
 	}
 	
-	func handleVariableDeltaMessage(assigned: [Variable], removed: [String]) {
+	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String]) {
 		varHandler.handleVariableDeltaMessage(assigned, removed: removed)
 	}
 
@@ -96,29 +97,29 @@ extension SessionController: ServerResponseHandlerDelegate {
 		return MacConsoleAttachment(file:file)
 	}
 	
-	func attributedStringForInputFile(fileId:Int) -> NSAttributedString {
+	func attributedStringForInputFile(_ fileId:Int) -> NSAttributedString {
 		let file = session.workspace.fileWithId(fileId)
 		return NSAttributedString(string: "[\(file!.name)]")
 	}
 	
-	func cacheImages(images:[SessionImage]) {
+	func cacheImages(_ images:[SessionImage]) {
 		imgCache.cacheImagesFromServer(images)
 	}
 	
-	func showFile(fileId:Int) {
+	func showFile(_ fileId:Int) {
 		outputHandler.showFile(fileId)
 	}
 }
 
 //MARK: - save/restore
 extension SessionController {
-	func stateFileUrl() throws -> NSURL {
-		let fileManager = NSFileManager()
-		let appSupportUrl = try fileManager.URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-		let dataDirUrl = NSURL(string: "Rc2/sessions/", relativeToURL: appSupportUrl)?.absoluteURL
-		try fileManager.createDirectoryAtURL(dataDirUrl!, withIntermediateDirectories: true, attributes: nil)
+	func stateFileUrl() throws -> URL {
+		let fileManager = Foundation.FileManager()
+		let appSupportUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+		let dataDirUrl = URL(string: "Rc2/sessions/", relativeTo: appSupportUrl)?.absoluteURL
+		try fileManager.createDirectory(at: dataDirUrl!, withIntermediateDirectories: true, attributes: nil)
 		let fname = "\(session.restServer!.host.name)--\(session.workspace.project!.userId)--\(session.workspace.wspaceId).plist"
-		let furl = NSURL(string:fname, relativeToURL: dataDirUrl)?.absoluteURL
+		let furl = URL(string:fname, relativeTo: dataDirUrl)?.absoluteURL
 		return furl!
 	}
 	
@@ -127,28 +128,28 @@ extension SessionController {
 		var dict = [String:AnyObject]()
 		dict["outputController"] = outputHandler.saveSessionState()
 		dict["imageCache"] = imgCache
-		dict["delegate"] = delegate?.saveState()
+		dict["delegate"] = delegate?.saveState() as AnyObject?
 		do {
-			let data = NSKeyedArchiver.archivedDataWithRootObject(dict)
+			let data = NSKeyedArchiver.archivedData(withRootObject: dict)
 			//only write to disk if has changed
 			let hash = data.sha256()
 			if hash != savedStateHash {
 				let furl = try stateFileUrl()
-				data.writeToURL(furl, atomically: true)
+				try? data.write(to: furl, options: [.atomic])
 				savedStateHash = hash
 			}
-		} catch let err {
-			log.error("Error saving session state:\(err)")
+		} catch let err as NSError {
+			os_log("Error saving session state: %@", err)
 		}
 	}
 	
-	private func restoreSessionState() {
+	fileprivate func restoreSessionState() {
 		do {
 			let furl = try stateFileUrl()
-			if furl.checkResourceIsReachableAndReturnError(nil),
-				let data = NSData(contentsOfURL: furl)
+			if (furl as NSURL).checkResourceIsReachableAndReturnError(nil),
+				let data = try? Data(contentsOf: furl)
 			{
-				guard let dict = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? [String:AnyObject] else {
+				guard let dict = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data as NSData) as? [String:AnyObject] else {
 					return
 				}
 				if let ostate = dict["outputController"] as? [String : AnyObject] {
@@ -164,8 +165,8 @@ extension SessionController {
 				}
 				savedStateHash = data.sha256()
 			}
-		} catch let err {
-			log.error("error restoring session state:\(err)")
+		} catch let err as NSError {
+			os_log("error restoring session state: %@", type:.error, err)
 		}
 	}
 }
@@ -180,22 +181,22 @@ extension SessionController: SessionDelegate {
 		delegate?.sessionClosed()
 	}
 	
-	func sessionFilesLoaded(session:Session) {
+	func sessionFilesLoaded(_ session:Session) {
 		delegate?.filesRefreshed()
 	}
 	
-	func respondToHelp(helpTopic: String) {
+	func respondToHelp(_ helpTopic: String) {
 		outputHandler.showHelp(HelpController.sharedInstance.topicsWithName(helpTopic))
 	}
 	
-	func sessionMessageReceived(response:ServerResponse) {
-		if case ServerResponse.ShowOutput( _, let updatedFile) = response {
+	func sessionMessageReceived(_ response:ServerResponse) {
+		if case ServerResponse.showOutput( _, let updatedFile) = response {
 			if updatedFile != session.workspace.fileWithId(updatedFile.fileId) {
 				//need to refetch file from server, then show it
 				let prog = session.fileHandler.updateFile(updatedFile, withData: nil)
 				prog?.rc2_addCompletionHandler() {
 					if let astr = self.responseHandler.handleResponse(response) {
-						self.outputHandler.appendFormattedString(astr, type: response.isEcho() ? .Input : .Default)
+						self.outputHandler.appendFormattedString(astr, type: response.isEcho() ? .input : .default)
 					}
 					//					self.outputHandler?.appendFormattedString(self.consoleAttachment(forFile:updatedFile).serializeToAttributedString(), type:.Default)
 				}
@@ -203,12 +204,12 @@ extension SessionController: SessionDelegate {
 			}
 		}
 		if let astr = responseHandler.handleResponse(response) {
-			outputHandler.appendFormattedString(astr, type: response.isEcho() ? .Input : .Default)
+			outputHandler.appendFormattedString(astr, type: response.isEcho() ? .input : .default)
 		}
 	}
 	
 	//TODO: impelment sessionErrorReceived
-	func sessionErrorReceived(error:ErrorType) {
+	func sessionErrorReceived(_ error:Error) {
 		
 	}
 }

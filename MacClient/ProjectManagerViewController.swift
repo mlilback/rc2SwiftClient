@@ -5,13 +5,33 @@
 //
 
 import Cocoa
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l >= r
+  default:
+    return !(lhs < rhs)
+  }
+}
+
 
 struct ProjectAndWorkspace {
 	let project:String
 	let workspace:String
 }
 
-public class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
+open class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
 	@IBOutlet var projectOutline:NSOutlineView?
 	@IBOutlet var addRemoveButtons:NSSegmentedControl?
 	
@@ -20,31 +40,31 @@ public class ProjectManagerViewController: NSViewController, EmbeddedDialogContr
 	var host:ServerHost?
 	var loginSession:LoginSession?
 
-	override public func viewDidAppear() {
+	override open func viewDidAppear() {
 		super.viewDidAppear()
 		projectOutline?.reloadData()
 		projectOutline?.expandItem(nil, expandChildren: true)
 	}
 	
-	func continueAction(callback:(value:Any?, error:NSError?) -> Void) {
-		if let wspace = projectOutline?.itemAtRow(projectOutline!.selectedRow) as? Workspace,
-			let project = loginSession?.projectWithId(wspace.projectId)
+	func continueAction(_ callback: @escaping (_ value:Any?, _ error:NSError?) -> Void) {
+		if let wspace = projectOutline?.item(atRow: projectOutline!.selectedRow) as? Workspace,
+			let project = loginSession?.project(withId: wspace.projectId)
 		{
 			let pw = ProjectAndWorkspace(project: project.name, workspace: wspace.name)
-			callback(value: pw, error: nil)
+			callback(pw, nil)
 		} else {
-			callback(value: nil, error: NSError.error(withCode: .Impossible, description: "should not be able to continue w/o a workspace selected"))
+			callback(nil, NSError.error(withCode: .impossible, description: "should not be able to continue w/o a workspace selected"))
 		}
 	}
 	
-	@IBAction func addRemoveAction(sender:AnyObject?) {
+	@IBAction func addRemoveAction(_ sender:AnyObject?) {
 		
 	}
 }
 
 extension ProjectManagerViewController: NSOutlineViewDataSource {
 	
-	public func outlineView(outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int {
+	public func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
 		if nil == item {
 			return loginSession?.projects.count ?? 0
 		} else if let proj = item as? Project {
@@ -53,11 +73,11 @@ extension ProjectManagerViewController: NSOutlineViewDataSource {
 		return 0
 	}
 	
-	public func outlineView(outlineView: NSOutlineView, isItemExpandable item: AnyObject) -> Bool {
+	public func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
 		return item is Project
 	}
 	
-	public func outlineView(outlineView: NSOutlineView, child index: Int, ofItem item: AnyObject?) -> AnyObject {
+	public func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
 		if let proj = item as? Project {
 			return proj.workspaces[index]
 		}
@@ -66,7 +86,7 @@ extension ProjectManagerViewController: NSOutlineViewDataSource {
 }
 
 extension ProjectManagerViewController: NSOutlineViewDelegate {
-	public func outlineView(outlineView: NSOutlineView, viewForTableColumn tableColumn: NSTableColumn?, item: AnyObject) -> NSView?
+	public func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView?
 	{
 		var val = "";
 		if let proj = item as? Project {
@@ -74,16 +94,16 @@ extension ProjectManagerViewController: NSOutlineViewDelegate {
 		} else if let wspace = item as? Workspace {
 			val = wspace.name
 		}
-		let view = outlineView.makeViewWithIdentifier("string", owner: nil) as? NSTableCellView
+		let view = outlineView.make(withIdentifier: "string", owner: nil) as? NSTableCellView
 		view?.textField?.stringValue = val
 		return view
 	}
 	
-	public func outlineView(outlineView: NSOutlineView, shouldSelectItem item: AnyObject) -> Bool {
+	public func outlineView(_ outlineView: NSOutlineView, shouldSelectItem item: Any) -> Bool {
 		return item is Workspace
 	}
 	
-	public func outlineViewSelectionDidChange(notification: NSNotification) {
+	public func outlineViewSelectionDidChange(_ notification: Notification) {
 		canContinue = projectOutline?.selectedRow >= 0
 	}
 }

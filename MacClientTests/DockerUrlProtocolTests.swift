@@ -12,8 +12,8 @@ import SwiftyJSON
 import Darwin
 
 class DockerUrlProtocolTests: XCTestCase {
-	var sessionConfig: NSURLSessionConfiguration?
-	var session: NSURLSession?
+	var sessionConfig: URLSessionConfiguration?
+	var session: URLSession?
 	
 	override class func setUp() {
 //		let envname = "CFNETWORK_DIAGNOSTICS".dataUsingEncoding(NSUTF8StringEncoding)
@@ -23,9 +23,9 @@ class DockerUrlProtocolTests: XCTestCase {
 	
 	override func setUp() {
 		super.setUp()
-		sessionConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
+		sessionConfig = URLSessionConfiguration.default
 		sessionConfig?.protocolClasses = [DockerUrlProtocol.self]
-		session = NSURLSession(configuration: sessionConfig!)
+		session = URLSession(configuration: sessionConfig!)
 	}
 	
 	override func tearDown() {
@@ -33,19 +33,19 @@ class DockerUrlProtocolTests: XCTestCase {
 	}
 
 	func testVersionRequest() {
-		let expect = expectationWithDescription("version")
-		let url = NSURL(string: "unix:///version")!
-		var fetchedData:NSData?
-		let task = session?.dataTaskWithRequest(NSURLRequest(URL: url)) { data, response, error in
+		let expect = expectation(description: "version")
+		let url = URL(string: "unix:///version")!
+		var fetchedData:Data?
+		let task = session?.dataTask(with: URLRequest(url: url), completionHandler: { data, response, error in
 			fetchedData = data
-			guard let httpResponse = response as? NSHTTPURLResponse else { XCTFail(); return }
+			guard let httpResponse = response as? HTTPURLResponse else { XCTFail(); return }
 			XCTAssertNotNil(httpResponse)
 			XCTAssertEqual(httpResponse.statusCode, 200)
 			expect.fulfill()
-		}
+		}) 
 		task?.resume()
-		self.waitForExpectationsWithTimeout(2) { (err) -> Void in }
-		let json = JSON.parse(String(data:fetchedData!, encoding: NSUTF8StringEncoding)!)
+		self.waitForExpectations(timeout: 2) { (err) -> Void in }
+		let json = JSON.parse(String(data:fetchedData!, encoding: String.Encoding.utf8)!)
 		XCTAssertNotNil(json.dictionary)
 		XCTAssertNotNil(json["Version"].string)
 		XCTAssertNotNil(json["Experimental"].bool)

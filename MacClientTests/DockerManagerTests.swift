@@ -40,7 +40,7 @@ class DockerManagerTests: XCTestCase {
 		}
 	}
 
-	private func sockaddr_cast(p: UnsafePointer<sockaddr_un>) -> UnsafePointer<sockaddr> {
+	fileprivate func sockaddr_cast(_ p: UnsafePointer<sockaddr_un>) -> UnsafePointer<sockaddr> {
 		return UnsafePointer<sockaddr>(p)
 	}
 }

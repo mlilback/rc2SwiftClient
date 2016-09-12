@@ -6,8 +6,9 @@
 
 import Foundation
 import WebKit
+import os
 
-public class WebViewController: NSViewController, WKNavigationDelegate {
+open class WebViewController: NSViewController, WKNavigationDelegate {
 	var webView:WKWebView?
 	@IBOutlet var containerView: NSView?
 	@IBOutlet var navButtons: NSSegmentedControl?
@@ -15,7 +16,7 @@ public class WebViewController: NSViewController, WKNavigationDelegate {
 	@IBOutlet var titleLabel: NSTextField?
 	var webConfig: WKWebViewConfiguration?
 	
-	override public func viewDidLoad() {
+	override open func viewDidLoad() {
 		super.viewDidLoad()
 		let prefs = WKPreferences()
 		prefs.minimumFontSize = 9.0;
@@ -32,17 +33,17 @@ public class WebViewController: NSViewController, WKNavigationDelegate {
 	
 	func setupWebView() {
 		webView?.removeFromSuperview()
-		webView = WKWebView(frame: CGRectInset(view.frame, 4, 4), configuration: webConfig!)
+		webView = WKWebView(frame: view.frame.insetBy(dx: 4, dy: 4), configuration: webConfig!)
 		webView?.navigationDelegate = self
 		webView?.translatesAutoresizingMaskIntoConstraints = false
 		containerView?.addSubview(webView!)
-		webView!.topAnchor.constraintEqualToAnchor(containerView?.topAnchor).active = true
-		webView!.bottomAnchor.constraintEqualToAnchor(containerView?.bottomAnchor).active = true
-		webView!.leadingAnchor.constraintEqualToAnchor(containerView?.leadingAnchor).active = true
-		webView!.trailingAnchor.constraintEqualToAnchor(containerView?.trailingAnchor).active = true
+		webView!.topAnchor.constraint(equalTo: (containerView?.topAnchor)!).isActive = true
+		webView!.bottomAnchor.constraint(equalTo: (containerView?.bottomAnchor)!).isActive = true
+		webView!.leadingAnchor.constraint(equalTo: (containerView?.leadingAnchor)!).isActive = true
+		webView!.trailingAnchor.constraint(equalTo: (containerView?.trailingAnchor)!).isActive = true
 	}
 	
-	@IBAction func navigateWebView(sender:AnyObject) {
+	@IBAction func navigateWebView(_ sender:AnyObject) {
 		switch ((navButtons?.selectedSegment)!) {
 		case 0:
 			webView?.goBack(sender)
@@ -53,30 +54,30 @@ public class WebViewController: NSViewController, WKNavigationDelegate {
 		}
 	}
 	
-	@IBAction func showShareSheet(sender:AnyObject) {
-		let sharepicker = NSSharingServicePicker(items: [webView!.URL!])
-		sharepicker.showRelativeToRect((shareButton?.frame)!, ofView: (shareButton?.superview)!, preferredEdge: .MaxY)
+	@IBAction func showShareSheet(_ sender:AnyObject) {
+		let sharepicker = NSSharingServicePicker(items: [webView!.url!])
+		sharepicker.show(relativeTo: (shareButton?.frame)!, of: (shareButton?.superview)!, preferredEdge: .maxY)
 	}
 
-	func staticHmtlFolder() -> NSURL {
-		let pkg = NSBundle(forClass: self.dynamicType)
-		let url = pkg.URLForResource("help404", withExtension: "html", subdirectory: "static_html")
-		return url!.URLByDeletingLastPathComponent!
+	func staticHmtlFolder() -> URL {
+		let pkg = Bundle(for: type(of: self))
+		let url = pkg.url(forResource: "help404", withExtension: "html", subdirectory: "static_html")
+		return url!.deletingLastPathComponent()
 	}
 
 	//MARK -- WKNavigationDelegate
 	
-	public func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!)
+	open func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!)
 	{
 		navButtons?.setEnabled(webView.canGoBack, forSegment: 0)
 		navButtons?.setEnabled(webView.canGoForward, forSegment: 1)
 		titleLabel?.stringValue = webView.title!
 	}
 	
-	public func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
-		log.warning("failed to navigate:\(error)")
+	open func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+		os_log("failed to navigate:%@", type:.error, error as NSError)
 	}
 	
-	public func webView(webView: WKWebView, didCommitNavigation navigation: WKNavigation!) {
+	open func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
 	}
 }

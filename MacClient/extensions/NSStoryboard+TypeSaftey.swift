@@ -22,12 +22,12 @@ extension NSStoryboard {
 		case MainWindow
 	}
 	
-	convenience init(storyboard: Storyboard, bundle:NSBundle? = nil) {
+	convenience init(storyboard: Storyboard, bundle:Bundle? = nil) {
 		self.init(name:storyboard.rawValue, bundle:bundle)
 	}
 
-	func instantiateViewController<T: NSViewController where T: StoryboardIdentifiable>() -> T {
-		let optionalViewController = self.instantiateControllerWithIdentifier(T.storyboardIdentifier)
+	func instantiateViewController<T: NSViewController>() -> T where T: StoryboardIdentifiable {
+		let optionalViewController = self.instantiateController(withIdentifier: T.storyboardIdentifier)
 		
 		guard let viewController = optionalViewController as? T  else {
 			fatalError("Couldn’t instantiate view controller with identifier \(T.storyboardIdentifier)")
@@ -36,8 +36,8 @@ extension NSStoryboard {
 		return viewController
 	}
 
-	func instantiateWindowController<T: NSWindowController where T: StoryboardIdentifiable>() -> T {
-		let optionalController = self.instantiateControllerWithIdentifier(T.storyboardIdentifier)
+	func instantiateWindowController<T: NSWindowController>() -> T where T: StoryboardIdentifiable {
+		let optionalController = self.instantiateController(withIdentifier: T.storyboardIdentifier)
 		
 		guard let controller = optionalController as? T  else {
 			fatalError("Couldn’t instantiate window controller with identifier \(T.storyboardIdentifier)")
@@ -53,13 +53,13 @@ protocol StoryboardIdentifiable {
 
 extension StoryboardIdentifiable where Self: NSViewController {
 	static var storyboardIdentifier: String {
-		return String(self)
+		return String(describing: self)
 	}
 }
 
 extension StoryboardIdentifiable where Self: NSWindowController {
 	static var storyboardIdentifier: String {
-		return String(self)
+		return String(describing: self)
 	}
 }
 

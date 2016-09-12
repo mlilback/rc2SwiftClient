@@ -16,38 +16,38 @@ class FileCacheTests: BaseTest {
 	var wspace:Workspace!
 	var file:File!
 	var filePath:String!
-	var fileData:NSData!
+	var fileData:Data!
 	var destUri:String!
-	var cachedUrl:NSURL!
-	var baseUrl:NSURL = NSURL(string: "http://localhost/")!
+	var cachedUrl:URL!
+	var baseUrl:URL = URL(string: "http://localhost/")!
 	var multiExpectation:XCTestExpectation?
 
 	override class func initialize() {
-		NSURLSessionConfiguration.mockingjaySwizzleDefaultSessionConfiguration()
+		URLSessionConfiguration.mockingjaySwizzleDefaultSessionConfiguration()
 	}
 	
 	override func setUp() {
 		super.setUp()
 		wspace = sessionData.projects.first!.workspaces.first!
-		cache = FileCache(workspace: wspace, baseUrl: baseUrl, config: NSURLSessionConfiguration.defaultSessionConfiguration())
+		cache = FileCache(workspace: wspace, baseUrl: baseUrl, config: URLSessionConfiguration.defaultSessionConfiguration())
 		file = (wspace.files.first)!
-		filePath = NSBundle(forClass: self.dynamicType).pathForResource("lognormal", ofType: "R")!
-		fileData = NSData(contentsOfFile: filePath)!
+		filePath = Bundle(for: type(of: self)).path(forResource: "lognormal", ofType: "R")!
+		fileData = try! Data(contentsOf: URL(fileURLWithPath: filePath))
 		destUri = "/workspaces/\(wspace.wspaceId)/files/\(wspace.files[0].fileId)"
 		cachedUrl = cache.cachedFileUrl(file)
-		do { try mockFM.removeItemAtURL(cachedUrl) } catch _ {}
+		do { try mockFM.removeItem(at: cachedUrl) } catch _ {}
 	}
 	
 	override func tearDown() {
-		do { try mockFM.removeItemAtURL(cachedUrl) } catch _ {}
+		do { try mockFM.removeItem(at: cachedUrl) } catch _ {}
 		super.tearDown()
 	}
 	
 	//TODO: needs to actually test the second file was downloaded correctly
 	func testMultipleDownload() {
 		//use contents of words file instead of the R file we use in other tests (i.e. make it a lot larger)
-		let wordsUrl = NSURL(fileURLWithPath: "/usr/share/dict/words")
-		fileData = NSData(contentsOfURL: wordsUrl)!
+		let wordsUrl = URL(fileURLWithPath: "/usr/share/dict/words")
+		fileData = try! Data(contentsOf: wordsUrl)
 		let fakeFile = File(json: JSON.parse("{\"id\" : 1,\"wspaceId\" : 1,\"name\" : \"sample.R\",\"version\" : 0,\"dateCreated\" : 1439407405827,\"lastModified\" : 1439407405827,\"etag\": \"f/1/0\", \"fileSize\":\(fileData.length) }"))
 		file = fakeFile
 		wspace.replaceFile(at:0, withFile: fakeFile)
@@ -56,21 +56,21 @@ class FileCacheTests: BaseTest {
 		let file1Data = fileData.subdataWithRange(NSMakeRange(0, wspace.files[1].fileSize))
 		stub(uri("/workspaces/\(wspace.wspaceId)/files/\(wspace.files[1].fileId)"), builder: http(200, headers:[:], data:file1Data))
 		
-		multiExpectation = expectationWithDescription("download from server")
+		multiExpectation = expectation(description: "download from server")
 		cache.cacheAllFiles() { (prog) in
 			prog.rc2_addCompletionHandler() {
 				self.multiExpectation?.fulfill()
 			}
 		}
-		self.waitForExpectationsWithTimeout(60) { (err) -> Void in }
+		self.waitForExpectations(timeout: 60) { (err) -> Void in }
 		var fileSize:UInt64 = 0
 		do {
-			let fileAttrs:NSDictionary = try NSFileManager.defaultManager().attributesOfItemAtPath(cachedUrl.path!)
+			let fileAttrs:NSDictionary = try FileManager.default.attributesOfItem(atPath: cachedUrl.path) as NSDictionary
 			fileSize = fileAttrs.fileSize()
 		} catch let e as NSError {
 			XCTAssertFalse(true, "error getting file size:\(e)")
 		}
-		XCTAssertEqual(fileSize, UInt64(fileData.length))
+		XCTAssertEqual(fileSize, UInt64(fileData.count))
 	}
 	
 }

@@ -5,6 +5,26 @@
 //
 
 import Cocoa
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class TopicWrapper: NSObject {
 	var topic:HelpTopic
@@ -22,9 +42,9 @@ class SidebarHelpController : AbstractSessionViewController, NSOutlineViewDataSo
 	@IBOutlet var searchField: NSSearchField?
 	@IBOutlet var searchMenu: NSMenu?
 	let help:HelpController = HelpController.sharedInstance
-	private var searchNameOnly:Bool = false
-	private var helpPackages:[TopicWrapper] = []
-	private var expandedBeforeSearch:[TopicWrapper]?
+	fileprivate var searchNameOnly:Bool = false
+	fileprivate var helpPackages:[TopicWrapper] = []
+	fileprivate var expandedBeforeSearch:[TopicWrapper]?
 	
 	//MARK: lifecycle
 	override func  viewDidLoad() {
@@ -42,7 +62,7 @@ class SidebarHelpController : AbstractSessionViewController, NSOutlineViewDataSo
 	}
 	
 	//MARK: actions
-	@IBAction func search(sender:AnyObject) {
+	@IBAction func search(_ sender:AnyObject) {
 		if nil == expandedBeforeSearch {
 			let exp = helpPackages.flatMap() { outline!.isItemExpanded($0) ? $0 : nil }
 			expandedBeforeSearch = exp
@@ -54,7 +74,7 @@ class SidebarHelpController : AbstractSessionViewController, NSOutlineViewDataSo
 		outline!.expandItem(nil, expandChildren: true)
 	}
 	
-	@IBAction func adjustSearchOption(menuItem:NSMenuItem) {
+	@IBAction func adjustSearchOption(_ menuItem:NSMenuItem) {
 		if menuItem.tag == 1 { //name only
 			searchNameOnly = !searchNameOnly
 			menuItem.state = searchNameOnly ? NSOnState : NSOffState
@@ -63,46 +83,46 @@ class SidebarHelpController : AbstractSessionViewController, NSOutlineViewDataSo
 	
 	//MARK: menu delegate
 	
-	func menuNeedsUpdate(menu: NSMenu) {
+	func menuNeedsUpdate(_ menu: NSMenu) {
 		if menu == searchMenu {
-			if let menuItem = menu.itemWithTag(1) {
+			if let menuItem = menu.item(withTag: 1) {
 				menuItem.state = searchNameOnly ? NSOnState : NSOffState
 			}
 		}
 	}
 	
 	//MARK: OutlineView Support
-	func outlineView(outlineView: NSOutlineView, numberOfChildrenOfItem item: AnyObject?) -> Int {
+	func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
 		if let topic = item as? TopicWrapper {
 			return topic.children?.count ?? 0
 		}
 		return helpPackages.count
 	}
 	
-	func outlineView(outlineView: NSOutlineView, child index: Int, ofItem item: AnyObject?) -> AnyObject {
-		if nil === item { return helpPackages[index] }
+	func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
+		if nil == item { return helpPackages[index] }
 		return (item as! TopicWrapper).children![index]
 	}
 	
-	func outlineView(outlineView: NSOutlineView, isItemExpandable item: AnyObject) -> Bool {
+	func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
 		return ((item as! TopicWrapper).children?.count ?? 0) > 0
 	}
 	
-	func outlineView(outlineView: NSOutlineView, shouldSelectItem item: AnyObject) -> Bool {
+	func outlineView(_ outlineView: NSOutlineView, shouldSelectItem item: Any) -> Bool {
 		return !(item as! TopicWrapper).topic.isPackage
 	}
 	
-	func outlineView(outlineView: NSOutlineView, viewForTableColumn tableColumn: NSTableColumn?, item: AnyObject) -> NSView? {
-		let cell = outline?.makeViewWithIdentifier("string", owner: self) as? NSTableCellView
+	func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
+		let cell = outline?.make(withIdentifier: "string", owner: self) as? NSTableCellView
 		cell?.textField?.stringValue = (item as! TopicWrapper).topic.name
 		return cell
 	}
 	
-	func outlineViewSelectionDidChange(notification: NSNotification) {
+	func outlineViewSelectionDidChange(_ notification: Notification) {
 		var obj:AnyObject? = nil
-		if let topic = outline!.itemAtRow(outline!.selectedRow) as? TopicWrapper {
+		if let topic = outline!.item(atRow: outline!.selectedRow) as? TopicWrapper {
 			obj = topic.topic
 		}
-		NSNotificationCenter.defaultCenter().postNotificationName(Notifications.DisplayHelpTopic, object:obj, userInfo:nil)
+		NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.DisplayHelpTopic), object:obj, userInfo:nil)
 	}
 }

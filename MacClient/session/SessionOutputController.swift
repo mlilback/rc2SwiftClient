@@ -22,8 +22,8 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 	let cmdHistory: CommandHistory
 	dynamic var consoleInputText = "" { didSet { canExecute = consoleInputText.characters.count > 0 } }
 	dynamic var canExecute = false
-	var viewFileOrImage: ((fileWrapper: NSFileWrapper) -> ())?
-	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFontOfSize(14.0)!.fontDescriptor {
+	var viewFileOrImage: ((_ fileWrapper: FileWrapper) -> ())?
+	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFont(ofSize: 14.0)!.fontDescriptor {
 		didSet {
 			let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
 			resultsView?.font = font
@@ -52,13 +52,13 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 	}
 	
 	//MARK: actions
-	@IBAction override func performTextFinderAction(sender: AnyObject?) {
+	@IBAction override func performTextFinderAction(_ sender: Any?) {
 		let menuItem = NSMenuItem(title: "foo", action: #selector(NSTextView.performFindPanelAction(_:)), keyEquivalent: "")
-		menuItem.tag = Int(NSFindPanelAction.ShowFindPanel.rawValue)
+		menuItem.tag = Int(NSFindPanelAction.showFindPanel.rawValue)
 		resultsView?.performFindPanelAction(menuItem)
 	}
 
-	@IBAction func executeQuery(sender:AnyObject?) {
+	@IBAction func executeQuery(_ sender:AnyObject?) {
 		guard consoleInputText.characters.count > 0 else { return }
 		session.executeScript(consoleInputText)
 		cmdHistory.addToCommandHistory(consoleInputText)
@@ -66,33 +66,33 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 	}
 	
 	//MARK: SessionOutputHandler
-	func appendFormattedString(string:NSAttributedString, type:OutputStringType = .Default) {
+	func appendFormattedString(_ string:NSAttributedString, type:OutputStringType = .default) {
 		let mutStr = string.mutableCopy() as! NSMutableAttributedString
 		mutStr.addAttributes([NSFontAttributeName:outputFont], range: NSMakeRange(0, string.length))
-		resultsView!.textStorage?.appendAttributedString(mutStr)
+		resultsView!.textStorage?.append(mutStr)
 		resultsView!.scrollToEndOfDocument(nil)
 	}
 	
 	func saveSessionState() -> AnyObject {
 		var dict = [String:AnyObject]()
-		dict[SessionStateKey.History.rawValue] = cmdHistory.commands
-		let rtfd = resultsView?.textStorage?.RTFDFromRange(NSMakeRange(0, (resultsView?.textStorage?.length)!), documentAttributes: [NSDocumentTypeDocumentAttribute:NSRTFDTextDocumentType])
-		dict[SessionStateKey.Results.rawValue] = rtfd
-		dict["font"] = NSKeyedArchiver.archivedDataWithRootObject(currentFontDescriptor)
-		return dict
+		dict[SessionStateKey.History.rawValue] = cmdHistory.commands as AnyObject?
+		let rtfd = resultsView?.textStorage?.rtfd(from: NSMakeRange(0, (resultsView?.textStorage?.length)!), documentAttributes: [NSDocumentTypeDocumentAttribute:NSRTFDTextDocumentType])
+		dict[SessionStateKey.Results.rawValue] = rtfd as AnyObject?
+		dict["font"] = NSKeyedArchiver.archivedData(withRootObject: currentFontDescriptor) as AnyObject?
+		return dict as AnyObject
 	}
 
-	func restoreSessionState(state:[String:AnyObject]) {
+	func restoreSessionState(_ state:[String:AnyObject]) {
 		if state[SessionStateKey.History.rawValue] is NSArray {
 			cmdHistory.commands = state[SessionStateKey.History.rawValue] as! [String]
 		}
 		if state[SessionStateKey.Results.rawValue] is NSData {
-			let data = state[SessionStateKey.Results.rawValue] as! NSData
+			let data = state[SessionStateKey.Results.rawValue] as! Data
 			let ts = resultsView!.textStorage!
 			//for some reason, NSLayoutManager is initially making the line with an attachment 32 tall, even though image is 48. On window resize, it corrects itself. so we are going to keep an array of attachment indexes so we can fix this later
 			var fileIndexes:[Int] = []
-			resultsView!.replaceCharactersInRange(NSMakeRange(0, ts.length), withRTFD:data)
-			resultsView!.textStorage?.enumerateAttribute(NSAttachmentAttributeName, inRange: NSMakeRange(0, ts.length), options: [], usingBlock:
+			resultsView!.replaceCharacters(in: NSMakeRange(0, ts.length), withRTFD:data)
+			resultsView!.textStorage?.enumerateAttribute(NSAttachmentAttributeName, in: NSMakeRange(0, ts.length), options: [], using:
 			{ (value, range, stop) -> Void in
 				guard let attach = value as? NSTextAttachment else { return }
 				let fw = attach.fileWrapper
@@ -110,10 +110,10 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 			})
 			//now go through all lines with an attachment and insert a space, and then delete it. that forces a layout that uses the correct line height
 			fileIndexes.forEach() {
-				ts.insertAttributedString(NSAttributedString(string: " "), atIndex: $0)
-				ts.deleteCharactersInRange(NSMakeRange($0, 1))
+				ts.insert(NSAttributedString(string: " "), at: $0)
+				ts.deleteCharacters(in: NSMakeRange($0, 1))
 			}
-			if let fontData = state["font"] as? NSData, let fontDesc = NSKeyedUnarchiver.unarchiveObjectWithData(fontData) {
+			if let fontData = state["font"] as? Data, let fontDesc = NSKeyedUnarchiver.unarchiveObject(with: fontData) {
 				currentFontDescriptor = fontDesc as! NSFontDescriptor
 			}
 			//scroll to bottom
@@ -121,35 +121,35 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 		}
 	}
 	
-	func attachmentCellForAttachment(attachment:NSTextAttachment) -> NSTextAttachmentCell {
-		let fdict = NSKeyedUnarchiver.unarchiveObjectWithData((attachment.fileWrapper?.regularFileContents)!) as? NSDictionary
-		let fileType = FileType.fileTypeWithExtension(fdict?.objectForKey("ext") as? String)
+	func attachmentCellForAttachment(_ attachment:NSTextAttachment) -> NSTextAttachmentCell {
+		let fdict = NSKeyedUnarchiver.unarchiveObject(with: (attachment.fileWrapper?.regularFileContents)!) as? NSDictionary
+		let fileType = FileType.fileTypeWithExtension(fdict?.object(forKey: "ext") as? String)
 		let img = fileType?.image()
 		img?.size = ConsoleAttachmentImageSize
 		return NSTextAttachmentCell(imageCell: img)
 	}
 	
 	//MARK: command history
-	@IBAction func historyClicked(sender:AnyObject?) {
+	@IBAction func historyClicked(_ sender:AnyObject?) {
 		cmdHistory.adjustCommandHistoryMenu()
-		let hframe = historyButton?.superview?.convertRect((historyButton?.frame)!, toView: nil)
-		let rect = view.window?.convertRectToScreen(hframe!)
-		cmdHistory.historyMenu.popUpMenuPositioningItem(nil, atLocation: (rect?.origin)!, inView: nil)
+		let hframe = historyButton?.superview?.convert((historyButton?.frame)!, to: nil)
+		let rect = view.window?.convertToScreen(hframe!)
+		cmdHistory.historyMenu.popUp(positioning: nil, at: (rect?.origin)!, in: nil)
 	}
 
-	@IBAction func displayHistoryItem(sender:AnyObject?) {
+	@IBAction func displayHistoryItem(_ sender:AnyObject?) {
 		let mi = sender as! NSMenuItem
 		consoleInputText = mi.representedObject as! String
 		canExecute = consoleInputText.characters.count > 0
 		view.window?.makeFirstResponder(consoleTextField)
 	}
 	
-	@IBAction func clearConsole(sender:AnyObject?) {
-		resultsView?.textStorage?.deleteCharactersInRange(NSMakeRange(0, (resultsView?.textStorage?.length)!))
+	@IBAction func clearConsole(_ sender:AnyObject?) {
+		resultsView?.textStorage?.deleteCharacters(in: NSMakeRange(0, (resultsView?.textStorage?.length)!))
 	}
 	
 	//MARK: textfield delegate
-	func control(control: NSControl, textView: NSTextView, doCommandBySelector commandSelector: Selector) -> Bool {
+	func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
 		if commandSelector == #selector(NSResponder.insertNewline(_:)) {
 			executeQuery(control)
 			return true
@@ -158,11 +158,11 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 	}
 	
 	//MARK: textview delegate
-	func textView(textView: NSTextView, clickedOnCell cell: NSTextAttachmentCellProtocol, inRect cellFrame: NSRect, atIndex charIndex: Int)
+	func textView(_ textView: NSTextView, clickedOn cell: NSTextAttachmentCellProtocol, in cellFrame: NSRect, at charIndex: Int)
 	{
 		let attach = cell.attachment
 		guard let fw = attach?.fileWrapper else { return }
-		viewFileOrImage?(fileWrapper: fw)
+		viewFileOrImage?(fw)
 	}
 }
 
@@ -173,9 +173,9 @@ extension SessionOutputController: UsesAdjustableFont {
 		return true
 	}
 	
-	func fontChanged(menuItem:NSMenuItem) {
+	func fontChanged(_ menuItem:NSMenuItem) {
 		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
-		let newDesc = newNameDesc.fontDescriptorWithSize(currentFontDescriptor.pointSize)
+		let newDesc = newNameDesc.withSize(currentFontDescriptor.pointSize)
 		currentFontDescriptor = newDesc
 		resultsView?.font = NSFont(descriptor: newDesc, size: newDesc.pointSize)
 	}

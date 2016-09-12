@@ -17,7 +17,7 @@ public enum PrimitiveType: String {
 	Null = "n",
 	NA = "na" ///never sent from server. used for objects that aren't a primitive
 	
-	static func forString(typeCode:Swift.String?) -> PrimitiveType {
+	static func forString(_ typeCode:Swift.String?) -> PrimitiveType {
 		guard let code = typeCode else { return .NA }
 		if let val = PrimitiveType(rawValue: code) { return val }
 		return .NA
@@ -25,72 +25,72 @@ public enum PrimitiveType: String {
 }
 
 public enum VariableType: Int {
-	case Unknown,
-	Primitive,
-	Date,
-	DateTime,
-	Vector,
-	Matrix,
-	Array,
-	List,
-	Factor,
-	DataFrame,
-	Environment,
-	Function,
-	S3Object,
-	S4Object
+	case unknown,
+	primitive,
+	date,
+	dateTime,
+	vector,
+	matrix,
+	array,
+	list,
+	factor,
+	dataFrame,
+	environment,
+	function,
+	s3Object,
+	s4Object
 	
 	func isContainer() -> Bool {
 		switch (self) {
-		case .Array, .DataFrame, .Matrix, .List, .Environment:
+		case .array, .dataFrame, .matrix, .list, .environment:
 			return true
 		default:
 			return false
 		}
 	}
 	
-	static func forClass(name:String?) -> VariableType {
-		guard let cname = name else { return .Unknown }
+	static func forClass(_ name:String?) -> VariableType {
+		guard let cname = name else { return .unknown }
 		switch (cname) {
 			case "data.frame":
-				return .DataFrame
+				return .dataFrame
 			case "matrix":
-				return .Matrix
+				return .matrix
 			case "array":
-				return .Array
+				return .array
 			case "list":
-				return .List
+				return .list
 			case "environment":
-				return .Environment
+				return .environment
 			case "function":
-				return .Function
+				return .function
 			case "Date":
-				return .Date
+				return .date
 			case "POSIXct", "POSIXlt":
-				return .DateTime
+				return .dateTime
 			case "factor", "ordered factor":
-				return .Factor
+				return .factor
 			case "generic":
-				return .S3Object
+				return .s3Object
 			case "S4":
-				return .S4Object
+				return .s4Object
 			case "raw":
-				return .Primitive
+				return .primitive
 			default:
-				return .Unknown
+				return .unknown
 		}
 	}
 }
 
-public class Variable: NSObject {
-	private let jsonData:JSON
+open class Variable: NSObject {
+	fileprivate let jsonData:JSON
 
-	public static func variablesForJsonArray(array:[JSON]?) -> [Variable] {
+	open static func variablesForJsonArray(_ array:[JSON]?) -> [Variable] {
 		if nil == array { return [] }
 		return array!.flatMap() { Variable.variableForJson($0) }
 	}
 	
-	public static func variablesForJsonDictionary(dict:[String:JSON]?) -> [Variable] {
+	open static func variablesForJsonDictionary(_ dict:[String:JSON]?) -> [Variable] {
 		if nil == dict { return [] }
 		var array:[Variable] = []
 		for (_,value) in dict! {
@@ -99,8 +99,8 @@ public class Variable: NSObject {
 		return array
 	}
 	
-	public static func variableForJson(json:JSON) -> Variable {
-		if json["primitive"].boolValue ?? false {
+	open static func variableForJson(_ json:JSON) -> Variable {
+		if json["primitive"].boolValue {
 			switch (PrimitiveType.forString(json["type"].stringValue)) {
 			case .Boolean:
 				return BoolPrimitiveVariable(json: json)
@@ -126,21 +126,21 @@ public class Variable: NSObject {
 		return Variable(json:json)
 	}
 	
-	public var name:String? { return jsonData["name"].string }
+	open var name:String? { return jsonData["name"].string }
 	/// for nested values, the fully qualified name (e.g. foo[0][1][2])
-	public var fullyQualifiedName:String? { return name }
+	open var fullyQualifiedName:String? { return name }
 	///from R
-	public var classNameR:String {
+	open var classNameR:String {
 		if let klass = jsonData["class"].string {
 			return klass
 		}
 		return "<unknown>"
 	}
 	/// a string representation of the value for display. e.g. for a factor, the name and number of possible values
-	override public var description: String { return "\(classNameR)[\(length)]" }
+	override open var description: String { return "\(classNameR)[\(length)]" }
 	///a more descriptive description: e.g. for a factor, list all the values
-	public var summary:String {
-		if let summ = jsonData["summary"].string where summ.utf8.count > 0 {
+	open var summary:String {
+		if let summ = jsonData["summary"].string , summ.utf8.count > 0 {
 			return summ
 		}
 		return description
@@ -154,7 +154,7 @@ public class Variable: NSObject {
 	//the number of values in this variable locally (since all R variables are vectors)
 	var count:Int { return 0 }
 	//the number of values in this variable on the server (since all R variables are vectors)
-	var length:Int { return jsonData["length"].intValue ?? self.count }
+	var length:Int { return jsonData["length"].intValue }
 	
 	init(json:JSON) {
 		jsonData = json
@@ -162,21 +162,21 @@ public class Variable: NSObject {
 		primitiveType = PrimitiveType.forString(jsonData["type"].string)
 	}
 
-	var isPrimitive:Bool { return type == .Primitive }
-	var isFactor:Bool { return type == .Factor }
-	var isDate:Bool { return type == .Date }
-	var isDateTime:Bool { return type == .DateTime }
+	var isPrimitive:Bool { return type == .primitive }
+	var isFactor:Bool { return type == .factor }
+	var isDate:Bool { return type == .date }
+	var isDateTime:Bool { return type == .dateTime }
 
 	///if a string primitive type, returns the requested string value
-	public func stringValueAtIndex(index:Int) -> String? { return nil }
+	open func stringValueAtIndex(_ index:Int) -> String? { return nil }
 	///if an Int primitive type, returns the requested Int value
-	public func intValueAtIndex(index:Int) -> Int? { return nil }
+	open func intValueAtIndex(_ index:Int) -> Int? { return nil }
 	///if a Bool primitive type, returns the requested Bool value
-	public func boolValueAtIndex(index:Int) -> Bool? { return nil }
+	open func boolValueAtIndex(_ index:Int) -> Bool? { return nil }
 	///if the primitive type is a Double, returns the requested string value
-	public func doubleValueAtIndex(index:Int) -> Double? { return nil }
+	open func doubleValueAtIndex(_ index:Int) -> Double? { return nil }
 	///returns the value as a primitive type that can be downcast
-	public func primitiveValueAtIndex(index:Int) -> PrimitiveValue? {
+	open func primitiveValueAtIndex(_ index:Int) -> PrimitiveValue? {
 		switch(primitiveType) {
 		case .Boolean:
 			return boolValueAtIndex(index)
@@ -191,12 +191,12 @@ public class Variable: NSObject {
 		}
 	}
 	///if contains variables (list, array, S3, S4) returns nested variable
-	public func variableAtIndex(index:Int) -> Variable? { return nil }
+	open func variableAtIndex(_ index:Int) -> Variable? { return nil }
 	
 	///if a function type, returns the source code for the function
-	public var functionBody:String? { return nil }
+	open var functionBody:String? { return nil }
 	///if a factor, returns the levels
-	public var levels:[String]? { return nil }
+	open var levels:[String]? { return nil }
 }
 
 public protocol PrimitiveValue {}
@@ -205,8 +205,8 @@ extension Int: PrimitiveValue {}
 extension Double: PrimitiveValue {}
 extension String: PrimitiveValue {}
 
-public class BoolPrimitiveVariable: Variable {
-	private let values:[Bool]
+open class BoolPrimitiveVariable: Variable {
+	fileprivate let values:[Bool]
 	
 	override init(json: JSON) {
 		self.values = json.dictionaryValue["value"]!.arrayValue.map() { $0.boolValue }
@@ -215,17 +215,17 @@ public class BoolPrimitiveVariable: Variable {
 	
 	override var count:Int { return values.count }
 
-	override public func boolValueAtIndex(index: Int) -> Bool? {
+	override open func boolValueAtIndex(_ index: Int) -> Bool? {
 		return values[index]
 	}
 
-	override public var description: String {
-		return "[\((values.map() { String($0) }).joinWithSeparator(", "))]"
+	override open var description: String {
+		return "[\((values.map() { String($0) }).joined(separator: ", "))]"
 	}
 }
 
-public class IntPrimitiveVariable: Variable {
-	private let values:[Int]
+open class IntPrimitiveVariable: Variable {
+	fileprivate let values:[Int]
 	
 	override init(json: JSON) {
 		self.values = json.dictionaryValue["value"]!.arrayValue.map() { $0.intValue }
@@ -234,21 +234,21 @@ public class IntPrimitiveVariable: Variable {
 	
 	override var count:Int { return values.count }
 	
-	override public func intValueAtIndex(index: Int) -> Int? {
+	override open func intValueAtIndex(_ index: Int) -> Int? {
 		return values[index]
 	}
 	
-	override public func doubleValueAtIndex(index: Int) -> Double? {
+	override open func doubleValueAtIndex(_ index: Int) -> Double? {
 		return Double(intValueAtIndex(index) ?? 0)
 	}
 
-	override public var description: String {
-		return "[\((values.map() { String($0) }).joinWithSeparator(", "))]"
+	override open var description: String {
+		return "[\((values.map() { String($0) }).joined(separator: ", "))]"
 	}
 }
 
-public class DoublePrimitiveVariable: Variable {
-	private let values:[Double]
+open class DoublePrimitiveVariable: Variable {
+	fileprivate let values:[Double]
 	
 	override init(json: JSON) {
 		self.values = json.dictionaryValue["value"]!.arrayValue.map() {
@@ -264,17 +264,17 @@ public class DoublePrimitiveVariable: Variable {
 	
 	override var count:Int { return values.count }
 	
-	override public func doubleValueAtIndex(index: Int) -> Double? {
+	override open func doubleValueAtIndex(_ index: Int) -> Double? {
 		return values[index]
 	}
 	
-	override public var description: String {
-		return "[\((values.map() { String($0) }).joinWithSeparator(", "))]"
+	override open var description: String {
+		return "[\((values.map() { String($0) }).joined(separator: ", "))]"
 	}
 }
 
-public class StringPrimitiveVariable: Variable {
-	private let values:[String]
+open class StringPrimitiveVariable: Variable {
+	fileprivate let values:[String]
 	
 	override init(json: JSON) {
 		self.values = json.dictionaryValue["value"]!.arrayValue.map() { $0.stringValue }
@@ -283,21 +283,21 @@ public class StringPrimitiveVariable: Variable {
 	
 	override var count:Int { return values.count }
 	
-	override public func stringValueAtIndex(index: Int) -> String? {
+	override open func stringValueAtIndex(_ index: Int) -> String? {
 		return values[index]
 	}
 
-	override public var description: String {
+	override open var description: String {
 		if primitiveType == .Complex {
-			return "[\((values.map() { String($0) }).joinWithSeparator(", "))]"
+			return "[\((values.map() { String($0) }).joined(separator: ", "))]"
 		}
-		return "[\((values.map() { "\"\(String($0))\"" }).joinWithSeparator(", "))]"
+		return "[\((values.map() { "\"\($0)\"" }).joined(separator: ", "))]"
 	}
 }
 
-public class FactorVariable: Variable {
-	private let values:[Int]
-	private let levelNames:[String]
+open class FactorVariable: Variable {
+	fileprivate let values:[Int]
+	fileprivate let levelNames:[String]
 	
 	override init(json: JSON) {
 		self.values = json.dictionaryValue["value"]!.arrayValue.map() { $0.intValue - 1 }
@@ -307,23 +307,23 @@ public class FactorVariable: Variable {
 	
 	override var count:Int { return values.count }
 	
-	override public var levels:[String]? { return levelNames }
+	override open var levels:[String]? { return levelNames }
 
-	override public func intValueAtIndex(index: Int) -> Int? {
+	override open func intValueAtIndex(_ index: Int) -> Int? {
 		return values[index]
 	}
 	
-	override public func stringValueAtIndex(index: Int) -> String? {
+	override open func stringValueAtIndex(_ index: Int) -> String? {
 		return levelNames[values[index]]
 	}
 	
-	override public var description: String {
-		return "[\((values.map() { levelNames[$0] }).joinWithSeparator(", "))]"
+	override open var description: String {
+		return "[\((values.map() { levelNames[$0] }).joined(separator: ", "))]"
 	}
 }
 
-public class GenericVariable: Variable {
-	private let values:[Variable]
+open class GenericVariable: Variable {
+	fileprivate let values:[Variable]
 	
 	override init(json: JSON) {
 		self.values = Variable.variablesForJsonArray(json.dictionaryValue["value"]!.arrayValue)
@@ -332,9 +332,9 @@ public class GenericVariable: Variable {
 	
 	override var count:Int { return values.count }
 	
-	override public func stringValueAtIndex(index: Int) -> String? {
+	override open func stringValueAtIndex(_ index: Int) -> String? {
 		return values[index].description
 	}
 	
-	override public func variableAtIndex(index:Int) -> Variable? { return values[index] }
+	override open func variableAtIndex(_ index:Int) -> Variable? { return values[index] }
 }

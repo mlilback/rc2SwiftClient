@@ -7,7 +7,7 @@
 import Foundation
 
 public enum ConsoleAttachmentType: Int {
-	case Image, File
+	case image, file
 }
 
 public protocol ConsoleAttachment: NSObjectProtocol, NSSecureCoding {
