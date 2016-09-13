@@ -28,16 +28,17 @@ open class FileCache: NSObject, URLSessionDownloadDelegate {
 	fileprivate var downloadingAllFiles:Bool = false
 	
 	lazy var fileCacheUrl: URL = { () -> URL in
+		var fileDir: URL? = nil
 		do {
 			let cacheDir = try self.fileManager.Url(for: .cachesDirectory, domain: .userDomainMask, appropriateFor: nil, create: true)
 			let ourDir = cacheDir.appendingPathComponent(Bundle.main.bundleIdentifier!, isDirectory:true)
-			let fileDir = ourDir.appendingPathComponent("FileCache", isDirectory: true)
-			if (try fileDir.checkResourceIsReachable()) {
-				try self.fileManager.createDirectoryHierarchy(at: fileDir)
+			fileDir = ourDir.appendingPathComponent("FileCache", isDirectory: true)
+			if (!fileDir!.fileExists()) {
+				try self.fileManager.createDirectoryHierarchy(at: fileDir!)
 			}
-			return fileDir
-		} catch let err {
-			os_log("failed to create file cache dir: %@", type:.error, err as NSError)
+			return fileDir!
+		} catch let err as NSError {
+			os_log("failed to create file cache (%{public}@) dir: %{public}@", type:.error, fileDir!.path, err)
 		}
 		fatalError("failed to create file cache")
 	}()

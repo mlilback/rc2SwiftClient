@@ -9,6 +9,6 @@ github "mlilback/BrightFutures" "swift3.0"
 github "Swinject/Swinject" "c6db56b20da87def2aa0265b6b0aad472dfa9f3d"
 github "mlilback/SwinjectStoryboard" "fd96f6f09d9e9cdb6faf8cb473df1f47021eefcd"
 github "sebskuse/Mockingjay" "d47440a3518297a53914dc179c95bb6799c444a6"
+github "sebskuse/URITemplate.swift" "395dc704b4a3479e1b517b92132ac8a2b81db9d8"
 
-#github "kylef/URITemplate.swift"
 #github "antitypical/Result"

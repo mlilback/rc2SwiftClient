@@ -61,7 +61,7 @@ public enum ServerResponse : Equatable {
 			case "fileOpResponse":
 				return ServerResponse.fileOperationResponse(transId: jsonObj["transId"].stringValue, operation: FileOperation(rawValue:jsonObj["operation"].stringValue)!, file: File(json: jsonObj["file"]))
 			default:
-				os_log("unknown message from server:%@", jsonObj["msg"].stringValue)
+				os_log("unknown message from server:%{public}@", jsonObj["msg"].stringValue)
 				return nil
 		}
 	}

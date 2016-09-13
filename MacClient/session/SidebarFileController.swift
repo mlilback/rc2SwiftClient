@@ -139,7 +139,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	//MARK: - actions
 	func addButtonClicked(_ sender:AnyObject?) {
-		os_log("called for %@", type:.info, (addRemoveButtons?.selectedSegment)!)
+		os_log("called for %{public}@", type:.info, (addRemoveButtons?.selectedSegment)!)
 		if addRemoveButtons?.selectedSegment == 0 {
 			//add file
 			//TODO: implement add file
@@ -174,7 +174,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	@IBAction func addDocumentOfType(_ menuItem:NSMenuItem) {
 		//TODO: implement addDocumentOfType
-		os_log("add file of type %@", type:.info, menuItem)
+		os_log("add file of type %{public}@", type:.info, menuItem)
 	}
 	
 	@IBAction func segButtonClicked(_ sender:AnyObject?) {
@@ -203,7 +203,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		{ (progress:Progress) in
 			if progress.rc2_error != nil {
 				//TODO: handle error
-				os_log("got import error %@", type:.error, progress.rc2_error as! NSError)
+				os_log("got import error %{public}@", type:.error, progress.rc2_error as! NSError)
 			}
 			self.appStatus?.currentProgress = nil
 			self.fileImporter = nil //free up importer
@@ -212,7 +212,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		do {
 			try importer.startImport()
 		} catch let err {
-			os_log("failed to start import: %@", type:.error, err as NSError)
+			os_log("failed to start import: %{public}@", type:.error, err as NSError)
 			//TODO: report error to user
 		}
 		//save reference so ARC does not dealloc importer
@@ -236,14 +236,14 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				let bmark = try (savePanel.directoryURL as NSURL?)?.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
 				defaults.set(bmark, forKey: LastExportDirectoryKey)
 			} catch let err as NSError {
-				os_log("why did we get error creating export bookmark: %@", type:.error, err)
+				os_log("why did we get error creating export bookmark: %{public}@", type:.error, err)
 			}
 			savePanel.close()
 			if result == NSFileHandlingPanelOKButton && savePanel.url != nil {
 				do {
 					try Foundation.FileManager.default.copyItem(at: self.session.fileHandler.fileCache.cachedFileUrl(self.selectedFile!), to: savePanel.url!)
 				} catch let error as NSError {
-					os_log("failed to copy file for export: %@", type:.error, error)
+					os_log("failed to copy file for export: %{public}@", type:.error, error)
 					let alert = NSAlert(error:error)
 					alert.beginSheetModal(for: self.view.window!, completionHandler: { (response) -> Void in
 						//do nothing

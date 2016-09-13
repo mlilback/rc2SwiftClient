@@ -30,7 +30,7 @@ open class BookmarkManager {
 			let jhosts = try JSON(hosts.map() { try $0.serialize() })
 			defaults.set(jhosts.rawString(), forKey: PrefKeys.Hosts)
 		} catch let err as NSError {
-			os_log("failed to serialize bookmarks: %@", type:.error, err)
+			os_log("failed to serialize bookmarks: %{public}@", type:.error, err)
 		}
 	}
 	

@@ -136,7 +136,7 @@ class SessionEditorController: AbstractSessionViewController
 				case .success(let val):
 					contents = String(data: val!, encoding: String.Encoding.utf8)
 				case .failure(let err):
-					os_log("got error: %@", type:.error, err as NSError)
+					os_log("got error: %{public}@", type:.error, err as NSError)
 				}
 				self.adjustDocumentForFile(file, content: contents)
 			}
@@ -230,7 +230,7 @@ extension SessionEditorController: UsesAdjustableFont {
 	}
 	
 	func fontChanged(_ menuItem:NSMenuItem) {
-		os_log("font changed: %@", type:.info, (menuItem.representedObject as? NSObject)!)
+		os_log("font changed: %{public}@", type:.info, (menuItem.representedObject as? NSObject)!)
 		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
 		let newDesc = newNameDesc.withSize(currentFontDescriptor.pointSize)
 		currentFontDescriptor = newDesc

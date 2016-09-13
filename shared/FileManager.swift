@@ -87,7 +87,7 @@ public class Rc2DefaultFileManager: Rc2FileManager {
 			}
 			promise.success(toUrl)
 		} catch let err as NSError {
-			os_log("got error downloading file %@: %@", tmpFile.lastPathComponent, err)
+			os_log("got error downloading file %{public}@: %{public}@", tmpFile.lastPathComponent, err)
 			promise.failure(FileError.failedToSaveFile)
 		}
 	}
@@ -116,7 +116,7 @@ extension File {
 		{
 			setXAttributeWithName(FileAttrChecksum, data: shaData, atURL: toUrl)
 		} else {
-			os_log("failed to create sha256 checksum for %@", type:.error, toUrl.path)
+			os_log("failed to create sha256 checksum for %{public}@", type:.error, toUrl.path)
 		}
 	}
 }

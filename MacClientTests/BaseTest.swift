@@ -44,3 +44,24 @@ class BaseTest: XCTestCase {
 		return files
 	}
 }
+
+extension XCTestCase {
+	func XCTAssertThrows<T>( expression: @autoclosure () throws -> T, _ message: String = "") {
+		do {
+			_ = try expression()
+			let errMsg = "No error to catch! - \(message)"
+			XCTFail(errMsg, file: #file, line: #line)
+		} catch {
+		}
+	}
+ 
+	func XCTAssertNoThrow<T>( expression: @autoclosure () throws -> T, _ message: String = "") {
+		do {
+			_ = try expression()
+		} catch let error {
+			let errMsg = "Caught error: \(error) - \(message)"
+			XCTFail(errMsg, file: #file, line: #line)
+		}
+	}
+
+}

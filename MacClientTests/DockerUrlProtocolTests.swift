@@ -23,6 +23,7 @@ class DockerUrlProtocolTests: XCTestCase {
 	
 	override func setUp() {
 		super.setUp()
+		continueAfterFailure = false
 		sessionConfig = URLSessionConfiguration.default
 		sessionConfig?.protocolClasses = [DockerUrlProtocol.self]
 		session = URLSession(configuration: sessionConfig!)
@@ -33,22 +34,31 @@ class DockerUrlProtocolTests: XCTestCase {
 	}
 
 	func testVersionRequest() {
-		let expect = expectation(description: "version")
+		let expect = expectation(description: "contact docker daemon")
 		let url = URL(string: "unix:///version")!
 		var fetchedData:Data?
-		let task = session?.dataTask(with: URLRequest(url: url), completionHandler: { data, response, error in
+		var httpResponse:HTTPURLResponse?
+		var error:NSError?
+		let task = session?.dataTask(with: URLRequest(url: url), completionHandler: { data, response, err in
+			error = err as NSError?
+			httpResponse = response as? HTTPURLResponse
 			fetchedData = data
-			guard let httpResponse = response as? HTTPURLResponse else { XCTFail(); return }
-			XCTAssertNotNil(httpResponse)
-			XCTAssertEqual(httpResponse.statusCode, 200)
 			expect.fulfill()
 		}) 
 		task?.resume()
-		self.waitForExpectations(timeout: 2) { (err) -> Void in }
-		let json = JSON.parse(String(data:fetchedData!, encoding: String.Encoding.utf8)!)
-		XCTAssertNotNil(json.dictionary)
-		XCTAssertNotNil(json["Version"].string)
-		XCTAssertNotNil(json["Experimental"].bool)
+		self.waitForExpectations(timeout: 2) { (err) -> Void in
+			XCTAssertNil(error)
+			XCTAssertNotNil(httpResponse)
+			XCTAssertEqual(httpResponse!.statusCode, 200)
+			XCTAssertNotNil(fetchedData)
+			let jsonStr = String(data:fetchedData!, encoding: String.Encoding.utf8)!
+			let json = JSON.parse(jsonStr)
+			XCTAssertNotNil(json.dictionary)
+			let verStr = json["ApiVersion"].string
+			XCTAssertNotNil(verStr)
+			guard let verNum = Double(verStr!) else { XCTFail("failed to parse version number"); return }
+			XCTAssertNotNil(verNum >= 1.24)
+		}
 	}
 
 }

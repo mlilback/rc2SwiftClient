@@ -67,10 +67,10 @@ open class DockerManager : NSObject {
 				}
 				self.apiVersion = Double(json["ApiVersion"].stringValue)!
 			} catch let err as NSError {
-				os_log("error getting docker version %@", err)
+				os_log("error getting docker version %{public}@", err)
 			}
 		}.onFailure { error in
-			os_log("error getting docker version: %@", error)
+			os_log("error getting docker version: %{public}@", error)
 		}
 	}
 	

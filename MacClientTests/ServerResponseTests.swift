@@ -47,9 +47,9 @@ class ServerResponseTests: XCTestCase {
 			aVar = variables.filter() { $0.name == "speciald" }.first!
 			XCTAssertEqual(aVar.name, "speciald")
 			XCTAssertEqual(aVar.primitiveType, PrimitiveType.Double)
-			XCTAssertEqual(aVar.doubleValueAtIndex(0), Double.nan)
-			XCTAssertEqual(aVar.doubleValueAtIndex(1), Double.infinity)
-			XCTAssertEqual(aVar.doubleValueAtIndex(2), -Double.infinity)
+			XCTAssertTrue(aVar.doubleValueAtIndex(0)!.isNaN)
+			XCTAssertTrue(aVar.doubleValueAtIndex(1)!.isInfinite)
+			XCTAssertTrue(aVar.doubleValueAtIndex(2)!.isInfinite) //neg inf is sams as pos inf
 			XCTAssertEqual(aVar.doubleValueAtIndex(3), 3.14)
 			aVar = variables.filter() { $0.name == "dct" }.first!
 			XCTAssertEqual(aVar.name, "dct")

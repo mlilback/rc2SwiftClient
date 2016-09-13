@@ -30,7 +30,7 @@ open class CodeHighlighter: NSObject {
 		let sourceStr = content.string.substring(with: range.toStringRange(content.string)!)
 
 		guard let tokenizer = PKTokenizer(string: sourceStr) else {
-			os_log("failed to create tokenizer for '%@'", type:.error, sourceStr)
+			os_log("failed to create tokenizer for '%{public}@'", type:.error, sourceStr)
 			return
 		}
 		let slash = Int32("/".unicodeScalars.first!.value)

@@ -29,12 +29,18 @@ class RestServerTest: XCTestCase {
 		stub(http(method: .post, uri: "/login"), builder: jsonData(resultData!))
 		let loginEx = expectation(description: "login")
 		let future = server?.login("local")
+		var success = false
+		var loginError: Error?
 		future!.onSuccess { result in
+			success = true
 			loginEx.fulfill()
 		}.onFailure { error in
-			XCTFail("login failed:\(error)")
+			loginError = error
 		}
-		self.waitForExpectations(timeout: 2) { (err) -> Void in }
+		self.waitForExpectations(timeout: 2) { (err) -> Void in
+			XCTAssertTrue(success)
+			XCTAssertNil(loginError, "loign error: \(loginError!)")
+		}
 	}
 	
 	func dummyWorkspace() -> Workspace {
@@ -88,9 +94,9 @@ class RestServerTest: XCTestCase {
 	func testCreateSession() {
 		doLogin()
 		let wspace = dummyWorkspace()
-		server!.createSession(wspace, appStatus: DummyAppStatus()).onSuccess { session in
-		XCTAssertEqual(session.workspace, wspace)
-	}
+		XCTAssertNoThrow(expression: try server!.createSession(workspace:wspace, appStatus: DummyAppStatus()).onSuccess { session in
+			XCTAssertEqual(session.workspace, wspace)
+		})
 	}
 	/*
 	func testCreateWorkspace() {

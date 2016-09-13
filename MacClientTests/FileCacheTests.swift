@@ -46,7 +46,7 @@ class FileCacheTests: BaseTest {
 	//TODO: needs to actually test the second file was downloaded correctly
 	func testMultipleDownload() {
 		//use contents of words file instead of the R file we use in other tests (i.e. make it a lot larger)
-		let wordsUrl = URL(fileURLWithPath: "/usr/share/dict/words")
+		let wordsUrl = URL(fileURLWithPath: "/usr/share/dict/web2")
 		fileData = try! Data(contentsOf: wordsUrl)
 		let fakeFile = File(json: JSON.parse("{\"id\" : 1,\"wspaceId\" : 1,\"name\" : \"sample.R\",\"version\" : 0,\"dateCreated\" : 1439407405827,\"lastModified\" : 1439407405827,\"etag\": \"f/1/0\", \"fileSize\":\(fileData.count) }"))
 		file = fakeFile
@@ -65,8 +65,8 @@ class FileCacheTests: BaseTest {
 		self.waitForExpectations(timeout: 60) { (err) -> Void in }
 		var fileSize:UInt64 = 0
 		do {
-			let fileAttrs:NSDictionary = try FileManager.default.attributesOfItem(atPath: cachedUrl.path) as NSDictionary
-			fileSize = fileAttrs.fileSize()
+			let fileAttrs = try FileManager.default.attributesOfItem(atPath: wordsUrl.path)
+			fileSize = (fileAttrs[FileAttributeKey.size] as! NSNumber).uint64Value
 		} catch let e as NSError {
 			XCTAssertFalse(true, "error getting file size:\(e)")
 		}

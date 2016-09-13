@@ -58,7 +58,7 @@ open class HTMLString {
 					let attrs = self.parseColorAttrs(srcString, attrString:srcString.substring(with: (result?.rangeAt(2))!) as NSString)
 					destStr = NSAttributedString(string: content, attributes: attrs)
 				default:
-					os_log("unsupported tag: '%@'", tagName)
+					os_log("unsupported tag: '%{public}@'", tagName)
 					destStr = NSAttributedString(string: srcString.substring(with: (result?.rangeAt(0))!))
 			}
 			outString.append(destStr!)
@@ -78,7 +78,7 @@ open class HTMLString {
 				case "hex":
 					dict[NSForegroundColorAttributeName] = try! PlatformColor(hex: attrValue)
 				default:
-					os_log("unsupport color attribute '%@'", attrName)
+					os_log("unsupport color attribute '%{public}@'", attrName)
 			}
 		}
 		return dict

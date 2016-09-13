@@ -33,7 +33,7 @@ class DockerManagerTests: XCTestCase {
 	func testVersionCommand() {
 		let expect = self.expectation(description: "file download")
 		let docker = DockerManager()
-		let future = try docker.dockerRequest("version")
+		let future = try docker.dockerRequest("/version")
 		future.onSuccess { json in
 			XCTAssert(Double(json["ApiVersion"].stringValue)! > 1.2)
 			expect.fulfill()

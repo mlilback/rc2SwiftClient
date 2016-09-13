@@ -77,7 +77,7 @@ import os
 //MARK: - ServerResponseHandlerDelegate
 extension SessionController: ServerResponseHandlerDelegate {
 	func handleFileUpdate(_ file:File, change:FileChangeType) {
-		os_log("got file update %@ v%@", type:.info, file.fileId, file.version)
+		os_log("got file update %{public}@ v%{public}@", type:.info, file.fileId, file.version)
 		session.fileHandler.handleFileUpdate(file, change: change)
 	}
 	
@@ -139,7 +139,7 @@ extension SessionController {
 				savedStateHash = hash
 			}
 		} catch let err as NSError {
-			os_log("Error saving session state: %@", err)
+			os_log("Error saving session state: %{public}@", err)
 		}
 	}
 	
@@ -166,7 +166,7 @@ extension SessionController {
 				savedStateHash = data.sha256()
 			}
 		} catch let err as NSError {
-			os_log("error restoring session state: %@", type:.error, err)
+			os_log("error restoring session state: %{public}@", type:.error, err)
 		}
 	}
 }

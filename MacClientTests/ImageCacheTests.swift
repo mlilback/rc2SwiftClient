@@ -15,7 +15,7 @@ class ImageCacheTests: BaseTest {
 		cache.workspace = sessionData.projects.first!.workspaces.first
 		let srcImage : URL = Bundle(for: ImageCacheTests.self).url(forResource: "graph", withExtension: "png")!
 		let destUrl = URL(string: "1.png", relativeTo: cache.cacheUrl)!
-		if try! destUrl.checkPromisedItemIsReachable() {
+		if destUrl.fileExists() {
 			try! mockFM.removeItem(at:destUrl)
 		}
 		let expect = expectation(description: "fetch image from cache")

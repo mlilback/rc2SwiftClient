@@ -11,6 +11,10 @@ import Result
 import SwiftyJSON
 import os
 
+public enum RestServerError: Error {
+	case loginRequired
+}
+
 @objc open class RestServer : NSObject, URLSessionTaskDelegate {
 
 	fileprivate let kServerHostKey = "ServerHostKey"
@@ -89,12 +93,18 @@ import os
 		return request
 	}
 	
-	func createSession(_ wspace:Workspace, appStatus:AppStatus) -> Future<Session, NSError> {
-		var request = URLRequest(url: createWebsocketUrl(wspace.wspaceId))
-		request.addValue(loginSession!.authToken, forHTTPHeaderField: "Rc2-Auth")
+	///creates a session and starts the opening process
+	/// - parameter workspace: the workspace to use for the session
+	/// - parameter appStatus: used to present errors
+	/// - returns: a future that will return a session or an error
+	/// - throws: .loginRequired if login() has not created a LoginSession
+	func createSession(workspace:Workspace, appStatus:AppStatus) throws -> Future<Session, NSError> {
+		guard let loginSession = self.loginSession else { throw RestServerError.loginRequired }
+		var request = URLRequest(url: createWebsocketUrl(workspace.wspaceId))
+		request.addValue(loginSession.authToken, forHTTPHeaderField: "Rc2-Auth")
 		request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
 		let ws = WebSocket()
-		session = Session(wspace, source:ws, restServer:self, appStatus:appStatus, networkConfig:urlConfig, hostIdentifier: host.host)
+		session = Session(workspace, source:ws, restServer:self, appStatus:appStatus, networkConfig:urlConfig, hostIdentifier: host.host)
 		return session!.open(request)
 	}
 	
@@ -136,11 +146,11 @@ import os
 					UserDefaults.standard.set(self.loginSession!.host, forKey: self.kServerHostKey)
 				case 401:
 					let error = self.createError(401, description: "Invalid login or password")
-					os_log("got a %@", type:.debug, response!.statusCode)
+					os_log("got a %{public}@", type:.debug, response!.statusCode)
 					promise.failure(error)
 				default:
 					let error = self.createError(response!.statusCode, description: "")
-					os_log("got unknown status code: %@", response!.statusCode)
+					os_log("got unknown status code: %{public}@", response!.statusCode)
 					promise.failure(error)
 			}
 		}

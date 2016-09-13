@@ -89,7 +89,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 			do {
 				try fileContents.write(to: fileCache.cachedFileUrl(file), options: [])
 			} catch let err {
-				os_log("failed to write file %@ update: %@", type:.error, file.fileId, err as NSError)
+				os_log("failed to write file %{public}@ update: %{public}@", type:.error, file.fileId, err as NSError)
 			}
 		} else {
 			//TODO: test that this works properly for large files
@@ -108,7 +108,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 				workspace.replaceFile(at:idx, withFile: file)
 				fileCache.flushCacheForFile(file)
 			} else {
-				os_log("got file update for non-existing file: %@", file.fileId)
+				os_log("got file update for non-existing file: %{public}@", file.fileId)
 			}
 		case .Insert:
 			//TODO: implement file insert handling
@@ -129,7 +129,7 @@ class DefaultSessionFileHandler: SessionFileHandler {
 					completionHandler(nil)
 				}
 			} catch let err as NSError {
-				os_log("error saving file %@:%@", type:.error, file.name, err)
+				os_log("error saving file %{public}@:%{public}@", type:.error, file.name, err)
 				DispatchQueue.main.async {
 					completionHandler(err)
 				}

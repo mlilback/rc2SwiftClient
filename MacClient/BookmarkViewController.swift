@@ -126,7 +126,8 @@ open class BookmarkViewController: NSViewController {
 			let restServer = RestServer(host: host)
 			restServer.login(password).onSuccess { loginsession in
 				let wspace = loginsession.project(withName:aMark.projectName)?.workspace(withName:aMark.workspaceName!)
-				restServer.createSession(wspace!, appStatus: self.appStatus!).onSuccess { _ in
+				//only throws exception if not logged in, but we are inside the login success closure
+				try! restServer.createSession(workspace: wspace!, appStatus: self.appStatus!).onSuccess { _ in
 					self.openSession?(restServer)
 				}.onFailure { error in
 					self.displayError(error)

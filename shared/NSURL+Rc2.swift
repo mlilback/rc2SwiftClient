@@ -23,9 +23,17 @@ extension URL {
 		return lastPathComponent
 	}
 	
-	/** gets the file size without throwing an error.
-	returns: the size of the file. returns 0 if the URL is not a file or on an error
-	*/
+	///calls checkResourceIsReachable and returns false if an error is thrown
+	public func fileExists() -> Bool {
+		do {
+			return try checkResourceIsReachable()
+		} catch {
+		}
+		return false
+	}
+	
+	/// gets the file size without throwing an error.
+	/// - returns: the size of the file. returns 0 if the URL is not a file or on an error
 	func fileSize() -> Int64 {
 		guard self.isFileURL else { return 0 }
 		do {

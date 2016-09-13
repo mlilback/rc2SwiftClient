@@ -69,7 +69,7 @@ class FileImporter: NSObject, ProgressReporting, URLSessionDataDelegate {
 		do {
 			try Foundation.FileManager.default.createDirectory(at: tmpDir, withIntermediateDirectories: true, attributes: [:])
 		} catch let err as NSError {
-			os_log("failed to create temporary directory for upload: %@", type:.error, err)
+			os_log("failed to create temporary directory for upload: %{public}@", type:.error, err)
 		}
 		super.init()
 		progress.rc2_addCompletionHandler() {
@@ -112,14 +112,14 @@ class FileImporter: NSObject, ProgressReporting, URLSessionDataDelegate {
 			do { try Foundation.FileManager.default.removeItem(at: tmpDir) } catch _ {}
 		}
 		if error != nil {
-			os_log("error uploading file %@", type:.error, (error as? NSError)!)
+			os_log("error uploading file %{public}@", type:.error, (error as? NSError)!)
 			return
 		}
 		let index:Int = tasks.filter {  $1.task == task }.map { $0.0 }.first!
 		guard let importData = tasks[index] else {
 			fatalError("failed to find progress for task of \(index)")
 		}
-		os_log("upload status=", type:.info, ((task.response as? HTTPURLResponse)?.statusCode)!)
+		os_log("upload status=%d", type:.info, ((task.response as? HTTPURLResponse)?.statusCode)!)
 		if let status = (task.response as? HTTPURLResponse)?.statusCode , status != 201 {
 			let err = NSError(domain: Rc2ErrorDomain, code: Rc2ErrorCode.serverError.rawValue, userInfo: [NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: status)])
 			progress.rc2_complete(err)
@@ -130,7 +130,7 @@ class FileImporter: NSObject, ProgressReporting, URLSessionDataDelegate {
 				let idata = try Data(contentsOf: importData.srcFile)
 				fileHandler.updateFile(newFile, withData: idata)
 			} catch let err {
-				os_log("error importing file %@: %@", type:.error, newFile.name, err as NSError)
+				os_log("error importing file %{public}@: %{public}@", type:.error, newFile.name, err as NSError)
 			}
 			importData.progress.completedUnitCount = importData.progress.totalUnitCount
 			importData.progress.rc2_complete(nil)
@@ -143,7 +143,7 @@ class FileImporter: NSObject, ProgressReporting, URLSessionDataDelegate {
 	
 	func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64)
 	{
-		os_log("session said sent data %@", type:.info, bytesSent)
+		os_log("session said sent data %{public}@", type:.info, bytesSent)
 		let index:Int = tasks.filter {  $1.task == task }.map { $0.0 }.first!
 		guard let importData = tasks[index] else {
 			fatalError("failed to find progress for task of \(index)")
@@ -153,7 +153,7 @@ class FileImporter: NSObject, ProgressReporting, URLSessionDataDelegate {
 	
 	func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
 	{
-		os_log("session said received data %@", type:.info, data.count)
+		os_log("session said received data %{public}@", type:.info, data.count)
 		let index:Int = tasks.filter {  $1.task == dataTask }.map { $0.0 }.first!
 		guard let importData = tasks[index] else {
 			fatalError("failed to find progress for task of \(index)")

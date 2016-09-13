@@ -44,7 +44,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		let outStr = "GET \(path) HTTP/1.0\r\n\r\n"
 		fh.write(outStr.data(using: String.Encoding.utf8)!)
 		let inData = fh.readDataToEndOfFile()
-		
+		close(fd)
 		guard let (headersString, contentString) = splitResponseData(inData) else { reportBadResponse(); return }
 		guard let (statusCode, httpVersion, headers) = extractHeaders(headersString) else { reportBadResponse(); return }
 		guard let response = HTTPURLResponse(url: request.url!, statusCode: statusCode, httpVersion: httpVersion, headerFields: headers) else { reportBadResponse(); return }
