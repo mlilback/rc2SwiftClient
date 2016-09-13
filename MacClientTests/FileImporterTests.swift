@@ -46,9 +46,9 @@ class FileImporterTests: BaseTest, URLSessionDataDelegate {
 		super.setUp()
 		filesToImport = fileUrlsForTesting().map() { return FileToImport(url: $0, uniqueName: nil) }
 		testWorkspace = workspaceForTesting()
-		expectedFiles = filesToImport.enumerate().map() { (index, file) in
+		expectedFiles = filesToImport.enumerated().map() { (index, file) in
 			let jsonString = "{\"id\" : \(index),\"wspaceId\" : 1, " +
-				"\"name\" : \"\(file.fileUrl.lastPathComponent!)\", \"version\" : 0," +
+				"\"name\" : \"\(file.fileUrl.lastPathComponent)\", \"version\" : 0," +
 				"\"dateCreated\" : 1439407405827, \"lastModified\" : 1439407405827," +
 				"\"fileSize\" : \(file.fileUrl.fileSize()),\"etag\" : \"f/1/0\" }"
 			return jsonString
@@ -86,26 +86,26 @@ class FileImporterTests: BaseTest, URLSessionDataDelegate {
 	
 	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?)
 	{
-		guard keyPath != nil else {
+		guard keyPath != nil, &kvoContext == context else {
 			super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
 			return
 		}
-		switch(keyPath!, context) {
-			case("fractionCompleted", kvoContext):
+		switch(keyPath!) {
+			case("fractionCompleted"):
 				let percent = (object as? Progress)?.fractionCompleted
 				print("per updated \(percent)")
 				if percent >= 1.0 {
 					expect?.fulfill()
 				}
 			
-		case("completedUnitCount", kvoContext):
+		case("completedUnitCount"):
 			let percent = (object as? Progress)?.fractionCompleted
 			print("per updated \(percent)")
 			if percent >= 1.0 {
 				expect?.fulfill()
 			}
 			
-			case("error", kvoContext):
+			case("error"):
 				print("completed set to \(importer?.progress.rc2_error)")
 				expect?.fulfill()
 			
@@ -150,11 +150,11 @@ class FileImporterSession: NSObject, URLSessionProtocol {
 		delay(self.randomDelay())
 		{
 			//receive half the file's data
-			myDelegate.URLSession!(self.realSession, task: myTask, didSendBodyData: halfSize, totalBytesSent: halfSize, totalBytesExpectedToSend: fsize)
+			myDelegate.urlSession!(self.realSession, task: myTask, didSendBodyData: halfSize, totalBytesSent: halfSize, totalBytesExpectedToSend: fsize)
 			delay(self.randomDelay()) {
 				//receive the other half
-				myDelegate.URLSession!(self.realSession, task: myTask, didSendBodyData: halfSize, totalBytesSent: fsize, totalBytesExpectedToSend: fsize)
-				myDelegate.URLSession!(self.realSession, task: myTask, didCompleteWithError: nil)
+				myDelegate.urlSession!(self.realSession, task: myTask, didSendBodyData: halfSize, totalBytesSent: fsize, totalBytesExpectedToSend: fsize)
+				myDelegate.urlSession!(self.realSession, task: myTask, didCompleteWithError: nil)
 			}
 		}
 		return myTask

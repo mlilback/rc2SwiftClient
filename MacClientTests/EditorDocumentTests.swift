@@ -19,12 +19,12 @@ class EditorDocumentTests: BaseTest {
 		super.setUp()
 		let wspace = sessionData!.projects.first!.workspaces[0]
 		file = wspace.files[0]
-		let cacheDir = mockFM.tempDirUrl.appendingPathComponent("io.rc2.MacClient", isDirectory: true)?.appendingPathComponent("FileCache", isDirectory: true).absoluteURL
-		try! mockFM.createDirectory(at: cacheDir, withIntermediateDirectories: true, attributes: nil)
-		fileUrl = URL(fileURLWithPath: "\(file!.fileId).R", relativeToURL: cacheDir).absoluteURL
+		let cacheDir = mockFM.tempDirUrl.appendingPathComponent("io.rc2.MacClient", isDirectory: true).appendingPathComponent("FileCache", isDirectory: true).absoluteURL
+		try! mockFM.createDirectoryHierarchy(at: cacheDir)
+		fileUrl = URL(fileURLWithPath: "\(file!.fileId).R", relativeTo: cacheDir).absoluteURL
 		try! startFileContents.write(to: fileUrl, atomically: true, encoding: String.Encoding.utf8)
-		fileHandler = DefaultSessionFileHandler(wspace: wspace, baseUrl: mockFM.tempDirUrl, config: URLSessionConfiguration.defaultSessionConfiguration(), appStatus: appStatus)
-		fileHandler?.fileCache.fileManager = mockFM
+		let fileCache = FileCache(workspace: wspace, baseUrl: mockFM.tempDirUrl, config: URLSessionConfiguration.default, appStatus: appStatus, fileManager:mockFM)
+		fileHandler = DefaultSessionFileHandler(wspace: wspace, baseUrl: mockFM.tempDirUrl, config: URLSessionConfiguration.default, appStatus: appStatus, fileCache:fileCache)
 		
 	}
 	
@@ -46,7 +46,7 @@ class EditorDocumentTests: BaseTest {
 		}
 		self.waitForExpectations(timeout: 2){ (error) in }
 		XCTAssertEqual(doc.savedContents, modContent)
-		let fcontents = try! String(contentsOfURL: (fileHandler?.fileCache.cachedFileUrl(file))!)
+		let fcontents = try! String(contentsOf: (fileHandler?.fileCache.cachedFileUrl(file))!)
 		XCTAssertEqual(fcontents, doc.currentContents)
 	}
 }

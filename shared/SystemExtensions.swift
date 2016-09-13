@@ -85,7 +85,7 @@ extension NotificationCenter {
 }
 
 extension NSError {
-	static func error(withCode code:Rc2ErrorCode, description:String?) -> NSError {
+	public static func error(withCode code:Rc2ErrorCode, description:String?) -> NSError {
 		var userInfo:[String:AnyObject]?
 		if let desc = description {
 			userInfo = [NSLocalizedDescriptionKey:desc as AnyObject]
@@ -95,7 +95,7 @@ extension NSError {
 }
 
 extension NSRange {
-	func toStringRange(_ str:String) -> Range<String.Index>? {
+	public func toStringRange(_ str:String) -> Range<String.Index>? {
 		guard str.characters.count >= length - location else { return nil }
 		let fromIdx = str.characters.index(str.startIndex, offsetBy: self.location)
 		let toIdx = str.characters.index(fromIdx, offsetBy: self.length)
@@ -103,7 +103,7 @@ extension NSRange {
 	}
 }
 
-func MaxNSRangeIndex(_ range:NSRange) -> Int {
+public func MaxNSRangeIndex(_ range:NSRange) -> Int {
 	return range.location + range.length - 1
 }
 

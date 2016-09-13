@@ -102,7 +102,7 @@ open class SyntaxParser: NSObject {
 	}
 	
 	///returns true if the chunks changed
-	func parse() -> Bool {
+	@discardableResult func parse() -> Bool {
 		if textStorage.string != lastSource {
 			let oldChunks = chunks
 			parseRange(NSMakeRange(0, textStorage.length))

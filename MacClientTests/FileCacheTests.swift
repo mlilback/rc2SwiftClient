@@ -29,7 +29,7 @@ class FileCacheTests: BaseTest {
 	override func setUp() {
 		super.setUp()
 		wspace = sessionData.projects.first!.workspaces.first!
-		cache = FileCache(workspace: wspace, baseUrl: baseUrl, config: URLSessionConfiguration.defaultSessionConfiguration())
+		cache = FileCache(workspace: wspace, baseUrl: baseUrl, config: URLSessionConfiguration.default, appStatus:nil)
 		file = (wspace.files.first)!
 		filePath = Bundle(for: type(of: self)).path(forResource: "lognormal", ofType: "R")!
 		fileData = try! Data(contentsOf: URL(fileURLWithPath: filePath))
@@ -48,13 +48,13 @@ class FileCacheTests: BaseTest {
 		//use contents of words file instead of the R file we use in other tests (i.e. make it a lot larger)
 		let wordsUrl = URL(fileURLWithPath: "/usr/share/dict/words")
 		fileData = try! Data(contentsOf: wordsUrl)
-		let fakeFile = File(json: JSON.parse("{\"id\" : 1,\"wspaceId\" : 1,\"name\" : \"sample.R\",\"version\" : 0,\"dateCreated\" : 1439407405827,\"lastModified\" : 1439407405827,\"etag\": \"f/1/0\", \"fileSize\":\(fileData.length) }"))
+		let fakeFile = File(json: JSON.parse("{\"id\" : 1,\"wspaceId\" : 1,\"name\" : \"sample.R\",\"version\" : 0,\"dateCreated\" : 1439407405827,\"lastModified\" : 1439407405827,\"etag\": \"f/1/0\", \"fileSize\":\(fileData.count) }"))
 		file = fakeFile
 		wspace.replaceFile(at:0, withFile: fakeFile)
 		//stub out download of both files
-		stub(uri("/workspaces/\(wspace.wspaceId)/files/\(wspace.files[0].fileId)"), builder: http(200, headers:[:], data:fileData))
-		let file1Data = fileData.subdataWithRange(NSMakeRange(0, wspace.files[1].fileSize))
-		stub(uri("/workspaces/\(wspace.wspaceId)/files/\(wspace.files[1].fileId)"), builder: http(200, headers:[:], data:file1Data))
+		stub(uri(uri: "/workspaces/\(wspace.wspaceId)/files/\(wspace.files[0].fileId)"), builder: http(200, headers:[:], download:Download.content(fileData)))
+		let file1Data = fileData.subdata(in: 0..<wspace.files[1].fileSize)
+		stub(uri(uri: "/workspaces/\(wspace.wspaceId)/files/\(wspace.files[1].fileId)"), builder: http(200, headers:[:], download:Download.content(file1Data)))
 		
 		multiExpectation = expectation(description: "download from server")
 		cache.cacheAllFiles() { (prog) in

@@ -8,13 +8,13 @@ import Foundation
 
 let Rc2ErrorDomain = "Rc2ErrorDomain"
 
-enum Rc2ErrorCode: Int {
+public enum Rc2ErrorCode: Int {
 	case serverError = 101
 	case impossible = 102
 	case dockerError = 103
 }
 
-struct Notifications {
+public struct Notifications {
 	///will always be posted on the main thread
 	static let AppStatusChanged = "AppStatusChangedNotification"
 	///The object can be either a HelpTopic or a String

@@ -18,10 +18,15 @@ class DefaultSessionFileHandler: SessionFileHandler {
 	fileprivate var downloadPromise: Promise <Bool,NSError>
 	fileprivate var saveQueue:DispatchQueue
 	
-	init(wspace:Workspace, baseUrl:URL, config:URLSessionConfiguration, appStatus:AppStatus?) {
+	init(wspace:Workspace, baseUrl:URL, config:URLSessionConfiguration, appStatus:AppStatus?, fileCache:FileCache? = nil)
+	{
 		self.workspace = wspace
 		self.appStatus = appStatus
-		self.fileCache = FileCache(workspace: workspace, baseUrl: baseUrl, config: config, appStatus:appStatus)
+		if fileCache != nil {
+			self.fileCache = fileCache!
+		} else {
+			self.fileCache = FileCache(workspace: workspace, baseUrl: baseUrl, config: config, appStatus:appStatus)
+		}
 		self.baseUrl = baseUrl
 		self.downloadPromise = Promise<Bool,NSError>()
 		self.saveQueue = DispatchQueue(label: "fileHandlerSerial", attributes: [])

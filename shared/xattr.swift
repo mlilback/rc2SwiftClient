@@ -26,7 +26,7 @@ func dataForXAttributeNamed(_ name: String, atURL url: URL) -> (error: String?, 
 }
 
 /** Convience wrapper using URL instead of path */
-func removeXAttributeNamed(_ name: String, atURL url: URL) -> String? {
+@discardableResult func removeXAttributeNamed(_ name: String, atURL url: URL) -> String? {
 	guard url.isFileURL else { return "invalid file URL" }
 	return removeXAttributeNamed(name, atPath: url.path)
 }

@@ -26,7 +26,7 @@ class RestServerTest: XCTestCase {
 	func doLogin() {
 		let path : String = Bundle(for: RestServerTest.self).path(forResource: "loginResults", ofType: "json")!
 		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
-		stub(http(.POST, uri: "/login"), builder: jsonData(resultData!))
+		stub(http(method: .post, uri: "/login"), builder: jsonData(resultData!))
 		let loginEx = expectation(description: "login")
 		let future = server?.login("local")
 		future!.onSuccess { result in
@@ -76,7 +76,7 @@ class RestServerTest: XCTestCase {
 	
 	func testCreateWebsocketUrl() {
 		let url = server!.createWebsocketUrl(2)
-		let build = Bundle(forClass: RestServer.self).infoDictionary!["CFBundleVersion"]!
+		let build = Bundle(for: RestServer.self).infoDictionary!["CFBundleVersion"]!
 		let queryStr = "client=osx&build=\(build)"
 		XCTAssertEqual(url.query!, queryStr)
 		XCTAssertEqual(url.host, "localhost")

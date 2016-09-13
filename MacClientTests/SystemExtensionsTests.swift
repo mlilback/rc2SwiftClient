@@ -22,9 +22,9 @@ class SystemExtensionsTests: XCTestCase {
 	
 	func testNSRange() {
 		let str = "string"
-		let nsrng = NSRange(0, str.length)
+		let nsrng = NSRange(location: 0, length: str.characters.count)
 		let strRng = nsrng.toStringRange(str)
-		XCTAssertEqual(str.characters[strRng.start], "s")
+		XCTAssertEqual(str.characters[(strRng?.lowerBound)!], "s")
 		XCTFail() //implement this and more
 	}
 }

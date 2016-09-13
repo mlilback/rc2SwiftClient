@@ -31,16 +31,16 @@ class DockerManagerTests: XCTestCase {
 	}
 	
 	func testVersionCommand() {
+		let expect = self.expectation(description: "file download")
 		let docker = DockerManager()
-		do {
-			let json = try docker.dockerRequest("version")
+		let future = try docker.dockerRequest("version")
+		future.onSuccess { json in
 			XCTAssert(Double(json["ApiVersion"].stringValue)! > 1.2)
-		} catch let err as NSError {
-			XCTFail("execption while getting version: \(err)")
+			expect.fulfill()
+		}.onFailure {_ in 
+			XCTFail()
+			expect.fulfill()
 		}
-	}
-
-	fileprivate func sockaddr_cast(_ p: UnsafePointer<sockaddr_un>) -> UnsafePointer<sockaddr> {
-		return UnsafePointer<sockaddr>(p)
+		self.waitForExpectations(timeout: 2) { (err) -> Void in }
 	}
 }

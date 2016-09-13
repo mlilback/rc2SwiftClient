@@ -42,8 +42,13 @@ open class FileCache: NSObject, URLSessionDownloadDelegate {
 		fatalError("failed to create file cache")
 	}()
 	
-	init(workspace:Workspace, baseUrl:URL, config:URLSessionConfiguration, appStatus:AppStatus?=nil) {
-		self.fileManager = Rc2DefaultFileManager()
+	init(workspace:Workspace, baseUrl:URL, config:URLSessionConfiguration, appStatus:AppStatus?=nil, fileManager:Rc2FileManager? = nil)
+	{
+		if fileManager != nil {
+			self.fileManager = fileManager!
+		} else {
+			self.fileManager = Rc2DefaultFileManager()
+		}
 		self.workspace = workspace
 		self.baseUrl = baseUrl
 		urlConfig = config
