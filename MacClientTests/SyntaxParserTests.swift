@@ -21,21 +21,21 @@ class SyntaxParserTests: XCTestCase {
 		super.tearDown()
 	}
 
-	func loadStorageWith(filename:String, suffix:String) {
+	func loadStorageWith(_ filename:String, suffix:String) {
 		parser = SyntaxParser.parserWithTextStorage(storage, fileType: FileType.fileTypeWithExtension(suffix)!)
-		let fileUrl = NSBundle(forClass: self.dynamicType).URLForResource(filename, withExtension: suffix, subdirectory: nil)!
-		let contents = try! String(contentsOfURL: fileUrl, encoding: NSUTF8StringEncoding)
-		storage.replaceCharactersInRange(NSMakeRange(0, storage.string.utf8.count), withString: contents)
+		let fileUrl = Bundle(for: type(of: self)).url(forResource: filename, withExtension: suffix, subdirectory: nil)!
+		let contents = try! String(contentsOf: fileUrl, encoding: String.Encoding.utf8)
+		storage.replaceCharacters(in: NSMakeRange(0, storage.string.utf8.count), with: contents)
 	}
 	
 	func testChunkBreaks() {
 		//storage must be non-empty and not the same length as the range
 		// we are testing. "foo" should do
-		storage.appendAttributedString(NSAttributedString(string: "foo"))
+		storage.append(NSAttributedString(string: "foo"))
 		let chunks = [
-			DocumentChunk(chunkType: .Equation, chunkNumber: 1),
-			DocumentChunk(chunkType: .Documentation, chunkNumber: 2),
-			DocumentChunk(chunkType: .RCode, chunkNumber: 3)
+			DocumentChunk(chunkType: .equation, chunkNumber: 1),
+			DocumentChunk(chunkType: .documentation, chunkNumber: 2),
+			DocumentChunk(chunkType: .rCode, chunkNumber: 3)
 		]
 		chunks[0].parsedRange = NSMakeRange(0, 10)
 		chunks[1].parsedRange = NSMakeRange(10, 20)
@@ -70,25 +70,25 @@ class SyntaxParserTests: XCTestCase {
 		loadStorageWith("syntax1", suffix:"Rnw")
 		parser.parse()
 		XCTAssertEqual(parser.chunks.count, 5)
-		XCTAssertEqual(parser.chunks[0].type, ChunkType.Documentation)
-		XCTAssertEqual(parser.chunks[1].type, ChunkType.RCode)
-		XCTAssertEqual(parser.chunks[2].type, ChunkType.Documentation)
-		XCTAssertEqual(parser.chunks[3].type, ChunkType.RCode)
+		XCTAssertEqual(parser.chunks[0].type, ChunkType.documentation)
+		XCTAssertEqual(parser.chunks[1].type, ChunkType.rCode)
+		XCTAssertEqual(parser.chunks[2].type, ChunkType.documentation)
+		XCTAssertEqual(parser.chunks[3].type, ChunkType.rCode)
 		XCTAssertEqual(parser.chunks[3].name, "fig=TRUE,echo=FALSE")
-		XCTAssertEqual(parser.chunks[4].type, ChunkType.Documentation)
+		XCTAssertEqual(parser.chunks[4].type, ChunkType.documentation)
 	}
 	
 	func testMarkdown1() {
 		loadStorageWith("syntax2", suffix:"Rmd")
 		parser.parse()
 		XCTAssertEqual(parser.chunks.count, 7)
-		XCTAssertEqual(parser.chunks[0].type, ChunkType.Documentation)
-		XCTAssertEqual(parser.chunks[1].type, ChunkType.Equation)
-		XCTAssertEqual(parser.chunks[2].type, ChunkType.Documentation)
-		XCTAssertEqual(parser.chunks[3].type, ChunkType.RCode)
-		XCTAssertEqual(parser.chunks[4].type, ChunkType.Documentation)
-		XCTAssertEqual(parser.chunks[5].type, ChunkType.Equation)
-		XCTAssertEqual(parser.chunks[4].type, ChunkType.Documentation)
+		XCTAssertEqual(parser.chunks[0].type, ChunkType.documentation)
+		XCTAssertEqual(parser.chunks[1].type, ChunkType.equation)
+		XCTAssertEqual(parser.chunks[2].type, ChunkType.documentation)
+		XCTAssertEqual(parser.chunks[3].type, ChunkType.rCode)
+		XCTAssertEqual(parser.chunks[4].type, ChunkType.documentation)
+		XCTAssertEqual(parser.chunks[5].type, ChunkType.equation)
+		XCTAssertEqual(parser.chunks[4].type, ChunkType.documentation)
 		
 		//TODO: check equation chunks have correct range and background color
 	}

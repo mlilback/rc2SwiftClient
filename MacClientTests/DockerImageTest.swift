@@ -16,9 +16,9 @@ class DockerImageTest: XCTestCase {
 
 	override func setUp() {
 		super.setUp()
-		let path : String = NSBundle(forClass: DockerImageTest.self).pathForResource("dockerImages", ofType: "json")!
-		let resultData = NSData(contentsOfFile: path)
-		jsonArray = JSON(data:resultData!)
+		let path : String = Bundle(for: DockerImageTest.self).path(forResource: "dockerImages", ofType: "json")!
+		let resultData = try! Data(contentsOf: URL(fileURLWithPath: path))
+		jsonArray = JSON(data:resultData)
 	}
 	
 	override func tearDown() {
@@ -38,13 +38,13 @@ class DockerImageTest: XCTestCase {
 	
 	func testImageSerialization() {
 		let original:[DockerImage] = (jsonArray?.arrayValue.map() { return DockerImage(json: $0)! })!
-		let json = JSON(original.map() { try! $0.toJson() })
+		let json = JSON(original.map() { try! $0.serialize() })
 		var images:[DockerImage] = []
 		for anImageJson in json.arrayValue {
 			images.append(DockerImage(json: anImageJson)!)
 		}
 		XCTAssertEqual(original.count, images.count)
-		for (idx, obj) in images.enumerate() {
+		for (idx, obj) in images.enumerated() {
 			XCTAssertEqual(obj, original[idx])
 		}
 	}

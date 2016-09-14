@@ -11,16 +11,16 @@ import ClientCore
 
 class ColorEnumTests: XCTestCase {
 	func testOutputColors() {
-		let defurl = NSBundle(forClass: Session.self).URLForResource("CommonDefaults", withExtension: "plist")
-		let cdict = NSDictionary(contentsOfURL: defurl!)?.objectForKey("OutputColors") as! Dictionary<String,String>
+		let defurl = Bundle(for: Session.self).url(forResource: "CommonDefaults", withExtension: "plist")
+		let cdict = NSDictionary(contentsOf: defurl!)?.object(forKey: "OutputColors") as! Dictionary<String,String>
 		OutputColors.allValues.forEach({
 			XCTAssertNotNil(try! PlatformColor(hex:(cdict[$0.rawValue])!))
 		})
 	}
 
 	func testSyntaxColors() {
-		let defurl = NSBundle(forClass: Session.self).URLForResource("CommonDefaults", withExtension: "plist")
-		let cdict = NSDictionary(contentsOfURL: defurl!)?.objectForKey("SyntaxColors") as! Dictionary<String,String>
+		let defurl = Bundle(for: Session.self).url(forResource: "CommonDefaults", withExtension: "plist")
+		let cdict = NSDictionary(contentsOf: defurl!)?.object(forKey: "SyntaxColors") as! Dictionary<String,String>
 		SyntaxColors.allValues.forEach({
 			XCTAssertNotNil(try! PlatformColor(hex:(cdict[$0.rawValue])!))
 		})

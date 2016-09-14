@@ -22,7 +22,6 @@
 		081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */; };
 		0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */; };
 		0812631F1C862F4B003E37A5 /* EditorDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812631E1C862F4B003E37A5 /* EditorDocument.swift */; };
-		081263211C87A9E8003E37A5 /* EditorDocumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */; };
 		081468371C755A1E006DF8FC /* FileImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081468361C755A1E006DF8FC /* FileImporterTests.swift */; };
 		0814CB721CF894AC0008DE6B /* ConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814CB711CF894AC0008DE6B /* ConsoleAttachment.swift */; };
 		0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */; };
@@ -83,7 +82,6 @@
 		083305F91C519B8500E27F66 /* createWorkspace.json in Resources */ = {isa = PBXBuildFile; fileRef = 083305F31C519B8500E27F66 /* createWorkspace.json */; };
 		083305FA1C519B8500E27F66 /* loginResults.json in Resources */ = {isa = PBXBuildFile; fileRef = 083305F41C519B8500E27F66 /* loginResults.json */; };
 		083305FB1C519B8500E27F66 /* Rc2FileTypeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305F61C519B8500E27F66 /* Rc2FileTypeTest.swift */; };
-		083305FD1C519B8500E27F66 /* RestServerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305F81C519B8500E27F66 /* RestServerTest.swift */; };
 		083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 083306061C51A0B200E27F66 /* CommonDefaults.plist */; };
 		083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F01C64341C00D40EEB /* AppStatusView.swift */; };
 		083382F31C653B6300D40EEB /* xattr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F21C653B6300D40EEB /* xattr.swift */; };
@@ -222,6 +220,8 @@
 		08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448FF1C4EBEF100C64706 /* MacSplitter.swift */; };
 		08F673D01D020B2700B87049 /* MiscProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F673CF1D020B2700B87049 /* MiscProtocols.swift */; };
 		08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F673D11D0214C700B87049 /* AppKitExtensions.swift */; };
+		08F8EDB71D89E3460037245C /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
+		08F8EDB91D89E3770037245C /* BrightFutures.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08FDB1991C591409006FCD1A /* ImageCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDB1981C591409006FCD1A /* ImageCacheTests.swift */; };
 		08FDB19B1C5917C3006FCD1A /* graph.png in Resources */ = {isa = PBXBuildFile; fileRef = 08FDB19A1C5917C3006FCD1A /* graph.png */; };
 /* End PBXBuildFile section */
@@ -271,6 +271,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				08F8EDB91D89E3770037245C /* BrightFutures.framework in CopyFiles */,
 				08037C331D7C5D2200006E9E /* SwiftyJSON.framework in CopyFiles */,
 				08037C241D7C576C00006E9E /* PMKVObserver.framework in CopyFiles */,
 			);
@@ -620,6 +621,7 @@
 				08037C341D7C5D3400006E9E /* SwiftyJSON.framework in Frameworks */,
 				08037C221D7C571D00006E9E /* PMKVObserver.framework in Frameworks */,
 				089794231D7B68F0003339EE /* ClientCore.framework in Frameworks */,
+				08F8EDB71D89E3460037245C /* BrightFutures.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1460,7 +1462,6 @@
 				08F42FA21D33F47000A1EE8D /* MockSessionHelpers.swift in Sources */,
 				08F189BD1D2184EB00866A05 /* BookmarkTest.swift in Sources */,
 				083382F81C68EBC200D40EEB /* FileCacheTests.swift in Sources */,
-				083305FD1C519B8500E27F66 /* RestServerTest.swift in Sources */,
 				080214861C692CA1008B55D3 /* xattrTests.swift in Sources */,
 				088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */,
 				081468371C755A1E006DF8FC /* FileImporterTests.swift in Sources */,
@@ -1469,7 +1470,6 @@
 				0845CB1E1C616E060090267C /* MockFileManagers.swift in Sources */,
 				086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */,
 				080834561C84C13300F5A190 /* SyntaxParserTests.swift in Sources */,
-				081263211C87A9E8003E37A5 /* EditorDocumentTests.swift in Sources */,
 				083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */,
 				083305F01C519B4B00E27F66 /* ColorEnumTests.swift in Sources */,
 			);
@@ -1854,7 +1854,7 @@
 				);
 				INFOPLIST_FILE = ClientCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient.ClientCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1879,7 +1879,7 @@
 				);
 				INFOPLIST_FILE = ClientCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient.ClientCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;

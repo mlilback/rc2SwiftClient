@@ -8,45 +8,46 @@ import Foundation
 import BrightFutures
 @testable import MacClient
 import XCTest
+import os
 
 struct MockFileEntry {
 	let file:File
-	let url:NSURL
+	let url:URL
 }
 
 class MockFileCache: FileCache {
-	var fileManager:FileManager
+	var fileManager:Rc2FileManager
 	var cachedFiles = [Int:MockFileEntry]()
 	
-	init(fileManager fm:FileManager) {
+	init(fileManager fm:Rc2FileManager) {
 		self.fileManager = fm
 	}
 	
-	func append(file:File, url:NSURL) {
+	func append(file:File, url:URL) {
 		cachedFiles[file.fileId] = MockFileEntry(file: file, url: url)
 	}
 	
-	func isFileCached(file:File) -> Bool {
+	func isFileCached(_ file:File) -> Bool {
 		return cachedFiles[file.fileId] != nil
 	}
 	
-	func flushCacheForWorkspace(wspace:Workspace) {
+	func flushCache(workspace:Workspace) {
 	}
 	
 	///recaches the specified file if it has changed
-	@discardableResult func flushCacheForFile(file:File) -> NSProgress? {
-		cachedFiles.removeValueForKey(file.fileId)
+	@discardableResult func flushCache(file:File) -> Progress? {
+		cachedFiles.removeValue(forKey: file.fileId)
 		return nil
 	}
 	
 	///caches all the files in the workspace that aren't already cached with the current version of the file
 	//observer fractionCompleted on returned progress for completion handling
-	@discardableResult func cacheAllFiles(setupHandler:((NSProgress)-> Void)) -> NSProgress? {
+	@discardableResult func cacheAllFiles(_ setupHandler:((Progress)-> Void)) -> Progress? {
 		return nil
 	}
 	
 	///returns the file system url where the file is/will be stored
-	func cachedFileUrl(file:File) -> NSURL {
+	func cachedUrl(file:File) -> URL {
 		let theFile = cachedFiles[file.fileId]
 		XCTAssertNotNil(theFile)
 		return theFile!.url
@@ -59,7 +60,7 @@ class MockSessionFileHandler: SessionFileHandler {
 	var fileCache:FileCache { return mockFileCache }
 	var fileDelegate:SessionFileHandlerDelegate?
 	
-	init(wspace:Workspace, fileManager:FileManager) {
+	init(wspace:Workspace, fileManager:Rc2FileManager) {
 		self.workspace = wspace
 		self.mockFileCache = MockFileCache(fileManager: fileManager)
 	}
@@ -71,38 +72,38 @@ class MockSessionFileHandler: SessionFileHandler {
 	}
 	
 	///handle file change that requires refetching contents
-	func handleFileUpdate(file:File, change:FileChangeType) {
-		log.warning("handleFileUpdate not implemented")
+	func handleFileUpdate(_ file:File, change:FileChangeType) {
+		os_log("handleFileUpdate not implemented")
 		XCTFail()
 	}
 	
 	//handle file change that might contain the file's contents
-	func updateFile(file:File, withData data:NSData?) -> NSProgress? {
-		log.warning("udpateFile not implemented")
+	@discardableResult func updateFile(_ file:File, withData data:Data?) -> Progress? {
+		os_log("updateFile not implemented")
 		XCTFail()
 		return nil
 	}
 	
-	func contentsOfFile(file:File) -> Future<NSData?,FileError> {
-		let promise = Promise<NSData?,FileError>()
+	func contentsOfFile(_ file:File) -> Future<Data?,FileError> {
+		let promise = Promise<Data?,FileError>()
 		if let entry = mockFileCache.cachedFiles[file.fileId] {
-			let fdata = NSData(contentsOfURL: entry.url)
+			let fdata = try! Data(contentsOf: entry.url)
 			promise.success(fdata)
 		} else {
 			XCTFail("no such file in cache")
-			promise.failure(.FileNotFound)
+			promise.failure(.fileNotFound)
 		}
 		return promise.future
 	}
 	
 	//the following will add the save operation to a serial queue to be executed immediately
-	func saveFile(file:File, contents:String, completionHandler:(NSError?) -> Void) {
+	func saveFile(_ file:File, contents:String, completionHandler: @escaping (NSError?) -> Void) {
 		var error:NSError? = nil
-		let url = fileCache.cachedFileUrl(file)
+		let url = fileCache.cachedUrl(file:file)
 		do {
-			try contents.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding)
+			try contents.write(to: url, atomically: true, encoding: String.Encoding.utf8)
 		} catch let err as NSError? {
-			log.error("error saving file \(file): \(err)")
+			os_log("error saving file %{public}@: %{public}@", type:.error, file.description, err!)
 			error = err
 		}
 		completionHandler(error)

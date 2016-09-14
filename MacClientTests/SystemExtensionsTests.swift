@@ -20,4 +20,12 @@ class SystemExtensionsTests: XCTestCase {
 		XCTAssertEqual(Int(gray.greenComponent * 255.0), 153)
 		XCTAssertEqual(Int(gray.blueComponent * 255.0), 153)
 	}
+	
+	func testNSRange() {
+		let str = "string"
+		let nsrng = NSRange(location: 0, length: str.characters.count)
+		let strRng = nsrng.toStringRange(str)
+		XCTAssertEqual(str.characters[(strRng?.lowerBound)!], "s")
+		//TODO: fully test this extension
+	}
 }

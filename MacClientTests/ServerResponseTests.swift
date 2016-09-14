@@ -20,13 +20,13 @@ class ServerResponseTests: XCTestCase {
 	}
 
 	func testListVariables() {
-		let path : String = NSBundle(forClass: self.dynamicType).pathForResource("listvars", ofType: "json")!
-		let resultData = NSData(contentsOfFile: path)
+		let path : String = Bundle(for: type(of: self)).path(forResource: "listvars", ofType: "json")!
+		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
 		let srcJson = JSON(data:resultData!)
 		let rsp = ServerResponse.parseResponse(srcJson)
 		XCTAssertNotNil(rsp)
 		switch (rsp!) {
-		case .Variables(let single, let variables):
+		case .variables(let single, let variables):
 			XCTAssert(!single)
 			XCTAssertEqual(variables.count, 10)
 			var aVar = variables.filter() { $0.name == "str" }.first!
@@ -47,16 +47,16 @@ class ServerResponseTests: XCTestCase {
 			aVar = variables.filter() { $0.name == "speciald" }.first!
 			XCTAssertEqual(aVar.name, "speciald")
 			XCTAssertEqual(aVar.primitiveType, PrimitiveType.Double)
-			XCTAssertEqual(aVar.doubleValueAtIndex(0), (kCFNumberNaN as NSNumber))
-			XCTAssertEqual(aVar.doubleValueAtIndex(1), (kCFNumberPositiveInfinity as NSNumber))
-			XCTAssertEqual(aVar.doubleValueAtIndex(2), (kCFNumberNegativeInfinity as NSNumber))
+			XCTAssertTrue(aVar.doubleValueAtIndex(0)!.isNaN)
+			XCTAssertTrue(aVar.doubleValueAtIndex(1)!.isInfinite)
+			XCTAssertTrue(aVar.doubleValueAtIndex(2)!.isInfinite) //neg inf is sams as pos inf
 			XCTAssertEqual(aVar.doubleValueAtIndex(3), 3.14)
 			aVar = variables.filter() { $0.name == "dct" }.first!
 			XCTAssertEqual(aVar.name, "dct")
-			XCTAssertEqual(aVar.type, VariableType.DateTime)
+			XCTAssertEqual(aVar.type, VariableType.dateTime)
 			aVar = variables.filter() { $0.name == "f" }.first!
 			XCTAssertEqual(aVar.name, "f")
-			XCTAssertEqual(aVar.type, VariableType.Factor)
+			XCTAssertEqual(aVar.type, VariableType.factor)
 			XCTAssertEqual(aVar.levels!, ["a","b","c","d","e"])
 			aVar = variables.filter() { $0.name == "cpx" }.first!
 			XCTAssertEqual(aVar.name, "cpx")
@@ -76,13 +76,13 @@ class ServerResponseTests: XCTestCase {
 	}
 	
 	func testSessionImageFromJSON() {
-		let path : String = NSBundle(forClass: self.dynamicType).pathForResource("resultsWithImages", ofType: "json")!
-		let resultData = NSData(contentsOfFile: path)
+		let path : String = Bundle(for: type(of: self)).path(forResource: "resultsWithImages", ofType: "json")!
+		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
 		let srcJson = JSON(data:resultData!)
 		let rsp = ServerResponse.parseResponse(srcJson)
 		XCTAssertNotNil(rsp)
 		switch (rsp!) {
-			case .ExecComplete(let qid, let bid, let imgs):
+			case .execComplete(let qid, let bid, let imgs):
 				XCTAssertEqual(imgs.count, 3)
 				XCTAssertEqual(bid, 1)
 				XCTAssertEqual(qid, 1001)
@@ -92,9 +92,9 @@ class ServerResponseTests: XCTestCase {
 		}
 	}
 	
-	func sessionImageCodingTest(image:SessionImage) {
-		let data = NSKeyedArchiver.archivedDataWithRootObject(image)
-		let obj = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! SessionImage
+	func sessionImageCodingTest(_ image:SessionImage) {
+		let data = NSKeyedArchiver.archivedData(withRootObject:image)
+		let obj = NSKeyedUnarchiver.unarchiveObject(with: data) as! SessionImage
 		XCTAssertEqual(image, obj)
 	}
 }
