@@ -6,9 +6,31 @@
 
 import Cocoa
 import ClientCore
+import os
+
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 enum OutputTabType: Int {
-	 case Console = 0, Image, WebKit, Help
+	 case console = 0, image, webKit, help
 }
 
 class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandler {
@@ -16,13 +38,8 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	var imageController: ImageOutputController?
 	var webController: WebKitOutputController?
 	var helpController: HelpOutputController?
-	weak var sessionController: SessionController? { didSet {
-		_ = KVObserver(object: sessionController!, keyPath:"imageCache") { object, _, _ in
-			self.imageController?.imageCache = object.imageCache
-		}
-		imageController?.imageCache = sessionController?.imageCache
-	}}
-
+	var imageCache: ImageCache?
+	weak var sessionController: SessionController?
 	var consoleToolbarControl: NSSegmentedControl?
 	var segmentItem: NSToolbarItem?
 	var segmentControl: NSSegmentedControl?
@@ -34,14 +51,15 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(OutputTabController.handleDisplayHelp(_:)), name: Notifications.DisplayHelpTopic, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(OutputTabController.handleDisplayHelp(_:)), name: NSNotification.Name(rawValue: Notifications.DisplayHelpTopic), object: nil)
 	}
 	override func viewWillAppear() {
 		super.viewWillAppear()
-		selectedOutputTab = .Console
+		selectedOutputTab = .console
 		consoleController = firstChildViewController(self)
 		consoleController?.viewFileOrImage = displayFileAttachment
 		imageController = firstChildViewController(self)
+		imageController?.imageCache = imageCache
 		webController = firstChildViewController(self)
 		helpController = firstChildViewController(self)
 	}
@@ -59,7 +77,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		return (self.consoleController?.consoleTextField)!
 	}
 	
-	func handlesToolbarItem(item: NSToolbarItem) -> Bool {
+	func handlesToolbarItem(_ item: NSToolbarItem) -> Bool {
 		if item.itemIdentifier == "console" {
 			consoleToolbarControl = item.view as! NSSegmentedControl?
 			consoleToolbarControl?.target = self
@@ -89,13 +107,13 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		return false
 	}
 	
-	dynamic func tabSwitcherClicked(sender:AnyObject?) {
+	dynamic func tabSwitcherClicked(_ sender:AnyObject?) {
 		let index = (segmentControl?.selectedSegment)!
 		selectedOutputTab = OutputTabType(rawValue: index)!
 //		NSUserDefaults.standardUserDefaults().setInteger(index, forKey: LastSelectedSessionTabIndex)
 	}
 
-	func showHelp(topics: [HelpTopic]) {
+	func showHelp(_ topics: [HelpTopic]) {
 		guard topics.count > 0 else {
 			consoleController?.appendFormattedString(sessionController!.formatErrorMessage("No help found"))
 			return
@@ -108,71 +126,71 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		showHelpTopic(topics[0])
 	}
 	
-	func handleDisplayHelp(note:NSNotification) {
+	func handleDisplayHelp(_ note:Notification) {
 		if let topic:HelpTopic = note.object as? HelpTopic {
 			showHelpTopic(topic)
 		} else if let topicName:String = note.object as? String {
 			showHelp(HelpController.sharedInstance.topicsWithName(topicName))
 		} else { //told to show without a topic. switch back to console.
-			selectedOutputTab = .Console
+			selectedOutputTab = .console
 		}
 	}
 
-	func clearConsole(sender:AnyObject?) {
+	func clearConsole(_ sender:AnyObject?) {
 		consoleController?.clearConsole(sender)
 		sessionController?.imageCache?.clearCache()
 	}
 	
-	func consoleButtonClicked(sender:AnyObject?) {
-		selectedOutputTab = .Console
+	func consoleButtonClicked(_ sender:AnyObject?) {
+		selectedOutputTab = .console
 	}
 	
-	func displayFileAttachment(fileWrapper: NSFileWrapper) {
-		log.info("told to display file \(fileWrapper.filename)")
-		guard let attachment = NSKeyedUnarchiver.unarchiveObjectWithData(fileWrapper.regularFileContents!) as? MacConsoleAttachment else {
-			log.warning("asked to display invalid attachment")
+	func displayFileAttachment(_ fileWrapper: FileWrapper) {
+		os_log("told to display file %{public}@", type:.info, fileWrapper.filename!)
+		guard let attachment = NSKeyedUnarchiver.unarchiveObject(with: fileWrapper.regularFileContents!) as? MacConsoleAttachment else {
+			os_log("asked to display invalid attachment")
 			return
 		}
 		switch (attachment.type) {
-			case .File:
+			case .file:
 				if let file = sessionController?.session.workspace.fileWithId(Int(attachment.fileId)) {
-					webController?.loadLocalFile(sessionController!.session.fileHandler.fileCache.cachedFileUrl(file))
-					selectedOutputTab = .WebKit
+					webController?.loadLocalFile(sessionController!.session.fileHandler.fileCache.cachedUrl(file:file))
+					selectedOutputTab = .webKit
 					//TODO: implement option to check by filename if not found by id
 				} else {
 					//TODO: report error
 				}
-			case .Image:
+			case .image:
 				if let image = attachment.image,
 				let images = sessionController!.imageCache?.sessionImagesForBatch(image.batchId),
-				let index = images.indexOf({$0.id == image.id})
+				let index = images.index(where: {$0.id == image.id})
 			{
 				imageController?.displayImageAtIndex(index, images:images)
-				selectedOutputTab = .Image
+				selectedOutputTab = .image
 				tabView.window?.toolbar?.validateVisibleItems()
 			}
 		}
 	}
 	
-	func showFile(fileId:Int) {
+	func showFile(_ fileId:Int) {
 		displayedFileId = fileId
 		if let file = sessionController?.session.workspace.fileWithId(fileId) {
 			//TODO: need to specially handle images
 			delay(0.5) { //delay is to give previous async file save time to actually write file to disk.
-				self.webController?.loadLocalFile(self.sessionController!.session.fileHandler.fileCache.cachedFileUrl(file))
-				self.selectedOutputTab = .WebKit
+				self.webController?.loadLocalFile(self.sessionController!.session.fileHandler.fileCache.cachedUrl(file:file))
+				self.selectedOutputTab = .webKit
 			}
 		} else {
 			webController?.clearContents()
-			selectedOutputTab = .Console
+			selectedOutputTab = .console
 		}
 	}
 
-	func appendFormattedString(string:NSAttributedString, type:OutputStringType = .Default) {
+	func appendFormattedString(_ string:NSAttributedString, type:OutputStringType = .default) {
 		consoleController?.appendFormattedString(string, type:type)
 		//switch back to console view
-		if selectedOutputTab != .Console {
-			selectedOutputTab = .Console
+		if selectedOutputTab != .console {
+			selectedOutputTab = .console
 		}
 	}
 
@@ -183,10 +201,10 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	func saveSessionState() -> AnyObject {
 		var dict = [String:AnyObject]()
 		dict["console"] = consoleController?.saveSessionState()
-		return dict
+		return dict as AnyObject
 	}
 	
-	func restoreSessionState(state:[String:AnyObject]) {
+	func restoreSessionState(_ state:[String:AnyObject]) {
 		if let consoleState = state["console"] as? [String:AnyObject] {
 			consoleController?.restoreSessionState(consoleState)
 		}
@@ -200,13 +218,13 @@ private extension OutputTabController {
 		//		guard index != selectedTabViewItemIndex else { return }
 		segmentControl?.animator().setSelected(true, forSegment: index)
 		for idx in 0..<3 {
-			[segmentControl?.setEnabled(idx == index ? false : true, forSegment: idx)]
+			segmentControl?.setEnabled(idx == index ? false : true, forSegment: idx)
 		}
 	}
 	
 	///actually shows the help page for the specified topic
-	func showHelpTopic(topic:HelpTopic) {
-		selectedOutputTab = .Help
+	func showHelpTopic(_ topic:HelpTopic) {
+		selectedOutputTab = .help
 		helpController!.loadHelpTopic(topic)
 	}
 }
@@ -225,13 +243,13 @@ class ClearConsoleToolbarItem: NSToolbarItem {
 	var textView: NSTextView?
 	weak var tabController: NSTabViewController?
 	override func validate() {
-		enabled = textView?.textStorage?.length > 0 && tabController?.selectedTabViewItemIndex == 0
+		isEnabled = textView?.textStorage?.length > 0 && tabController?.selectedTabViewItemIndex == 0
 	}
 }
 
 class OutputConsoleToolbarItem : NSToolbarItem {
 	weak var tabController: NSTabViewController?
 	override func validate() {
-		enabled = tabController?.selectedTabViewItemIndex > 0
+		isEnabled = tabController?.selectedTabViewItemIndex > 0
 	}
 }

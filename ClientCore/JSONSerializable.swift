@@ -9,8 +9,8 @@ import Foundation
 import SwiftyJSON
 
 public protocol JSONSerializable {
-	///for deserialization
+	///for deserialization from JSON
 	init?(json:JSON)
 	
-	func toJson() throws -> JSON
+	func serialize() throws -> JSON
 }

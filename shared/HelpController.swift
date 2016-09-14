@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import os
 
 class HelpTopic: NSObject {
 	let name:String
@@ -34,32 +35,32 @@ class HelpTopic: NSObject {
 		self.title = title
 		self.desc = description
 		self.subtopics = nil
-		self.aliases = aliases.componentsSeparatedByString(":")
+		self.aliases = aliases.components(separatedBy: ":")
 	}
 	
 	///convience for sorting
-	func compare(other: HelpTopic) -> Bool {
-		return self.name.caseInsensitiveCompare(other.name) == .OrderedAscending
+	func compare(_ other: HelpTopic) -> Bool {
+		return self.name.caseInsensitiveCompare(other.name) == .orderedAscending
 	}
 	
 	///accesor function to be passed around as a closure
-	static func subtopicsAccessor(topic:HelpTopic) -> [HelpTopic]? {
+	static func subtopicsAccessor(_ topic:HelpTopic) -> [HelpTopic]? {
 		return topic.subtopics
 	}
 }
 
 class HelpController {
 	static let sharedInstance = HelpController()
-	private let db:FMDatabase
+	fileprivate let db:FMDatabase
 	
 	let packages:[HelpTopic]
 	let allTopics:Set<HelpTopic>
 	let allTopicNames:Set<String>
-	private let topicsByName:Dictionary<String, [HelpTopic]>
+	fileprivate let topicsByName:Dictionary<String, [HelpTopic]>
 	
 	///loads topics from storage
 	init() {
-		let dbpath = NSBundle.mainBundle().pathForResource("helpindex", ofType: "db")
+		let dbpath = Bundle.main.path(forResource: "helpindex", ofType: "db")
 		do {
 			db = FMDatabase(path: dbpath)
 			db.open()
@@ -69,8 +70,8 @@ class HelpController {
 			var names = Set<String>()
 			let rs = try db.executeQuery("select package,name,title,aliases,desc from helptopic where name not like '.%' order by package, name COLLATE nocase ", values: nil)
 			while rs.next() {
-				let package = rs.stringForColumn("package")
-				let topic = HelpTopic(name: rs.stringForColumn("name"), packageName:package, title: rs.stringForColumn("title"), aliases:rs.stringForColumn("aliases"), description: rs.stringForColumn("desc"))
+				guard let package = rs.string(forColumn: "package") else { continue }
+				let topic = HelpTopic(name: rs.string(forColumn: "name"), packageName:package, title: rs.string(forColumn: "title"), aliases:rs.string(forColumn: "aliases"), description: rs.string(forColumn: "desc"))
 				if topsByPack[package] == nil {
 					topsByPack[package] = []
 				}
@@ -87,15 +88,15 @@ class HelpController {
 			}
 			var packs:[HelpTopic] = []
 			topsByPack.forEach() { (key, ptopics) in
-				let package = HelpTopic(name: key, subtopics: ptopics.sort({ return $0.compare($1) }))
+				let package = HelpTopic(name: key, subtopics: ptopics.sorted(by: { return $0.compare($1) }))
 				packs.append(package)
 			}
-			self.packages = packs.sort({ return $0.compare($1) })
+			self.packages = packs.sorted(by: { return $0.compare($1) })
 			self.allTopics = all
 			self.allTopicNames = names
 			self.topicsByName = topsByName
 		} catch let error as NSError {
-			log.error("error loading help index: \(error)")
+			os_log("error loading help index: %{public}@", type:.error, error)
 			fatalError("failed to load help index")
 		}
 	}
@@ -104,38 +105,38 @@ class HelpController {
 		db.close()
 	}
 	
-	func hasTopic(name:String) -> Bool {
+	func hasTopic(_ name:String) -> Bool {
 		return allTopicNames.contains(name)
 	}
 	
-	private func parseResultSet(rs:FMResultSet) throws -> [HelpTopic] {
+	fileprivate func parseResultSet(_ rs:FMResultSet) throws -> [HelpTopic] {
 		var topicsByPack = [String:[HelpTopic]]()
 		while rs.next() {
-			let package = rs.stringForColumn("package")
-			let topic = HelpTopic(name: rs.stringForColumn("name"), packageName:package, title: rs.stringForColumn("title"), aliases:rs.stringForColumn("aliases"), description: rs.stringForColumn("desc"))
+			guard let package = rs.string(forColumn: "package") else { continue }
+			let topic = HelpTopic(name: rs.string(forColumn: "name"), packageName:package, title: rs.string(forColumn: "title"), aliases:rs.string(forColumn: "aliases"), description: rs.string(forColumn: "desc"))
 			if topicsByPack[package] == nil {
 				topicsByPack[package] = []
 			}
 			topicsByPack[package]!.append(topic)
 		}
 		let matches:[HelpTopic] = topicsByPack.map() { HelpTopic(name: $0, subtopics: $1) }
-		return matches.sort({ return $0.compare($1) })
+		return matches.sorted(by: { return $0.compare($1) })
 	}
 	
-	func searchTopics(searchString:String) -> [HelpTopic] {
+	func searchTopics(_ searchString:String) -> [HelpTopic] {
 		guard searchString.characters.count > 0 else { return packages }
 		var results:[HelpTopic] = []
 		do {
 			let rs = try db.executeQuery("select * from helpidx where helpidx match ?", values: [searchString])
 			results = try parseResultSet(rs)
 		} catch let error as NSError {
-			log.warning("error searching help:\(error)")
+			os_log("error searching help: %{public}@", error)
 		}
 		return results
 	}
 	
 	//can't share code with initializer because functions can't be called in init before all properties are assigned
-	func topicsWithName(targetName:String) -> [HelpTopic] {
+	func topicsWithName(_ targetName:String) -> [HelpTopic] {
 		var packs:[HelpTopic] = []
 		var topsByPack = [String:[HelpTopic]]()
 		topicsByName[targetName]?.forEach() { aTopic in
@@ -147,19 +148,19 @@ class HelpController {
 			}
 		}
 		topsByPack.forEach() { (key, ptopics) in
-			let package = HelpTopic(name: key, subtopics: ptopics.sort({ return $0.compare($1) }))
+			let package = HelpTopic(name: key, subtopics: ptopics.sorted(by: { return $0.compare($1) }))
 			packs.append(package)
 		}
-		packs = packs.reduce([], combine: { (pks, ht) in
+		packs = packs.reduce([], { (pks, ht) in
 			var myPacks = pks
-			if ht.subtopics != nil { myPacks.appendContentsOf(ht.subtopics!) }
+			if ht.subtopics != nil { myPacks.append(contentsOf: ht.subtopics!) }
 			return myPacks
 		})
-		packs = packs.sort({ return $0.compare($1) })
+		packs = packs.sorted(by: { return $0.compare($1) })
 		return packs
 	}
 	
-	func topicsStartingWith(namePrefix:String) -> [HelpTopic] {
+	func topicsStartingWith(_ namePrefix:String) -> [HelpTopic] {
 		var tops:[HelpTopic] = []
 		topicsByName.forEach() { (tname, tarray) in
 			if tname.hasPrefix(namePrefix) { tops += tarray }
@@ -167,8 +168,8 @@ class HelpController {
 		return tops
 	}
 	
-	func urlForTopic(topic:HelpTopic) -> NSURL {
+	func urlForTopic(_ topic:HelpTopic) -> URL {
 		let str = "\(HelpUrlBase)/\(topic.packageName)\(HelpUrlFuncSeperator)/\(topic.name).html"
-		return NSURL(string: str)!
+		return URL(string: str)!
 	}
 }

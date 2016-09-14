@@ -5,12 +5,13 @@
 //
 
 import Cocoa
+import os
 import XCGLogger
 import SwinjectStoryboard
 import Swinject
 import SwiftyJSON
 
-let log = XCGLogger.defaultInstance()
+//let log = XCGLogger.defaultInstance()
 
 @NSApplicationMain
 class MacAppDelegate: NSObject, NSApplicationDelegate {
@@ -19,29 +20,28 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	let bookmarkManager = BookmarkManager()
 	dynamic var dockerManager: DockerManager?
 
-	private dynamic var _currentProgress: NSProgress?
-	private let _statusQueue = dispatch_queue_create("io.rc2.statusQueue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0))
+	fileprivate dynamic var _currentProgress: Progress?
+	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 
-	func applicationWillFinishLaunching(notification: NSNotification) {
+	func applicationWillFinishLaunching(_ notification: Notification) {
 		dockerManager = DockerManager()
 		dockerManager?.isDockerRunning() { isRunning in
-			log.info("docker is running \(isRunning ? "yes" : "no")")
+			os_log("docker is running %{public}@", type:.info, isRunning ? "yes" : "no")
 			let f = self.dockerManager!.pullImage("rc2server/dbserver")
-			f.onSuccess {_ in 
-				log.info("pulll should be good")
+			f.onSuccess {_ in
+				os_log("pull should be good", type:.info)
 			}.onFailure { err in
-				log.error("got \(err)")
+				os_log("docker error: %{public}@", type:.error, err as NSError)
 			}
 		}
-		log.setup(.Debug, showLogIdentifier: false, showFunctionName: true, showThreadName: false, showLogLevel: true, showFileNames: true, showLineNumbers: true, showDate: false, writeToFile: nil, fileLogLevel: .Debug)
-		let cdUrl = NSBundle.mainBundle().URLForResource("CommonDefaults", withExtension: "plist")
-		NSUserDefaults.standardUserDefaults().registerDefaults(NSDictionary(contentsOfURL: cdUrl!)! as! [String : AnyObject])
-		NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(MacAppDelegate.windowWillClose), name: NSWindowWillCloseNotification, object: nil)
+		let cdUrl = Bundle.main.url(forResource: "CommonDefaults", withExtension: "plist")
+		UserDefaults.standard.register(defaults: NSDictionary(contentsOf: cdUrl!)! as! [String : AnyObject])
+		NotificationCenter.default.addObserver(self, selector: #selector(MacAppDelegate.windowWillClose), name: NSNotification.Name.NSWindowWillClose, object: nil)
 	}
 
-	func applicationDidFinishLaunching(aNotification: NSNotification) {
+	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		//skip showing bookmarks when running unit tests
-		guard NSProcessInfo.processInfo().environment["XCTestConfigurationFilePath"] == nil else { return }
+		guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
 		showBookmarkWindow(nil)
 	#if HOCKEYAPP_ENABLED
 //		log.info("key is \(kHockeyAppIdentifier)")
@@ -53,9 +53,9 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		restoreSessions()
 	}
 
-	func applicationWillTerminate(aNotification: NSNotification) {
-		NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowWillCloseNotification, object: nil)
-		let defaults = NSUserDefaults.standardUserDefaults()
+	func applicationWillTerminate(_ aNotification: Notification) {
+		NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSWindowWillClose, object: nil)
+		let defaults = UserDefaults.standard
 		//save info to restore open sessions
 		var reopen = [Bookmark]()
 		for controller in sessionWindowControllers {
@@ -65,25 +65,25 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			}
 		}
 		do {
-			let bmarks = try JSON(reopen.map() { try $0.toJson() })
-			defaults.setObject(bmarks.rawString(), forKey: PrefKeys.OpenSessions)
+			let bmarks = try JSON(reopen.map() { try $0.serialize() })
+			defaults.set(bmarks.rawString(), forKey: PrefKeys.OpenSessions)
 		} catch let err {
-			log.error("failed to serialize bookmarks: \(err)")
+			os_log("failed to serialize bookmarks: %{public}@", type:.error, err as NSError)
 		}
 	}
 
-	func applicationShouldOpenUntitledFile(sender: NSApplication) -> Bool {
+	func applicationShouldOpenUntitledFile(_ sender: NSApplication) -> Bool {
 		return NSApp.modalWindow == nil
 	}
 	
-	func applicationOpenUntitledFile(sender: NSApplication) -> Bool {
+	func applicationOpenUntitledFile(_ sender: NSApplication) -> Bool {
 		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
 		return true
 	}
 	
-	override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
+	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		switch(menuItem.action) {
-			case #selector(MacAppDelegate.showBookmarkWindow(_:)):
+			case (#selector(MacAppDelegate.showBookmarkWindow(_:)))?:
 				return NSApp.mainWindow != bookmarkWindowController?.window
 			default:
 				return false
@@ -91,17 +91,17 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func restoreSessions() {
-		let defaults = NSUserDefaults.standardUserDefaults()
+		let defaults = UserDefaults.standard
 		//load them, or create default ones
 		var bookmarks = [Bookmark]()
-		if let bmstr = defaults.stringForKey(PrefKeys.OpenSessions) {
+		if let bmstr = defaults.string(forKey: PrefKeys.OpenSessions) {
 			for aJsonObj in JSON.parse(bmstr).arrayValue {
 				bookmarks.append(Bookmark(json: aJsonObj)!)
 			}
 		}
 		guard let bmarkController = bookmarkWindowController?.contentViewController as? BookmarkViewController else
 		{
-			log.error("failed to get bookmarkViewController to restore sessions")
+			os_log("failed to get bookmarkViewController to restore sessions", type:.error)
 			return
 		}
 		//TODO: show progress dialog
@@ -110,15 +110,15 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		}
 	}
 	
-	func windowForAppStatus(session:Session?) -> NSWindow {
+	func windowForAppStatus(_ session:Session?) -> NSWindow {
 		return windowControllerForSession(session!)!.window!
 	}
 	
-	@IBAction func showBookmarkWindow(sender:AnyObject?) {
+	@IBAction func showBookmarkWindow(_ sender:AnyObject?) {
 		if nil == bookmarkWindowController {
 			let container = Container()
 			container.registerForStoryboard(NSWindowController.self, name: "bmarkWindow") { r,c in
-				log.info("wc registered")
+				os.os_log("wc registered", type:.debug)
 			}
 			container.registerForStoryboard(BookmarkViewController.self) { r, c in
 				c.bookmarkManager = self.bookmarkManager
@@ -132,14 +132,14 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			}
 
 			let sboard = SwinjectStoryboard.create(name: "BookmarkManager", bundle: nil, container: container)
-			bookmarkWindowController = sboard.instantiateControllerWithIdentifier("bookmarkWindow") as? NSWindowController
+			bookmarkWindowController = sboard.instantiateController(withIdentifier: "bookmarkWindow") as? NSWindowController
 			let bvc = bookmarkWindowController!.contentViewController as! BookmarkViewController
 			bvc.openSessionCallback = openSession
 		}
 		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
 	}
 	
-	func openSession(restServer:RestServer) {
+	func openSession(_ restServer:RestServer) {
 		let appStatus = MacAppStatus(windowAccessor: windowForAppStatus)
 		let wc = MainWindowController.createFromNib()
 		sessionWindowControllers.insert(wc)
@@ -158,7 +158,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		let sboard = SwinjectStoryboard.create(name: "MainController", bundle: nil, container: container)
 		wc.window?.makeKeyAndOrderFront(self)
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window
-		let root = sboard.instantiateControllerWithIdentifier("rootController") as? RootViewController
+		let root = sboard.instantiateController(withIdentifier: "rootController") as? RootViewController
 		wc.contentViewController = root
 		wc.appStatus = appStatus
 		restServer.appStatus = appStatus
@@ -166,17 +166,17 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		wc.setupChildren(restServer)
 	}
 	
-	func windowWillClose(note:NSNotification) {
+	func windowWillClose(_ note:Notification) {
 		//if no windows will be visible, acitvate/show bookmark window
 		if let sessionWC = (note.object as! NSWindow).windowController as? MainWindowController {
 			sessionWindowControllers.remove(sessionWC)
 			if sessionWindowControllers.count < 1 {
-				performSelector(#selector(MacAppDelegate.showBookmarkWindow), withObject: nil, afterDelay: 0.2)
+				perform(#selector(MacAppDelegate.showBookmarkWindow), with: nil, afterDelay: 0.2)
 			}
 		}
 	}
 	
-	func windowControllerForSession(session:Session) -> MainWindowController? {
+	func windowControllerForSession(_ session:Session) -> MainWindowController? {
 		for wc in sessionWindowControllers {
 			if wc.session == session { return wc }
 		}

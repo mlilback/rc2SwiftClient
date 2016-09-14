@@ -11,49 +11,51 @@
 #endif
 import ClientCore
 import BrightFutures
+import Dispatch
+import os
 
-enum ImageCacheError: ErrorType {
-	case NoSuchImage
-	case FailedToLoadFromNetwork
+enum ImageCacheError: Error {
+	case noSuchImage
+	case failedToLoadFromNetwork
 }
 
 /// Handles caching of SessionImage(s)
 /// implements NSSecureCoding so can be saved
-public class ImageCache :NSObject, NSSecureCoding {
+open class ImageCache :NSObject, NSSecureCoding {
 	///to allow dependency injection
-	var fileManager:NSFileManager
+	var fileManager:Foundation.FileManager
 	///to allow dependency injection
 	var workspace: Workspace?
 	weak var restServer:RestServer?
 	///caching needs to be unique for each server. we don't care what the identifier is, just that it is unique per host
 	///mutable because we need to be able to read it from an archive
-	private(set) var hostIdentifier: String
+	fileprivate(set) var hostIdentifier: String
 	
-	private var cache: NSCache
-	private var metaCache: [Int:SessionImage]
+	fileprivate var cache: NSCache<AnyObject, AnyObject>
+	fileprivate var metaCache: [Int:SessionImage]
 	
-	private(set) lazy var cacheUrl: NSURL =
+	fileprivate(set) lazy var cacheUrl: URL =
 		{
-			var result: NSURL?
+			var result: URL?
 			do {
 				let fm = self.fileManager
-				let cacheDir = try fm.URLForDirectory(.CachesDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
-				let ourDir = cacheDir.URLByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!, isDirectory:true)
-				let imgDir = ourDir!.URLByAppendingPathComponent("\(self.hostIdentifier)/images", isDirectory: true)
-				if !imgDir!.checkResourceIsReachableAndReturnError(nil) {
-					try self.fileManager.createDirectoryAtURL(imgDir!, withIntermediateDirectories: true, attributes: nil)
+				let cacheDir = try fm.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+				let ourDir = cacheDir.appendingPathComponent(Bundle.main.bundleIdentifier!, isDirectory:true)
+				let imgDir = ourDir.appendingPathComponent("\(self.hostIdentifier)/images", isDirectory: true)
+				if !(imgDir as NSURL).checkResourceIsReachableAndReturnError(nil) {
+					try self.fileManager.createDirectory(at: imgDir, withIntermediateDirectories: true, attributes: nil)
 				}
 				result = imgDir
-			} catch let error {
-				log.error("got error creating image cache direcctory:\(error)")
+			} catch let error as NSError {
+				os_log("got error creating image cache direcctory: %{public}@", type:.error, error)
 				assertionFailure("failed to create image cache dir")
 			}
 			return result!
 		}()
 	
-	public static func supportsSecureCoding() -> Bool { return true }
+	public static var supportsSecureCoding : Bool { return true }
 	
-	init(restServer:RestServer, fileManager fm:NSFileManager=NSFileManager(), hostIdentifier hostIdent:String) {
+	init(restServer:RestServer, fileManager fm:Foundation.FileManager=Foundation.FileManager(), hostIdentifier hostIdent:String) {
 		self.restServer = restServer
 		fileManager = fm
 		cache = NSCache()
@@ -62,61 +64,61 @@ public class ImageCache :NSObject, NSSecureCoding {
 	}
 	
 	public required init?(coder decoder:NSCoder) {
-		guard let host = decoder.decodeObjectOfClass(NSString.self, forKey: "hostIdentifier") as? String else {
+		guard let host = decoder.decodeObject(of: NSString.self, forKey: "hostIdentifier") as? String else {
 			return nil
 		}
 		hostIdentifier = host
-		fileManager = NSFileManager.defaultManager()
+		fileManager = Foundation.FileManager.default
 		cache = NSCache()
-		metaCache = decoder.decodeObjectOfClasses([NSArray.self, SessionImage.self, NSNumber.self], forKey: "metaCache") as! [Int:SessionImage]
+		metaCache = decoder.decodeObject(of: [NSArray.self, SessionImage.self, NSNumber.self], forKey: "metaCache") as! [Int:SessionImage]
 	}
 	
-	public func encodeWithCoder(coder: NSCoder) {
-		coder.encodeObject(hostIdentifier, forKey:"hostIdentifier")
-		coder.encodeObject(metaCache, forKey: "metaCache")
+	open func encode(with coder: NSCoder) {
+		coder.encode(hostIdentifier, forKey:"hostIdentifier")
+		coder.encode(metaCache, forKey: "metaCache")
 	}
 	
-	func imageWithId(imageId:Int) -> PlatformImage? {
-		if let pitem = cache.objectForKey(imageId) {
+	func imageWithId(_ imageId:Int) -> PlatformImage? {
+		if let pitem = cache.object(forKey: imageId as AnyObject) {
 			defer { pitem.endContentAccess() }
 			if pitem.beginContentAccess() {
-				return PlatformImage(data: NSData(data: pitem as! NSPurgeableData))
+				return PlatformImage(data: NSData(data: (pitem as! NSPurgeableData) as Data) as Data)
 			}
 		}
 		//read from disk
-		let imgUrl = NSURL(fileURLWithPath: "\(imageId).png", relativeToURL: cacheUrl)
-		guard let imgData = NSData(contentsOfURL: imgUrl) else {
+		let imgUrl = URL(fileURLWithPath: "\(imageId).png", relativeTo: cacheUrl)
+		guard let imgData = try? Data(contentsOf: imgUrl) else {
 			return nil
 		}
-		cache.setObject(NSPurgeableData(data: imgData), forKey: imageId)
+		cache.setObject(NSPurgeableData(data: imgData), forKey: imageId as AnyObject)
 		return PlatformImage(data: imgData)
 	}
 	
 	///caches to disk and in memory
-	func cacheImageFromServer(img:SessionImage) {
+	func cacheImageFromServer(_ img:SessionImage) {
 		//cache to disk
-		let destUrl = NSURL(fileURLWithPath: "\(img.id).png", isDirectory: false, relativeToURL: cacheUrl)
-		img.imageData!.writeToURL(destUrl, atomically: true)
+		let destUrl = URL(fileURLWithPath: "\(img.id).png", isDirectory: false, relativeTo: cacheUrl)
+		try? img.imageData!.write(to: destUrl, options: [.atomic])
 		//cache in memory
-		let pdata = NSPurgeableData(data: img.imageData!)
-		cache.setObject(pdata, forKey: img.id)
+		let pdata = NSData(data: img.imageData! as Data) as Data
+		cache.setObject(pdata as AnyObject, forKey: img.id as AnyObject)
 		metaCache[img.id] = (img.copy() as! SessionImage)
 	}
 	
-	func cacheImagesFromServer(images:[SessionImage]) {
+	func cacheImagesFromServer(_ images:[SessionImage]) {
 		for anImage in images {
 			cacheImageFromServer(anImage)
 		}
 	}
 	
-	func sessionImagesForBatch(batchId:Int) -> [SessionImage] {
+	func sessionImagesForBatch(_ batchId:Int) -> [SessionImage] {
 		var matches:[SessionImage] = []
 		for anImage in metaCache.values {
 			if anImage.batchId == batchId {
 				matches.append(anImage)
 			}
 		}
-		return matches.sort({ $0.id < $1.id })
+		return matches.sorted(by: { $0.id < $1.id })
 	}
 	
 	func clearCache() {
@@ -125,28 +127,31 @@ public class ImageCache :NSObject, NSSecureCoding {
 	}
 	
 	///imageWithId: should have been called at some point to make sure the image is cached
-	func urlForCachedImage(imageId:Int) -> NSURL {
-		return NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: self.cacheUrl).absoluteURL!
+	func urlForCachedImage(_ imageId:Int) -> URL {
+		return URL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeTo: self.cacheUrl).absoluteURL
 	}
 	
-	func imageWithId(imageId:Int) -> Future<PlatformImage, ImageCacheError> {
+	func imageWithId(_ imageId:Int) -> Future<PlatformImage, ImageCacheError> {
 		assert(workspace != nil, "imageCache.workspace must be set before using")
 		let promise = Promise<PlatformImage, ImageCacheError>()
-		let fileUrl = NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: self.cacheUrl)
-		Queue.global.async {
-			if fileUrl.checkResourceIsReachableAndReturnError(nil) {
-				promise.success(PlatformImage(contentsOfURL: fileUrl)!)
-				return
+		let fileUrl = URL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeTo: self.cacheUrl)
+		DispatchQueue.global().async {
+			do {
+				if try fileUrl.checkResourceIsReachable() {
+					promise.success(PlatformImage(contentsOf: fileUrl)!)
+					return
+				}
+			} catch {
 			}
 			//need to fetch from server
 			self.restServer!.downloadImage(self.workspace!, imageId: imageId, destination: fileUrl).onSuccess
 			{ _ in
-				if let pimg = PlatformImage(contentsOfURL: fileUrl) {
+				if let pimg = PlatformImage(contentsOf: fileUrl) {
 					return promise.success(pimg)
 				}
-				return promise.failure(.FailedToLoadFromNetwork)
+				return promise.failure(.failedToLoadFromNetwork)
 			}.onFailure() { err in
-				promise.failure(.FailedToLoadFromNetwork)
+				promise.failure(.failedToLoadFromNetwork)
 			}
 		}
 		return promise.future

@@ -6,103 +6,110 @@
 
 import Foundation
 import ClientCore
+import Darwin
+import os
 
 ///DockerUrlProtocol is a subclass of NSURLProtocol for dealing with "unix" URLs
 /// This is used to communicate with the local Docker daemon using a REST-like syntax
 
-public class DockerUrlProtocol: NSURLProtocol, NSURLSessionDelegate {
-	private let socketPath = "/var/run/docker.sock"
+open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
+	fileprivate let socketPath = "/var/run/docker.sock"
 	
-	override public class func canInitWithRequest(request:NSURLRequest) -> Bool {
-		return request.URL!.scheme == "unix"
+	override open class func canInit(with request:URLRequest) -> Bool {
+		return request.url!.scheme == "unix"
 	}
 	
-	public override class func canonicalRequestForRequest(request:NSURLRequest) -> NSURLRequest {
+	open override class func canonicalRequest(for request:URLRequest) -> URLRequest {
 		return request
 	}
 	
-	override public func startLoading() {
+	override open func startLoading() {
 		//setup a unix domain socket
-		let fd = Darwin.socket(AF_UNIX, SOCK_STREAM, 0)
+		let fd = socket(AF_UNIX, SOCK_STREAM, 0)
 		guard fd >= 0 else {
-			client?.URLProtocol(self, didFailWithError: NSError(domain: NSPOSIXErrorDomain, code: Int(Darwin.errno), userInfo: nil))
+			client?.urlProtocol(self, didFailWithError: NSError(domain: NSPOSIXErrorDomain, code: Int(Darwin.errno), userInfo: nil))
 			return
 		}
-		var addr = Darwin.sockaddr_un()
-		addr.sun_family = UInt8(AF_LOCAL)
-		addr.sun_len = UInt8(sizeof(sockaddr_un))
-		socketPath.withCString { cpath in
-			withUnsafeMutablePointer(&addr.sun_path) { spath in
-				strcpy(UnsafeMutablePointer(spath), cpath)
-			}
+		let pathLen = socketPath.utf8CString.count
+		precondition(pathLen < 104) //size limit of struct
+		var addr = sockaddr_un()
+		addr.sun_family = sa_family_t(AF_LOCAL)
+		addr.sun_len = UInt8(pathLen)
+		_ = withUnsafeMutablePointer(to: &addr.sun_path) { ptr in
+			strncpy(UnsafeMutableRawPointer(ptr).assumingMemoryBound(to: CChar.self), socketPath, pathLen)
 		}
 		//connect, make the request, and fetch result data
-		let code = Darwin.connect(fd, sockaddr_cast(&addr), socklen_t(strideof(sockaddr_un)))
-		guard code >= 0 else { reportBadResponse(); return }
-		let fh = NSFileHandle(fileDescriptor: fd)
-		guard let path = request.URL?.path else { reportBadResponse(); return }
+		var code:Int32 = 0
+		withUnsafePointer(to: &addr) { ptr in
+			ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { ar in
+				code = connect(fd, ar, socklen_t(MemoryLayout<sockaddr_un>.size))
+			}
+		}
+		guard code >= 0 else {
+			os_log("bad response %d, %d", type:.error, code, errno)
+			reportBadResponse()
+			return
+		}
+		let fh = FileHandle(fileDescriptor: fd)
+		guard let path = request.url?.path else { reportBadResponse(); return }
 		let outStr = "GET \(path) HTTP/1.0\r\n\r\n"
-		fh.writeData(outStr.dataUsingEncoding(NSUTF8StringEncoding)!)
+		fh.write(outStr.data(using: String.Encoding.utf8)!)
 		let inData = fh.readDataToEndOfFile()
+		close(fd)
 		
 		//split the response into headers and content, create a response object
 		guard let (headersString, contentString) = splitResponseData(inData) else { reportBadResponse(); return }
 		guard let (statusCode, httpVersion, headers) = extractHeaders(headersString) else { reportBadResponse(); return }
-		guard let response = NSHTTPURLResponse(URL: request.URL!, statusCode: statusCode, HTTPVersion: httpVersion, headerFields: headers) else { reportBadResponse(); return }
+		guard let response = HTTPURLResponse(url: request.url!, statusCode: statusCode, httpVersion: httpVersion, headerFields: headers) else { reportBadResponse(); return }
 		
 		//report success to client
-		client?.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: .NotAllowed)
-		client?.URLProtocol(self, didLoadData: contentString.dataUsingEncoding(NSUTF8StringEncoding)!)
-		client?.URLProtocolDidFinishLoading(self)
+		client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+		client?.urlProtocol(self, didLoad: contentString.data(using: String.Encoding.utf8)!)
+		client?.urlProtocolDidFinishLoading(self)
 	}
 	
-	override public func stopLoading() {
+	override open func stopLoading() {
 	}
 
 	//convience wrapper for sending an error message to the client
-	private func reportBadResponse() {
-		client?.URLProtocol(self, didFailWithError: NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey:request.URL!]))
+	fileprivate func reportBadResponse() {
+		client?.urlProtocol(self, didFailWithError: NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey:request.url!]))
 	}
 	
 	///splits raw data into headers and content
 	///
 	/// - parameter data: raw data to split
 	/// - returns: a tuple of the header and content strings
-	private func splitResponseData(data:NSData) -> (String,String)? {
-		guard let responseString = String(data:data, encoding: NSUTF8StringEncoding),
-			let endFirstLineRange = responseString.rangeOfString("\r\n\r\n")
+	fileprivate func splitResponseData(_ data:Data) -> (String,String)? {
+		guard let responseString = String(data:data, encoding: String.Encoding.utf8),
+			let endFirstLineRange = responseString.range(of: "\r\n\r\n")
 			else { reportBadResponse(); return nil }
-		let headersString = responseString.substringWithRange(responseString.startIndex..<endFirstLineRange.startIndex)
-		let contentString = responseString.substringFromIndex(endFirstLineRange.endIndex)
+		let headersString = responseString.substring(with: responseString.startIndex..<endFirstLineRange.lowerBound)
+		let contentString = responseString.substring(from: endFirstLineRange.upperBound)
 		return (headersString, contentString)
 	}
 	
 	///extracts headers into a dictionary
 	/// - parameter headerString: the raw headers from an HTTP response
 	/// - returns: tuple of the HTTP status code, HTTP version, and a dictionary of headers
-	func extractHeaders(headerString:String) -> (Int,String,[String:String])? {
-		let responseRegex = try! NSRegularExpression(pattern: "^(HTTP/1.\\d) (\\d+)", options: [.AnchorsMatchLines])
-		guard let matchResult = responseRegex.firstMatchInString(headerString, options: [], range: headerString.toNSRange) where matchResult.numberOfRanges == 3,
-			let statusRange = matchResult.rangeAtIndex(2).toStringRange(headerString),
-			let versionRange = matchResult.rangeAtIndex(1).toStringRange(headerString)
+	func extractHeaders(_ headerString:String) -> (Int,String,[String:String])? {
+		let responseRegex = try! NSRegularExpression(pattern: "^(HTTP/1.\\d) (\\d+)", options: [.anchorsMatchLines])
+		guard let matchResult = responseRegex.firstMatch(in: headerString, options: [], range: headerString.toNSRange) , matchResult.numberOfRanges == 3,
+			let statusRange = matchResult.rangeAt(2).toStringRange(headerString),
+			let versionRange = matchResult.rangeAt(1).toStringRange(headerString)
 			else { reportBadResponse(); return nil }
-		guard let statusCode = Int(headerString.substringWithRange(statusRange)) else { reportBadResponse(); return nil }
-		let versionString = headerString.substringWithRange(versionRange)
-		let headersString = headerString.substringFromIndex(statusRange.endIndex)
+		guard let statusCode = Int(headerString.substring(with:statusRange)) else { reportBadResponse(); return nil }
+		let versionString = headerString.substring(with:versionRange)
+		let headersString = headerString.substring(from:statusRange.upperBound)
 		var headers = [String:String]()
 		let headerRegex = try! NSRegularExpression(pattern: "(.+): (.*)", options: [])
-		headerRegex.enumerateMatchesInString(headersString, options: [], range: NSMakeRange(0, headersString.characters.count))
+		headerRegex.enumerateMatches(in: headersString, options: [], range: NSMakeRange(0, headersString.characters.count))
 		{ (matchResult, _, _) in
-			if let key = matchResult?.stringAtIndex(1, forString: headersString), let value = matchResult?.stringAtIndex(2, forString: headersString)
+			if let key = matchResult?.string(index:1, forString: headersString), let value = matchResult?.string(index:2, forString: headersString)
 			{
 				headers[key] = value
 			}
 		}
 		return (statusCode, versionString, headers)
-	}
-	
-	///convience wrapper of a sockaddr_un to a sockaddr
-	private func sockaddr_cast(p: UnsafePointer<sockaddr_un>) -> UnsafePointer<sockaddr> {
-		return UnsafePointer<sockaddr>(p)
 	}
 }

@@ -18,7 +18,7 @@ public enum SyntaxColor: String {
 public struct SyntaxColorMap {
 	///A singleton map loaded from user defaults Assumes a default map was installed (likely by the register domain).
 	static var standardMap:SyntaxColorMap = {
-		let srcMap = NSUserDefaults.standardUserDefaults().objectForKey(RCodeHighlighterColors) as! [String:String]
+		let srcMap = UserDefaults.standard.object(forKey: RCodeHighlighterColors) as! [String:String]
 		var dict: [SyntaxColor:PlatformColor] = [:]
 		for (key,value) in srcMap {
 			try! dict[SyntaxColor(rawValue:key)!] = PlatformColor(hex:value)
@@ -26,7 +26,7 @@ public struct SyntaxColorMap {
 		return SyntaxColorMap(colorDict: dict)
 	}()
 	
-	private var colorMap:[SyntaxColor:PlatformColor] = [:]
+	fileprivate var colorMap:[SyntaxColor:PlatformColor] = [:]
 	
 	///initializes a SyntaxColorMap
 	/// - parameter colorDict: A dictionary of syntax colors mapped to platform colors

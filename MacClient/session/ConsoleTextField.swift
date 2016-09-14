@@ -8,7 +8,7 @@ import Cocoa
 
 class ConsoleTextField: NSTextField {
 	//will be called when the contextual menu is about to be displayed so it can be adjusted/
-	var adjustContextualMenu: ((fieldEditor:NSText, menu:NSMenu) -> NSMenu)?
+	var adjustContextualMenu: ((_ fieldEditor:NSText, _ menu:NSMenu) -> NSMenu)?
 	
 	override init(frame frameRect: NSRect) {
 		super.init(frame: frameRect)
@@ -25,17 +25,17 @@ class ConsoleTextField: NSTextField {
 	
 	func updateContextMenu() {
 		let editor = currentEditor() as NSText!
-		if let handler = adjustContextualMenu, menu = editor.menu {
-			editor.menu = handler(fieldEditor: editor, menu: menu)
+		if let handler = adjustContextualMenu, let menu = editor?.menu {
+			editor?.menu = handler(editor!, menu)
 		}
 	}
 	
-	override func textDidBeginEditing(notification: NSNotification) {
+	override func textDidBeginEditing(_ notification: Notification) {
 		super.textDidBeginEditing(notification)
 		updateContextMenu()
 	}
 	
-	override func textDidEndEditing(notification: NSNotification) {
+	override func textDidEndEditing(_ notification: Notification) {
 		super.textDidEndEditing(notification)
 		currentEditor()?.menu = NSTextView.defaultMenu()
 	}
@@ -44,7 +44,7 @@ class ConsoleTextField: NSTextField {
 	/// the selection is maintained by the FieldEditor. The TextField is assigned as the
 	/// FieldEditor's delegate. Implementing this method (NSTextField does not appear to implement it)
 	/// is the only way to do anything when the text selection changes
-	func textViewDidChangeSelection(note:NSNotification) {
+	func textViewDidChangeSelection(_ note:Notification) {
 		updateContextMenu()
 	}
 }

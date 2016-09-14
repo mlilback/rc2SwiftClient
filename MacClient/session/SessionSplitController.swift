@@ -18,17 +18,17 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 		let splitItem = splitViewItems[0]
 		splitItem.minimumThickness = SidebarFixedWidth
 		splitItem.maximumThickness = SidebarFixedWidth
-		splitItem.springLoaded = false
+		splitItem.isSpringLoaded = false
 	}
 	
-	func handlesToolbarItem(item: NSToolbarItem) -> Bool {
+	func handlesToolbarItem(_ item: NSToolbarItem) -> Bool {
 		if item.itemIdentifier == "leftView" {
 			segmentItem = item
 			segmentControl = item.view as! NSSegmentedControl?
 			segmentControl?.target = self
 			segmentControl?.action = #selector(SessionSplitController.tabSwitcherClicked(_:))
 			let sidebar = sidebarTabController()
-			let lastSelection = NSUserDefaults.standardUserDefaults().integerForKey(LastSelectedSessionTabIndex)
+			let lastSelection = UserDefaults.standard.integer(forKey: LastSelectedSessionTabIndex)
 			segmentControl?.selectedSegment = lastSelection
 			sidebar.selectedTabViewItemIndex = lastSelection
 			return true
@@ -36,21 +36,21 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 		return false
 	}
 
-	dynamic func tabSwitcherClicked(sender:AnyObject?) {
+	dynamic func tabSwitcherClicked(_ sender:AnyObject?) {
 		let sidebar = sidebarTabController()
 		let splitItem = splitViewItems[0]
 		let index = (segmentControl?.selectedSegment)!
 		if index == sidebar.selectedTabViewItemIndex {
 			//same as currently selected. toggle visibility
-			segmentControl?.animator().setSelected(splitItem.collapsed, forSegment: index)
+			segmentControl?.animator().setSelected(splitItem.isCollapsed, forSegment: index)
 			toggleSidebar(nil)
 		} else {
-			if splitItem.collapsed {
+			if splitItem.isCollapsed {
 				toggleSidebar(self)
 			}
 			segmentControl?.animator().setSelected(true, forSegment: index)
 			sidebar.selectedTabViewItemIndex = index
-			NSUserDefaults.standardUserDefaults().setInteger(index, forKey: LastSelectedSessionTabIndex)
+			UserDefaults.standard.set(index, forKey: LastSelectedSessionTabIndex)
 		}
 	}
 

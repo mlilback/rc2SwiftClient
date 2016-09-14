@@ -9,25 +9,30 @@ import SwiftWebSocket
 import BrightFutures
 import Result
 import SwiftyJSON
+import os
 
-@objc public class RestServer : NSObject, NSURLSessionTaskDelegate {
+public enum RestServerError: Error {
+	case loginRequired
+}
 
-	private let kServerHostKey = "ServerHostKey"
+@objc open class RestServer : NSObject, URLSessionTaskDelegate {
+	
+	fileprivate let kServerHostKey = "ServerHostKey"
 	
 	//for dependency injection
-	var fileManager:FileManager = NSFileManager.defaultManager()
+	var fileManager:Rc2FileManager = Rc2DefaultFileManager()
 	
-	public typealias Rc2RestCompletionHandler = (success:Bool, results:Any?, error:NSError?) -> Void
+	public typealias Rc2RestCompletionHandler = (_ success:Bool, _ results:Any?, _ error:NSError?) -> Void
 	
-	private(set) var urlConfig : NSURLSessionConfiguration!
-	private var urlSession : NSURLSession!
+	fileprivate(set) var urlConfig : URLSessionConfiguration!
+	fileprivate var urlSession : URLSession!
 	let host:ServerHost
-	private(set) public var loginSession : LoginSession?
-	private(set) var baseUrl : NSURL?
-	private var userAgent: String
-	weak var appStatus:AppStatus? { didSet { session?.appStatus = appStatus } }
-	private(set) var session:Session?
-
+	fileprivate(set) open var loginSession : LoginSession?
+	fileprivate(set) var baseUrl : URL?
+	fileprivate var userAgent: String
+	weak var appStatus:AppStatus?
+	fileprivate(set) var session:Session?
+	
 	var connectionDescription : String {
 		get {
 			let login = loginSession?.currentUser.login
@@ -46,59 +51,65 @@ import SwiftyJSON
 		#endif
 		self.host = host
 		super.init()
-		urlConfig = NSURLSessionConfiguration.defaultSessionConfiguration()
-		urlConfig.HTTPAdditionalHeaders = ["User-Agent": userAgent, "Accept": "application/json"]
-		urlSession = NSURLSession(configuration: urlConfig, delegate: self, delegateQueue:NSOperationQueue.mainQueue())
+		urlConfig = URLSessionConfiguration.default
+		urlConfig.httpAdditionalHeaders = ["User-Agent": userAgent, "Accept": "application/json"]
+		urlSession = URLSession(configuration: urlConfig, delegate: self, delegateQueue:OperationQueue.main)
 	}
-
+	
 	///give a hostname from hosts property, the list of last known workspace names
-	func workspaceNamesForHostName(hostName:String, userName:String) -> [String] {
-		let defaults = NSUserDefaults.standardUserDefaults()
+	func workspaceNamesForHostName(_ hostName:String, userName:String) -> [String] {
+		let defaults = UserDefaults.standard
 		let key = "ws//\(hostName)//\(userName)"
-		if let names = defaults.objectForKey(key) as? [String] where names.count > 0 {
+		if let names = defaults.object(forKey: key) as? [String] , names.count > 0 {
 			return names
 		}
 		return ["Default"]
 	}
 	
-	private func createError(err:FileError, description:String) -> NSError {
+	fileprivate func createError(_ err:FileError, description:String) -> NSError {
 		switch(err) {
-			case .FoundationError(let nserror):
-				return nserror
-			default:
-				return NSError(domain: Rc2ErrorDomain, code: 1, userInfo: [NSLocalizedDescriptionKey:NSLocalizedString(description, comment: "")])
+		case .foundationError(let nserror):
+			return nserror
+		default:
+			return NSError(domain: Rc2ErrorDomain, code: 1, userInfo: [NSLocalizedDescriptionKey:NSLocalizedString(description, comment: "")])
 		}
 	}
 	
-	private func createError(code:Int, description:String) -> NSError {
+	fileprivate func createError(_ code:Int, description:String) -> NSError {
 		return NSError(domain: Rc2ErrorDomain, code: code, userInfo: [NSLocalizedDescriptionKey:NSLocalizedString(description, comment: "")])
 	}
 	
-	private func request(path:String, method:String, jsonDict:NSDictionary) -> NSMutableURLRequest {
-		let url = NSURL(string: path, relativeToURL: baseUrl)
-		let request = NSMutableURLRequest(URL: url!)
-		request.HTTPMethod = method
+	fileprivate func request(_ path:String, method:String, jsonDict:NSDictionary) -> URLRequest {
+		let url = URL(string: path, relativeTo: baseUrl)
+		var request = URLRequest(url: url!)
+		request.httpMethod = method
 		if loginSession != nil {
 			request.addValue(loginSession!.authToken, forHTTPHeaderField:"Rc2-Auth")
 		}
 		if (jsonDict.count > 0) {
 			request.addValue("application/json", forHTTPHeaderField:"Content-Type")
-			request.HTTPBody = try! NSJSONSerialization.dataWithJSONObject(jsonDict, options: [])
+			request.httpBody = try! JSONSerialization.data(withJSONObject: jsonDict, options: [])
 		}
 		return request
 	}
 	
-	func createSession(wspace:Workspace) -> Future<Session, NSError> {
-		let request = NSMutableURLRequest(URL: createWebsocketUrl(wspace.wspaceId))
-		request.addValue(loginSession!.authToken, forHTTPHeaderField: "Rc2-Auth")
+	///creates a session and starts the opening process
+	/// - parameter workspace: the workspace to use for the session
+	/// - parameter appStatus: used to present errors
+	/// - returns: a future that will return a session or an error
+	/// - throws: .loginRequired if login() has not created a LoginSession
+	func createSession(workspace:Workspace, appStatus:AppStatus) throws -> Future<Session, NSError> {
+		guard let loginSession = self.loginSession else { throw RestServerError.loginRequired }
+		var request = URLRequest(url: createWebsocketUrl(workspace.wspaceId))
+		request.addValue(loginSession.authToken, forHTTPHeaderField: "Rc2-Auth")
 		request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
 		let ws = WebSocket()
-		session = Session(wspace, source:ws, restServer:self, networkConfig:urlConfig, hostIdentifier: host.host)
+		session = Session(workspace, source:ws, restServer:self, networkConfig:urlConfig, hostIdentifier: host.host)
 		return session!.open(request)
 	}
 	
-	func createWebsocketUrl(wspaceId:Int32) -> NSURL {
-		let build = NSBundle(forClass: RestServer.self).infoDictionary!["CFBundleVersion"]!
+	func createWebsocketUrl(_ wspaceId:Int32) -> URL {
+		let build = Bundle(for: RestServer.self).infoDictionary!["CFBundleVersion"]!
 		#if os(OSX)
 			let client = "osx"
 		#else
@@ -106,13 +117,13 @@ import SwiftyJSON
 		#endif
 		let prot = host.secure ? "wss" : "ws"
 		let urlStr = "\(prot)://\(host.host):\(host.port)/ws/\(wspaceId)?client=\(client)&build=\(build)"
-		return NSURL(string: urlStr)!
+		return URL(string: urlStr)!
 	}
 	
-	public func login(password:String) -> Future<LoginSession,NSError> {
+	open func login(_ password:String) -> Future<LoginSession,NSError> {
 		let hprotocol = host.secure ? "https" : "http"
 		let hoststr = "\(hprotocol)://\(host.host):\(host.port)/"
-		baseUrl = NSURL(string: hoststr)!
+		baseUrl = URL(string: hoststr)!
 		assert(baseUrl != nil, "baseUrl not specified")
 		let promise = Promise<LoginSession,NSError>()
 		let loginObj = LoginHandler(config: urlConfig, baseUrl: baseUrl!)
@@ -124,131 +135,134 @@ import SwiftyJSON
 			}
 			let json = JSON(data:data!)
 			switch(response!.statusCode) {
-				case 200:
-					self.loginSession = LoginSession(json: json, host: self.host.host)
-					//store list of workspace names for this session
-//					let wspaceListKey = "ws//\(self.selectedHost.name)//\(login)"
-//					NSUserDefaults.standardUserDefaults().setObject(self.loginSession!.workspaces.map() { $0.name }, forKey: wspaceListKey)
-					//for anyone that copies our session config later, include the auth token
-					self.urlConfig.HTTPAdditionalHeaders!["Rc2-Auth"] = self.loginSession!.authToken
-					promise.success(self.loginSession!)
-					NSUserDefaults.standardUserDefaults().setObject(self.loginSession!.host, forKey: self.kServerHostKey)
-				case 401:
-					let error = self.createError(401, description: "Invalid login or password")
-					log.verbose("got a \(response!.statusCode)")
-					promise.failure(error)
-				default:
-					let error = self.createError(response!.statusCode, description: "")
-					log.warning("got unknown status code: \(response!.statusCode)")
-					promise.failure(error)
+			case 200:
+				self.loginSession = LoginSession(json: json, host: self.host.host)
+				//store list of workspace names for this session
+				//					let wspaceListKey = "ws//\(self.selectedHost.name)//\(login)"
+				//					NSUserDefaults.standardUserDefaults().setObject(self.loginSession!.workspaces.map() { $0.name }, forKey: wspaceListKey)
+				//for anyone that copies our session config later, include the auth token
+				self.urlConfig.httpAdditionalHeaders!["Rc2-Auth"] = self.loginSession!.authToken
+				promise.success(self.loginSession!)
+				UserDefaults.standard.set(self.loginSession!.host, forKey: self.kServerHostKey)
+			case 401:
+				let error = self.createError(401, description: "Invalid login or password")
+				os_log("got a %{public}@", type:.debug, response!.statusCode)
+				promise.failure(error)
+			default:
+				let error = self.createError(response!.statusCode, description: "")
+				os_log("got unknown status code: %{public}@", response!.statusCode)
+				promise.failure(error)
 			}
 		}
 		return promise.future
 	}
 	/*
 	public func createWorkspace(wspaceName:String, handler:Rc2RestCompletionHandler) {
-		let req = request("workspaces", method:"POST", jsonDict: ["name":wspaceName])
-		let task = urlSession.dataTaskWithRequest(req) { (data, response, error) -> Void in
-			let json = JSON(data:data!)
-			let httpResponse = response as! NSHTTPURLResponse
-			switch(httpResponse.statusCode) {
-			case 200:
-				let wspace = Workspace(json: json)
-				var spaces = (self.loginSession?.workspaces)!
-				spaces.append(wspace)
-				self.loginSession?.workspaces = spaces
-				dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: wspace, error: nil) })
-			case 422:
-				let error = self.createError(422, description: "A workspace with that name already exists")
-				log.warning("got duplicate error")
-				dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
-			default:
-				let error = self.createError(httpResponse.statusCode, description: "")
-				log.warning("got unknown error: \(httpResponse.statusCode)")
-				dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
-			}
-		}
-		task.resume()
+	let req = request("workspaces", method:"POST", jsonDict: ["name":wspaceName])
+	let task = urlSession.dataTaskWithRequest(req) { (data, response, error) -> Void in
+	let json = JSON(data:data!)
+	let httpResponse = response as! NSHTTPURLResponse
+	switch(httpResponse.statusCode) {
+	case 200:
+	let wspace = Workspace(json: json)
+	var spaces = (self.loginSession?.workspaces)!
+	spaces.append(wspace)
+	self.loginSession?.workspaces = spaces
+	dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: wspace, error: nil) })
+	case 422:
+	let error = self.createError(422, description: "A workspace with that name already exists")
+	log.warning("got duplicate error")
+	dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
+	default:
+	let error = self.createError(httpResponse.statusCode, description: "")
+	log.warning("got unknown error: \(httpResponse.statusCode)")
+	dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
 	}
-
+	}
+	task.resume()
+	}
+	
 	public func renameWorkspace(wspace:Workspace, newName:String, handler:Rc2RestCompletionHandler) {
-		let req = request("workspaces/\(wspace.wspaceId)", method:"PUT", jsonDict: ["name":newName, "id":Int(wspace.wspaceId)])
-		let task = urlSession.dataTaskWithRequest(req) { (data, response, error) -> Void in
-			let json = JSON(data!)
-			let httpResponse = response as! NSHTTPURLResponse
-			switch(httpResponse.statusCode) {
-			case 200:
-				let modWspace = Workspace(json: json)
-				var spaces = (self.loginSession?.workspaces)!
-				spaces[spaces.indexOf(wspace)!] = modWspace
-				dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: modWspace, error: nil) })
-			default:
-				let error = self.createError(httpResponse.statusCode, description: "")
-				log.warning("got unknown error: \(httpResponse.statusCode)")
-				dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
-			}
-		}
-		task.resume()
+	let req = request("workspaces/\(wspace.wspaceId)", method:"PUT", jsonDict: ["name":newName, "id":Int(wspace.wspaceId)])
+	let task = urlSession.dataTaskWithRequest(req) { (data, response, error) -> Void in
+	let json = JSON(data!)
+	let httpResponse = response as! NSHTTPURLResponse
+	switch(httpResponse.statusCode) {
+	case 200:
+	let modWspace = Workspace(json: json)
+	var spaces = (self.loginSession?.workspaces)!
+	spaces[spaces.indexOf(wspace)!] = modWspace
+	dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: modWspace, error: nil) })
+	default:
+	let error = self.createError(httpResponse.statusCode, description: "")
+	log.warning("got unknown error: \(httpResponse.statusCode)")
+	dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
 	}
-
+	}
+	task.resume()
+	}
+	
 	
 	public func deleteWorkspace(wspace:Workspace, handler:Rc2RestCompletionHandler) {
-		let req = request("workspaces/\(wspace.wspaceId)", method:"DELETE", jsonDict: [:])
-		let task = urlSession.dataTaskWithRequest(req) { (data, response, error) -> Void in
-			let httpResponse = response as! NSHTTPURLResponse
-			switch(httpResponse.statusCode) {
-			case 204:
-				self.loginSession?.workspaces.removeAtIndex((self.loginSession?.workspaces.indexOf(wspace))!)
-				dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: nil, error: nil) })
-			default:
-				let error = self.createError(httpResponse.statusCode, description: "")
-				log.warning("got unknown error: \(httpResponse.statusCode)")
-				dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
-			}
-		}
-		task.resume()
+	let req = request("workspaces/\(wspace.wspaceId)", method:"DELETE", jsonDict: [:])
+	let task = urlSession.dataTaskWithRequest(req) { (data, response, error) -> Void in
+	let httpResponse = response as! NSHTTPURLResponse
+	switch(httpResponse.statusCode) {
+	case 204:
+	self.loginSession?.workspaces.removeAtIndex((self.loginSession?.workspaces.indexOf(wspace))!)
+	dispatch_async(dispatch_get_main_queue(), { handler(success: true, results: nil, error: nil) })
+	default:
+	let error = self.createError(httpResponse.statusCode, description: "")
+	log.warning("got unknown error: \(httpResponse.statusCode)")
+	dispatch_async(dispatch_get_main_queue(), { handler(success: false, results: nil, error: error) })
+	}
+	}
+	task.resume()
 	} */
 	
 	/// - parameter destination: the directory to save the image in, overwriting any existing file
-	public func downloadImage(wspace:Workspace, imageId:Int, destination:NSURL, handler:Rc2RestCompletionHandler) {
+	open func downloadImage(_ wspace:Workspace, imageId:Int, destination:URL, handler:@escaping Rc2RestCompletionHandler) {
 		let req = request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET", jsonDict:[:])
 		let (task, f) = urlSession.downloadWithPromise(req)
 		task.resume()
-		f.onSuccess(Queue.main.context) { (dloadUrl, response) in
-			let fileUrl = NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: destination)
+		f.onSuccess(DispatchQueue.main.context) { (dloadUrl, response) in
+			let fileUrl = URL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeTo: destination)
 			do {
-				if fileUrl.checkResourceIsReachableAndReturnError(nil) {
-					try self.fileManager.removeItemAtURL(fileUrl)
+				if try fileUrl.checkResourceIsReachable() {
+					try self.fileManager.removeItem(at:fileUrl)
 				}
-				try self.fileManager.moveItemAtURL(dloadUrl!, toURL: fileUrl)
-				handler(success: true, results: fileUrl, error: nil)
+				try self.fileManager.moveItem(at: dloadUrl!, to: fileUrl)
+				handler(true, fileUrl, nil)
 			} catch let err as NSError {
-				let error = self.createError(FileError.FailedToSaveFile, description: err.localizedDescription)
-				handler(success: false, results: nil, error: error)
+				let error = self.createError(FileError.failedToSaveFile, description: err.localizedDescription)
+				handler(false, nil, error)
 			}
-		}.onFailure(Queue.main.context) { (error) in
-			handler(success:false, results:nil, error:error)
+			}.onFailure(DispatchQueue.main.context) { (error) in
+				handler(false, nil, error)
 		}
 	}
-
-	public func downloadFile(wspace:Workspace, file:File, to destDirUrl:NSURL) -> Future<NSURL?, FileError> {
-		var p = Promise<NSURL?,FileError>()
-		let cacheUrl = NSURL(fileURLWithPath: file.name, relativeToURL: destDirUrl)
-		let req = request("workspaces/\(wspace.wspaceId)/files/\(file.fileId)", method: "GET", jsonDict: [:])
-		if cacheUrl.checkResourceIsReachableAndReturnError(nil) {
-			req.addValue("f/\(file.fileId)/\(file.version)", forHTTPHeaderField: "If-None-Match")
+	
+	open func downloadFile(_ wspace:Workspace, file:File, to destDirUrl:URL) -> Future<URL?, FileError> {
+		var p = Promise<URL?,FileError>()
+		let cacheUrl = URL(fileURLWithPath: file.name, relativeTo: destDirUrl)
+		var req = request("workspaces/\(wspace.wspaceId)/files/\(file.fileId)", method: "GET", jsonDict: [:])
+		do {
+			if try cacheUrl.checkResourceIsReachable() {
+				req.addValue("f/\(file.fileId)/\(file.version)", forHTTPHeaderField: "If-None-Match")
+			}
+		} catch {
 		}
 		req.addValue(file.fileType.mimeType, forHTTPHeaderField: "Accept")
-		let task = urlSession.downloadTaskWithRequest(req) { (dloadUrl, response, error) -> Void in
-			let hresponse = response as! NSHTTPURLResponse
-			guard error == nil else { p.failure(.FileNotFound); return }
+		let task = urlSession.downloadTask(with: req) { (dloadUrl, response, error) -> Void in
+			let hresponse = response as! HTTPURLResponse
+			guard error == nil else { p.failure(.fileNotFound); return }
 			switch (hresponse.statusCode) {
-				case 304: //use existing
-					p.success(cacheUrl)
-				case 200: //dloaded it
-					self.fileManager.moveTempFile(dloadUrl!, toUrl: cacheUrl, file:file, promise: &p)
-				default:
-					break
+			case 304: //use existing
+				p.success(cacheUrl)
+			case 200: //dloaded it
+				self.fileManager.move(tempFile:dloadUrl!, to: cacheUrl, file:file, promise: &p)
+			default:
+				break
 			}
 		}
 		task.resume()
@@ -256,17 +270,17 @@ import SwiftyJSON
 	}
 	
 	///parameter destination: the directory to save the image in, overwriting any existing file
-	public func downloadImage(wspace:Workspace, imageId:Int, destination:NSURL) -> Future<NSURL?,FileError>  {
-		var p = Promise<NSURL?, FileError>()
-		let req = request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET", jsonDict:[:])
+	open func downloadImage(_ wspace:Workspace, imageId:Int, destination:URL) -> Future<URL?,FileError>  {
+		var p = Promise<URL?, FileError>()
+		var req = request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET", jsonDict:[:])
 		req.addValue("image/png", forHTTPHeaderField: "Accept")
-		let task = urlSession.downloadTaskWithRequest(req) { (dloadUrl, response, error) -> Void in
-			let hresponse = response as? NSHTTPURLResponse
+		let task = urlSession.downloadTask(with: req) { (dloadUrl, response, error) -> Void in
+			let hresponse = response as? HTTPURLResponse
 			if error == nil && hresponse?.statusCode == 200 {
-				let fileUrl = NSURL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeToURL: destination)
-				self.fileManager.moveTempFile(dloadUrl!, toUrl: fileUrl, file:nil, promise: &p)
+				let fileUrl = URL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeTo: destination)
+				self.fileManager.move(tempFile: dloadUrl!, to: fileUrl, file:nil, promise: &p)
 			} else {
-				p.failure(FileError.FailedToSaveFile)
+				p.failure(FileError.failedToSaveFile)
 			}
 		}
 		task.resume()
@@ -274,70 +288,70 @@ import SwiftyJSON
 	}
 }
 
-public class LoginHandler: NSObject, NSURLSessionDataDelegate {
-	let urlConfig:NSURLSessionConfiguration
-	let baseUrl:NSURL
+open class LoginHandler: NSObject, URLSessionDataDelegate {
+	let urlConfig:URLSessionConfiguration
+	let baseUrl:URL
 	var loggedInHandler:LoginHandler?
-	var urlSession:NSURLSession!
-	var loginResponse:NSURLResponse?
+	var urlSession:Foundation.URLSession!
+	var loginResponse:URLResponse?
 	var responseData:NSMutableData = NSMutableData()
-
-	public typealias LoginHandler = (data:NSData?, response:NSHTTPURLResponse?, error:NSError?) -> Void
 	
-	init(config:NSURLSessionConfiguration, baseUrl:NSURL) {
+	public typealias LoginHandler = (_ data:Data?, _ response:HTTPURLResponse?, _ error:NSError?) -> Void
+	
+	init(config:URLSessionConfiguration, baseUrl:URL) {
 		self.urlConfig = config
 		self.baseUrl = baseUrl
 		super.init()
 	}
-
-	public func login(login:String, password:String, handler:LoginHandler) {
-		self.urlSession = NSURLSession(configuration: urlConfig, delegate: self, delegateQueue:NSOperationQueue.mainQueue())
+	
+	open func login(_ login:String, password:String, handler:@escaping LoginHandler) {
+		self.urlSession = Foundation.URLSession(configuration: urlConfig, delegate: self, delegateQueue:OperationQueue.main)
 		loggedInHandler = handler
-		let url = NSURL(string: "login", relativeToURL: baseUrl)
-
-		let req = NSMutableURLRequest(URL: url!)
-		req.HTTPMethod = "POST"
+		let url = URL(string: "login", relativeTo: baseUrl)
+		
+		var req = URLRequest(url: url!)
+		req.httpMethod = "POST"
 		req.addValue("application/json", forHTTPHeaderField:"Content-Type")
 		req.addValue("application/json", forHTTPHeaderField: "Accept")
-		req.HTTPBody = try! NSJSONSerialization.dataWithJSONObject(["login":login, "password":password], options: [])
-
-		let task = urlSession.dataTaskWithRequest(req);
+		req.httpBody = try! JSONSerialization.data(withJSONObject: ["login":login, "password":password], options: [])
+		
+		let task = urlSession.dataTask(with: req);
 		task.resume()
 	}
-
-	public func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveResponse response: NSURLResponse, completionHandler: (NSURLSessionResponseDisposition) -> Void)
+	
+	open func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)
 	{
 		self.loginResponse = response
-		completionHandler(NSURLSessionResponseDisposition.Allow)
+		completionHandler(Foundation.URLSession.ResponseDisposition.allow)
 	}
 	
-	public func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData)
+	open func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
 	{
-		responseData.appendData(data)
+		responseData.append(data)
 	}
 	
-	public func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?)
+	open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
 	{
 		if error != nil {
-			loggedInHandler!(data: nil, response:loginResponse as! NSHTTPURLResponse!, error: error)
+			loggedInHandler!(nil, loginResponse as! HTTPURLResponse!, error as NSError?)
 		} else {
-			loggedInHandler!(data:responseData, response:loginResponse as! NSHTTPURLResponse!, error:nil)
+			loggedInHandler!(responseData as Data, loginResponse as! HTTPURLResponse!, nil)
 		}
 		urlSession.invalidateAndCancel()
 	}
 }
 
-extension NSURLSession {
-	func downloadWithPromise(request: NSURLRequest) -> (NSURLSessionDownloadTask, Future<(NSURL?, NSURLResponse?), NSError>) {
-		let p = Promise<(NSURL?, NSURLResponse?), NSError>()
-		let task = self.downloadTaskWithRequest(request, completionHandler:self.downloadCompletionHandler(promise:p))
+extension URLSession {
+	func downloadWithPromise(_ request: URLRequest) -> (URLSessionDownloadTask, Future<(URL?, URLResponse?), NSError>) {
+		let p = Promise<(URL?, URLResponse?), NSError>()
+		let task = self.downloadTask(with:request, completionHandler:self.downloadCompletionHandler(promise:p))
 		return (task, p.future)
 	}
 	
-	func downloadCompletionHandler(promise p: Promise<(NSURL?, NSURLResponse?), NSError>) ->  (NSURL?, NSURLResponse?, NSError?) -> Void {
+	func downloadCompletionHandler(promise p: Promise<(URL?, URLResponse?), NSError>) ->  (URL?, URLResponse?, Error?) -> Void {
 		return { (data, response, error) -> () in
 			if let error = error {
-				p.failure(error)
+				p.failure(error as NSError)
 			} else {
 				p.success(data, response)
 			}

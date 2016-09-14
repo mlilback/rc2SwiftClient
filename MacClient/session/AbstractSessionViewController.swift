@@ -17,7 +17,7 @@ class AbstractSessionViewController: NSViewController {
 	} }
 	
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 
 	override func viewDidLoad() {
@@ -32,7 +32,7 @@ class AbstractSessionViewController: NSViewController {
 	}
 }
 
-func firstChildViewController<T>(rootController:NSViewController) -> T? {
+func firstChildViewController<T>(_ rootController:NSViewController) -> T? {
 	return firstRecursiveDescendent(rootController,
 		children: { return $0.childViewControllers },
 		filter: { return $0 is T }) as? T

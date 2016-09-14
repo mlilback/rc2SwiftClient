@@ -7,6 +7,19 @@
 import Cocoa
 import ClientCore
 import CoreServices
+import os
+
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
 
 class DisplayableImage: NSObject {
 	let imageId:Int
@@ -39,11 +52,11 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		super.viewDidLoad()
 		pageController = NSPageController()
 		pageController?.delegate = self
-		pageController?.transitionStyle = .StackBook
+		pageController?.transitionStyle = .stackBook
 		pageController?.view = containerView!
 		view.wantsLayer = true
-		shareButton?.sendActionOn(NSEventMask.LeftMouseDown)
-		view.layer?.backgroundColor = PlatformColor.whiteColor().CGColor
+		shareButton?.sendAction(on: NSEventMask(rawValue: UInt64(Int(NSEventMask.leftMouseDown.rawValue))))
+		view.layer?.backgroundColor = PlatformColor.white.cgColor
 		labelField?.stringValue = ""
 		navigateButton?.setEnabled(false, forSegment: 0)
 		navigateButton?.setEnabled(false, forSegment: 1)
@@ -62,7 +75,7 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		}
 	}
 	
-	func displayImageAtIndex(index:Int, images:[SessionImage]) {
+	func displayImageAtIndex(_ index:Int, images:[SessionImage]) {
 		batchImages = images.map { (simg) -> DisplayableImage in
 			return DisplayableImage(imageId: simg.id, name: simg.name)
 		}
@@ -73,7 +86,7 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		navigateButton?.setEnabled(index + 1 < images.count, forSegment: 1)
 	}
 	
-	@IBAction func navigateClicked(sender:AnyObject?) {
+	@IBAction func navigateClicked(_ sender:AnyObject?) {
 		switch ((navigateButton?.selectedSegment)!) {
 		case 0:
 			pageController?.navigateBack(self)
@@ -84,56 +97,57 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		}
 	}
 	
-	@IBAction func shareImage(sender:AnyObject?) {
+	@IBAction func shareImage(_ sender:AnyObject?) {
 		let dimg = batchImages[(pageController?.selectedIndex)!]
 		let imgUrl = imageCache?.urlForCachedImage(dimg.imageId)
 		myShareServices.removeAll()
 		let wspace = NSWorkspace()
-		if let appUrl = wspace.URLForApplicationToOpenURL(imgUrl!) {
-			let appIcon = wspace.iconForFile(appUrl.path!)
+		if let appUrl = wspace.urlForApplication(toOpen: imgUrl!) {
+			let appIcon = wspace.icon(forFile: appUrl.path)
 			let appName = appUrl.localizedName()
 			myShareServices.append(NSSharingService(title: "Open in \(appName)", image: appIcon, alternateImage: nil, handler: {
 					var urlToUse = imgUrl!
 					do {
-						try urlToUse = NSFileManager.defaultManager().copyURLToTemporaryLocation(imgUrl!)
+						let fm = Rc2DefaultFileManager()
+						try urlToUse = fm.copyURLToTemporaryLocation(imgUrl!)
 					} catch let err as NSError {
-						log.error("error copying to tmp:\(err)")
+						os_log("error copying to tmp: %{public}@", type:.error, err)
 					}
-					wspace.openFile((urlToUse.path)!, withApplication: appUrl.path)
+					wspace.openFile(urlToUse.path, withApplication: appUrl.path)
 				}))
 		}
 		let picker = NSSharingServicePicker(items: [dimg.image!])
 		picker.delegate = self
-		picker.showRelativeToRect((shareButton?.bounds)!, ofView: shareButton!, preferredEdge: .MaxY)
+		picker.show(relativeTo: (shareButton?.bounds)!, of: shareButton!, preferredEdge: .maxY)
 	}
 	
-	func sharingServicePicker(sharingServicePicker: NSSharingServicePicker, sharingServicesForItems items: [AnyObject], proposedSharingServices proposedServices: [NSSharingService]) -> [NSSharingService]
+	func sharingServicePicker(_ sharingServicePicker: NSSharingServicePicker, sharingServicesForItems items: [Any], proposedSharingServices proposedServices: [NSSharingService]) -> [NSSharingService]
 	{
 		return myShareServices + proposedServices
 	}
 	
-	func pageController(pageController: NSPageController, didTransitionToObject object: AnyObject) {
+	func pageController(_ pageController: NSPageController, didTransitionTo object: Any) {
 		if let dimage = object as? DisplayableImage {
 			labelField?.stringValue = dimage.name
-			let index = batchImages.indexOf(dimage)!
+			let index = batchImages.index(of: dimage)!
 			navigateButton?.setEnabled(index > 0, forSegment: 0)
 			navigateButton?.setEnabled(index < batchImages.count-1, forSegment: 1)
 		}
 	}
 	
-	func pageController(pageController: NSPageController, identifierForObject object: AnyObject) -> String {
-		return "\(batchImages.indexOf(object as! DisplayableImage)!)"
+	func pageController(_ pageController: NSPageController, identifierFor object: Any) -> String {
+		return "\(batchImages.index(of: object as! DisplayableImage)!)"
 	}
 	
-	func pageController(pageController: NSPageController, viewControllerForIdentifier identifier: String) -> NSViewController
+	func pageController(_ pageController: NSPageController, viewControllerForIdentifier identifier: String) -> NSViewController
 	{
 		let vc = ImageViewController()
 		let iv = NSImageView(frame: (containerView?.frame)!)
-		iv.imageFrameStyle = .None
+		iv.imageFrameStyle = .none
 		iv.translatesAutoresizingMaskIntoConstraints = false
-		iv.setContentHuggingPriority(200, forOrientation: .Horizontal)
-		iv.setContentCompressionResistancePriority(200, forOrientation: .Horizontal)
-		iv.imageScaling = .ScaleProportionallyDown
+		iv.setContentHuggingPriority(200, for: .horizontal)
+		iv.setContentCompressionResistancePriority(200, for: .horizontal)
+		iv.imageScaling = .scaleProportionallyDown
 		let index = Int(identifier)!
 		let displayedImage = batchImages[index]
 		if let img = displayedImage.image {
@@ -146,7 +160,7 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		return vc
 	}
 	
-	func pageController(pageController: NSPageController, prepareViewController viewController: NSViewController, withObject object: AnyObject?)
+	func pageController(_ pageController: NSPageController, prepare viewController: NSViewController, with object: Any?)
 	{
 		let iview = viewController.view as? NSImageView
 		guard let dimg = object as? DisplayableImage else {
@@ -160,7 +174,7 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		labelField?.stringValue = dimg.name
 	}
 	
-	func pageControllerDidEndLiveTransition(pageController: NSPageController) {
+	func pageControllerDidEndLiveTransition(_ pageController: NSPageController) {
 		pageController.completeTransition()
 	}
 }
@@ -170,11 +184,11 @@ class ImageViewController: NSViewController {
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		guard !didAddConstraints else { return }
-		if let sv = view.superview, ssv = sv.superview {
-			ssv.addConstraint(view.widthAnchor.constraintEqualToAnchor(sv.widthAnchor, multiplier: 1))
-			ssv.addConstraint(view.heightAnchor.constraintEqualToAnchor(sv.heightAnchor, multiplier: 1))
-			ssv.addConstraint(view.centerXAnchor.constraintEqualToAnchor(sv.centerXAnchor, constant: 0))
-			ssv.addConstraint(view.centerYAnchor.constraintEqualToAnchor(sv.centerYAnchor, constant: 0))
+		if let sv = view.superview, let ssv = sv.superview {
+			ssv.addConstraint(view.widthAnchor.constraint(equalTo: sv.widthAnchor, multiplier: 1))
+			ssv.addConstraint(view.heightAnchor.constraint(equalTo: sv.heightAnchor, multiplier: 1))
+			ssv.addConstraint(view.centerXAnchor.constraint(equalTo: sv.centerXAnchor, constant: 0))
+			ssv.addConstraint(view.centerYAnchor.constraint(equalTo: sv.centerYAnchor, constant: 0))
 			ssv.needsLayout = true
 			didAddConstraints = true
 		}

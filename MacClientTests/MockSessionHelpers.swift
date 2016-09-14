@@ -34,14 +34,14 @@ class MockFileCache: FileCache {
 	}
 	
 	///recaches the specified file if it has changed
-	func flushCacheForFile(file:File) -> NSProgress? {
+	@discardableResult func flushCacheForFile(file:File) -> NSProgress? {
 		cachedFiles.removeValueForKey(file.fileId)
 		return nil
 	}
 	
 	///caches all the files in the workspace that aren't already cached with the current version of the file
 	//observer fractionCompleted on returned progress for completion handling
-	func cacheAllFiles(setupHandler:((NSProgress)-> Void)) -> NSProgress? {
+	@discardableResult func cacheAllFiles(setupHandler:((NSProgress)-> Void)) -> NSProgress? {
 		return nil
 	}
 	

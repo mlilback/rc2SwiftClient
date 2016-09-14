@@ -7,7 +7,7 @@
 import Foundation
 import SwiftyJSON
 
-public class LoginSession: CustomStringConvertible {
+open class LoginSession: CustomStringConvertible {
 	let host : String;
 	let authToken : String;
 	let currentUser : User;
@@ -20,12 +20,12 @@ public class LoginSession: CustomStringConvertible {
 		projects = Project.projectsFromJsonArray(json["projects"])
 	}
 	
-	func projectWithId(projectId:Int32) -> Project? {
+	func project(withId projectId:Int32) -> Project? {
 		return projects.filter({ $0.projectId == projectId }).first
 	}
 	
-	func projectWithName(name:String) -> Project? {
-		if let found = projects.indexOf({$0.name == name}) {
+	func project(withName name:String) -> Project? {
+		if let found = projects.index(where: {$0.name == name}) {
 			return projects[found]
 		}
 		if name == "Default" {
@@ -34,7 +34,7 @@ public class LoginSession: CustomStringConvertible {
 		return nil
 	}
 
-	public var description : String {
+	open var description : String {
 		return "<LoginSession: \(currentUser.login)@\(host) (\(currentUser.userId))";
 	}
 }

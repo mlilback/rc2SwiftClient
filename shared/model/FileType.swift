@@ -11,10 +11,10 @@ import Foundation
 	import UIKit
 #endif
 
-public class FileType : Equatable {
+open class FileType : Equatable {
 	
 	static var allFileTypes:[FileType] = {
-		let fpath = NSBundle(forClass: Session.self).pathForResource("FileTypes", ofType: "plist")
+		let fpath = Bundle(for: Session.self).path(forResource: "FileTypes", ofType: "plist")
 		let dict = NSDictionary(contentsOfFile: fpath!)
 		let rawTypes = dict!["FileTypes"] as! NSArray
 		return rawTypes.map({ FileType(dictionary: $0 as! NSDictionary) })
@@ -45,15 +45,15 @@ public class FileType : Equatable {
 	var isRMarkdown:Bool { return boolPropertyValue("IsRMarkdown") }
 	var isExecutable:Bool { return boolPropertyValue("IsExecutable") }
 	
-	private let typeDict : NSDictionary
+	fileprivate let typeDict : NSDictionary
 	
-	static func fileTypeWithExtension(anExtension:String?) -> FileType? {
+	static func fileTypeWithExtension(_ anExtension:String?) -> FileType? {
 		guard let ext = anExtension else { return nil }
 		let filtered:[FileType] = FileType.allFileTypes.filter {return $0.fileExtension == ext }
 		return filtered.first
 	}
 	
-	private func boolPropertyValue(key:String) -> Bool {
+	fileprivate func boolPropertyValue(_ key:String) -> Bool {
 		if let nval = typeDict[key] as! NSNumber? {
 			return nval.boolValue
 		}
@@ -69,7 +69,7 @@ public class FileType : Equatable {
 	func image() -> NSImage? {
 		let imgName = "file-\(fileExtension)"
 		if let img = NSImage(named: imgName) {
-			img.backgroundColor = NSColor.clearColor()
+			img.backgroundColor = NSColor.clear
 			return img
 		}
 		return NSImage(named: "file-plain")
@@ -79,7 +79,7 @@ public class FileType : Equatable {
 			var img:NSImage?
 			img = NSImage(named: iname)
 			if (img == nil) {
-				img = NSWorkspace.sharedWorkspace().iconForFileType(self.fileExtension)
+				img = NSWorkspace.shared().icon(forFileType: self.fileExtension)
 			}
 			img?.size = NSMakeSize(48, 48)
 			if (img != nil) {

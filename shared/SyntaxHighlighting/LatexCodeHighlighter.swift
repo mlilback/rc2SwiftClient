@@ -10,7 +10,7 @@ import Foundation
 #endif
 import ClientCore
 
-public class LatexCodeHighlighter : CodeHighlighter {
+open class LatexCodeHighlighter : CodeHighlighter {
 	let commentRegex:NSRegularExpression
 	
 	override init()  {
@@ -18,28 +18,28 @@ public class LatexCodeHighlighter : CodeHighlighter {
 		super.init()
 	}
 	
-	override func addAttributes(content:NSMutableAttributedString, range:NSRange) {
+	override func addAttributes(_ content:NSMutableAttributedString, range:NSRange) {
 		if let color = colorMap[.Comment] {
-			let sourceStr = content.string.substringWithRange(range.toStringRange(content.string)!)
-			commentRegex.enumerateMatchesInString(sourceStr, options: [], range: NSMakeRange(0, sourceStr.characters.count))
+			let sourceStr = content.string.substring(with: range.toStringRange(content.string)!)
+			commentRegex.enumerateMatches(in: sourceStr, options: [], range: NSMakeRange(0, sourceStr.characters.count))
 			{ (results, _, _) -> Void in
-				content.addAttribute(NSForegroundColorAttributeName, value: color, range: (results?.rangeAtIndex(1))!)
+				content.addAttribute(NSForegroundColorAttributeName, value: color, range: (results?.rangeAt(1))!)
 			}
 		}
 	}
 	
-	override func colorForToken(token:PKToken, lastToken:PKToken?, inout includePreviousCharacter usePrevious:Bool) -> PlatformColor?
+	override func colorForToken(_ token:PKToken, lastToken:PKToken?, includePreviousCharacter usePrevious:inout Bool) -> PlatformColor?
 	{
 		var color:PlatformColor?
 		switch(token.tokenType) {
-		case .Comment:
+		case .comment:
 			color = colorMap[.Comment]
-		case .QuotedString:
+		case .quotedString:
 			color = colorMap[.Quote]
-		case .Symbol:
+		case .symbol:
 			color = colorMap[.Symbol]
-		case .Word:
-			if lastToken?.tokenType == .Symbol && lastToken?.stringValue.characters.first == "\\"
+		case .word:
+			if lastToken?.tokenType == .symbol && lastToken?.stringValue.characters.first == "\\"
 			{
 				usePrevious = true
 				color = colorMap[.Keyword]

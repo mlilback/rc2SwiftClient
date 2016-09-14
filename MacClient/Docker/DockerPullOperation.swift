@@ -7,6 +7,7 @@
 import Foundation
 import BrightFutures
 import SwiftyJSON
+import os
 
 public struct LayerProgress {
 	let id:String
@@ -20,11 +21,11 @@ public struct LayerProgress {
 }
 
 
-public class DockerPullOperation: NSObject, NSURLSessionDataDelegate {
-	private let url: NSURL
-	private let urlConfig: NSURLSessionConfiguration
-	private var urlSession: NSURLSession?
-	private var _task: NSURLSessionDataTask?
+open class DockerPullOperation: NSObject, URLSessionDataDelegate {
+	fileprivate let url: URL
+	fileprivate let urlConfig: URLSessionConfiguration
+	fileprivate var urlSession: Foundation.URLSession?
+	fileprivate var _task: URLSessionDataTask?
 	let promise = Promise<Bool, NSError>()
 	var layers = [String:LayerProgress]()
 	var totalDownloaded: Int = 0
@@ -33,37 +34,37 @@ public class DockerPullOperation: NSObject, NSURLSessionDataDelegate {
 	/// - parameter baseUrl: the scheme/host/port to use for the connection
 	/// - parameter imageName: the name of the image to pull
 	/// - parameter config: sesion configuration to use. If nil, will use system default
-	public init(baseUrl:NSURL, imageName:String, config:NSURLSessionConfiguration? = nil) {
-		urlConfig = config ?? NSURLSessionConfiguration.defaultSessionConfiguration()
-		let urlparts = NSURLComponents(URL: baseUrl, resolvingAgainstBaseURL: true)
+	public init(baseUrl:URL, imageName:String, config:URLSessionConfiguration? = nil) {
+		urlConfig = config ?? URLSessionConfiguration.default
+		var urlparts = URLComponents(url: baseUrl, resolvingAgainstBaseURL: true)
 		urlparts?.path = "/images/create"
-		urlparts?.queryItems = [NSURLQueryItem(name:"fromImage", value: imageName)]
-		self.url = urlparts!.URL!
+		urlparts?.queryItems = [URLQueryItem(name:"fromImage", value: imageName)]
+		self.url = urlparts!.url!
 	}
 	
-	public func start() {
-		log.info("starting pull: \(url.absoluteString)")
-		urlSession = NSURLSession(configuration: urlConfig, delegate: self, delegateQueue:NSOperationQueue.mainQueue())
+	open func start() {
+		os_log("starting pull: %{public}@", type:.info, url.absoluteString)
+		urlSession = Foundation.URLSession(configuration: urlConfig, delegate: self, delegateQueue:OperationQueue.main)
 		
-		let req = NSMutableURLRequest(URL: url)
-		req.HTTPMethod = "POST"
+		var req = URLRequest(url: url)
+		req.httpMethod = "POST"
 		req.addValue("application/json", forHTTPHeaderField:"Content-Type")
 		req.addValue("application/json", forHTTPHeaderField: "Accept")
 		
-		_task = urlSession!.dataTaskWithRequest(req)
+		_task = urlSession!.dataTask(with: req)
 		_task?.resume()
 	}
 	
-	public func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveResponse response: NSURLResponse, completionHandler: (NSURLSessionResponseDisposition) -> Void)
+	open func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)
 	{
-		completionHandler(NSURLSessionResponseDisposition.Allow)
+		completionHandler(Foundation.URLSession.ResponseDisposition.allow)
 	}
 
-	public func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
-		let str = String(data: data, encoding:NSUTF8StringEncoding)!
+	open func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+		let str = String(data: data, encoding:String.Encoding.utf8)!
 		let json = JSON.parse(str)
 		guard let status = json["status"].string else {
-			log.info("invalid json chunk from pull")
+			os_log("invalid json chunk from pull", type:.info)
 			return
 		}
 		statuses.insert(status)
@@ -73,7 +74,7 @@ public class DockerPullOperation: NSObject, NSURLSessionDataDelegate {
 			case "Downloading":
 				if var layer = layers[json["id"].stringValue] {
 					if let details = json["progressDetails"].dictionary {
-						if let fsize = details["total"]?.int where layer.finalSize == 0 {
+						if let fsize = details["total"]?.int , layer.finalSize == 0 {
 							layer.finalSize = fsize
 						}
 						if let csize = details["curent"]?.int {
@@ -83,7 +84,7 @@ public class DockerPullOperation: NSObject, NSURLSessionDataDelegate {
 				}
 			case "Download Complete":
 				if var layer = layers[json["id"].stringValue] {
-					log.info("finished layer \(layer.id)")
+					os_log("finished layer %{public}@", type:.info, layer.id)
 					layer.complete = true
 					totalDownloaded += layer.finalSize
 				}
@@ -93,10 +94,10 @@ public class DockerPullOperation: NSObject, NSURLSessionDataDelegate {
 		}
 	}
 	
-	public func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
-		log.info("pull finished: \(totalDownloaded)")
-		log.info("statuses=\(statuses)")
-		guard nil == error else { promise.failure(error!); return }
+	open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+		os_log("pull finished: %d", type:.info, totalDownloaded)
+		os_log("statuses= %{public}@", type:.info, statuses)
+		guard nil == error else { promise.failure(error! as NSError); return }
 		promise.success(true)
 	}
 

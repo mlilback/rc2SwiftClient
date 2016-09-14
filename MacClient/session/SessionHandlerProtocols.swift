@@ -13,33 +13,33 @@ import Cocoa
 	///parameter variables: key is a string, value is an ObjcBox of a JSON value
 	/// - parameter single: if this is an update for a single variable, or a delta
 	/// - paramter variables: the variable objects from the server
-	func handleVariableMessage(single:Bool, variables:[Variable])
+	func handleVariableMessage(_ single:Bool, variables:[Variable])
 	
 	/// handle a delta change message
 	/// - parameter assigned: variabless that were assigned (insert or update)
 	/// - parameter: removed: variables that werer deleted
-	func handleVariableDeltaMessage(assigned:[Variable], removed:[String])
+	func handleVariableDeltaMessage(_ assigned:[Variable], removed:[String])
 }
 
 @objc enum OutputStringType: Int {
-	case Default, Input
+	case `default`, input
 }
 
 @objc protocol OutputHandler {
 	var sessionController: SessionController? { get set }
-	func appendFormattedString(string:NSAttributedString, type:OutputStringType)
+	func appendFormattedString(_ string:NSAttributedString, type:OutputStringType)
 	func saveSessionState() -> AnyObject
-	func restoreSessionState(state:[String:AnyObject])
+	func restoreSessionState(_ state:[String:AnyObject])
 	func prepareForSearch()
 	func initialFirstResponder() -> NSResponder
 	//use fileId instead of file object because File is a swift struct and can't be used in an objc protocol
 	//also get weird compile errors if fileId is made Int?. so passing a zero is the same as nil
-	func showFile(fileId:Int)
-	func showHelp(topics:[HelpTopic])
+	func showFile(_ fileId:Int)
+	func showHelp(_ topics:[HelpTopic])
 }
 
 @objc protocol FileHandler {
-	func filesRefreshed(note:NSNotification?)
-	func promptToImportFiles(sender:AnyObject?)
-	func validateMenuItem(menuItem: NSMenuItem) -> Bool
+	func filesRefreshed(_ note:Notification?)
+	func promptToImportFiles(_ sender:AnyObject?)
+	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
 }

@@ -6,10 +6,10 @@
 
 import Foundation
 
-public extension NSTextCheckingResult {
+extension NSTextCheckingResult {
 	///returns the substring of inputString at the specified range
-	func stringAtIndex(index:Int, forString inputString:String) -> String? {
-		guard let strRange = rangeAtIndex(index).toStringRange(inputString) else { return nil }
-		return inputString.substringWithRange(strRange)
+	public func string(index:Int, forString inputString:String) -> String? {
+		guard let strRange = rangeAt(index).toStringRange(inputString) else { return nil }
+		return inputString.substring(with: strRange)
 	}
 }

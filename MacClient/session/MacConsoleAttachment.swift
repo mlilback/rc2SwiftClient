@@ -6,20 +6,20 @@
 
 import Foundation
 
-public class MacConsoleAttachment: NSObject, ConsoleAttachment {
-	public let type: ConsoleAttachmentType
+open class MacConsoleAttachment: NSObject, ConsoleAttachment {
+	open let type: ConsoleAttachmentType
 	let image: SessionImage?
 	let fileId:Int32
 	let fileVersion:Int32
 	let fileName:String?
 	let fileExtension:String?
 	
-	public static func supportsSecureCoding() -> Bool {
+	public static var supportsSecureCoding : Bool {
 		return true
 	}
 
 	public init(file inFile:File) {
-		type = .File
+		type = .file
 		image = nil
 		fileId = Int32(inFile.fileId)
 		fileVersion = Int32(inFile.version)
@@ -29,7 +29,7 @@ public class MacConsoleAttachment: NSObject, ConsoleAttachment {
 	}
 	
 	public init(image inImage:SessionImage) {
-		type = .Image
+		type = .image
 		image = inImage
 		fileName = nil
 		fileExtension = nil
@@ -39,45 +39,45 @@ public class MacConsoleAttachment: NSObject, ConsoleAttachment {
 	}
 
 	public required init?(coder decoder:NSCoder) {
-		self.type = ConsoleAttachmentType(rawValue: Int(decoder.decodeIntForKey("type")))!
-		self.image = decoder.decodeObjectForKey("image") as? SessionImage
-		self.fileId = decoder.decodeIntForKey("fileId")
-		self.fileVersion = decoder.decodeIntForKey("fileVersion")
-		self.fileName = decoder.decodeObjectForKey("fileName") as? String
-		self.fileExtension = decoder.decodeObjectForKey("fileExtension") as? String
+		self.type = ConsoleAttachmentType(rawValue: Int(decoder.decodeCInt(forKey: "type")))!
+		self.image = decoder.decodeObject(forKey: "image") as? SessionImage
+		self.fileId = decoder.decodeCInt(forKey: "fileId")
+		self.fileVersion = decoder.decodeCInt(forKey: "fileVersion")
+		self.fileName = decoder.decodeObject(forKey: "fileName") as? String
+		self.fileExtension = decoder.decodeObject(forKey: "fileExtension") as? String
 	}
 	
-	public func encodeWithCoder(coder: NSCoder) {
-		coder.encodeInt(Int32(type.rawValue), forKey: "type")
-		coder.encodeObject(image, forKey: "image")
-		coder.encodeInt(fileId, forKey: "fileId")
-		coder.encodeInt(fileVersion, forKey: "fileVersion")
-		coder.encodeObject(fileName, forKey: "fileName")
-		coder.encodeObject(fileExtension, forKey: "fileExtension")
+	open func encode(with coder: NSCoder) {
+		coder.encodeCInt(Int32(type.rawValue), forKey: "type")
+		coder.encode(image, forKey: "image")
+		coder.encodeCInt(fileId, forKey: "fileId")
+		coder.encodeCInt(fileVersion, forKey: "fileVersion")
+		coder.encode(fileName, forKey: "fileName")
+		coder.encode(fileExtension, forKey: "fileExtension")
 	}
 	
-	private func fileAttachmentData() -> (NSFileWrapper, NSImage?) {
-		let data = NSKeyedArchiver.archivedDataWithRootObject(self)
-		let file = NSFileWrapper(regularFileWithContents: data)
+	fileprivate func fileAttachmentData() -> (FileWrapper, NSImage?) {
+		let data = NSKeyedArchiver.archivedData(withRootObject: self)
+		let file = FileWrapper(regularFileWithContents: data)
 		file.filename = fileName
 		file.preferredFilename = fileName
 		return (file, FileType.fileTypeWithExtension(fileExtension)?.image())
 	}
 	
-	private func imageAttachmentData() -> (NSFileWrapper, NSImage?) {
-		let data = NSKeyedArchiver.archivedDataWithRootObject(self)
-		let file = NSFileWrapper(regularFileWithContents: data)
+	fileprivate func imageAttachmentData() -> (FileWrapper, NSImage?) {
+		let data = NSKeyedArchiver.archivedData(withRootObject: self)
+		let file = FileWrapper(regularFileWithContents: data)
 		file.filename = image?.name
 		file.preferredFilename = image?.name
 		return (file, NSImage(named:"graph")!)
 	}
 	
-	public func serializeToAttributedString() -> NSAttributedString {
-		var results:(NSFileWrapper, NSImage?)?
+	open func serializeToAttributedString() -> NSAttributedString {
+		var results:(FileWrapper, NSImage?)?
 		switch(type) {
-			case .File:
+			case .file:
 				results = fileAttachmentData()
-			case .Image:
+			case .image:
 				results = imageAttachmentData()
 		}
 		assert(results?.0 != nil)

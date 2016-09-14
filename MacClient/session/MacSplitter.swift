@@ -8,14 +8,14 @@
 import Cocoa
 import ClientCore
 
-@objc public class MacSplitter : NSView {
-	override public func awakeFromNib() {
+@objc open class MacSplitter : NSView {
+	override open func awakeFromNib() {
 		wantsLayer = true
-		let tarea = NSTrackingArea(rect: bounds, options: [.CursorUpdate, .InVisibleRect, .ActiveInKeyWindow], owner: self, userInfo: nil)
+		let tarea = NSTrackingArea(rect: bounds, options: [.cursorUpdate, .inVisibleRect, .activeInKeyWindow], owner: self, userInfo: nil)
 		addTrackingArea(tarea)
 	}
 	
-	override public func drawRect(dirtyRect: NSRect) {
+	override open func draw(_ dirtyRect: NSRect) {
 		var rect = bounds
 		rect.size.width = 1
 		rect.origin.x += 3
@@ -24,7 +24,7 @@ import ClientCore
 		NSRectFill(rect)
 	}
 	
-	override public func cursorUpdate(event: NSEvent) {
-		NSCursor.resizeLeftRightCursor().set()
+	override open func cursorUpdate(with event: NSEvent) {
+		NSCursor.resizeLeftRight().set()
 	}
 }

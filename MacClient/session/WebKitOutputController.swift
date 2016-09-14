@@ -14,16 +14,16 @@ class WebKitOutputController: WebViewController {
 	}
 
 	func clearContents() {
-		webView?.loadRequest(NSURLRequest(URL: NSURL(string: "about:blank")!));
+		_ = webView?.load(URLRequest(url: URL(string: "about:blank")!));
 	}
 	
-	func loadLocalFile(url:NSURL) {
+	func loadLocalFile(_ url:URL) {
 		guard webView !=  nil else {
-			dispatch_async(dispatch_get_main_queue()) { self.loadLocalFile(url) }
+			DispatchQueue.main.async { self.loadLocalFile(url) }
 			return
 		}
 		//it is utterly rediculous that we have to load a new webview every time, but it wasn't loading the second request
 		setupWebView()
-		webView?.loadFileURL(url, allowingReadAccessToURL: url.URLByDeletingLastPathComponent!)
+		_ = webView?.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
 	}
 }

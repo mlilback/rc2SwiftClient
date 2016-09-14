@@ -8,42 +8,42 @@ import Foundation
 
 public extension String {
 	///convience property equal to the range of entire string
-	public var fullRange:Range<Index> { return self.startIndex..<self.endIndex }
+	public var fullRange:Range<Index> { return startIndex..<endIndex }
 	///convience property equal to the NSRange of the entire string
 	public var toNSRange:NSRange { return NSMakeRange(0, characters.count) }
 
-	private struct CharSetStatics {
-		static var urlAllowedCharacters:NSCharacterSet = {
+	fileprivate struct CharSetStatics {
+		static var urlAllowedCharacters:CharacterSet = {
 			let unreserved = "-._~/?"
-			let allowed = NSMutableCharacterSet.alphanumericCharacterSet()
-			allowed.addCharactersInString(unreserved)
-			return allowed
+			let allowed = NSMutableCharacterSet.alphanumeric()
+			allowed.addCharacters(in: unreserved)
+			return allowed as CharacterSet
 		}()
 
-		static var formAllowedCharacters:NSCharacterSet = {
+		static var formAllowedCharacters:CharacterSet = {
 			let unreserved = "*-._"
-			let allowed = NSMutableCharacterSet.alphanumericCharacterSet()
-			allowed.addCharactersInString(unreserved)
-			allowed.addCharactersInString(" ")
-			return allowed
+			let allowed = NSMutableCharacterSet.alphanumeric()
+			allowed.addCharacters(in: unreserved)
+			allowed.addCharacters(in: " ")
+			return allowed as CharacterSet
 		}()
 	}
 	
 	///from http://useyourloaf.com/blog/how-to-percent-encode-a-url-string/
 	public func stringByAddingPercentEncodingForURL() -> String? {
-		return stringByAddingPercentEncodingWithAllowedCharacters(CharSetStatics.urlAllowedCharacters)
+		return addingPercentEncoding(withAllowedCharacters: CharSetStatics.urlAllowedCharacters)
 	}
 
 	///from http://useyourloaf.com/blog/how-to-percent-encode-a-url-string/
 	/// converts spaces to +
 	public func stringByAddingPercentEncodingForFormData() -> String? {
 		let unreserved = "*-._"
-		let allowed = NSMutableCharacterSet.alphanumericCharacterSet()
-		allowed.addCharactersInString(unreserved)
-		allowed.addCharactersInString(" ")
+		let allowed = NSMutableCharacterSet.alphanumeric()
+		allowed.addCharacters(in: unreserved)
+		allowed.addCharacters(in: " ")
 		
-		var encoded = stringByAddingPercentEncodingWithAllowedCharacters(CharSetStatics.formAllowedCharacters)
-		encoded = encoded?.stringByReplacingOccurrencesOfString(" ", withString: "+")
+		var encoded = addingPercentEncoding(withAllowedCharacters: CharSetStatics.formAllowedCharacters)
+		encoded = encoded?.replacingOccurrences(of: " ", with: "+")
 		return encoded
 	}
 }

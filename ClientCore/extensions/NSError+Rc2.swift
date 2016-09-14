@@ -18,7 +18,7 @@ public extension NSError {
 			localDescription = NSLocalizedString("Rc2ErrorCode.\(code)", comment: "")
 		}
 		if let desc = localDescription {
-			userInfo?[NSLocalizedDescriptionKey] = desc
+			userInfo?[NSLocalizedDescriptionKey] = desc as AnyObject?
 		}
 		if underlyingError != nil { userInfo?[NSUnderlyingErrorKey] = underlyingError }
 		if userInfo?.count ?? 0 < 1 { userInfo = nil }

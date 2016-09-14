@@ -5,6 +5,26 @@
 //
 
 import Cocoa
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l >= r
+  default:
+    return !(lhs < rhs)
+  }
+}
+
 
 
 class SidebarVariableController : AbstractSessionViewController, VariableHandler, NSTableViewDataSource, NSTableViewDelegate {
@@ -32,7 +52,6 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		log.info("vars loaded")
 	}
 	
 	override func sessionChanged() {
@@ -41,53 +60,53 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 		}
 	}
 	
-	func variableNamed(name:String?) -> Variable? {
+	func variableNamed(_ name:String?) -> Variable? {
 		return rootVariables.filter({ $0.name == name }).first
 	}
 	
-	func handleVariableMessage(single:Bool, variables:[Variable]) {
+	func handleVariableMessage(_ single:Bool, variables:[Variable]) {
 		if single {
 			if let curVal = variableNamed(variables[0].name) {
-				rootVariables[rootVariables.indexOf(curVal)!] = curVal
+				rootVariables[rootVariables.index(of: curVal)!] = curVal
 			} else {
 				rootVariables.append(variables.first!)
 			}
 		} else {
 			rootVariables = variables
 		}
-		rootVariables.sortInPlace { (lhs, rhs) -> Bool in
+		rootVariables.sort { (lhs, rhs) -> Bool in
 			return lhs.name < rhs.name
 		}
 		varTableView?.reloadData()
 	}
 	
-	func handleVariableDeltaMessage(assigned: [Variable], removed: [String]) {
-		for (_, variable) in assigned.enumerate() {
+	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String]) {
+		for (_, variable) in assigned.enumerated() {
 			if let curVal = variableNamed(variable.name) {
-				rootVariables[rootVariables.indexOf(curVal)!] = variable
+				rootVariables[rootVariables.index(of: curVal)!] = variable
 			} else {
 				rootVariables.append(variable)
 			}
 		}
 		removed.forEach() { str in
 			if let curVal = variableNamed(str) {
-				rootVariables.removeAtIndex(rootVariables.indexOf(curVal)!)
+				rootVariables.remove(at: rootVariables.index(of: curVal)!)
 			}
 		}
 		varTableView?.reloadData()
 	}
 	
 	//MARK: NSTableViewDataSource
-	func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+	func numberOfRows(in tableView: NSTableView) -> Int {
 		return rootVariables.count
 	}
 	
 	//MARK: NSTableViewDelegate
-	func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView?
+	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView?
 	{
 		let isValue = tableColumn!.identifier == "value"
 		let cellIdent = isValue ? "varValueView" : "varNameView"
-		let view:NSTableCellView = tableView.makeViewWithIdentifier(cellIdent, owner: self) as! NSTableCellView
+		let view:NSTableCellView = tableView.make(withIdentifier: cellIdent, owner: self) as! NSTableCellView
 		let variable = rootVariables[row]
 		view.textField?.stringValue = isValue ? variable.description : variable.name ?? ""
 		if changedIndexes.contains(row) {
@@ -101,19 +120,19 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 		return view
 	}
 
-	func tableView(tableView: NSTableView, selectionIndexesForProposedSelection proposedSelectionIndexes: NSIndexSet) -> NSIndexSet
+	func tableView(_ tableView: NSTableView, selectionIndexesForProposedSelection proposedSelectionIndexes: IndexSet) -> IndexSet
 	{
 		guard proposedSelectionIndexes.count > 0 else { return proposedSelectionIndexes }
-		let variable = rootVariables[proposedSelectionIndexes.firstIndex]
+		let variable = rootVariables[proposedSelectionIndexes.first!]
 		if variable.count <= 1 && variable.primitiveType != .NA { return tableView.selectedRowIndexes }
 		return proposedSelectionIndexes
 	}
 	
-	func tableViewSelectionDidChange(notification: NSNotification)
+	func tableViewSelectionDidChange(_ notification: Notification)
 	{
 		//if no selection, dismiss popover if visible
 		guard varTableView?.selectedRow >= 0 else {
-			if variablePopover?.shown ?? false { variablePopover?.close(); variablePopover = nil }
+			if variablePopover?.isShown ?? false { variablePopover?.close(); variablePopover = nil }
 			return
 		}
 		

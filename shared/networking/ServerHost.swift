@@ -38,18 +38,18 @@ public struct ServerHost: JSONSerializable, CustomStringConvertible, Hashable {
 		self.secure = dict["secure"].boolValue
 	}
 
-	public func toJson() throws -> JSON {
+	public func serialize() throws -> JSON {
 		var dict = [String:AnyObject]()
-		dict["name"] = name
-		dict["host"] = host
-		dict["port"] = port
-		dict["user"] = user
-		dict["secure"] = secure
+		dict["name"] = name as AnyObject?
+		dict["host"] = host as AnyObject?
+		dict["port"] = port as AnyObject?
+		dict["user"] = user as AnyObject?
+		dict["secure"] = secure as AnyObject?
 		return JSON(dict)
 	}
 
 	public var description: String {
-		return "ServerHost \(name) \(user ?? "")@(\(host):\(port) \(secure ? "secure" : ""))"
+		return "ServerHost \(name) \(user )@(\(host):\(port) \(secure ? "secure" : ""))"
 	}
 	
 	public var hashValue: Int { return name.hashValue ^ host.hashValue ^ port.hashValue ^ secure.hashValue }

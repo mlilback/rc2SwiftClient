@@ -25,13 +25,13 @@ public struct DockerImage: JSONSerializable, Equatable {
 		self.tags = localTags
 	}
 	
-	public func toJson() throws -> JSON {
+	public func serialize() throws -> JSON {
 		var dict:[String:AnyObject] = [:]
-		dict["Id"] = id
-		dict["Size"] = size
+		dict["Id"] = id as AnyObject?
+		dict["Size"] = size as AnyObject?
 		var outTags:[JSON] = []
 		for aTag in tags {
-			outTags.append(try aTag.toJson())
+			outTags.append(try aTag.serialize())
 		}
 		return JSON(["Id": JSON(id), "Size": JSON(size), "RepoTags": JSON(outTags)])
 	}

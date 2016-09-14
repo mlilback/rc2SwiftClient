@@ -7,6 +7,7 @@
 import Cocoa
 import ClientCore
 import BrightFutures
+import os
 
 struct SelectServerResponse {
 	let server:ServerHost?
@@ -39,25 +40,25 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	dynamic var login:String = "" { didSet { adjustCanContinue() } }
 	dynamic var password:String = "" { didSet { adjustCanContinue() } }
 	var selectedServer:ServerHost?
-	private let keychain = Keychain()
+	fileprivate let keychain = Keychain()
 	
 	dynamic var selectedServerIndex:Int = 0 { didSet {
-		serverDetailsView?.animator().hidden = selectedServerIndex == 0
+		serverDetailsView?.animator().isHidden = selectedServerIndex == 0
 		adjustCanContinue()
-		let serverCount = (serverMenu?.menu?.itemArray.count)!
-		valuesEditable = selectedServerIndex == ((serverCount - 1) ?? 0)
+		let serverCount = (serverMenu?.menu?.items.count)!
+		valuesEditable = selectedServerIndex == ((serverCount - 1) )
 		if customServerSelected {
 			view.window?.makeFirstResponder(serverNameField)
 		}
 		loadServerHost((serverMenu?.selectedItem?.representedObject as? Box<ServerHost>)?.unbox)
 	} }
 	
-	var customServerSelected:Bool { return selectedServerIndex == (serverMenu?.menu?.itemArray.count ?? 0) - 1 }
+	var customServerSelected:Bool { return selectedServerIndex == (serverMenu?.menu?.items.count ?? 0) - 1 }
 	var localServerSelected:Bool { return selectedServerIndex == 0 }
 	
 	override func viewWillAppear() {
 		super.viewWillAppear()
-		serverDetailsView?.hidden = true
+		serverDetailsView?.isHidden = true
 		if let menu = serverMenu?.menu {
 			menu.removeAllItems()
 			menu.addItem(NSMenuItem(title: "Local Server", action: nil, keyEquivalent: ""))
@@ -83,7 +84,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		adjustCanContinue()
 	}
 	
-	func loadServerHost(host:ServerHost?) {
+	func loadServerHost(_ host:ServerHost?) {
 		serverName = host?.name ?? ""
 		hostName = host?.host ?? ""
 		login = host?.user ?? ""
@@ -94,10 +95,10 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		canContinue = selectedServerIndex == 0 || (serverName.characters.count > 0 && hostName.characters.count > 0 && login.characters.count > 0 && password.characters.count > 0)
 	}
 	
-	func continueAction(callback:(value:Any?, error:NSError?) -> Void) {
+	func continueAction(_ callback:@escaping (_ value:Any?, _ error:NSError?) -> Void) {
 		let future = attemptLogin()
 		future.onSuccess { (loginsession) in
-			log.info("logged in successfully")
+			os_log("logged in successfully", type:.info)
 			if !(self.bookmarkManager!.hosts.contains(self.selectedServer!)) {
 				self.bookmarkManager?.addHost(self.selectedServer!)
 				self.bookmarkManager?.save()
@@ -105,19 +106,19 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 			}
 			//for some reason, Xcode 7 compiler crashes if the result tuple is defined in the callback() call
 			let result = SelectServerResponse(server: self.selectedServer, loginSession: loginsession)
-			callback(value:result, error:nil)
+			callback(result, nil)
 			self.busy = false
 		}.onFailure { (error) in
-			callback(value: nil, error: error)
+			callback(nil, error)
 			self.busy = false
 		}
 	}
 	
-	func savePassword(host:ServerHost) {
+	func savePassword(_ host:ServerHost) {
 		do {
 			try keychain.setString(host.keychainKey, value: self.password)
 		} catch let err as NSError {
-			log.info("error saving password: \(err)")
+			os_log("error saving password: %{public}@", type:.info, err)
 		}
 	}
 	
@@ -129,7 +130,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		if let boxedServer = serverMenu?.itemArray[selectedServerIndex].representedObject as? Box<ServerHost> {
 			selectedServer = boxedServer.unbox
 			server = selectedServer
-		} else if selectedServerIndex + 1 == serverMenu?.menu?.itemArray.count {
+		} else if selectedServerIndex + 1 == serverMenu?.menu?.items.count {
 			selectedServer = ServerHost(name: serverName, host: hostName, port: 8088, user: login, secure: false)
 			server = selectedServer
 		} else {

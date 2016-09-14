@@ -11,9 +11,9 @@ import SwiftWebSocket
 public protocol WebSocketSource : class {
 	var event: WebSocketEvents { get set }
 	var binaryType: WebSocketBinaryType { get set }
-	func open(request request: NSURLRequest, subProtocols : [String])
-	func close(code : Int, reason : String)
-	func send(message : Any)
+	func open(request: URLRequest, subProtocols : [String])
+	func close(_ code : Int, reason : String)
+	func send(_ message : Any)
 }
 
 ///declare SwiftWebSocket's WebSocket as conforming to WebSocketSource

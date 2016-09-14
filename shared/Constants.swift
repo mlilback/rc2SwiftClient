@@ -9,7 +9,7 @@ import ClientCore
 
 let Rc2ErrorDomain = "Rc2ErrorDomain"
 
-struct Notifications {
+public struct Notifications {
 	///will always be posted on the main thread
 	static let AppStatusChanged = "AppStatusChangedNotification"
 	///The object can be either a HelpTopic or a String
@@ -54,5 +54,5 @@ let ConsoleAttachmentImageSize = CGSize(width: 48, height: 48)
 let HelpUrlBase = "http://stat.wvu.edu/rc2/library"
 let HelpUrlFuncSeperator = "/html"
 
-let VariableUpdatedBackgroundColor = PlatformColor.greenColor()
-let VariableNormalBackgroundColor = PlatformColor.whiteColor()
+let VariableUpdatedBackgroundColor = PlatformColor.green
+let VariableNormalBackgroundColor = PlatformColor.white

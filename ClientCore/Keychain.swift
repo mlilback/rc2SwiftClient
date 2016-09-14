@@ -12,29 +12,29 @@ private let SecAttrService: String! = kSecAttrService as String
 private let SecAttrGeneric: String! = kSecAttrGeneric as String
 private let SecAttrAccount: String! = kSecAttrAccount as String
 private let SecValueData: String! = kSecValueData as String
-public class Keychain {
+open class Keychain {
 	let service: String
 	
 	init(service: String = "io.rc2.client") {
 		self.service = service
 	}
 	
-	public func getString(key: String) -> String? {
+	open func getString(_ key: String) -> String? {
 		let query = setupQuery(key)
 		var dataRef: AnyObject?
-		let status = withUnsafeMutablePointer(&dataRef) { SecItemCopyMatching(query as CFDictionaryRef, UnsafeMutablePointer($0)) }
+		let status = withUnsafeMutablePointer(to: &dataRef) { SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0)) }
 		if status == noErr && dataRef != nil {
-			return NSString(data: (dataRef as? NSData)!, encoding: NSUTF8StringEncoding) as String?
+			return NSString(data: (dataRef as? Data)!, encoding: String.Encoding.utf8.rawValue) as String?
 		}
 		return nil
 	}
 	
-	public func removeKey(key: String) -> Bool {
+	@discardableResult open func removeKey(_ key: String) -> Bool {
 		let query = setupQuery(key)
-		return noErr == SecItemDelete(query)
+		return noErr == SecItemDelete(query as CFDictionary)
 	}
 	
-	public func setString(key: String, value: String?) throws {
+	open func setString(_ key: String, value: String?) throws {
 		guard value != nil else {
 			removeKey(key)
 			return
@@ -45,21 +45,21 @@ public class Keychain {
 			guard existing != value else {
 				return
 			}
-			let values: [String:AnyObject] = [SecValueData: (value?.dataUsingEncoding(NSUTF8StringEncoding))!]
-			status = SecItemUpdate(query, values)
+			let values: [String:AnyObject] = [SecValueData: (value?.data(using: String.Encoding.utf8))! as AnyObject]
+			status = SecItemUpdate(query as CFDictionary, values as CFDictionary)
 		} else {
-			query[SecValueData] = value!.dataUsingEncoding(NSUTF8StringEncoding)
-			status = SecItemAdd(query, nil)
+			query[SecValueData] = value!.data(using: String.Encoding.utf8) as AnyObject?
+			status = SecItemAdd(query as CFDictionary, nil)
 		}
 		if status != errSecSuccess {
 			throw NSError(domain: NSOSStatusErrorDomain, code: Int(status), userInfo: nil)
 		}
 	}
 	
-	private func setupQuery(key:String) -> [String:AnyObject] {
-		var query: [String:AnyObject] = [SecClass:kSecClassGenericPassword as String]
-		query[kSecAttrService as String] = service
-		query[kSecAttrAccount as String] = key
+	fileprivate func setupQuery(_ key:String) -> [String:AnyObject] {
+		var query: [String:AnyObject] = [SecClass:kSecClassGenericPassword as String as String as AnyObject]
+		query[kSecAttrService as String] = service as AnyObject?
+		query[kSecAttrAccount as String] = key as AnyObject?
 		query[kSecReturnData as String] = kCFBooleanTrue
 		return query
 	}

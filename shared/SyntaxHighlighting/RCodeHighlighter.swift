@@ -12,27 +12,27 @@ import ClientCore
 
 let RCodeHighlighterColors = "RCodeHighlighterColors"
 
-public class RCodeHighlighter: CodeHighlighter {
+open class RCodeHighlighter: CodeHighlighter {
 	
 	let keywords:Set<String> = {
-		let url = NSBundle.mainBundle().URLForResource("RKeywords", withExtension: "txt")!
-		let keyArray = try! NSString(contentsOfURL: url, encoding: NSUTF8StringEncoding).componentsSeparatedByString("\n")
+		let url = Bundle.main.url(forResource: "RKeywords", withExtension: "txt")!
+		let keyArray = try! NSString(contentsOf: url, encoding: String.Encoding.utf8.rawValue).components(separatedBy: "\n")
 		return Set<String>(keyArray)
 	}()
 	
-	override func colorForToken(token:PKToken, lastToken:PKToken?, inout includePreviousCharacter usePrevious:Bool) -> PlatformColor?
+	override func colorForToken(_ token:PKToken, lastToken:PKToken?, includePreviousCharacter usePrevious:inout Bool) -> PlatformColor?
 	{
 		var color:PlatformColor?
 		switch(token.tokenType) {
-			case .Comment:
+			case .comment:
 				color = colorMap[.Comment]
-			case .QuotedString:
+			case .quotedString:
 				color = colorMap[.Quote]
-			case .Number:
-				color = PlatformColor.blackColor()
-			case .Symbol:
+			case .number:
+				color = PlatformColor.black
+			case .symbol:
 				color = colorMap[.Symbol]
-			case .Word:
+			case .word:
 				if keywords.contains(token.stringValue) {
 					color = colorMap[.Keyword]
 				}

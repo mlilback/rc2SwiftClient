@@ -7,29 +7,29 @@
 import Foundation
 import WebKit
 
-public class HelpOutputController: WebViewController {
-	override public func viewDidLoad() {
+open class HelpOutputController: WebViewController {
+	override open func viewDidLoad() {
 		super.viewDidLoad()
 	}
 	
-	func loadHelpTopic(topic:HelpTopic) {
+	func loadHelpTopic(_ topic:HelpTopic) {
 		let url = HelpController.sharedInstance.urlForTopic(topic)
-		webView?.loadRequest(NSURLRequest(URL: url))
+		_ = webView?.load(URLRequest(url: url))
 	}
 	
-	public func webView(webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void)
+	open func webView(_ webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void)
 	{
-		if let response = navigationResponse.response as? NSHTTPURLResponse {
+		if let response = navigationResponse.response as? HTTPURLResponse {
 			if response.statusCode == 404 {
-				dispatch_async(dispatch_get_main_queue()) {
+				DispatchQueue.main.async {
 					let furl = self.staticHmtlFolder()
-					let purl = furl.URLByAppendingPathComponent("help404.html")
-					self.webView?.loadFileURL(purl!, allowingReadAccessToURL: furl)
+					let purl = furl.appendingPathComponent("help404.html")
+					_ = self.webView?.loadFileURL(purl, allowingReadAccessTo: furl as URL)
 				}
-				decisionHandler(.Cancel)
+				decisionHandler(.cancel)
 			}
 		}
-		decisionHandler(.Allow)
+		decisionHandler(.allow)
 	}
 	
 }

@@ -13,7 +13,7 @@ class AppStatusView: NSView {
 		get { return self.realDetProgress }
 		set { self.realDetProgress = newValue }
 	}
-	private var realDetProgress:NSProgressIndicator?
+	fileprivate var realDetProgress:NSProgressIndicator?
 
 	@IBOutlet var cancelButton: NSButton?
 	weak var appStatus: AppStatus? { didSet { self.statusChanged(nil) } }
@@ -22,59 +22,59 @@ class AppStatusView: NSView {
 	override var intrinsicContentSize:NSSize { return NSSize(width:220, height:22) }
 	
 	deinit {
-		NSNotificationCenter.defaultCenter().removeObserver(self)
+		NotificationCenter.default.removeObserver(self)
 	}
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
-		dispatch_async(dispatch_get_main_queue()) {
-			NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppStatusView.statusChanged(_:)), name: Notifications.AppStatusChanged, object: nil)
+		DispatchQueue.main.async {
+			NotificationCenter.default.addObserver(self, selector: #selector(AppStatusView.statusChanged(_:)), name: NSNotification.Name(rawValue: Notifications.AppStatusChanged), object: nil)
 		}
 	}
 	
-	override func drawRect(dirtyRect: NSRect) {
-		NSGraphicsContext.currentContext()?.saveGraphicsState()
+	override func draw(_ dirtyRect: NSRect) {
+		NSGraphicsContext.current()?.saveGraphicsState()
 		let path = NSBezierPath(roundedRect: bounds, xRadius: 4, yRadius: 4)
 		path.addClip()
-		NSColor.whiteColor().setFill()
+		NSColor.white.setFill()
 		path.fill()
-		NSColor.blackColor().set()
+		NSColor.black.set()
 		path.stroke()
-		NSGraphicsContext.currentContext()?.restoreGraphicsState()
-		super.drawRect(dirtyRect)
+		NSGraphicsContext.current()?.restoreGraphicsState()
+		super.draw(dirtyRect)
 	}
 
-	func statusChanged(sender:AnyObject?) {
+	func statusChanged(_ sender:AnyObject?) {
 		textField?.stringValue = appStatus?.statusMessage ?? ""
-		if let isBusy = appStatus?.busy where isBusy {
-			if appStatus?.currentProgress?.indeterminate ?? true {
+		if let isBusy = appStatus?.busy , isBusy {
+			if appStatus?.currentProgress?.isIndeterminate ?? true {
 				progress?.startAnimation(self)
 			} else {
 				determinateProgress?.doubleValue = 0
-				determinateProgress?.hidden = false
+				determinateProgress?.isHidden = false
 				progressContext = KVObserver(object: (appStatus?.currentProgress)!, keyPath: "fractionCompleted")
 					{ prog, _, _ in
 						self.determinateProgress?.doubleValue = prog.fractionCompleted
 						self.textField?.stringValue = prog.localizedDescription
-						if self.determinateProgress?.doubleValue >= 1.0 {
-							dispatch_async(dispatch_get_main_queue()) {
+						if self.determinateProgress?.doubleValue ?? 0 >= 1.0 {
+							DispatchQueue.main.async() {
 								self.appStatus?.currentProgress = nil
 							}
 						}
 					}
 			}
-			cancelButton?.hidden = appStatus?.currentProgress?.cancellable ?? false
+			cancelButton?.isHidden = appStatus?.currentProgress?.isCancellable ?? false
 		} else {
 			progress?.stopAnimation(self)
-			determinateProgress?.hidden = true
-			cancelButton?.hidden = true
+			determinateProgress?.isHidden = true
+			cancelButton?.isHidden = true
 			progressContext?.cancel()
 			progressContext = nil
 		}
 	}
 	
-	@IBAction func cancel(sender: AnyObject?) {
-		if appStatus?.currentProgress?.cancellable ?? true {
+	@IBAction func cancel(_ sender: AnyObject?) {
+		if appStatus?.currentProgress?.isCancellable ?? true {
 			appStatus?.currentProgress?.cancel()
 		}
 	}

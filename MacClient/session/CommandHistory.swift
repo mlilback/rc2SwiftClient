@@ -21,19 +21,19 @@ class CommandHistory {
 		self.action = selector
 	}
 	
-	func addToCommandHistory(origQuery:String) {
-		var maxLen = NSUserDefaults.standardUserDefaults().integerForKey(PrefKeys.MaxCommandHistorySize)
+	func addToCommandHistory(_ origQuery:String) {
+		var maxLen = UserDefaults.standard.integer(forKey: PrefKeys.MaxCommandHistorySize)
 		if (maxLen < MinHistoryLength) { maxLen = DefaultHistoryLength; }
 		if (maxLen > MaxHistoryLength) { maxLen = MaxHistoryLength; }
-		let query = origQuery.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-		let idx = commands.indexOf(query)
+		let query = origQuery.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+		let idx = commands.index(of: query)
 		if idx == nil {
-			commands.insert(query, atIndex: 0)
+			commands.insert(query, at: 0)
 			if commands.count > maxLen { commands.removeLast() }
 		} else {
 			//already there, need to move to front
-			commands.removeAtIndex(idx!)
-			commands.insert(query, atIndex: 0)
+			commands.remove(at: idx!)
+			commands.insert(query, at: 0)
 		}
 	}
 	
@@ -42,7 +42,7 @@ class CommandHistory {
 		for aCommand in commands {
 			var menuCommand = aCommand
 			if aCommand.characters.count > 50 {
-				menuCommand = menuCommand.substringToIndex(menuCommand.startIndex.advancedBy(49)).stringByAppendingString("…")
+				menuCommand = menuCommand.substring(to: menuCommand.characters.index(menuCommand.startIndex, offsetBy: 49)) + "…"
 			}
 			let menuItem = NSMenuItem(title: menuCommand, action: action, keyEquivalent: "")
 			menuItem.target = target

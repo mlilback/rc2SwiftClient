@@ -17,7 +17,7 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 	var statusView: AppStatusView?
 	
 	/// Need to schedule setting up toolbar handlers, but don't want to do it more than once
-	private var toolbarSetupScheduled = false
+	fileprivate var toolbarSetupScheduled = false
 	
 	class func createFromNib() -> Self {
 		let winc = self.init(windowNibName: "MainWindow")
@@ -26,15 +26,15 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 	
 	override func windowDidLoad() {
 		super.windowDidLoad()
-		window!.titleVisibility = .Hidden
+		window!.titleVisibility = .hidden
 	}
 	
-	func setupChildren(restServer:RestServer) {
+	func setupChildren(_ restServer:RestServer) {
 		statusView?.appStatus = appStatus
 		let rootVC = contentViewController as! RootViewController
 		rootVC.restServer = restServer
 		rootVC.sessionClosedHandler = {
-			dispatch_async(dispatch_get_main_queue()) {
+			DispatchQueue.main.async {
 				self.window?.close()
 			}
 		}
@@ -45,15 +45,15 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 	}
 
 	//When the first toolbar item is loaded, queue a closure to call assignHandlers from the ToolbarDelegatingOwner protocol(default implementation) that assigns each toolbar item to the appropriate ToolbarItemHandler (normally a view controller)
-	func toolbarWillAddItem(notification: NSNotification) {
+	func toolbarWillAddItem(_ notification: Notification) {
 		//schedule assigning handlers after toolbar items are loaded
 		if !toolbarSetupScheduled {
-			dispatch_async(dispatch_get_main_queue()) { () -> Void in
+			DispatchQueue.main.async { () -> Void in
 				self.assignHandlers(self.contentViewController!, items: (self.window?.toolbar?.items)!)
 			}
 			toolbarSetupScheduled = true
 		}
-		let item:NSToolbarItem = (notification.userInfo!["item"] as? NSToolbarItem)!
+		let item:NSToolbarItem = ((notification as NSNotification).userInfo!["item"] as? NSToolbarItem)!
 		if item.itemIdentifier == "status",
 			let sview = item.view as? AppStatusView
 		{
