@@ -12,6 +12,7 @@ public struct DockerImage: JSONSerializable, Equatable {
 	let id:String
 	let tags:[DockerTag]
 	let size:Int
+	var labels:[String:String] = [:]
 	
 	public init?(json:JSON) {
 		id = json["Id"].stringValue
@@ -23,6 +24,9 @@ public struct DockerImage: JSONSerializable, Equatable {
 			}
 		}
 		self.tags = localTags
+		for (key,value) in json["Labels"].dictionaryValue {
+			labels[key] = value.stringValue
+		}
 	}
 	
 	public func serialize() throws -> JSON {

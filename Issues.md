@@ -9,3 +9,9 @@
 * compute engine barfs on markdown files with a space in their name
 
 * add output segmented control (console, html, pdf, image)
+
+* RestServerTests and EditorDocumentTests are disabled and need fixing.
+
+* SystemExtensionsTests is incomplete
+
+* BaseTest used to load a LoginSession from the actual RestServer

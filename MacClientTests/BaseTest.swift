@@ -20,7 +20,7 @@ class BaseTest: XCTestCase {
 		//setup filemanager with directory to trash
 		mockFM = MockFileManager()
 		
-		let path : String = Bundle(for: RestServerTest.self).path(forResource: "loginResults", ofType: "json")!
+		let path : String = Bundle(for: BaseTest.self).path(forResource: "loginResults", ofType: "json")!
 		let resultData = try! Data(contentsOf: URL(fileURLWithPath: path))
 		sessionData = LoginSession(json: JSON.init(data: resultData), host: "test")
 	}

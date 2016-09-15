@@ -125,6 +125,11 @@
             value = "3"
             isEnabled = "NO">
          </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "DockerHostUrl"
+            value = "http://10.0.1.9:2375/"
+            isEnabled = "YES">
+         </EnvironmentVariable>
       </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>

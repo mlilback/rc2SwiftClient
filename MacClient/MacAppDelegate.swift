@@ -27,12 +27,12 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		dockerManager = DockerManager()
 		dockerManager?.isDockerRunning() { isRunning in
 			os_log("docker is running %{public}@", type:.info, isRunning ? "yes" : "no")
-			let f = self.dockerManager!.pullImage("rc2server/dbserver")
-			f.onSuccess {_ in
-				os_log("pull should be good", type:.info)
-			}.onFailure { err in
-				os_log("docker error: %{public}@", type:.error, err as NSError)
-			}
+//			let f = self.dockerManager!.pullImage("rc2server/dbserver")
+//			f.onSuccess {_ in
+//				os_log("pull should be good", type:.info)
+//			}.onFailure { err in
+//				os_log("docker error: %{public}@", type:.error, err as NSError)
+//			}
 		}
 		let cdUrl = Bundle.main.url(forResource: "CommonDefaults", withExtension: "plist")
 		UserDefaults.standard.register(defaults: NSDictionary(contentsOf: cdUrl!)! as! [String : AnyObject])

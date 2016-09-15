@@ -24,22 +24,32 @@ open class DockerManager : NSObject {
 	let session: URLSession
 	fileprivate(set) var isInstalled:Bool = false
 	fileprivate var versionLoaded:Bool = false
+	fileprivate(set) var installedImages:[DockerImage] = []
+	fileprivate var initialzed = false
 	
-	override init() {
+	///after creating, must call either initializeConnection or isDockerRunning
+	init(host:String? = nil) {
+		hostUrl = host
 		sessionConfig = URLSessionConfiguration.default
 		sessionConfig.protocolClasses = [DockerUrlProtocol.self]
 		session = URLSession(configuration: sessionConfig)
 		super.init()
 		isInstalled = Foundation.FileManager().fileExists(atPath: socketPath)
+		//check for a host specified as an environment variable - useful for testing
+		if nil == host, let envHost = ProcessInfo.processInfo.environment["DockerHostUrl"] {
+			hostUrl = envHost
+		}
 	}
 	
 	///connects to the docker daemon and confirms it is running and is compatible with what we require
 	func isDockerRunning(_ handler:@escaping (Bool) -> Void) {
-		initializeConnection("http://10.0.1.9:2375/", handler: { rsp, error in handler(rsp) })
+		initializeConnection(handler: { rsp, error in
+			handler(rsp)
+		})
 	}
 	
-	func initializeConnection(_ url:String?, handler: @escaping SimpleServerCallback) {
-		if nil == hostUrl { hostUrl = url }
+	func initializeConnection(handler: @escaping SimpleServerCallback) {
+		self.initialzed = true
 		guard !versionLoaded else { handler(apiVersion > 0, nil); return }
 		let future = dockerRequest("/version")
 		processVersionFuture(future, handler: handler)
@@ -92,7 +102,7 @@ open class DockerManager : NSObject {
 	
 	///makes a simple GET api request and returns the parsed results
 	/// - parameter command: The api command to send. Should include initial slash.
-	fileprivate func dockerRequest(_ command:String) -> Future<JSON,NSError> {
+	func dockerRequest(_ command:String) -> Future<JSON,NSError> {
 		precondition(command.hasPrefix("/"))
 		var urlStr = "unix://\(command)"
 		if nil != hostUrl {
@@ -108,10 +118,32 @@ open class DockerManager : NSObject {
 			}
 			let jsonStr = String(data:data!, encoding: String.Encoding.utf8)!
 			let json = JSON.parse(jsonStr)
-			guard json.dictionary != nil else { return promise.failure(NSError.error(withCode: .dockerError, description:"")) }
 			return promise.success(json)
 		}
 		task.resume()
+		return promise.future
+	}
+	
+	func loadImages() -> Future<[DockerImage],NSError> {
+		let promise = Promise<[DockerImage],NSError>()
+		let future = dockerRequest("/images/json")
+		print("making request")
+		future.onSuccess { json in
+			print("request success")
+			self.installedImages.removeAll()
+			for aDict in json.arrayValue {
+				if let anImage = DockerImage(json: aDict), anImage.labels.keys.contains("io.rc2.type")
+				{
+					self.installedImages.append(anImage)
+				}
+				promise.success(self.installedImages)
+			}
+			
+		}.onFailure { err in
+			print("request failure")
+			os_log("error reading image data from docker: %{public}@", type:.error, err)
+			promise.failure(err)
+		}
 		return promise.future
 	}
 	

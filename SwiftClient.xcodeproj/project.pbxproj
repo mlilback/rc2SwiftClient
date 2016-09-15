@@ -199,6 +199,7 @@
 		08DB1A9D1D32EFC10079DA6B /* SwinjectStoryboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */; };
 		08DB1A9E1D32EFC10079DA6B /* SwinjectStoryboard.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08DB1AA01D32EFC70079DA6B /* Swinject.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A971D32EF930079DA6B /* Swinject.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08E7E08B1D8AD84A000C4C87 /* DockerManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08634DB11D2DA33F00445462 /* DockerManagerTests.swift */; };
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08EFF6031C7BB2E600AAF1D4 /* MultipartInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */; };
@@ -1452,6 +1453,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08E7E08B1D8AD84A000C4C87 /* DockerManagerTests.swift in Sources */,
 				08ABCF011D82FCCE007C6A5E /* DockerUrlProtocolTests.swift in Sources */,
 				083305F21C519B4B00E27F66 /* ServerResponseTests.swift in Sources */,
 				083305FB1C519B8500E27F66 /* Rc2FileTypeTest.swift in Sources */,
