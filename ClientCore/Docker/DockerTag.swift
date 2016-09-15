@@ -6,7 +6,6 @@
 
 import Foundation
 import SwiftyJSON
-import ClientCore
 
 ///Representation of a tag on a docker image
 public struct DockerTag: JSONSerializable, CustomStringConvertible, Hashable {

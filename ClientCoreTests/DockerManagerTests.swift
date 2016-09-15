@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import MacClient
+@testable import ClientCore
 import SwiftyJSON
 
 class DockerManagerTests: XCTestCase {

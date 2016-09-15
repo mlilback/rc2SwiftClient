@@ -10,6 +10,7 @@ import XCGLogger
 import SwinjectStoryboard
 import Swinject
 import SwiftyJSON
+import ClientCore
 
 //let log = XCGLogger.defaultInstance()
 

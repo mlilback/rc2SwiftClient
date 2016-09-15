@@ -8,7 +8,6 @@ import Foundation
 import SwiftyJSON
 import BrightFutures
 import ServiceManagement
-import ClientCore
 import os
 
 ///manages communicating with the local docker engine
@@ -28,7 +27,7 @@ open class DockerManager : NSObject {
 	fileprivate var initialzed = false
 	
 	///after creating, must call either initializeConnection or isDockerRunning
-	init(host:String? = nil) {
+	public init(host:String? = nil) {
 		hostUrl = host
 		sessionConfig = URLSessionConfiguration.default
 		sessionConfig.protocolClasses = [DockerUrlProtocol.self]
@@ -42,13 +41,13 @@ open class DockerManager : NSObject {
 	}
 	
 	///connects to the docker daemon and confirms it is running and is compatible with what we require
-	func isDockerRunning(_ handler:@escaping (Bool) -> Void) {
+	public func isDockerRunning(_ handler:@escaping (Bool) -> Void) {
 		initializeConnection(handler: { rsp, error in
 			handler(rsp)
 		})
 	}
 	
-	func initializeConnection(handler: @escaping SimpleServerCallback) {
+	public func initializeConnection(handler: @escaping SimpleServerCallback) {
 		self.initialzed = true
 		guard !versionLoaded else { handler(apiVersion > 0, nil); return }
 		let future = dockerRequest("/version")
@@ -124,7 +123,7 @@ open class DockerManager : NSObject {
 		return promise.future
 	}
 	
-	func loadImages() -> Future<[DockerImage],NSError> {
+	public func loadImages() -> Future<[DockerImage],NSError> {
 		let promise = Promise<[DockerImage],NSError>()
 		let future = dockerRequest("/images/json")
 		print("making request")
@@ -147,7 +146,7 @@ open class DockerManager : NSObject {
 		return promise.future
 	}
 	
-	func pullImage(_ imageName:String) -> Future<Bool, NSError> {
+	public func pullImage(_ imageName:String) -> Future<Bool, NSError> {
 		let pullTask = DockerPullOperation(baseUrl: URL(string: hostUrl!)!, imageName: imageName)
 		pullTask.start()
 		return pullTask.promise.future

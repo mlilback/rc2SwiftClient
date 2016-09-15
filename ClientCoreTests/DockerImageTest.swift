@@ -9,7 +9,6 @@
 import XCTest
 import SwiftyJSON
 @testable import ClientCore
-@testable import MacClient
 
 class DockerImageTest: XCTestCase {
 	var jsonArray:JSON?

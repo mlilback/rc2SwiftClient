@@ -169,17 +169,8 @@
 		08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FD91CC9692C001EDFAA /* BasicOutlineDataSource.swift */; };
 		08A01FDC1CCA8B2F001EDFAA /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */; };
 		08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */; };
-		08ABCEFB1D82FAE4007C6A5E /* DockerImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEF51D82FAE4007C6A5E /* DockerImage.swift */; };
-		08ABCEFC1D82FAE4007C6A5E /* DockerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEF61D82FAE4007C6A5E /* DockerManager.swift */; };
-		08ABCEFD1D82FAE4007C6A5E /* DockerTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEF71D82FAE4007C6A5E /* DockerTag.swift */; };
-		08ABCEFE1D82FAE4007C6A5E /* DockerUrlProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEF81D82FAE4007C6A5E /* DockerUrlProtocol.swift */; };
-		08ABCEFF1D82FAE4007C6A5E /* LocalServerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEFA1D82FAE4007C6A5E /* LocalServerProtocol.swift */; };
-		08ABCF011D82FCCE007C6A5E /* DockerUrlProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCF001D82FCCE007C6A5E /* DockerUrlProtocolTests.swift */; };
 		08B036221C73B131005928B3 /* FileImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B036211C73B131005928B3 /* FileImporter.swift */; };
-		08B4BE5B1D82FF5D006861E3 /* DockerImageTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814F1EA1D7A2E290093C0C1 /* DockerImageTest.swift */; };
-		08B4BE5C1D82FFDD006861E3 /* dockerImages.json in Resources */ = {isa = PBXBuildFile; fileRef = 0814F1EC1D7A2E960093C0C1 /* dockerImages.json */; };
 		08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
-		08B4BE5F1D833162006861E3 /* DockerPullOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B4BE5E1D833162006861E3 /* DockerPullOperation.swift */; };
 		08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; };
 		08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08BFD3E81C90B5AC0041EB1C /* MessagePackSwift.framework.dSYM in Resources */ = {isa = PBXBuildFile; fileRef = 08BFD3E71C90B5AC0041EB1C /* MessagePackSwift.framework.dSYM */; };
@@ -199,7 +190,20 @@
 		08DB1A9D1D32EFC10079DA6B /* SwinjectStoryboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */; };
 		08DB1A9E1D32EFC10079DA6B /* SwinjectStoryboard.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08DB1AA01D32EFC70079DA6B /* Swinject.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A971D32EF930079DA6B /* Swinject.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		08E7E08B1D8AD84A000C4C87 /* DockerManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08634DB11D2DA33F00445462 /* DockerManagerTests.swift */; };
+		08E7E0901D8AE827000C4C87 /* DockerImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEF51D82FAE4007C6A5E /* DockerImage.swift */; };
+		08E7E0911D8AE82C000C4C87 /* DockerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEF61D82FAE4007C6A5E /* DockerManager.swift */; };
+		08E7E0921D8AE830000C4C87 /* DockerTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEF71D82FAE4007C6A5E /* DockerTag.swift */; };
+		08E7E0931D8AE834000C4C87 /* DockerUrlProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEF81D82FAE4007C6A5E /* DockerUrlProtocol.swift */; };
+		08E7E0941D8AE838000C4C87 /* LocalServerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEFA1D82FAE4007C6A5E /* LocalServerProtocol.swift */; };
+		08E7E0951D8AE83D000C4C87 /* DockerPullOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B4BE5E1D833162006861E3 /* DockerPullOperation.swift */; };
+		08E7E0961D8AE8A7000C4C87 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
+		08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
+		08E7E0981D8AE926000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
+		08E7E0991D8AEC38000C4C87 /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08E7E09A1D8AEC53000C4C87 /* DockerImageTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814F1EA1D7A2E290093C0C1 /* DockerImageTest.swift */; };
+		08E7E09B1D8AEC56000C4C87 /* DockerManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08634DB11D2DA33F00445462 /* DockerManagerTests.swift */; };
+		08E7E09C1D8AEC5A000C4C87 /* DockerUrlProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCF001D82FCCE007C6A5E /* DockerUrlProtocolTests.swift */; };
+		08E7E09D1D8AECE1000C4C87 /* dockerImages.json in Resources */ = {isa = PBXBuildFile; fileRef = 0814F1EC1D7A2E960093C0C1 /* dockerImages.json */; };
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08EFF6031C7BB2E600AAF1D4 /* MultipartInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */; };
@@ -275,6 +279,7 @@
 				08F8EDB91D89E3770037245C /* BrightFutures.framework in CopyFiles */,
 				08037C331D7C5D2200006E9E /* SwiftyJSON.framework in CopyFiles */,
 				08037C241D7C576C00006E9E /* PMKVObserver.framework in CopyFiles */,
+				08E7E0991D8AEC38000C4C87 /* Result.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -612,6 +617,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				089794401D7B69C7003339EE /* PMKVObserver.framework in Frameworks */,
+				08E7E0961D8AE8A7000C4C87 /* BrightFutures.framework in Frameworks */,
+				08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -623,6 +630,7 @@
 				08037C221D7C571D00006E9E /* PMKVObserver.framework in Frameworks */,
 				089794231D7B68F0003339EE /* ClientCore.framework in Frameworks */,
 				08F8EDB71D89E3460037245C /* BrightFutures.framework in Frameworks */,
+				08E7E0981D8AE926000C4C87 /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -712,7 +720,6 @@
 		083382F41C68E43400D40EEB /* test resources */ = {
 			isa = PBXGroup;
 			children = (
-				0814F1EC1D7A2E960093C0C1 /* dockerImages.json */,
 				08634DBA1D2DA9CB00445462 /* syntax1.Rnw */,
 				08634DB81D2DA93A00445462 /* syntax2.Rmd */,
 				088CE6801C4B0AF500153414 /* Info.plist */,
@@ -778,7 +785,6 @@
 				08F673CF1D020B2700B87049 /* MiscProtocols.swift */,
 				08F448F31C4E244500C64706 /* session */,
 				081263141C85D2E0003E37A5 /* generic views */,
-				08ABCEF41D82FAE4007C6A5E /* Docker */,
 				083305D11C4FC76C00E27F66 /* extensions */,
 				088CE6751C4B0AF400153414 /* Info.plist */,
 				083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */,
@@ -798,9 +804,6 @@
 				083382F91C68F2A900D40EEB /* BaseTest.swift */,
 				08F189BC1D2184EB00866A05 /* BookmarkTest.swift */,
 				083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */,
-				0814F1EA1D7A2E290093C0C1 /* DockerImageTest.swift */,
-				08634DB11D2DA33F00445462 /* DockerManagerTests.swift */,
-				08ABCF001D82FCCE007C6A5E /* DockerUrlProtocolTests.swift */,
 				0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */,
 				081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */,
 				083382F71C68EBC200D40EEB /* FileCacheTests.swift */,
@@ -934,6 +937,7 @@
 				083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */,
 				08F189BA1D21826D00866A05 /* JSONSerializable.swift */,
 				089794431D7B6A8F003339EE /* extensions */,
+				08ABCEF41D82FAE4007C6A5E /* Docker */,
 				089794371D7B6925003339EE /* ClientCore-Bridging-Header.h */,
 				0897941D1D7B68F0003339EE /* Info.plist */,
 			);
@@ -944,6 +948,10 @@
 			isa = PBXGroup;
 			children = (
 				089794291D7B68F0003339EE /* ClientCoreTests.swift */,
+				0814F1EA1D7A2E290093C0C1 /* DockerImageTest.swift */,
+				08634DB11D2DA33F00445462 /* DockerManagerTests.swift */,
+				08ABCF001D82FCCE007C6A5E /* DockerUrlProtocolTests.swift */,
+				0814F1EC1D7A2E960093C0C1 /* dockerImages.json */,
 				0897942B1D7B68F0003339EE /* Info.plist */,
 			);
 			path = ClientCoreTests;
@@ -1262,7 +1270,6 @@
 				083305FA1C519B8500E27F66 /* loginResults.json in Resources */,
 				08D6106F1CD2C53100258D8E /* listvars.json in Resources */,
 				08634DBB1D2DA9CB00445462 /* syntax1.Rnw in Resources */,
-				08B4BE5C1D82FFDD006861E3 /* dockerImages.json in Resources */,
 				08FDB19B1C5917C3006FCD1A /* graph.png in Resources */,
 				083305F91C519B8500E27F66 /* createWorkspace.json in Resources */,
 				08634DB91D2DA93A00445462 /* syntax2.Rmd in Resources */,
@@ -1280,6 +1287,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08E7E09D1D8AECE1000C4C87 /* dockerImages.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1384,9 +1392,7 @@
 				08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */,
 				08B036221C73B131005928B3 /* FileImporter.swift in Sources */,
 				083382F61C68E59300D40EEB /* FileCache.swift in Sources */,
-				08ABCEFB1D82FAE4007C6A5E /* DockerImage.swift in Sources */,
 				08F448FC1C4E244500C64706 /* SessionOutputController.swift in Sources */,
-				08ABCEFF1D82FAE4007C6A5E /* LocalServerProtocol.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
 				08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */,
 				08CB55521C5C06B2002CB7EE /* OutputTabController.swift in Sources */,
@@ -1397,7 +1403,6 @@
 				08A01FA91CBC07B0001EDFAA /* WebKitOutputController.swift in Sources */,
 				083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
-				08ABCEFE1D82FAE4007C6A5E /* DockerUrlProtocol.swift in Sources */,
 				08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */,
 				0814CB721CF894AC0008DE6B /* ConsoleAttachment.swift in Sources */,
 				083305E61C517FE300E27F66 /* SidebarHelpController.swift in Sources */,
@@ -1408,8 +1413,6 @@
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
 				083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */,
 				08F673D01D020B2700B87049 /* MiscProtocols.swift in Sources */,
-				08B4BE5F1D833162006861E3 /* DockerPullOperation.swift in Sources */,
-				08ABCEFD1D82FAE4007C6A5E /* DockerTag.swift in Sources */,
 				084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */,
 				088CE6AE1C4B605D00153414 /* Session.swift in Sources */,
 				08F189A21D09AA0300866A05 /* SessionController.swift in Sources */,
@@ -1445,7 +1448,6 @@
 				086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */,
 				08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */,
 				0827A4E91C7ED9CE001F0AFB /* SyntaxParser.swift in Sources */,
-				08ABCEFC1D82FAE4007C6A5E /* DockerManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1453,13 +1455,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08E7E08B1D8AD84A000C4C87 /* DockerManagerTests.swift in Sources */,
-				08ABCF011D82FCCE007C6A5E /* DockerUrlProtocolTests.swift in Sources */,
 				083305F21C519B4B00E27F66 /* ServerResponseTests.swift in Sources */,
 				083305FB1C519B8500E27F66 /* Rc2FileTypeTest.swift in Sources */,
 				08A01FD81CC965F8001EDFAA /* HelpControllerTests.swift in Sources */,
 				08FDB1991C591409006FCD1A /* ImageCacheTests.swift in Sources */,
-				08B4BE5B1D82FF5D006861E3 /* DockerImageTest.swift in Sources */,
 				08159D1E1C77656C004A205A /* NSProgressTests.m in Sources */,
 				08F42FA21D33F47000A1EE8D /* MockSessionHelpers.swift in Sources */,
 				08F189BD1D2184EB00866A05 /* BookmarkTest.swift in Sources */,
@@ -1481,11 +1480,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08E7E0921D8AE830000C4C87 /* DockerTag.swift in Sources */,
 				089794421D7B6A0F003339EE /* SharedConstants.swift in Sources */,
 				089794511D7B6A8F003339EE /* SystemExtensions.swift in Sources */,
 				0897944B1D7B6A8F003339EE /* NSError+Rc2.swift in Sources */,
 				0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */,
 				0897944F1D7B6A8F003339EE /* NSURL+Rc2.swift in Sources */,
+				08E7E0911D8AE82C000C4C87 /* DockerManager.swift in Sources */,
+				08E7E0931D8AE834000C4C87 /* DockerUrlProtocol.swift in Sources */,
+				08E7E0901D8AE827000C4C87 /* DockerImage.swift in Sources */,
+				08E7E0941D8AE838000C4C87 /* LocalServerProtocol.swift in Sources */,
+				08E7E0951D8AE83D000C4C87 /* DockerPullOperation.swift in Sources */,
 				08037C351D7C5E2200006E9E /* RecursiveFlatMap.swift in Sources */,
 				089794501D7B6A8F003339EE /* String+Rc2Extensions.swift in Sources */,
 				08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */,
@@ -1498,7 +1503,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08E7E09B1D8AEC56000C4C87 /* DockerManagerTests.swift in Sources */,
 				0897942A1D7B68F0003339EE /* ClientCoreTests.swift in Sources */,
+				08E7E09A1D8AEC53000C4C87 /* DockerImageTest.swift in Sources */,
+				08E7E09C1D8AEC5A000C4C87 /* DockerUrlProtocolTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
