@@ -25,6 +25,7 @@ open class DockerManager : NSObject {
 	fileprivate var versionLoaded:Bool = false
 	fileprivate(set) var installedImages:[DockerImage] = []
 	fileprivate var initialzed = false
+	fileprivate let queue = OperationQueue()
 	
 	///after creating, must call either initializeConnection or isDockerRunning
 	public init(host:String? = nil) {
@@ -56,14 +57,14 @@ open class DockerManager : NSObject {
 	
 	//test document available at fester.rc2.io
 	func checkForUpdates(_ baseUrl:String, requiredVersion:Int, handler:@escaping SimpleServerCallback) {
-		let url = URL(string: baseUrl)?.appendingPathComponent("/localServer.json")
+		let url = URL(string: baseUrl)?.appendingPathComponent("/imageInfo.json")
 		session.dataTask(with: url!, completionHandler: { (data, response, error) in
 			guard let rawData = data , error == nil else {
 				handler(false, NSError.error(withCode: .networkError, description: "failed to connect to update server", underlyingError: error as NSError?))
 				return
 			}
 			let json = JSON(rawData)
-			guard let latestVersion = json["latestVersion"].int else {
+			guard let latestVersion = json["version"].int else {
 				handler(false, NSError.error(withCode: .serverError, description: "update server returned invalid data"))
 				return
 			}

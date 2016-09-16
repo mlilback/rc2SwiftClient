@@ -51,7 +51,7 @@ struct Constants {
 
 let ConsoleAttachmentImageSize = CGSize(width: 48, height: 48)
 
-let HelpUrlBase = "http://stat.wvu.edu/rc2/library"
+let HelpUrlBase = "http://www.rc2.io/help/library"
 let HelpUrlFuncSeperator = "/html"
 
 let VariableUpdatedBackgroundColor = PlatformColor.green

@@ -6,7 +6,6 @@
 
 import Cocoa
 import os
-import XCGLogger
 import SwinjectStoryboard
 import Swinject
 import SwiftyJSON

@@ -6,7 +6,7 @@ This version is a complete rewrite in Swift, though where possible it is a prett
 
 ## Dependencies
 
-The OSX client requires 10.11 El Capitan. Development is being done with Xcode 7.3.
+The macOS client requires 10.12 Sierra. Development is being done with Xcode 8.
 
 * [Bright Futures](https://github.com/Thomvis/BrightFutures.git) a promise/future library to make async code look a lot cleaner
 
@@ -36,19 +36,36 @@ The OSX client requires 10.11 El Capitan. Development is being done with Xcode 7
 
 * [SwinjectStoryboard](https://github.com/Swinject/SwinjectStoryboard) for dependency injection into objects loaded from a storyboard (since container segues don't call prepareForSegue)
 
-* [XCGLogger](https://github.com/DaveWoodCom/XCGLogger) for logging
-
 # Preparing to build
 
 1. `carthage bootstrap --no-use-binaries --platform Mac`
 
 2. `git submodule update --init`
 
-# Help support
+# Docker support
+
+By default, all communication is done via /var/run/docker.sock. A remote host can be used by putting a URL with port number in the environment variable `DockerHostUrl`.
+
+# Help support (local)
 
 In the help directory, indexDocs.pl is a perl script to generate a json file with the help information necessary to make an index to search. These files are checked into git. The createHelpIndex target parses these files and creates an sqllite db that is embedded in the application for searching help.
 
 The perl script requires `Cpanel::JSON::XS` and `Statistics::R`.
+
+# Help support (server)
+
+The URL for help documentation on the web is part of info.plist.
+
+## Generating help files ##
+
+```
+cd R-3.3.1
+./configure --enable-prebuilt-html
+make
+tar zcf rdocs.tgz doc library/*/html/*
+# cd destination-directory
+tar xzf rdocs.tgz
+```
 
 # xcconfig usage
 

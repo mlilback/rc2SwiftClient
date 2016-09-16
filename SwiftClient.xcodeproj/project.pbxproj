@@ -50,15 +50,12 @@
 		082FF1D01C7F321B00CCC27F /* SwiftWebSocket.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C11C7F321B00CCC27F /* SwiftWebSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082FF1D11C7F321B00CCC27F /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */; };
 		082FF1D21C7F321B00CCC27F /* SwiftyJSON.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		082FF1D51C7F321B00CCC27F /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C41C7F321B00CCC27F /* XCGLogger.framework */; };
-		082FF1D61C7F321B00CCC27F /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C41C7F321B00CCC27F /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082FF1E21C7F323800CCC27F /* BrightFutures.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1D91C7F323800CCC27F /* BrightFutures.framework.dSYM */; };
 		082FF1E31C7F323800CCC27F /* CryptoSwift.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1DA1C7F323800CCC27F /* CryptoSwift.framework.dSYM */; };
 		082FF1E51C7F323800CCC27F /* PMKVObserver.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1DC1C7F323800CCC27F /* PMKVObserver.framework.dSYM */; };
 		082FF1E61C7F323800CCC27F /* Result.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1DD1C7F323800CCC27F /* Result.framework.dSYM */; };
 		082FF1E71C7F323800CCC27F /* SwiftWebSocket.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1DE1C7F323800CCC27F /* SwiftWebSocket.framework.dSYM */; };
 		082FF1E81C7F323800CCC27F /* SwiftyJSON.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1DF1C7F323800CCC27F /* SwiftyJSON.framework.dSYM */; };
-		082FF1EA1C7F323800CCC27F /* XCGLogger.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1E11C7F323800CCC27F /* XCGLogger.framework.dSYM */; };
 		082FF1EC1C7F338C00CCC27F /* URITemplate.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1EB1C7F338C00CCC27F /* URITemplate.framework.dSYM */; };
 		082FF1EE1C7F339400CCC27F /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; };
 		082FF1EF1C7F339400CCC27F /* URITemplate.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -101,6 +98,10 @@
 		083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */; };
 		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
 		083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
+		0841991F1D8C72EB0089A1AC /* PSOperations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0841991E1D8C72EB0089A1AC /* PSOperations.framework */; };
+		084199211D8C73120089A1AC /* PSOperations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 084199201D8C73120089A1AC /* PSOperations.framework */; };
+		084199221D8C73210089A1AC /* PSOperations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 084199201D8C73120089A1AC /* PSOperations.framework */; };
+		084199231D8C73210089A1AC /* PSOperations.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 084199201D8C73120089A1AC /* PSOperations.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0845CB1E1C616E060090267C /* MockFileManagers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* MockFileManagers.swift */; };
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08634DB91D2DA93A00445462 /* syntax2.Rmd in Resources */ = {isa = PBXBuildFile; fileRef = 08634DB81D2DA93A00445462 /* syntax2.Rmd */; };
@@ -308,10 +309,10 @@
 				082FF1D21C7F321B00CCC27F /* SwiftyJSON.framework in Embed Frameworks */,
 				08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */,
 				089794301D7B68F0003339EE /* ClientCore.framework in Embed Frameworks */,
+				084199231D8C73210089A1AC /* PSOperations.framework in Embed Frameworks */,
 				089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */,
 				082FF1C61C7F321B00CCC27F /* BrightFutures.framework in Embed Frameworks */,
 				082FF1C81C7F321B00CCC27F /* CryptoSwift.framework in Embed Frameworks */,
-				082FF1D61C7F321B00CCC27F /* XCGLogger.framework in Embed Frameworks */,
 				08DB1A9E1D32EFC10079DA6B /* SwinjectStoryboard.framework in Embed Frameworks */,
 				082FF1EF1C7F339400CCC27F /* URITemplate.framework in Embed Frameworks */,
 			);
@@ -333,7 +334,6 @@
 				082FF1E71C7F323800CCC27F /* SwiftWebSocket.framework.dSYM in CopyFiles */,
 				082FF1E81C7F323800CCC27F /* SwiftyJSON.framework.dSYM in CopyFiles */,
 				082FF1EC1C7F338C00CCC27F /* URITemplate.framework.dSYM in CopyFiles */,
-				082FF1EA1C7F323800CCC27F /* XCGLogger.framework.dSYM in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -445,6 +445,8 @@
 		083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbeddedDialogController.swift; sourceTree = "<group>"; };
 		083A567C1D25AFE7009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/BookmarkManager.storyboard; sourceTree = "<group>"; };
 		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarkManager.swift; sourceTree = "<group>"; };
+		0841991E1D8C72EB0089A1AC /* PSOperations.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PSOperations.framework; path = "vendor/PSOperations/build/Debug-iphoneos/PSOperations.framework"; sourceTree = "<group>"; };
+		084199201D8C73120089A1AC /* PSOperations.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PSOperations.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0845CB1D1C616E060090267C /* MockFileManagers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManagers.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		084FEA7F1D3044E700060A7D /* ObjcConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcConstants.h; sourceTree = "<group>"; };
@@ -582,9 +584,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				084199211D8C73120089A1AC /* PSOperations.framework in Frameworks */,
 				08A01FD01CC81315001EDFAA /* libsqlite3.tbd in Frameworks */,
 				082FF1D11C7F321B00CCC27F /* SwiftyJSON.framework in Frameworks */,
 				089346031C7F661400100CF6 /* PEGKit.framework in Frameworks */,
+				084199221D8C73210089A1AC /* PSOperations.framework in Frameworks */,
 				08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */,
 				082FF1CB1C7F321B00CCC27F /* PMKVObserver.framework in Frameworks */,
 				08DB1A9D1D32EFC10079DA6B /* SwinjectStoryboard.framework in Frameworks */,
@@ -593,7 +597,6 @@
 				0833A8221D2D7E770033654B /* HockeySDK.framework in Frameworks */,
 				082FF1C71C7F321B00CCC27F /* CryptoSwift.framework in Frameworks */,
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
-				082FF1D51C7F321B00CCC27F /* XCGLogger.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				0897942F1D7B68F0003339EE /* ClientCore.framework in Frameworks */,
 				082FF1C51C7F321B00CCC27F /* BrightFutures.framework in Frameworks */,
@@ -616,6 +619,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0841991F1D8C72EB0089A1AC /* PSOperations.framework in Frameworks */,
 				089794401D7B69C7003339EE /* PMKVObserver.framework in Frameworks */,
 				08E7E0961D8AE8A7000C4C87 /* BrightFutures.framework in Frameworks */,
 				08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */,
@@ -831,6 +835,8 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				084199201D8C73120089A1AC /* PSOperations.framework */,
+				0841991E1D8C72EB0089A1AC /* PSOperations.framework */,
 				08A01FCD1CC80189001EDFAA /* libsqlite3.tbd */,
 				082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */,
 				082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */,

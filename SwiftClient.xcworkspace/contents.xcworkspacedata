@@ -4,4 +4,7 @@
    <FileRef
       location = "container:SwiftClient.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:vendor/PSOperations/PSOperations.xcodeproj">
+   </FileRef>
 </Workspace>
