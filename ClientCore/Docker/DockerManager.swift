@@ -9,7 +9,6 @@ import SwiftyJSON
 import BrightFutures
 import ServiceManagement
 import os
-import PSOperations
 
 ///manages communicating with the local docker engine
 open class DockerManager : NSObject {
@@ -26,7 +25,6 @@ open class DockerManager : NSObject {
 	fileprivate var versionLoaded:Bool = false
 	fileprivate(set) var installedImages:[DockerImage] = []
 	fileprivate var initialzed = false
-	fileprivate let queue = PSOperations.OperationQueue()
 	
 	///after creating, must call either initializeConnection or isDockerRunning
 	public init(host:String? = nil) {
@@ -142,17 +140,17 @@ open class DockerManager : NSObject {
 			
 		}.onFailure { err in
 			print("request failure")
-			os_log("error reading image data from docker: %{public}@", type:.error, err)
+			os_log("error reading image data from docker: %{public}s", type:.error, err)
 			promise.failure(err)
 		}
 		return promise.future
 	}
 	
-	public func pullImage(_ imageName:String) -> Future<Bool, NSError> {
-		let pullTask = DockerPullOperation(baseUrl: URL(string: hostUrl!)!, imageName: imageName)
-		pullTask.start()
-		return pullTask.promise.future
+	public func pullImages(handler: ProgressHandler? = nil) -> (Future<Bool, NSError>, Progress) {
+		let url = URL(string: hostUrl!)!
+		let dbsize = installedImages.filter { $0.isNamed("rc2server/dbserver") }.reduce(0) { _, img in return img.size }
+		let dbpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/dbserver", estimatedSize: dbsize)
+		return (dbpull.startPull(progressHandler: handler), dbpull.progress!)
 	}
-	
 }
 

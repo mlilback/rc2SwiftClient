@@ -38,6 +38,13 @@ public struct DockerImage: JSONSerializable, Equatable {
 		}
 		return JSON(["Id": JSON(id), "Size": JSON(size), "RepoTags": JSON(outTags)])
 	}
+	
+	public func isNamed(_ str: String) -> Bool {
+		for (_, aTag) in tags.enumerated() {
+			if aTag.description.hasPrefix(str) { return true }
+		}
+		return false
+	}
 }
 
 public func ==(lhs:DockerImage, rhs:DockerImage) -> Bool {

@@ -98,10 +98,15 @@
 		083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */; };
 		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
 		083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
-		0841991F1D8C72EB0089A1AC /* PSOperations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0841991E1D8C72EB0089A1AC /* PSOperations.framework */; };
 		084199211D8C73120089A1AC /* PSOperations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 084199201D8C73120089A1AC /* PSOperations.framework */; };
 		084199221D8C73210089A1AC /* PSOperations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 084199201D8C73120089A1AC /* PSOperations.framework */; };
 		084199231D8C73210089A1AC /* PSOperations.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 084199201D8C73120089A1AC /* PSOperations.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		084199261D903F7A0089A1AC /* ServerSetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* ServerSetupController.swift */; };
+		0841992A1D908C410089A1AC /* busybox.jsonData in Resources */ = {isa = PBXBuildFile; fileRef = 084199291D908C410089A1AC /* busybox.jsonData */; };
+		0841992C1D908C550089A1AC /* DockerPullTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0841992B1D908C540089A1AC /* DockerPullTest.swift */; };
+		0841992E1D9093A20089A1AC /* TestDataProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0841992D1D9093A20089A1AC /* TestDataProtocol.swift */; };
+		084199301D9096880089A1AC /* TestDataProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0841992F1D9096880089A1AC /* TestDataProtocolTests.swift */; };
+		084199321D90A7FE0089A1AC /* DockerTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199311D90A7FE0089A1AC /* DockerTagTests.swift */; };
 		0845CB1E1C616E060090267C /* MockFileManagers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* MockFileManagers.swift */; };
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08634DB91D2DA93A00445462 /* syntax2.Rmd in Resources */ = {isa = PBXBuildFile; fileRef = 08634DB81D2DA93A00445462 /* syntax2.Rmd */; };
@@ -246,13 +251,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 089794191D7B68F0003339EE;
 			remoteInfo = ClientCore;
-		};
-		089794261D7B68F0003339EE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 088CE6681C4B0AF400153414;
-			remoteInfo = MacClient;
 		};
 		0897942D1D7B68F0003339EE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -447,6 +445,13 @@
 		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarkManager.swift; sourceTree = "<group>"; };
 		0841991E1D8C72EB0089A1AC /* PSOperations.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PSOperations.framework; path = "vendor/PSOperations/build/Debug-iphoneos/PSOperations.framework"; sourceTree = "<group>"; };
 		084199201D8C73120089A1AC /* PSOperations.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PSOperations.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		084199251D903F7A0089A1AC /* ServerSetupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerSetupController.swift; sourceTree = "<group>"; };
+		084199271D9052140089A1AC /* Progress+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Progress+Rc2.swift"; sourceTree = "<group>"; };
+		084199291D908C410089A1AC /* busybox.jsonData */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = busybox.jsonData; sourceTree = "<group>"; };
+		0841992B1D908C540089A1AC /* DockerPullTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerPullTest.swift; sourceTree = "<group>"; };
+		0841992D1D9093A20089A1AC /* TestDataProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestDataProtocol.swift; sourceTree = "<group>"; };
+		0841992F1D9096880089A1AC /* TestDataProtocolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestDataProtocolTests.swift; sourceTree = "<group>"; };
+		084199311D90A7FE0089A1AC /* DockerTagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerTagTests.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* MockFileManagers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManagers.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		084FEA7F1D3044E700060A7D /* ObjcConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcConstants.h; sourceTree = "<group>"; };
@@ -619,7 +624,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0841991F1D8C72EB0089A1AC /* PSOperations.framework in Frameworks */,
 				089794401D7B69C7003339EE /* PMKVObserver.framework in Frameworks */,
 				08E7E0961D8AE8A7000C4C87 /* BrightFutures.framework in Frameworks */,
 				08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */,
@@ -748,8 +752,8 @@
 				088CE66B1C4B0AF400153414 /* MacClient */,
 				088CE6941C4B605D00153414 /* shared */,
 				0897941B1D7B68F0003339EE /* ClientCore */,
-				08A01FAF1CC7FA28001EDFAA /* createHelpIndex */,
 				089794281D7B68F0003339EE /* ClientCoreTests */,
+				08A01FAF1CC7FA28001EDFAA /* createHelpIndex */,
 				088CE67D1C4B0AF500153414 /* MacClientTests */,
 				088CE6931C4B144800153414 /* Frameworks */,
 				088CE66A1C4B0AF400153414 /* Products */,
@@ -774,6 +778,7 @@
 				088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */,
 				0890650A1D26F59300C7CA5D /* MacAppStatus.swift */,
 				088CE6701C4B0AF400153414 /* Assets.xcassets */,
+				084199251D903F7A0089A1AC /* ServerSetupController.swift */,
 				083305D81C501B7300E27F66 /* MainWindowController.swift */,
 				088CE6721C4B0AF400153414 /* Main.storyboard */,
 				083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */,
@@ -954,14 +959,19 @@
 			isa = PBXGroup;
 			children = (
 				089794291D7B68F0003339EE /* ClientCoreTests.swift */,
+				084199311D90A7FE0089A1AC /* DockerTagTests.swift */,
 				0814F1EA1D7A2E290093C0C1 /* DockerImageTest.swift */,
 				08634DB11D2DA33F00445462 /* DockerManagerTests.swift */,
 				08ABCF001D82FCCE007C6A5E /* DockerUrlProtocolTests.swift */,
+				0841992B1D908C540089A1AC /* DockerPullTest.swift */,
+				084199291D908C410089A1AC /* busybox.jsonData */,
 				0814F1EC1D7A2E960093C0C1 /* dockerImages.json */,
 				0897942B1D7B68F0003339EE /* Info.plist */,
+				0841992D1D9093A20089A1AC /* TestDataProtocol.swift */,
+				0841992F1D9096880089A1AC /* TestDataProtocolTests.swift */,
 			);
 			path = ClientCoreTests;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		089794431D7B6A8F003339EE /* extensions */ = {
 			isa = PBXGroup;
@@ -969,6 +979,7 @@
 				089794441D7B6A8F003339EE /* NSError+Rc2.swift */,
 				089794451D7B6A8F003339EE /* NSProgress+Rc2.h */,
 				089794461D7B6A8F003339EE /* NSProgress+Rc2.m */,
+				084199271D9052140089A1AC /* Progress+Rc2.swift */,
 				089794471D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift */,
 				089794481D7B6A8F003339EE /* NSURL+Rc2.swift */,
 				089794491D7B6A8F003339EE /* String+Rc2Extensions.swift */,
@@ -1151,7 +1162,6 @@
 			);
 			dependencies = (
 				089794251D7B68F0003339EE /* PBXTargetDependency */,
-				089794271D7B68F0003339EE /* PBXTargetDependency */,
 			);
 			name = ClientCoreTests;
 			productName = ClientCoreTests;
@@ -1293,6 +1303,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0841992A1D908C410089A1AC /* busybox.jsonData in Resources */,
 				08E7E09D1D8AECE1000C4C87 /* dockerImages.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1401,6 +1412,7 @@
 				08F448FC1C4E244500C64706 /* SessionOutputController.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
 				08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */,
+				084199261D903F7A0089A1AC /* ServerSetupController.swift in Sources */,
 				08CB55521C5C06B2002CB7EE /* OutputTabController.swift in Sources */,
 				0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */,
 				0827A4E31C7ED9CE001F0AFB /* LatexCodeHighlighter.swift in Sources */,
@@ -1509,10 +1521,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0841992C1D908C550089A1AC /* DockerPullTest.swift in Sources */,
 				08E7E09B1D8AEC56000C4C87 /* DockerManagerTests.swift in Sources */,
 				0897942A1D7B68F0003339EE /* ClientCoreTests.swift in Sources */,
+				0841992E1D9093A20089A1AC /* TestDataProtocol.swift in Sources */,
 				08E7E09A1D8AEC53000C4C87 /* DockerImageTest.swift in Sources */,
 				08E7E09C1D8AEC5A000C4C87 /* DockerUrlProtocolTests.swift in Sources */,
+				084199321D90A7FE0089A1AC /* DockerTagTests.swift in Sources */,
+				084199301D9096880089A1AC /* TestDataProtocolTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1541,11 +1557,6 @@
 			isa = PBXTargetDependency;
 			target = 089794191D7B68F0003339EE /* ClientCore */;
 			targetProxy = 089794241D7B68F0003339EE /* PBXContainerItemProxy */;
-		};
-		089794271D7B68F0003339EE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 088CE6681C4B0AF400153414 /* MacClient */;
-			targetProxy = 089794261D7B68F0003339EE /* PBXContainerItemProxy */;
 		};
 		0897942E1D7B68F0003339EE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

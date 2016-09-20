@@ -16,3 +16,5 @@ public enum Rc2ErrorCode: Int {
 	case noSuchProject = 104
 	case networkError = 105
 }
+
+public typealias ProgressHandler = (Progress?) -> Void

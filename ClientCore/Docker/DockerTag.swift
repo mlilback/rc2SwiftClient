@@ -21,18 +21,19 @@ public struct DockerTag: JSONSerializable, CustomStringConvertible, Hashable {
 	
 	///parses a tag string to create the instance. Only works with tags of the format [repo/][tag][:version]
 	public init?(tag:String) {
-		let reg = try! NSRegularExpression(pattern: "(([\\w][\\w.-]+)/)?([\\w][\\w.-]+)(:([\\w][\\w.-]+))?", options: [])
+		let reg = try! NSRegularExpression(pattern: "(([\\w][\\w.-]+)/)?([\\w][\\w.-]+)(:([\\w]?[\\w.-]+))?", options: [])
 		guard let match = reg.firstMatch(in: tag, options: [], range: tag.toNSRange) else { return nil }
-		switch match.numberOfRanges {
-		case 6:
-			self.init(repo: match.string(index:2, forString: tag), name: match.string(index:3, forString: tag)!, version: match.string(index:5, forString: tag))
-		case 4:
-			self.init(repo: nil, name: match.string(index:1, forString: tag)!, version: match.string(index:3, forString: tag))
-		case 2:
-			self.init(repo: nil, name: match.string(index:1, forString: tag)!, version: nil)
-		default:
-			return nil
+		var repo:String?
+		var name:String
+		var version:String?
+		if match.rangeAt(5).length > 0 {
+			version = match.string(index: 5, forString: tag)
 		}
+		if match.rangeAt(2).length > 0 {
+			repo = match.string(index:2, forString:tag)
+		}
+		name = match.string(index: 3, forString: tag)!
+		self.init(repo:repo, name:name, version:version)
 	}
 	
 	public init(repo:String?, name:String, version:String?) {

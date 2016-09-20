@@ -19,6 +19,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	var bookmarkWindowController: NSWindowController?
 	let bookmarkManager = BookmarkManager()
 	dynamic var dockerManager: DockerManager?
+	var setupController: ServerSetupController?
 
 	fileprivate dynamic var _currentProgress: Progress?
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
@@ -26,7 +27,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	func applicationWillFinishLaunching(_ notification: Notification) {
 		dockerManager = DockerManager()
 		dockerManager?.isDockerRunning() { isRunning in
-			os_log("docker is running %{public}@", type:.info, isRunning ? "yes" : "no")
+			os_log("docker is running %{public}s", type:.info, isRunning ? "yes" : "no")
+			self.startSetup()
 //			let f = self.dockerManager!.pullImage("rc2server/dbserver")
 //			f.onSuccess {_ in
 //				os_log("pull should be good", type:.info)
@@ -42,7 +44,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		//skip showing bookmarks when running unit tests
 		guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
-		showBookmarkWindow(nil)
+//		showBookmarkWindow(nil)
 	#if HOCKEYAPP_ENABLED
 //		log.info("key is \(kHockeyAppIdentifier)")
 //		BITHockeyManager.sharedHockeyManager().configureWithIdentifier(kHockeyAppIdentifier)
@@ -87,6 +89,26 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 				return NSApp.mainWindow != bookmarkWindowController?.window
 			default:
 				return false
+		}
+	}
+	
+	func startSetup() {
+		precondition(setupController == nil)
+		let sboard = SwinjectStoryboard.create(name: "Main", bundle: nil)
+		let wc = sboard.instantiateWindowController()
+		setupController = wc.contentViewController as? ServerSetupController
+		wc.window?.makeKeyAndOrderFront(self)
+		guard let (future, progress) = dockerManager?.pullImages() else { fatalError("failed to start image pull") }
+		setupController?.progress = progress
+		future.onSuccess {_ in 
+			wc.window?.orderOut(self)
+			wc.close()
+			self.showBookmarkWindow(self)
+		}.onFailure { err in
+			os_log("error pulling images: %{public}s", type:.error, err)
+			wc.window?.orderOut(self)
+			wc.close()
+			self.showBookmarkWindow(self)
 		}
 	}
 	

@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A320" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -526,6 +526,63 @@ CA
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-229" y="65"/>
+        </scene>
+        <!--Window Controller-->
+        <scene sceneID="HW3-Oi-wyR">
+            <objects>
+                <windowController storyboardIdentifier="NSWindowController" id="VvP-Om-ZsH" sceneMemberID="viewController">
+                    <window key="window" title="Setting Up Server" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="h1V-Fn-Msq">
+                        <windowStyleMask key="styleMask" titled="YES"/>
+                        <windowPositionMask key="initialPositionMask" topStrut="YES"/>
+                        <rect key="contentRect" x="934" y="800" width="425" height="83"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2048" height="1129"/>
+                    </window>
+                    <connections>
+                        <segue destination="MSO-Wl-nyy" kind="relationship" relationship="window.shadowedContentViewController" id="ktP-nm-3S3"/>
+                    </connections>
+                </windowController>
+                <customObject id="Nxf-jS-gAP" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-201" y="330"/>
+        </scene>
+        <!--Server Setup Controller-->
+        <scene sceneID="jev-cS-w7g">
+            <objects>
+                <viewController storyboardIdentifier="ServerSetupController" id="MSO-Wl-nyy" customClass="ServerSetupController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="ZsW-b4-mL9">
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="83"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6TE-w1-CEJ">
+                                <rect key="frame" x="50" y="46" width="141" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Installing Local Server" id="xZG-re-BwD">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="xB2-2U-oSL">
+                                <rect key="frame" x="20" y="19" width="200" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="wTO-dk-aR7"/>
+                                </constraints>
+                                <connections>
+                                    <binding destination="MSO-Wl-nyy" name="value" keyPath="progress.fractionCompleted" id="eko-jM-U8Z"/>
+                                </connections>
+                            </progressIndicator>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="xB2-2U-oSL" firstAttribute="centerX" secondItem="ZsW-b4-mL9" secondAttribute="centerX" id="5IP-mt-gWr"/>
+                            <constraint firstAttribute="bottom" secondItem="xB2-2U-oSL" secondAttribute="bottom" constant="20" symbolic="YES" id="GM0-Ha-xzd"/>
+                            <constraint firstItem="6TE-w1-CEJ" firstAttribute="top" secondItem="ZsW-b4-mL9" secondAttribute="top" constant="20" symbolic="YES" id="PZE-qt-DvL"/>
+                            <constraint firstItem="6TE-w1-CEJ" firstAttribute="centerX" secondItem="ZsW-b4-mL9" secondAttribute="centerX" id="bXd-5C-8Pg"/>
+                            <constraint firstItem="xB2-2U-oSL" firstAttribute="top" secondItem="6TE-w1-CEJ" secondAttribute="bottom" constant="8" symbolic="YES" id="kCv-ZG-k7p"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <customObject id="M6X-H9-jqA" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-201" y="696"/>
         </scene>
     </scenes>
 </document>

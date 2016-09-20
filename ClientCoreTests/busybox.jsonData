@@ -1,0 +1,62 @@
+{"status":"Pulling from library/busybox","id":"1"}
+{"status":"Pulling fs layer","progressDetail":{},"id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":16384,"total":667590},"progress":"[=\u003e                                                 ] 16.38 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":32768,"total":667590},"progress":"[==\u003e                                                ] 32.77 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":52584,"total":667590},"progress":"[===\u003e                                               ] 52.58 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":68968,"total":667590},"progress":"[=====\u003e                                             ] 68.97 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":91680,"total":667590},"progress":"[======\u003e                                            ] 91.68 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":108064,"total":667590},"progress":"[========\u003e                                          ] 108.1 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":124448,"total":667590},"progress":"[=========\u003e                                         ] 124.4 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":157216,"total":667590},"progress":"[===========\u003e                                       ] 157.2 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":173600,"total":667590},"progress":"[=============\u003e                                     ] 173.6 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":189984,"total":667590},"progress":"[==============\u003e                                    ]   190 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":206368,"total":667590},"progress":"[===============\u003e                                   ] 206.4 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":222752,"total":667590},"progress":"[================\u003e                                  ] 222.8 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":239136,"total":667590},"progress":"[=================\u003e                                 ] 239.1 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":255520,"total":667590},"progress":"[===================\u003e                               ] 255.5 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":271904,"total":667590},"progress":"[====================\u003e                              ] 271.9 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":288288,"total":667590},"progress":"[=====================\u003e                             ] 288.3 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":321056,"total":667590},"progress":"[========================\u003e                          ] 321.1 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":337440,"total":667590},"progress":"[=========================\u003e                         ] 337.4 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":353824,"total":667590},"progress":"[==========================\u003e                        ] 353.8 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":370208,"total":667590},"progress":"[===========================\u003e                       ] 370.2 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":386592,"total":667590},"progress":"[============================\u003e                      ] 386.6 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":419360,"total":667590},"progress":"[===============================\u003e                   ] 419.4 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":435744,"total":667590},"progress":"[================================\u003e                  ] 435.7 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":468512,"total":667590},"progress":"[===================================\u003e               ] 468.5 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":484896,"total":667590},"progress":"[====================================\u003e              ] 484.9 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":501280,"total":667590},"progress":"[=====================================\u003e             ] 501.3 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":534048,"total":667590},"progress":"[=======================================\u003e           ]   534 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":550432,"total":667590},"progress":"[=========================================\u003e         ] 550.4 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":583200,"total":667590},"progress":"[===========================================\u003e       ] 583.2 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":599584,"total":667590},"progress":"[============================================\u003e      ] 599.6 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":615968,"total":667590},"progress":"[==============================================\u003e    ]   616 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":632352,"total":667590},"progress":"[===============================================\u003e   ] 632.4 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":648736,"total":667590},"progress":"[================================================\u003e  ] 648.7 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Downloading","progressDetail":{"current":665120,"total":667590},"progress":"[=================================================\u003e ] 665.1 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Verifying Checksum","progressDetail":{},"id":"8ddc19f16526"}
+{"status":"Download complete","progressDetail":{},"id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":32768,"total":667590},"progress":"[==\u003e                                                ] 32.77 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":65536,"total":667590},"progress":"[====\u003e                                              ] 65.54 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":98304,"total":667590},"progress":"[=======\u003e                                           ]  98.3 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":131072,"total":667590},"progress":"[=========\u003e                                         ] 131.1 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":163840,"total":667590},"progress":"[============\u003e                                      ] 163.8 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":196608,"total":667590},"progress":"[==============\u003e                                    ] 196.6 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":229376,"total":667590},"progress":"[=================\u003e                                 ] 229.4 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":294912,"total":667590},"progress":"[======================\u003e                            ] 294.9 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":327680,"total":667590},"progress":"[========================\u003e                          ] 327.7 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":360448,"total":667590},"progress":"[==========================\u003e                        ] 360.4 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":393216,"total":667590},"progress":"[=============================\u003e                     ] 393.2 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":425984,"total":667590},"progress":"[===============================\u003e                   ]   426 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":458752,"total":667590},"progress":"[==================================\u003e                ] 458.8 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":491520,"total":667590},"progress":"[====================================\u003e              ] 491.5 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":524288,"total":667590},"progress":"[=======================================\u003e           ] 524.3 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":557056,"total":667590},"progress":"[=========================================\u003e         ] 557.1 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":589824,"total":667590},"progress":"[============================================\u003e      ] 589.8 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":622592,"total":667590},"progress":"[==============================================\u003e    ] 622.6 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":655360,"total":667590},"progress":"[=================================================\u003e ] 655.4 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":667590,"total":667590},"progress":"[==================================================\u003e] 667.6 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Extracting","progressDetail":{"current":667590,"total":667590},"progress":"[==================================================\u003e] 667.6 kB/667.6 kB","id":"8ddc19f16526"}
+{"status":"Pull complete","progressDetail":{},"id":"8ddc19f16526"}
+{"status":"Digest: sha256:a59906e33509d14c036c8678d687bd4eec81ed7c4b8ce907b888c607f6a1e0e6"}
+{"status":"Status: Downloaded newer image for busybox:1"}
