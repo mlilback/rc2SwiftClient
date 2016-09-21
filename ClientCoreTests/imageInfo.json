@@ -1,0 +1,22 @@
+{
+  "images": {
+    "appserver": {
+      "dupsize": 126634686, 
+      "id": "sha256:88eea10322f34a5fcec6f86c08145d4e5662b85ac54309b3a5d8d24760edbec4", 
+      "name": "appserver", 
+      "size": 477000264
+    }, 
+    "compute": {
+      "dupsize": 126634686, 
+      "id": "sha256:fafe69365baec53784d6a24af44028dc7fcf3d85c9a641363e055ac7ab9d4fbe", 
+      "name": "compute", 
+      "size": 2099723690
+    }, 
+    "dbserver": {
+      "id": "sha256:544695ec771bd6f6c511274ce6f63c2e587897927c1c4d05a0402abfdac1c889", 
+      "name": "dbserver", 
+      "size": 442069860
+    }
+  }, 
+  "version": 1
+}

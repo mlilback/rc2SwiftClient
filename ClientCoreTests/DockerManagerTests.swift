@@ -9,11 +9,14 @@
 import XCTest
 @testable import ClientCore
 import SwiftyJSON
+import BrightFutures
+import Mockingjay
 
 class DockerManagerTests: XCTestCase {
 	
 	override func setUp() {
 		super.setUp()
+		URLSessionConfiguration.mockingjaySwizzleDefaultSessionConfiguration()
 	}
 	
 	override func tearDown() {
@@ -25,11 +28,6 @@ class DockerManagerTests: XCTestCase {
 		XCTAssertTrue(docker.isInstalled)
 	}
 
-//	func testDockerNotInstalled() {
-//		let docker = DockerManager(path: "/usr/local/foo/bar")
-//		XCTAssertFalse(docker.isInstalled)
-//	}
-	
 	func testVersionCommand() {
 		let expect = self.expectation(description: "file download")
 		let docker = DockerManager()
@@ -44,38 +42,47 @@ class DockerManagerTests: XCTestCase {
 		self.waitForExpectations(timeout: 2) { (err) -> Void in }
 	}
 	
-	func testLoadImages() {
-		//make sure running
-		let expect = self.expectation(description:"check docker running")
+	func testLoadRequiredInfo() {
 		let docker = DockerManager()
-		var success = false
-		docker.isDockerRunning() { rspSuccess in
-			success = rspSuccess
+		initializeManager(docker: docker)
+
+		stubGetRequest(uriPath: "/imageInfo.json", fileName: "imageInfo")
+		let expect = expectation(description: "load required info")
+		let future = docker.loadRequiredImageInfo()
+		var loaded:Bool = false
+		var error:NSError? = nil
+		future.onSuccess { success in
+			loaded = success
 			expect.fulfill()
-		}
-		self.waitForExpectations(timeout:20) { (err) -> Void in
-			XCTAssertTrue(success)
-		}
-		let imgExpect = self.expectation(description: "load image info")
-		let future = docker.loadImages()
-		success = false
-		var images:[DockerImage]?
-		var error:NSError?
-		future.onSuccess { rspImages in
-			success = true
-			images = rspImages
-			imgExpect.fulfill()
 		}.onFailure { err in
 			error = err
-			imgExpect.fulfill()
+			expect.fulfill()
 		}
-		self.waitForExpectations(timeout:20) { (err) -> Void in
-			XCTAssertTrue(success)
-			XCTAssertEqual(images?.count, 1)
-			print(images?.first?.tags)
-			if let anErr = error {
-				print("error fetching image info: \(anErr)")
-			}
+		waitForExpectations(timeout: 2) { _ in
+			XCTAssertTrue(loaded)
+			XCTAssertNil(error)
+			XCTAssertEqual(docker.imageInfo?.version, 1)
+			XCTAssertEqual(docker.imageInfo?.dbserver.name, "dbserver")
 		}
+	}
+	
+	///initializes docker with fake data from version.json
+	func initializeManager(docker:DockerManager) {
+		let expect = expectation(description: "docker init")
+		stubGetRequest(uriPath: "/version", fileName: "version")
+		var running:Bool = false
+		docker.isDockerRunning() { isRun in
+			running = isRun
+			expect.fulfill()
+		}
+		waitForExpectations(timeout: 1, handler:nil)
+		XCTAssertTrue(running)
+	}
+	
+	///uses Mockingjay to stub out a request for uriPath with the contents of fileName.json
+	func stubGetRequest(uriPath:String, fileName:String) {
+		let path : String = Bundle(for: DockerManagerTests.self).path(forResource: fileName, ofType: "json")!
+		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
+		stub(http(method: .get, uri: uriPath), builder: jsonData(resultData!))
 	}
 }

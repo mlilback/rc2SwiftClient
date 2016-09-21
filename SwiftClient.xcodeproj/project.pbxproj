@@ -98,15 +98,20 @@
 		083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */; };
 		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
 		083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
-		084199211D8C73120089A1AC /* PSOperations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 084199201D8C73120089A1AC /* PSOperations.framework */; };
-		084199221D8C73210089A1AC /* PSOperations.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 084199201D8C73120089A1AC /* PSOperations.framework */; };
-		084199231D8C73210089A1AC /* PSOperations.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 084199201D8C73120089A1AC /* PSOperations.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		084199261D903F7A0089A1AC /* ServerSetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* ServerSetupController.swift */; };
 		0841992A1D908C410089A1AC /* busybox.jsonData in Resources */ = {isa = PBXBuildFile; fileRef = 084199291D908C410089A1AC /* busybox.jsonData */; };
 		0841992C1D908C550089A1AC /* DockerPullTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0841992B1D908C540089A1AC /* DockerPullTest.swift */; };
 		0841992E1D9093A20089A1AC /* TestDataProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0841992D1D9093A20089A1AC /* TestDataProtocol.swift */; };
 		084199301D9096880089A1AC /* TestDataProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0841992F1D9096880089A1AC /* TestDataProtocolTests.swift */; };
 		084199321D90A7FE0089A1AC /* DockerTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199311D90A7FE0089A1AC /* DockerTagTests.swift */; };
+		084199351D91A77D0089A1AC /* DockerImageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199341D91A77D0089A1AC /* DockerImageInfo.swift */; };
+		084199371D91ABC70089A1AC /* DockerImageInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199361D91ABC70089A1AC /* DockerImageInfoTests.swift */; };
+		084199391D91AC6B0089A1AC /* imageInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 084199381D91AC6B0089A1AC /* imageInfo.json */; };
+		0841993A1D91B0760089A1AC /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
+		0841993B1D91B2770089A1AC /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; };
+		0841993C1D91B2830089A1AC /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; };
+		0841993D1D91B2B80089A1AC /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0841993E1D91B2C80089A1AC /* URITemplate.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0845CB1E1C616E060090267C /* MockFileManagers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* MockFileManagers.swift */; };
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08634DB91D2DA93A00445462 /* syntax2.Rmd in Resources */ = {isa = PBXBuildFile; fileRef = 08634DB81D2DA93A00445462 /* syntax2.Rmd */; };
@@ -114,6 +119,7 @@
 		086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */; };
 		0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086659991CA1F3E5007AC555 /* MainWindow.xib */; };
 		086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086BC9AE1C552D43006ABAE0 /* AppStatus.swift */; };
+		087389BE1D92C2C40056518F /* version.json in Resources */ = {isa = PBXBuildFile; fileRef = 087389BD1D92C2C40056518F /* version.json */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
 		088CE6741C4B0AF400153414 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6721C4B0AF400153414 /* Main.storyboard */; };
@@ -200,7 +206,6 @@
 		08E7E0911D8AE82C000C4C87 /* DockerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEF61D82FAE4007C6A5E /* DockerManager.swift */; };
 		08E7E0921D8AE830000C4C87 /* DockerTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEF71D82FAE4007C6A5E /* DockerTag.swift */; };
 		08E7E0931D8AE834000C4C87 /* DockerUrlProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEF81D82FAE4007C6A5E /* DockerUrlProtocol.swift */; };
-		08E7E0941D8AE838000C4C87 /* LocalServerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCEFA1D82FAE4007C6A5E /* LocalServerProtocol.swift */; };
 		08E7E0951D8AE83D000C4C87 /* DockerPullOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B4BE5E1D833162006861E3 /* DockerPullOperation.swift */; };
 		08E7E0961D8AE8A7000C4C87 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
 		08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
@@ -275,6 +280,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				0841993E1D91B2C80089A1AC /* URITemplate.framework in CopyFiles */,
+				0841993D1D91B2B80089A1AC /* Mockingjay.framework in CopyFiles */,
 				08F8EDB91D89E3770037245C /* BrightFutures.framework in CopyFiles */,
 				08037C331D7C5D2200006E9E /* SwiftyJSON.framework in CopyFiles */,
 				08037C241D7C576C00006E9E /* PMKVObserver.framework in CopyFiles */,
@@ -307,7 +314,6 @@
 				082FF1D21C7F321B00CCC27F /* SwiftyJSON.framework in Embed Frameworks */,
 				08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */,
 				089794301D7B68F0003339EE /* ClientCore.framework in Embed Frameworks */,
-				084199231D8C73210089A1AC /* PSOperations.framework in Embed Frameworks */,
 				089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */,
 				082FF1C61C7F321B00CCC27F /* BrightFutures.framework in Embed Frameworks */,
 				082FF1C81C7F321B00CCC27F /* CryptoSwift.framework in Embed Frameworks */,
@@ -394,14 +400,12 @@
 		082FF1C01C7F321B00CCC27F /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/Mac/Result.framework; sourceTree = "<group>"; };
 		082FF1C11C7F321B00CCC27F /* SwiftWebSocket.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftWebSocket.framework; path = Carthage/Build/Mac/SwiftWebSocket.framework; sourceTree = "<group>"; };
 		082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyJSON.framework; path = Carthage/Build/Mac/SwiftyJSON.framework; sourceTree = "<group>"; };
-		082FF1C41C7F321B00CCC27F /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCGLogger.framework; path = Carthage/Build/Mac/XCGLogger.framework; sourceTree = "<group>"; };
 		082FF1D91C7F323800CCC27F /* BrightFutures.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = BrightFutures.framework.dSYM; path = Carthage/Build/Mac/BrightFutures.framework.dSYM; sourceTree = "<group>"; };
 		082FF1DA1C7F323800CCC27F /* CryptoSwift.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = CryptoSwift.framework.dSYM; path = Carthage/Build/Mac/CryptoSwift.framework.dSYM; sourceTree = "<group>"; };
 		082FF1DC1C7F323800CCC27F /* PMKVObserver.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = PMKVObserver.framework.dSYM; path = Carthage/Build/Mac/PMKVObserver.framework.dSYM; sourceTree = "<group>"; };
 		082FF1DD1C7F323800CCC27F /* Result.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Result.framework.dSYM; path = Carthage/Build/Mac/Result.framework.dSYM; sourceTree = "<group>"; };
 		082FF1DE1C7F323800CCC27F /* SwiftWebSocket.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = SwiftWebSocket.framework.dSYM; path = Carthage/Build/Mac/SwiftWebSocket.framework.dSYM; sourceTree = "<group>"; };
 		082FF1DF1C7F323800CCC27F /* SwiftyJSON.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = SwiftyJSON.framework.dSYM; path = Carthage/Build/Mac/SwiftyJSON.framework.dSYM; sourceTree = "<group>"; };
-		082FF1E11C7F323800CCC27F /* XCGLogger.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = XCGLogger.framework.dSYM; path = Carthage/Build/Mac/XCGLogger.framework.dSYM; sourceTree = "<group>"; };
 		082FF1EB1C7F338C00CCC27F /* URITemplate.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = URITemplate.framework.dSYM; path = Carthage/Build/Mac/URITemplate.framework.dSYM; sourceTree = "<group>"; };
 		082FF1ED1C7F339400CCC27F /* URITemplate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = URITemplate.framework; path = Carthage/Build/Mac/URITemplate.framework; sourceTree = "<group>"; };
 		083174031C5571D300071408 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
@@ -443,8 +447,6 @@
 		083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbeddedDialogController.swift; sourceTree = "<group>"; };
 		083A567C1D25AFE7009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/BookmarkManager.storyboard; sourceTree = "<group>"; };
 		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarkManager.swift; sourceTree = "<group>"; };
-		0841991E1D8C72EB0089A1AC /* PSOperations.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PSOperations.framework; path = "vendor/PSOperations/build/Debug-iphoneos/PSOperations.framework"; sourceTree = "<group>"; };
-		084199201D8C73120089A1AC /* PSOperations.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PSOperations.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		084199251D903F7A0089A1AC /* ServerSetupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerSetupController.swift; sourceTree = "<group>"; };
 		084199271D9052140089A1AC /* Progress+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Progress+Rc2.swift"; sourceTree = "<group>"; };
 		084199291D908C410089A1AC /* busybox.jsonData */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = busybox.jsonData; sourceTree = "<group>"; };
@@ -452,6 +454,9 @@
 		0841992D1D9093A20089A1AC /* TestDataProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestDataProtocol.swift; sourceTree = "<group>"; };
 		0841992F1D9096880089A1AC /* TestDataProtocolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestDataProtocolTests.swift; sourceTree = "<group>"; };
 		084199311D90A7FE0089A1AC /* DockerTagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerTagTests.swift; sourceTree = "<group>"; };
+		084199341D91A77D0089A1AC /* DockerImageInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerImageInfo.swift; sourceTree = "<group>"; };
+		084199361D91ABC70089A1AC /* DockerImageInfoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerImageInfoTests.swift; sourceTree = "<group>"; };
+		084199381D91AC6B0089A1AC /* imageInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = imageInfo.json; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* MockFileManagers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManagers.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		084FEA7F1D3044E700060A7D /* ObjcConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcConstants.h; sourceTree = "<group>"; };
@@ -462,6 +467,7 @@
 		086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemExtensionsTests.swift; sourceTree = "<group>"; };
 		0866599A1CA1F3E5007AC555 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/MainWindow.xib; sourceTree = SOURCE_ROOT; };
 		086BC9AE1C552D43006ABAE0 /* AppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStatus.swift; sourceTree = "<group>"; };
+		087389BD1D92C2C40056518F /* version.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = version.json; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		088CE6691C4B0AF400153414 /* Rc².app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Rc².app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppDelegate.swift; sourceTree = "<group>"; };
@@ -531,7 +537,6 @@
 		08ABCEF61D82FAE4007C6A5E /* DockerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerManager.swift; sourceTree = "<group>"; };
 		08ABCEF71D82FAE4007C6A5E /* DockerTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerTag.swift; sourceTree = "<group>"; };
 		08ABCEF81D82FAE4007C6A5E /* DockerUrlProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerUrlProtocol.swift; sourceTree = "<group>"; };
-		08ABCEFA1D82FAE4007C6A5E /* LocalServerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalServerProtocol.swift; sourceTree = "<group>"; };
 		08ABCF001D82FCCE007C6A5E /* DockerUrlProtocolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerUrlProtocolTests.swift; sourceTree = "<group>"; };
 		08B036211C73B131005928B3 /* FileImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporter.swift; sourceTree = "<group>"; };
 		08B4BE5E1D833162006861E3 /* DockerPullOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerPullOperation.swift; sourceTree = "<group>"; };
@@ -589,11 +594,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				084199211D8C73120089A1AC /* PSOperations.framework in Frameworks */,
 				08A01FD01CC81315001EDFAA /* libsqlite3.tbd in Frameworks */,
 				082FF1D11C7F321B00CCC27F /* SwiftyJSON.framework in Frameworks */,
 				089346031C7F661400100CF6 /* PEGKit.framework in Frameworks */,
-				084199221D8C73210089A1AC /* PSOperations.framework in Frameworks */,
 				08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */,
 				082FF1CB1C7F321B00CCC27F /* PMKVObserver.framework in Frameworks */,
 				08DB1A9D1D32EFC10079DA6B /* SwinjectStoryboard.framework in Frameworks */,
@@ -626,6 +629,7 @@
 			files = (
 				089794401D7B69C7003339EE /* PMKVObserver.framework in Frameworks */,
 				08E7E0961D8AE8A7000C4C87 /* BrightFutures.framework in Frameworks */,
+				0841993B1D91B2770089A1AC /* URITemplate.framework in Frameworks */,
 				08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -638,6 +642,8 @@
 				08037C221D7C571D00006E9E /* PMKVObserver.framework in Frameworks */,
 				089794231D7B68F0003339EE /* ClientCore.framework in Frameworks */,
 				08F8EDB71D89E3460037245C /* BrightFutures.framework in Frameworks */,
+				0841993A1D91B0760089A1AC /* Mockingjay.framework in Frameworks */,
+				0841993C1D91B2830089A1AC /* URITemplate.framework in Frameworks */,
 				08E7E0981D8AE926000C4C87 /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -741,7 +747,7 @@
 			name = "test resources";
 			sourceTree = "<group>";
 		};
-		088CE6601C4B0AF400153414 = {
+		084199331D9179C60089A1AC /* xcconfig */ = {
 			isa = PBXGroup;
 			children = (
 				08F189AB1D18816A00866A05 /* Debug.xcconfig */,
@@ -749,6 +755,14 @@
 				08F189AD1D18818700866A05 /* Shared.xcconfig */,
 				08037C211D7B74A100006E9E /* App.xcconfig */,
 				08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */,
+			);
+			name = xcconfig;
+			sourceTree = "<group>";
+		};
+		088CE6601C4B0AF400153414 = {
+			isa = PBXGroup;
+			children = (
+				084199331D9179C60089A1AC /* xcconfig */,
 				088CE66B1C4B0AF400153414 /* MacClient */,
 				088CE6941C4B605D00153414 /* shared */,
 				0897941B1D7B68F0003339EE /* ClientCore */,
@@ -840,8 +854,6 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				084199201D8C73120089A1AC /* PSOperations.framework */,
-				0841991E1D8C72EB0089A1AC /* PSOperations.framework */,
 				08A01FCD1CC80189001EDFAA /* libsqlite3.tbd */,
 				082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */,
 				082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */,
@@ -858,7 +870,6 @@
 				08DB1A971D32EF930079DA6B /* Swinject.framework */,
 				08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */,
 				082FF1ED1C7F339400CCC27F /* URITemplate.framework */,
-				082FF1C41C7F321B00CCC27F /* XCGLogger.framework */,
 				082FF1EB1C7F338C00CCC27F /* URITemplate.framework.dSYM */,
 				08BFD3E71C90B5AC0041EB1C /* MessagePackSwift.framework.dSYM */,
 				08F2A85C1C7F36EC00A803A0 /* Mockingjay.framework.dSYM */,
@@ -869,7 +880,6 @@
 				082FF1DD1C7F323800CCC27F /* Result.framework.dSYM */,
 				082FF1DE1C7F323800CCC27F /* SwiftWebSocket.framework.dSYM */,
 				082FF1DF1C7F323800CCC27F /* SwiftyJSON.framework.dSYM */,
-				082FF1E11C7F323800CCC27F /* XCGLogger.framework.dSYM */,
 				08DB1A991D32EFA10079DA6B /* Swinject.framework.dSYM */,
 				08DB1A9A1D32EFA10079DA6B /* SwinjectStoryboard.framework.dSYM */,
 			);
@@ -969,6 +979,9 @@
 				0897942B1D7B68F0003339EE /* Info.plist */,
 				0841992D1D9093A20089A1AC /* TestDataProtocol.swift */,
 				0841992F1D9096880089A1AC /* TestDataProtocolTests.swift */,
+				084199361D91ABC70089A1AC /* DockerImageInfoTests.swift */,
+				087389BD1D92C2C40056518F /* version.json */,
+				084199381D91AC6B0089A1AC /* imageInfo.json */,
 			);
 			path = ClientCoreTests;
 			sourceTree = SOURCE_ROOT;
@@ -1020,9 +1033,9 @@
 			children = (
 				08ABCEF51D82FAE4007C6A5E /* DockerImage.swift */,
 				08ABCEF61D82FAE4007C6A5E /* DockerManager.swift */,
+				084199341D91A77D0089A1AC /* DockerImageInfo.swift */,
 				08ABCEF71D82FAE4007C6A5E /* DockerTag.swift */,
 				08ABCEF81D82FAE4007C6A5E /* DockerUrlProtocol.swift */,
-				08ABCEFA1D82FAE4007C6A5E /* LocalServerProtocol.swift */,
 				08B4BE5E1D833162006861E3 /* DockerPullOperation.swift */,
 			);
 			path = Docker;
@@ -1097,7 +1110,6 @@
 				088CE6671C4B0AF400153414 /* Resources */,
 				082FF1D71C7F321B00CCC27F /* Embed Frameworks */,
 				082FF1D81C7F322500CCC27F /* CopyFiles */,
-				0833A81B1D2D7E210033654B /* hockey app */,
 				084525B11D3D56E500E99F9D /* Embed XPC Services */,
 			);
 			buildRules = (
@@ -1304,6 +1316,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				0841992A1D908C410089A1AC /* busybox.jsonData in Resources */,
+				084199391D91AC6B0089A1AC /* imageInfo.json in Resources */,
+				087389BE1D92C2C40056518F /* version.json in Resources */,
 				08E7E09D1D8AECE1000C4C87 /* dockerImages.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1311,20 +1325,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0833A81B1D2D7E210033654B /* hockey app */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "hockey app";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -n $HOCKEYAPP_ENABLED ]; then\n    FWORK=\"${SRCROOT}/HockeySDK-Mac/HockeySDK.framework\"\n    if [ -d \"$FWORK\" ]; then\n    rsync -rC --exclude .DS_Store --copy-links /svn/MyProject/MyResources/myLog.json /Users/benjamin.flynn/Library/Developer/Xcode/DerivedData/MyApp-gocyhvchxrohmbbg‌​mgbzzxtztbku/Build/Products/Debug-iphoneos/MyApp.app\n\n    fi\n    FILE=\"${SRCROOT}/HockeySDK-Mac/BuildAgent\"\n    if [ -f \"$FILE\" ]; then\n    \"$FILE\"\n    fi\nfi\n";
-		};
 		0833A8241D2D853B0033654B /* increment build number */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 8;
@@ -1505,9 +1505,9 @@
 				0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */,
 				0897944F1D7B6A8F003339EE /* NSURL+Rc2.swift in Sources */,
 				08E7E0911D8AE82C000C4C87 /* DockerManager.swift in Sources */,
+				084199351D91A77D0089A1AC /* DockerImageInfo.swift in Sources */,
 				08E7E0931D8AE834000C4C87 /* DockerUrlProtocol.swift in Sources */,
 				08E7E0901D8AE827000C4C87 /* DockerImage.swift in Sources */,
-				08E7E0941D8AE838000C4C87 /* LocalServerProtocol.swift in Sources */,
 				08E7E0951D8AE83D000C4C87 /* DockerPullOperation.swift in Sources */,
 				08037C351D7C5E2200006E9E /* RecursiveFlatMap.swift in Sources */,
 				089794501D7B6A8F003339EE /* String+Rc2Extensions.swift in Sources */,
@@ -1526,6 +1526,7 @@
 				0897942A1D7B68F0003339EE /* ClientCoreTests.swift in Sources */,
 				0841992E1D9093A20089A1AC /* TestDataProtocol.swift in Sources */,
 				08E7E09A1D8AEC53000C4C87 /* DockerImageTest.swift in Sources */,
+				084199371D91ABC70089A1AC /* DockerImageInfoTests.swift in Sources */,
 				08E7E09C1D8AEC5A000C4C87 /* DockerUrlProtocolTests.swift in Sources */,
 				084199321D90A7FE0089A1AC /* DockerTagTests.swift in Sources */,
 				084199301D9096880089A1AC /* TestDataProtocolTests.swift in Sources */,

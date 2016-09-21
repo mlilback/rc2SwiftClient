@@ -10,25 +10,32 @@ import BrightFutures
 import ServiceManagement
 import os
 
+public typealias SimpleServerCallback = (_ success:Bool, _ error:NSError?) -> Void
+
 ///manages communicating with the local docker engine
 open class DockerManager : NSObject {
 	let requiredApiVersion = 1.24
-	fileprivate let socketPath = "/var/run/docker.sock"
+	let sessionConfig: URLSessionConfiguration
+	let session: URLSession
+	let baseInfoUrl: String
 	fileprivate(set) var hostUrl: String?
 	fileprivate(set) var primaryVersion:Int = 0
 	fileprivate(set) var secondaryVersion:Int = 0
 	fileprivate(set) var fixVersion = 0
 	fileprivate(set) var apiVersion:Double = 0
-	let sessionConfig: URLSessionConfiguration
-	let session: URLSession
 	fileprivate(set) var isInstalled:Bool = false
-	fileprivate var versionLoaded:Bool = false
 	fileprivate(set) var installedImages:[DockerImage] = []
+	fileprivate(set) var imageInfo: RequiredImageInfo?
+	fileprivate let socketPath = "/var/run/docker.sock"
 	fileprivate var initialzed = false
+	fileprivate var versionLoaded:Bool = false
 	
-	///after creating, must call either initializeConnection or isDockerRunning
-	public init(host:String? = nil) {
+	///Default initializer. After creation, initializeConnection or isDockerRunning must be called
+	/// - parameter hostUrl: The base url of the docker daemon (i.e. http://localhost:2375/) to connect to. nil means use /var/run/docker.sock. Also checks for the environment variable "DockerHostUrl" if not specified
+	/// - parameter baseInfoUrl: the base url where imageInfo.json can be found. Defaults to www.rc2.io.
+	public init(hostUrl host:String? = nil, baseInfoUrl infoUrl:String? = nil) {
 		hostUrl = host
+		self.baseInfoUrl = infoUrl == nil ? "http://www.rc2.io/" : infoUrl!
 		sessionConfig = URLSessionConfiguration.default
 		sessionConfig.protocolClasses = [DockerUrlProtocol.self]
 		session = URLSession(configuration: sessionConfig)
@@ -40,67 +47,65 @@ open class DockerManager : NSObject {
 		}
 	}
 	
-	///connects to the docker daemon and confirms it is running and is compatible with what we require
+	///connects to the docker daemon and confirms it is running and is compatible with what is required.
+	/// calls initializeCOnnection()
+	/// - parameter handler: Closure called with true if able to connect to docker daemon.
 	public func isDockerRunning(_ handler:@escaping (Bool) -> Void) {
 		initializeConnection(handler: { rsp, error in
 			handler(rsp)
 		})
 	}
 	
+	///Loads basic version information from the docker daemon. Also loads list of docker images that are installed.
+	///Must be called before being using any func except isDockerRunning().
+	/// - parameter handler: Closure called with true if able to connect to docker daemon.
 	public func initializeConnection(handler: @escaping SimpleServerCallback) {
 		self.initialzed = true
 		guard !versionLoaded else { handler(apiVersion > 0, nil); return }
 		let future = dockerRequest("/version")
-		processVersionFuture(future, handler: handler)
-	}
-	
-	//test document available at fester.rc2.io
-	func checkForUpdates(_ baseUrl:String, requiredVersion:Int, handler:@escaping SimpleServerCallback) {
-		let url = URL(string: baseUrl)?.appendingPathComponent("/imageInfo.json")
-		session.dataTask(with: url!, completionHandler: { (data, response, error) in
-			guard let rawData = data , error == nil else {
-				handler(false, NSError.error(withCode: .networkError, description: "failed to connect to update server", underlyingError: error as NSError?))
-				return
-			}
-			let json = JSON(rawData)
-			guard let latestVersion = json["version"].int else {
-				handler(false, NSError.error(withCode: .serverError, description: "update server returned invalid data"))
-				return
-			}
-			if latestVersion > requiredVersion {
-				
-			}
-		}) 
-	}
-	
-	///parses the future returned from asking docker for version info
-	fileprivate func processVersionFuture(_ future:Future<JSON,NSError>, handler:@escaping SimpleServerCallback) {
 		future.onSuccess { json in
-			do {
-				let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
-				let verStr = json["Version"].stringValue
-				if let match = regex.firstMatch(in: verStr, options: [], range: NSMakeRange(0, verStr.characters.count)) {
-					self.primaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(1)))!
-					self.secondaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(2)))!
-					self.fixVersion = Int((verStr as NSString).substring(with: match.rangeAt(3)))!
-					self.versionLoaded = true
-				} else {
-					os_log("failed to parser version string", type:.info)
-				}
-				self.apiVersion = Double(json["ApiVersion"].stringValue)!
-			} catch let err as NSError {
-				os_log("error getting docker version %{public}@", type:.error, err)
+			if let err = self.processVersionJson(json: json) {
+				handler(false, err)
+				return
 			}
-			os_log("docker is version %d.%d.%d:%d", type:.info, self.primaryVersion, self.secondaryVersion, self.fixVersion, self.apiVersion)
-			handler(self.apiVersion >= self.requiredApiVersion, nil)
+			//successfully parsed the version info. now get the image info
+			self.loadImages().onSuccess { _ in
+				handler(true, nil)
 			}.onFailure { error in
-				os_log("error getting docker version: %{public}@", type:.error, error as NSError)
-				handler(false, error as NSError)
+				handler(false, error)
+			}
+		}.onFailure { err in
+			handler(false, err)
 		}
 	}
 	
-	///makes a simple GET api request and returns the parsed results
+	///parses the version string from docker rest api
+	/// - parameter json: the json returned from the rest call
+	/// - returns: nil on success, NSError on failure
+	fileprivate func processVersionJson(json:JSON) -> NSError? {
+		do {
+			let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
+			let verStr = json["Version"].stringValue
+			if let match = regex.firstMatch(in: verStr, options: [], range: NSMakeRange(0, verStr.characters.count)) {
+				self.primaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(1)))!
+				self.secondaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(2)))!
+				self.fixVersion = Int((verStr as NSString).substring(with: match.rangeAt(3)))!
+				self.versionLoaded = true
+			} else {
+				os_log("failed to parser version string", type:.info)
+			}
+			self.apiVersion = Double(json["ApiVersion"].stringValue)!
+			os_log("docker is version %d.%d.%d:%d", type:.info, self.primaryVersion, self.secondaryVersion, self.fixVersion, self.apiVersion)
+			return nil
+		} catch let err as NSError {
+			os_log("error getting docker version %{public}@", type:.error, err)
+			return err
+		}
+	}
+	
+	///Makes a GET api request and returns the parsed json results
 	/// - parameter command: The api command to send. Should include initial slash.
+	/// - returns: A future for the JSON or an error.
 	func dockerRequest(_ command:String) -> Future<JSON,NSError> {
 		precondition(command.hasPrefix("/"))
 		var urlStr = "unix://\(command)"
@@ -123,34 +128,69 @@ open class DockerManager : NSObject {
 		return promise.future
 	}
 	
-	public func loadImages() -> Future<[DockerImage],NSError> {
-		let promise = Promise<[DockerImage],NSError>()
-		let future = dockerRequest("/images/json")
-		print("making request")
-		future.onSuccess { json in
-			print("request success")
-			self.installedImages.removeAll()
-			for aDict in json.arrayValue {
-				if let anImage = DockerImage(json: aDict), anImage.labels.keys.contains("io.rc2.type")
-				{
-					self.installedImages.append(anImage)
-				}
-				promise.success(self.installedImages)
+	///fetches any missing/updated images based on imageInfo
+	public func pullImages(handler: ProgressHandler? = nil) -> (Future<Bool, NSError>, Progress) {
+		precondition(imageInfo != nil)
+		let url = URL(string: hostUrl!)!
+		let dbsize = imageInfo!.dbserver.size
+		let dbpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/dbserver", estimatedSize: Int(dbsize))
+		return (dbpull.startPull(progressHandler: handler), dbpull.progress!)
+	}
+	
+	///make a request and return the returned data
+	/// - parameter url: The URL to fetch
+	/// - returns: a future for the data at url or an error
+	func makeRequest(url:URL) -> Future<Data,NSError> {
+		let promise = Promise<Data,NSError>()
+		session.dataTask(with: url, completionHandler: { (data, response, error) in
+			guard let rawData = data , error == nil else {
+				promise.failure(error as! NSError)
+				return
 			}
-			
-		}.onFailure { err in
-			print("request failure")
-			os_log("error reading image data from docker: %{public}s", type:.error, err)
-			promise.failure(err)
+			promise.success(rawData)
+		}).resume()
+		return promise.future
+	}
+
+	///fetches the imageInfo.json file from the internet and parses it
+	func loadRequiredImageInfo() -> Future<Bool,NSError> {
+		precondition(initialzed)
+		let promise = Promise<Bool,NSError>()
+		let updateFuture = makeRequest(url: URL(string:"\(baseInfoUrl)imageInfo.json")!)
+		updateFuture.onSuccess { (data) in
+			let json = JSON(data: data)
+			self.imageInfo = RequiredImageInfo(json: json)
+			promise.success(true)
+			}.onFailure { (err) in
+				promise.failure(err)
 		}
 		return promise.future
 	}
-	
-	public func pullImages(handler: ProgressHandler? = nil) -> (Future<Bool, NSError>, Progress) {
-		let url = URL(string: hostUrl!)!
-		let dbsize = installedImages.filter { $0.isNamed("rc2server/dbserver") }.reduce(0) { _, img in return img.size }
-		let dbpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/dbserver", estimatedSize: dbsize)
-		return (dbpull.startPull(progressHandler: handler), dbpull.progress!)
+
+	///requests the list of images from docker and sticks them in installedImages property
+	func loadImages() -> Future<[DockerImage],NSError> {
+		precondition(initialzed)
+		let promise = Promise<[DockerImage],NSError>()
+		loadRequiredImageInfo().onSuccess { _ in
+			let future = self.dockerRequest("/images/json")
+			future.onSuccess { json in
+				self.installedImages.removeAll()
+				for aDict in json.arrayValue {
+					if let anImage = DockerImage(json: aDict), anImage.labels.keys.contains("io.rc2.type")
+					{
+						self.installedImages.append(anImage)
+					}
+					promise.success(self.installedImages)
+				}
+				
+				}.onFailure { err in
+					os_log("error reading image data from docker: %{public}s", type:.error, err)
+					promise.failure(err)
+			}
+			}.onFailure { err in
+				promise.failure(err)
+		}
+		return promise.future
 	}
 }
 

@@ -82,7 +82,7 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 			handleStatus(status: status, json: json)
 		}
 		let curTime = Date.timeIntervalSinceReferenceDate
-		if oldTotal == 0 || (totalDownloaded > oldTotal && (curTime - _lastUpdate) > 100) {
+		if oldTotal == 0 || (totalDownloaded > oldTotal && (curTime - _lastUpdate) > 0.1) {
 			//adjust progress
 			os_log("downloaded: %d", totalDownloaded)
 			progress?.completedUnitCount = Int64(totalDownloaded)

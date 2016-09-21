@@ -98,7 +98,10 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		let wc = sboard.instantiateWindowController()
 		setupController = wc.contentViewController as? ServerSetupController
 		wc.window?.makeKeyAndOrderFront(self)
-		guard let (future, progress) = dockerManager?.pullImages() else { fatalError("failed to start image pull") }
+		guard let (future, progress) = dockerManager?.pullImages(handler: { p in
+			self.setupController!.progress = p
+			os_log("got progress of %1.2f", p!.fractionCompleted)
+		}) else { fatalError("failed to start image pull") }
 		setupController?.progress = progress
 		future.onSuccess {_ in 
 			wc.window?.orderOut(self)
