@@ -9,11 +9,15 @@ import BrightFutures
 import SwiftyJSON
 import os
 
-//progress information on the pull
+///progress information on the pull
 public struct PullProgress {
+	///the name of the pull
 	public let name:String
+	///the estimated size used for progress calcuations
 	public let estSize:Int64
+	///the number of bytes downloaded so far
 	public var currentSize:Int64 = 0
+	///true if currently extracting the download
 	public var extracting:Bool = false
 	public var complete:Bool = false
 	

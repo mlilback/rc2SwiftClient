@@ -15,10 +15,8 @@ public class ServerSetupController: NSViewController {
 		let percent = Double(pullProgress!.currentSize) / Double(pullProgress!.estSize)
 		progressBar?.doubleValue = percent
 		if pullProgress!.extracting {
-//			progressBar?.isIndeterminate = true
 			statusText?.stringValue = "Extracting…"
-		} else if progressBar!.isIndeterminate {
-//			progressBar?.isIndeterminate = false
+		} else {
 			statusText?.stringValue = "Downloading…"
 		}
 	} }

@@ -39,7 +39,7 @@ open class DockerManager : NSObject {
 		self.baseInfoUrl = infoUrl == nil ? "https://www.rc2.io/" : infoUrl!
 		sessionConfig = URLSessionConfiguration.default
 		sessionConfig.protocolClasses = [DockerUrlProtocol.self]
-		sessionConfig.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+		sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
 		session = URLSession(configuration: sessionConfig)
 		super.init()
 		isInstalled = Foundation.FileManager().fileExists(atPath: socketPath)
@@ -134,16 +134,36 @@ open class DockerManager : NSObject {
 	public func pullImages(handler: PullProgressHandler? = nil) -> Future<Bool, NSError> {
 		precondition(imageInfo != nil)
 		precondition(imageInfo!.dbserver.size > 0)
+		let promise = Promise<Bool, NSError>()
 		let url = URL(string: hostUrl!)!
-		let dbsize = imageInfo!.dbserver.size
-		let dbpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/dbserver", estimatedSize: dbsize)
-		pullProgress = PullProgress(name: "dbserver", size: dbsize)
-		return dbpull.startPull { pp in
-			self.pullProgress?.currentSize = pp.currentSize
-			self.pullProgress?.extracting = pp.extracting
-			self.pullProgress?.complete = pp.complete
-			handler?(self.pullProgress!)
+		let fullSize = imageInfo!.dbserver.size + imageInfo!.appserver.size
+		pullProgress = PullProgress(name: "dbserver", size: fullSize)
+		let dbpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/dbserver", estimatedSize: imageInfo!.dbserver.size)
+		let dbfuture = pullSingleImage(pull: dbpull, progressHandler: handler)
+		dbfuture.onSuccess { _ in
+			let apppull = DockerPullOperation(baseUrl: url, imageName: "rc2server/appserver", estimatedSize: self.imageInfo!.appserver.size)
+			let appfuture = self.pullSingleImage(pull: apppull, progressHandler: handler)
+			appfuture.onSuccess { _ in
+				promise.success(true)
+			}.onFailure { err in
+				promise.failure(err)
+			}
+		}.onFailure { err in
+			promise.failure(err)
 		}
+		return promise.future
+	}
+	
+	func pullSingleImage(pull:DockerPullOperation, progressHandler:PullProgressHandler?) -> Future<Bool, NSError>
+	{
+		pullProgress?.extracting = false
+		let alreadyDownloaded = pullProgress!.currentSize
+		let future = pull.startPull { pp in
+			self.pullProgress?.currentSize = pp.currentSize + alreadyDownloaded
+			self.pullProgress?.extracting = pp.extracting
+			progressHandler?(self.pullProgress!)
+		}
+		return future
 	}
 	
 	///make a request and return the returned data
@@ -167,6 +187,7 @@ open class DockerManager : NSObject {
 		let promise = Promise<Bool,NSError>()
 		let updateFuture = makeRequest(url: URL(string:"\(baseInfoUrl)imageInfo.json")!)
 		updateFuture.onSuccess { (data) in
+			NSLog(String(data: data, encoding: .utf8)!)
 			let json = JSON(data: data)
 			self.imageInfo = RequiredImageInfo(json: json)
 			promise.success(true)
