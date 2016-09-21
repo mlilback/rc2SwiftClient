@@ -9,7 +9,22 @@ import BrightFutures
 import SwiftyJSON
 import os
 
-public struct LayerProgress {
+//progress information on the pull
+public struct PullProgress {
+	public let name:String
+	public let estSize:Int64
+	public var currentSize:Int64 = 0
+	public var extracting:Bool = false
+	public var complete:Bool = false
+	
+	public init(name:String, size:Int64) {
+		self.name = name
+		self.estSize = size
+	}
+}
+
+//represents the status as a layer is downloaded
+struct LayerProgress {
 	let id:String
 	var finalSize: Int = 0
 	var currentSize: Int = 0
@@ -20,35 +35,37 @@ public struct LayerProgress {
 	}
 }
 
+public typealias PullProgressHandler = (PullProgress) -> Void
 
 open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	fileprivate let url: URL
 	fileprivate let urlConfig: URLSessionConfiguration
 	fileprivate var urlSession: Foundation.URLSession?
 	fileprivate var _task: URLSessionDataTask?
-	fileprivate var _progressHandler:ProgressHandler?
-	fileprivate(set) var progress: Progress?
+	fileprivate var _progressHandler:PullProgressHandler?
+	fileprivate(set) var pullProgress: PullProgress
 	fileprivate var _lastUpdate: Double = 0
 	let estimatedSize: Int64
 	let promise = Promise<Bool, NSError>()
 	var layers = [String:LayerProgress]()
-	var totalDownloaded: Int = 0
+	var totalDownloaded: Int64 = 0
 	var statuses = Set<String>()
 	
 	/// - parameter baseUrl: the scheme/host/port to use for the connection
 	/// - parameter imageName: the name of the image to pull
+	/// - parameter estimatedSize: the size of the download, used for progress calculation
 	/// - parameter config: sesion configuration to use. If nil, will use system default
-	public init(baseUrl:URL, imageName:String, estimatedSize size:Int, config:URLSessionConfiguration? = nil) {
+	public init(baseUrl:URL, imageName:String, estimatedSize size:Int64, config:URLSessionConfiguration? = nil) {
 		urlConfig = config ?? URLSessionConfiguration.default
 		var urlparts = URLComponents(url: baseUrl, resolvingAgainstBaseURL: true)
 		urlparts?.path = "/images/create"
 		urlparts?.queryItems = [URLQueryItem(name:"fromImage", value: imageName)]
 		self.url = urlparts!.url!
-		self.estimatedSize = Int64(size)
-		progress = Progress(totalUnitCount: estimatedSize)
+		self.estimatedSize = size
+		pullProgress = PullProgress(name: imageName, size: size)
 	}
 	
-	open func startPull(progressHandler:ProgressHandler? = nil) -> Future<Bool, NSError> {
+	open func startPull(progressHandler:@escaping PullProgressHandler) -> Future<Bool, NSError> {
 		_progressHandler = progressHandler
 		os_log("starting pull: %{public}s", type:.info, url.absoluteString)
 		urlSession = Foundation.URLSession(configuration: urlConfig, delegate: self, delegateQueue:OperationQueue.main)
@@ -82,12 +99,16 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 			handleStatus(status: status, json: json)
 		}
 		let curTime = Date.timeIntervalSinceReferenceDate
-		if oldTotal == 0 || (totalDownloaded > oldTotal && (curTime - _lastUpdate) > 0.1) {
-			//adjust progress
-			os_log("downloaded: %d", totalDownloaded)
-			progress?.completedUnitCount = Int64(totalDownloaded)
+		if oldTotal == 0 || (curTime - _lastUpdate) > 0.1 {
+			if totalDownloaded > oldTotal {
+				pullProgress.currentSize = totalDownloaded
+				os_log("downloaded: %d",type:.debug,  totalDownloaded)
+				_progressHandler?(pullProgress)
+			} else if totalDownloaded >= estimatedSize {
+				pullProgress.extracting = true
+				_progressHandler?(pullProgress)
+			}
 			_lastUpdate = curTime
-			_progressHandler?(progress!)
 		}
 	}
 	
@@ -99,6 +120,7 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 				if var layer = layers[json["id"].stringValue] {
 					if let details = json["progressDetail"].dictionary {
 						if let fsize = details["total"]?.int , layer.finalSize == 0 {
+							NSLog("layer %@ is %d in size", layer.id, fsize)
 							layer.finalSize = fsize
 						}
 						if let csize = details["current"]?.int {
@@ -124,10 +146,12 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	
 	open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
 		os_log("pull finished: %d", type:.info, totalDownloaded)
-		os_log("statuses= %{public}s", type:.info, statuses)
-		progress?.completedUnitCount = (progress?.totalUnitCount)!
+		pullProgress.complete = true
 		guard nil == error else { promise.failure(error! as NSError); return }
 		promise.success(true)
+		for aLayer in layers.values {
+			os_log("layer %{public}s is %d", type:.info, aLayer.id, aLayer.finalSize)
+		}
 	}
 
 }

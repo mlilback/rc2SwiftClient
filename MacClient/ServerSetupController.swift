@@ -6,9 +6,22 @@
 
 import Cocoa
 import os
+import ClientCore
 
 public class ServerSetupController: NSViewController {
-	dynamic var progress:Progress?
+	@IBOutlet dynamic var progressBar:NSProgressIndicator?
+	@IBOutlet dynamic var statusText:NSTextField?
+	public var pullProgress:PullProgress? { didSet {
+		let percent = Double(pullProgress!.currentSize) / Double(pullProgress!.estSize)
+		progressBar?.doubleValue = percent
+		if pullProgress!.extracting {
+//			progressBar?.isIndeterminate = true
+			statusText?.stringValue = "Extracting…"
+		} else if progressBar!.isIndeterminate {
+//			progressBar?.isIndeterminate = false
+			statusText?.stringValue = "Downloading…"
+		}
+	} }
 	
 }
 

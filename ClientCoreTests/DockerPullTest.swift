@@ -30,11 +30,10 @@ class DockerPullTest: XCTestCase {
 		let url = URL(string: "test://foo.com/bar")!
 		let pullOp = DockerPullOperation(baseUrl: url, imageName: "busybox", estimatedSize: 667590, config: config)
 		let future = pullOp.startPull() { progress in
-			self.unitCount = progress!.completedUnitCount
-			print("got progress \(progress!.fractionCompleted)")
+			self.unitCount = progress.currentSize
 		}
 		future.onSuccess { _ in
-			self.unitCount = pullOp.progress!.completedUnitCount
+			self.unitCount = pullOp.pullProgress.currentSize
 			self.expect!.fulfill()
 		}.onFailure { err in
 			self.savedError = err

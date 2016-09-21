@@ -550,11 +550,11 @@ CA
             <objects>
                 <viewController storyboardIdentifier="ServerSetupController" id="MSO-Wl-nyy" customClass="ServerSetupController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="ZsW-b4-mL9">
-                        <rect key="frame" x="0.0" y="0.0" width="240" height="83"/>
+                        <rect key="frame" x="0.0" y="0.0" width="425" height="83"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6TE-w1-CEJ">
-                                <rect key="frame" x="50" y="46" width="141" height="17"/>
+                                <rect key="frame" x="31" y="46" width="364" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Installing Local Server" id="xZG-re-BwD">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -562,27 +562,29 @@ CA
                                 </textFieldCell>
                             </textField>
                             <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="xB2-2U-oSL">
-                                <rect key="frame" x="20" y="19" width="200" height="20"/>
+                                <rect key="frame" x="33" y="19" width="360" height="20"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="wTO-dk-aR7"/>
+                                    <constraint firstAttribute="width" constant="360" id="wTO-dk-aR7"/>
                                 </constraints>
-                                <connections>
-                                    <binding destination="MSO-Wl-nyy" name="value" keyPath="progress.fractionCompleted" id="eko-jM-U8Z"/>
-                                </connections>
                             </progressIndicator>
                         </subviews>
                         <constraints>
                             <constraint firstItem="xB2-2U-oSL" firstAttribute="centerX" secondItem="ZsW-b4-mL9" secondAttribute="centerX" id="5IP-mt-gWr"/>
                             <constraint firstAttribute="bottom" secondItem="xB2-2U-oSL" secondAttribute="bottom" constant="20" symbolic="YES" id="GM0-Ha-xzd"/>
+                            <constraint firstItem="6TE-w1-CEJ" firstAttribute="width" secondItem="xB2-2U-oSL" secondAttribute="width" id="JEz-Rh-A8z"/>
                             <constraint firstItem="6TE-w1-CEJ" firstAttribute="top" secondItem="ZsW-b4-mL9" secondAttribute="top" constant="20" symbolic="YES" id="PZE-qt-DvL"/>
                             <constraint firstItem="6TE-w1-CEJ" firstAttribute="centerX" secondItem="ZsW-b4-mL9" secondAttribute="centerX" id="bXd-5C-8Pg"/>
                             <constraint firstItem="xB2-2U-oSL" firstAttribute="top" secondItem="6TE-w1-CEJ" secondAttribute="bottom" constant="8" symbolic="YES" id="kCv-ZG-k7p"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="progressBar" destination="xB2-2U-oSL" id="QZR-tk-HCB"/>
+                        <outlet property="statusText" destination="6TE-w1-CEJ" id="4ab-k7-N8p"/>
+                    </connections>
                 </viewController>
                 <customObject id="M6X-H9-jqA" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-201" y="696"/>
+            <point key="canvasLocation" x="-201.5" y="693.5"/>
         </scene>
     </scenes>
 </document>

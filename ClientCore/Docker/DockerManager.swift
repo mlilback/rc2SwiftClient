@@ -26,6 +26,7 @@ open class DockerManager : NSObject {
 	fileprivate(set) var isInstalled:Bool = false
 	fileprivate(set) var installedImages:[DockerImage] = []
 	fileprivate(set) var imageInfo: RequiredImageInfo?
+	fileprivate(set) var pullProgress: PullProgress?
 	fileprivate let socketPath = "/var/run/docker.sock"
 	fileprivate var initialzed = false
 	fileprivate var versionLoaded:Bool = false
@@ -35,9 +36,10 @@ open class DockerManager : NSObject {
 	/// - parameter baseInfoUrl: the base url where imageInfo.json can be found. Defaults to www.rc2.io.
 	public init(hostUrl host:String? = nil, baseInfoUrl infoUrl:String? = nil) {
 		hostUrl = host
-		self.baseInfoUrl = infoUrl == nil ? "http://www.rc2.io/" : infoUrl!
+		self.baseInfoUrl = infoUrl == nil ? "https://www.rc2.io/" : infoUrl!
 		sessionConfig = URLSessionConfiguration.default
 		sessionConfig.protocolClasses = [DockerUrlProtocol.self]
+		sessionConfig.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
 		session = URLSession(configuration: sessionConfig)
 		super.init()
 		isInstalled = Foundation.FileManager().fileExists(atPath: socketPath)
@@ -129,12 +131,19 @@ open class DockerManager : NSObject {
 	}
 	
 	///fetches any missing/updated images based on imageInfo
-	public func pullImages(handler: ProgressHandler? = nil) -> (Future<Bool, NSError>, Progress) {
+	public func pullImages(handler: PullProgressHandler? = nil) -> Future<Bool, NSError> {
 		precondition(imageInfo != nil)
+		precondition(imageInfo!.dbserver.size > 0)
 		let url = URL(string: hostUrl!)!
 		let dbsize = imageInfo!.dbserver.size
-		let dbpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/dbserver", estimatedSize: Int(dbsize))
-		return (dbpull.startPull(progressHandler: handler), dbpull.progress!)
+		let dbpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/dbserver", estimatedSize: dbsize)
+		pullProgress = PullProgress(name: "dbserver", size: dbsize)
+		return dbpull.startPull { pp in
+			self.pullProgress?.currentSize = pp.currentSize
+			self.pullProgress?.extracting = pp.extracting
+			self.pullProgress?.complete = pp.complete
+			handler?(self.pullProgress!)
+		}
 	}
 	
 	///make a request and return the returned data
@@ -161,8 +170,8 @@ open class DockerManager : NSObject {
 			let json = JSON(data: data)
 			self.imageInfo = RequiredImageInfo(json: json)
 			promise.success(true)
-			}.onFailure { (err) in
-				promise.failure(err)
+		}.onFailure { (err) in
+			promise.failure(err)
 		}
 		return promise.future
 	}
@@ -180,15 +189,15 @@ open class DockerManager : NSObject {
 					{
 						self.installedImages.append(anImage)
 					}
-					promise.success(self.installedImages)
 				}
+				promise.success(self.installedImages)
 				
-				}.onFailure { err in
-					os_log("error reading image data from docker: %{public}s", type:.error, err)
-					promise.failure(err)
-			}
 			}.onFailure { err in
+				os_log("error reading image data from docker: %{public}s", type:.error, err)
 				promise.failure(err)
+			}
+		}.onFailure { err in
+			promise.failure(err)
 		}
 		return promise.future
 	}
