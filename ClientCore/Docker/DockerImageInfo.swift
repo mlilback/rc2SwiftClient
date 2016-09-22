@@ -14,7 +14,8 @@ public struct DockerImageInfo: JSONSerializable {
 	let name:String
 	let id:String
 
-	public init(json:JSON) {
+	public init?(json:JSON?) {
+		guard let json = json else { return nil }
 		size = json["size"].int64Value
 		dupSize = json["dupsize"].int64Value
 		name = json["name"].stringValue
@@ -37,11 +38,12 @@ public struct RequiredImageInfo: JSONSerializable {
 	let appserver: DockerImageInfo
 	let computeserver: DockerImageInfo
 	
-	public init(json:JSON) {
+	public init?(json:JSON?) {
+		guard let json = json else { return nil }
 		version = json["version"].intValue
-		dbserver = DockerImageInfo(json: json["images"].dictionary!["dbserver"]!)
-		appserver = DockerImageInfo(json: json["images"].dictionary!["appserver"]!)
-		computeserver = DockerImageInfo(json: json["images"].dictionary!["compute"]!)
+		dbserver = DockerImageInfo(json: json["images"].dictionary!["dbserver"]!)!
+		appserver = DockerImageInfo(json: json["images"].dictionary!["appserver"]!)!
+		computeserver = DockerImageInfo(json: json["images"].dictionary!["compute"]!)!
 	}
 
 	public func serialize() throws -> JSON {

@@ -30,7 +30,8 @@ public struct ServerHost: JSONSerializable, CustomStringConvertible, Hashable {
 		self.secure = secure
 	}
 	
-	public init?(json dict:JSON) {
+	public init?(json dict:JSON?) {
+		guard let dict = dict else { return nil }
 		self.name = dict["name"].stringValue
 		self.host = dict["host"].stringValue
 		self.user = dict["user"].stringValue

@@ -10,7 +10,7 @@ import SwiftyJSON
 
 public protocol JSONSerializable {
 	///for deserialization from JSON
-	init?(json:JSON)
+	init?(json:JSON?)
 	
 	func serialize() throws -> JSON
 }

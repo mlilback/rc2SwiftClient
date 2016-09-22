@@ -9,11 +9,16 @@ import SwiftyJSON
 import BrightFutures
 import ServiceManagement
 import os
+import SwiftyUserDefaults
 
 ///a callback closure
 public typealias SimpleServerCallback = (_ success:Bool, _ error:NSError?) -> Void
 
-
+extension DefaultsKeys {
+	static let lastImageInfoCheck = DefaultsKey<Double>("lastImageInfoCheck")
+	static let dockerImageVersion = DefaultsKey<Int>("dockerImageVersion")
+	static let cachedImageInfo = DefaultsKey<JSON?>("cachedImageInfo")
+}
 
 ///manages communicating with the local docker engine
 open class DockerManager : NSObject {
@@ -21,6 +26,7 @@ open class DockerManager : NSObject {
 	let sessionConfig: URLSessionConfiguration
 	let session: URLSession
 	let baseInfoUrl: String
+	let defaults: UserDefaults
 	fileprivate(set) var hostUrl: String?
 	fileprivate(set) var primaryVersion:Int = 0
 	fileprivate(set) var secondaryVersion:Int = 0
@@ -34,16 +40,26 @@ open class DockerManager : NSObject {
 	fileprivate var initialzed = false
 	fileprivate var versionLoaded:Bool = false
 	
+	///has enough time elapsed that we should check to see if there is an update to the docker images
+	public var shouldCheckForUpdate: Bool {
+		return defaults[.lastImageInfoCheck] + 86400.0 <= Date.timeIntervalSinceReferenceDate
+	}
+	
 	///Default initializer. After creation, initializeConnection or isDockerRunning must be called
 	/// - parameter hostUrl: The base url of the docker daemon (i.e. http://localhost:2375/) to connect to. nil means use /var/run/docker.sock. Also checks for the environment variable "DockerHostUrl" if not specified
 	/// - parameter baseInfoUrl: the base url where imageInfo.json can be found. Defaults to www.rc2.io.
-	public init(hostUrl host:String? = nil, baseInfoUrl infoUrl:String? = nil) {
+	/// - parameter userDefaults: defaults to standard user defaults. Allows for dependency injection.
+	public init(hostUrl host:String? = nil, baseInfoUrl infoUrl:String? = nil, userDefaults:UserDefaults = .standard)
+	{
 		hostUrl = host
 		self.baseInfoUrl = infoUrl == nil ? "https://www.rc2.io/" : infoUrl!
+		defaults = userDefaults
 		sessionConfig = URLSessionConfiguration.default
 		sessionConfig.protocolClasses = [DockerUrlProtocol.self]
 		sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
 		session = URLSession(configuration: sessionConfig)
+		//read image info if it is there
+		imageInfo = RequiredImageInfo(json: defaults[.cachedImageInfo])
 		super.init()
 		isInstalled = Foundation.FileManager().fileExists(atPath: socketPath)
 		//check for a host specified as an environment variable - useful for testing
@@ -82,6 +98,29 @@ open class DockerManager : NSObject {
 		}.onFailure { err in
 			handler(false, err)
 		}
+	}
+	
+	///Checks to see if it is necessary to check for an imageInfo update, and if so, perform that check.
+	/// - returns: a future whose success will be true if a request was made to the server, false if cached
+	public func checkForImageUpdate() -> Future<Bool,NSError> {
+		precondition(initialzed)
+		let promise = Promise<Bool,NSError>()
+		//short circuit if we don't need to chedk and have valid data
+		guard imageInfo == nil || shouldCheckForUpdate else {
+			promise.success(false)
+			return promise.future
+		}
+		let updateFuture = makeRequest(url: URL(string:"\(baseInfoUrl)imageInfo.json")!)
+		updateFuture.onSuccess { (data) in
+			let json = JSON(data: data)
+			self.imageInfo = RequiredImageInfo(json: json)
+			self.defaults[.cachedImageInfo] = json
+			self.defaults[.lastImageInfoCheck] = Date.timeIntervalSinceReferenceDate
+			promise.success(true)
+		}.onFailure { (err) in
+			promise.failure(err)
+		}
+		return promise.future
 	}
 	
 	///parses the version string from docker rest api
@@ -190,27 +229,11 @@ open class DockerManager : NSObject {
 		return promise.future
 	}
 
-	///fetches the imageInfo.json file from the internet and parses it
-	func loadRequiredImageInfo() -> Future<Bool,NSError> {
-		precondition(initialzed)
-		let promise = Promise<Bool,NSError>()
-		let updateFuture = makeRequest(url: URL(string:"\(baseInfoUrl)imageInfo.json")!)
-		updateFuture.onSuccess { (data) in
-			NSLog(String(data: data, encoding: .utf8)!)
-			let json = JSON(data: data)
-			self.imageInfo = RequiredImageInfo(json: json)
-			promise.success(true)
-		}.onFailure { (err) in
-			promise.failure(err)
-		}
-		return promise.future
-	}
-
 	///requests the list of images from docker and sticks them in installedImages property
 	func loadImages() -> Future<[DockerImage],NSError> {
 		precondition(initialzed)
 		let promise = Promise<[DockerImage],NSError>()
-		loadRequiredImageInfo().onSuccess { _ in
+		checkForImageUpdate().onSuccess { _ in
 			let future = self.dockerRequest("/images/json")
 			future.onSuccess { json in
 				self.installedImages.removeAll()

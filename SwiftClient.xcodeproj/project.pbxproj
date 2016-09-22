@@ -215,6 +215,12 @@
 		08E7E09B1D8AEC56000C4C87 /* DockerManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08634DB11D2DA33F00445462 /* DockerManagerTests.swift */; };
 		08E7E09C1D8AEC5A000C4C87 /* DockerUrlProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCF001D82FCCE007C6A5E /* DockerUrlProtocolTests.swift */; };
 		08E7E09D1D8AECE1000C4C87 /* dockerImages.json in Resources */ = {isa = PBXBuildFile; fileRef = 0814F1EC1D7A2E960093C0C1 /* dockerImages.json */; };
+		08E836651D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
+		08E836661D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
+		08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
+		08E836681D94240100E26EFE /* SwiftyUserDefaults.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08E836691D94242A00E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
+		08E8366B1D94436D00E26EFE /* UserDefaults+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8366A1D94436D00E26EFE /* UserDefaults+JSON.swift */; };
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08EFF6031C7BB2E600AAF1D4 /* MultipartInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */; };
@@ -308,6 +314,7 @@
 				0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */,
 				08DB1AA01D32EFC70079DA6B /* Swinject.framework in Embed Frameworks */,
 				0833A8231D2D7EAD0033654B /* HockeySDK.framework in Embed Frameworks */,
+				08E836681D94240100E26EFE /* SwiftyUserDefaults.framework in Embed Frameworks */,
 				082FF1CC1C7F321B00CCC27F /* PMKVObserver.framework in Embed Frameworks */,
 				082FF1D01C7F321B00CCC27F /* SwiftWebSocket.framework in Embed Frameworks */,
 				082FF1CE1C7F321B00CCC27F /* Result.framework in Embed Frameworks */,
@@ -558,6 +565,8 @@
 		08DB1A971D32EF930079DA6B /* Swinject.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Swinject.framework; path = Carthage/Build/Mac/Swinject.framework; sourceTree = "<group>"; };
 		08DB1A991D32EFA10079DA6B /* Swinject.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Swinject.framework.dSYM; path = Carthage/Build/Mac/Swinject.framework.dSYM; sourceTree = "<group>"; };
 		08DB1A9A1D32EFA10079DA6B /* SwinjectStoryboard.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = SwinjectStoryboard.framework.dSYM; path = Carthage/Build/Mac/SwinjectStoryboard.framework.dSYM; sourceTree = "<group>"; };
+		08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = Carthage/Build/Mac/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
+		08E8366A1D94436D00E26EFE /* UserDefaults+JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+JSON.swift"; sourceTree = "<group>"; };
 		08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetActionBlock.swift; sourceTree = "<group>"; };
 		08ED575E1C724383002B2558 /* MacFileImportSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacFileImportSetup.swift; sourceTree = "<group>"; };
 		08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStream.swift; sourceTree = "<group>"; };
@@ -597,11 +606,13 @@
 				08A01FD01CC81315001EDFAA /* libsqlite3.tbd in Frameworks */,
 				082FF1D11C7F321B00CCC27F /* SwiftyJSON.framework in Frameworks */,
 				089346031C7F661400100CF6 /* PEGKit.framework in Frameworks */,
+				08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */,
 				082FF1CB1C7F321B00CCC27F /* PMKVObserver.framework in Frameworks */,
 				08DB1A9D1D32EFC10079DA6B /* SwinjectStoryboard.framework in Frameworks */,
 				08DB1A981D32EF930079DA6B /* Swinject.framework in Frameworks */,
 				082FF1EE1C7F339400CCC27F /* URITemplate.framework in Frameworks */,
+				08E836651D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				0833A8221D2D7E770033654B /* HockeySDK.framework in Frameworks */,
 				082FF1C71C7F321B00CCC27F /* CryptoSwift.framework in Frameworks */,
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
@@ -630,6 +641,7 @@
 				089794401D7B69C7003339EE /* PMKVObserver.framework in Frameworks */,
 				08E7E0961D8AE8A7000C4C87 /* BrightFutures.framework in Frameworks */,
 				0841993B1D91B2770089A1AC /* URITemplate.framework in Frameworks */,
+				08E836661D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -644,6 +656,7 @@
 				08F8EDB71D89E3460037245C /* BrightFutures.framework in Frameworks */,
 				0841993A1D91B0760089A1AC /* Mockingjay.framework in Frameworks */,
 				0841993C1D91B2830089A1AC /* URITemplate.framework in Frameworks */,
+				08E836691D94242A00E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				08E7E0981D8AE926000C4C87 /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -869,6 +882,7 @@
 				082FF1C21C7F321B00CCC27F /* SwiftyJSON.framework */,
 				08DB1A971D32EF930079DA6B /* Swinject.framework */,
 				08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */,
+				08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */,
 				082FF1ED1C7F339400CCC27F /* URITemplate.framework */,
 				082FF1EB1C7F338C00CCC27F /* URITemplate.framework.dSYM */,
 				08BFD3E71C90B5AC0041EB1C /* MessagePackSwift.framework.dSYM */,
@@ -997,6 +1011,7 @@
 				089794481D7B6A8F003339EE /* NSURL+Rc2.swift */,
 				089794491D7B6A8F003339EE /* String+Rc2Extensions.swift */,
 				0897944A1D7B6A8F003339EE /* SystemExtensions.swift */,
+				08E8366A1D94436D00E26EFE /* UserDefaults+JSON.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -1511,6 +1526,7 @@
 				08E7E0951D8AE83D000C4C87 /* DockerPullOperation.swift in Sources */,
 				08037C351D7C5E2200006E9E /* RecursiveFlatMap.swift in Sources */,
 				089794501D7B6A8F003339EE /* String+Rc2Extensions.swift in Sources */,
+				08E8366B1D94436D00E26EFE /* UserDefaults+JSON.swift in Sources */,
 				08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */,
 				08037C2D1D7C5AF400006E9E /* JSONSerializable.swift in Sources */,
 				0897944D1D7B6A8F003339EE /* NSProgress+Rc2.m in Sources */,

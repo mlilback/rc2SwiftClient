@@ -42,7 +42,8 @@ public struct DockerTag: JSONSerializable, CustomStringConvertible, Hashable {
 		self.version = version
 	}
 
-	public init?(json:JSON) {
+	public init?(json:JSON?) {
+		guard let json = json else { return nil }
 		self.repo = json["repo"].string
 		self.name = json["name"].stringValue
 		self.version = json["version"].string

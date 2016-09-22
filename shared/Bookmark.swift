@@ -25,7 +25,8 @@ public struct Bookmark: JSONSerializable, CustomStringConvertible, Equatable {
 		self.lastUsed = lastUsed
 	}
 	
-	public init?(json:JSON) {
+	public init?(json:JSON?) {
+		guard let json = json else { return nil }
 		name = json["name"].stringValue
 		projectName = json["project"].stringValue
 		workspaceName = json["workspace"].stringValue

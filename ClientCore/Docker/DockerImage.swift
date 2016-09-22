@@ -13,7 +13,8 @@ public struct DockerImage: JSONSerializable, Equatable {
 	let size:Int
 	var labels:[String:String] = [:]
 	
-	public init?(json:JSON) {
+	public init?(json:JSON?) {
+		guard let json = json else { return nil }
 		id = json["Id"].stringValue
 		self.size = json["Size"].intValue
 		var localTags:[DockerTag] = []

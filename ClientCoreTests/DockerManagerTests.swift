@@ -48,7 +48,7 @@ class DockerManagerTests: XCTestCase {
 
 		stubGetRequest(uriPath: "/imageInfo.json", fileName: "imageInfo")
 		let expect = expectation(description: "load required info")
-		let future = docker.loadRequiredImageInfo()
+		let future = docker.checkForImageUpdate()
 		var loaded:Bool = false
 		var error:NSError? = nil
 		future.onSuccess { success in
