@@ -33,7 +33,7 @@ class DockerImageInfoTests: XCTestCase {
 		waitForExpectations(timeout: 2) { _ in
 			XCTAssertNil(error)
 			let json = JSON(data: fetchedData!)
-			let info = RequiredImageInfo(json:json)
+			let info = RequiredImageInfo(json:json)!
 			XCTAssertEqual(info.version, 1)
 			XCTAssertEqual(info.dbserver.size, 157619958)
 			XCTAssertEqual(info.computeserver.name, "compute")

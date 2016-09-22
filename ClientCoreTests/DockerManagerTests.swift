@@ -13,10 +13,12 @@ import BrightFutures
 import Mockingjay
 
 class DockerManagerTests: XCTestCase {
+	var defaults: UserDefaults!
 	
 	override func setUp() {
 		super.setUp()
 		URLSessionConfiguration.mockingjaySwizzleDefaultSessionConfiguration()
+		defaults = UserDefaults(suiteName: UUID().uuidString)! //not sure why this is failable
 	}
 	
 	override func tearDown() {
@@ -24,29 +26,48 @@ class DockerManagerTests: XCTestCase {
 	}
 
 	func testDockerInstalled() {
-		let docker = DockerManager()
+		let docker = DockerManager(userDefaults:defaults)
 		XCTAssertTrue(docker.isInstalled)
 	}
 
 	func testVersionCommand() {
 		let expect = self.expectation(description: "file download")
-		let docker = DockerManager()
-		let future = docker.dockerRequest("/version")
-		future.onSuccess { json in
-			XCTAssert(Double(json["ApiVersion"].stringValue)! > 1.2)
+		let docker = DockerManager(userDefaults:defaults)
+		let future = docker.initializeConnection()
+		var error:NSError?
+		future.onSuccess { _ in
 			expect.fulfill()
-		}.onFailure {_ in 
-			XCTFail()
+		}.onFailure { err in
+			error = err
 			expect.fulfill()
 		}
-		self.waitForExpectations(timeout: 2) { (err) -> Void in }
+		self.waitForExpectations(timeout: 2) { _ in
+			XCTAssertNil(error)
+			XCTAssertGreaterThan(docker.apiVersion, 1.2)
+		}
+	}
+	
+	func testDockerNotLoaded() {
+		let expect = expectation(description: "failed to load")
+		let docker = DockerManager(hostUrl: "http://foobar:9899/", baseInfoUrl: "http://localhost:12351/", userDefaults:defaults)
+		var failed = false
+		docker.initializeConnection().onSuccess { _ in
+			expect.fulfill()
+		}.onFailure { _ in
+			failed = true
+			expect.fulfill()
+		}
+		waitForExpectations(timeout: 2) { _ in
+			XCTAssertTrue(failed)
+		}
 	}
 	
 	func testLoadRequiredInfo() {
-		let docker = DockerManager()
-		initializeManager(docker: docker)
-
+		//initialize using fake docker info
+		stubGetRequest(uriPath: "/version", fileName: "version")
 		stubGetRequest(uriPath: "/imageInfo.json", fileName: "imageInfo")
+
+		let docker = DockerManager()
 		let expect = expectation(description: "load required info")
 		let future = docker.checkForImageUpdate()
 		var loaded:Bool = false
@@ -64,19 +85,6 @@ class DockerManagerTests: XCTestCase {
 			XCTAssertEqual(docker.imageInfo?.version, 1)
 			XCTAssertEqual(docker.imageInfo?.dbserver.name, "dbserver")
 		}
-	}
-	
-	///initializes docker with fake data from version.json
-	func initializeManager(docker:DockerManager) {
-		let expect = expectation(description: "docker init")
-		stubGetRequest(uriPath: "/version", fileName: "version")
-		var running:Bool = false
-		docker.isDockerRunning() { isRun in
-			running = isRun
-			expect.fulfill()
-		}
-		waitForExpectations(timeout: 1, handler:nil)
-		XCTAssertTrue(running)
 	}
 	
 	///uses Mockingjay to stub out a request for uriPath with the contents of fileName.json

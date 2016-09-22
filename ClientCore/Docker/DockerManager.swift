@@ -68,36 +68,39 @@ open class DockerManager : NSObject {
 		}
 	}
 	
-	///connects to the docker daemon and confirms it is running and is compatible with what is required.
-	/// calls initializeCOnnection()
-	/// - parameter handler: Closure called with true if able to connect to docker daemon.
-	public func isDockerRunning(_ handler:@escaping (Bool) -> Void) {
-		initializeConnection(handler: { rsp, error in
-			handler(rsp)
-		})
+	///connects to the docker daemon and confirms it is running and meets requirements.
+	/// calls initializeConnection()
+	/// - returns: Closure called with true if able to connect to docker daemon.
+	public func isDockerRunning() -> Future<Bool, NSError> {
+		guard !initialzed else { return initializeConnection() }
+		let promise = Promise<Bool,NSError>()
+		promise.success(true)
+		return promise.future
 	}
 	
 	///Loads basic version information from the docker daemon. Also loads list of docker images that are installed.
 	///Must be called before being using any func except isDockerRunning().
-	/// - parameter handler: Closure called with true if able to connect to docker daemon.
-	public func initializeConnection(handler: @escaping SimpleServerCallback) {
+	/// - returns: future. the result will be false if there was an error parsing information from docker.
+	public func initializeConnection() -> Future<Bool, NSError> {
 		self.initialzed = true
-		guard !versionLoaded else { handler(apiVersion > 0, nil); return }
+		let promise = Promise<Bool, NSError>()
+		guard !versionLoaded else { promise.success(apiVersion > 0); return promise.future }
 		let future = dockerRequest("/version")
 		future.onSuccess { json in
 			if let err = self.processVersionJson(json: json) {
-				handler(false, err)
-				return
-			}
-			//successfully parsed the version info. now get the image info
-			self.loadImages().onSuccess { _ in
-				handler(true, nil)
-			}.onFailure { error in
-				handler(false, error)
+				promise.failure(err)
+			} else {
+				//successfully parsed the version info. now get the image info
+				self.loadImages().onSuccess { _ in
+					promise.success(true)
+				}.onFailure { error in
+					promise.failure(error)
+				}
 			}
 		}.onFailure { err in
-			handler(false, err)
+			promise.failure(err)
 		}
+		return promise.future
 	}
 	
 	///Checks to see if it is necessary to check for an imageInfo update, and if so, perform that check.
