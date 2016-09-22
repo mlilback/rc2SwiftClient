@@ -16,3 +16,4 @@
 
 * BaseTest used to load a LoginSession from the actual RestServer
 
+* need to save time of last pull and not attempt every time app is started

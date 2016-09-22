@@ -10,7 +10,10 @@ import BrightFutures
 import ServiceManagement
 import os
 
+///a callback closure
 public typealias SimpleServerCallback = (_ success:Bool, _ error:NSError?) -> Void
+
+
 
 ///manages communicating with the local docker engine
 open class DockerManager : NSObject {
@@ -136,7 +139,7 @@ open class DockerManager : NSObject {
 		precondition(imageInfo!.dbserver.size > 0)
 		let promise = Promise<Bool, NSError>()
 		let url = URL(string: hostUrl!)!
-		let fullSize = imageInfo!.dbserver.size + imageInfo!.appserver.size
+		let fullSize = imageInfo!.dbserver.size + imageInfo!.appserver.size + imageInfo!.computeserver.size
 		pullProgress = PullProgress(name: "dbserver", size: fullSize)
 		let dbpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/dbserver", estimatedSize: imageInfo!.dbserver.size)
 		let dbfuture = pullSingleImage(pull: dbpull, progressHandler: handler)
@@ -144,7 +147,13 @@ open class DockerManager : NSObject {
 			let apppull = DockerPullOperation(baseUrl: url, imageName: "rc2server/appserver", estimatedSize: self.imageInfo!.appserver.size)
 			let appfuture = self.pullSingleImage(pull: apppull, progressHandler: handler)
 			appfuture.onSuccess { _ in
-				promise.success(true)
+				let cpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/compute", estimatedSize: self.imageInfo!.computeserver.size)
+				let cfuture = self.pullSingleImage(pull: cpull, progressHandler: handler)
+				cfuture.onSuccess { _ in
+					promise.success(true)
+				}.onFailure { err in
+					promise.failure(err)
+				}
 			}.onFailure { err in
 				promise.failure(err)
 			}

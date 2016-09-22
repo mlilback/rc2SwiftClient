@@ -106,7 +106,6 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 		if oldTotal == 0 || (curTime - _lastUpdate) > 0.1 {
 			if totalDownloaded > oldTotal {
 				pullProgress.currentSize = totalDownloaded
-				os_log("downloaded: %d",type:.debug,  totalDownloaded)
 				_progressHandler?(pullProgress)
 			} else if totalDownloaded >= estimatedSize {
 				pullProgress.extracting = true
