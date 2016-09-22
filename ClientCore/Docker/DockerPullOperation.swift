@@ -123,7 +123,6 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 				if var layer = layers[json["id"].stringValue] {
 					if let details = json["progressDetail"].dictionary {
 						if let fsize = details["total"]?.int , layer.finalSize == 0 {
-							NSLog("layer %@ is %d in size", layer.id, fsize)
 							layer.finalSize = fsize
 						}
 						if let csize = details["current"]?.int {

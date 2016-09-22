@@ -26,15 +26,17 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 
 	func applicationWillFinishLaunching(_ notification: Notification) {
 		dockerManager = DockerManager()
-		dockerManager?.isDockerRunning() { isRunning in
-			os_log("docker is running %{public}s", type:.info, isRunning ? "yes" : "no")
-			self.startSetup()
-//			let f = self.dockerManager!.pullImage("rc2server/dbserver")
-//			f.onSuccess {_ in
-//				os_log("pull should be good", type:.info)
-//			}.onFailure { err in
-//				os_log("docker error: %{public}@", type:.error, err as NSError)
-//			}
+		dockerManager!.isDockerRunning().onSuccess { _ in
+			self.dockerManager!.checkForImageUpdate().onSuccess { _ in
+				os_log("docker is running")
+				DispatchQueue.main.async {
+					self.startSetup()
+				}
+			}.onFailure { err in
+				os_log("error checking for docker image update: %{public}s", err)
+			}
+		}.onFailure { err in
+			os_log("docker not running: %{public}s", type:.error, err as NSError)
 		}
 		let cdUrl = Bundle.main.url(forResource: "CommonDefaults", withExtension: "plist")
 		UserDefaults.standard.register(defaults: NSDictionary(contentsOf: cdUrl!)! as! [String : AnyObject])
@@ -98,6 +100,10 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		let wc = sboard.instantiateWindowController()
 		setupController = wc.contentViewController as? ServerSetupController
 		wc.window?.makeKeyAndOrderFront(self)
+		guard dockerManager!.pullIsNecessary() else {
+			self.showBookmarkWindow(self)
+			return
+		}
 		guard let future = dockerManager?.pullImages(handler: { p in
 			self.setupController!.pullProgress = p
 		}) else { fatalError("failed to start image pull") }

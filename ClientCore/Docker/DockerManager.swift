@@ -72,7 +72,7 @@ open class DockerManager : NSObject {
 	/// calls initializeConnection()
 	/// - returns: Closure called with true if able to connect to docker daemon.
 	public func isDockerRunning() -> Future<Bool, NSError> {
-		guard !initialzed else { return initializeConnection() }
+		guard initialzed else { return initializeConnection() }
 		let promise = Promise<Bool,NSError>()
 		promise.success(true)
 		return promise.future
@@ -104,12 +104,13 @@ open class DockerManager : NSObject {
 	}
 	
 	///Checks to see if it is necessary to check for an imageInfo update, and if so, perform that check.
-	/// - returns: a future whose success will be true if a request was made to the server, false if cached
+	/// - returns: a future whose success will be true if a pull is required
 	public func checkForImageUpdate() -> Future<Bool,NSError> {
 		precondition(initialzed)
 		let promise = Promise<Bool,NSError>()
 		//short circuit if we don't need to chedk and have valid data
 		guard imageInfo == nil || shouldCheckForUpdate else {
+			os_log("using cached docker info", type:.info)
 			promise.success(false)
 			return promise.future
 		}
@@ -232,6 +233,18 @@ open class DockerManager : NSObject {
 		return promise.future
 	}
 
+	///compares installedImages with imageInfo to see if a pull is necessary
+	public func pullIsNecessary() -> Bool {
+		//TODO: we need tag/version info as part of the images
+		for aTag in [imageInfo!.dbserver.tag, imageInfo!.appserver.tag, imageInfo!.computeserver.tag] {
+			if installedImages.filter({ img in img.isNamed(aTag) }).count < 1 {
+				return true
+			}
+		}
+		os_log("no pull necessary", type:.info)
+		return false
+	}
+	
 	///requests the list of images from docker and sticks them in installedImages property
 	func loadImages() -> Future<[DockerImage],NSError> {
 		precondition(initialzed)

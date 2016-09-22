@@ -10,14 +10,14 @@ import os
 
 public struct DockerImageInfo: JSONSerializable {
 	let size:Int64
-	let dupSize:Int64
+	let tag:String
 	let name:String
 	let id:String
 
 	public init?(json:JSON?) {
 		guard let json = json else { return nil }
 		size = json["size"].int64Value
-		dupSize = json["dupsize"].int64Value
+		tag = json["tag"].stringValue
 		name = json["name"].stringValue
 		id = json["id"].stringValue
 	}
@@ -25,7 +25,7 @@ public struct DockerImageInfo: JSONSerializable {
 	public func serialize() throws -> JSON {
 		var dict = [String:Any]()
 		dict["size"] = size
-		dict["dupsize"] = dupSize
+		dict["tag"] = tag
 		dict["name"] = name
 		dict["id"] = id
 		return JSON(dict)
