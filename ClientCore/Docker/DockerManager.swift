@@ -22,6 +22,7 @@ extension DefaultsKeys {
 
 ///manages communicating with the local docker engine
 open class DockerManager : NSObject {
+	let networkName = "rc2server"
 	let requiredApiVersion = 1.24
 	let sessionConfig: URLSessionConfiguration
 	let session: URLSession
@@ -36,6 +37,7 @@ open class DockerManager : NSObject {
 	fileprivate(set) var installedImages:[DockerImage] = []
 	fileprivate(set) var imageInfo: RequiredImageInfo?
 	fileprivate(set) var pullProgress: PullProgress?
+	fileprivate(set) var dataDirectory:URL?
 	fileprivate let socketPath = "/var/run/docker.sock"
 	fileprivate var initialzed = false
 	fileprivate var versionLoaded:Bool = false
@@ -127,10 +129,54 @@ open class DockerManager : NSObject {
 		return promise.future
 	}
 	
+	///compares installedImages with imageInfo to see if a pull is necessary
+	public func pullIsNecessary() -> Bool {
+		//TODO: we need tag/version info as part of the images
+		for aTag in [imageInfo!.dbserver.tag, imageInfo!.appserver.tag, imageInfo!.computeserver.tag] {
+			if installedImages.filter({ img in img.isNamed(aTag) }).count < 1 {
+				return true
+			}
+		}
+		os_log("no pull necessary", type:.info)
+		return false
+	}
+	
+	///fetches any missing/updated images based on imageInfo
+	public func pullImages(handler: PullProgressHandler? = nil) -> Future<Bool, NSError> {
+		precondition(imageInfo != nil)
+		precondition(imageInfo!.dbserver.size > 0)
+		let promise = Promise<Bool, NSError>()
+		let url = URL(string: hostUrl!)!
+		let fullSize = imageInfo!.dbserver.size + imageInfo!.appserver.size + imageInfo!.computeserver.size
+		pullProgress = PullProgress(name: "dbserver", size: fullSize)
+		let dbpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/dbserver", estimatedSize: imageInfo!.dbserver.size)
+		let dbfuture = pullSingleImage(pull: dbpull, progressHandler: handler)
+		dbfuture.onSuccess { _ in
+			let apppull = DockerPullOperation(baseUrl: url, imageName: "rc2server/appserver", estimatedSize: self.imageInfo!.appserver.size)
+			let appfuture = self.pullSingleImage(pull: apppull, progressHandler: handler)
+			appfuture.onSuccess { _ in
+				let cpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/compute", estimatedSize: self.imageInfo!.computeserver.size)
+				let cfuture = self.pullSingleImage(pull: cpull, progressHandler: handler)
+				cfuture.onSuccess { _ in
+					promise.success(true)
+					}.onFailure { err in
+						promise.failure(err)
+				}
+				}.onFailure { err in
+					promise.failure(err)
+			}
+			}.onFailure { err in
+				promise.failure(err)
+		}
+		return promise.future
+	}
+}
+
+fileprivate extension DockerManager {
 	///parses the version string from docker rest api
 	/// - parameter json: the json returned from the rest call
 	/// - returns: nil on success, NSError on failure
-	fileprivate func processVersionJson(json:JSON) -> NSError? {
+	func processVersionJson(json:JSON) -> NSError? {
 		do {
 			let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
 			let verStr = json["Version"].stringValue
@@ -176,36 +222,6 @@ open class DockerManager : NSObject {
 		return promise.future
 	}
 	
-	///fetches any missing/updated images based on imageInfo
-	public func pullImages(handler: PullProgressHandler? = nil) -> Future<Bool, NSError> {
-		precondition(imageInfo != nil)
-		precondition(imageInfo!.dbserver.size > 0)
-		let promise = Promise<Bool, NSError>()
-		let url = URL(string: hostUrl!)!
-		let fullSize = imageInfo!.dbserver.size + imageInfo!.appserver.size + imageInfo!.computeserver.size
-		pullProgress = PullProgress(name: "dbserver", size: fullSize)
-		let dbpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/dbserver", estimatedSize: imageInfo!.dbserver.size)
-		let dbfuture = pullSingleImage(pull: dbpull, progressHandler: handler)
-		dbfuture.onSuccess { _ in
-			let apppull = DockerPullOperation(baseUrl: url, imageName: "rc2server/appserver", estimatedSize: self.imageInfo!.appserver.size)
-			let appfuture = self.pullSingleImage(pull: apppull, progressHandler: handler)
-			appfuture.onSuccess { _ in
-				let cpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/compute", estimatedSize: self.imageInfo!.computeserver.size)
-				let cfuture = self.pullSingleImage(pull: cpull, progressHandler: handler)
-				cfuture.onSuccess { _ in
-					promise.success(true)
-				}.onFailure { err in
-					promise.failure(err)
-				}
-			}.onFailure { err in
-				promise.failure(err)
-			}
-		}.onFailure { err in
-			promise.failure(err)
-		}
-		return promise.future
-	}
-	
 	func pullSingleImage(pull:DockerPullOperation, progressHandler:PullProgressHandler?) -> Future<Bool, NSError>
 	{
 		pullProgress?.extracting = false
@@ -233,18 +249,6 @@ open class DockerManager : NSObject {
 		return promise.future
 	}
 
-	///compares installedImages with imageInfo to see if a pull is necessary
-	public func pullIsNecessary() -> Bool {
-		//TODO: we need tag/version info as part of the images
-		for aTag in [imageInfo!.dbserver.tag, imageInfo!.appserver.tag, imageInfo!.computeserver.tag] {
-			if installedImages.filter({ img in img.isNamed(aTag) }).count < 1 {
-				return true
-			}
-		}
-		os_log("no pull necessary", type:.info)
-		return false
-	}
-	
 	///requests the list of images from docker and sticks them in installedImages property
 	func loadImages() -> Future<[DockerImage],NSError> {
 		precondition(initialzed)
@@ -269,6 +273,30 @@ open class DockerManager : NSObject {
 			promise.failure(err)
 		}
 		return promise.future
+	}
+	
+	///creates AppSupport/io.rc2.xxx/[v1/pgdata, v1/docker-compolse.yml]
+	func setupDataDirectory() {
+		do {
+			let fm = FileManager()
+			let appdir = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+			dataDirectory = appdir.appendingPathComponent(Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as! String, isDirectory: true).appendingPathComponent("v1", isDirectory: true)
+			if !fm.directoryExists(at: dataDirectory!) {
+				try fm.createDirectory(at: dataDirectory!, withIntermediateDirectories: true, attributes: nil)
+			}
+			let pgdir = dataDirectory!.appendingPathComponent("pgdata", isDirectory: true)
+			if !fm.directoryExists(at: pgdir) {
+				try fm.createDirectory(at: pgdir, withIntermediateDirectories: true, attributes: nil)
+			}
+			let composeurl = Bundle(for: type(of: self)).url(forResource: "docker-compoose", withExtension: "yml")
+			assert(composeurl!.fileExists())
+			let desturl = dataDirectory!.appendingPathComponent("docker-compose.yml")
+			try fm.copyItem(at: composeurl!, to: desturl)
+		} catch let err {
+			os_log("error setting up data diretory: %{public}s", err as NSError)
+		}
+		
+		
 	}
 }
 
