@@ -223,6 +223,7 @@
 		08E8366B1D94436D00E26EFE /* UserDefaults+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8366A1D94436D00E26EFE /* UserDefaults+JSON.swift */; };
 		08E8366C1D94500900E26EFE /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08E8366E1D94715D00E26EFE /* FileManager+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8366D1D94715D00E26EFE /* FileManager+Rc2.swift */; };
+		08E836721D9AF8F500E26EFE /* networks.json in Resources */ = {isa = PBXBuildFile; fileRef = 08E836711D9AF8F500E26EFE /* networks.json */; };
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08EFF6031C7BB2E600AAF1D4 /* MultipartInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */; };
@@ -571,6 +572,7 @@
 		08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = Carthage/Build/Mac/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
 		08E8366A1D94436D00E26EFE /* UserDefaults+JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+JSON.swift"; sourceTree = "<group>"; };
 		08E8366D1D94715D00E26EFE /* FileManager+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager+Rc2.swift"; sourceTree = "<group>"; };
+		08E836711D9AF8F500E26EFE /* networks.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = networks.json; sourceTree = "<group>"; };
 		08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetActionBlock.swift; sourceTree = "<group>"; };
 		08ED575E1C724383002B2558 /* MacFileImportSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacFileImportSetup.swift; sourceTree = "<group>"; };
 		08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStream.swift; sourceTree = "<group>"; };
@@ -1000,6 +1002,7 @@
 				084199361D91ABC70089A1AC /* DockerImageInfoTests.swift */,
 				087389BD1D92C2C40056518F /* version.json */,
 				084199381D91AC6B0089A1AC /* imageInfo.json */,
+				08E836711D9AF8F500E26EFE /* networks.json */,
 			);
 			path = ClientCoreTests;
 			sourceTree = SOURCE_ROOT;
@@ -1339,6 +1342,7 @@
 				084199391D91AC6B0089A1AC /* imageInfo.json in Resources */,
 				087389BE1D92C2C40056518F /* version.json in Resources */,
 				08E7E09D1D8AECE1000C4C87 /* dockerImages.json in Resources */,
+				08E836721D9AF8F500E26EFE /* networks.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

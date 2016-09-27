@@ -11,6 +11,7 @@ import XCTest
 import SwiftyJSON
 import BrightFutures
 import Mockingjay
+import Result
 
 class DockerManagerTests: XCTestCase {
 	var defaults: UserDefaults!
@@ -65,25 +66,43 @@ class DockerManagerTests: XCTestCase {
 	func testLoadRequiredInfo() {
 		//initialize using fake docker info
 		stubGetRequest(uriPath: "/version", fileName: "version")
-		stubGetRequest(uriPath: "/imageInfo.json", fileName: "imageInfo")
-
-		let docker = DockerManager()
+		stubGetRequest(uriPath: "https://www.rc2.io/imageInfo.json", fileName: "imageInfo")
+		
+		//swizzle wasn't working for some reason, so we manually add the mockingjay protocol to session config
+		let sessionConfig = URLSessionConfiguration.default
+		sessionConfig.protocolClasses = [MockingjayProtocol.self, DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
+		let docker = DockerManager(userDefaults:defaults, sessionConfiguration:sessionConfig)
 		let expect = expectation(description: "load required info")
-		let future = docker.checkForImageUpdate()
-		var loaded:Bool = false
-		var error:NSError? = nil
-		future.onSuccess { success in
-			loaded = success
-			expect.fulfill()
-		}.onFailure { err in
-			error = err
+		var result: Result<Bool, NSError>?
+		docker.initializeConnection().flatMap { _ in
+			docker.checkForImageUpdate()
+		}.onComplete { r2 in
+			result = r2
 			expect.fulfill()
 		}
-		waitForExpectations(timeout: 2) { _ in
-			XCTAssertTrue(loaded)
-			XCTAssertNil(error)
+		waitForExpectations(timeout: 20) { _ in
+			//checkForImageUpdate() bool result does not mean success, means that was loaded remotely. so just check on if there was an error or not
+			if let _ = result?.error {
+				XCTFail()
+			}
 			XCTAssertEqual(docker.imageInfo?.version, 1)
 			XCTAssertEqual(docker.imageInfo?.dbserver.name, "dbserver")
+		}
+	}
+	
+	func testNetworkExists() {
+		stubGetRequest(uriPath: "/networks", fileName: "networks")
+		let docker = DockerManager()
+		let expect = expectation(description: "load networks")
+		var result = false
+		docker.initializeConnection().flatMap { _ in
+			docker.networkExists(named:"rc2server")
+		}.onComplete { r2 in
+			if case .success(let s) = r2 { result = s }
+			expect.fulfill()
+		}
+		waitForExpectations(timeout: 1) { _ in
+			XCTAssertTrue(result)
 		}
 	}
 	
@@ -91,6 +110,6 @@ class DockerManagerTests: XCTestCase {
 	func stubGetRequest(uriPath:String, fileName:String) {
 		let path : String = Bundle(for: DockerManagerTests.self).path(forResource: fileName, ofType: "json")!
 		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
-		stub(http(method: .get, uri: uriPath), builder: jsonData(resultData!))
+		stub(uri(uri: uriPath), builder: jsonData(resultData!))
 	}
 }

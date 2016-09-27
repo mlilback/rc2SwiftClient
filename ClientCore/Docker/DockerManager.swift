@@ -15,20 +15,24 @@ import SwiftyUserDefaults
 public typealias SimpleServerCallback = (_ success:Bool, _ error:NSError?) -> Void
 
 extension DefaultsKeys {
+	//MARK: - Keys for UserDefaults
 	static let lastImageInfoCheck = DefaultsKey<Double>("lastImageInfoCheck")
 	static let dockerImageVersion = DefaultsKey<Int>("dockerImageVersion")
 	static let cachedImageInfo = DefaultsKey<JSON?>("cachedImageInfo")
 }
 
+//MARK: -
 ///manages communicating with the local docker engine
 open class DockerManager : NSObject {
+	//MARK: - Properties
 	let networkName = "rc2server"
 	let requiredApiVersion = 1.24
 	let sessionConfig: URLSessionConfiguration
 	let session: URLSession
 	let baseInfoUrl: String
 	let defaults: UserDefaults
-	fileprivate(set) var hostUrl: String?
+	///the base url to connect to. will be set in init, but unwrapped since might be after call to super.init
+	fileprivate(set) var baseUrl: URL!
 	fileprivate(set) var primaryVersion:Int = 0
 	fileprivate(set) var secondaryVersion:Int = 0
 	fileprivate(set) var fixVersion = 0
@@ -47,17 +51,23 @@ open class DockerManager : NSObject {
 		return defaults[.lastImageInfoCheck] + 86400.0 <= Date.timeIntervalSinceReferenceDate
 	}
 	
+	//MARK: - Public Methods
+	
 	///Default initializer. After creation, initializeConnection or isDockerRunning must be called
 	/// - parameter hostUrl: The base url of the docker daemon (i.e. http://localhost:2375/) to connect to. nil means use /var/run/docker.sock. Also checks for the environment variable "DockerHostUrl" if not specified
 	/// - parameter baseInfoUrl: the base url where imageInfo.json can be found. Defaults to www.rc2.io.
 	/// - parameter userDefaults: defaults to standard user defaults. Allows for dependency injection.
-	public init(hostUrl host:String? = nil, baseInfoUrl infoUrl:String? = nil, userDefaults:UserDefaults = .standard)
+	public init(hostUrl host:String? = nil, baseInfoUrl infoUrl:String? = nil, userDefaults:UserDefaults = .standard, sessionConfiguration:URLSessionConfiguration = .default)
 	{
-		hostUrl = host
+		if let hostUrl = host {
+			baseUrl = URL(string: hostUrl)!
+		} else {
+			baseUrl = URL(string: "unix://")
+		}
 		self.baseInfoUrl = infoUrl == nil ? "https://www.rc2.io/" : infoUrl!
 		defaults = userDefaults
-		sessionConfig = URLSessionConfiguration.default
-		sessionConfig.protocolClasses = [DockerUrlProtocol.self]
+		sessionConfig = sessionConfiguration
+		sessionConfig.protocolClasses = [DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
 		sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
 		session = URLSession(configuration: sessionConfig)
 		//read image info if it is there
@@ -66,8 +76,9 @@ open class DockerManager : NSObject {
 		isInstalled = Foundation.FileManager().fileExists(atPath: socketPath)
 		//check for a host specified as an environment variable - useful for testing
 		if nil == host, let envHost = ProcessInfo.processInfo.environment["DockerHostUrl"] {
-			hostUrl = envHost
+			baseUrl = URL(string:envHost)
 		}
+		assert(baseUrl != nil, "hostUrl not specified as argument or environment variable")
 	}
 	
 	///connects to the docker daemon and confirms it is running and meets requirements.
@@ -146,16 +157,15 @@ open class DockerManager : NSObject {
 		precondition(imageInfo != nil)
 		precondition(imageInfo!.dbserver.size > 0)
 		let promise = Promise<Bool, NSError>()
-		let url = URL(string: hostUrl!)!
 		let fullSize = imageInfo!.dbserver.size + imageInfo!.appserver.size + imageInfo!.computeserver.size
 		pullProgress = PullProgress(name: "dbserver", size: fullSize)
-		let dbpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/dbserver", estimatedSize: imageInfo!.dbserver.size)
+		let dbpull = DockerPullOperation(baseUrl: baseUrl, imageName: "rc2server/dbserver", estimatedSize: imageInfo!.dbserver.size)
 		let dbfuture = pullSingleImage(pull: dbpull, progressHandler: handler)
 		dbfuture.onSuccess { _ in
-			let apppull = DockerPullOperation(baseUrl: url, imageName: "rc2server/appserver", estimatedSize: self.imageInfo!.appserver.size)
+			let apppull = DockerPullOperation(baseUrl: self.baseUrl, imageName: "rc2server/appserver", estimatedSize: self.imageInfo!.appserver.size)
 			let appfuture = self.pullSingleImage(pull: apppull, progressHandler: handler)
 			appfuture.onSuccess { _ in
-				let cpull = DockerPullOperation(baseUrl: url, imageName: "rc2server/compute", estimatedSize: self.imageInfo!.computeserver.size)
+				let cpull = DockerPullOperation(baseUrl: self.baseUrl, imageName: "rc2server/compute", estimatedSize: self.imageInfo!.computeserver.size)
 				let cfuture = self.pullSingleImage(pull: cpull, progressHandler: handler)
 				cfuture.onSuccess { _ in
 					promise.success(true)
@@ -170,8 +180,30 @@ open class DockerManager : NSObject {
 		}
 		return promise.future
 	}
+
+	///checks to see if a network with the specified name exists
+	public func networkExists(named:String) -> Future<Bool, NSError> {
+		precondition(initialzed)
+		let promise = Promise<Bool, NSError>()
+		dockerRequest("/networks").onSuccess { json in
+			promise.success(json.array?.filter({ aNet in
+				return aNet["Name"].stringValue == named
+			}).count ?? 0 > 0)
+		}.onFailure { err in
+			promise.failure(err)
+		}
+		return promise.future
+	}
+	
+	public func createNetwork(named:String) -> Future<Bool, NSError> {
+		precondition(initialzed)
+		let promise = Promise<Bool, NSError>()
+		
+		return promise.future
+	}
 }
 
+//MARK: - Private Methods
 fileprivate extension DockerManager {
 	///parses the version string from docker rest api
 	/// - parameter json: the json returned from the rest call
@@ -202,11 +234,7 @@ fileprivate extension DockerManager {
 	/// - returns: A future for the JSON or an error.
 	func dockerRequest(_ command:String) -> Future<JSON,NSError> {
 		precondition(command.hasPrefix("/"))
-		var urlStr = "unix://\(command)"
-		if nil != hostUrl {
-			urlStr = "\(hostUrl!)\(command)"
-		}
-		let url = URL(string: urlStr)!
+		let url = baseUrl.appendingPathComponent(command)
 		let promise = Promise<JSON,NSError>()
 		let task = session.dataTask(with: URLRequest(url: url)) { data, response, error in
 			guard let response = response as? HTTPURLResponse else { promise.failure(error! as NSError); return }
