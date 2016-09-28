@@ -116,6 +116,33 @@ class DockerManagerTests: XCTestCase {
 		XCTAssertNotNil(result.error)
 	}
 
+	func testContainerRefresh() {
+		stubGetRequest(uriPath: "/containers/json", fileName: "containers")
+		let docker = DockerManager(userDefaults:defaults, sessionConfiguration:sessionConfig)
+		let result = callDockerMethod(docker: docker, action: { docker in
+			return docker.refreshContainers()
+		})
+		guard let _ = result?.value else {
+			XCTFail("failed to refresh containers")
+			return
+		}
+		XCTAssertEqual(docker.containers.count, 1)
+		XCTAssertTrue(docker.containers[0].isNamed("rc2_dbserver"))
+	}
+
+	func testContainerRefreshFail() {
+		stubGetRequest(uriPath: "/containers/json", fileName: "networks")
+		let docker = DockerManager(userDefaults:defaults, sessionConfiguration:sessionConfig)
+		let result = callDockerMethod(docker: docker, action: { docker in
+			return docker.refreshContainers()
+		})
+		guard let _ = result?.error else {
+			XCTFail("succeeded refreshing containers")
+			return
+		}
+		XCTAssertEqual(docker.containers.count, 0)
+	}
+
 	/// helper function to create a network. caller should have stubbed the uri "/networks/create"
 	func callDockerMethod(docker:DockerManager?, action: @escaping (DockerManager) -> Future<Bool,NSError>) -> Result<Bool, NSError>?
 	{

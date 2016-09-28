@@ -40,6 +40,7 @@ open class DockerManager : NSObject {
 	fileprivate(set) var isInstalled:Bool = false
 	fileprivate(set) var installedImages:[DockerImage] = []
 	fileprivate(set) var imageInfo: RequiredImageInfo?
+	fileprivate(set) var containers: [DockerContainer] = []
 	fileprivate(set) var pullProgress: PullProgress?
 	fileprivate(set) var dataDirectory:URL?
 	fileprivate let socketPath = "/var/run/docker.sock"
@@ -181,6 +182,33 @@ open class DockerManager : NSObject {
 		return promise.future
 	}
 
+	/// Refreshes the containers property from the docker daemon
+	///
+	/// - returns: a future whose value will always be true
+	public func refreshContainers() -> Future<Bool, NSError> {
+		precondition(initialzed)
+		let promise = Promise<Bool, NSError>()
+		let filtersJson = JSON(["label": ["rc2.live"]])
+		let filtersStr = filtersJson.description.stringByAddingPercentEncodingForFormData()
+		var urlcomponents = URLComponents(url: baseUrl.appendingPathComponent("/containers/json"), resolvingAgainstBaseURL: true)!
+		urlcomponents.queryItems = [URLQueryItem(name:"all", value:"1"), URLQueryItem(name:"filters", value:filtersStr)]
+		makeRequest(request: URLRequest(url: urlcomponents.url!)).onSuccess { rawData in
+			let json = JSON(data:rawData)
+			if json == JSON.null {
+				promise.failure(NSError.error(withCode: .invalidJson, description: "invalid json for list containers"))
+			} else {
+				self.containers = json.arrayValue.flatMap { DockerContainer(json:$0) }
+				guard self.containers.count == json.arrayValue.count else {
+					return promise.failure(NSError.error(withCode: .invalidJson, description: "invalid json for list containers"))
+				}
+				return promise.success(true)
+			}
+		}.onFailure { err in
+			promise.failure(err)
+		}
+		return promise.future
+	}
+	
 	///checks to see if a network with the specified name exists
 	public func networkExists(named:String) -> Future<Bool, NSError> {
 		precondition(initialzed)
@@ -289,12 +317,19 @@ fileprivate extension DockerManager {
 		return future
 	}
 	
-	///make a request and return the returned data
+	/// make a request and return the returned data
 	/// - parameter url: The URL to fetch
 	/// - returns: a future for the data at url or an error
 	func makeRequest(url:URL) -> Future<Data,NSError> {
+		return makeRequest(request: URLRequest(url: url))
+	}
+
+	/// make a request and return the returned data
+	/// - parameter request: The URLRequest to fetch
+	/// - returns: a future for the data from request or an error
+	func makeRequest(request:URLRequest) -> Future<Data,NSError> {
 		let promise = Promise<Data,NSError>()
-		session.dataTask(with: url, completionHandler: { (data, response, error) in
+		session.dataTask(with: request, completionHandler: { (data, response, error) in
 			guard let rawData = data , error == nil else {
 				promise.failure(error as! NSError)
 				return

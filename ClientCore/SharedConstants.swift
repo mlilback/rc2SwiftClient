@@ -15,6 +15,7 @@ public enum Rc2ErrorCode: Int {
 	case dockerError = 103
 	case noSuchProject = 104
 	case networkError = 105
+	case invalidJson = 106
 }
 
 public typealias ProgressHandler = (Progress?) -> Void

@@ -7,7 +7,7 @@
 import Foundation
 import SwiftyJSON
 
-public struct DockerImage: JSONSerializable, Equatable {
+public struct DockerImage: JSONSerializable, Named {
 	let id:String
 	let tags:[DockerTag]
 	let size:Int
@@ -48,6 +48,9 @@ public struct DockerImage: JSONSerializable, Equatable {
 	}
 }
 
-public func ==(lhs:DockerImage, rhs:DockerImage) -> Bool {
-	return lhs.id == rhs.id && lhs.size == rhs.size
+extension DockerImage: Equatable {
+	public static func ==(lhs:DockerImage, rhs:DockerImage) -> Bool {
+		return lhs.id == rhs.id && lhs.size == rhs.size
+	}
 }
+

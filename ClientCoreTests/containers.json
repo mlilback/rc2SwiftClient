@@ -1,0 +1,49 @@
+[
+    {
+        "Command": "var/lib/postgresql/runpg.sh 9.4",
+        "Created": 1474915460,
+        "HostConfig": {
+            "NetworkMode": "rc2server"
+        },
+        "Id": "e811587d3c78274490f076bce09f027e36fed13a20568c2052d0353e35a5d81d",
+        "Image": "rc2server/dbserver",
+        "ImageID": "sha256:544695ec771bd6f6c511274ce6f63c2e587897927c1c4d05a0402abfdac1c889",
+        "Labels": {
+            "io.rc2.type": "app",
+            "rc2.live": ""
+        },
+        "Mounts": [
+            {
+                "Destination": "/sessions",
+                "Mode": "",
+                "Propagation": "rprivate",
+                "RW": true,
+                "Source": "/Users/mlilback/Library/Application Support/Rc2/sessions"
+            }
+        ],
+        "Names": [
+            "/rc2_dbserver"
+        ],
+        "NetworkSettings": {
+            "Networks": {
+                "rc2server": {
+                    "Aliases": null,
+                    "EndpointID": "028a77978243349e3cb21258ab854a3623ebf9259052fb4428dc7f57836cc1df",
+                    "Gateway": "172.19.0.1",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "IPAMConfig": null,
+                    "IPAddress": "172.19.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "Links": null,
+                    "MacAddress": "02:42:ac:13:00:02",
+                    "NetworkID": "b75564811d1146b0898d4401127929a35e5c2694cabf9c769647e0982750374c"
+                }
+            }
+        },
+        "Ports": [],
+        "State": "running",
+        "Status": "Up 44 hours"
+    }
+]
