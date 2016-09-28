@@ -74,6 +74,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		} catch let err {
 			os_log("failed to serialize bookmarks: %{public}@", type:.error, err as NSError)
 		}
+		dockerManager?.session.invalidateAndCancel()
 	}
 
 	func applicationShouldOpenUntitledFile(_ sender: NSApplication) -> Bool {

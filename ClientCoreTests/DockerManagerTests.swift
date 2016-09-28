@@ -15,10 +15,12 @@ import Result
 
 class DockerManagerTests: XCTestCase {
 	var defaults: UserDefaults!
+	var sessionConfig:URLSessionConfiguration!
 	
 	override func setUp() {
 		super.setUp()
-		URLSessionConfiguration.mockingjaySwizzleDefaultSessionConfiguration()
+		sessionConfig = URLSessionConfiguration.default
+		sessionConfig.protocolClasses = [MockingjayProtocol.self, DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
 		defaults = UserDefaults(suiteName: UUID().uuidString)! //not sure why this is failable
 	}
 	
@@ -68,44 +70,71 @@ class DockerManagerTests: XCTestCase {
 		stubGetRequest(uriPath: "/version", fileName: "version")
 		stubGetRequest(uriPath: "https://www.rc2.io/imageInfo.json", fileName: "imageInfo")
 		
-		//swizzle wasn't working for some reason, so we manually add the mockingjay protocol to session config
-		let sessionConfig = URLSessionConfiguration.default
-		sessionConfig.protocolClasses = [MockingjayProtocol.self, DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
 		let docker = DockerManager(userDefaults:defaults, sessionConfiguration:sessionConfig)
-		let expect = expectation(description: "load required info")
-		var result: Result<Bool, NSError>?
-		docker.initializeConnection().flatMap { _ in
-			docker.checkForImageUpdate()
-		}.onComplete { r2 in
-			result = r2
-			expect.fulfill()
+		guard let result = callDockerMethod(docker:docker, action: { docker in
+			return docker.checkForImageUpdate()
+		}) else {
+			XCTFail("failed to create network")
+			return
 		}
-		waitForExpectations(timeout: 20) { _ in
-			//checkForImageUpdate() bool result does not mean success, means that was loaded remotely. so just check on if there was an error or not
-			if let _ = result?.error {
-				XCTFail()
-			}
-			XCTAssertEqual(docker.imageInfo?.version, 1)
-			XCTAssertEqual(docker.imageInfo?.dbserver.name, "dbserver")
-		}
+		//checkForImageUpdate() result does not mean success, means that was loaded remotely. so just check on if there was an error or not
+		XCTAssertNil(result.error)
+		XCTAssertEqual(docker.imageInfo?.version, 1)
+		XCTAssertEqual(docker.imageInfo?.dbserver.name, "dbserver")
 	}
 	
 	func testNetworkExists() {
 		stubGetRequest(uriPath: "/networks", fileName: "networks")
-		let docker = DockerManager()
-		let expect = expectation(description: "load networks")
-		var result = false
-		docker.initializeConnection().flatMap { _ in
-			docker.networkExists(named:"rc2server")
-		}.onComplete { r2 in
-			if case .success(let s) = r2 { result = s }
-			expect.fulfill()
+		guard let result = callDockerMethod(docker:nil, action: { docker in
+			return docker.networkExists(named:"rc2server")
+		}) else {
+			XCTFail("failed to create network")
+			return
 		}
-		waitForExpectations(timeout: 1) { _ in
-			XCTAssertTrue(result)
-		}
+		XCTAssertTrue(result.value ?? false)
 	}
 	
+	func testCreateNetwork() {
+		stub(uri(uri:"/networks/create"), builder: http(201))
+		guard let result = callDockerMethod(docker:nil, action: { docker in
+			return docker.createNetwork(named:"foo")
+		}) else {
+			XCTFail("failed to create network")
+			return
+		}
+		XCTAssertTrue(result.value ?? false)
+	}
+	
+	func testCreateNetworkFailure() {
+		stub(uri(uri:"/networks/create"), builder: http(500))
+		guard let result = callDockerMethod(docker:nil, action: { docker in
+			return docker.createNetwork(named:"foo")
+		}) else {
+			XCTFail("failed to create network")
+			return
+		}
+		XCTAssertNotNil(result.error)
+	}
+
+	/// helper function to create a network. caller should have stubbed the uri "/networks/create"
+	func callDockerMethod(docker:DockerManager?, action: @escaping (DockerManager) -> Future<Bool,NSError>) -> Result<Bool, NSError>?
+	{
+		var dm:DockerManager? = docker
+		if dm == nil {
+			dm = DockerManager(userDefaults:defaults, sessionConfiguration:sessionConfig)
+		}
+		let expect = expectation(description: "create network")
+		var result: Result<Bool, NSError>?
+		dm!.initializeConnection().flatMap { r1 in
+			action(dm!)
+		}.onComplete { r2 in
+			result = r2
+			expect.fulfill()
+		}
+		waitForExpectations(timeout: 2) { _ in }
+		return result
+	}
+
 	///uses Mockingjay to stub out a request for uriPath with the contents of fileName.json
 	func stubGetRequest(uriPath:String, fileName:String) {
 		let path : String = Bundle(for: DockerManagerTests.self).path(forResource: fileName, ofType: "json")!

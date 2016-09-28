@@ -27,8 +27,8 @@ open class DockerManager : NSObject {
 	//MARK: - Properties
 	let networkName = "rc2server"
 	let requiredApiVersion = 1.24
-	let sessionConfig: URLSessionConfiguration
-	let session: URLSession
+	public let sessionConfig: URLSessionConfiguration
+	public let session: URLSession
 	let baseInfoUrl: String
 	let defaults: UserDefaults
 	///the base url to connect to. will be set in init, but unwrapped since might be after call to super.init
@@ -195,10 +195,37 @@ open class DockerManager : NSObject {
 		return promise.future
 	}
 	
+	/// sends a request to docker to create a network
+	///
+	/// - parameter named: the name of the network to create
+	///
+	/// - returns: a future for the success of the operation
 	public func createNetwork(named:String) -> Future<Bool, NSError> {
 		precondition(initialzed)
 		let promise = Promise<Bool, NSError>()
-		
+		var props = [String:Any]()
+		props["Internal"] = true
+		props["Driver"] = "bridge"
+		props["Name"] = named
+		let jsonData = try! JSONSerialization.data(withJSONObject: props, options: [])
+		let request = URLRequest(url: URL(string: "/networks/create", relativeTo: baseUrl)!)
+		let task = session.uploadTask(with: request, from: jsonData) { (data, response, error) in
+			guard error == nil else {
+				promise.failure(NSError.error(withCode: .serverError, description: "failed to create network", underlyingError: error as? NSError))
+				return
+			}
+			guard let httpResponse = response as? HTTPURLResponse else {
+				os_log("upload request received strange response", type:.error)
+				promise.failure(NSError.error(withCode: .impossible, description: "invalid response"))
+				return
+			}
+			guard httpResponse.statusCode == 201 else {
+				promise.failure(NSError.error(withCode: .serverError, description: "failed to create network (\(httpResponse.statusCode))"))
+				return
+			}
+			promise.success(true)
+		}
+		task.resume()
 		return promise.future
 	}
 }
