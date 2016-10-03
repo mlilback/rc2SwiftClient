@@ -1,0 +1,20 @@
+{
+	"dbserver": {
+		"Image": "rc2server/dbserver",
+		"Hostname": "dbserver",
+		"Labels": { "rc2.live": "" },
+		"NetworkMode": "rc2server"
+	},
+	"appserver": {
+		"Image": "rc2server/appserver",
+		"Hostname": "appserver",
+		"Labels": { "rc2.live": "" },
+		"NetworkMode": "rc2server"
+	},
+	"compute": {
+		"Image": "rc2server/compute",
+		"Hostname": "compute",
+		"Labels": { "rc2.live": "" },
+		"NetworkMode": "rc2server"
+	}
+}

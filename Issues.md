@@ -17,3 +17,6 @@
 * BaseTest used to load a LoginSession from the actual RestServer
 
 * need to adjust progress size if only pulling 1 or 2 images
+
+* examine SourceKit for syntax highlighting
+

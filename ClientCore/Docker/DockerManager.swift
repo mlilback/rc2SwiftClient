@@ -11,14 +11,30 @@ import ServiceManagement
 import os
 import SwiftyUserDefaults
 
-///a callback closure
+/// a callback closure
 public typealias SimpleServerCallback = (_ success:Bool, _ error:NSError?) -> Void
+/// alias for future returned
+public typealias DockerFuture = Future<Bool, NSError>
+///alias for promise used for DockerFuture
+typealias DockerPromise = Promise<Bool, NSError>
 
+//MARK: Keys for UserDefaults
 extension DefaultsKeys {
-	//MARK: - Keys for UserDefaults
 	static let lastImageInfoCheck = DefaultsKey<Double>("lastImageInfoCheck")
 	static let dockerImageVersion = DefaultsKey<Int>("dockerImageVersion")
 	static let cachedImageInfo = DefaultsKey<JSON?>("cachedImageInfo")
+}
+
+//MARK: -
+/// An enumeration of the container names used to provide services via Docker
+public enum Rc2Container: String {
+	case dbserver, appserver, compute
+}
+
+//MARK: -
+/// simple operations that can be performed on a container
+public enum ContainerOperation: String {
+	case start, stop, restart, pause, resume
 }
 
 //MARK: -
@@ -46,6 +62,10 @@ open class DockerManager : NSObject {
 	fileprivate let socketPath = "/var/run/docker.sock"
 	fileprivate var initialzed = false
 	fileprivate var versionLoaded:Bool = false
+	///will be set in init, but unwrapped since might be after call to super.init
+	fileprivate var containerInfo: JSON!
+	///the path to use for the source shared folder for dbserver. overridden when using a remote docker daemon
+	fileprivate var remoteLocalSharePath: String?
 	
 	///has enough time elapsed that we should check to see if there is an update to the docker images
 	public var shouldCheckForUpdate: Bool {
@@ -55,7 +75,7 @@ open class DockerManager : NSObject {
 	//MARK: - Public Methods
 	
 	///Default initializer. After creation, initializeConnection or isDockerRunning must be called
-	/// - parameter hostUrl: The base url of the docker daemon (i.e. http://localhost:2375/) to connect to. nil means use /var/run/docker.sock. Also checks for the environment variable "DockerHostUrl" if not specified
+	/// - parameter hostUrl: The base url of the docker daemon (i.e. http://localhost:2375/) to connect to. nil means use /var/run/docker.sock. Also checks for the environment variable "DockerHostUrl" if not specified. If DockerHostUrl is specified, also should define DockerHostSharePath as the path to map to /rc2 in the dbserver container
 	/// - parameter baseInfoUrl: the base url where imageInfo.json can be found. Defaults to www.rc2.io.
 	/// - parameter userDefaults: defaults to standard user defaults. Allows for dependency injection.
 	public init(hostUrl host:String? = nil, baseInfoUrl infoUrl:String? = nil, userDefaults:UserDefaults = .standard, sessionConfiguration:URLSessionConfiguration = .default)
@@ -75,19 +95,25 @@ open class DockerManager : NSObject {
 		imageInfo = RequiredImageInfo(json: defaults[.cachedImageInfo])
 		super.init()
 		isInstalled = Foundation.FileManager().fileExists(atPath: socketPath)
+		setupDataDirectory()
 		//check for a host specified as an environment variable - useful for testing
 		if nil == host, let envHost = ProcessInfo.processInfo.environment["DockerHostUrl"] {
 			baseUrl = URL(string:envHost)
+			remoteLocalSharePath = ProcessInfo.processInfo.environment["DockerHostSharePath"]
 		}
 		assert(baseUrl != nil, "hostUrl not specified as argument or environment variable")
+		//load static docker info we'll use throughout this class
+		let path : String = Bundle(for:type(of: self)).path(forResource: "dockerInfo", ofType: "json")!
+		containerInfo = JSON(data: try! Data(contentsOf: URL(fileURLWithPath: path)))
+		assert(containerInfo.dictionary?.count == 3)
 	}
 	
 	///connects to the docker daemon and confirms it is running and meets requirements.
 	/// calls initializeConnection()
 	/// - returns: Closure called with true if able to connect to docker daemon.
-	public func isDockerRunning() -> Future<Bool, NSError> {
+	public func isDockerRunning() -> DockerFuture {
 		guard initialzed else { return initializeConnection() }
-		let promise = Promise<Bool,NSError>()
+		let promise = DockerPromise()
 		promise.success(true)
 		return promise.future
 	}
@@ -95,9 +121,9 @@ open class DockerManager : NSObject {
 	///Loads basic version information from the docker daemon. Also loads list of docker images that are installed.
 	///Must be called before being using any func except isDockerRunning().
 	/// - returns: future. the result will be false if there was an error parsing information from docker.
-	public func initializeConnection() -> Future<Bool, NSError> {
+	public func initializeConnection() -> DockerFuture {
 		self.initialzed = true
-		let promise = Promise<Bool, NSError>()
+		let promise = DockerPromise()
 		guard !versionLoaded else { promise.success(apiVersion > 0); return promise.future }
 		let future = dockerRequest("/version")
 		future.onSuccess { json in
@@ -119,9 +145,9 @@ open class DockerManager : NSObject {
 	
 	///Checks to see if it is necessary to check for an imageInfo update, and if so, perform that check.
 	/// - returns: a future whose success will be true if a pull is required
-	public func checkForImageUpdate() -> Future<Bool,NSError> {
+	public func checkForImageUpdate() -> DockerFuture {
 		precondition(initialzed)
-		let promise = Promise<Bool,NSError>()
+		let promise = DockerPromise()
 		//short circuit if we don't need to chedk and have valid data
 		guard imageInfo == nil || shouldCheckForUpdate else {
 			os_log("using cached docker info", type:.info)
@@ -154,10 +180,10 @@ open class DockerManager : NSObject {
 	}
 	
 	///fetches any missing/updated images based on imageInfo
-	public func pullImages(handler: PullProgressHandler? = nil) -> Future<Bool, NSError> {
+	public func pullImages(handler: PullProgressHandler? = nil) -> DockerFuture {
 		precondition(imageInfo != nil)
 		precondition(imageInfo!.dbserver.size > 0)
-		let promise = Promise<Bool, NSError>()
+		let promise = DockerPromise()
 		let fullSize = imageInfo!.dbserver.size + imageInfo!.appserver.size + imageInfo!.computeserver.size
 		pullProgress = PullProgress(name: "dbserver", size: fullSize)
 		let dbpull = DockerPullOperation(baseUrl: baseUrl, imageName: "rc2server/dbserver", estimatedSize: imageInfo!.dbserver.size)
@@ -182,12 +208,100 @@ open class DockerManager : NSObject {
 		return promise.future
 	}
 
+	/// performs an action on all containers
+	///
+	/// - parameter operation: the operation to perform
+	///
+	/// - returns: a future whose value will always be true
+	public func performOnAllContainers(operation: ContainerOperation) -> DockerFuture {
+		let promise = DockerPromise()
+		let seq = [perform(operation:operation, on:.compute), perform(operation:operation, on:.appserver), perform(operation:operation, on:.dbserver)]
+		seq.sequence().onSuccess { _ in
+			promise.success(true)
+		}.onFailure { err in
+			promise.failure(err)
+		}
+		return promise.future
+	}
+	
+	/// Performs an operation on a docker container
+	///
+	/// - parameter operation: the operation to perform
+	/// - parameter container: the target container
+	///
+	/// - returns: a future whose value will always be true
+	public func perform(operation:ContainerOperation, on container:Rc2Container) -> DockerFuture {
+		precondition(initialzed)
+		let promise = DockerPromise()
+		let url = baseUrl.appendingPathComponent("/containers/\(container.rawValue)/\(operation.rawValue)")
+		session.dataTask(with: url, completionHandler: { (data, response, error) in
+			guard let hresponse = response as? HTTPURLResponse , error == nil else {
+				promise.failure(error as! NSError)
+				return
+			}
+			switch hresponse.statusCode {
+				case 204:
+					promise.success(true)
+				case 304:
+					promise.failure(NSError.error(withCode: .alreadyExists, description: "operation already in progress"))
+				case 404:
+					promise.failure(NSError.error(withCode: .noSuchObject, description: "no such container"))
+				default:
+					promise.failure(NSError.error(withCode: .serverError	, description: "unknown error"))
+			}
+		}).resume()
+		return promise.future
+	}
+
+	/// removes a container
+	///
+	/// - parameter container: container to remove
+	///
+	/// - returns: a future whose value will always be true
+	public func remove(container:Rc2Container) -> DockerFuture {
+		precondition(initialzed)
+		let promise = DockerPromise()
+		let url = baseUrl.appendingPathComponent("/containers/\(container.rawValue)")
+		var request = URLRequest(url: url)
+		request.httpMethod = "DELETE"
+		session.dataTask(with: request, completionHandler: { (data, response, error) in
+			guard let hresponse = response as? HTTPURLResponse , error == nil else {
+				promise.failure(error as! NSError)
+				return
+			}
+			switch hresponse.statusCode {
+			case 204:
+				promise.success(true)
+			case 404:
+				promise.failure(NSError.error(withCode: .noSuchObject, description: "no such container"))
+			default:
+				promise.failure(NSError.error(withCode: .serverError	, description: "unknown error"))
+			}
+		}).resume()
+		return promise.future
+	}
+
+	/// removes all containers
+	///
+	/// - returns: a future whose value will always be true
+	public func removeAllContainers() -> DockerFuture {
+		precondition(initialzed)
+		let promise = DockerPromise()
+		let seq = [remove(container:.compute), remove(container:.appserver), remove(container:.dbserver)]
+		seq.sequence().onSuccess { _ in
+			promise.success(true)
+		}.onFailure { err in
+				promise.failure(err)
+		}
+		return promise.future
+	}
+
 	/// Refreshes the containers property from the docker daemon
 	///
 	/// - returns: a future whose value will always be true
-	public func refreshContainers() -> Future<Bool, NSError> {
+	public func refreshContainers() -> DockerFuture {
 		precondition(initialzed)
-		let promise = Promise<Bool, NSError>()
+		let promise = DockerPromise()
 		let filtersJson = JSON(["label": ["rc2.live"]])
 		let filtersStr = filtersJson.description.stringByAddingPercentEncodingForFormData()
 		var urlcomponents = URLComponents(url: baseUrl.appendingPathComponent("/containers/json"), resolvingAgainstBaseURL: true)!
@@ -209,10 +323,50 @@ open class DockerManager : NSObject {
 		return promise.future
 	}
 	
-	///checks to see if a network with the specified name exists
-	public func networkExists(named:String) -> Future<Bool, NSError> {
+	/// creates a container on the docker daemon. containers property is not updated with the new container
+	/// - parameter container: which container to create
+	/// - returns: future whose value will always be true
+	public func createContainer(_ container:Rc2Container) -> DockerFuture
+	{
 		precondition(initialzed)
-		let promise = Promise<Bool, NSError>()
+		let promise = DockerPromise()
+		var containerJson = containerInfo[container.rawValue]
+		containerJson["Labels"] = JSON([["rc2.live": ""]])
+		if case .dbserver = container {
+			var pgdir = dataDirectory!.appendingPathComponent("dbdata", isDirectory: true).standardizedFileURL.path
+			//if we are connecting to a remote docker host, can't use a local folder for the share path
+			if let remotePath = remoteLocalSharePath {
+				pgdir = remotePath
+			}
+			containerJson["Binds"] = JSON(["\(pgdir):/rc2"])
+		}
+		let jsonData = try! containerJson.rawData()
+		var comps = URLComponents(url: URL(string:"/containers/create", relativeTo:baseUrl)!, resolvingAgainstBaseURL: true)!
+		comps.queryItems = [URLQueryItem(name:"name", value:"rc2_\(container.rawValue)")]
+		let request = URLRequest(url: comps.url!)
+		let task = session.uploadTask(with: request, from: jsonData) { (data, response, error) in
+			guard nil == error else {
+				promise.failure(error! as NSError)
+				return
+			}
+			let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 500
+			switch statusCode {
+				case 201: //success
+					promise.success(true)
+				case 409:
+					promise.failure(NSError.error(withCode: .alreadyExists, description: "container \(container.rawValue) already exists"))
+				default:
+					promise.failure(NSError.error(withCode: .serverError, description: "server returned \(statusCode)"))
+			}
+		}
+		task.resume()
+		return promise.future
+	}
+	
+	///checks to see if a network with the specified name exists
+	public func networkExists(named:String) -> DockerFuture {
+		precondition(initialzed)
+		let promise = DockerPromise()
 		dockerRequest("/networks").onSuccess { json in
 			promise.success(json.array?.filter({ aNet in
 				return aNet["Name"].stringValue == named
@@ -228,9 +382,9 @@ open class DockerManager : NSObject {
 	/// - parameter named: the name of the network to create
 	///
 	/// - returns: a future for the success of the operation
-	public func createNetwork(named:String) -> Future<Bool, NSError> {
+	public func createNetwork(named:String) -> DockerFuture {
 		precondition(initialzed)
-		let promise = Promise<Bool, NSError>()
+		let promise = DockerPromise()
 		var props = [String:Any]()
 		props["Internal"] = true
 		props["Driver"] = "bridge"
@@ -305,7 +459,7 @@ fileprivate extension DockerManager {
 		return promise.future
 	}
 	
-	func pullSingleImage(pull:DockerPullOperation, progressHandler:PullProgressHandler?) -> Future<Bool, NSError>
+	func pullSingleImage(pull:DockerPullOperation, progressHandler:PullProgressHandler?) -> DockerFuture
 	{
 		pullProgress?.extracting = false
 		let alreadyDownloaded = pullProgress!.currentSize
@@ -365,7 +519,7 @@ fileprivate extension DockerManager {
 		return promise.future
 	}
 	
-	///creates AppSupport/io.rc2.xxx/[v1/pgdata, v1/docker-compolse.yml]
+	///creates AppSupport/io.rc2.xxx/[v1/dbdata, v1/docker-compolse.yml]
 	func setupDataDirectory() {
 		do {
 			let fm = FileManager()
@@ -374,7 +528,7 @@ fileprivate extension DockerManager {
 			if !fm.directoryExists(at: dataDirectory!) {
 				try fm.createDirectory(at: dataDirectory!, withIntermediateDirectories: true, attributes: nil)
 			}
-			let pgdir = dataDirectory!.appendingPathComponent("pgdata", isDirectory: true)
+			let pgdir = dataDirectory!.appendingPathComponent("dbdata", isDirectory: true)
 			if !fm.directoryExists(at: pgdir) {
 				try fm.createDirectory(at: pgdir, withIntermediateDirectories: true, attributes: nil)
 			}

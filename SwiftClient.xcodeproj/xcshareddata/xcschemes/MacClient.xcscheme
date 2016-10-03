@@ -126,6 +126,11 @@
             isEnabled = "NO">
          </EnvironmentVariable>
          <EnvironmentVariable
+            key = "DockerHostSharePath"
+            value = "/home/mlilback/pgdata"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
             key = "DockerHostUrl"
             value = "http://10.0.1.9:2375/"
             isEnabled = "YES">

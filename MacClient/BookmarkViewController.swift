@@ -129,7 +129,7 @@ open class BookmarkViewController: NSViewController {
 			restServer.login(password).onSuccess { loginsession in
 				guard let wspace = loginsession.project(withName:aMark.projectName)?.workspace(withName:aMark.workspaceName!) else
 				{
-					self.appStatus?.presentError(NSError.error(withCode: .noSuchProject, description: nil), session:nil)
+					self.appStatus?.presentError(NSError.error(withCode: .noSuchObject, description: nil), session:nil)
 					return
 				}
 				do {
@@ -163,7 +163,7 @@ open class BookmarkViewController: NSViewController {
 		restServer.login(pass).onSuccess { loginsession in
 			guard let wspace = loginsession.project(withName:bookmark.projectName)?.workspace(withName:bookmark.workspaceName!) else
 			{
-				self.presentError(NSError.error(withCode: .noSuchProject, description: nil))
+				self.presentError(NSError.error(withCode: .noSuchObject, description: nil))
 				return
 			}
 			do {
