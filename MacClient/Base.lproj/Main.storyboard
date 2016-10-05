@@ -493,6 +493,12 @@ CA
                                                 <action selector="showBookmarkWindow:" target="Voe-Tx-rLC" id="3uS-m6-vDJ"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Docker Manager" id="kSp-wP-GuG">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="showDockerControl" target="Voe-Tx-rLC" id="jLB-MC-ceg"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="eu3-7i-yIM"/>
                                         <menuItem title="Bring All to Front" id="LE2-aR-0XJ">
                                             <modifierMask key="keyEquivalentModifierMask"/>

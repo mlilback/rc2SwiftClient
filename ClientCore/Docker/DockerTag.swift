@@ -16,7 +16,7 @@ public struct DockerTag: JSONSerializable, CustomStringConvertible, Hashable {
 	
 	///tag formatted as [repo/]name[:version]
 	public var description: String {
-		return "\(repo == nil ? "" : repo! + "/")\(name)\(version == nil ? "" : ":version!")"
+		return "\(repo == nil ? "" : repo! + "/")\(name)\(version == nil ? "" : ":\(version!)")"
 	}
 	
 	///parses a tag string to create the instance. Only works with tags of the format [repo/][tag][:version]

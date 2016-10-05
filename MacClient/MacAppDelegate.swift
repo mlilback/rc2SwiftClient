@@ -20,6 +20,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	let bookmarkManager = BookmarkManager()
 	dynamic var dockerManager: DockerManager?
 	var setupController: ServerSetupController?
+	private var dockerWindowController: NSWindowController?
 
 	fileprivate dynamic var _currentProgress: Progress?
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
@@ -90,6 +91,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		switch(menuItem.action) {
 			case (#selector(MacAppDelegate.showBookmarkWindow(_:)))?:
 				return NSApp.mainWindow != bookmarkWindowController?.window
+		case (#selector(MacAppDelegate.showDockerControl(_:)))?:
+				return true
 			default:
 				return false
 		}
@@ -102,13 +105,19 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		setupController = wc.contentViewController as? ServerSetupController
 		wc.window?.makeKeyAndOrderFront(self)
 		guard dockerManager!.pullIsNecessary() else {
-			self.showBookmarkWindow(self)
+			self.dockerManager?.prepareToStart().onSuccess { _ in
+				self.showBookmarkWindow(self)
+			}.onFailure { err in
+				os_log("error preparing docker: %{public}s", type:.error, err)
+			}
 			return
 		}
 		guard let future = dockerManager?.pullImages(handler: { p in
 			self.setupController!.pullProgress = p
 		}) else { fatalError("failed to start image pull") }
-		future.onSuccess {_ in 
+		future.flatMap { _ in
+			self.dockerManager!.prepareToStart()
+		}.onSuccess {_ in
 			wc.window?.orderOut(self)
 			wc.close()
 			self.showBookmarkWindow(self)
@@ -194,6 +203,18 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		restServer.appStatus = appStatus
 		wc.session = restServer.session
 		wc.setupChildren(restServer)
+	}
+	
+	@IBAction func showDockerControl(_ sender:Any?) {
+		if nil == dockerWindowController {
+			let container = Container()
+			container.registerForStoryboard(DockerViewController.self) { (r, c) in
+				c.manager = self.dockerManager
+			}
+			let sboard = SwinjectStoryboard.create(name: "DockerControl", bundle: nil, container: container)
+			dockerWindowController = sboard.instantiateWindowController()
+		}
+		dockerWindowController?.window?.makeKeyAndOrderFront(self)
 	}
 	
 	func windowWillClose(_ note:Notification) {

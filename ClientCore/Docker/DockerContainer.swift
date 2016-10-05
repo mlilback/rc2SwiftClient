@@ -23,7 +23,10 @@ public struct DockerContainer: JSONSerializable, Named {
 		id = json["Id"].stringValue
 		var inName = ""
 		let names = json["Names"].arrayValue.map({ return $0.stringValue })
-		if names.count > 0 { inName = names.first! }
+		if names.count > 0 {
+			let nname = names.first!
+			inName = nname.substring(from: nname.index(after: nname.startIndex)) //strip off the leading '/'
+		}
 		name = inName
 		imageName = json["Image"].stringValue
 		guard let parsedState = ContainerState(rawValue: json["State"].stringValue) else { return nil }

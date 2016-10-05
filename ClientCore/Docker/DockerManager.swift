@@ -27,8 +27,9 @@ extension DefaultsKeys {
 
 //MARK: -
 /// An enumeration of the container names used to provide services via Docker
-public enum Rc2Container: String {
+public enum Rc2ContainerType: String {
 	case dbserver, appserver, compute
+	static let all:[Rc2ContainerType] = [.dbserver, .appserver, .compute]
 }
 
 //MARK: -
@@ -56,7 +57,7 @@ open class DockerManager : NSObject {
 	fileprivate(set) var isInstalled:Bool = false
 	fileprivate(set) var installedImages:[DockerImage] = []
 	fileprivate(set) var imageInfo: RequiredImageInfo?
-	fileprivate(set) var containers: [DockerContainer] = []
+	public fileprivate(set) var containers: [DockerContainer] = []
 	fileprivate(set) var pullProgress: PullProgress?
 	fileprivate(set) var dataDirectory:URL?
 	fileprivate let socketPath = "/var/run/docker.sock"
@@ -97,7 +98,11 @@ open class DockerManager : NSObject {
 		isInstalled = Foundation.FileManager().fileExists(atPath: socketPath)
 		setupDataDirectory()
 		//check for a host specified as an environment variable - useful for testing
-		if nil == host, let envHost = ProcessInfo.processInfo.environment["DockerHostUrl"] {
+		if nil == host, var envHost = ProcessInfo.processInfo.environment["DockerHostUrl"] {
+			//go through a lot of trouble to remove any trailing slash
+			if envHost.hasSuffix("/") {
+				envHost = envHost.substring(to: envHost.index(envHost.endIndex, offsetBy: -1))
+			}
 			baseUrl = URL(string:envHost)
 			remoteLocalSharePath = ProcessInfo.processInfo.environment["DockerHostSharePath"]
 		}
@@ -230,7 +235,7 @@ open class DockerManager : NSObject {
 	/// - parameter container: the target container
 	///
 	/// - returns: a future whose value will always be true
-	public func perform(operation:ContainerOperation, on container:Rc2Container) -> DockerFuture {
+	public func perform(operation:ContainerOperation, on container:Rc2ContainerType) -> DockerFuture {
 		precondition(initialzed)
 		let promise = DockerPromise()
 		let url = baseUrl.appendingPathComponent("/containers/\(container.rawValue)/\(operation.rawValue)")
@@ -258,7 +263,7 @@ open class DockerManager : NSObject {
 	/// - parameter container: container to remove
 	///
 	/// - returns: a future whose value will always be true
-	public func remove(container:Rc2Container) -> DockerFuture {
+	public func remove(container:Rc2ContainerType) -> DockerFuture {
 		precondition(initialzed)
 		let promise = DockerPromise()
 		let url = baseUrl.appendingPathComponent("/containers/\(container.rawValue)")
@@ -296,18 +301,69 @@ open class DockerManager : NSObject {
 		return promise.future
 	}
 
+	/// Ensures containers exist and are ready to run
+	///
+	/// - returns: a future whose value will always be true
+	public func prepareToStart() -> DockerFuture {
+		precondition(initialzed)
+		let promise = DockerPromise()
+		refreshContainers().onSuccess { _ in
+			var futures:[DockerFuture] = []
+			//if we don't have all containers, add any that are missing and refresh to see new ones
+			if self.containers.count != Rc2ContainerType.all.count {
+				futures.append(self.createContainers())
+				futures.append(self.refreshContainers())
+			}
+			futures.sequence().onSuccess { _ in
+				promise.success(true)
+			}.onFailure { error in
+				promise.failure(error)
+			}
+		}.onFailure { err in
+			promise.failure(err)
+		}
+		return promise.future
+	}
+	
+	/// Creates any containers that don't yet exist
+	///
+	/// - returns: a future whose value will always be true
+	func createContainers() -> DockerFuture {
+		precondition(initialzed)
+		let promise = DockerPromise()
+		var futures:[DockerFuture] = []
+		for aType in Rc2ContainerType.all {
+			if nil == container(type: aType) {
+				futures.append(createContainer(aType))
+			}
+		}
+		guard futures.count > 0 else {
+			promise.success(true)
+			return promise.future
+		}
+		//we need to run them
+		futures.sequence().onSuccess { _ in
+			promise.success(true)
+		}.onFailure { err in
+			promise.failure(err)
+		}
+		return promise.future
+	}
+	
 	/// Refreshes the containers property from the docker daemon
 	///
 	/// - returns: a future whose value will always be true
 	public func refreshContainers() -> DockerFuture {
 		precondition(initialzed)
 		let promise = DockerPromise()
-		let filtersJson = JSON(["label": ["rc2.live"]])
-		let filtersStr = filtersJson.description.stringByAddingPercentEncodingForFormData()
+		//should never error since object is a constant
+		let filtersJson = try! JSONSerialization.data(withJSONObject: ["label": ["rc2.live"]], options: [])
+		let filtersStr = String(data:filtersJson, encoding:.utf8)!
 		var urlcomponents = URLComponents(url: baseUrl.appendingPathComponent("/containers/json"), resolvingAgainstBaseURL: true)!
 		urlcomponents.queryItems = [URLQueryItem(name:"all", value:"1"), URLQueryItem(name:"filters", value:filtersStr)]
 		makeRequest(request: URLRequest(url: urlcomponents.url!)).onSuccess { rawData in
-			let json = JSON(data:rawData)
+			let jsonStr = String(data:rawData, encoding:.utf8)!
+			let json = JSON.parse(jsonStr)
 			if json == JSON.null {
 				promise.failure(NSError.error(withCode: .invalidJson, description: "invalid json for list containers"))
 			} else {
@@ -326,12 +382,12 @@ open class DockerManager : NSObject {
 	/// creates a container on the docker daemon. containers property is not updated with the new container
 	/// - parameter container: which container to create
 	/// - returns: future whose value will always be true
-	public func createContainer(_ container:Rc2Container) -> DockerFuture
+	public func createContainer(_ container:Rc2ContainerType) -> DockerFuture
 	{
 		precondition(initialzed)
 		let promise = DockerPromise()
 		var containerJson = containerInfo[container.rawValue]
-		containerJson["Labels"] = JSON([["rc2.live": ""]])
+		containerJson["Labels"] = JSON(["rc2.live": ""])
 		if case .dbserver = container {
 			var pgdir = dataDirectory!.appendingPathComponent("dbdata", isDirectory: true).standardizedFileURL.path
 			//if we are connecting to a remote docker host, can't use a local folder for the share path
@@ -343,7 +399,9 @@ open class DockerManager : NSObject {
 		let jsonData = try! containerJson.rawData()
 		var comps = URLComponents(url: URL(string:"/containers/create", relativeTo:baseUrl)!, resolvingAgainstBaseURL: true)!
 		comps.queryItems = [URLQueryItem(name:"name", value:"rc2_\(container.rawValue)")]
-		let request = URLRequest(url: comps.url!)
+		var request = URLRequest(url: comps.url!)
+		request.httpMethod = "POST"
+		request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 		let task = session.uploadTask(with: request, from: jsonData) { (data, response, error) in
 			guard nil == error else {
 				promise.failure(error! as NSError)
@@ -356,7 +414,8 @@ open class DockerManager : NSObject {
 				case 409:
 					promise.failure(NSError.error(withCode: .alreadyExists, description: "container \(container.rawValue) already exists"))
 				default:
-					promise.failure(NSError.error(withCode: .serverError, description: "server returned \(statusCode)"))
+					let errStr = String(data:data!, encoding:.utf8)!
+					promise.failure(NSError.error(withCode: .serverError, description: "server returned \(statusCode):\(errStr)"))
 			}
 		}
 		task.resume()
@@ -484,8 +543,13 @@ fileprivate extension DockerManager {
 	func makeRequest(request:URLRequest) -> Future<Data,NSError> {
 		let promise = Promise<Data,NSError>()
 		session.dataTask(with: request, completionHandler: { (data, response, error) in
-			guard let rawData = data , error == nil else {
+			guard let rawData = data, let rsp = response as? HTTPURLResponse, error == nil else {
 				promise.failure(error as! NSError)
+				return
+			}
+			guard rsp.statusCode == 200 else {
+				let httperror = NSError.error(withCode: .serverError, description: "server returned \(rsp.statusCode) error", underlyingError: error as NSError?)
+				promise.failure(httperror)
 				return
 			}
 			promise.success(rawData)
@@ -532,15 +596,30 @@ fileprivate extension DockerManager {
 			if !fm.directoryExists(at: pgdir) {
 				try fm.createDirectory(at: pgdir, withIntermediateDirectories: true, attributes: nil)
 			}
-			let composeurl = Bundle(for: type(of: self)).url(forResource: "docker-compoose", withExtension: "yml")
-			assert(composeurl!.fileExists())
-			let desturl = dataDirectory!.appendingPathComponent("docker-compose.yml")
-			try fm.copyItem(at: composeurl!, to: desturl)
+//			let composeurl = Bundle(for: type(of: self)).url(forResource: "docker-compose", withExtension: "yml")
+//			assert(composeurl!.fileExists())
+//			let desturl = dataDirectory!.appendingPathComponent("docker-compose.yml")
+//			try fm.copyItem(at: composeurl!, to: desturl)
 		} catch let err {
 			os_log("error setting up data diretory: %{public}s", err as NSError)
 		}
 		
 		
 	}
+
+	/// Returns the container of the specified type
+	///
+	/// - parameter type: the container to return (if exists)
+	///
+	/// - returns: the requested container, or nil if container does not exist
+	func container(type:Rc2ContainerType) -> DockerContainer? {
+		for aContainer in containers {
+			if aContainer.imageName.hasPrefix("rc2server/\(type.rawValue)") {
+				return aContainer
+			}
+		}
+		return nil
+	}
+	
 }
 
