@@ -1,49 +1,127 @@
 [
-    {
-        "Command": "var/lib/postgresql/runpg.sh 9.4",
-        "Created": 1474915460,
-        "HostConfig": {
-            "NetworkMode": "rc2server"
-        },
-        "Id": "e811587d3c78274490f076bce09f027e36fed13a20568c2052d0353e35a5d81d",
-        "Image": "rc2server/dbserver",
-        "ImageID": "sha256:544695ec771bd6f6c511274ce6f63c2e587897927c1c4d05a0402abfdac1c889",
-        "Labels": {
-            "io.rc2.type": "app",
-            "rc2.live": ""
-        },
-        "Mounts": [
-            {
-                "Destination": "/sessions",
-                "Mode": "",
-                "Propagation": "rprivate",
-                "RW": true,
-                "Source": "/Users/mlilback/Library/Application Support/Rc2/sessions"
-            }
-        ],
-        "Names": [
-            "/rc2_dbserver"
-        ],
-        "NetworkSettings": {
-            "Networks": {
-                "rc2server": {
-                    "Aliases": null,
-                    "EndpointID": "028a77978243349e3cb21258ab854a3623ebf9259052fb4428dc7f57836cc1df",
-                    "Gateway": "172.19.0.1",
-                    "GlobalIPv6Address": "",
-                    "GlobalIPv6PrefixLen": 0,
-                    "IPAMConfig": null,
-                    "IPAddress": "172.19.0.2",
-                    "IPPrefixLen": 16,
-                    "IPv6Gateway": "",
-                    "Links": null,
-                    "MacAddress": "02:42:ac:13:00:02",
-                    "NetworkID": "b75564811d1146b0898d4401127929a35e5c2694cabf9c769647e0982750374c"
-                }
-            }
-        },
-        "Ports": [],
-        "State": "running",
-        "Status": "Up 44 hours"
-    }
+  {
+    "Command": "var/lib/postgresql/runpg.sh 9.4", 
+    "Created": 1475681879, 
+    "HostConfig": {
+      "NetworkMode": "rc2server"
+    }, 
+    "Id": "a9a50568e6f1c54a62a2810482195a4ba97ce7ba798ac535065e7de135a6e41d", 
+    "Image": "rc2server/dbserver", 
+    "ImageID": "sha256:992e7b95e6ea58579ed195ddd3a572d69aacc0241087d51d21cfcddbc70b0cb7", 
+    "Labels": {
+      "io.rc2.type": "app", 
+      "rc2.live": ""
+    }, 
+    "Mounts": [
+      {
+        "Destination": "/rc2", 
+        "Mode": "", 
+        "Propagation": "rprivate", 
+        "RW": true, 
+        "Source": "/home/mlilback/pgdata"
+      }
+    ], 
+    "Names": [
+      "/rc2_dbserver"
+    ], 
+    "NetworkSettings": {
+      "Networks": {
+        "rc2server": {
+          "Aliases": null, 
+          "EndpointID": "", 
+          "Gateway": "", 
+          "GlobalIPv6Address": "", 
+          "GlobalIPv6PrefixLen": 0, 
+          "IPAMConfig": null, 
+          "IPAddress": "", 
+          "IPPrefixLen": 0, 
+          "IPv6Gateway": "", 
+          "Links": null, 
+          "MacAddress": "", 
+          "NetworkID": "5bfce2bbe529a83e05ad2761bc75b6a3d34fefb12f6215cf6bfcc49de430c016"
+        }
+      }
+    }, 
+    "Ports": [], 
+    "State": "exited", 
+    "Status": "Exited (1) 10 hours ago"
+  }, 
+  {
+    "Command": "/usr/bin/java -jar /rc2/rc2drop.jar server /rc2/docker.yml", 
+    "Created": 1475681879, 
+    "HostConfig": {
+      "NetworkMode": "rc2server"
+    }, 
+    "Id": "0d4f8e908eff010ef71312cbabb64d323407040300f15c025bb9e0683ffcae07", 
+    "Image": "rc2server/appserver", 
+    "ImageID": "sha256:8c70c9bcbf4b249d1d6533276cb66617847cee812a1db74461902ce16a0bb1df", 
+    "Labels": {
+      "io.rc2.type": "app", 
+      "rc2.live": ""
+    }, 
+    "Mounts": [], 
+    "Names": [
+      "/rc2_appserver"
+    ], 
+    "NetworkSettings": {
+      "Networks": {
+        "rc2server": {
+          "Aliases": null, 
+          "EndpointID": "", 
+          "Gateway": "", 
+          "GlobalIPv6Address": "", 
+          "GlobalIPv6PrefixLen": 0, 
+          "IPAMConfig": null, 
+          "IPAddress": "", 
+          "IPPrefixLen": 0, 
+          "IPv6Gateway": "", 
+          "Links": null, 
+          "MacAddress": "", 
+          "NetworkID": ""
+        }
+      }
+    }, 
+    "Ports": [], 
+    "State": "created", 
+    "Status": "Created"
+  }, 
+  {
+    "Command": "/rc2compute/rserver", 
+    "Created": 1475681879, 
+    "HostConfig": {
+      "NetworkMode": "rc2server"
+    }, 
+    "Id": "a2e46027b387965137ba9ad099abf375e924805558082e48f90408a2736f0729", 
+    "Image": "rc2server/compute", 
+    "ImageID": "sha256:70a5892172c6368eb504e7827fed665a730edb9c6fb6607c97c2311f8fb442d5", 
+    "Labels": {
+      "io.rc2.type": "app", 
+      "rc2.live": ""
+    }, 
+    "Mounts": [], 
+    "Names": [
+      "/rc2_compute"
+    ], 
+    "NetworkSettings": {
+      "Networks": {
+        "rc2server": {
+          "Aliases": null, 
+          "EndpointID": "", 
+          "Gateway": "", 
+          "GlobalIPv6Address": "", 
+          "GlobalIPv6PrefixLen": 0, 
+          "IPAMConfig": null, 
+          "IPAddress": "", 
+          "IPPrefixLen": 0, 
+          "IPv6Gateway": "", 
+          "Links": null, 
+          "MacAddress": "", 
+          "NetworkID": ""
+        }
+      }
+    }, 
+    "Ports": [], 
+    "State": "created", 
+    "Status": "Created"
+  }
 ]

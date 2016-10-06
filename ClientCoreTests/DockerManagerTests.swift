@@ -34,6 +34,8 @@ class DockerManagerTests: XCTestCase {
 	}
 
 	func testVersionCommand() {
+		stubGetRequest(uriPath: "/version", fileName: "version")
+		stubGetRequest(uriPath: "/containers/json", fileName: "containers")
 		let expect = self.expectation(description: "file download")
 		let docker = DockerManager(userDefaults:defaults)
 		let future = docker.initializeConnection()
@@ -44,7 +46,7 @@ class DockerManagerTests: XCTestCase {
 			error = err
 			expect.fulfill()
 		}
-		self.waitForExpectations(timeout: 2) { _ in
+		self.waitForExpectations(timeout: 200) { _ in
 			XCTAssertNil(error)
 			XCTAssertGreaterThan(docker.apiVersion, 1.2)
 		}
@@ -126,21 +128,7 @@ class DockerManagerTests: XCTestCase {
 			XCTFail("failed to refresh containers")
 			return
 		}
-		XCTAssertEqual(docker.containers.count, 1)
-		XCTAssertTrue(docker.containers[0].isNamed("rc2_dbserver"))
-	}
-
-	func testContainerRefreshFail() {
-		stubGetRequest(uriPath: "/containers/json", fileName: "networks")
-		let docker = DockerManager(userDefaults:defaults, sessionConfiguration:sessionConfig)
-		let result = callDockerMethod(docker: docker, action: { docker in
-			return docker.refreshContainers()
-		})
-		guard let _ = result?.error else {
-			XCTFail("succeeded refreshing containers")
-			return
-		}
-		XCTAssertEqual(docker.containers.count, 0)
+		XCTAssertTrue(docker.containers[.dbserver]?.imageName == "rc2server/dbserver")
 	}
 
 	/// helper function to create a network. caller should have stubbed the uri "/networks/create"
@@ -158,7 +146,7 @@ class DockerManagerTests: XCTestCase {
 			result = r2
 			expect.fulfill()
 		}
-		waitForExpectations(timeout: 2) { _ in }
+		waitForExpectations(timeout: 10) { _ in }
 		return result
 	}
 

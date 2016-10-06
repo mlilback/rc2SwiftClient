@@ -11,9 +11,12 @@ import Mockingjay
 import SwiftyJSON
 
 class DockerImageInfoTests: XCTestCase {
+	var sessionConfig:URLSessionConfiguration!
+	
 	override func setUp() {
 		super.setUp()
-		URLSessionConfiguration.mockingjaySwizzleDefaultSessionConfiguration()
+		sessionConfig = URLSessionConfiguration.default
+		sessionConfig.protocolClasses = [MockingjayProtocol.self, DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
 	}
 
 	func testParseInfo() {
@@ -35,7 +38,7 @@ class DockerImageInfoTests: XCTestCase {
 			let json = JSON(data: fetchedData!)
 			let info = RequiredImageInfo(json:json)!
 			XCTAssertEqual(info.version, 1)
-			XCTAssertEqual(info.dbserver.size, 157619958)
+			XCTAssertEqual(info.dbserver.size, 442069860)
 			XCTAssertEqual(info.computeserver.name, "compute")
 		}
 	}

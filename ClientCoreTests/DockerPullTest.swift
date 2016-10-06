@@ -28,7 +28,7 @@ class DockerPullTest: XCTestCase {
 		let config = URLSessionConfiguration.default
 		config.protocolClasses = [TestDataProtocol.self]
 		let url = URL(string: "test://foo.com/bar")!
-		let pullOp = DockerPullOperation(baseUrl: url, imageName: "busybox", estimatedSize: 667590, config: config)
+		let pullOp = DockerPullOperation(baseUrl: url, imageName: "busybox", estimatedSize: 1332710, config: config)
 		let future = pullOp.startPull() { progress in
 			self.unitCount = progress.currentSize
 		}
@@ -41,7 +41,7 @@ class DockerPullTest: XCTestCase {
 		}
 		waitForExpectations(timeout: 50) { err in
 			XCTAssertNil(self.savedError)
-			XCTAssertEqual(self.unitCount, 667590)
+			XCTAssertEqual(self.unitCount, 1332710)
 		}
 	}
 }

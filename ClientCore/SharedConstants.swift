@@ -20,3 +20,9 @@ public enum Rc2ErrorCode: Int {
 }
 
 public typealias ProgressHandler = (Progress?) -> Void
+
+public struct AppInfo {
+	private static let bundleInfo = Bundle.main.infoDictionary
+	
+	public static var bundleIdentifier: String? { return bundleInfo?["CFBundleIdentifier"] as? String }
+}

@@ -123,6 +123,8 @@
 		0864DA641DA2BDC1003F3F57 /* DockerControl.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0864DA621DA2BDC1003F3F57 /* DockerControl.storyboard */; };
 		0864DA661DA2C70A003F3F57 /* DockerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0864DA651DA2C70A003F3F57 /* DockerViewController.swift */; };
 		0864DA681DA2C8D1003F3F57 /* DockerContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0864DA671DA2C8D1003F3F57 /* DockerContainerController.swift */; };
+		0864DA851DA56A0B003F3F57 /* DockerEventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0864DA841DA56A0B003F3F57 /* DockerEventMonitor.swift */; };
+		0864DA871DA6BE46003F3F57 /* DockerContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0864DA861DA6BE46003F3F57 /* DockerContainerTests.swift */; };
 		086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */; };
 		0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086659991CA1F3E5007AC555 /* MainWindow.xib */; };
 		086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086BC9AE1C552D43006ABAE0 /* AppStatus.swift */; };
@@ -489,6 +491,8 @@
 		0864DA631DA2BDC1003F3F57 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/DockerControl.storyboard; sourceTree = "<group>"; };
 		0864DA651DA2C70A003F3F57 /* DockerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerViewController.swift; sourceTree = "<group>"; };
 		0864DA671DA2C8D1003F3F57 /* DockerContainerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerContainerController.swift; sourceTree = "<group>"; };
+		0864DA841DA56A0B003F3F57 /* DockerEventMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerEventMonitor.swift; sourceTree = "<group>"; };
+		0864DA861DA6BE46003F3F57 /* DockerContainerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerContainerTests.swift; sourceTree = "<group>"; };
 		086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemExtensionsTests.swift; sourceTree = "<group>"; };
 		0866599A1CA1F3E5007AC555 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/MainWindow.xib; sourceTree = SOURCE_ROOT; };
 		086BC9AE1C552D43006ABAE0 /* AppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStatus.swift; sourceTree = "<group>"; };
@@ -1007,6 +1011,7 @@
 			isa = PBXGroup;
 			children = (
 				089794291D7B68F0003339EE /* ClientCoreTests.swift */,
+				0864DA861DA6BE46003F3F57 /* DockerContainerTests.swift */,
 				084199311D90A7FE0089A1AC /* DockerTagTests.swift */,
 				0814F1EA1D7A2E290093C0C1 /* DockerImageTest.swift */,
 				08634DB11D2DA33F00445462 /* DockerManagerTests.swift */,
@@ -1081,6 +1086,7 @@
 				08ABCEF71D82FAE4007C6A5E /* DockerTag.swift */,
 				08ABCEF81D82FAE4007C6A5E /* DockerUrlProtocol.swift */,
 				08B4BE5E1D833162006861E3 /* DockerPullOperation.swift */,
+				0864DA841DA56A0B003F3F57 /* DockerEventMonitor.swift */,
 			);
 			path = Docker;
 			sourceTree = "<group>";
@@ -1568,6 +1574,7 @@
 				08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */,
 				08037C2D1D7C5AF400006E9E /* JSONSerializable.swift in Sources */,
 				0897944D1D7B6A8F003339EE /* NSProgress+Rc2.m in Sources */,
+				0864DA851DA56A0B003F3F57 /* DockerEventMonitor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1584,6 +1591,7 @@
 				08E7E09C1D8AEC5A000C4C87 /* DockerUrlProtocolTests.swift in Sources */,
 				084199321D90A7FE0089A1AC /* DockerTagTests.swift in Sources */,
 				084199301D9096880089A1AC /* TestDataProtocolTests.swift in Sources */,
+				0864DA871DA6BE46003F3F57 /* DockerContainerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

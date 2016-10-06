@@ -116,10 +116,10 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	}
 	
 	func handleStatus(status:String, json:JSON) {
-		switch status {
-			case "Pulling fs layer":
+		switch status.lowercased() {
+			case "pulling fs layer":
 				layers[json["id"].string!] = LayerProgress(layerId: json["id"].string!)
-			case "Downloading":
+			case "downloading":
 				if var layer = layers[json["id"].stringValue] {
 					if let details = json["progressDetail"].dictionary {
 						if let fsize = details["total"]?.int , layer.finalSize == 0 {
@@ -134,7 +134,7 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 						return cnt + layerTuple.1.currentSize
 					}
 				}
-			case "Download Complete":
+			case "download complete":
 				if var layer = layers[json["id"].stringValue] {
 					os_log("finished layer %{public}@", type:.info, layer.id)
 					layer.complete = true
@@ -148,6 +148,7 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	
 	open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
 		os_log("pull finished: %d", type:.info, totalDownloaded)
+		pullProgress.currentSize = totalDownloaded
 		pullProgress.complete = true
 		guard nil == error else { promise.failure(error! as NSError); return }
 		promise.success(true)
