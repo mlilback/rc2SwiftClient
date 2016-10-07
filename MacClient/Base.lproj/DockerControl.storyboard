@@ -134,6 +134,13 @@
                             <constraint firstAttribute="bottom" secondItem="jx8-nN-6KS" secondAttribute="bottom" constant="20" symbolic="YES" id="wDD-GH-Vwo"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="pauseButton" destination="N1E-wQ-Cmd" id="6Et-Fa-maL"/>
+                        <outlet property="restartButton" destination="TbU-Dh-Lm1" id="gTT-ee-kde"/>
+                        <outlet property="startButton" destination="PZi-JI-sQe" id="NDX-E1-MNA"/>
+                        <outlet property="stopButton" destination="FDw-9z-ba1" id="4Md-bZ-MEl"/>
+                        <outlet property="unpauseButton" destination="zAl-QB-g7w" id="mt4-w4-OJ1"/>
+                    </connections>
                 </viewController>
                 <customObject id="9Pp-KW-Teu" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -150,7 +157,7 @@
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fcY-l8-RjI">
                                 <rect key="frame" x="0.0" y="0.0" width="450" height="167"/>
                                 <clipView key="contentView" id="lzd-n4-buh">
-                                    <rect key="frame" x="1" y="23" width="448" height="143"/>
+                                    <rect key="frame" x="1" y="0.0" width="448" height="166"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="eeS-mh-AVv" viewBased="YES" id="nS9-gj-ssV">

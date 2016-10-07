@@ -6,6 +6,7 @@
 
 import Foundation
 import SwiftyJSON
+import ReactiveSwift
 
 public enum ContainerState: String {
 	case notAvailable, created, restarting, running, paused, exited
@@ -32,20 +33,22 @@ public final class DockerContainer: JSONSerializable {
 	public let name: String
 	public private(set) var id: String
 	public private(set) var imageName: String
-	public private(set) var state: ContainerState
+	public let state: MutableProperty<ContainerState>
+//	public private(set) var state: ContainerState
 	var createInfo: JSON?
 	
 	/// - returns: true if we know the container exists on the server
-	public var exists:Bool { return state != .notAvailable }
+	public var exists:Bool { return state.value != .notAvailable }
 	
 	/// create an empty container of the specified type
 	/// - parameter type: the type of container to create
 	public init(type:ContainerType) {
 		self.type = type
-		self.name = "/rc2_\(type.rawValue)"
+		self.name = "rc2_\(type.rawValue)"
 		self.id = ""
 		self.imageName = "rc2server/\(type.rawValue)"
-		self.state = .notAvailable
+		self.state = MutableProperty(.notAvailable)
+//		self.state = .notAvailable
 	}
 
 	/// creates a container from the json returned from the docker server. required as part of JSONSerializable
@@ -65,7 +68,7 @@ public final class DockerContainer: JSONSerializable {
 		//these will be set by update
 		imageName = ""
 		id = ""
-		state = .notAvailable
+		state = MutableProperty(.notAvailable)
 		do {
 			try update(json:json)
 		} catch {
@@ -87,25 +90,25 @@ public final class DockerContainer: JSONSerializable {
 		}
 		id = jid
 		imageName = jiname
-		state = jstate
+		state.value = jstate
 	}
 	
 	public func serialize() throws -> JSON {
-		return JSON(["Id": JSON(id), "Image": JSON(imageName), "Name": JSON([JSON(name)]), "State": JSON(state.rawValue)])
+		return JSON(["Id": JSON(id), "Image": JSON(imageName), "Name": JSON([JSON(name)]), "State": JSON(state.value.rawValue)])
 	}
 
 	/// Updates the state of the container, useful for updating via a docker event
 	///
 	/// - parameter state: the new state of the container
 	public func update(state:ContainerState) {
-		self.state = state
+		self.state.value = state
 		//don't use a state machine because we could become off from what docker says and need to correct"
 	}
 }
 
 extension DockerContainer: Equatable {
 	public static func == (lhs: DockerContainer, rhs: DockerContainer) -> Bool {
-		return lhs.id == rhs.id && lhs.imageName == rhs.imageName && lhs.name == rhs.name && lhs.state == rhs.state
+		return lhs.id == rhs.id && lhs.imageName == rhs.imageName && lhs.name == rhs.name && lhs.state.value == rhs.state.value
 	}
 }
 

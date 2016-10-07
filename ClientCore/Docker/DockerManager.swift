@@ -28,7 +28,7 @@ extension DefaultsKeys {
 //MARK: -
 /// simple operations that can be performed on a container
 public enum ContainerOperation: String {
-	case start, stop, restart, pause, resume
+	case start, stop, restart, pause, resume = "unpause"
 }
 
 //MARK: -
@@ -258,7 +258,9 @@ open class DockerManager : NSObject {
 		precondition(initialzed)
 		let promise = DockerPromise()
 		let url = baseUrl.appendingPathComponent("/containers/\(container.name)/\(operation.rawValue)")
-		session.dataTask(with: url, completionHandler: { (data, response, error) in
+		var request = URLRequest(url: url)
+		request.httpMethod = "POST"
+		session.dataTask(with: request, completionHandler: { (data, response, error) in
 			guard let hresponse = response as? HTTPURLResponse , error == nil else {
 				promise.failure(error as! NSError)
 				return
@@ -412,7 +414,7 @@ extension DockerManager: DockerEventMonitorDelegate {
 		print("got event: \(event)")
 		//only care if it is one of our containers
 		guard let from = event.json["from"].string,
-			let ctype = ContainerType(rawValue: from),
+			let ctype = ContainerType.from(imageName:from),
 			let container = containers[ctype] else { return }
 		switch event.eventType {
 			case .die:
@@ -459,7 +461,7 @@ fileprivate extension DockerManager {
 		let promise = DockerPromise()
 		var futures:[DockerFuture] = []
 		for aContainer in containers {
-			if aContainer.state == .notAvailable {
+			if aContainer.state.value == .notAvailable {
 				futures.append(create(container:aContainer))
 			}
 		}
@@ -592,7 +594,7 @@ fileprivate extension DockerManager {
 	func create(container:DockerContainer) -> DockerFuture
 	{
 		precondition(initialzed)
-		precondition(container.state == .notAvailable)
+		precondition(container.state.value == .notAvailable)
 		let promise = DockerPromise()
 		var containerJson = container.createInfo!
 		containerJson["Labels"] = JSON(["rc2.live": ""])

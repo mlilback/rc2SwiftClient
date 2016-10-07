@@ -22,6 +22,10 @@
 		081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */; };
 		0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */; };
 		0812631F1C862F4B003E37A5 /* EditorDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812631E1C862F4B003E37A5 /* EditorDocument.swift */; };
+		08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
+		08127CC71DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
+		08127CC81DA811AA002E0D01 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
+		08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		081468371C755A1E006DF8FC /* FileImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081468361C755A1E006DF8FC /* FileImporterTests.swift */; };
 		0814CB721CF894AC0008DE6B /* ConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814CB711CF894AC0008DE6B /* ConsoleAttachment.swift */; };
 		0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */; };
@@ -327,6 +331,7 @@
 				0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */,
 				08DB1AA01D32EFC70079DA6B /* Swinject.framework in Embed Frameworks */,
 				0833A8231D2D7EAD0033654B /* HockeySDK.framework in Embed Frameworks */,
+				08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */,
 				08E836681D94240100E26EFE /* SwiftyUserDefaults.framework in Embed Frameworks */,
 				082FF1CC1C7F321B00CCC27F /* PMKVObserver.framework in Embed Frameworks */,
 				082FF1D01C7F321B00CCC27F /* SwiftWebSocket.framework in Embed Frameworks */,
@@ -394,6 +399,7 @@
 		081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoodleLineNumberView.m; sourceTree = "<group>"; };
 		0812631E1C862F4B003E37A5 /* EditorDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorDocument.swift; sourceTree = "<group>"; };
 		081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorDocumentTests.swift; sourceTree = "<group>"; };
+		08127CC51DA81192002E0D01 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/Mac/ReactiveSwift.framework; sourceTree = "<group>"; };
 		081468361C755A1E006DF8FC /* FileImporterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporterTests.swift; sourceTree = "<group>"; };
 		0814CB711CF894AC0008DE6B /* ConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleAttachment.swift; sourceTree = "<group>"; };
 		0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacConsoleAttachment.swift; sourceTree = "<group>"; };
@@ -628,11 +634,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				08A01FD01CC81315001EDFAA /* libsqlite3.tbd in Frameworks */,
+				08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
 				082FF1D11C7F321B00CCC27F /* SwiftyJSON.framework in Frameworks */,
 				089346031C7F661400100CF6 /* PEGKit.framework in Frameworks */,
 				08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */,
 				082FF1CB1C7F321B00CCC27F /* PMKVObserver.framework in Frameworks */,
+				08127CC81DA811AA002E0D01 /* ReactiveSwift.framework in Frameworks */,
 				08DB1A9D1D32EFC10079DA6B /* SwinjectStoryboard.framework in Frameworks */,
 				08DB1A981D32EF930079DA6B /* Swinject.framework in Frameworks */,
 				082FF1EE1C7F339400CCC27F /* URITemplate.framework in Frameworks */,
@@ -667,6 +675,7 @@
 				0841993B1D91B2770089A1AC /* URITemplate.framework in Frameworks */,
 				08E836661D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */,
+				08127CC71DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -902,6 +911,7 @@
 				082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */,
 				089346021C7F661400100CF6 /* PEGKit.framework */,
 				082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */,
+				08127CC51DA81192002E0D01 /* ReactiveSwift.framework */,
 				082FF1C01C7F321B00CCC27F /* Result.framework */,
 				088CE6B91C4C44BD00153414 /* Security.framework */,
 				0833A8251D2D87120033654B /* Sparkle.framework */,
