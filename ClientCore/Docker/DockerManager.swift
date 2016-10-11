@@ -141,7 +141,8 @@ open class DockerManager : NSObject {
 			} else {
 				self.eventMonitor = DockerEventMonitor(baseUrl: self.baseUrl, delegate: self, sessionConfig: self.sessionConfig)
 				//successfully parsed the version info. now get the image info
-				[self.loadImages(), self.refreshContainers()].sequence().onSuccess { _ in
+				//TODO: these are run asynchronously, not in order. we need them to run serially
+				[self.loadImages(), self.refreshContainers(), self.initializeContainers()].sequence().onSuccess { _ in
 					promise.success(true)
 				}.onFailure { error in
 					promise.failure(error)
@@ -343,8 +344,12 @@ open class DockerManager : NSObject {
 			if json == JSON.null {
 				promise.failure(NSError.error(withCode: .invalidJson, description: "invalid json for list containers"))
 			} else {
+				//reset all state to notAvailable
+				self.containers.forEach { $0.update(state: .notAvailable) }
 				for entry in json.arrayValue {
-					if let type = ContainerType.from(imageName: entry["Image"].stringValue) {
+					let rc2type = entry["Labels"]["io.rc2.type"].string
+					print("entry type=\(rc2type)")
+					if let type = ContainerType(rawValue: entry["Labels"]["io.rc2.type"].stringValue) {
 						do {
 							try self.containers[type]?.update(json:entry)
 						} catch let err {
