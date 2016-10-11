@@ -15,12 +15,12 @@ public enum ContainerState: String {
 //MARK: -
 /// An enumeration of the container names used to provide services via Docker
 public enum ContainerType: String {
-	static let typeRegex: NSRegularExpression = try! NSRegularExpression(pattern: "rc2server/(appserver|dbserver|compute)", options: [])
+	static let nameRegex: NSRegularExpression = try! NSRegularExpression(pattern: "rc2server/(appserver|dbserver|compute)", options: [])
 	case dbserver, appserver, compute
 	static let all:[ContainerType] = [.dbserver, .appserver, .compute]
 	
 	static func from(imageName:String) -> ContainerType? {
-		guard let match = typeRegex.firstMatch(in: imageName, options: [], range: imageName.toNSRange) else {
+		guard let match = nameRegex.firstMatch(in: imageName, options: [], range: imageName.toNSRange) else {
 			return nil
 		}
 		return ContainerType(rawValue: match.string(index: 1, forString: imageName) ?? "")

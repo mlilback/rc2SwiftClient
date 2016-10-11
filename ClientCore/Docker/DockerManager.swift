@@ -101,7 +101,10 @@ open class DockerManager : NSObject {
 				envHost = envHost.substring(to: envHost.index(envHost.endIndex, offsetBy: -1))
 			}
 			baseUrl = URL(string:envHost)
-			remoteLocalSharePath = ProcessInfo.processInfo.environment["DockerHostSharePath"]
+			guard let spath = ProcessInfo.processInfo.environment["DockerHostSharePath"] else {
+				fatalError("remote url provided without share path")
+			}
+			remoteLocalSharePath = spath
 		}
 		assert(baseUrl != nil, "hostUrl not specified as argument or environment variable")
 		//load static docker info we'll use throughout this class
@@ -129,6 +132,7 @@ open class DockerManager : NSObject {
 	public func initializeConnection() -> DockerFuture {
 		self.initialzed = true
 		let promise = DockerPromise()
+		//if we've already loaded the version info, don't do so again
 		guard !versionLoaded else { promise.success(apiVersion > 0); return promise.future }
 		let future = dockerRequest("/version")
 		future.onSuccess { json in
