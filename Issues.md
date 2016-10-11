@@ -20,3 +20,8 @@
 
 * examine SourceKit for syntax highlighting
 
+* if dockerUrl is set but not responding, no error message is logged or notified
+
+* add unit test for scanning installed images for a specific docker tag
+
+* eventually need to be able to reopen everthing network related (DockerEventManager)
