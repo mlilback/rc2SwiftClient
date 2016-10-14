@@ -8,7 +8,7 @@ import Foundation
 import XCTest
 @testable import ClientCore
 
-class DockerContainerTests: XCTestCase {
+class DockerContainerTests: BaseDockerTest {
 
 	func testContainerTypeParsing() {
 		let t1 = ContainerType.from(imageName:"rc2server/dbserver")
@@ -23,5 +23,21 @@ class DockerContainerTests: XCTestCase {
 		XCTAssertNil(t5)
 	}
 	
+	func testContainerRefresh() {
+		stubGetRequest(uriPath: "/containers/json", fileName: "containers")
+		let api = DockerAPIImplementation(baseUrl: URL(string:"http://10.0.1.9:2375/")!, sessionConfig: sessionConfig)
+		api.refreshContainers().startWithResult { result in
+			
+		}
+//		let docker = DockerManager(userDefaults:userDefaults, sessionConfiguration:sessionConfig)
+//		let result = callDockerMethod(docker: docker, action: { docker in
+//			return docker.refreshContainers()
+//		})
+//		guard let _ = result?.value else {
+//			XCTFail("failed to refresh containers")
+//			return
+//		}
+//		XCTAssertTrue(docker.containers[.dbserver]?.imageName == "rc2server/dbserver")
+	}
 }
 

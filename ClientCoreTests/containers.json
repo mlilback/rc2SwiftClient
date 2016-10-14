@@ -9,14 +9,16 @@
     "Image": "rc2server/dbserver", 
     "ImageID": "sha256:992e7b95e6ea58579ed195ddd3a572d69aacc0241087d51d21cfcddbc70b0cb7", 
     "Labels": {
-      "io.rc2.type": "app", 
+      "io.rc2.type": "dbserver",
       "rc2.live": ""
     }, 
     "Mounts": [
       {
-        "Destination": "/rc2", 
+		"Name": "6a1f7caf85a0c652298b1bad0c08f00101e9b55d4b5c1035209fcd9779b22e48",
+        "Destination": "/rc2",
+		"Driver": "local",
         "Mode": "", 
-        "Propagation": "rprivate", 
+        "Propagation": "",
         "RW": true, 
         "Source": "/home/mlilback/pgdata"
       }
@@ -56,7 +58,7 @@
     "Image": "rc2server/appserver", 
     "ImageID": "sha256:8c70c9bcbf4b249d1d6533276cb66617847cee812a1db74461902ce16a0bb1df", 
     "Labels": {
-      "io.rc2.type": "app", 
+      "io.rc2.type": "appserver",
       "rc2.live": ""
     }, 
     "Mounts": [], 
@@ -95,7 +97,7 @@
     "Image": "rc2server/compute", 
     "ImageID": "sha256:70a5892172c6368eb504e7827fed665a730edb9c6fb6607c97c2311f8fb442d5", 
     "Labels": {
-      "io.rc2.type": "app", 
+      "io.rc2.type": "compute", 
       "rc2.live": ""
     }, 
     "Mounts": [], 

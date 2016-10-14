@@ -13,23 +13,10 @@ import BrightFutures
 import Mockingjay
 import Result
 
-class DockerManagerTests: XCTestCase {
-	var defaults: UserDefaults!
-	var sessionConfig:URLSessionConfiguration!
+class DockerManagerTests: BaseDockerTest {
 	
-	override func setUp() {
-		super.setUp()
-		sessionConfig = URLSessionConfiguration.default
-		sessionConfig.protocolClasses = [MockingjayProtocol.self, DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
-		defaults = UserDefaults(suiteName: UUID().uuidString)! //not sure why this is failable
-	}
-	
-	override func tearDown() {
-		super.tearDown()
-	}
-
 	func testDockerInstalled() {
-		let docker = DockerManager(userDefaults:defaults)
+		let docker = DockerManager(userDefaults:userDefaults)
 		XCTAssertTrue(docker.isInstalled)
 	}
 
@@ -37,7 +24,7 @@ class DockerManagerTests: XCTestCase {
 		stubGetRequest(uriPath: "/version", fileName: "version")
 		stubGetRequest(uriPath: "/containers/json", fileName: "containers")
 		let expect = self.expectation(description: "file download")
-		let docker = DockerManager(userDefaults:defaults)
+		let docker = DockerManager(userDefaults:userDefaults)
 		let future = docker.initializeConnection()
 		var error:NSError?
 		future.onSuccess { _ in
@@ -54,7 +41,7 @@ class DockerManagerTests: XCTestCase {
 	
 	func testDockerNotLoaded() {
 		let expect = expectation(description: "failed to load")
-		let docker = DockerManager(hostUrl: "http://foobar:9899/", baseInfoUrl: "http://localhost:12351/", userDefaults:defaults)
+		let docker = DockerManager(hostUrl: "http://foobar:9899/", baseInfoUrl: "http://localhost:12351/", userDefaults:userDefaults)
 		var failed = false
 		docker.initializeConnection().onSuccess { _ in
 			expect.fulfill()
@@ -72,7 +59,7 @@ class DockerManagerTests: XCTestCase {
 		stubGetRequest(uriPath: "/version", fileName: "version")
 		stubGetRequest(uriPath: "https://www.rc2.io/imageInfo.json", fileName: "imageInfo")
 		
-		let docker = DockerManager(userDefaults:defaults, sessionConfiguration:sessionConfig)
+		let docker = DockerManager(userDefaults:userDefaults, sessionConfiguration:sessionConfig)
 		guard let result = callDockerMethod(docker:docker, action: { docker in
 			return docker.checkForImageUpdate()
 		}) else {
@@ -120,7 +107,7 @@ class DockerManagerTests: XCTestCase {
 
 	func testContainerRefresh() {
 		stubGetRequest(uriPath: "/containers/json", fileName: "containers")
-		let docker = DockerManager(userDefaults:defaults, sessionConfiguration:sessionConfig)
+		let docker = DockerManager(userDefaults:userDefaults, sessionConfiguration:sessionConfig)
 		let result = callDockerMethod(docker: docker, action: { docker in
 			return docker.refreshContainers()
 		})
@@ -129,31 +116,5 @@ class DockerManagerTests: XCTestCase {
 			return
 		}
 		XCTAssertTrue(docker.containers[.dbserver]?.imageName == "rc2server/dbserver")
-	}
-
-	/// helper function to create a network. caller should have stubbed the uri "/networks/create"
-	func callDockerMethod(docker:DockerManager?, action: @escaping (DockerManager) -> Future<Bool,NSError>) -> Result<Bool, NSError>?
-	{
-		var dm:DockerManager? = docker
-		if dm == nil {
-			dm = DockerManager(userDefaults:defaults, sessionConfiguration:sessionConfig)
-		}
-		let expect = expectation(description: "create network")
-		var result: Result<Bool, NSError>?
-		dm!.initializeConnection().flatMap { r1 in
-			action(dm!)
-		}.onComplete { r2 in
-			result = r2
-			expect.fulfill()
-		}
-		waitForExpectations(timeout: 10) { _ in }
-		return result
-	}
-
-	///uses Mockingjay to stub out a request for uriPath with the contents of fileName.json
-	func stubGetRequest(uriPath:String, fileName:String) {
-		let path : String = Bundle(for: DockerManagerTests.self).path(forResource: fileName, ofType: "json")!
-		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
-		stub(uri(uri: uriPath), builder: jsonData(resultData!))
 	}
 }

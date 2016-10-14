@@ -8,22 +8,64 @@ import Foundation
 import SwiftyJSON
 import ReactiveSwift
 
+/// Possible states for a container
 public enum ContainerState: String {
 	case notAvailable, created, restarting, running, paused, exited
+	
+	/// convience array with all possible values
+	static let all:[ContainerState] = [.notAvailable, .created, .restarting, .running, .paused, .exited]
+	/// convience array with possible values for a container that actually exists
+	static let valid:[ContainerState] = [.created, .restarting, .running, .paused, .exited]
 }
 
 //MARK: -
 /// An enumeration of the container names used to provide services via Docker
 public enum ContainerType: String {
-	static let nameRegex: NSRegularExpression = try! NSRegularExpression(pattern: "rc2server/(appserver|dbserver|compute)", options: [])
 	case dbserver, appserver, compute
+
+	static private let imageRegex: NSRegularExpression = try! NSRegularExpression(pattern: "rc2server/(appserver|dbserver|compute)", options: [])
+	static private let containerRegex: NSRegularExpression = try! NSRegularExpression(pattern: "rc2_(appserver|dbserver|compute)", options: [])
+
+	/// convience array with all possible values
 	static let all:[ContainerType] = [.dbserver, .appserver, .compute]
 	
+	/// Convience initializer from an image name
+	///
+	/// - parameter imageName: image name in format "rc2server/<type>"
+	///
+	/// - returns: corresponding state or nil
 	static func from(imageName:String) -> ContainerType? {
-		guard let match = nameRegex.firstMatch(in: imageName, options: [], range: imageName.toNSRange) else {
+		guard let match = imageRegex.firstMatch(in: imageName, options: [], range: imageName.toNSRange) else {
 			return nil
 		}
 		return ContainerType(rawValue: match.string(index: 1, forString: imageName) ?? "")
+	}
+	
+	/// Convience initializer from an image name
+	///
+	/// - parameter containerName: image name in format "rc2_<ype>"
+	///
+	/// - returns: corresponding state or nil
+	static func from(containerName:String) -> ContainerType? {
+		guard let match = containerRegex.firstMatch(in: containerName, options: [], range: containerName.toNSRange) else {
+			return nil
+		}
+		return ContainerType(rawValue: match.string(index: 1, forString: containerName) ?? "")
+	}
+}
+
+/// Information about a container mount point
+public struct DockerMount {
+	public let name: String
+	public let source: String
+	public let destination: String
+	public let readWrite: Bool
+	
+	public init(json:JSON) {
+		name = json["Name"].stringValue
+		source = json["Source"].stringValue
+		destination = json["Destination"].stringValue
+		readWrite = json["RW"].boolValue
 	}
 }
 
@@ -33,6 +75,7 @@ public final class DockerContainer: JSONSerializable {
 	public let name: String
 	public private(set) var id: String
 	public private(set) var imageName: String
+	public private(set) var mountPoints: [DockerMount]
 	public let state: MutableProperty<ContainerState>
 //	public private(set) var state: ContainerState
 	var createInfo: JSON?
@@ -48,6 +91,7 @@ public final class DockerContainer: JSONSerializable {
 		self.id = ""
 		self.imageName = "rc2server/\(type.rawValue)"
 		self.state = MutableProperty(.notAvailable)
+		self.mountPoints = []
 //		self.state = .notAvailable
 	}
 
@@ -62,12 +106,13 @@ public final class DockerContainer: JSONSerializable {
 			inName = nname.substring(from: nname.index(after: nname.startIndex)) //strip off the leading '/'
 		}
 		guard inName != nil else { return nil }
-		guard let jtype = ContainerType.from(imageName:inName!) else { return nil }
+		guard let jtype = ContainerType.from(containerName:inName!) else { return nil }
 		name = inName!
 		type = jtype
 		//these will be set by update
 		imageName = ""
 		id = ""
+		mountPoints = []
 		state = MutableProperty(.notAvailable)
 		do {
 			try update(json:json)
@@ -91,6 +136,7 @@ public final class DockerContainer: JSONSerializable {
 		id = jid
 		imageName = jiname
 		state.value = jstate
+		mountPoints = json["Mounts"].array?.map { DockerMount(json:$0) } ?? []
 	}
 	
 	public func serialize() throws -> JSON {
