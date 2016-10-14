@@ -8,5 +8,5 @@ import Foundation
 
 /// A protocol for types that have 1 or more names
 public protocol Named: Equatable {
-	func isNamed(_ str:String) -> Bool
+	func isNamed(_ str: String) -> Bool
 }

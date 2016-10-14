@@ -14,11 +14,11 @@ private let SecAttrAccount: String! = kSecAttrAccount as String
 private let SecValueData: String! = kSecValueData as String
 open class Keychain {
 	let service: String
-	
+
 	init(service: String = "io.rc2.client") {
 		self.service = service
 	}
-	
+
 	open func getString(_ key: String) -> String? {
 		let query = setupQuery(key)
 		var dataRef: AnyObject?
@@ -28,19 +28,19 @@ open class Keychain {
 		}
 		return nil
 	}
-	
+
 	@discardableResult open func removeKey(_ key: String) -> Bool {
 		let query = setupQuery(key)
 		return noErr == SecItemDelete(query as CFDictionary)
 	}
-	
+
 	open func setString(_ key: String, value: String?) throws {
 		guard value != nil else {
 			removeKey(key)
 			return
 		}
 		var query = setupQuery(key)
-		var status : OSStatus = noErr
+		var status: OSStatus = noErr
 		if let existing = getString(key) {
 			guard existing != value else {
 				return
@@ -55,8 +55,8 @@ open class Keychain {
 			throw NSError(domain: NSOSStatusErrorDomain, code: Int(status), userInfo: nil)
 		}
 	}
-	
-	fileprivate func setupQuery(_ key:String) -> [String:AnyObject] {
+
+	fileprivate func setupQuery(_ key: String) -> [String:AnyObject] {
 		var query: [String:AnyObject] = [SecClass:kSecClassGenericPassword as String as String as AnyObject]
 		query[kSecAttrService as String] = service as AnyObject?
 		query[kSecAttrAccount as String] = key as AnyObject?

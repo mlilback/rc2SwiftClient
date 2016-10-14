@@ -13,15 +13,15 @@ import os
 
 open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	fileprivate let socketPath = "/var/run/docker.sock"
-	
-	override open class func canInit(with request:URLRequest) -> Bool {
+
+	override open class func canInit(with request: URLRequest) -> Bool {
 		return request.url!.scheme == "unix"
 	}
-	
-	open override class func canonicalRequest(for request:URLRequest) -> URLRequest {
+
+	open override class func canonicalRequest(for request: URLRequest) -> URLRequest {
 		return request
 	}
-	
+
 	override open func startLoading() {
 		//setup a unix domain socket
 		let fd = socket(AF_UNIX, SOCK_STREAM, 0)
@@ -38,7 +38,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 			strncpy(UnsafeMutableRawPointer(ptr).assumingMemoryBound(to: CChar.self), socketPath, pathLen)
 		}
 		//connect, make the request, and fetch result data
-		var code:Int32 = 0
+		var code: Int32 = 0
 		withUnsafePointer(to: &addr) { ptr in
 			ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { ar in
 				code = connect(fd, ar, socklen_t(MemoryLayout<sockaddr_un>.size))
@@ -55,18 +55,18 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		fh.write(outStr.data(using: String.Encoding.utf8)!)
 		let inData = fh.readDataToEndOfFile()
 		close(fd)
-		
+
 		//split the response into headers and content, create a response object
 		guard let (headersString, contentString) = splitResponseData(inData) else { reportBadResponse(); return }
 		guard let (statusCode, httpVersion, headers) = extractHeaders(headersString) else { reportBadResponse(); return }
 		guard let response = HTTPURLResponse(url: request.url!, statusCode: statusCode, httpVersion: httpVersion, headerFields: headers) else { reportBadResponse(); return }
-		
+
 		//report success to client
 		client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
 		client?.urlProtocol(self, didLoad: contentString.data(using: String.Encoding.utf8)!)
 		client?.urlProtocolDidFinishLoading(self)
 	}
-	
+
 	override open func stopLoading() {
 	}
 
@@ -74,12 +74,12 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	fileprivate func reportBadResponse() {
 		client?.urlProtocol(self, didFailWithError: NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey:request.url!]))
 	}
-	
+
 	///splits raw data into headers and content
 	///
 	/// - parameter data: raw data to split
 	/// - returns: a tuple of the header and content strings
-	fileprivate func splitResponseData(_ data:Data) -> (String,String)? {
+	fileprivate func splitResponseData(_ data: Data) -> (String, String)? {
 		guard let responseString = String(data:data, encoding: String.Encoding.utf8),
 			let endFirstLineRange = responseString.range(of: "\r\n\r\n")
 			else { reportBadResponse(); return nil }
@@ -87,13 +87,14 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		let contentString = responseString.substring(from: endFirstLineRange.upperBound)
 		return (headersString, contentString)
 	}
-	
+
 	///extracts headers into a dictionary
 	/// - parameter headerString: the raw headers from an HTTP response
 	/// - returns: tuple of the HTTP status code, HTTP version, and a dictionary of headers
-	func extractHeaders(_ headerString:String) -> (Int,String,[String:String])? {
+	func extractHeaders(_ headerString: String) -> (Int, String, [String:String])? {
+		// swiftlint:disable:next force_try
 		let responseRegex = try! NSRegularExpression(pattern: "^(HTTP/1.\\d) (\\d+)", options: [.anchorsMatchLines])
-		guard let matchResult = responseRegex.firstMatch(in: headerString, options: [], range: headerString.toNSRange) , matchResult.numberOfRanges == 3,
+		guard let matchResult = responseRegex.firstMatch(in: headerString, options: [], range: headerString.toNSRange), matchResult.numberOfRanges == 3,
 			let statusRange = matchResult.rangeAt(2).toStringRange(headerString),
 			let versionRange = matchResult.rangeAt(1).toStringRange(headerString)
 			else { reportBadResponse(); return nil }
@@ -101,8 +102,9 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		let versionString = headerString.substring(with:versionRange)
 		let headersString = headerString.substring(from:statusRange.upperBound)
 		var headers = [String:String]()
+		// swiftlint:disable:next force_try
 		let headerRegex = try! NSRegularExpression(pattern: "(.+): (.*)", options: [])
-		headerRegex.enumerateMatches(in: headersString, options: [], range: NSMakeRange(0, headersString.characters.count))
+		headerRegex.enumerateMatches(in: headersString, options: [], range: headersString.toNSRange)
 		{ (matchResult, _, _) in
 			if let key = matchResult?.string(index:1, forString: headersString), let value = matchResult?.string(index:2, forString: headersString)
 			{

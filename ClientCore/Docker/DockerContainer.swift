@@ -11,11 +11,11 @@ import ReactiveSwift
 /// Possible states for a container
 public enum ContainerState: String {
 	case notAvailable, created, restarting, running, paused, exited
-	
+
 	/// convience array with all possible values
-	static let all:[ContainerState] = [.notAvailable, .created, .restarting, .running, .paused, .exited]
+	static let all: [ContainerState] = [.notAvailable, .created, .restarting, .running, .paused, .exited]
 	/// convience array with possible values for a container that actually exists
-	static let valid:[ContainerState] = [.created, .restarting, .running, .paused, .exited]
+	static let valid: [ContainerState] = [.created, .restarting, .running, .paused, .exited]
 }
 
 //MARK: -
@@ -23,30 +23,32 @@ public enum ContainerState: String {
 public enum ContainerType: String {
 	case dbserver, appserver, compute
 
+	// swiftlint:disable:next force_try
 	static private let imageRegex: NSRegularExpression = try! NSRegularExpression(pattern: "rc2server/(appserver|dbserver|compute)", options: [])
+	// swiftlint:disable:next force_try
 	static private let containerRegex: NSRegularExpression = try! NSRegularExpression(pattern: "rc2_(appserver|dbserver|compute)", options: [])
 
 	/// convience array with all possible values
-	static let all:[ContainerType] = [.dbserver, .appserver, .compute]
-	
+	static let all: [ContainerType] = [.dbserver, .appserver, .compute]
+
 	/// Convience initializer from an image name
 	///
 	/// - parameter imageName: image name in format "rc2server/<type>"
 	///
 	/// - returns: corresponding state or nil
-	static func from(imageName:String) -> ContainerType? {
+	static func from(imageName: String) -> ContainerType? {
 		guard let match = imageRegex.firstMatch(in: imageName, options: [], range: imageName.toNSRange) else {
 			return nil
 		}
 		return ContainerType(rawValue: match.string(index: 1, forString: imageName) ?? "")
 	}
-	
+
 	/// Convience initializer from an image name
 	///
 	/// - parameter containerName: image name in format "rc2_<ype>"
 	///
 	/// - returns: corresponding state or nil
-	static func from(containerName:String) -> ContainerType? {
+	static func from(containerName: String) -> ContainerType? {
 		guard let match = containerRegex.firstMatch(in: containerName, options: [], range: containerName.toNSRange) else {
 			return nil
 		}
@@ -60,8 +62,8 @@ public struct DockerMount {
 	public let source: String
 	public let destination: String
 	public let readWrite: Bool
-	
-	public init(json:JSON) {
+
+	public init(json: JSON) {
 		name = json["Name"].stringValue
 		source = json["Source"].stringValue
 		destination = json["Destination"].stringValue
@@ -79,13 +81,13 @@ public final class DockerContainer: JSONSerializable {
 	public let state: MutableProperty<ContainerState>
 //	public private(set) var state: ContainerState
 	var createInfo: JSON?
-	
+
 	/// - returns: true if we know the container exists on the server
-	public var exists:Bool { return state.value != .notAvailable }
-	
+	public var exists: Bool { return state.value != .notAvailable }
+
 	/// create an empty container of the specified type
 	/// - parameter type: the type of container to create
-	public init(type:ContainerType) {
+	public init(type: ContainerType) {
 		self.type = type
 		self.name = "rc2_\(type.rawValue)"
 		self.id = ""
@@ -96,10 +98,10 @@ public final class DockerContainer: JSONSerializable {
 	}
 
 	/// creates a container from the json returned from the docker server. required as part of JSONSerializable
-	public init?(json:JSON?) {
+	public init?(json: JSON?) {
 		guard let json = json else { return nil }
 		//figure out the name and container type
-		var inName:String?
+		var inName: String?
 		let names = json["Names"].arrayValue.map({ return $0.stringValue })
 		if names.count > 0 {
 			let nname = names.first!
@@ -126,7 +128,7 @@ public final class DockerContainer: JSONSerializable {
 	/// - parameter json: the JSON to update from
 	///
 	/// - throws: an NSError with a Rc2ErrorCode
-	func update(json:JSON) throws {
+	func update(json: JSON) throws {
 		guard let jid = json["Id"].string, let jiname = json["Image"].string,
 			let jstateStr = json["State"].string,
 			let jstate = ContainerState(rawValue:jstateStr) else
@@ -138,7 +140,7 @@ public final class DockerContainer: JSONSerializable {
 		state.value = jstate
 		mountPoints = json["Mounts"].array?.map { DockerMount(json:$0) } ?? []
 	}
-	
+
 	public func serialize() throws -> JSON {
 		return JSON(["Id": JSON(id), "Image": JSON(imageName), "Name": JSON([JSON(name)]), "State": JSON(state.value.rawValue)])
 	}
@@ -146,7 +148,7 @@ public final class DockerContainer: JSONSerializable {
 	/// Updates the state of the container, useful for updating via a docker event
 	///
 	/// - parameter state: the new state of the container
-	public func update(state:ContainerState) {
+	public func update(state: ContainerState) {
 		self.state.value = state
 		//don't use a state machine because we could become off from what docker says and need to correct"
 	}

@@ -95,6 +95,7 @@ class DockerAPIImplementation: DockerAPI {
 		return SignalProducer<Void, NSError> { observer, disposable in
 			self.session.dataTask(with: request) { (data, response, error) in
 				guard let hresponse = response as? HTTPURLResponse, error == nil else {
+					// swiftlint:disable:next force_cast
 					observer.send(error: error as! NSError)
 					return
 				}
@@ -117,6 +118,7 @@ class DockerAPIImplementation: DockerAPI {
 		return SignalProducer<(Data, HTTPURLResponse), NSError> { observer, disposable in
 			self.session.dataTask(with: request, completionHandler: { (data, response, error) in
 				guard let rawData = data, let rsp = response as? HTTPURLResponse, error == nil else {
+					// swiftlint:disable:next force_cast
 					observer.send(error: error as! NSError)
 					return
 				}

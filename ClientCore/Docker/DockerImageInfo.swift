@@ -9,12 +9,12 @@ import SwiftyJSON
 import os
 
 public struct DockerImageInfo: JSONSerializable {
-	let size:Int64
-	let tag:String
-	let name:String
-	let id:String
+	let size: Int64
+	let tag: String
+	let name: String
+	let id: String
 
-	public init?(json:JSON?) {
+	public init?(json: JSON?) {
 		guard let json = json else { return nil }
 		size = json["size"].int64Value
 		tag = json["tag"].stringValue
@@ -37,8 +37,8 @@ public struct RequiredImageInfo: JSONSerializable {
 	let dbserver: DockerImageInfo
 	let appserver: DockerImageInfo
 	let computeserver: DockerImageInfo
-	
-	public init?(json:JSON?) {
+
+	public init?(json: JSON?) {
 		guard let json = json else { return nil }
 		version = json["version"].intValue
 		dbserver = DockerImageInfo(json: json["images"].dictionary!["dbserver"]!)!
@@ -49,7 +49,7 @@ public struct RequiredImageInfo: JSONSerializable {
 	public func serialize() throws -> JSON {
 		do {
 			let images = ["dbserver": try dbserver.serialize(), "appserver": try appserver.serialize(), "compute": try computeserver.serialize()]
-			var dict:[String:JSON] = [:]
+			var dict: [String:JSON] = [:]
 			dict["images"] = JSON(arrayLiteral: images)
 			dict["version"] = JSON(version)
 			return JSON(jsonDictionary: dict)

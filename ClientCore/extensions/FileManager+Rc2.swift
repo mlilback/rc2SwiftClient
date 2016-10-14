@@ -7,8 +7,8 @@
 import Foundation
 
 public extension FileManager {
-	
-	public func directoryExists(at:URL) -> Bool {
+
+	public func directoryExists(at: URL) -> Bool {
 		var isDir: ObjCBool = false
 		return  self.fileExists(atPath: at.absoluteURL.path, isDirectory: &isDir) && isDir.boolValue
 	}

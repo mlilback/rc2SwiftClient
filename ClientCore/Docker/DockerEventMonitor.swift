@@ -31,7 +31,8 @@ struct DockerEvent: CustomStringConvertible {
 	let eventType: DockerEventType
 	let json: JSON
 
-	 init?(_ json:JSON) {
+	// swiftlint:disable:next cyclomatic_complexity //how else do we implement this?
+	 init?(_ json: JSON) {
 		self.json = json
 		switch json["Action"] {
 			case "delete":
@@ -60,7 +61,7 @@ struct DockerEvent: CustomStringConvertible {
 				return nil
 		}
 	}
-	
+
 	var description: String {
 		var jsonStr = ""
 		do {
@@ -72,14 +73,14 @@ struct DockerEvent: CustomStringConvertible {
 }
 
 protocol DockerEventMonitorDelegate: class {
-	func handleEvent(_ event:DockerEvent)
+	func handleEvent(_ event: DockerEvent)
 	func eventMonitorClosed(error: Error?)
 }
 
 class DockerEventMonitor: NSObject, URLSessionDataDelegate {
 	var delegate: DockerEventMonitorDelegate
-	var session:URLSession!
-	
+	var session: URLSession!
+
 	init(baseUrl: URL, delegate: DockerEventMonitorDelegate, sessionConfig: URLSessionConfiguration = URLSessionConfiguration.default)
 	{
 		self.delegate = delegate
@@ -95,7 +96,7 @@ class DockerEventMonitor: NSObject, URLSessionDataDelegate {
 	{
 		completionHandler(Foundation.URLSession.ResponseDisposition.allow)
 	}
-	
+
 	open func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
 		let str = String(data: data, encoding:String.Encoding.utf8)!
 		let messages = str.components(separatedBy: "\n")
@@ -111,10 +112,9 @@ class DockerEventMonitor: NSObject, URLSessionDataDelegate {
 			}
 		}
 	}
-	
+
 	open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
 		os_log("why did our session end?: %{public}s", error as? NSError ?? "unknown")
 		delegate.eventMonitorClosed(error: error)
 	}
 }
-

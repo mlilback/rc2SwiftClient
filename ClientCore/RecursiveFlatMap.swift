@@ -8,7 +8,7 @@ import Foundation
 
 ///returns array of all recursive children of root that pass the test in transform
 //
-//ideally transform and children weould be @noescape, but you can't call another 
+//ideally transform and children weould be @noescape, but you can't call another
 // noescape function, even though it should be fine with the same functiuon
 public func recursiveFlatMap<T, TResult>(_ root: T, transform: (T) -> TResult?, children: (T) -> [T]) -> [TResult]
 {

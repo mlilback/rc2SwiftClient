@@ -1285,6 +1285,7 @@
 				089794161D7B68F0003339EE /* Frameworks */,
 				089794171D7B68F0003339EE /* Headers */,
 				089794181D7B68F0003339EE /* Resources */,
+				082610961DB1632200C03422 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1476,6 +1477,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		082610961DB1632200C03422 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n    (cd ClientCore; swiftlint)\nelse\n    echo \"Warning: swiftlint not installed\"\nfi\n";
+		};
 		0833A8241D2D853B0033654B /* increment build number */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 8;

@@ -8,12 +8,12 @@ import Foundation
 import BrightFutures
 import CryptoSwift
 
-public func delay(_ delay:Double, _ closure:@escaping ()->()) {
+public func delay(_ delay: Double, _ closure:@escaping ()->()) {
 	DispatchQueue.main.asyncAfter(
 		deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
 }
 
-public enum ColorInputError : Error {
+public enum ColorInputError: Error {
 	case invalidHexString
 }
 
@@ -29,27 +29,27 @@ public enum ColorInputError : Error {
 
 public final class Box<T> {
 	public let unbox: T
-	public init(_ value:T) {
+	public init(_ value: T) {
 		self.unbox = value
 	}
 }
 
 public final class ObjcBox<T>: NSObject {
 	public let unbox: T
-	public init(_ value:T) {
+	public init(_ value: T) {
 		self.unbox = value
 	}
 }
 
 public extension PlatformColor {
-	public static func colorWithHexString(_ hex:String, alpha:CGFloat = 1.0) -> PlatformColor? {
+	public static func colorWithHexString(_ hex: String, alpha: CGFloat = 1.0) -> PlatformColor? {
 		do {
 			return try PlatformColor(hex:hex, alpha:alpha)
 		} catch _ {
 			return nil
 		}
 	}
-	public convenience init(hex:String, alpha:CGFloat = 1.0) throws {
+	public convenience init(hex: String, alpha: CGFloat = 1.0) throws {
 		var hcode = hex
 		if hcode.hasPrefix("#") {
 			hcode = hcode.substring(from: hcode.characters.index(hcode.characters.startIndex, offsetBy: 1))
@@ -64,20 +64,20 @@ public extension PlatformColor {
 		Scanner(string: greenHex).scanHexInt32(&greenInt)
 		Scanner(string: blueHex).scanHexInt32(&blueInt)
 		let divisor: CGFloat = 255.0
-		
+
 		self.init(red:CGFloat(redInt) / divisor, green:CGFloat(greenInt) / divisor, blue:CGFloat(blueInt) / divisor, alpha:alpha)
 	}
 }
 
 public extension NotificationCenter {
-	func postNotificationNameOnMainThread(_ noteName:String, object:AnyObject, userInfo:[AnyHashable: Any]?=nil) {
+	func postNotificationNameOnMainThread(_ noteName: String, object: AnyObject, userInfo: [AnyHashable: Any]?=nil) {
 		if !Thread.isMainThread {
 			postAsyncNotificationNameOnMainThread(noteName, object: object, userInfo:userInfo)
 		} else {
 			post(name: Notification.Name(rawValue: noteName), object: object, userInfo: userInfo)
 		}
 	}
-	func postAsyncNotificationNameOnMainThread(_ noteName:String, object:AnyObject, userInfo:[AnyHashable: Any]?=nil) {
+	func postAsyncNotificationNameOnMainThread(_ noteName: String, object: AnyObject, userInfo: [AnyHashable: Any]?=nil) {
 		DispatchQueue.main.async(execute: {
 			self.post(name: Notification.Name(rawValue: noteName), object: object, userInfo: userInfo)
 		})
@@ -85,7 +85,7 @@ public extension NotificationCenter {
 }
 
 public extension NSRange {
-	public func toStringRange(_ str:String) -> Range<String.Index>? {
+	public func toStringRange(_ str: String) -> Range<String.Index>? {
 		guard str.characters.count >= length - location  && location < str.characters.count else { return nil }
 		let fromIdx = str.characters.index(str.startIndex, offsetBy: self.location)
 		let toIdx = str.characters.index(fromIdx, offsetBy: self.length)
@@ -93,8 +93,6 @@ public extension NSRange {
 	}
 }
 
-
-public func MaxNSRangeIndex(_ range:NSRange) -> Int {
+public func MaxNSRangeIndex(_ range: NSRange) -> Int {
 	return range.location + range.length - 1
 }
-

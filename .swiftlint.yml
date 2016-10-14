@@ -1,0 +1,13 @@
+disabled_rules:
+  - opening_brace
+  - line_length
+  - todo
+  - variable_name #doesn't allow underscores
+opt_in_rules:
+
+excluded:
+  - Carthage
+  - vendor
+variable_name:
+  excluded:
+    - id
