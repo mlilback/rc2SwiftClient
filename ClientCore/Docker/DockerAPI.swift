@@ -13,7 +13,13 @@ public enum DockerContainerOperation: String {
 	case start, stop, restart, pause, resume = "unpause"
 }
 
+/// Abstracts communicating with docker. Protocol allows for dependency injection.
 protocol DockerAPI {
+	/// Fetches the current containers from the docker daemon
+	///
+	/// - returns: a signal producer that will send a single value and a completed event, or an error event
+	func refreshContainers() -> SignalProducer<[DockerContainer], NSError>
+
 	/// Performs an operation on a docker container
 	///
 	/// - parameter operation: the operation to perform

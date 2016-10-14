@@ -9,30 +9,7 @@ import ReactiveSwift
 import SwiftyJSON
 import os
 
-public extension SignalProducer {
-	public func passValue<U>(to link: @escaping ((Value) -> SignalProducer<U, Error>)) -> SignalProducer<U, Error>
-	{
-		return SignalProducer<U, Error> { observer, _ in
-			self.startWithResult { firstResult in
-				switch firstResult {
-				case .success(let firstValue):
-					link(firstValue).startWithResult { secondResult in
-						switch secondResult {
-						case .success(let secondValue):
-							observer.send(value: secondValue)
-							observer.sendCompleted()
-						case .failure(let secondError):
-							observer.send(error: secondError)
-						}
-					}
-				case .failure(let firstError):
-					observer.send(error: firstError)
-				}
-			}
-		}
-	}
-}
-
+/// Default implementation of DockerAPI protocol
 class DockerAPIImplementation: DockerAPI {
 	fileprivate let baseUrl: URL
 	fileprivate let sessionConfig: URLSessionConfiguration
@@ -50,7 +27,7 @@ class DockerAPIImplementation: DockerAPI {
 	}
 
 	/// - returns: a URLRequest to fetch list of containers
-	public func containersRequest() -> URLRequest {
+	fileprivate func containersRequest() -> URLRequest {
 		// swiftlint:disable:next force_try
 		let filtersJson = try! JSONSerialization.data(withJSONObject: ["label": ["rc2.live"]], options: [])
 		let filtersStr = String(data:filtersJson, encoding:.utf8)!
@@ -59,7 +36,8 @@ class DockerAPIImplementation: DockerAPI {
 		return URLRequest(url: urlcomponents.url!)
 	}
 
-	public func dataToContainers(data: Data) -> SignalProducer<[DockerContainer], NSError>
+	//must not reference self so can be used as the target of passValue without a retain cycle
+	fileprivate func dataToContainers(data: Data) -> SignalProducer<[DockerContainer], NSError>
 	{
 		return SignalProducer<[DockerContainer], NSError> { observer, _ in
 			guard let jsonStr = String(data: data, encoding:.utf8) else {
@@ -76,9 +54,10 @@ class DockerAPIImplementation: DockerAPI {
 	///
 	/// - returns: a signal producer that will send a single value and a completed event, or an error event
 	public func refreshContainers() -> SignalProducer<[DockerContainer], NSError> {
-		return  self.makeRequest(request: self.containersRequest())
+		return self.makeRequest(request: self.containersRequest())
 			.map({ $0.0 }) //transform from (Data, HTTPURLResponse) to Data
-			.passValue(to: dataToContainers)
+			.flatMap(.concat, transform: dataToContainers)
+			//.passValue(to: dataToContainers)
 	}
 
 	/// Performs an operation on a docker container
@@ -87,7 +66,7 @@ class DockerAPIImplementation: DockerAPI {
 	/// - parameter container: the target container
 	///
 	/// - returns: a signal producer that will return no Next events
-	func perform(operation: DockerContainerOperation, on container: DockerContainer) -> SignalProducer<Void, NSError>
+	public func perform(operation: DockerContainerOperation, on container: DockerContainer) -> SignalProducer<Void, NSError>
 	{
 		let url = baseUrl.appendingPathComponent("/containers/\(container.name)/\(operation.rawValue)")
 		var request = URLRequest(url: url)
@@ -114,7 +93,7 @@ class DockerAPIImplementation: DockerAPI {
 	}
 
 	@discardableResult
-	func makeRequest(request: URLRequest) -> SignalProducer<(Data, HTTPURLResponse), NSError> {
+	fileprivate func makeRequest(request: URLRequest) -> SignalProducer<(Data, HTTPURLResponse), NSError> {
 		return SignalProducer<(Data, HTTPURLResponse), NSError> { observer, disposable in
 			self.session.dataTask(with: request, completionHandler: { (data, response, error) in
 				guard let rawData = data, let rsp = response as? HTTPURLResponse, error == nil else {

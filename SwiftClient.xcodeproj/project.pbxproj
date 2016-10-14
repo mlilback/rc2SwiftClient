@@ -1073,6 +1073,7 @@
 		089794281D7B68F0003339EE /* ClientCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				082610931DB0315600C03422 /* DefaultDockerAPISpec.swift */,
 				08127CDD1DAD5867002E0D01 /* BaseDockerTest.swift */,
 				0864DA861DA6BE46003F3F57 /* DockerContainerTests.swift */,
 				084199311D90A7FE0089A1AC /* DockerTagTests.swift */,
@@ -1090,7 +1091,6 @@
 				08604A4F1D9C143B00DE2A79 /* containers.json */,
 				084199381D91AC6B0089A1AC /* imageInfo.json */,
 				08E836711D9AF8F500E26EFE /* networks.json */,
-				082610931DB0315600C03422 /* DefaultDockerAPISpec.swift */,
 			);
 			path = ClientCoreTests;
 			sourceTree = SOURCE_ROOT;
