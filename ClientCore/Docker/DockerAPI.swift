@@ -43,4 +43,18 @@ protocol DockerAPI {
 	///
 	/// - returns: a signal procuder with no value events
 	func remove(container: DockerContainer) -> SignalProducer<(), DockerError>
+
+	/// create a netork
+	///
+	/// - parameter network: name of network to create
+	///
+	/// - returns: a signal producer that will return no values
+	func create(network: String) -> SignalProducer<(), DockerError>
+
+	/// check to see if a netwwork exists
+	///
+	/// - parameter name: name of network
+	///
+	/// - returns: a signal producer with a single Bool value
+	func networkExists(name: String) -> SignalProducer<Bool, DockerError>
 }

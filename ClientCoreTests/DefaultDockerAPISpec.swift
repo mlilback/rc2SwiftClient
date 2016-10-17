@@ -45,8 +45,10 @@ class DefaultDockerAPISpec: QuickSpec {
 			
 			context("use the dbserver container") {
 				var dbcontainer: DockerContainer!
+				var scheduler: QueueScheduler!
 				beforeEach {
 					commonPrep()
+					scheduler = QueueScheduler(name: "\(#file)\(#line)")
 					self.stubGetRequest(uriPath: "/containers/json", fileName: "containers")
 					let containers = self.loadContainers(api: api, queue: globalQueue).value
 					guard let db = containers?[.dbserver] else {
@@ -56,11 +58,8 @@ class DefaultDockerAPISpec: QuickSpec {
 				}
 
 				it("should correctly perform operations") {
-					self.stub({ request in
-						return request.httpMethod == "POST" && request.url!.path.hasPrefix("/containers/rc2_dbserver/")
-					}, builder: http(204))
+					self.stub(self.postMatcher(uriPath: "/containers/rc2_dbserver/"), builder: http(204))
 					for anOperation in DockerContainerOperation.all {
-						let scheduler = QueueScheduler(name: "\(#file)\(#line)")
 						let producer = api.perform(operation: anOperation, container: dbcontainer).observe(on: scheduler)
 						let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
 						expect(result.error).to(beNil())
@@ -69,7 +68,6 @@ class DefaultDockerAPISpec: QuickSpec {
 				
 				it("should remove the container") {
 					self.stub(uri(uri: "/containers/rc2_dbserver"), builder: http(204))
-					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
 					let producer = api.remove(container: dbcontainer).observe(on: scheduler)
 					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
 					expect(result.error).to(beNil())
@@ -77,10 +75,47 @@ class DefaultDockerAPISpec: QuickSpec {
 
 				it("should fail to remove the container") {
 					self.stub(uri(uri: "/containers/rc2_dbserver"), builder: http(404))
-					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
 					let producer = api.remove(container: dbcontainer).observe(on: scheduler)
 					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
 					expect(result.error).to(matchError(DockerError.noSuchObject))
+				}
+			}
+			
+			context("test network operations") {
+				it("network should exist") {
+					self.stubGetRequest(uriPath: "/networks", fileName: "networks")
+					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
+					let producer = api.networkExists(name: "clientcore_default").observe(on: scheduler)
+					var result: Result<Bool, DockerError>!
+					let group = DispatchGroup()
+					globalQueue.async(group: group) {
+						result = producer.single()
+					}
+					group.wait()
+					expect(result.error).to(beNil())
+					expect(result.value).to(beTrue())
+				}
+
+				it("network should not exist") {
+					self.stubGetRequest(uriPath: "/networks", fileName: "networks")
+					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
+					let producer = api.networkExists(name: "rc2_nonexistant").observe(on: scheduler)
+					var result: Result<Bool, DockerError>!
+					let group = DispatchGroup()
+					globalQueue.async(group: group) {
+						result = producer.single()
+					}
+					group.wait()
+					expect(result.error).to(beNil())
+					expect(result?.value).to(beFalse())
+				}
+				
+				it("create network") {
+					self.stub(self.postMatcher(uriPath: "/networks/create"), builder:http(204))
+					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
+					let producer = api.create(network: "rc2_fakecreate").observe(on: scheduler)
+					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
+					expect(result.error).to(beNil())
 				}
 			}
 		}
@@ -112,8 +147,15 @@ class DefaultDockerAPISpec: QuickSpec {
 		return r
 	}
 
-	///uses Mockingjay to stub out a request for uriPath with the contents of fileName.json
-	func stubGetRequest(uriPath:String, fileName:String) {
+	/// returns a custom matcher looking for a post request at the specified path
+	func postMatcher(uriPath: String) -> (URLRequest) -> Bool {
+		return { request in
+			return request.httpMethod == "POST" && request.url!.path.hasPrefix(uriPath)
+		}
+	}
+	
+	/// uses Mockingjay to stub out a request for uriPath with the contents of fileName.json
+	func stubGetRequest(uriPath: String, fileName: String) {
 		let path : String = Bundle(for: type(of:self)).path(forResource: fileName, ofType: "json")!
 		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
 		stub(uri(uri: uriPath), builder: jsonData(resultData!))

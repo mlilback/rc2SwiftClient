@@ -33,6 +33,8 @@ class DockerAPIImplementation: DockerAPI {
 		self.log = log
 	}
 
+	// MARK: container operations
+
 	// documentation in DockerAPI protocol
 	public func refreshContainers() -> SignalProducer<[DockerContainer], DockerError>
 	{
@@ -99,6 +101,58 @@ class DockerAPIImplementation: DockerAPI {
 				}
 			}.resume()
 		}
+	}
+
+	// MARK: network operations
+
+	/// documentation in DockerAPI protocol
+	func create(network: String) -> SignalProducer<(), DockerError>
+	{
+		var props = [String:Any]()
+		props["Internal"] = true
+		props["Driver"] = "bridge"
+		props["Name"] = network
+		// swiftlint:disable:next force_try
+		let jsonData = try! JSONSerialization.data(withJSONObject: props, options: [])
+		var request = URLRequest(url: baseUrl.appendingPathComponent("networks/create"))
+		request.httpMethod = "POST"
+		return SignalProducer<(), DockerError> { observer, _ in
+			let task = self.session.uploadTask(with: request, from: jsonData) { (data, response, error) in
+				guard let rsp = response as? HTTPURLResponse, error == nil else {
+					observer.send(error: .networkError(error as? NSError))
+					return
+				}
+				switch rsp.statusCode {
+					case 204:
+						observer.sendCompleted()
+					case 404:
+						observer.send(error: .noSuchObject)
+					default:
+						observer.send(error: .networkError(nil))
+				}
+			}
+			task.resume()
+		}
+	}
+
+	/// documentation in DockerAPI protocol
+	func networkExists(name: String) -> SignalProducer<Bool, DockerError> {
+		let req = URLRequest(url: baseUrl.appendingPathComponent("networks"))
+		return makeRequest(request: req)
+			.map({ $0.0 }) //transform from (Data, HTTPURLResponse) to Data
+			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
+				return SignalProducer<Bool, DockerError> { observer, _ in
+					guard let jsonStr = String(data: data, encoding: .utf8) else {
+						observer.send(error: .invalidJson)
+						return
+					}
+					let json = JSON.parse(jsonStr)
+					observer.send(value: json.arrayValue.filter( { aNet in
+						return aNet["Name"].stringValue == name
+					}).count > 0)
+					observer.sendCompleted()
+				}
+			})
 	}
 }
 
