@@ -49,9 +49,7 @@ class DockerAPIImplementation: DockerAPI {
 		let producer = SignalProducer< SignalProducer<(), DockerError>, DockerError >(values: producers)
 		return producer.flatten(.concat)
 	}
-}
 
-extension DockerAPIImplementation {
 	// documentation in DockerAPI protocol
 	public func perform(operation: DockerContainerOperation, container: DockerContainer) -> SignalProducer<Void, DockerError>
 	{
@@ -78,6 +76,33 @@ extension DockerAPIImplementation {
 		}
 	}
 
+	/// documentation in DockerAPI protocol
+	func remove(container: DockerContainer) -> SignalProducer<(), DockerError> {
+		let url = baseUrl.appendingPathComponent("containers/\(container.name)")
+		var request = URLRequest(url: url)
+		request.httpMethod = "DELETE"
+		return SignalProducer<Void, DockerError> { observer, _ in
+			self.session.dataTask(with: request) { (data, response, error) in
+				guard let hresponse = response as? HTTPURLResponse, error == nil else {
+					observer.send(error: .networkError(error as? NSError))
+					return
+				}
+				switch hresponse.statusCode {
+				case 204:
+					observer.sendCompleted()
+				case 404:
+					observer.send(error: .noSuchObject)
+				case 409:
+					observer.send(error: .conflict)
+				default:
+					observer.send(error: .networkError(error as? NSError))
+				}
+			}.resume()
+		}
+	}
+}
+
+extension DockerAPIImplementation {
 	/// - returns: a URLRequest to fetch list of containers
 	fileprivate func containersRequest() -> URLRequest
 	{

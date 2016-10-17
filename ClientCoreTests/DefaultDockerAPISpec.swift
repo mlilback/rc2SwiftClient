@@ -53,25 +53,47 @@ class DefaultDockerAPISpec: QuickSpec {
 						fatalError("failed to load containers for testing")
 					}
 					dbcontainer = db
+				}
+
+				it("should correctly perform operations") {
 					self.stub({ request in
 						return request.httpMethod == "POST" && request.url!.path.hasPrefix("/containers/rc2_dbserver/")
 					}, builder: http(204))
-				}
-				it("should correctly perform operations") {
 					for anOperation in DockerContainerOperation.all {
 						let scheduler = QueueScheduler(name: "\(#file)\(#line)")
 						let producer = api.perform(operation: anOperation, container: dbcontainer).observe(on: scheduler)
-						var result: Result<(), DockerError>?
-						let group = DispatchGroup()
-						globalQueue.async(group: group) {
-							result = producer.wait()
-						}
-						group.wait()
-						expect(result?.error).to(beNil())
+						let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
+						expect(result.error).to(beNil())
 					}
+				}
+				
+				it("should remove the container") {
+					self.stub(uri(uri: "/containers/rc2_dbserver"), builder: http(204))
+					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
+					let producer = api.remove(container: dbcontainer).observe(on: scheduler)
+					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
+					expect(result.error).to(beNil())
+				}
+
+				it("should fail to remove the container") {
+					self.stub(uri(uri: "/containers/rc2_dbserver"), builder: http(404))
+					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
+					let producer = api.remove(container: dbcontainer).observe(on: scheduler)
+					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
+					expect(result.error).to(matchError(DockerError.noSuchObject))
 				}
 			}
 		}
+	}
+	
+	func makeNoValueRequest(producer: SignalProducer<(), DockerError>, queue: DispatchQueue) -> Result<(), DockerError> {
+		var result: Result<(), DockerError>?
+		let group = DispatchGroup()
+		queue.async(group: group) {
+			result = producer.wait()
+		}
+		group.wait()
+		return result!
 	}
 	
 	func loadContainers(api: DockerAPI, queue:DispatchQueue) -> Result<[DockerContainer], DockerError> {

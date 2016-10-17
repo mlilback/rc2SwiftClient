@@ -34,6 +34,13 @@ protocol DockerAPI {
 	/// - parameter operation: the operation to perform
 	/// - parameter on:        array of containers to perform the operation on
 	///
-	/// - returns: a signal responder with no value events
+	/// - returns: a signal producer with no value events
 	func perform(operation: DockerContainerOperation, containers: [DockerContainer]) -> SignalProducer<(), DockerError>
+
+	/// Remove a container
+	///
+	/// - parameter container: container to remove
+	///
+	/// - returns: a signal procuder with no value events
+	func remove(container: DockerContainer) -> SignalProducer<(), DockerError>
 }
