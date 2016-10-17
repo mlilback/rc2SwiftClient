@@ -29,6 +29,7 @@ extension DefaultsKeys {
 /// simple operations that can be performed on a container
 public enum ContainerOperation: String {
 	case start, stop, restart, pause, resume = "unpause"
+	public static var all: [ContainerOperation] = [.start, .stop, .restart, .pause, .resume]
 }
 
 //MARK: -

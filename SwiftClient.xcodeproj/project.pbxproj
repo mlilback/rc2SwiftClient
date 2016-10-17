@@ -46,6 +46,7 @@
 		082610921DB02FEE00C03422 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; };
 		082610941DB0315600C03422 /* DefaultDockerAPISpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082610931DB0315600C03422 /* DefaultDockerAPISpec.swift */; };
 		082610951DB13CC100C03422 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
+		082610981DB272A000C03422 /* DockerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082610971DB272A000C03422 /* DockerError.swift */; };
 		0827A4E11C7ED9CE001F0AFB /* DocumentChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4D81C7ED9CE001F0AFB /* DocumentChunk.swift */; };
 		0827A4E21C7ED9CE001F0AFB /* CodeHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4D91C7ED9CE001F0AFB /* CodeHighlighter.swift */; };
 		0827A4E31C7ED9CE001F0AFB /* LatexCodeHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4DA1C7ED9CE001F0AFB /* LatexCodeHighlighter.swift */; };
@@ -441,6 +442,7 @@
 		0826108D1DB02FC300C03422 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/Mac/Nimble.framework; sourceTree = "<group>"; };
 		0826108E1DB02FC300C03422 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/Mac/Quick.framework; sourceTree = "<group>"; };
 		082610931DB0315600C03422 /* DefaultDockerAPISpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultDockerAPISpec.swift; sourceTree = "<group>"; };
+		082610971DB272A000C03422 /* DockerError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerError.swift; sourceTree = "<group>"; };
 		0827A4D81C7ED9CE001F0AFB /* DocumentChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentChunk.swift; sourceTree = "<group>"; };
 		0827A4D91C7ED9CE001F0AFB /* CodeHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeHighlighter.swift; sourceTree = "<group>"; };
 		0827A4DA1C7ED9CE001F0AFB /* LatexCodeHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatexCodeHighlighter.swift; sourceTree = "<group>"; };
@@ -1143,6 +1145,9 @@
 			isa = PBXGroup;
 			children = (
 				08604A511D9C4DBE00DE2A79 /* dockerInfo.json */,
+				082610971DB272A000C03422 /* DockerError.swift */,
+				08127CCA1DAD1D82002E0D01 /* DockerAPI.swift */,
+				08127CCC1DAD1F0D002E0D01 /* DockerAPIImplementation.swift */,
 				08ABCEF51D82FAE4007C6A5E /* DockerImage.swift */,
 				08604A4B1D9C058200DE2A79 /* DockerContainer.swift */,
 				08ABCEF61D82FAE4007C6A5E /* DockerManager.swift */,
@@ -1151,8 +1156,6 @@
 				08ABCEF81D82FAE4007C6A5E /* DockerUrlProtocol.swift */,
 				08B4BE5E1D833162006861E3 /* DockerPullOperation.swift */,
 				0864DA841DA56A0B003F3F57 /* DockerEventMonitor.swift */,
-				08127CCA1DAD1D82002E0D01 /* DockerAPI.swift */,
-				08127CCC1DAD1F0D002E0D01 /* DockerAPIImplementation.swift */,
 			);
 			path = Docker;
 			sourceTree = "<group>";
@@ -1695,6 +1698,7 @@
 				08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */,
 				08037C2D1D7C5AF400006E9E /* JSONSerializable.swift in Sources */,
 				0897944D1D7B6A8F003339EE /* NSProgress+Rc2.m in Sources */,
+				082610981DB272A000C03422 /* DockerError.swift in Sources */,
 				0864DA851DA56A0B003F3F57 /* DockerEventMonitor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
