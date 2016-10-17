@@ -44,14 +44,15 @@ class DefaultDockerAPISpec: QuickSpec {
 			}
 			
 			context("use the dbserver container") {
+				var containers: [DockerContainer] = []
 				var dbcontainer: DockerContainer!
 				var scheduler: QueueScheduler!
 				beforeEach {
 					commonPrep()
 					scheduler = QueueScheduler(name: "\(#file)\(#line)")
 					self.stubGetRequest(uriPath: "/containers/json", fileName: "containers")
-					let containers = self.loadContainers(api: api, queue: globalQueue).value
-					guard let db = containers?[.dbserver] else {
+					containers = self.loadContainers(api: api, queue: globalQueue).value!
+					guard let db = containers[.dbserver] else {
 						fatalError("failed to load containers for testing")
 					}
 					dbcontainer = db
@@ -64,6 +65,25 @@ class DefaultDockerAPISpec: QuickSpec {
 						let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
 						expect(result.error).to(beNil())
 					}
+				}
+				
+				it("should perform operation on all containers") {
+					//use a custom builder to count how many times a HTTPResponse is built
+					var count: Int = 0
+					let mybuilder: (URLRequest) -> Response = { req in
+						count += 1
+						return http(204)(req)
+					}
+					self.stub(self.postMatcher(uriPath: "/containers/rc2_dbserver/pause"), builder: mybuilder)
+					self.stub(self.postMatcher(uriPath: "/containers/rc2_appserver/pause"), builder: mybuilder)
+					self.stub(self.postMatcher(uriPath: "/containers/rc2_compute/pause"), builder: mybuilder)
+					let producer = api.perform(operation: .pause, containers: containers).observe(on: scheduler)
+					let group = DispatchGroup()
+					globalQueue.async(group: group) {
+						_ = producer.wait()
+					}
+					group.wait()
+					expect(count).to(equal(containers.count))
 				}
 				
 				it("should remove the container") {
