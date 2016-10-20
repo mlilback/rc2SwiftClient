@@ -77,6 +77,11 @@
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
+            key = "CFNETWORK_DIAGNOSTICS"
+            value = "1"
+            isEnabled = "NO">
+         </EnvironmentVariable>
+         <EnvironmentVariable
             key = "DockerHostSharePath"
             value = "/home/mlilback/pgdata"
             isEnabled = "YES">

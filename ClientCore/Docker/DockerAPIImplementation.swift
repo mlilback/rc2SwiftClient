@@ -7,14 +7,19 @@
 import Foundation
 import ReactiveSwift
 import SwiftyJSON
+import Result
 import os
 
 /// Default implementation of DockerAPI protocol
 class DockerAPIImplementation: DockerAPI {
-	fileprivate let baseUrl: URL
+	// MARK: - properties
+	public let baseUrl: URL
 	fileprivate let sessionConfig: URLSessionConfiguration
 	fileprivate var session: URLSession
 	fileprivate let log: OSLog
+	public let scheduler: QueueScheduler
+
+	// MARK: - init
 
 	/// Instantiates object to make calls to docker daemon
 	///
@@ -23,8 +28,10 @@ class DockerAPIImplementation: DockerAPI {
 	/// - parameter log:           the log object to use for os_log, defaults to sensible one
 	///
 	/// - returns: an instance of this class
-	init(baseUrl: URL, sessionConfig: URLSessionConfiguration = URLSessionConfiguration.default, log: OSLog = OSLog(subsystem: "io.rc2.client", category: "docker"))
+	init(baseUrl: URL = URL(string: "unix://")!, sessionConfig: URLSessionConfiguration = URLSessionConfiguration.default, log: OSLog = OSLog(subsystem: "io.rc2.client", category: "docker"))
 	{
+		precondition(baseUrl.absoluteString.hasPrefix("unix:") || !baseUrl.absoluteString.hasSuffix("/"))
+		self.scheduler = QueueScheduler(qos: .default, name: "rc2.dockerAPI")
 		self.baseUrl = baseUrl
 		self.sessionConfig = sessionConfig
 		sessionConfig.protocolClasses = [DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
@@ -33,14 +40,48 @@ class DockerAPIImplementation: DockerAPI {
 		self.log = log
 	}
 
-	// MARK: container operations
+	// MARK: - general
+
+	// documentation in DockerAPI protocol
+	public func loadVersion() -> SignalProducer<DockerVersion, DockerError>
+	{
+		let req = URLRequest(url: baseUrl.appendingPathComponent("/version"))
+		return makeRequest(request: req)
+			.map({ $0.0 }) //transform from (Data, HTTPURLResponse) to Data
+			.flatMap(.concat, transform: dataToJson)
+			.flatMap(.concat, transform: parseVersionInfo)
+			.observe(on: scheduler)
+	}
+
+	// documentation in DockerAPI protocol
+	public func fetchJson(url: URL) -> SignalProducer<JSON, DockerError> {
+		return self.makeRequest(request: URLRequest(url: url))
+			.map({ $0.0 })
+			.flatMap(.concat, transform: self.dataToJson)
+	}
+
+	// MARK: - image operations
+
+	// documentation in DockerAPI protocol
+	public func loadImages() -> SignalProducer<[DockerImage], DockerError> {
+		let req = URLRequest(url: baseUrl.appendingPathComponent("/images/json"))
+		return makeRequest(request: req)
+			.map({ $0.0 })
+			.flatMap(.concat, transform: dataToJson)
+			.flatMap(.concat, transform: parseImages)
+			.observe(on: scheduler)
+	}
+
+	// MARK: - container operations
 
 	// documentation in DockerAPI protocol
 	public func refreshContainers() -> SignalProducer<[DockerContainer], DockerError>
 	{
 		return self.makeRequest(request: self.containersRequest())
 			.map({ $0.0 }) //transform from (Data, HTTPURLResponse) to Data
-			.flatMap(.concat, transform: dataToContainers)
+			.flatMap(.concat, transform: dataToJson)
+			.flatMap(.concat, transform: parseContainers)
+			.observe(on: scheduler)
 	}
 
 	// documentation in DockerAPI protocol
@@ -55,7 +96,7 @@ class DockerAPIImplementation: DockerAPI {
 	// documentation in DockerAPI protocol
 	public func perform(operation: DockerContainerOperation, container: DockerContainer) -> SignalProducer<Void, DockerError>
 	{
-		let url = baseUrl.appendingPathComponent("containers/\(container.name)/\(operation.rawValue)")
+		let url = baseUrl.appendingPathComponent("/containers/\(container.name)/\(operation.rawValue)")
 		var request = URLRequest(url: url)
 		request.httpMethod = "POST"
 		return SignalProducer<Void, DockerError> { observer, disposable in
@@ -75,12 +116,52 @@ class DockerAPIImplementation: DockerAPI {
 					observer.send(error: .networkError(error as? NSError))
 				}
 			}.resume()
+		}.observe(on: scheduler)
+	}
+
+	// documentation in DockerAPI protocol
+	func create(container: DockerContainer) -> SignalProducer<DockerContainer, DockerError> {
+		return SignalProducer<DockerContainer, DockerError> { observer, _ in
+			guard container.state.value != .notAvailable else {
+				observer.send(value: container)
+				observer.sendCompleted()
+				return
+			}
+			guard var containerJson = container.createInfo else {
+				observer.send(error: .invalidJson)
+				return
+			}
+			containerJson["Labels"] = JSON(["rc2.live"])
+			// swiftlint:disable:next force_try // we created from static string, serious programmer error if fails
+			let jsonData = try! containerJson.rawData()
+			var comps = URLComponents(url: URL(string:"/containers/create", relativeTo:self.baseUrl)!, resolvingAgainstBaseURL: true)!
+			comps.queryItems = [URLQueryItem(name:"name", value:container.name)]
+			var request = URLRequest(url: comps.url!)
+			request.httpMethod = "POST"
+			request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+			let task = self.session.uploadTask(with: request, from: jsonData) { (data, response, error) in
+				guard nil == error else {
+					observer.send(error: .networkError(error! as NSError))
+					return
+				}
+				guard let response = response as? HTTPURLResponse else { fatalError("got non-http response") }
+				switch response.statusCode {
+				case 201: //success
+					observer.send(value: container)
+					observer.sendCompleted()
+				case 409:
+					observer.send(error: .alreadyExists)
+				default:
+					observer.send(error: DockerError.generateHttpError(from: response, body: data))
+				}
+			}
+			task.resume()
 		}
 	}
 
 	/// documentation in DockerAPI protocol
 	func remove(container: DockerContainer) -> SignalProducer<(), DockerError> {
-		let url = baseUrl.appendingPathComponent("containers/\(container.name)")
+		let url = baseUrl.appendingPathComponent("/containers/\(container.name)")
 		var request = URLRequest(url: url)
 		request.httpMethod = "DELETE"
 		return SignalProducer<Void, DockerError> { observer, _ in
@@ -100,10 +181,10 @@ class DockerAPIImplementation: DockerAPI {
 					observer.send(error: .networkError(error as? NSError))
 				}
 			}.resume()
-		}
+		}.observe(on: scheduler)
 	}
 
-	// MARK: network operations
+	// MARK: - network operations
 
 	/// documentation in DockerAPI protocol
 	func create(network: String) -> SignalProducer<(), DockerError>
@@ -114,8 +195,9 @@ class DockerAPIImplementation: DockerAPI {
 		props["Name"] = network
 		// swiftlint:disable:next force_try
 		let jsonData = try! JSONSerialization.data(withJSONObject: props, options: [])
-		var request = URLRequest(url: baseUrl.appendingPathComponent("networks/create"))
+		var request = URLRequest(url: baseUrl.appendingPathComponent("/networks/create"))
 		request.httpMethod = "POST"
+		request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 		return SignalProducer<(), DockerError> { observer, _ in
 			let task = self.session.uploadTask(with: request, from: jsonData) { (data, response, error) in
 				guard let rsp = response as? HTTPURLResponse, error == nil else {
@@ -123,7 +205,7 @@ class DockerAPIImplementation: DockerAPI {
 					return
 				}
 				switch rsp.statusCode {
-					case 204:
+					case 201, 204: //spec says 204, but should be 201 for created. we'll handle both
 						observer.sendCompleted()
 					case 404:
 						observer.send(error: .noSuchObject)
@@ -132,12 +214,12 @@ class DockerAPIImplementation: DockerAPI {
 				}
 			}
 			task.resume()
-		}
+		}.observe(on: scheduler)
 	}
 
 	/// documentation in DockerAPI protocol
 	func networkExists(name: String) -> SignalProducer<Bool, DockerError> {
-		let req = URLRequest(url: baseUrl.appendingPathComponent("networks"))
+		let req = URLRequest(url: baseUrl.appendingPathComponent("/networks"))
 		return makeRequest(request: req)
 			.map({ $0.0 }) //transform from (Data, HTTPURLResponse) to Data
 			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
@@ -152,11 +234,56 @@ class DockerAPIImplementation: DockerAPI {
 					}).count > 0)
 					observer.sendCompleted()
 				}
-			})
+			}).observe(on: scheduler)
 	}
 }
 
+// MARK: private methods
 extension DockerAPIImplementation {
+	/// convience method to parse Data into JSON
+	///
+	/// - parameter data: data to parse
+	///
+	/// - returns: parsed JSON
+	fileprivate func dataToJson(data: Data) -> SignalProducer<JSON, DockerError> {
+		return SignalProducer<JSON, DockerError> { observer, _ in
+			guard let jsonStr = String(data: data, encoding:.utf8) else {
+				observer.send(error: .invalidJson)
+				return
+			}
+			observer.send(value: JSON.parse(jsonStr))
+			observer.sendCompleted()
+		}
+	}
+
+	/// parses JSON from docker daemon into version information
+	///
+	/// - parameter json: json object with version information
+	///
+	/// - returns: the version information
+	fileprivate func parseVersionInfo(json: JSON) -> SignalProducer<DockerVersion, DockerError>
+	{
+		return SignalProducer<DockerVersion, DockerError> { observer, _ in
+			do {
+				let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
+				let verStr = json["Version"].stringValue
+				guard let match = regex.firstMatch(in: verStr, options: [], range: verStr.toNSRange),
+					let primaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(1))),
+					let secondaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(2))),
+					let fixVersion = Int((verStr as NSString).substring(with: match.rangeAt(3))),
+					let apiVersion = Double(json["ApiVersion"].stringValue) else
+				{
+					observer.send(error: .invalidJson)
+					return
+				}
+				observer.send(value: DockerVersion(major: primaryVersion, minor: secondaryVersion, fix: fixVersion, apiVersion: apiVersion))
+				observer.sendCompleted()
+			} catch let err as NSError {
+				observer.send(error: .cocoaError(err))
+			}
+		}
+	}
+
 	/// - returns: a URLRequest to fetch list of containers
 	fileprivate func containersRequest() -> URLRequest
 	{
@@ -168,16 +295,21 @@ extension DockerAPIImplementation {
 		return URLRequest(url: urlcomponents.url!)
 	}
 
-	//must not reference self so can be used as the target of passValue without a retain cycle
-	fileprivate func dataToContainers(data: Data) -> SignalProducer<[DockerContainer], DockerError>
+	//must not reference self
+	fileprivate func parseContainers(json: JSON) -> SignalProducer<[DockerContainer], DockerError>
 	{
 		return SignalProducer<[DockerContainer], DockerError> { observer, _ in
-			guard let jsonStr = String(data: data, encoding:.utf8) else {
-				observer.send(error: .invalidJson)
-				return
-			}
-			let json = JSON.parse(jsonStr)
 			observer.send(value: json.arrayValue.flatMap { return DockerContainer(json:$0) })
+			observer.sendCompleted()
+		}
+	}
+
+	fileprivate func parseImages(json: JSON) -> SignalProducer<[DockerImage], DockerError> {
+		return SignalProducer<[DockerImage], DockerError> { observer, _ in
+			let images = json.arrayValue
+				.flatMap({ DockerImage(json: $0) })
+				.filter({ $0.labels.keys.contains("io.rc2.type") })
+			observer.send(value: images)
 			observer.sendCompleted()
 		}
 	}

@@ -25,7 +25,7 @@ class DockerContainerTests: BaseDockerTest {
 	
 	func testContainerRefresh() {
 		stubGetRequest(uriPath: "/containers/json", fileName: "containers")
-		let api = DockerAPIImplementation(baseUrl: URL(string:"http://10.0.1.9:2375/")!, sessionConfig: sessionConfig)
+		let api = DockerAPIImplementation(baseUrl: URL(string:"http://10.0.1.9:2375")!, sessionConfig: sessionConfig)
 		api.refreshContainers().startWithResult { result in
 			
 		}

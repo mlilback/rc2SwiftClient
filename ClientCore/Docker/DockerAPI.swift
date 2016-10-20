@@ -6,6 +6,7 @@
 
 import Foundation
 import ReactiveSwift
+import SwiftyJSON
 
 //MARK: -
 /// simple operations that can be performed on a container
@@ -14,8 +15,33 @@ public enum DockerContainerOperation: String {
 	public static var all: [DockerContainerOperation] = [.start, .stop, .restart, .pause, .resume]
 }
 
+public struct DockerVersion {
+	public let major: Int
+	public let minor: Int
+	public let fix: Int
+	public let apiVersion: Double
+}
+
 /// Abstracts communicating with docker. Protocol allows for dependency injection.
-protocol DockerAPI {
+public protocol DockerAPI {
+	var baseUrl: URL { get }
+	/// Fetches version information from docker daemon
+	///
+	/// - returns: a signal producer with a single value
+	func loadVersion() -> SignalProducer<DockerVersion, DockerError>
+
+	/// Convience mehtod to fetch json
+	///
+	/// - parameter url: the url that contains json data
+	///
+	/// - returns: the fetched json data
+	func fetchJson(url: URL) -> SignalProducer<JSON, DockerError>
+
+	/// Loads images from docker daemon
+	///
+	/// - returns: signal producer that will send array of images
+	func loadImages() -> SignalProducer<[DockerImage], DockerError>
+
 	/// Fetches the current containers from the docker daemon
 	///
 	/// - returns: a signal producer that will send a single value and a completed event, or an error event
@@ -36,6 +62,13 @@ protocol DockerAPI {
 	///
 	/// - returns: a signal producer with no value events
 	func perform(operation: DockerContainerOperation, containers: [DockerContainer]) -> SignalProducer<(), DockerError>
+
+	/// Create a container on the docker server
+	///
+	/// - parameter container: the container to create on the server
+	///
+	/// - returns: the parameter unchanged
+	func create(container: DockerContainer) -> SignalProducer<DockerContainer, DockerError>
 
 	/// Remove a container
 	///

@@ -22,7 +22,7 @@ class BaseDockerTest: XCTestCase {
 		userDefaults = UserDefaults(suiteName: UUID().uuidString)! //not sure why this is failable
 	}
 
-	/// helper function to create a network. caller should have stubbed the uri "/networks/create"
+	@available(*, deprecated)
 	func callDockerMethod(docker:DockerManager?, action: @escaping (DockerManager) -> Future<Bool,NSError>) -> Result<Bool, NSError>?
 	{
 		var dm:DockerManager? = docker
@@ -31,19 +31,19 @@ class BaseDockerTest: XCTestCase {
 		}
 		let expect = expectation(description: "calling a docker method")
 		var result: Result<Bool, NSError>?
-		dm!.initializeConnection().flatMap { r1 in
-			action(dm!)
-			}.onComplete { r2 in
-				result = r2
-				expect.fulfill()
-		}
-		waitForExpectations(timeout: 10) { _ in }
+//		dm!.initializeConnection().flatMap { r1 in
+//			action(dm!)
+//			}.onComplete { r2 in
+//				result = r2
+//				expect.fulfill()
+//		}
+//		waitForExpectations(timeout: 10) { _ in }
 		return result
 	}
 	
 	///uses Mockingjay to stub out a request for uriPath with the contents of fileName.json
 	func stubGetRequest(uriPath:String, fileName:String) {
-		let path : String = Bundle(for: DockerManagerTests.self).path(forResource: fileName, ofType: "json")!
+		let path : String = Bundle(for: type(of:self)).path(forResource: fileName, ofType: "json")!
 		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
 		stub(uri(uri: uriPath), builder: jsonData(resultData!))
 	}

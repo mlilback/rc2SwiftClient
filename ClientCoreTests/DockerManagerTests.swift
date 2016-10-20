@@ -15,12 +15,7 @@ import Result
 
 class DockerManagerTests: BaseDockerTest {
 	
-	func testDockerInstalled() {
-		let docker = DockerManager(userDefaults:userDefaults)
-		XCTAssertTrue(docker.isInstalled)
-	}
-
-	func testVersionCommand() {
+	func testVersion() {
 		stubGetRequest(uriPath: "/version", fileName: "version")
 		stubGetRequest(uriPath: "/containers/json", fileName: "containers")
 		let expect = self.expectation(description: "file download")

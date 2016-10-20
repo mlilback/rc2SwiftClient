@@ -12,6 +12,9 @@ import Mockingjay
 import Result
 import ReactiveSwift
 
+// TODO: create container
+// TODO: load images
+
 class DefaultDockerAPISpec: QuickSpec {
 	override func spec() {
 		var sessionConfig: URLSessionConfiguration!
@@ -23,10 +26,31 @@ class DefaultDockerAPISpec: QuickSpec {
 			if !(sessionConfig.protocolClasses?.contains(where: {$0 == MockingjayProtocol.self}) ?? false) {
 				sessionConfig.protocolClasses = [MockingjayProtocol.self, DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
 			}
-			api = DockerAPIImplementation(baseUrl: URL(string:"http://10.0.1.9:2375/")!, sessionConfig: sessionConfig)
+			api = DockerAPIImplementation(baseUrl: URL(string:"http://10.0.1.9:2375")!, sessionConfig: sessionConfig)
 		}
-			
+
 		describe("use docker api") {
+			it("should load version information") {
+				commonPrep()
+				self.stubGetRequest(uriPath: "/version", fileName: "version")
+				let result = self.makeValueRequest(producer: api.loadVersion(), queue: globalQueue)
+				expect(result.error).to(beNil())
+				expect(result.value?.major).to(equal(1))
+				expect(result.value?.minor).to(equal(12))
+				expect(result.value?.fix).to(equal(1))
+				expect(result.value?.apiVersion).to(beCloseTo(1.24))
+			}
+			
+			it("should fetch json") {
+				commonPrep()
+				self.stubGetRequest(uriPath: "/test/json", fileName: "version")
+				let result = self.makeValueRequest(producer: api.fetchJson(url: api.baseUrl.appendingPathComponent("/test/json")), queue: globalQueue)
+				expect(result.error).to(beNil())
+				expect(result.value).toNot(beNil())
+				let json = result.value!
+				expect(json["ApiVersion"]).to(equal("1.24"))
+			}
+
 			it("should refresh containers") {
 				commonPrep()
 				self.stubGetRequest(uriPath: "/containers/json", fileName: "containers")
@@ -141,6 +165,16 @@ class DefaultDockerAPISpec: QuickSpec {
 		}
 	}
 	
+	func makeValueRequest<T>(producer: SignalProducer<T, DockerError>, queue: DispatchQueue) -> Result<T, DockerError> {
+		var result: Result<T, DockerError>!
+		let group = DispatchGroup()
+		queue.async(group: group) {
+			result = producer.single()
+		}
+		group.wait()
+		return result
+	}
+
 	func makeNoValueRequest(producer: SignalProducer<(), DockerError>, queue: DispatchQueue) -> Result<(), DockerError> {
 		var result: Result<(), DockerError>?
 		let group = DispatchGroup()

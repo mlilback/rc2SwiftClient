@@ -141,6 +141,17 @@ public final class DockerContainer: JSONSerializable {
 		mountPoints = json["Mounts"].array?.map { DockerMount(json:$0) } ?? []
 	}
 
+	/// Update this container to match another container
+	///
+	/// - parameter from: container to copy all non-constant values from
+	func update(from: DockerContainer) {
+		id = from.id
+		imageName = from.imageName
+		state.value = from.state.value
+		mountPoints = from.mountPoints
+		createInfo = from.createInfo
+	}
+
 	public func serialize() throws -> JSON {
 		return JSON(["Id": JSON(id), "Image": JSON(imageName), "Name": JSON([JSON(name)]), "State": JSON(state.value.rawValue)])
 	}

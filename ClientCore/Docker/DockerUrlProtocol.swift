@@ -51,8 +51,17 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		}
 		let fh = FileHandle(fileDescriptor: fd)
 		guard let path = request.url?.path else { reportBadResponse(); return }
-		let outStr = "GET \(path) HTTP/1.0\r\n\r\n"
+		var outStr = "\(request.httpMethod!) \(path) HTTP/1.0\r\n"
+		request.allHTTPHeaderFields?.forEach { (k, v) in
+			outStr += "\(k): \(v)\r\n"
+		}
+		outStr += "\r\n"
 		fh.write(outStr.data(using: String.Encoding.utf8)!)
+		if let body = request.httpBody {
+			fh.write(body)
+		} else if let bstream = request.httpBodyStream {
+			fh.write(Data(bstream))
+		}
 		let inData = fh.readDataToEndOfFile()
 		close(fd)
 

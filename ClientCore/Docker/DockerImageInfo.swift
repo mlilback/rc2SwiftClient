@@ -32,7 +32,7 @@ public struct DockerImageInfo: JSONSerializable {
 	}
 }
 
-public struct RequiredImageInfo: JSONSerializable {
+public struct RequiredImageInfo: Collection, JSONSerializable {
 	let version: Int
 	let dbserver: DockerImageInfo
 	let appserver: DockerImageInfo
@@ -44,6 +44,23 @@ public struct RequiredImageInfo: JSONSerializable {
 		dbserver = DockerImageInfo(json: json["images"].dictionary!["dbserver"]!)!
 		appserver = DockerImageInfo(json: json["images"].dictionary!["appserver"]!)!
 		computeserver = DockerImageInfo(json: json["images"].dictionary!["compute"]!)!
+	}
+
+	public var startIndex: Int { return 0 }
+	public var endIndex: Int { return 2 }
+
+	public subscript(index: Int) -> DockerImageInfo {
+		switch index {
+			case 0: return dbserver
+			case 1: return appserver
+			case 2: return computeserver
+			default: fatalError("index out of bounds")
+		}
+	}
+
+	public func index(after i: Int) -> Int {
+		precondition(i < endIndex)
+		return i + 1
 	}
 
 	public func serialize() throws -> JSON {
