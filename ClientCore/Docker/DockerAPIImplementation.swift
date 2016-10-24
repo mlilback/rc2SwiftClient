@@ -11,7 +11,7 @@ import Result
 import os
 
 /// Default implementation of DockerAPI protocol
-class DockerAPIImplementation: DockerAPI {
+final class DockerAPIImplementation: DockerAPI {
 	// MARK: - properties
 	public let baseUrl: URL
 	fileprivate let sessionConfig: URLSessionConfiguration

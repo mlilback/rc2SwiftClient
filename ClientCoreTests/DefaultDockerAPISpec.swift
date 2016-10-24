@@ -161,7 +161,15 @@ class DefaultDockerAPISpec: QuickSpec {
 					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
 					expect(result.error).to(beNil())
 				}
-			}
+
+				it("create network fails") {
+					self.stub(self.postMatcher(uriPath: "/networks/create"), builder:http(500))
+					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
+					let producer = api.create(network: "rc2_fakecreatefail").observe(on: scheduler)
+					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
+					expect(result.error).toNot(beNil())
+				}
+}
 		}
 	}
 	

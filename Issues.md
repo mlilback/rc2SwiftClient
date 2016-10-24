@@ -25,3 +25,5 @@
 * add unit test for scanning installed images for a specific docker tag
 
 * eventually need to be able to reopen everthing network related (DockerEventManager)
+
+* add localization of strings using NSLocalizedString

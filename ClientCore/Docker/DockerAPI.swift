@@ -63,7 +63,7 @@ public protocol DockerAPI {
 	/// - returns: a signal producer with no value events
 	func perform(operation: DockerContainerOperation, containers: [DockerContainer]) -> SignalProducer<(), DockerError>
 
-	/// Create a container on the docker server
+	/// Create a container on the docker server if it doesn't exsist
 	///
 	/// - parameter container: the container to create on the server
 	///

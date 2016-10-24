@@ -77,7 +77,7 @@ protocol DockerEventMonitorDelegate: class {
 	func eventMonitorClosed(error: Error?)
 }
 
-class DockerEventMonitor: NSObject, URLSessionDataDelegate {
+final class DockerEventMonitor: NSObject, URLSessionDataDelegate {
 	var delegate: DockerEventMonitorDelegate
 	var session: URLSession!
 

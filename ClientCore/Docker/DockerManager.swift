@@ -22,14 +22,23 @@ extension DefaultsKeys {
 	static let cachedImageInfo = DefaultsKey<JSON?>("cachedImageInfo")
 }
 
+enum ManagerState: Int, Comparable {
+	case unknown, installed, initialized, ready
+
+	static func < (lhs: ManagerState, rhs: ManagerState) -> Bool {
+		return lhs.rawValue < rhs.rawValue
+	}
+}
+
 //MARK: -
 ///manages communicating with the local docker engine
-open class DockerManager: NSObject {
+public final class DockerManager: NSObject {
 	// MARK: - Properties
-	public let sessionConfig: URLSessionConfiguration
-	public let session: URLSession
 	public fileprivate(set) var containers: [DockerContainer]!
+	public var isReady: Bool { return state == .ready }
 
+	let sessionConfig: URLSessionConfiguration
+	let session: URLSession
 	let api: DockerAPI!
 	let dockerLog = OSLog(subsystem: "io.rc2.client", category: "docker")
 	let networkName = "rc2server"
@@ -45,13 +54,13 @@ open class DockerManager: NSObject {
 	fileprivate(set) var pullProgress: PullProgress?
 	fileprivate(set) var dataDirectory: URL?
 	fileprivate let socketPath = "/var/run/docker.sock"
-	fileprivate var initialzed = false
 	///the path to use for the source shared folder for dbserver. overridden when using a remote docker daemon
 	fileprivate var remoteLocalSharePath: String?
 	/// used for time to start listening to events
 	private let startupTime = Int(Date.timeIntervalSinceReferenceDate)
 	/// monitors event stream
 	fileprivate var eventMonitor: DockerEventMonitor?
+	private var state: ManagerState = .unknown
 
 	///has enough time elapsed that we should check to see if there is an update to the docker images
 	public var shouldCheckForUpdate: Bool {
@@ -64,6 +73,7 @@ open class DockerManager: NSObject {
 	/// - parameter hostUrl: The base url of the docker daemon (i.e. http://localhost:2375/) to connect to. nil means use /var/run/docker.sock. Also checks for the environment variable "DockerHostUrl" if not specified. If DockerHostUrl is specified, also should define DockerHostSharePath as the path to map to /rc2 in the dbserver container
 	/// - parameter baseInfoUrl: the base url where imageInfo.json can be found. Defaults to www.rc2.io.
 	/// - parameter userDefaults: defaults to standard user defaults. Allows for dependency injection.
+	/// - parameter sessionConfiguration: url configuration to use, defaults to the standard default configuration
 	public init(hostUrl host: String? = nil, baseInfoUrl infoUrl: String? = nil, userDefaults: UserDefaults = .standard, sessionConfiguration: URLSessionConfiguration = .default)
 	{
 		if let hostUrl = host {
@@ -106,21 +116,33 @@ open class DockerManager: NSObject {
 		}
 	}
 
-	///connects to the docker daemon and confirms it is running and meets requirements.
-	/// calls initializeConnection()
-	/// - returns: Closure called with true if able to connect to docker daemon.
-	public func isDockerRunning() -> SignalProducer<Bool, DockerError>  {
-		guard initialzed else { return initializeConnection().map { return true } }
-		return SignalProducer<Bool, DockerError>(result: Result<Bool, DockerError>(value: true))
+	/// loads version info from docker daemon and then checks for updates to image info from baseInfoUrl
+	///
+	/// - parameter refresh: if true, discards any cached info about version and required image info
+	///
+	/// - returns: a signal producer whose value is true if pullImage is necessary
+	public func initialize(refresh: Bool = false) -> SignalProducer<Bool, DockerError> {
+		if refresh {
+			state = .unknown
+			versionInfo = nil
+		}
+		guard state < .initialized && versionInfo == nil else {
+			return SignalProducer<Bool, DockerError>(value: true)
+		}
+		return self.api.loadVersion()
+			.flatMap(.concat, transform: verifyValidVersion)
+			.map { _ in self.state = .installed; return refresh }
+			.flatMap(.concat, transform: checkForImageUpdate)
+			.map { _ in self.pullIsNecessary() }
 	}
 
-	/// Loads basic version information from the docker daemon. Also loads list of docker images that are installed and gets info for existing containers.
-	/// Must be called before being using any func except isDockerRunning().
-	/// - returns: future. the result will be false if there was an error parsing information from docker.
-	public func initializeConnection() -> SignalProducer<(), DockerError> {
-		self.initialzed = true
-		return loadVersion()
-			.flatMap(.concat) { _ in return self.api.loadImages() }
+	/// Ensures docker has the correct containers available and containers property is in sync with docker
+	///
+	/// - precondition: initialize() must have been called
+	///
+	/// - returns: a signal producer with no values
+	public func prepareContainers() -> SignalProducer<(), DockerError> {
+		return self.api.loadImages()
 			.flatMap(.concat) { _ in return self.api.refreshContainers() }
 			.flatMap(.concat) { containers in return self.mergeContainers(containers) }
 			.flatMap(.concat) { containers in return self.createUnavailable(containers: containers) }
@@ -129,12 +151,18 @@ open class DockerManager: NSObject {
 
 	// MARK: - Image Manipulation
 
-	/// Checks to see if it is necessary to check for an imageInfo update, and if so, perform that check.
-	/// - returns: a future whose success will be true if a pull is required
-	public func checkForImageUpdate() -> SignalProducer<Bool, DockerError> {
-		precondition(initialzed)
+	/// contacts the baseInfo server to update the image requirements (might be cached)
+	///
+	/// - precondition: initialize() was called
+	/// - remark: called as part of initialize() process. Should only call to force an image update check
+	///
+	/// - parameter forceRefresh: true if any cached information should be discarded
+	///
+	/// - returns: a signal producer whose value is always true
+	public func checkForImageUpdate(forceRefresh: Bool = false) -> SignalProducer<Bool, DockerError> {
+		precondition(state > .initialized)
 		//short circuit if we don't need to chedk and have valid data
-		guard imageInfo == nil || shouldCheckForUpdate else {
+		guard imageInfo == nil || shouldCheckForUpdate || forceRefresh else {
 			os_log("using cached docker info", log:dockerLog, type:.info)
 			return SignalProducer<Bool, DockerError>(value: true)
 		}
@@ -146,7 +174,11 @@ open class DockerManager: NSObject {
 		}
 	}
 
-	///compares installedImages with imageInfo to see if a pull is necessary
+	/// compares installedImages with imageInfo to see if a pull is necessary
+	///
+	/// - remark: initialize() returns the same information
+	///
+	/// - returns: true if there are newer images we need to pull and pullImages() should be called
 	public func pullIsNecessary() -> Bool {
 		//TODO: we need tag/version info as part of the images
 		for aTag in [imageInfo!.dbserver.tag, imageInfo!.appserver.tag, imageInfo!.computeserver.tag] {
@@ -167,10 +199,33 @@ open class DockerManager: NSObject {
 		let producers = imageInfo!.map { self.pullSingleImage(pull: DockerPullOperation(baseUrl: self.baseUrl, imageName: $0.name, estimatedSize: $0.size)) }
 		return SignalProducer.merge(producers)
 	}
+
+	// MARK: - container manipulation
+
+	/// Performs an operation on a container
+	///
+	/// - parameter operation: the operation to perform
+	/// - parameter container: the container to perform the operation on
+	///
+	/// - returns: a signal producer with no values, just completed or error
+	public func perform(operation: DockerContainerOperation, on container: DockerContainer) -> SignalProducer<(), DockerError> {
+		return api.perform(operation: operation, container: container)
+	}
+
+	/// performs operation on all containers
+	///
+	/// - parameter operation: the operation to perform
+	///
+	/// - returns: a signal producer with no value
+	public func perform(operation: DockerContainerOperation) -> SignalProducer<(), DockerError> {
+		return api.perform(operation: operation, containers: containers)
+	}
 }
 
 // MARK: - Event Monitor Delegate
 extension DockerManager: DockerEventMonitorDelegate {
+	/// handles an event from the event monitor
+	// note that the only events that external observers should care about (as currently implemented) are related to specific containers, which will update their observable state property. Probably need a way to inform application if some serious problem ocurred
 	func handleEvent(_ event: DockerEvent) {
 		os_log("got event: %{public}s", log:dockerLog, type:.info, event.description)
 		print("got event: \(event)")
@@ -215,6 +270,9 @@ extension DockerManager: DockerEventMonitorDelegate {
 
 //MARK: - Private Methods
 fileprivate extension DockerManager {
+	/// Loads the version info from docker if not already cached
+	///
+	/// - returns: the version info
 	fileprivate func loadVersion() -> SignalProducer<DockerVersion, DockerError> {
 		//if we've already loaded the version info, don't do so again
 		guard versionInfo == nil else {
@@ -223,12 +281,39 @@ fileprivate extension DockerManager {
 		return self.api.loadVersion()
 	}
 
+	/// Validates the version parameter meets requirements
+	///
+	/// - parameter version: the version information to check
+	///
+	/// - returns: a signal producer whose value is always true
+	func verifyValidVersion(version: DockerVersion) -> SignalProducer<Bool, DockerError> {
+		return SignalProducer<Bool, DockerError>() { observer, _ in
+			//force cast because only should be called if versionInfo was set
+			if self.versionInfo!.apiVersion >= version.apiVersion {
+				observer.send(value: true)
+				observer.sendCompleted()
+			} else {
+				observer.send(error: .unsupportedDockerVersion)
+			}
+		}
+	}
+
+	/// Creates any containers that don't exist
+	///
+	/// - parameter containers: the containers to create if necessary
+	///
+	/// - returns: the containers unchanged
 	fileprivate func createUnavailable(containers: [DockerContainer]) -> SignalProducer<[DockerContainer], DockerError>
 	{
 		let producers = containers.map { self.api.create(container: $0) }
 		return SignalProducer.merge(producers).collect()
 	}
 
+	/// Updates the containers property to match the information in the containers parameter
+	///
+	/// - parameter containers: containers array from docker
+	///
+	/// - returns: a signal producer whose value is the containers pararmeter
 	fileprivate func mergeContainers(_ containers: [DockerContainer]) -> SignalProducer<[DockerContainer], DockerError>
 	{
 		return SignalProducer<[DockerContainer], DockerError> { observer, _ in

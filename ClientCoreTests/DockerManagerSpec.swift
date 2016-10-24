@@ -50,34 +50,6 @@ class DockerManagerSpec: QuickSpec {
 					expect(result.value!["ApiVersion"].string).to(equal("1.24"))
 				}
 			}
-			
-			context("test network operations") {
-				beforeEach {
-					let path = Bundle(for: type(of: self)).path(forResource: "networks", ofType: "json")
-					let networkData = try! Data(contentsOf: URL(fileURLWithPath: path!))
-					self.stub(uri(uri: "/networks"), builder: jsonData(networkData))
-					self.stub({ req in
-						print("url=\(req.url)")
-						return true
-					}, builder: { (req) in
-						return Response.success(HTTPURLResponse(url: req.url!, statusCode: 201, httpVersion: "HTTP/1.1", headerFields: nil)!, .noContent)
-					})
-				}
-				
-				it("network exists") {
-					let result = self.makeValueRequest(producer: api.networkExists(name: "rc2server"), queue: globalQueue)
-					expect(result.error).to(beNil())
-					expect(result.value).toNot(beNil())
-					expect(result.value!).to(beTrue())
-				}
-				
-				it("create network") {
-					self.stub(uri(uri: "/networks/create"), builder: http(201))
-					let result = self.makeNoValueRequest(producer: api.create(network: "rc2test"), queue: globalQueue)
-					expect(result.error).to(beNil())
-					//value will be nil since nothing is returned
-				}
-			}
 		}
 	}
 

@@ -6,6 +6,8 @@
 
 import Foundation
 
+fileprivate let myBundle = Bundle(identifier: "io.rc2.MacClient.ClientCore")!
+
 /// Possible errors from Docker-related types
 ///
 /// - networkError:      error from a Cocoa network call
@@ -17,6 +19,8 @@ import Foundation
 /// - noSuchObject:      the requested/specified object does not exist
 /// - conflict:          a conflict (container can't be removed, name already assigned, etc.)
 public enum DockerError: LocalizedError {
+	case dockerNotInstalled
+	case unsupportedDockerVersion
 	case networkError(NSError?)
 	case cocoaError(NSError?)
 	case httpError(statusCode: Int, description: String?, mimeType: String?)
@@ -25,6 +29,15 @@ public enum DockerError: LocalizedError {
 	case alreadyExists
 	case noSuchObject
 	case conflict
+
+	var localizedDescription: String {
+		// swiftlint:disable:next cyclomatic_complexity //how else do we implement this?
+		switch self {
+			case .dockerNotInstalled: return NSLocalizedString("DockerError_DockerNotInstalled", bundle: myBundle, comment: "")
+			case .unsupportedDockerVersion: return NSLocalizedString("DockerError_UnsupportedVersion", bundle: myBundle, comment: "")
+			default: return ""
+		}
+	}
 
 	/// Convience method to create an httpError
 	///
@@ -42,6 +55,7 @@ public enum DockerError: LocalizedError {
 }
 
 extension DockerError: Equatable {
+	// swiftlint:disable:next cyclomatic_complexity //how else do we implement this?
 	public static func == (lhs: DockerError, rhs: DockerError) -> Bool {
 		switch (lhs, rhs) {
 			case (.networkError(let a), .networkError(let b)) where a == b: return true
@@ -53,6 +67,8 @@ extension DockerError: Equatable {
 			case (.alreadyExists, .alreadyExists): return true
 			case (.noSuchObject, .noSuchObject): return true
 			case (.conflict, .conflict): return true
+			case (.dockerNotInstalled, .dockerNotInstalled): return true
+			case (.unsupportedDockerVersion, .unsupportedDockerVersion): return true
 			default: return false
 		}
 	}
