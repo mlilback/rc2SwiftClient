@@ -10,6 +10,7 @@ import SwinjectStoryboard
 import Swinject
 import SwiftyJSON
 import ClientCore
+import ReactiveSwift
 
 //let log = XCGLogger.defaultInstance()
 
@@ -27,17 +28,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 
 	func applicationWillFinishLaunching(_ notification: Notification) {
 		dockerManager = DockerManager()
-		dockerManager!.isDockerRunning().onSuccess { _ in
-			self.dockerManager!.checkForImageUpdate().onSuccess { _ in
-				os_log("docker is running")
-				DispatchQueue.main.async {
-					self.startSetup()
-				}
-			}.onFailure { err in
-				os_log("error checking for docker image update: %{public}s", err)
-			}
-		}.onFailure { err in
-			os_log("docker not running: %{public}s", type:.error, err as NSError)
+		DispatchQueue.main.async {
+			self.startSetup()
 		}
 		let cdUrl = Bundle.main.url(forResource: "CommonDefaults", withExtension: "plist")
 		UserDefaults.standard.register(defaults: NSDictionary(contentsOf: cdUrl!)! as! [String : AnyObject])
@@ -75,7 +67,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		} catch let err {
 			os_log("failed to serialize bookmarks: %{public}@", type:.error, err as NSError)
 		}
-		dockerManager?.session.invalidateAndCancel()
+		dockerManager = nil
 	}
 
 	func applicationShouldOpenUntitledFile(_ sender: NSApplication) -> Bool {
@@ -98,35 +90,50 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		}
 	}
 	
+	func performPullAndPrepareContainers(_ needPull: Bool) -> SignalProducer<(), DockerError> {
+		guard let docker = dockerManager else { fatalError() }
+		guard needPull else {
+			return docker.prepareContainers()
+		}
+		return docker.pullImages().on(
+			starting: {
+				self.setupController?.statusMesssage = "Pulling Images…"
+			}, value: { (pprogress) in
+				self.setupController?.pullProgress = pprogress
+		})
+			.map( { _ in } )
+			.flatMap(.concat) { docker.prepareContainers() }
+	}
+	
+	/// should be only called after docker manager has initialized
 	func startSetup() {
 		precondition(setupController == nil)
+		guard let docker = dockerManager else { fatalError("no docker manager") }
+		// load window and setupController
 		let sboard = SwinjectStoryboard.create(name: "Main", bundle: nil)
 		let wc = sboard.instantiateWindowController()
-		setupController = wc.contentViewController as? ServerSetupController
+		guard let setupController = wc.contentViewController as? ServerSetupController else { fatalError() }
 		wc.window?.makeKeyAndOrderFront(self)
-		guard dockerManager!.pullIsNecessary() else {
-			self.dockerManager?.prepareToStart().onSuccess { _ in
-				self.showBookmarkWindow(self)
-			}.onFailure { err in
-				os_log("error preparing docker: %{public}s", type:.error, err)
-			}
-			return
-		}
-		guard let future = dockerManager?.pullImages(handler: { p in
-			self.setupController!.pullProgress = p
-		}) else { fatalError("failed to start image pull") }
-		future.flatMap { _ in
-			self.dockerManager!.prepareToStart()
-		}.onSuccess {_ in
-			wc.window?.orderOut(self)
-			wc.close()
-			self.showBookmarkWindow(self)
-		}.onFailure { err in
-			os_log("error pulling images: %{public}s", type:.error, err)
-			wc.window?.orderOut(self)
-			wc.close()
-			self.showBookmarkWindow(self)
-		}
+
+		setupController.statusMesssage = "Initializing Docker…"
+		_ = docker.initialize()
+			.flatMap(.concat, transform: performPullAndPrepareContainers)
+			.flatMap(.concat, transform: {
+				return docker.perform(operation: .start)}
+			)
+			.on(
+				failed: { error in
+					fatalError(error.localizedDescription)
+				}, completed: {
+					wc.window?.orderOut(nil)
+					wc.close()
+					DispatchQueue.main.async {
+						self.showBookmarkWindow(nil)
+					}
+				}, interrupted: {
+					fatalError() //should never happen
+				}
+			).start(on: UIScheduler()).start()
 	}
 	
 	func restoreSessions() {

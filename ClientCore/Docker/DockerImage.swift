@@ -19,7 +19,7 @@ public struct DockerImage: JSONSerializable, Named {
 		self.size = json["Size"].intValue
 		var localTags: [DockerTag] = []
 		for aTag in json["RepoTags"].arrayValue {
-			if let tag = DockerTag(tag: aTag.stringValue) {
+			if let tag = DockerTag(tag: aTag.stringValue), tag.name != "none" {
 				localTags.append(tag)
 			}
 		}

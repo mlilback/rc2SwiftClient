@@ -34,7 +34,9 @@ final class DockerAPIImplementation: DockerAPI {
 		self.scheduler = QueueScheduler(qos: .default, name: "rc2.dockerAPI")
 		self.baseUrl = baseUrl
 		self.sessionConfig = sessionConfig
-		sessionConfig.protocolClasses = [DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
+		if sessionConfig.protocolClasses?.filter({ $0 == DockerUrlProtocol.self }).count == 0 {
+			sessionConfig.protocolClasses = [DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
+		}
 		sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
 		session = URLSession(configuration: sessionConfig)
 		self.log = log
@@ -106,10 +108,8 @@ final class DockerAPIImplementation: DockerAPI {
 					return
 				}
 				switch hresponse.statusCode {
-				case 204:
+				case 204, 304:
 					observer.sendCompleted()
-				case 304:
-					observer.send(error: .alreadyInProgress)
 				case 404:
 					observer.send(error: .noSuchObject)
 				default:
@@ -122,7 +122,7 @@ final class DockerAPIImplementation: DockerAPI {
 	// documentation in DockerAPI protocol
 	func create(container: DockerContainer) -> SignalProducer<DockerContainer, DockerError> {
 		return SignalProducer<DockerContainer, DockerError> { observer, _ in
-			guard container.state.value != .notAvailable else {
+			guard container.state.value == .notAvailable else {
 				observer.send(value: container)
 				observer.sendCompleted()
 				return
@@ -131,7 +131,7 @@ final class DockerAPIImplementation: DockerAPI {
 				observer.send(error: .invalidJson)
 				return
 			}
-			containerJson["Labels"] = JSON(["rc2.live"])
+			containerJson["Labels"] = JSON(["rc2.live": ""])
 			// swiftlint:disable:next force_try // we created from static string, serious programmer error if fails
 			let jsonData = try! containerJson.rawData()
 			var comps = URLComponents(url: URL(string:"/containers/create", relativeTo:self.baseUrl)!, resolvingAgainstBaseURL: true)!
@@ -144,6 +144,7 @@ final class DockerAPIImplementation: DockerAPI {
 					observer.send(error: .networkError(error! as NSError))
 					return
 				}
+				print("create=\(String(data:data!, encoding:.utf8))")
 				guard let response = response as? HTTPURLResponse else { fatalError("got non-http response") }
 				switch response.statusCode {
 				case 201: //success
@@ -267,7 +268,7 @@ extension DockerAPIImplementation {
 			do {
 				let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
 				let verStr = json["Version"].stringValue
-				guard let match = regex.firstMatch(in: verStr, options: [], range: verStr.toNSRange),
+				guard let match = regex.firstMatch(in: verStr, options: [], range: verStr.fullNSRange),
 					let primaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(1))),
 					let secondaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(2))),
 					let fixVersion = Int((verStr as NSString).substring(with: match.rangeAt(3))),
@@ -308,7 +309,7 @@ extension DockerAPIImplementation {
 		return SignalProducer<[DockerImage], DockerError> { observer, _ in
 			let images = json.arrayValue
 				.flatMap({ DockerImage(json: $0) })
-				.filter({ $0.labels.keys.contains("io.rc2.type") })
+				.filter({ $0.labels.keys.contains("io.rc2.type") && $0.tags.count > 0 })
 			observer.send(value: images)
 			observer.sendCompleted()
 		}

@@ -10,10 +10,8 @@ import ClientCore
 
 public class DockerViewController: NSViewController {
 	dynamic var manager: DockerManager? { didSet {
-		manager?.refreshContainers().onSuccess { _ in
-			self.tableController?.manager = self.manager
-			self.tableController?.containerTable?.reloadData()
-		}
+		self.tableController?.manager = self.manager
+		self.tableController?.containerTable?.reloadData()
 	} }
 	dynamic var tableController: DockerContainerController?
 	@IBOutlet dynamic var startButton: NSButton?
@@ -82,16 +80,15 @@ public class DockerViewController: NSViewController {
 	}
 
 	@IBAction func pauseSelection(_ sender: AnyObject) {
-		manager?.perform(operation: .pause, on: selectedContainer()).onFailure { err in
-			print("failed to pause: \(err)")
+		manager?.perform(operation: .pause, on: selectedContainer()).startWithFailed { error in
+			print("failed to pause: \(error)")
 		}
 	}
 
 	@IBAction func resumeSelection(_ sender: AnyObject) {
-		manager?.perform(operation: .resume, on: selectedContainer()).onFailure { err in
-			print("failed to pause: \(err)")
+		manager?.perform(operation: .resume, on: selectedContainer()).startWithFailed { error in
+			print("failed to resume: \(error)")
 		}
-
 	}
 }
 

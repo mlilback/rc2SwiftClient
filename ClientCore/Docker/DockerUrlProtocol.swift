@@ -50,7 +50,10 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 			return
 		}
 		let fh = FileHandle(fileDescriptor: fd)
-		guard let path = request.url?.path else { reportBadResponse(); return }
+		guard var path = request.url?.path else { reportBadResponse(); return }
+		if let queryStr = request.url?.query {
+			path += "?\(queryStr)"
+		}
 		var outStr = "\(request.httpMethod!) \(path) HTTP/1.0\r\n"
 		request.allHTTPHeaderFields?.forEach { (k, v) in
 			outStr += "\(k): \(v)\r\n"
@@ -100,22 +103,23 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	///extracts headers into a dictionary
 	/// - parameter headerString: the raw headers from an HTTP response
 	/// - returns: tuple of the HTTP status code, HTTP version, and a dictionary of headers
-	func extractHeaders(_ headerString: String) -> (Int, String, [String:String])? {
+	func extractHeaders(_ responseString: String) -> (Int, String, [String:String])? {
 		// swiftlint:disable:next force_try
-		let responseRegex = try! NSRegularExpression(pattern: "^(HTTP/1.\\d) (\\d+)", options: [.anchorsMatchLines])
-		guard let matchResult = responseRegex.firstMatch(in: headerString, options: [], range: headerString.toNSRange), matchResult.numberOfRanges == 3,
-			let statusRange = matchResult.rangeAt(2).toStringRange(headerString),
-			let versionRange = matchResult.rangeAt(1).toStringRange(headerString)
+		let responseRegex = try! NSRegularExpression(pattern: "^(HTTP/1.\\d) (\\d+)( .*?\r\n)(.*)", options: [.anchorsMatchLines, .dotMatchesLineSeparators])
+		guard let matchResult = responseRegex.firstMatch(in: responseString, options: [], range: responseString.fullNSRange), matchResult.numberOfRanges == 5,
+			let statusString = responseString.substring(from: matchResult.rangeAt(2)),
+			let statusCode = Int(statusString),
+			let versionString = responseString.substring(from: matchResult.rangeAt(1)),
+			let headersString = responseString.substring(from: matchResult.rangeAt(4))
 			else { reportBadResponse(); return nil }
-		guard let statusCode = Int(headerString.substring(with:statusRange)) else { reportBadResponse(); return nil }
-		let versionString = headerString.substring(with:versionRange)
-		let headersString = headerString.substring(from:statusRange.upperBound)
 		var headers = [String:String]()
 		// swiftlint:disable:next force_try
 		let headerRegex = try! NSRegularExpression(pattern: "(.+): (.*)", options: [])
-		headerRegex.enumerateMatches(in: headersString, options: [], range: headersString.toNSRange)
+		headerRegex.enumerateMatches(in: headersString, options: [], range: headersString.fullNSRange)
 		{ (matchResult, _, _) in
-			if let key = matchResult?.string(index:1, forString: headersString), let value = matchResult?.string(index:2, forString: headersString)
+			if let match = matchResult,
+				let key = headersString.substring(from: match.rangeAt(1)),
+				let value = headersString.substring(from: match.rangeAt(2))
 			{
 				headers[key] = value
 			}

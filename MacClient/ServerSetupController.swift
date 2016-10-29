@@ -9,8 +9,9 @@ import os
 import ClientCore
 
 public class ServerSetupController: NSViewController {
-	@IBOutlet dynamic var progressBar:NSProgressIndicator?
-	@IBOutlet dynamic var statusText:NSTextField?
+	@IBOutlet fileprivate dynamic var progressBar:NSProgressIndicator?
+	@IBOutlet fileprivate dynamic var statusText:NSTextField?
+	
 	public var pullProgress:PullProgress? { didSet {
 		let percent = Double(pullProgress!.currentSize) / Double(pullProgress!.estSize)
 		progressBar?.doubleValue = percent
@@ -21,5 +22,9 @@ public class ServerSetupController: NSViewController {
 		}
 	} }
 	
+	public var statusMesssage: String {
+		get { return statusText?.stringValue ?? "" }
+		set { statusText?.stringValue = newValue }
+	}
 }
 

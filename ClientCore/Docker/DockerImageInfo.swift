@@ -13,6 +13,7 @@ public struct DockerImageInfo: JSONSerializable {
 	let tag: String
 	let name: String
 	let id: String
+	var fullName: String { return "rc2server/\(name)" }
 
 	public init?(json: JSON?) {
 		guard let json = json else { return nil }
@@ -47,7 +48,7 @@ public struct RequiredImageInfo: Collection, JSONSerializable {
 	}
 
 	public var startIndex: Int { return 0 }
-	public var endIndex: Int { return 2 }
+	public var endIndex: Int { return 3 }
 
 	public subscript(index: Int) -> DockerImageInfo {
 		switch index {

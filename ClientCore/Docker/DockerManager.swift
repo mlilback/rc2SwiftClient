@@ -23,7 +23,7 @@ extension DefaultsKeys {
 }
 
 enum ManagerState: Int, Comparable {
-	case unknown, installed, initialized, ready
+	case unknown, initialized, ready
 
 	static func < (lhs: ManagerState, rhs: ManagerState) -> Bool {
 		return lhs.rawValue < rhs.rawValue
@@ -112,9 +112,20 @@ public final class DockerManager: NSObject {
 		let containerInfo = JSON(data: URL(fileURLWithPath: path).contents()!)
 		assert(containerInfo.dictionary?.count == ContainerType.all.count)
 		containers = containerInfo.dictionaryValue.map { key, value in
-			DockerContainer(type: ContainerType.from(containerName: key)!)
+			guard let type = ContainerType.from(imageName: key) else {
+				fatalError("failed to find container of type \(key)")
+			}
+			let dc = DockerContainer(type: type, createInfo: value)
+			dc.createInfo = value
+			return dc
 		}
 	}
+
+	deinit {
+		session.invalidateAndCancel()
+	}
+
+	//MARK: - standard operating procedure
 
 	/// loads version info from docker daemon and then checks for updates to image info from baseInfoUrl
 	///
@@ -129,11 +140,29 @@ public final class DockerManager: NSObject {
 		guard state < .initialized && versionInfo == nil else {
 			return SignalProducer<Bool, DockerError>(value: true)
 		}
-		return self.api.loadVersion()
+		let producer = self.api.loadVersion()
 			.flatMap(.concat, transform: verifyValidVersion)
-			.map { _ in self.state = .installed; return refresh }
+			.map { v in self.versionInfo = v; self.state = .initialized }
+			.flatMap(.concat, transform: api.loadImages)
+			.map { images in self.installedImages = images; return refresh }
 			.flatMap(.concat, transform: checkForImageUpdate)
 			.map { _ in self.pullIsNecessary() }
+		return producer
+	}
+
+	/// pulls any images needed from docker hub
+	///
+	/// - returns: the values are repeated progress handlers
+	public func pullImages() -> SignalProducer<PullProgress, DockerError> {
+		precondition(imageInfo != nil)
+		precondition(imageInfo!.dbserver.size > 0)
+		let fullSize = imageInfo!.reduce(0) { val, info in val + info.size }
+		pullProgress = PullProgress(name: "all", size: fullSize)
+		let producers = imageInfo!.map { img -> SignalProducer<PullProgress, DockerError> in
+			print("got pull for \(img.fullName)")
+			return self.pullSingleImage(pull: DockerPullOperation(baseUrl: self.baseUrl, imageName: img.fullName, estimatedSize: img.size, config: sessionConfig))
+		}
+		return SignalProducer.merge(producers)
 	}
 
 	/// Ensures docker has the correct containers available and containers property is in sync with docker
@@ -142,25 +171,24 @@ public final class DockerManager: NSObject {
 	///
 	/// - returns: a signal producer with no values
 	public func prepareContainers() -> SignalProducer<(), DockerError> {
-		return self.api.loadImages()
-			.flatMap(.concat) { _ in return self.api.refreshContainers() }
+		return self.api.refreshContainers()
 			.flatMap(.concat) { containers in return self.mergeContainers(containers) }
 			.flatMap(.concat) { containers in return self.createUnavailable(containers: containers) }
 			.map { _ in return () }
 	}
 
-	// MARK: - Image Manipulation
+	// MARK: - possibly public for update management
 
 	/// contacts the baseInfo server to update the image requirements (might be cached)
+	///
+	/// - parameter forceRefresh: true if any cached information should be discarded
 	///
 	/// - precondition: initialize() was called
 	/// - remark: called as part of initialize() process. Should only call to force an image update check
 	///
-	/// - parameter forceRefresh: true if any cached information should be discarded
-	///
 	/// - returns: a signal producer whose value is always true
 	public func checkForImageUpdate(forceRefresh: Bool = false) -> SignalProducer<Bool, DockerError> {
-		precondition(state > .initialized)
+		precondition(state >= .initialized)
 		//short circuit if we don't need to chedk and have valid data
 		guard imageInfo == nil || shouldCheckForUpdate || forceRefresh else {
 			os_log("using cached docker info", log:dockerLog, type:.info)
@@ -190,17 +218,7 @@ public final class DockerManager: NSObject {
 		return false
 	}
 
-	///fetches any missing/updated images based on imageInfo
-	public func pullImages(handler: PullProgressHandler? = nil) -> SignalProducer<PullProgress, DockerError> {
-		precondition(imageInfo != nil)
-		precondition(imageInfo!.dbserver.size > 0)
-		let fullSize = imageInfo!.reduce(0) { val, info in val + info.size }
-		pullProgress = PullProgress(name: "all", size: fullSize)
-		let producers = imageInfo!.map { self.pullSingleImage(pull: DockerPullOperation(baseUrl: self.baseUrl, imageName: $0.name, estimatedSize: $0.size)) }
-		return SignalProducer.merge(producers)
-	}
-
-	// MARK: - container manipulation
+	// MARK: - container operations
 
 	/// Performs an operation on a container
 	///
@@ -217,8 +235,13 @@ public final class DockerManager: NSObject {
 	/// - parameter operation: the operation to perform
 	///
 	/// - returns: a signal producer with no value
-	public func perform(operation: DockerContainerOperation) -> SignalProducer<(), DockerError> {
-		return api.perform(operation: operation, containers: containers)
+	public func perform(operation: DockerContainerOperation, on inContainers: [DockerContainer]? = nil) -> SignalProducer<(), DockerError>
+	{
+		var selectedContainers = containers!
+		if inContainers != nil {
+			selectedContainers = inContainers!
+		}
+		return api.perform(operation: operation, containers: selectedContainers)
 	}
 }
 
@@ -228,7 +251,6 @@ extension DockerManager: DockerEventMonitorDelegate {
 	// note that the only events that external observers should care about (as currently implemented) are related to specific containers, which will update their observable state property. Probably need a way to inform application if some serious problem ocurred
 	func handleEvent(_ event: DockerEvent) {
 		os_log("got event: %{public}s", log:dockerLog, type:.info, event.description)
-		print("got event: \(event)")
 		//only care if it is one of our containers
 		guard let from = event.json["from"].string,
 			let ctype = ContainerType.from(imageName:from),
@@ -270,27 +292,17 @@ extension DockerManager: DockerEventMonitorDelegate {
 
 //MARK: - Private Methods
 fileprivate extension DockerManager {
-	/// Loads the version info from docker if not already cached
-	///
-	/// - returns: the version info
-	fileprivate func loadVersion() -> SignalProducer<DockerVersion, DockerError> {
-		//if we've already loaded the version info, don't do so again
-		guard versionInfo == nil else {
-			return SignalProducer<DockerVersion, DockerError>(value: versionInfo!)
-		}
-		return self.api.loadVersion()
-	}
-
-	/// Validates the version parameter meets requirements
+	/// Validates the version parameter meets requirements.
 	///
 	/// - parameter version: the version information to check
 	///
-	/// - returns: a signal producer whose value is always true
-	func verifyValidVersion(version: DockerVersion) -> SignalProducer<Bool, DockerError> {
-		return SignalProducer<Bool, DockerError>() { observer, _ in
+	/// - returns: a signal producer whose value is the valid version info
+	func verifyValidVersion(version: DockerVersion) -> SignalProducer<DockerVersion, DockerError> {
+		return SignalProducer<DockerVersion, DockerError>() { observer, _ in
 			//force cast because only should be called if versionInfo was set
-			if self.versionInfo!.apiVersion >= version.apiVersion {
-				observer.send(value: true)
+			if version.apiVersion >= self.requiredApiVersion {
+				self.versionInfo = version
+				observer.send(value: version)
 				observer.sendCompleted()
 			} else {
 				observer.send(error: .unsupportedDockerVersion)
@@ -313,17 +325,17 @@ fileprivate extension DockerManager {
 	///
 	/// - parameter containers: containers array from docker
 	///
-	/// - returns: a signal producer whose value is the containers pararmeter
+	/// - returns: a signal producer whose value is the merged containers
 	fileprivate func mergeContainers(_ containers: [DockerContainer]) -> SignalProducer<[DockerContainer], DockerError>
 	{
 		return SignalProducer<[DockerContainer], DockerError> { observer, _ in
-			precondition(self.containers.count == containers.count)
+//			precondition(self.containers.count == containers.count)
 			self.containers.forEach { aContainer in
 				if let c2 = containers[aContainer.type] {
 					aContainer.update(from: c2)
 				}
 			}
-			observer.send(value: containers)
+			observer.send(value: self.containers)
 			observer.sendCompleted()
 		}
 	}

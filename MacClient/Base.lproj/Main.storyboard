@@ -537,7 +537,7 @@ CA
         <scene sceneID="HW3-Oi-wyR">
             <objects>
                 <windowController storyboardIdentifier="NSWindowController" id="VvP-Om-ZsH" sceneMemberID="viewController">
-                    <window key="window" title="Downloading Server" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="h1V-Fn-Msq">
+                    <window key="window" title="Preparing Docker" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="h1V-Fn-Msq">
                         <windowStyleMask key="styleMask" titled="YES"/>
                         <windowPositionMask key="initialPositionMask" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="934" y="800" width="425" height="83"/>
@@ -549,7 +549,7 @@ CA
                 </windowController>
                 <customObject id="Nxf-jS-gAP" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-201" y="330"/>
+            <point key="canvasLocation" x="-202" y="399"/>
         </scene>
         <!--Server Setup Controller-->
         <scene sceneID="jev-cS-w7g">

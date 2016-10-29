@@ -37,7 +37,7 @@ public enum ContainerType: String {
 	///
 	/// - returns: corresponding state or nil
 	static func from(imageName: String) -> ContainerType? {
-		guard let match = imageRegex.firstMatch(in: imageName, options: [], range: imageName.toNSRange) else {
+		guard let match = imageRegex.firstMatch(in: imageName, options: [], range: imageName.fullNSRange) else {
 			return nil
 		}
 		return ContainerType(rawValue: match.string(index: 1, forString: imageName) ?? "")
@@ -49,7 +49,7 @@ public enum ContainerType: String {
 	///
 	/// - returns: corresponding state or nil
 	static func from(containerName: String) -> ContainerType? {
-		guard let match = containerRegex.firstMatch(in: containerName, options: [], range: containerName.toNSRange) else {
+		guard let match = containerRegex.firstMatch(in: containerName, options: [], range: containerName.fullNSRange) else {
 			return nil
 		}
 		return ContainerType(rawValue: match.string(index: 1, forString: containerName) ?? "")
@@ -87,13 +87,14 @@ public final class DockerContainer: JSONSerializable {
 
 	/// create an empty container of the specified type
 	/// - parameter type: the type of container to create
-	public init(type: ContainerType) {
+	public init(type: ContainerType, createInfo: JSON) {
 		self.type = type
 		self.name = "rc2_\(type.rawValue)"
 		self.id = ""
 		self.imageName = "rc2server/\(type.rawValue)"
 		self.state = MutableProperty(.notAvailable)
 		self.mountPoints = []
+		self.createInfo = createInfo
 //		self.state = .notAvailable
 	}
 

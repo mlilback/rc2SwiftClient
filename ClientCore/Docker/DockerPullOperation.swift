@@ -59,14 +59,16 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	/// - parameter imageName: the name of the image to pull
 	/// - parameter estimatedSize: the size of the download, used for progress calculation
 	/// - parameter config: sesion configuration to use. If nil, will use system default
-	public init(baseUrl: URL, imageName: String, estimatedSize size: Int64, config: URLSessionConfiguration? = nil) {
-		urlConfig = config ?? URLSessionConfiguration.default
+	public init(baseUrl: URL, imageName: String, estimatedSize size: Int64, config: URLSessionConfiguration) {
+		urlConfig = config
 		var urlparts = URLComponents(url: baseUrl, resolvingAgainstBaseURL: true)
 		urlparts?.path = "/images/create"
 		urlparts?.queryItems = [URLQueryItem(name:"fromImage", value: imageName)]
 		self.url = urlparts!.url!
 		self.estimatedSize = size
 		pullProgress = PullProgress(name: imageName, size: size)
+		super.init()
+		assert(urlConfig.protocolClasses!.filter({ $0 == DockerUrlProtocol.self }).count > 0)
 	}
 
 	open func startPull(progressHandler:@escaping PullProgressHandler) -> Future<Bool, NSError> {
@@ -147,10 +149,10 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	}
 
 	open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+		guard nil == error else { promise.failure(error! as NSError); return }
 		os_log("pull finished: %d", type:.info, totalDownloaded)
 		pullProgress.currentSize = totalDownloaded
 		pullProgress.complete = true
-		guard nil == error else { promise.failure(error! as NSError); return }
 		promise.success(true)
 		for aLayer in layers.values {
 			os_log("layer %{public}s is %d", type:.info, aLayer.id, aLayer.finalSize)

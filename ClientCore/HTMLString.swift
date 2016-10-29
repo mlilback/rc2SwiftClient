@@ -38,7 +38,7 @@ open class HTMLString {
 		let srcString = regularText as NSString
 		var nextStart = 0
 		let outString: NSMutableAttributedString = NSMutableAttributedString()
-		HTMLString.basicRegex.enumerateMatches(in: regularText, options: [.reportCompletion], range: regularText.toNSRange)
+		HTMLString.basicRegex.enumerateMatches(in: regularText, options: [.reportCompletion], range: regularText.fullNSRange)
 		{ (result, flags, stop) -> Void in
 			guard result != nil else {
 				//copy to end of string

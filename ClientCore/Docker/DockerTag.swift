@@ -23,7 +23,7 @@ public struct DockerTag: JSONSerializable, CustomStringConvertible, Hashable {
 	public init?(tag: String) {
 		// swiftlint:disable:next force_try
 		let reg = try! NSRegularExpression(pattern: "(([\\w][\\w.-]+)/)?([\\w][\\w.-]+)(:([\\w]?[\\w.-]+))?", options: [])
-		guard let match = reg.firstMatch(in: tag, options: [], range: tag.toNSRange) else { return nil }
+		guard let match = reg.firstMatch(in: tag, options: [], range: tag.fullNSRange) else { return nil }
 		var repo: String?
 		var name: String
 		var version: String?
