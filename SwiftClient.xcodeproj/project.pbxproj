@@ -147,6 +147,10 @@
 		0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086659991CA1F3E5007AC555 /* MainWindow.xib */; };
 		086BC9AF1C552D43006ABAE0 /* AppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086BC9AE1C552D43006ABAE0 /* AppStatus.swift */; };
 		087389BE1D92C2C40056518F /* version.json in Resources */ = {isa = PBXBuildFile; fileRef = 087389BD1D92C2C40056518F /* version.json */; };
+		08765C7D1DC57AE200F75D8E /* NSURLRequest+Rc2Docker.h in Headers */ = {isa = PBXBuildFile; fileRef = 08765C7B1DC57AE200F75D8E /* NSURLRequest+Rc2Docker.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		08765C7E1DC57AE200F75D8E /* NSURLRequest+Rc2Docker.m in Sources */ = {isa = PBXBuildFile; fileRef = 08765C7C1DC57AE200F75D8E /* NSURLRequest+Rc2Docker.m */; };
+		08765C801DC57F7500F75D8E /* NSURLRequest+RcDocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C7F1DC57F7500F75D8E /* NSURLRequest+RcDocker.swift */; };
+		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
 		088CE6741C4B0AF400153414 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6721C4B0AF400153414 /* Main.storyboard */; };
@@ -535,6 +539,10 @@
 		0866599A1CA1F3E5007AC555 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/MainWindow.xib; sourceTree = SOURCE_ROOT; };
 		086BC9AE1C552D43006ABAE0 /* AppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStatus.swift; sourceTree = "<group>"; };
 		087389BD1D92C2C40056518F /* version.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = version.json; sourceTree = "<group>"; };
+		08765C7B1DC57AE200F75D8E /* NSURLRequest+Rc2Docker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLRequest+Rc2Docker.h"; sourceTree = "<group>"; };
+		08765C7C1DC57AE200F75D8E /* NSURLRequest+Rc2Docker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLRequest+Rc2Docker.m"; sourceTree = "<group>"; };
+		08765C7F1DC57F7500F75D8E /* NSURLRequest+RcDocker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURLRequest+RcDocker.swift"; sourceTree = "<group>"; };
+		08765C811DC58AB300F75D8E /* DispatchReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchReader.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		088CE6691C4B0AF400153414 /* Rc².app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Rc².app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppDelegate.swift; sourceTree = "<group>"; };
@@ -1064,6 +1072,7 @@
 				089794411D7B6A0F003339EE /* SharedConstants.swift */,
 				083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */,
 				08F189BA1D21826D00866A05 /* JSONSerializable.swift */,
+				08765C811DC58AB300F75D8E /* DispatchReader.swift */,
 				089794431D7B6A8F003339EE /* extensions */,
 				08ABCEF41D82FAE4007C6A5E /* Docker */,
 				089794371D7B6925003339EE /* ClientCore-Bridging-Header.h */,
@@ -1153,9 +1162,12 @@
 				08ABCEF61D82FAE4007C6A5E /* DockerManager.swift */,
 				084199341D91A77D0089A1AC /* DockerImageInfo.swift */,
 				08ABCEF71D82FAE4007C6A5E /* DockerTag.swift */,
-				08ABCEF81D82FAE4007C6A5E /* DockerUrlProtocol.swift */,
 				08B4BE5E1D833162006861E3 /* DockerPullOperation.swift */,
+				08ABCEF81D82FAE4007C6A5E /* DockerUrlProtocol.swift */,
 				0864DA841DA56A0B003F3F57 /* DockerEventMonitor.swift */,
+				08765C7B1DC57AE200F75D8E /* NSURLRequest+Rc2Docker.h */,
+				08765C7F1DC57F7500F75D8E /* NSURLRequest+RcDocker.swift */,
+				08765C7C1DC57AE200F75D8E /* NSURLRequest+Rc2Docker.m */,
 			);
 			path = Docker;
 			sourceTree = "<group>";
@@ -1210,6 +1222,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0897944C1D7B6A8F003339EE /* NSProgress+Rc2.h in Headers */,
+				08765C7D1DC57AE200F75D8E /* NSURLRequest+Rc2Docker.h in Headers */,
 				089794381D7B6925003339EE /* ClientCore-Bridging-Header.h in Headers */,
 				089794541D7B6C91003339EE /* ClientCore.h in Headers */,
 			);
@@ -1676,6 +1689,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08765C7E1DC57AE200F75D8E /* NSURLRequest+Rc2Docker.m in Sources */,
 				08E7E0921D8AE830000C4C87 /* DockerTag.swift in Sources */,
 				08127CCD1DAD1F0D002E0D01 /* DockerAPIImplementation.swift in Sources */,
 				089794421D7B6A0F003339EE /* SharedConstants.swift in Sources */,
@@ -1685,9 +1699,11 @@
 				0897944F1D7B6A8F003339EE /* NSURL+Rc2.swift in Sources */,
 				08127CCB1DAD1D82002E0D01 /* DockerAPI.swift in Sources */,
 				08604A4C1D9C058200DE2A79 /* DockerContainer.swift in Sources */,
+				08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */,
 				08E7E0911D8AE82C000C4C87 /* DockerManager.swift in Sources */,
 				08E8366E1D94715D00E26EFE /* FileManager+Rc2.swift in Sources */,
 				084199351D91A77D0089A1AC /* DockerImageInfo.swift in Sources */,
+				08765C801DC57F7500F75D8E /* NSURLRequest+RcDocker.swift in Sources */,
 				08E7E0931D8AE834000C4C87 /* DockerUrlProtocol.swift in Sources */,
 				08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */,
 				08E7E0901D8AE827000C4C87 /* DockerImage.swift in Sources */,

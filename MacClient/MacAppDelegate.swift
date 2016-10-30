@@ -125,9 +125,9 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 				failed: { error in
 					fatalError(error.localizedDescription)
 				}, completed: {
-					wc.window?.orderOut(nil)
-					wc.close()
 					DispatchQueue.main.async {
+						wc.window?.orderOut(nil)
+						wc.close()
 						self.showBookmarkWindow(nil)
 					}
 				}, interrupted: {

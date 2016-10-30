@@ -119,6 +119,7 @@ public final class DockerManager: NSObject {
 			dc.createInfo = value
 			return dc
 		}
+//		self.eventMonitor = DockerEventMonitor(baseUrl: self.baseUrl, delegate: self, sessionConfig: self.sessionConfig)
 	}
 
 	deinit {

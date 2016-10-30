@@ -23,11 +23,104 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	}
 
 	override open func startLoading() {
-		//setup a unix domain socket
+		guard let fd = try? openDockerConnection() else { return }
+
+		let fh = FileHandle(fileDescriptor: fd)
+		guard let outStr = buildRequestString(), outStr.characters.count > 0 else { return }
+		fh.write(outStr.data(using: String.Encoding.utf8)!)
+		if let body = request.httpBody {
+			fh.write(body)
+		} else if let bstream = request.httpBodyStream {
+			fh.write(Data(bstream))
+		}
+
+		guard !request.isChunkedResponse else {
+			handleChunkedResponse(fileHandle: fh)
+			return
+		}
+		let inData = fh.readDataToEndOfFile()
+		close(fd)
+
+		guard let (response, responseData) = processInitialResponse(data: inData) else { return }
+		//report success to client
+		client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+		client?.urlProtocol(self, didLoad: responseData)
+		client?.urlProtocolDidFinishLoading(self)
+	}
+
+	// required by protocol, even though we don't user
+	override open func stopLoading() {
+	}
+
+	//MARK: - private methods
+
+	/// Builds a string with the proper http request string
+	///
+	/// - returns: the string to use as an http request
+	func buildRequestString() -> String? {
+		guard var path = request.url?.path else { reportBadResponse(); return nil }
+		if let queryStr = request.url?.query {
+			path += "?\(queryStr)"
+		}
+		var outStr = "\(request.httpMethod!) \(path) HTTP/1.0\r\n"
+		request.allHTTPHeaderFields?.forEach { (k, v) in
+			outStr += "\(k): \(v)\r\n"
+		}
+		outStr += "\r\n"
+		return outStr
+	}
+
+	/// actually write data to the file handle. Exists to allow unit test ignore write
+	///
+	/// - parameter data:       the data to write
+	/// - parameter fileHandle: the file handle to write to
+	func writeRequestData(data: Data, fileHandle: FileHandle) {
+		fileHandle.write(data)
+	}
+
+	/// called to read rest of data as chunks
+	///
+	/// - parameter fileHandle: the fileHandle to asynchronously read chunks of data from
+	fileprivate func handleChunkedResponse(fileHandle: FileHandle) {
+		//parse the first chunk of data that is available
+		guard let _ = try? processData(data: fileHandle.availableData) else { return }
+
+		//now start reading any future data asynchronously
+		// FIXME: we're not doing the actual work right now
+		DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: DispatchTime.now() + 0.5) {
+			self.client?.urlProtocol(self, didLoad: "foo".data(using: .utf8)!)
+			DispatchQueue.global().async {
+				self.client?.urlProtocolDidFinishLoading(self)
+			}
+		}
+	}
+
+	/// parses the incoming data and forwards it to the client
+	///
+	/// - parameter data: the data to parse
+	///
+	/// - throws: NSError if failed to parse the data. The error will have been reported to the client
+	func processData(data: Data) throws {
+		guard let (response, initialData) = processInitialResponse(data: data) else {
+			reportBadResponse()
+			return
+		}
+		//tell the client
+		client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+		client?.urlProtocol(self, didLoad: initialData)
+	}
+
+	/// Opens a socket to docker daemon. Notifies user of any problems
+	///
+	/// - throws: an NSError that has been reported to the client
+	///
+	/// - returns: the file descriptor for the connection
+	fileprivate func openDockerConnection() throws -> Int32 {
 		let fd = socket(AF_UNIX, SOCK_STREAM, 0)
 		guard fd >= 0 else {
-			client?.urlProtocol(self, didFailWithError: NSError(domain: NSPOSIXErrorDomain, code: Int(Darwin.errno), userInfo: nil))
-			return
+			let error = NSError(domain: NSPOSIXErrorDomain, code: Int(Darwin.errno), userInfo: nil)
+			client?.urlProtocol(self, didFailWithError: error)
+			throw error
 		}
 		let pathLen = socketPath.utf8CString.count
 		precondition(pathLen < 104) //size limit of struct
@@ -46,45 +139,33 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		}
 		guard code >= 0 else {
 			os_log("bad response %d, %d", type:.error, code, errno)
-			reportBadResponse()
-			return
+			let error = NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey:request.url!])
+			reportBadResponse(error: error)
+			throw error
 		}
-		let fh = FileHandle(fileDescriptor: fd)
-		guard var path = request.url?.path else { reportBadResponse(); return }
-		if let queryStr = request.url?.query {
-			path += "?\(queryStr)"
-		}
-		var outStr = "\(request.httpMethod!) \(path) HTTP/1.0\r\n"
-		request.allHTTPHeaderFields?.forEach { (k, v) in
-			outStr += "\(k): \(v)\r\n"
-		}
-		outStr += "\r\n"
-		fh.write(outStr.data(using: String.Encoding.utf8)!)
-		if let body = request.httpBody {
-			fh.write(body)
-		} else if let bstream = request.httpBodyStream {
-			fh.write(Data(bstream))
-		}
-		let inData = fh.readDataToEndOfFile()
-		close(fd)
-
-		//split the response into headers and content, create a response object
-		guard let (headersString, contentString) = splitResponseData(inData) else { reportBadResponse(); return }
-		guard let (statusCode, httpVersion, headers) = extractHeaders(headersString) else { reportBadResponse(); return }
-		guard let response = HTTPURLResponse(url: request.url!, statusCode: statusCode, httpVersion: httpVersion, headerFields: headers) else { reportBadResponse(); return }
-
-		//report success to client
-		client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-		client?.urlProtocol(self, didLoad: contentString.data(using: String.Encoding.utf8)!)
-		client?.urlProtocolDidFinishLoading(self)
+		return fd
 	}
 
-	override open func stopLoading() {
+	/// Parses the initial headers/content data from docker
+	///
+	/// - parameter inData: the data sent by docker
+	///
+	/// - returns: a response and the response data
+	func processInitialResponse(data inData: Data) -> (HTTPURLResponse, Data)? {
+		//split the response into headers and content, create a response object
+		guard let (headersString, contentString) = splitResponseData(inData) else { reportBadResponse(); return nil }
+		guard let (statusCode, httpVersion, headers) = extractHeaders(headersString) else { reportBadResponse(); return nil }
+		guard let response = HTTPURLResponse(url: request.url!, statusCode: statusCode, httpVersion: httpVersion, headerFields: headers) else { reportBadResponse(); return nil }
+		return (response, contentString.data(using: String.Encoding.utf8)!)
 	}
 
 	//convience wrapper for sending an error message to the client
-	fileprivate func reportBadResponse() {
-		client?.urlProtocol(self, didFailWithError: NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey:request.url!]))
+	fileprivate func reportBadResponse(error: NSError? = nil) {
+		var terror = error
+		if terror == nil {
+			terror = NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey:request.url!])
+		}
+		client?.urlProtocol(self, didFailWithError: terror!)
 	}
 
 	///splits raw data into headers and content

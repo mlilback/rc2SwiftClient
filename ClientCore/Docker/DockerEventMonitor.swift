@@ -88,7 +88,9 @@ final class DockerEventMonitor: NSObject, URLSessionDataDelegate {
 		sessionConfig.timeoutIntervalForRequest = 60 * 60 * 24 //wait a day
 		session = URLSession(configuration: sessionConfig, delegate: self, delegateQueue:nil)
 		let url = URL(string: "/events", relativeTo: baseUrl)!
-		let task = session.dataTask(with: url)
+		var request = URLRequest(url: url)
+		request.isChunkedResponse = true
+		let task = session.dataTask(with: request)
 		task.resume()
 	}
 
