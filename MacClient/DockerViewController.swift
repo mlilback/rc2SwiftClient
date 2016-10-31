@@ -71,12 +71,21 @@ public class DockerViewController: NSViewController {
 	}
 	
 	@IBAction func startSelection(_ sender: AnyObject) {
+		manager?.perform(operation: .start, on: selectedContainer()).startWithFailed { error in
+			print("failed to start: \(error)")
+		}
 	}
 
 	@IBAction func stopSelection(_ sender: AnyObject) {
+		manager?.perform(operation: .stop, on: selectedContainer()).startWithFailed { error in
+			print("failed to stop: \(error)")
+		}
 	}
 
 	@IBAction func restartSelection(_ sender: AnyObject) {
+		manager?.perform(operation: .restart, on: selectedContainer()).startWithFailed { error in
+			print("failed to restart: \(error)")
+		}
 	}
 
 	@IBAction func pauseSelection(_ sender: AnyObject) {

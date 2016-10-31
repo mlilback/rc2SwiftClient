@@ -144,7 +144,7 @@ final class DockerAPIImplementation: DockerAPI {
 					observer.send(error: .networkError(error! as NSError))
 					return
 				}
-				print("create=\(String(data:data!, encoding:.utf8))")
+				print("create=\(String(data:data!, encoding:.utf8)!)")
 				guard let response = response as? HTTPURLResponse else { fatalError("got non-http response") }
 				switch response.statusCode {
 				case 201: //success

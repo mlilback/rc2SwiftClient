@@ -13,6 +13,7 @@ import os
 
 open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	fileprivate let socketPath = "/var/run/docker.sock"
+	fileprivate var chunkObserver: BackgroundReader?
 
 	override open class func canInit(with request: URLRequest) -> Bool {
 		return request.url!.scheme == "unix"
@@ -50,6 +51,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 
 	// required by protocol, even though we don't user
 	override open func stopLoading() {
+		chunkObserver = nil
 	}
 
 	//MARK: - private methods
@@ -83,16 +85,32 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	/// - parameter fileHandle: the fileHandle to asynchronously read chunks of data from
 	fileprivate func handleChunkedResponse(fileHandle: FileHandle) {
 		//parse the first chunk of data that is available
-		guard let _ = try? processData(data: fileHandle.availableData) else { return }
+		guard let _ = try? processData(data: fileHandle.availableData) else {
+			print("failed to process initial data")
+			return
+		}
 
 		//now start reading any future data asynchronously
+		chunkObserver = BackgroundReader(owner: self, fileHandle: fileHandle)
+		fileHandle.waitForDataInBackgroundAndNotify()
+//		let queue = DispatchQueue.global(qos: .userInitiated)
+//		let source = DispatchSource.makeReadSource(fileDescriptor: fileHandle.fileDescriptor, queue: queue)
+//		source.setEventHandler {
+//			self.client?.urlProtocol(self, didLoad: fileHandle.availableData)
+//		}
+//		source.setCancelHandler {
+//			print("chunk canceled")
+//			self.client?.urlProtocolDidFinishLoading(self)
+//			fileHandle.closeFile()
+//		}
+//		source.activate()
 		// FIXME: we're not doing the actual work right now
-		DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: DispatchTime.now() + 0.5) {
-			self.client?.urlProtocol(self, didLoad: "foo".data(using: .utf8)!)
-			DispatchQueue.global().async {
-				self.client?.urlProtocolDidFinishLoading(self)
-			}
-		}
+//		DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: DispatchTime.now() + 0.5) {
+//			self.client?.urlProtocol(self, didLoad: "foo".data(using: .utf8)!)
+//			DispatchQueue.global().async {
+//				self.client?.urlProtocolDidFinishLoading(self)
+//			}
+//		}
 	}
 
 	/// parses the incoming data and forwards it to the client
@@ -206,5 +224,34 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 			}
 		}
 		return (statusCode, versionString, headers)
+	}
+}
+
+/// Reads data from a FileHandle and sends the data to a URLProtocol's client, finishing when EOF is reached
+class BackgroundReader {
+	weak var proto: URLProtocol?
+
+	/// Creates an instance that reads data from fileHandle and forwards it to the owner's client, finishing when EOF is reached
+	///
+	/// - parameter owner:      the URLProtocol who's client should be notified of data and finish
+	/// - parameter fileHandle: the fileHandle to read
+	init(owner: URLProtocol, fileHandle: FileHandle) {
+		self.proto = owner
+		let nc = NotificationCenter.default
+		nc.addObserver(self, selector: #selector(BackgroundReader.dataRead(note:)), name: Notification.Name.NSFileHandleDataAvailable, object: fileHandle)
+	}
+
+	/// Callback for NotificationCenter when data is available on the monitored FileHandle
+	///
+	/// - parameter note: the notification object
+	@objc func dataRead(note: Notification) {
+		guard let fh = note.object as? FileHandle else { fatalError() }
+		let data = fh.availableData
+		if data.count < 1 {
+			proto?.client?.urlProtocolDidFinishLoading(proto!)
+			return
+		}
+		proto?.client?.urlProtocol(proto!, didLoad: data)
+		fh.waitForDataInBackgroundAndNotify()
 	}
 }

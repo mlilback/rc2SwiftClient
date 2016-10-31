@@ -15,7 +15,6 @@ import Nimble
 class DockerUrlProtocolTests: XCTestCase, URLSessionDataDelegate {
 	var sessionConfig: URLSessionConfiguration?
 	var session: URLSession?
-	var semaphore: DispatchSemaphore?
 	var xpect: XCTestExpectation?
 	var queue: OperationQueue = OperationQueue()
 	
@@ -25,24 +24,90 @@ class DockerUrlProtocolTests: XCTestCase, URLSessionDataDelegate {
 		continueAfterFailure = false
 		sessionConfig = URLSessionConfiguration.default
 		sessionConfig?.protocolClasses = [TestDockerProtocol.self] as [AnyClass]
+		sessionConfig?.timeoutIntervalForRequest = 5000
 		session = URLSession(configuration: sessionConfig!, delegate: self, delegateQueue: queue)
-		semaphore = DispatchSemaphore(value: 0)
-		xpect = expectation(description: "bg url")
+//		xpect = expectation(description: "bg url")
 	}
 	
 	override func tearDown() {
 		super.tearDown()
 	}
 
-	func testChunkedResponse() {
+//	func testDispatchIO() {
+//		let fexpect = expectation(description: "file reading")
+//		let pipe = Pipe()
+//		let readHandle = pipe.fileHandleForReading
+//		let writeHandle = pipe.fileHandleForWriting
+//		let queue = DispatchQueue(label: "io test")
+//		let readSource = DispatchSource.makeReadSource(fileDescriptor: readHandle.fileDescriptor)
+//		var readCount = 0
+//		readSource.setEventHandler { 
+//			let str = String(data: readHandle.availableData, encoding: .utf8)
+//			print("read: \(str)")
+//			readCount += 1
+//		}
+//		readSource.setCancelHandler { 
+////			fexpect.fulfill()
+//			print("canceled")
+//		}
+//		readSource.activate()
+//		queue.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+//			writeHandle.write("foo1".data(using: .utf8)!)
+//			sleep(1)
+//			writeHandle.write("foo2".data(using: .utf8)!)
+//			sleep(1)
+//			writeHandle.write("foo3".data(using: .utf8)!)
+//			sleep(1)
+//			writeHandle.closeFile()
+//			readSource.cancel()
+//			fexpect.fulfill()
+//		}
+//		waitForExpectations(timeout: 10) { (err) in
+//			expect(err).to(beNil())
+//			expect(readCount).to(equal(3))
+//		}
+//	}
 
+//	func testReadHandle() {
+//		var observer: FHRead?
+//		let fexpect = expectation(description: "file reading")
+//		let pipe = Pipe()
+//		let readHandle = pipe.fileHandleForReading
+//		let writeHandle = pipe.fileHandleForWriting
+//		observer = FHRead(expect: fexpect, fileHandle: readHandle)
+//		readHandle.waitForDataInBackgroundAndNotify()
+//		let queue = DispatchQueue(label: "io test")
+//		queue.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+//			writeHandle.write("foo1".data(using: .utf8)!)
+//			print("wrote 1")
+//			sleep(1)
+//			writeHandle.write("foo2".data(using: .utf8)!)
+//			print("wrote 2")
+//			sleep(1)
+//			writeHandle.write("foo3".data(using: .utf8)!)
+//			print("wrote 3")
+//			sleep(1)
+//			writeHandle.closeFile()
+//			print("wrote close")
+//			DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) {
+//				readHandle.closeFile()
+//			}
+//		}
+//		waitForExpectations(timeout: 10) { (err) in
+//			expect(observer!.readCount).to(equal(3))
+//			expect(err).to(beNil())
+//			observer = nil
+//		}
+//	}
+
+	func testChunkedResponse() {
+		xpect = expectation(description: "foo bar")
 		let url = URL(string: "unix:///events")!
 		let request = NSMutableURLRequest(url: url)
 		request.rc2_chunkedResponse = true
 		let task = session?.dataTask(with: request as URLRequest)
 		task?.resume()
-		//semaphore?.wait()
-		waitForExpectations(timeout: 10) { (error) in
+		waitForExpectations(timeout: 300) { (error) in
 			expect(error).to(beNil())
 		}
 	}
@@ -83,17 +148,48 @@ class DockerUrlProtocolTests: XCTestCase, URLSessionDataDelegate {
 	open func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
 		let str = String(data: data, encoding:String.Encoding.utf8)!
 		print("got \(str)")
-		xpect?.fulfill()
 	}
 	
 	open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
 		print("did complete")
+		xpect?.fulfill()
 	}
 
 }
 
 public class TestDockerProtocol: DockerUrlProtocol {
 	override func writeRequestData(data: Data, fileHandle: FileHandle) {
+	}
+}
+
+class FHRead {
+	let expect: XCTestExpectation
+	var readCount = 0
+	init(expect: XCTestExpectation, fileHandle: FileHandle) {
+		self.expect = expect
+		let nc = NotificationCenter.default
+		nc.addObserver(self, selector: #selector(FHRead.dataRead(note:)), name: Notification.Name.NSFileHandleDataAvailable, object: fileHandle)
+	}
+	
+//	deinit {
+//		print("observer unregistered")
+//		NotificationCenter.default.removeObserver(self)
+//	}
+	
+	@objc func dataRead(note: Notification) {
+		print("dataRead")
+		guard let fh = note.object as? FileHandle else { fatalError() }
+		let data = fh.availableData
+		if data.count < 1 {
+			print("end of data")
+			expect.fulfill()
+			return
+		}
+		print("read note called")
+		let str = String(data: data, encoding: .utf8)
+		readCount += 1
+		print("read: \(str!) = \(readCount)")
+		fh.waitForDataInBackgroundAndNotify()
 	}
 }
 
