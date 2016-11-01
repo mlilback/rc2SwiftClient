@@ -29,8 +29,8 @@
                 <allowedToolbarItems>
                     <toolbarItem implicitItemIdentifier="45A7986F-AECA-4AD3-ACBE-F325C2AB72D7" explicitItemIdentifier="leftView" label="" paletteLabel="Left View" id="DRL-wf-hhl">
                         <nil key="toolTip"/>
-                        <size key="minSize" width="38" height="24"/>
-                        <size key="maxSize" width="112" height="32"/>
+                        <size key="minSize" width="108" height="25"/>
+                        <size key="maxSize" width="300" height="25"/>
                         <segmentedControl key="view" focusRingType="none" verticalHuggingPriority="750" id="Zp8-Yz-dPv">
                             <rect key="frame" x="0.0" y="14" width="108" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -53,8 +53,8 @@
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="B485D81B-B017-4BC2-9576-633E636B25FC" explicitItemIdentifier="rightView" label="" paletteLabel="Right View" id="rTc-JD-E1f" userLabel="Right View">
                         <nil key="toolTip"/>
-                        <size key="minSize" width="38" height="24"/>
-                        <size key="maxSize" width="200" height="32"/>
+                        <size key="minSize" width="38" height="25"/>
+                        <size key="maxSize" width="200" height="25"/>
                         <segmentedControl key="view" focusRingType="none" verticalHuggingPriority="750" id="qEC-FD-i7I">
                             <rect key="frame" x="0.0" y="14" width="154" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -85,7 +85,7 @@
                     <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="XZ3-bl-7lg"/>
                     <toolbarItem implicitItemIdentifier="9AB083D9-F13B-424F-89B1-0F1C554532F3" explicitItemIdentifier="clear" label="Clear" paletteLabel="Clear Console" id="aJO-nq-Elj" customClass="ClearConsoleToolbarItem" customModule="MacClient" customModuleProvider="target">
                         <nil key="toolTip"/>
-                        <size key="minSize" width="34" height="24"/>
+                        <size key="minSize" width="34" height="25"/>
                         <size key="maxSize" width="34" height="25"/>
                         <segmentedControl key="view" toolTip="Clear Console" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" id="Ny9-tw-Rap">
                             <rect key="frame" x="24" y="14" width="34" height="25"/>
@@ -101,7 +101,7 @@
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="334E0D12-33E6-4F0F-9904-D75C6D9961A3" explicitItemIdentifier="search" label="Search" paletteLabel="Search" id="UXu-W5-loZ" customClass="ValidatingToolbarItem" customModule="MacClient" customModuleProvider="target">
                         <nil key="toolTip"/>
-                        <size key="minSize" width="34" height="24"/>
+                        <size key="minSize" width="34" height="25"/>
                         <size key="maxSize" width="34" height="25"/>
                         <segmentedControl key="view" toolTip="Search" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" id="q3U-FQ-qgP">
                             <rect key="frame" x="5" y="14" width="34" height="25"/>

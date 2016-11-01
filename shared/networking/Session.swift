@@ -37,11 +37,7 @@ open class Session : NSObject, SessionFileHandlerDelegate {
 	///
 	weak var delegate : SessionDelegate?
 	weak var restServer: RestServer?
-	fileprivate var openPromise: Promise<Session, NSError>? {
-		didSet {
-			os_log("promise set", type:.info)
-		}
-	}
+	fileprivate var openPromise: Promise<Session, NSError>?
 
 	///regex used to catch user entered calls to help so we can hijack and display through our mechanism
 	var helpRegex : NSRegularExpression = {

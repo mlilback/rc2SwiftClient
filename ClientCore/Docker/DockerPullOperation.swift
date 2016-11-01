@@ -138,7 +138,7 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 				}
 			case "download complete":
 				if var layer = layers[json["id"].stringValue] {
-					os_log("finished layer %{public}@", type:.info, layer.id)
+					os_log("finished layer %{public}s", type:.info, layer.id)
 					layer.complete = true
 					totalDownloaded += layer.finalSize
 				}

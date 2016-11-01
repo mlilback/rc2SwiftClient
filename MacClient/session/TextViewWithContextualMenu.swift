@@ -18,7 +18,8 @@ class TextViewWithContextualMenu: NSTextView {
 		let defaultMenu = super.menu(for: event)
 		let menu = NSMenu(title: "")
 		for anItem in (defaultMenu?.items)! {
-			os_log("context item %{public}@ = %{public}@.%{public}@ (%{public}@)", type:.info, anItem.title, anItem.target as! NSObject, anItem.action?.description ?? "<noaction>", anItem.tag)
+			let targetd = (anItem.target as? NSObject)?.description ?? ""
+			os_log("context item %{public}s = %{public}s.%{public}s (%{public}s)", type:.info, anItem.title, targetd, anItem.action?.description ?? "<noaction>", anItem.tag)
 		}
 		//copy look up xxx and search with Google menu items
 		if let lookupItem = defaultMenu?.items.filter({ $0.title.hasPrefix("Look Up") }).first {

@@ -190,7 +190,8 @@ public final class DockerManager: NSObject {
 	/// - remark: called as part of initialize() process. Should only call to force an image update check
 	///
 	/// - returns: a signal producer whose value is always true
-	public func checkForImageUpdate(forceRefresh: Bool = false) -> SignalProducer<Bool, DockerError> {
+	public func checkForImageUpdate(forceRefresh: Bool = false) -> SignalProducer<Bool, DockerError>
+	{
 		precondition(state >= .initialized)
 		//short circuit if we don't need to chedk and have valid data
 		guard imageInfo == nil || shouldCheckForUpdate || forceRefresh else {

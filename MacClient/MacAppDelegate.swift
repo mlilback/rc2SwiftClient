@@ -163,9 +163,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	@IBAction func showBookmarkWindow(_ sender:AnyObject?) {
 		if nil == bookmarkWindowController {
 			let container = Container()
-			container.registerForStoryboard(NSWindowController.self, name: "bmarkWindow") { r,c in
-				os.os_log("wc registered", type:.debug)
-			}
 			container.registerForStoryboard(BookmarkViewController.self) { r, c in
 				c.bookmarkManager = self.bookmarkManager
 			}
@@ -174,7 +171,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			}
 			container.registerForStoryboard(SelectServerViewController.self) { r, c in
 				c.bookmarkManager = self.bookmarkManager
-//				c.docker = self.dockerManager
 			}
 
 			let sboard = SwinjectStoryboard.create(name: "BookmarkManager", bundle: nil, container: container)

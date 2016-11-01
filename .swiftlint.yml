@@ -11,3 +11,6 @@ excluded:
 variable_name:
   excluded:
     - id
+file_length:
+  warning: 450
+  

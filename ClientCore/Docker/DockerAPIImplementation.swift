@@ -111,10 +111,12 @@ final class DockerAPIImplementation: DockerAPI {
 		request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 		return SignalProducer<(), DockerError> { observer, _ in
 			let task = self.session.uploadTask(with: request, from: jsonData) { (data, response, error) in
-				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error)
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {
+					observer.send(value: ())
+				}
 			}
 			task.resume()
-			}.observe(on: scheduler)
+		}.observe(on: scheduler)
 	}
 
 	// MARK: - container operations
@@ -146,7 +148,9 @@ final class DockerAPIImplementation: DockerAPI {
 		request.httpMethod = "POST"
 		return SignalProducer<Void, DockerError> { observer, disposable in
 			self.session.dataTask(with: request) { (data, response, error) in
-				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error)
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {
+					observer.send(value: ())
+				}
 			}.resume()
 		}.observe(on: scheduler)
 	}
@@ -187,7 +191,9 @@ final class DockerAPIImplementation: DockerAPI {
 		request.httpMethod = "DELETE"
 		return SignalProducer<Void, DockerError> { observer, _ in
 			self.session.dataTask(with: request) { (data, response, error) in
-				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error)
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {
+					observer.send(value: ())
+				}
 			}.resume()
 		}.observe(on: scheduler)
 	}
@@ -208,7 +214,9 @@ final class DockerAPIImplementation: DockerAPI {
 		request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 		return SignalProducer<(), DockerError> { observer, _ in
 			let task = self.session.uploadTask(with: request, from: jsonData) { (data, response, error) in
-				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error)
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {
+					observer.send(value: ())
+				}
 			}
 			task.resume()
 		}.observe(on: scheduler)
@@ -290,7 +298,7 @@ extension DockerAPIImplementation {
 	}
 
 	/// handles sending completed or error for a docker response based on http status code
-	func statusCodeResponseHandler<T>(observer: Observer<T, DockerError>, data: Data?, response: URLResponse?, error: Error?, valueHandler:(() -> Void)? = nil)
+	func statusCodeResponseHandler<T>(observer: Observer<T, DockerError>, data: Data?, response: URLResponse?, error: Error?, valueHandler:(() -> Void))
 	{
 		guard let rsp = response as? HTTPURLResponse, error == nil else {
 			observer.send(error: .networkError(error as? NSError))
@@ -298,7 +306,7 @@ extension DockerAPIImplementation {
 		}
 		switch rsp.statusCode {
 		case 201, 204, 304: //spec says 204, but should be 201 for created. we'll handle both
-			valueHandler?()
+			valueHandler()
 			observer.sendCompleted()
 		case 404:
 			observer.send(error: .noSuchObject)
