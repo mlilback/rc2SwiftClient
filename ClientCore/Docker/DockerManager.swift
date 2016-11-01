@@ -144,6 +144,7 @@ public final class DockerManager: NSObject {
 		let producer = self.api.loadVersion()
 			.flatMap(.concat, transform: verifyValidVersion)
 			.map { v in self.versionInfo = v; self.state = .initialized }
+			.flatMap(.concat, transform: validateNetwork)
 			.flatMap(.concat, transform: api.loadImages)
 			.map { images in self.installedImages = images; return refresh }
 			.flatMap(.concat, transform: checkForImageUpdate)
@@ -309,6 +310,20 @@ fileprivate extension DockerManager {
 				observer.send(error: .unsupportedDockerVersion)
 			}
 		}
+	}
+
+	fileprivate func createNetworkIfExists(name: String, exists: Bool) -> SignalProducer<(), DockerError> {
+		guard !exists else {
+			return SignalProducer<(), DockerError>(value: ())
+		}
+		return api.create(network: name)
+	}
+
+	fileprivate func validateNetwork() -> SignalProducer<(), DockerError> {
+		let nname = "rc2server"
+		return api.networkExists(name: nname)
+			.map { exists in return (nname, exists) }
+			.flatMap(.concat, transform: createNetworkIfExists)
 	}
 
 	/// Creates any containers that don't exist

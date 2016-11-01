@@ -169,7 +169,34 @@ class DefaultDockerAPISpec: QuickSpec {
 					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
 					expect(result.error).toNot(beNil())
 				}
-}
+			}
+
+			context("test volume operations") {
+				let volumeChecker:(String) -> Result<Bool, DockerError> = { name in
+					self.stubGetRequest(uriPath: "/volumes", fileName: "volumes")
+					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
+					let producer = api.volumeExists(name: name).observe(on: scheduler)
+					var result: Result<Bool, DockerError>!
+					let group = DispatchGroup()
+					globalQueue.async(group: group) {
+						result = producer.single()
+					}
+					group.wait()
+					return result
+				}
+				
+				it("volume exists") {
+					let result = volumeChecker("rc2_dbdata")
+					expect(result.error).to(beNil())
+					expect(result.value).to(beTrue())
+				}
+				
+				it("volume does not exist") {
+					let result = volumeChecker("rc2_dbdataNOT")
+					expect(result.error).to(beNil())
+					expect(result.value).to(beFalse())
+				}
+			}
 		}
 	}
 	

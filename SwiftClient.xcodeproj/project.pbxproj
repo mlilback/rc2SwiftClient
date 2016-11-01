@@ -108,6 +108,7 @@
 		0833A8231D2D7EAD0033654B /* HockeySDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8211D2D7E770033654B /* HockeySDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; };
 		0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		083836CC1DC835480058C7EE /* volumes.json in Resources */ = {isa = PBXBuildFile; fileRef = 083836CB1DC835480058C7EE /* volumes.json */; };
 		083A4B021C7F347E0007AC46 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
 		083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		083A4B041C7F347E0007AC46 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
@@ -505,6 +506,7 @@
 		083382FB1C69189300D40EEB /* xattrTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = xattrTests.swift; sourceTree = "<group>"; };
 		0833A8211D2D7E770033654B /* HockeySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HockeySDK.framework; path = "HockeySDK-Mac/HockeySDK.framework"; sourceTree = "<group>"; };
 		0833A8251D2D87120033654B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = vendor/Sparkle.framework; sourceTree = "<group>"; };
+		083836CB1DC835480058C7EE /* volumes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = volumes.json; sourceTree = "<group>"; };
 		083A566E1D246D85009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/ProjectManagement.storyboard; sourceTree = "<group>"; };
 		083A56701D24722C009D3091 /* ProjectManagerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectManagerViewController.swift; sourceTree = "<group>"; };
 		083A56721D247B52009D3091 /* AddBookmarkViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddBookmarkViewController.swift; sourceTree = "<group>"; };
@@ -1101,6 +1103,7 @@
 				08604A4F1D9C143B00DE2A79 /* containers.json */,
 				084199381D91AC6B0089A1AC /* imageInfo.json */,
 				08E836711D9AF8F500E26EFE /* networks.json */,
+				083836CB1DC835480058C7EE /* volumes.json */,
 			);
 			path = ClientCoreTests;
 			sourceTree = SOURCE_ROOT;
@@ -1482,6 +1485,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0841992A1D908C410089A1AC /* busybox.jsonData in Resources */,
+				083836CC1DC835480058C7EE /* volumes.json in Resources */,
 				084199391D91AC6B0089A1AC /* imageInfo.json in Resources */,
 				087389BE1D92C2C40056518F /* version.json in Resources */,
 				08E7E09D1D8AECE1000C4C87 /* dockerImages.json in Resources */,

@@ -1,0 +1,14 @@
+{
+  "Volumes": [
+    {
+      "Driver": "local", 
+      "Labels": {
+        "rc2.live": ""
+      }, 
+      "Mountpoint": "/var/lib/docker/volumes/rc2_dbdata/_data", 
+      "Name": "rc2_dbdata", 
+      "Scope": "local"
+    }
+  ], 
+  "Warnings": null
+}

@@ -74,6 +74,42 @@ final class DockerAPIImplementation: DockerAPI {
 			.observe(on: scheduler)
 	}
 
+	// MARK: - volume operations
+
+	public func volumeExists(name: String) -> SignalProducer<Bool, DockerError> {
+		// swiftlint:disable:next force_try // we created from static string, serious programmer error if fails
+		let filtersJson = try! JSONSerialization.data(withJSONObject: ["name": [name]], options: [])
+		let filtersStr = String(data:filtersJson, encoding:.utf8)!
+		var urlcomponents = URLComponents(url: self.baseUrl.appendingPathComponent("/volumes"), resolvingAgainstBaseURL: true)!
+		urlcomponents.queryItems = [URLQueryItem(name:"all", value:"1"), URLQueryItem(name:"filters", value:filtersStr)]
+		let req = URLRequest(url: urlcomponents.url!)
+
+		return makeRequest(request: req)
+			.map({ $0.0 }) //transform from (Data, HTTPURLResponse) to Data
+			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
+				return SignalProducer<Bool, DockerError> { observer, _ in
+					guard let jsonStr = String(data: data, encoding: .utf8) else {
+						observer.send(error: .invalidJson)
+						return
+					}
+					let json = JSON.parse(jsonStr)["Volumes"]
+					let filteredVolumes = json.arrayValue.filter( { aName in
+						return aName["Name"].stringValue == name
+					})
+					switch filteredVolumes.count {
+						case 0:
+							observer.send(value: false)
+						case 1:
+							observer.send(value: true)
+						default:
+							observer.send(error: .conflict)
+							return
+					}
+					observer.sendCompleted()
+				}
+			}).observe(on: scheduler)
+	}
+
 	// MARK: - container operations
 
 	// documentation in DockerAPI protocol
@@ -230,9 +266,15 @@ final class DockerAPIImplementation: DockerAPI {
 						return
 					}
 					let json = JSON.parse(jsonStr)
-					observer.send(value: json.arrayValue.filter( { aNet in
+					let filteredNetworks = json.arrayValue.filter( { aNet in
 						return aNet["Name"].stringValue == name
-					}).count > 0)
+					})
+					guard filteredNetworks.count <= 1 else {
+						observer.send(error: .tooManyNetworks)
+						os_log("too many networks with our name", type: .fault)
+						return
+					}
+					observer.send(value: filteredNetworks.count > 0)
 					observer.sendCompleted()
 				}
 			}).observe(on: scheduler)

@@ -42,6 +42,13 @@ public protocol DockerAPI {
 	/// - returns: signal producer that will send array of images
 	func loadImages() -> SignalProducer<[DockerImage], DockerError>
 
+	/// checks to see if the named volume exists
+	///
+	/// - parameter name: the name to look for
+	///
+	/// - returns: true if a network exists with that name
+	func volumeExists(name: String) -> SignalProducer<Bool, DockerError>
+
 	/// Fetches the current containers from the docker daemon
 	///
 	/// - returns: a signal producer that will send a single value and a completed event, or an error event
