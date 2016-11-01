@@ -49,7 +49,7 @@ class EditorDocument: NSObject {
 				promise.success(self.savedContents!)
 			}.onFailure { error in
 				//TODO: handle error
-				os_log("failed to load contents of %{public}%@: %{public}@", self.file.name, error as NSError)
+				os_log("failed to load contents of %{public}s: %{public}s", self.file.name, error as NSError)
 				promise.failure(error as NSError)
 			}
 		}

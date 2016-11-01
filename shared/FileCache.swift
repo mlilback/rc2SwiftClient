@@ -52,7 +52,7 @@ open class DefaultFileCache: NSObject, FileCache, URLSessionDownloadDelegate {
 			}
 			return fileDir!
 		} catch let err as NSError {
-			os_log("failed to create file cache (%{public}@) dir: %{public}@", type:.error, fileDir!.path, err)
+			os_log("failed to create file cache (%{public}s) dir: %{public}s", type:.error, fileDir!.path, err)
 		}
 		fatalError("failed to create file cache")
 	}()

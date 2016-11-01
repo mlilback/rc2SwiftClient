@@ -65,7 +65,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			let bmarks = try JSON(reopen.map() { try $0.serialize() })
 			defaults.set(bmarks.rawString(), forKey: PrefKeys.OpenSessions)
 		} catch let err {
-			os_log("failed to serialize bookmarks: %{public}@", type:.error, err as NSError)
+			os_log("failed to serialize bookmarks: %{public}s", type:.error, err as NSError)
 		}
 		dockerManager = nil
 	}

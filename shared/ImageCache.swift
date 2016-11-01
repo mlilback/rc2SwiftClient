@@ -47,7 +47,7 @@ open class ImageCache :NSObject, NSSecureCoding {
 				}
 				result = imgDir
 			} catch let error as NSError {
-				os_log("got error creating image cache direcctory: %{public}@", type:.error, error)
+				os_log("got error creating image cache direcctory: %{public}s", type:.error, error)
 				assertionFailure("failed to create image cache dir")
 			}
 			return result!

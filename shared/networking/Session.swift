@@ -241,7 +241,7 @@ private extension Session {
 		do {
 			parsedValues = try decoder.parse()
 		} catch let err {
-			os_log("error parsing binary message:%{public}@", type:.error, err as NSError)
+			os_log("error parsing binary message:%{public}s", type:.error, err as NSError)
 		}
 		//get the dictionary of messagevalues
 		guard case MessageValue.DictionaryValue(let msgDict) = parsedValues![0] else {
@@ -258,7 +258,7 @@ private extension Session {
 			delegate?.sessionMessageReceived(response)
 			_ = fileHandler.updateFile(file, withData: dict["fileData"] as? Data)
 		default:
-			os_log("received unknown binary message: %{public}@", dict["msg"] as! String)
+			os_log("received unknown binary message: %{public}s", dict["msg"] as! String)
 			return
 		}
 	}
@@ -271,7 +271,7 @@ private extension Session {
 		}
 		if let errorDict = rawDict["error"] as? Dictionary<String,AnyObject> {
 			//TODO: inform user
-			os_log("got save response error: %{public}@", type:.error, (errorDict["message"] as? String)!)
+			os_log("got save response error: %{public}s", type:.error, (errorDict["message"] as? String)!)
 			return
 		}
 		do {
@@ -279,12 +279,12 @@ private extension Session {
 			let json = JSON(data: fileData)
 			let file = File(json: json)
 			guard let idx = workspace.indexOfFilePassingTest({ $0.fileId == file.fileId }) else {
-				os_log("saveResponse for file not in workspace: %{public}@", type:.error, file.name)
+				os_log("saveResponse for file not in workspace: %{public}s", type:.error, file.name)
 				return
 			}
 			workspace.replaceFile(at:idx, withFile: file)
 		} catch let err as NSError {
-			os_log("error parsing binary message: %{public}@", type:.error, err)
+			os_log("error parsing binary message: %{public}s", type:.error, err)
 		}
 	}
 	
@@ -324,7 +324,7 @@ private extension Session {
 		} else if let _ = message as? Data {
 			processBinaryResponse(message as! Data)
 		} else {
-			os_log("invalid binary data format received: %{public}@", type:.error)
+			os_log("invalid binary data format received: %{public}s", type:.error)
 		}
 	}
 	
@@ -337,7 +337,7 @@ private extension Session {
 			let jsonStr = NSString(data: json, encoding: String.Encoding.utf8.rawValue)
 			self.wsSource.send(jsonStr as! String)
 		} catch let err as NSError {
-			os_log("error sending json message on websocket: %{public}@", type:.error, err)
+			os_log("error sending json message on websocket: %{public}s", type:.error, err)
 			return false
 		}
 		return true

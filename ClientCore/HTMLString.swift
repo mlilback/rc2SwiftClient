@@ -60,7 +60,7 @@ open class HTMLString {
 					let attrs = self.parseColorAttrs(srcString, attrString:srcString.substring(with: (result?.rangeAt(2))!) as NSString)
 					destStr = NSAttributedString(string: content, attributes: attrs)
 				default:
-					os_log("unsupported tag: '%{public}@'", tagName)
+					os_log("unsupported tag: '%{public}s'", tagName)
 					destStr = NSAttributedString(string: srcString.substring(with: (result?.rangeAt(0))!))
 			}
 			outString.append(destStr!)
@@ -84,7 +84,7 @@ open class HTMLString {
 						os_log("Invalid color attribute: %{public}s", srcString.substring(with: (result?.range)!))
 					}
 				default:
-					os_log("unsupport color attribute '%{public}@'", attrName)
+					os_log("unsupport color attribute '%{public}s'", attrName)
 			}
 		}
 		return dict

@@ -146,7 +146,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	}
 	
 	func displayFileAttachment(_ fileWrapper: FileWrapper) {
-		os_log("told to display file %{public}@", type:.info, fileWrapper.filename!)
+		os_log("told to display file %{public}s", type:.info, fileWrapper.filename!)
 		guard let attachment = NSKeyedUnarchiver.unarchiveObject(with: fileWrapper.regularFileContents!) as? MacConsoleAttachment else {
 			os_log("asked to display invalid attachment")
 			return

@@ -74,7 +74,7 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 				defaults.set(bmark, forKey: LastImportDirectoryKey)
 				defaults.set(accessoryView.state == NSOnState, forKey: ReplaceFilesKey)
 			} catch let err as NSError {
-				os_log("why did we get error creating import bookmark: %{public}@", err)
+				os_log("why did we get error creating import bookmark: %{public}s", err)
 			}
 			panel.close()
 			if result == NSFileHandlingPanelOKButton && panel.urls.count > 0 {

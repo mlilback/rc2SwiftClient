@@ -111,7 +111,7 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 						let fm = Rc2DefaultFileManager()
 						try urlToUse = fm.copyURLToTemporaryLocation(imgUrl!)
 					} catch let err as NSError {
-						os_log("error copying to tmp: %{public}@", type:.error, err)
+						os_log("error copying to tmp: %{public}s", type:.error, err)
 					}
 					wspace.openFile(urlToUse.path, withApplication: appUrl.path)
 				}))

@@ -88,7 +88,7 @@ open class SyntaxParser: NSObject {
 				}
 			}
 		}
-		os_log("looking for %{public}@", type:.debug, NSStringFromRange(range))
+		os_log("looking for %{public}s", type:.debug, NSStringFromRange(range))
 		var outArray:[DocumentChunk] = []
 		for aChunk in chunks {
 			if NSIntersectionRange(aChunk.parsedRange, range).length > 0

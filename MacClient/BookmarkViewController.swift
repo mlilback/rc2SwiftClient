@@ -140,7 +140,7 @@ open class BookmarkViewController: NSViewController {
 						self.appStatus?.presentError(error, session:nil)
 					}
 				} catch let innerError {
-					os_log("error opening session: %{public}@", type:.error, innerError as NSError)
+					os_log("error opening session: %{public}s", type:.error, innerError as NSError)
 				}
 			}.onFailure { error in
 				self.appStatus?.presentError(error, session:nil)
@@ -174,7 +174,7 @@ open class BookmarkViewController: NSViewController {
 						self.appStatus?.presentError(error, session:nil)
 					}
 			} catch let outerError {
-				os_log("error opening session: %{public}@", type:.error, outerError as NSError)
+				os_log("error opening session: %{public}s", type:.error, outerError as NSError)
 				self.appStatus?.presentError(outerError as NSError, session: nil)
 			}
 		
