@@ -88,26 +88,33 @@ final class DockerAPIImplementation: DockerAPI {
 			.map({ $0.0 }) //transform from (Data, HTTPURLResponse) to Data
 			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
 				return SignalProducer<Bool, DockerError> { observer, _ in
-					guard let jsonStr = String(data: data, encoding: .utf8) else {
-						observer.send(error: .invalidJson)
-						return
+					self.jsonCheckHandler(observer: observer, data: data) { json in
+						let filteredVolumes = json["Volumes"].arrayValue.filter( { aName in
+							return aName["Name"].stringValue == name
+						})
+						return filteredVolumes.count == 1
 					}
-					let json = JSON.parse(jsonStr)["Volumes"]
-					let filteredVolumes = json.arrayValue.filter( { aName in
-						return aName["Name"].stringValue == name
-					})
-					switch filteredVolumes.count {
-						case 0:
-							observer.send(value: false)
-						case 1:
-							observer.send(value: true)
-						default:
-							observer.send(error: .conflict)
-							return
-					}
-					observer.sendCompleted()
 				}
 			}).observe(on: scheduler)
+	}
+
+	/// documentation in DockerAPI protocol
+	func create(volume: String) -> SignalProducer<(), DockerError>
+	{
+		var props = [String:Any]()
+		props["Name"] = volume
+		props["Labels"] = ["rc2.live": ""]
+		// swiftlint:disable:next force_try
+		let jsonData = try! JSONSerialization.data(withJSONObject: props, options: [])
+		var request = URLRequest(url: baseUrl.appendingPathComponent("/volumes/create"))
+		request.httpMethod = "POST"
+		request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+		return SignalProducer<(), DockerError> { observer, _ in
+			let task = self.session.uploadTask(with: request, from: jsonData) { (data, response, error) in
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error)
+			}
+			task.resume()
+			}.observe(on: scheduler)
 	}
 
 	// MARK: - container operations
@@ -139,18 +146,7 @@ final class DockerAPIImplementation: DockerAPI {
 		request.httpMethod = "POST"
 		return SignalProducer<Void, DockerError> { observer, disposable in
 			self.session.dataTask(with: request) { (data, response, error) in
-				guard let hresponse = response as? HTTPURLResponse, error == nil else {
-					observer.send(error: .networkError(error as? NSError))
-					return
-				}
-				switch hresponse.statusCode {
-				case 204, 304:
-					observer.sendCompleted()
-				case 404:
-					observer.send(error: .noSuchObject)
-				default:
-					observer.send(error: .networkError(error as? NSError))
-				}
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error)
 			}.resume()
 		}.observe(on: scheduler)
 	}
@@ -176,20 +172,8 @@ final class DockerAPIImplementation: DockerAPI {
 			request.httpMethod = "POST"
 			request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 			let task = self.session.uploadTask(with: request, from: jsonData) { (data, response, error) in
-				guard nil == error else {
-					observer.send(error: .networkError(error! as NSError))
-					return
-				}
-				print("create=\(String(data:data!, encoding:.utf8)!)")
-				guard let response = response as? HTTPURLResponse else { fatalError("got non-http response") }
-				switch response.statusCode {
-				case 201: //success
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {
 					observer.send(value: container)
-					observer.sendCompleted()
-				case 409:
-					observer.send(error: .alreadyExists)
-				default:
-					observer.send(error: DockerError.generateHttpError(from: response, body: data))
 				}
 			}
 			task.resume()
@@ -203,20 +187,7 @@ final class DockerAPIImplementation: DockerAPI {
 		request.httpMethod = "DELETE"
 		return SignalProducer<Void, DockerError> { observer, _ in
 			self.session.dataTask(with: request) { (data, response, error) in
-				guard let hresponse = response as? HTTPURLResponse, error == nil else {
-					observer.send(error: .networkError(error as? NSError))
-					return
-				}
-				switch hresponse.statusCode {
-				case 204:
-					observer.sendCompleted()
-				case 404:
-					observer.send(error: .noSuchObject)
-				case 409:
-					observer.send(error: .conflict)
-				default:
-					observer.send(error: .networkError(error as? NSError))
-				}
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error)
 			}.resume()
 		}.observe(on: scheduler)
 	}
@@ -237,18 +208,7 @@ final class DockerAPIImplementation: DockerAPI {
 		request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 		return SignalProducer<(), DockerError> { observer, _ in
 			let task = self.session.uploadTask(with: request, from: jsonData) { (data, response, error) in
-				guard let rsp = response as? HTTPURLResponse, error == nil else {
-					observer.send(error: .networkError(error as? NSError))
-					return
-				}
-				switch rsp.statusCode {
-					case 201, 204: //spec says 204, but should be 201 for created. we'll handle both
-						observer.sendCompleted()
-					case 404:
-						observer.send(error: .noSuchObject)
-					default:
-						observer.send(error: .networkError(nil))
-				}
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error)
 			}
 			task.resume()
 		}.observe(on: scheduler)
@@ -261,21 +221,12 @@ final class DockerAPIImplementation: DockerAPI {
 			.map({ $0.0 }) //transform from (Data, HTTPURLResponse) to Data
 			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
 				return SignalProducer<Bool, DockerError> { observer, _ in
-					guard let jsonStr = String(data: data, encoding: .utf8) else {
-						observer.send(error: .invalidJson)
-						return
+					self.jsonCheckHandler(observer: observer, data: data) { json in
+						let filteredNetworks = json.arrayValue.filter( { aNet in
+							return aNet["Name"].stringValue == name
+						})
+						return filteredNetworks.count == 1
 					}
-					let json = JSON.parse(jsonStr)
-					let filteredNetworks = json.arrayValue.filter( { aNet in
-						return aNet["Name"].stringValue == name
-					})
-					guard filteredNetworks.count <= 1 else {
-						observer.send(error: .tooManyNetworks)
-						os_log("too many networks with our name", type: .fault)
-						return
-					}
-					observer.send(value: filteredNetworks.count > 0)
-					observer.sendCompleted()
 				}
 			}).observe(on: scheduler)
 	}
@@ -336,6 +287,42 @@ extension DockerAPIImplementation {
 		var urlcomponents = URLComponents(url: self.baseUrl.appendingPathComponent("/containers/json"), resolvingAgainstBaseURL: true)!
 		urlcomponents.queryItems = [URLQueryItem(name:"all", value:"1"), URLQueryItem(name:"filters", value:filtersStr)]
 		return URLRequest(url: urlcomponents.url!)
+	}
+
+	/// handles sending completed or error for a docker response based on http status code
+	func statusCodeResponseHandler<T>(observer: Observer<T, DockerError>, data: Data?, response: URLResponse?, error: Error?, valueHandler:(() -> Void)? = nil)
+	{
+		guard let rsp = response as? HTTPURLResponse, error == nil else {
+			observer.send(error: .networkError(error as? NSError))
+			return
+		}
+		switch rsp.statusCode {
+		case 201, 204, 304: //spec says 204, but should be 201 for created. we'll handle both
+			valueHandler?()
+			observer.sendCompleted()
+		case 404:
+			observer.send(error: .noSuchObject)
+		case 409:
+			observer.send(error: .alreadyExists)
+		default:
+			observer.send(error: .networkError(nil))
+		}
+	}
+
+	/// takes the data from a request and allows easy filtering of it
+	///
+	/// - parameter observer: the observer to send signals on
+	/// - parameter data:     the data from a GET request
+	/// - parameter filter:   a closure that determines if the json meets requirements
+	func jsonCheckHandler(observer: Observer<Bool, DockerError>, data: Data?, filter: ((JSON) -> Bool))
+	{
+		guard let rdata = data, let jsonStr = String(data: rdata, encoding: .utf8) else {
+			observer.send(error: .invalidJson) //is this really the best error?
+			return
+		}
+		let json = JSON.parse(jsonStr)
+		observer.send(value: filter(json))
+		observer.sendCompleted()
 	}
 
 	//must not reference self

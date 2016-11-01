@@ -49,6 +49,13 @@ public protocol DockerAPI {
 	/// - returns: true if a network exists with that name
 	func volumeExists(name: String) -> SignalProducer<Bool, DockerError>
 
+	/// Creates a volume on the docker server
+	///
+	/// - parameter volume: the name of the volume to create
+	///
+	/// - returns: signal producer that will return no value events
+	func create(volume: String) -> SignalProducer<(), DockerError>
+
 	/// Fetches the current containers from the docker daemon
 	///
 	/// - returns: a signal producer that will send a single value and a completed event, or an error event

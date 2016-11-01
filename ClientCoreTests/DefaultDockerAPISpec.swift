@@ -130,12 +130,7 @@ class DefaultDockerAPISpec: QuickSpec {
 					self.stubGetRequest(uriPath: "/networks", fileName: "networks")
 					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
 					let producer = api.networkExists(name: "clientcore_default").observe(on: scheduler)
-					var result: Result<Bool, DockerError>!
-					let group = DispatchGroup()
-					globalQueue.async(group: group) {
-						result = producer.single()
-					}
-					group.wait()
+					let result = self.makeValueRequest(producer: producer, queue: globalQueue)
 					expect(result.error).to(beNil())
 					expect(result.value).to(beTrue())
 				}
@@ -144,14 +139,9 @@ class DefaultDockerAPISpec: QuickSpec {
 					self.stubGetRequest(uriPath: "/networks", fileName: "networks")
 					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
 					let producer = api.networkExists(name: "rc2_nonexistant").observe(on: scheduler)
-					var result: Result<Bool, DockerError>!
-					let group = DispatchGroup()
-					globalQueue.async(group: group) {
-						result = producer.single()
-					}
-					group.wait()
+					let result = self.makeValueRequest(producer: producer, queue: globalQueue)
 					expect(result.error).to(beNil())
-					expect(result?.value).to(beFalse())
+					expect(result.value).to(beFalse())
 				}
 				
 				it("create network") {
@@ -176,13 +166,7 @@ class DefaultDockerAPISpec: QuickSpec {
 					self.stubGetRequest(uriPath: "/volumes", fileName: "volumes")
 					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
 					let producer = api.volumeExists(name: name).observe(on: scheduler)
-					var result: Result<Bool, DockerError>!
-					let group = DispatchGroup()
-					globalQueue.async(group: group) {
-						result = producer.single()
-					}
-					group.wait()
-					return result
+					return self.makeValueRequest(producer: producer, queue: globalQueue)
 				}
 				
 				it("volume exists") {
@@ -195,6 +179,14 @@ class DefaultDockerAPISpec: QuickSpec {
 					let result = volumeChecker("rc2_dbdataNOT")
 					expect(result.error).to(beNil())
 					expect(result.value).to(beFalse())
+				}
+
+				it("create volume") {
+					self.stub(self.postMatcher(uriPath: "/volumes/create"), builder:http(201))
+					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
+					let producer = api.create(volume: "rc2_fakevol").observe(on: scheduler)
+					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
+					expect(result.error).to(beNil())
 				}
 			}
 		}
