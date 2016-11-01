@@ -146,11 +146,11 @@ public enum RestServerError: Error {
 				UserDefaults.standard.set(self.loginSession!.host, forKey: self.kServerHostKey)
 			case 401:
 				let error = self.createError(401, description: "Invalid login or password")
-				os_log("got a %{public}@", type:.debug, response!.statusCode)
+				os_log("login got a %d", type:.debug, response!.statusCode)
 				promise.failure(error)
 			default:
 				let error = self.createError(response!.statusCode, description: "")
-				os_log("got unknown status code: %{public}@", response!.statusCode)
+				os_log("got unknown status code: %d", response!.statusCode)
 				promise.failure(error)
 			}
 		}

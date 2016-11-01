@@ -313,7 +313,7 @@ private extension Session {
 	func handleReceivedMessage(_ message:Any) {
 		if let stringMessage = message as? String {
 			let jsonMessage = JSON.parse(stringMessage)
-			os_log("got message %{public}@", jsonMessage["msg"].stringValue)
+			os_log("got message %{public}s", jsonMessage["msg"].stringValue)
 			if let response = ServerResponse.parseResponse(jsonMessage) {
 				if case let .fileOperationResponse(transId, operation, file) = response {
 					handleFileResponse(transId, operation:operation, file:file)

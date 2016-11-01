@@ -44,9 +44,9 @@ struct LStrings {
 struct Constants {
 	static let DefaultProjectName = "default"
 	static let DefaultWorkspaceName = "default"
-	static let DefaultBookmarkName = "starter"
+	static let DefaultBookmarkName = "local"
 	static let LocalBookmarkGroupName = NSLocalizedString("Local Server", comment: "")
-	static let LocalServerPassword = "beavis"
+	static let LocalServerPassword = "local"
 }
 
 let ConsoleAttachmentImageSize = CGSize(width: 48, height: 48)

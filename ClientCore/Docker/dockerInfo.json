@@ -3,6 +3,7 @@
 		"Image": "rc2server/dbserver",
 		"Hostname": "dbserver",
 		"Labels": { "rc2.live": "" },
+		"HostConfig": { "Binds": ["rc2_dbdata:/rc2"] },
 		"NetworkMode": "rc2server",
 		"NetworkingConfig": {
 			"EndpointsConfig": {

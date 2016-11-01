@@ -12,7 +12,7 @@ import ClientCore
 ///Represents a remote host
 public struct ServerHost: JSONSerializable, CustomStringConvertible, Hashable {
 	
-	static let localHost:ServerHost = { return ServerHost(name: "Local Server", host: "localhost", port: 8088, user: "test", secure: false) }()
+	static let localHost:ServerHost = { return ServerHost(name: "Local Server", host: "localhost", port: 8088, user: "local", secure: false) }()
 	///user-friendly name for the host
 	let name:String
 	let host:String
@@ -22,7 +22,7 @@ public struct ServerHost: JSONSerializable, CustomStringConvertible, Hashable {
 	
 	var keychainKey:String { return "\(self.user)@\(self.host)" }
 	
-	init(name:String, host:String, port:Int=8088, user:String="test", secure:Bool=false) {
+	init(name:String, host:String, port:Int=8088, user:String="local", secure:Bool=false) {
 		self.name = name
 		self.host = host
 		self.user = user

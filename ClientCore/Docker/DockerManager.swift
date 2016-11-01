@@ -145,6 +145,7 @@ public final class DockerManager: NSObject {
 			.flatMap(.concat, transform: verifyValidVersion)
 			.map { v in self.versionInfo = v; self.state = .initialized }
 			.flatMap(.concat, transform: validateNetwork)
+			.flatMap(.concat, transform: validateVolumes)
 			.flatMap(.concat, transform: api.loadImages)
 			.map { images in self.installedImages = images; return refresh }
 			.flatMap(.concat, transform: checkForImageUpdate)
@@ -312,18 +313,28 @@ fileprivate extension DockerManager {
 		}
 	}
 
-	fileprivate func createNetworkIfExists(name: String, exists: Bool) -> SignalProducer<(), DockerError> {
-		guard !exists else {
-			return SignalProducer<(), DockerError>(value: ())
-		}
-		return api.create(network: name)
-	}
-
 	fileprivate func validateNetwork() -> SignalProducer<(), DockerError> {
 		let nname = "rc2server"
 		return api.networkExists(name: nname)
-			.map { exists in return (nname, exists) }
-			.flatMap(.concat, transform: createNetworkIfExists)
+			.map { exists in return (nname, exists, self.api.create(network:)) }
+			.flatMap(.concat, transform: optionallyCreateObject)
+	}
+
+	fileprivate func validateVolumes() -> SignalProducer<(), DockerError> {
+		let nname = "rc2_dbdata"
+		return api.volumeExists(name: nname)
+			.map { exists in return (nname, exists, self.api.create(volume:)) }
+			.flatMap(.concat, transform: optionallyCreateObject)
+	}
+
+	typealias CreateFunction = (String) -> SignalProducer<(), DockerError>
+
+	fileprivate func optionallyCreateObject(name: String, exists: Bool, handler: CreateFunction) -> SignalProducer<(), DockerError>
+	{
+		guard !exists else {
+			return SignalProducer<(), DockerError>(value: ())
+		}
+		return handler(name)
 	}
 
 	/// Creates any containers that don't exist
