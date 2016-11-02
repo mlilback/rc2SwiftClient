@@ -24,7 +24,6 @@
 		0812631F1C862F4B003E37A5 /* EditorDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812631E1C862F4B003E37A5 /* EditorDocument.swift */; };
 		08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		08127CC71DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
-		08127CC81DA811AA002E0D01 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08127CCB1DAD1D82002E0D01 /* DockerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08127CCA1DAD1D82002E0D01 /* DockerAPI.swift */; };
 		08127CCD1DAD1F0D002E0D01 /* DockerAPIImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08127CCC1DAD1F0D002E0D01 /* DockerAPIImplementation.swift */; };
@@ -245,7 +244,6 @@
 		08E7E09A1D8AEC53000C4C87 /* DockerImageTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814F1EA1D7A2E290093C0C1 /* DockerImageTest.swift */; };
 		08E7E09C1D8AEC5A000C4C87 /* DockerUrlProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ABCF001D82FCCE007C6A5E /* DockerUrlProtocolTests.swift */; };
 		08E7E09D1D8AECE1000C4C87 /* dockerImages.json in Resources */ = {isa = PBXBuildFile; fileRef = 0814F1EC1D7A2E960093C0C1 /* dockerImages.json */; };
-		08E836651D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
 		08E836661D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
 		08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
 		08E836681D94240100E26EFE /* SwiftyUserDefaults.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -689,11 +687,9 @@
 				08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */,
 				082FF1CB1C7F321B00CCC27F /* PMKVObserver.framework in Frameworks */,
-				08127CC81DA811AA002E0D01 /* ReactiveSwift.framework in Frameworks */,
 				08DB1A9D1D32EFC10079DA6B /* SwinjectStoryboard.framework in Frameworks */,
 				08DB1A981D32EF930079DA6B /* Swinject.framework in Frameworks */,
 				082FF1EE1C7F339400CCC27F /* URITemplate.framework in Frameworks */,
-				08E836651D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				0833A8221D2D7E770033654B /* HockeySDK.framework in Frameworks */,
 				082FF1C71C7F321B00CCC27F /* CryptoSwift.framework in Frameworks */,
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
@@ -1358,7 +1354,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = Rc2;
 				TargetAttributes = {
 					08127CD11DAD2434002E0D01 = {
@@ -2053,7 +2049,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2095,7 +2091,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;

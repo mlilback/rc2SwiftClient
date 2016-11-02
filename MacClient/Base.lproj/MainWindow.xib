@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11201" systemVersion="16A320" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
         <capability name="system font weights other than Regular or Bold" minToolsVersion="7.0"/>
     </dependencies>
@@ -29,10 +30,10 @@
                 <allowedToolbarItems>
                     <toolbarItem implicitItemIdentifier="45A7986F-AECA-4AD3-ACBE-F325C2AB72D7" explicitItemIdentifier="leftView" label="" paletteLabel="Left View" id="DRL-wf-hhl">
                         <nil key="toolTip"/>
-                        <size key="minSize" width="108" height="25"/>
-                        <size key="maxSize" width="300" height="25"/>
-                        <segmentedControl key="view" focusRingType="none" verticalHuggingPriority="750" id="Zp8-Yz-dPv">
-                            <rect key="frame" x="0.0" y="14" width="108" height="25"/>
+                        <size key="minSize" width="96" height="25"/>
+                        <size key="maxSize" width="162" height="28"/>
+                        <segmentedControl key="view" identifier="tbar-left-item" focusRingType="none" verticalHuggingPriority="750" id="Zp8-Yz-dPv">
+                            <rect key="frame" x="0.0" y="14" width="102" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <segmentedCell key="cell" borderStyle="border" focusRingType="none" alignment="left" style="texturedSquare" trackingMode="selectOne" id="gyX-8p-uvP">
                                 <font key="font" metaFont="system" size="14"/>
@@ -40,10 +41,10 @@
                                     <segment toolTip="Show/Hide Files" image="files" width="32">
                                         <nil key="label"/>
                                     </segment>
-                                    <segment image="variables" tag="1">
+                                    <segment image="variables" width="32" tag="1">
                                         <nil key="label"/>
                                     </segment>
-                                    <segment toolTip="Show/Hide Packages" image="package" tag="2">
+                                    <segment toolTip="Show/Hide Packages" image="package" width="32" tag="2">
                                         <nil key="label"/>
                                     </segment>
                                 </segments>
@@ -53,10 +54,10 @@
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="B485D81B-B017-4BC2-9576-633E636B25FC" explicitItemIdentifier="rightView" label="" paletteLabel="Right View" id="rTc-JD-E1f" userLabel="Right View">
                         <nil key="toolTip"/>
-                        <size key="minSize" width="38" height="25"/>
-                        <size key="maxSize" width="200" height="25"/>
+                        <size key="minSize" width="128" height="25"/>
+                        <size key="maxSize" width="260" height="28"/>
                         <segmentedControl key="view" focusRingType="none" verticalHuggingPriority="750" id="qEC-FD-i7I">
-                            <rect key="frame" x="0.0" y="14" width="154" height="25"/>
+                            <rect key="frame" x="0.0" y="14" width="133" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <segmentedCell key="cell" borderStyle="border" focusRingType="none" alignment="left" style="texturedSquare" trackingMode="selectOne" id="OJ9-jP-7NI">
                                 <font key="font" metaFont="system" size="14"/>
@@ -64,13 +65,13 @@
                                     <segment toolTip="Console" image="console-tbar" width="32">
                                         <nil key="label"/>
                                     </segment>
-                                    <segment toolTip="Image Viewer" image="image-tbar" tag="1">
+                                    <segment toolTip="Image Viewer" image="image-tbar" width="32" tag="1">
                                         <nil key="label"/>
                                     </segment>
-                                    <segment toolTip="Content Viewer" image="content-tbar" tag="2">
+                                    <segment toolTip="Content Viewer" image="content-tbar" width="32" tag="2">
                                         <nil key="label"/>
                                     </segment>
-                                    <segment toolTip="Help Viewer" image="help-tbar" tag="3">
+                                    <segment toolTip="Help Viewer" image="help-tbar" width="32" tag="3">
                                         <nil key="label"/>
                                     </segment>
                                 </segments>
@@ -141,7 +142,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Yl9-hW-Ujq">
-                                            <rect key="frame" x="277" y="1" width="15" height="15"/>
+                                            <rect key="frame" x="277" y="0.5" width="15" height="15"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="Yl9-hW-Ujq" secondAttribute="height" multiplier="1:1" id="wm6-wP-g01"/>
                                             </constraints>
@@ -204,12 +205,12 @@
     <resources>
         <image name="NSStopProgressFreestandingTemplate" width="14" height="14"/>
         <image name="clear" width="16" height="16"/>
-        <image name="console-tbar" width="40" height="40"/>
-        <image name="content-tbar" width="40" height="40"/>
+        <image name="console-tbar" width="38" height="38"/>
+        <image name="content-tbar" width="38" height="38"/>
         <image name="files" width="20" height="20"/>
-        <image name="help-tbar" width="40" height="40"/>
-        <image name="image-tbar" width="40" height="40"/>
-        <image name="package" width="48" height="48"/>
+        <image name="help-tbar" width="38" height="38"/>
+        <image name="image-tbar" width="38" height="30"/>
+        <image name="package" width="38" height="38"/>
         <image name="search" width="18" height="18"/>
         <image name="variables" width="20" height="20"/>
     </resources>

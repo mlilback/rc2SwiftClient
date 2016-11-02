@@ -111,9 +111,9 @@ extension File {
 	func writeXAttributes(_ toUrl:URL) {
 		let versionData = String(version).data(using: String.Encoding.utf8)
 		setXAttributeWithName(FileAttrVersion, data: versionData!, atURL: toUrl)
-		if let fileData = try? Data(contentsOf: toUrl),
-			let shaData = fileData.sha256()
+		if let fileData = try? Data(contentsOf: toUrl)
 		{
+			let shaData = fileData.sha256()
 			setXAttributeWithName(FileAttrChecksum, data: shaData, atURL: toUrl)
 		} else {
 			os_log("failed to create sha256 checksum for %{public}s", type:.error, toUrl.path)

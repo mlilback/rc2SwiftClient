@@ -27,3 +27,11 @@
 * eventually need to be able to reopen everthing network related (DockerEventManager)
 
 * add localization of strings using NSLocalizedString
+
+* need UI to reset rc2_dbdata volume
+
+* docker event stream can timeout. need to handle this (takes hours to happen)
+
+* make sure docker stuff works with sleep
+
+* switching help topics adjusts width of split view
