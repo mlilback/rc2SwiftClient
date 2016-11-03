@@ -227,10 +227,9 @@ final class DockerAPIImplementation: DockerAPI {
 			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
 				return SignalProducer<Bool, DockerError> { observer, _ in
 					self.jsonCheckHandler(observer: observer, data: data) { json in
-						//json is an array, not a dictionary which freddy's function largely require
-						guard case .array(let nets) = json else { return false }
+						guard let networks = try? json.asJsonArray() else { return false }
 						//nets is now json cast safely to [JSON]
-						let matches = nets.flatMap { network -> JSON? in
+						let matches = networks.flatMap { network -> JSON? in
 							guard let itemName = try? network.getString(at: "Name") else { return nil }
 							if itemName == name { return network }
 							return nil
@@ -341,24 +340,19 @@ extension DockerAPIImplementation {
 	//must not reference self
 	fileprivate func parseContainers(json: JSON) -> SignalProducer<[DockerContainer], DockerError>
 	{
-		guard case .array(let carray) = json else {
+		guard let containers: [DockerContainer] = try? json.asArray() else {
 			return SignalProducer<[DockerContainer], DockerError>(error: .invalidJson)
 		}
-		return SignalProducer<[DockerContainer], DockerError> { observer, _ in
-			observer.send(value: carray.flatMap { return DockerContainer(from: $0) })
-			observer.sendCompleted()
-		}
+		return SignalProducer<[DockerContainer], DockerError>(value: containers)
 	}
 
 	fileprivate func parseImages(json: JSON) -> SignalProducer<[DockerImage], DockerError> {
-		guard case .array(let carray) = json else {
+		guard let images: [DockerImage] = try? json.asArray() else {
 			return SignalProducer<[DockerImage], DockerError>(error: .invalidJson)
 		}
 		return SignalProducer<[DockerImage], DockerError> { observer, _ in
-			let images = carray
-				.flatMap({ DockerImage(from: $0) })
-				.filter({ $0.labels.keys.contains("io.rc2.type") && $0.tags.count > 0 })
-			observer.send(value: images)
+			let filteredImages = images.filter({ $0.labels.keys.contains("io.rc2.type") && $0.tags.count > 0 })
+			observer.send(value: filteredImages)
 			observer.sendCompleted()
 		}
 	}

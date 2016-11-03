@@ -10,7 +10,7 @@ import Nimble
 import ReactiveSwift
 import Mockingjay
 import Result
-import SwiftyJSON
+import Freddy
 @testable import ClientCore
 
 class DockerManagerSpec: QuickSpec {

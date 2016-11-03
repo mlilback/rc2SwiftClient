@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import SwiftyJSON
+import Freddy
 import Darwin
 import Nimble
 @testable import ClientCore
