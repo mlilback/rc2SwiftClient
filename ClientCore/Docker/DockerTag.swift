@@ -5,10 +5,10 @@
 //
 
 import Foundation
-import SwiftyJSON
+import Freddy
 
 ///Representation of a tag on a docker image
-public struct DockerTag: JSONSerializable, CustomStringConvertible, Hashable {
+public struct DockerTag: JSONDecodable, CustomStringConvertible, Hashable {
 	let repo: String?
 	let name: String
 	let version: String?
@@ -43,23 +43,33 @@ public struct DockerTag: JSONSerializable, CustomStringConvertible, Hashable {
 		self.version = version
 	}
 
-	public init?(json: JSON?) {
-		guard let json = json else { return nil }
-		self.repo = json["repo"].string
-		self.name = json["name"].stringValue
-		self.version = json["version"].string
+	public init?(from: JSON?) {
+		guard let json = from else { return nil }
+		do {
+			try self.init(json: json)
+		} catch {
+		}
+		return nil
 	}
 
-	public func serialize() throws -> JSON {
-		var dict = Dictionary<String, String>()
-		if let aRep = repo { dict["repo"] = aRep }
-		dict["name"] = name
-		if let aVer = version { dict["version"] = aVer }
-		return JSON(dict)
+	public init(json: JSON) throws {
+		self.repo = try json.getString(at: "repo")
+		self.name = try json.getString(at: "name")
+		self.version = try json.getString(at: "version")
 	}
 
 	public var hashValue: Int { return description.hashValue }
 
+}
+
+extension DockerTag: JSONEncodable {
+	public func toJSON() -> JSON {
+		var dict = Dictionary<String, String>()
+		if let aRep = repo { dict["repo"] = aRep }
+		dict["name"] = name
+		if let aVer = version { dict["version"] = aVer }
+		return dict.toJSON()
+	}
 }
 
 public func == (lhs: DockerTag, rhs: DockerTag) -> Bool {

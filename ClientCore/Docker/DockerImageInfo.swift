@@ -5,46 +5,61 @@
 //
 
 import Foundation
-import SwiftyJSON
+import Freddy
 import os
 
-public struct DockerImageInfo: JSONSerializable {
+public struct DockerImageInfo: JSONDecodable, JSONEncodable {
 	let size: Int64
 	let tag: String
 	let name: String
 	let id: String
 	var fullName: String { return "rc2server/\(name)" }
 
-	public init?(json: JSON?) {
-		guard let json = json else { return nil }
-		size = json["size"].int64Value
-		tag = json["tag"].stringValue
-		name = json["name"].stringValue
-		id = json["id"].stringValue
+	public init?(from: JSON?) {
+		guard let json = from else { return nil }
+		do {
+			try self.init(json: json)
+		} catch {
+		}
+		return nil
 	}
 
-	public func serialize() throws -> JSON {
-		var dict = [String:Any]()
-		dict["size"] = size
-		dict["tag"] = tag
-		dict["name"] = name
-		dict["id"] = id
-		return JSON(dict)
+	public init(json: JSON) throws {
+		size = Int64(try json.getInt(at: "size"))
+		tag = try json.getString(at: "tag", or:"")
+		name = try json.getString(at:"name")
+		id = try json.getString(at: "id")
+	}
+
+	public func toJSON() -> JSON {
+		return .dictionary(["size": .int(Int(size)), "tag": .string(tag), "name": .string(name), "id": .string(id)])
 	}
 }
 
-public struct RequiredImageInfo: Collection, JSONSerializable {
+public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
 	let version: Int
 	let dbserver: DockerImageInfo
 	let appserver: DockerImageInfo
 	let computeserver: DockerImageInfo
 
-	public init?(json: JSON?) {
-		guard let json = json else { return nil }
-		version = json["version"].intValue
-		dbserver = DockerImageInfo(json: json["images"].dictionary!["dbserver"]!)!
-		appserver = DockerImageInfo(json: json["images"].dictionary!["appserver"]!)!
-		computeserver = DockerImageInfo(json: json["images"].dictionary!["compute"]!)!
+	public init?(from: JSON?) {
+		guard let json = from else { return nil }
+		do {
+			try self.init(json: json)
+		} catch {
+			return nil
+		}
+	}
+
+	public init(json: JSON) throws {
+		version = try json.getInt(at: "version")
+		let imageDict = try json.decodedDictionary(at: "images", type: DockerImageInfo.self)
+		guard let db = imageDict["dbserver"], let app = imageDict["appserver"], let comp = imageDict["compute"] else {
+			throw DockerError.invalidJson
+		}
+		dbserver = db
+		appserver = app
+		computeserver = comp
 	}
 
 	public var startIndex: Int { return 0 }
@@ -64,16 +79,7 @@ public struct RequiredImageInfo: Collection, JSONSerializable {
 		return i + 1
 	}
 
-	public func serialize() throws -> JSON {
-		do {
-			let images = ["dbserver": try dbserver.serialize(), "appserver": try appserver.serialize(), "compute": try computeserver.serialize()]
-			var dict: [String:JSON] = [:]
-			dict["images"] = JSON(arrayLiteral: images)
-			dict["version"] = JSON(version)
-			return JSON(jsonDictionary: dict)
-		} catch let err as NSError {
-			os_log("error serializing: %{public}s", err)
-			throw err
-		}
+	public func toJSON() -> JSON {
+		return .dictionary(["version": .int(version), "images": ["dbserver": dbserver, "appserver": appserver, "compute": computeserver].toJSON()])
 	}
 }

@@ -26,9 +26,9 @@ class DockerPullTest: XCTestCase {
 		TestDataProtocol.responseHeaders = ["Content-Type":"application/json", "Content-size": String(completeStr.characters.count)]
 
 		let config = URLSessionConfiguration.default
-		config.protocolClasses = [TestDataProtocol.self]
+		config.protocolClasses = [TestDataProtocol.self, DockerUrlProtocol.self] as [AnyClass] + config.protocolClasses!
 		let url = URL(string: "test://foo.com/bar")!
-		let pullOp = DockerPullOperation(baseUrl: url, imageName: "busybox", estimatedSize: 1332710, config: config)
+		let pullOp = DockerPullOperation(baseUrl: url, imageName: "busybox", estimatedSize: 667590, config: config)
 		let future = pullOp.startPull() { progress in
 			self.unitCount = progress.currentSize
 		}
@@ -39,9 +39,9 @@ class DockerPullTest: XCTestCase {
 			self.savedError = err
 			self.expect!.fulfill()
 		}
-		waitForExpectations(timeout: 50) { err in
+		waitForExpectations(timeout: 2) { err in
 			XCTAssertNil(self.savedError)
-			XCTAssertEqual(self.unitCount, 1332710)
+			XCTAssertEqual(self.unitCount, 667590)
 		}
 	}
 }

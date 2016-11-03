@@ -47,7 +47,7 @@ class DockerManagerSpec: QuickSpec {
 					let result = self.makeValueRequest(producer: producer, queue: globalQueue)
 					expect(result.error).to(beNil())
 					expect(result.value).toNot(beNil())
-					expect(result.value!["ApiVersion"].string).to(equal("1.24"))
+					expect(try! result.value!.getString(at: "ApiVersion")).to(equal("1.24"))
 				}
 			}
 		}

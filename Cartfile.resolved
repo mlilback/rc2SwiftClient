@@ -1,4 +1,5 @@
 github "krzyzanowskim/CryptoSwift" "0.6.5"
+github "bignerdranch/Freddy" "3.0.1"
 github "mlilback/MessagePackSwift" "682454d037f5453091b370d9cca9a39654cb023d"
 github "sebskuse/Mockingjay" "d47440a3518297a53914dc179c95bb6799c444a6"
 github "Quick/Nimble" "v5.1.1"

@@ -6,7 +6,7 @@
 
 import Foundation
 import ReactiveSwift
-import SwiftyJSON
+import Freddy
 import Result
 import os
 
@@ -89,8 +89,8 @@ final class DockerAPIImplementation: DockerAPI {
 			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
 				return SignalProducer<Bool, DockerError> { observer, _ in
 					self.jsonCheckHandler(observer: observer, data: data) { json in
-						let filteredVolumes = json["Volumes"].arrayValue.filter( { aName in
-							return aName["Name"].stringValue == name
+						let filteredVolumes = try json.getArray(at: "Volumes").filter( { aVolume in
+							return try aVolume.getString(at: "Name") == name
 						})
 						return filteredVolumes.count == 1
 					}
@@ -163,13 +163,10 @@ final class DockerAPIImplementation: DockerAPI {
 				observer.sendCompleted()
 				return
 			}
-			guard var containerJson = container.createInfo else {
+			guard let jsonData = container.createInfo else {
 				observer.send(error: .invalidJson)
 				return
 			}
-			containerJson["Labels"] = JSON(["rc2.live": ""])
-			// swiftlint:disable:next force_try // we created from static string, serious programmer error if fails
-			let jsonData = try! containerJson.rawData()
 			var comps = URLComponents(url: URL(string:"/containers/create", relativeTo:self.baseUrl)!, resolvingAgainstBaseURL: true)!
 			comps.queryItems = [URLQueryItem(name:"name", value:container.name)]
 			var request = URLRequest(url: comps.url!)
@@ -230,10 +227,15 @@ final class DockerAPIImplementation: DockerAPI {
 			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
 				return SignalProducer<Bool, DockerError> { observer, _ in
 					self.jsonCheckHandler(observer: observer, data: data) { json in
-						let filteredNetworks = json.arrayValue.filter( { aNet in
-							return aNet["Name"].stringValue == name
-						})
-						return filteredNetworks.count == 1
+						//json is an array, not a dictionary which freddy's function largely require
+						guard case .array(let nets) = json else { return false }
+						//nets is now json cast safely to [JSON]
+						let matches = nets.flatMap { network -> JSON? in
+							guard let itemName = try? network.getString(at: "Name") else { return nil }
+							if itemName == name { return network }
+							return nil
+						}
+						return matches.count == 1
 					}
 				}
 			}).observe(on: scheduler)
@@ -249,11 +251,11 @@ extension DockerAPIImplementation {
 	/// - returns: parsed JSON
 	fileprivate func dataToJson(data: Data) -> SignalProducer<JSON, DockerError> {
 		return SignalProducer<JSON, DockerError> { observer, _ in
-			guard let jsonStr = String(data: data, encoding:.utf8) else {
-				observer.send(error: .invalidJson)
+			guard let json = try? JSON(data: data) else {
+				observer.send(error: DockerError.invalidJson)
 				return
 			}
-			observer.send(value: JSON.parse(jsonStr))
+			observer.send(value: json)
 			observer.sendCompleted()
 		}
 	}
@@ -268,12 +270,13 @@ extension DockerAPIImplementation {
 		return SignalProducer<DockerVersion, DockerError> { observer, _ in
 			do {
 				let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
-				let verStr = json["Version"].stringValue
+				let verStr = try json.getString(at: "Version")
 				guard let match = regex.firstMatch(in: verStr, options: [], range: verStr.fullNSRange),
 					let primaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(1))),
 					let secondaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(2))),
 					let fixVersion = Int((verStr as NSString).substring(with: match.rangeAt(3))),
-					let apiVersion = Double(json["ApiVersion"].stringValue) else
+					let apiStr = try? json.getString(at: "ApiVersion"),
+					let apiVersion = Double(apiStr) else
 				{
 					observer.send(error: .invalidJson)
 					return
@@ -322,30 +325,38 @@ extension DockerAPIImplementation {
 	/// - parameter observer: the observer to send signals on
 	/// - parameter data:     the data from a GET request
 	/// - parameter filter:   a closure that determines if the json meets requirements
-	func jsonCheckHandler(observer: Observer<Bool, DockerError>, data: Data?, filter: ((JSON) -> Bool))
+	func jsonCheckHandler(observer: Observer<Bool, DockerError>, data: Data?, filter: ((JSON) throws -> Bool))
 	{
-		guard let rdata = data, let jsonStr = String(data: rdata, encoding: .utf8) else {
+		guard let rdata = data,
+			let json = try? JSON(data: rdata),
+			let result = try? filter(json) else
+		{
 			observer.send(error: .invalidJson) //is this really the best error?
 			return
 		}
-		let json = JSON.parse(jsonStr)
-		observer.send(value: filter(json))
+		observer.send(value: result)
 		observer.sendCompleted()
 	}
 
 	//must not reference self
 	fileprivate func parseContainers(json: JSON) -> SignalProducer<[DockerContainer], DockerError>
 	{
+		guard case .array(let carray) = json else {
+			return SignalProducer<[DockerContainer], DockerError>(error: .invalidJson)
+		}
 		return SignalProducer<[DockerContainer], DockerError> { observer, _ in
-			observer.send(value: json.arrayValue.flatMap { return DockerContainer(json:$0) })
+			observer.send(value: carray.flatMap { return DockerContainer(from: $0) })
 			observer.sendCompleted()
 		}
 	}
 
 	fileprivate func parseImages(json: JSON) -> SignalProducer<[DockerImage], DockerError> {
+		guard case .array(let carray) = json else {
+			return SignalProducer<[DockerImage], DockerError>(error: .invalidJson)
+		}
 		return SignalProducer<[DockerImage], DockerError> { observer, _ in
-			let images = json.arrayValue
-				.flatMap({ DockerImage(json: $0) })
+			let images = carray
+				.flatMap({ DockerImage(from: $0) })
 				.filter({ $0.labels.keys.contains("io.rc2.type") && $0.tags.count > 0 })
 			observer.send(value: images)
 			observer.sendCompleted()

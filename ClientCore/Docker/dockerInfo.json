@@ -1,43 +1,45 @@
 {
-	"rc2server/dbserver": {
-		"Image": "rc2server/dbserver",
-		"Hostname": "dbserver",
-		"Labels": { "rc2.live": "" },
-		"HostConfig": { "Binds": ["rc2_dbdata:/rc2"] },
-		"NetworkMode": "rc2server",
-		"NetworkingConfig": {
-			"EndpointsConfig": {
-				"rc2server": {
-					"Aliases": [ "dbserver" ]
+	"containers": [
+		{
+			"Image": "rc2server/dbserver",
+			"Hostname": "dbserver",
+			"Labels": { "rc2.live": "" },
+			"HostConfig": { "Binds": ["rc2_dbdata:/rc2"] },
+			"NetworkMode": "rc2server",
+			"NetworkingConfig": {
+				"EndpointsConfig": {
+					"rc2server": {
+						"Aliases": [ "dbserver" ]
+					}
+				}
+			}
+		},
+		{
+			"Image": "rc2server/appserver",
+			"Hostname": "appserver",
+			"ExposedPorts": { "8088/tcp": {} },
+			"Labels": { "rc2.live": "" },
+			"HostConfig": { "NetworkMode": "rc2server", "PortBindings": { "8088/tcp": [{ "HostIp": "", "HostPort": "8088" }] } },
+			"NetworkingConfig": {
+				"EndpointsConfig": {
+					"rc2server": {
+						"Aliases": [ "appserver" ]
+					}
+				}
+			}
+		},
+		{
+			"Image": "rc2server/compute",
+			"Hostname": "compute",
+			"Labels": { "rc2.live": "" },
+			"NetworkMode": "rc2server",
+			"NetworkingConfig": {
+				"EndpointsConfig": {
+					"rc2server": {
+						"Aliases": [ "compute" ]
+					}
 				}
 			}
 		}
-	},
-	"rc2server/appserver": {
-		"Image": "rc2server/appserver",
-		"Hostname": "appserver",
-		"ExposedPorts": { "8088/tcp": {} },
-		"Labels": { "rc2.live": "" },
-		"HostConfig": { "NetworkMode": "rc2server", "PortBindings": { "8088/tcp": [{ "HostIp": "", "HostPort": "8088" }] } },
-		"NetworkingConfig": {
-			"EndpointsConfig": {
-				"rc2server": {
-					"Aliases": [ "appserver" ]
-				}
-			}
-		}
-	},
-	"rc2server/compute": {
-		"Image": "rc2server/compute",
-		"Hostname": "compute",
-		"Labels": { "rc2.live": "" },
-		"NetworkMode": "rc2server",
-		"NetworkingConfig": {
-			"EndpointsConfig": {
-				"rc2server": {
-					"Aliases": [ "compute" ]
-				}
-			}
-		}
-	}
+	]
 }

@@ -6,7 +6,7 @@
 
 import Foundation
 import BrightFutures
-import SwiftyJSON
+import Freddy
 import os
 
 ///progress information on the pull
@@ -96,9 +96,12 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 		let messages = str.components(separatedBy: "\r\n")
 		for aMessage in messages {
 			guard aMessage.characters.count > 0 else { continue }
-			let json = JSON.parse(aMessage)
-			guard let status = json["status"].string else {
-				os_log("invalid json chunk from pull %{public}s", type:.info, aMessage)
+			guard let json = try? JSON(jsonString: aMessage) else {
+				os_log("invalid json chunk: %{public}s", type: .info, aMessage)
+				continue
+			}
+			guard let status = try? json.getString(at: "status") else {
+				os_log("invalid json chunk from pull %{public}s", type: .info, aMessage)
 				continue
 			}
 			statuses.insert(status)
@@ -118,26 +121,25 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	}
 
 	func handleStatus(status: String, json: JSON) {
+		guard let layerId = try? json.getString(at: "id") else { return }
 		switch status.lowercased() {
 			case "pulling fs layer":
-				layers[json["id"].string!] = LayerProgress(layerId: json["id"].string!)
+				layers[layerId] = LayerProgress(layerId: layerId)
 			case "downloading":
-				if var layer = layers[json["id"].stringValue] {
-					if let details = json["progressDetail"].dictionary {
-						if let fsize = details["total"]?.int, layer.finalSize == 0 {
-							layer.finalSize = fsize
-						}
-						if let csize = details["current"]?.int {
-							layer.currentSize = csize
-						}
+				if var layer = layers[layerId] {
+					if let fsize = try? json.getInt(at: "progressDetail", "total"), layer.finalSize == 0 {
+						layer.finalSize = fsize
 					}
-					layers[layer.id] = layer
+					if let csize = try? json.getInt(at: "progressDetails", "current") {
+						layer.currentSize = csize
+					}
+					layers[layerId] = layer
 					totalDownloaded = layers.reduce(0) { cnt, layerTuple in
 						return cnt + layerTuple.1.currentSize
 					}
 				}
 			case "download complete":
-				if var layer = layers[json["id"].stringValue] {
+				if var layer = layers[layerId] {
 					os_log("finished layer %{public}s", type:.info, layer.id)
 					layer.complete = true
 					totalDownloaded += layer.finalSize

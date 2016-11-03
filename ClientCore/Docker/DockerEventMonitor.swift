@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import SwiftyJSON
+import Freddy
 import os
 
 enum DockerEventType: String {
@@ -34,7 +34,8 @@ struct DockerEvent: CustomStringConvertible {
 	// swiftlint:disable:next cyclomatic_complexity //how else do we implement this?
 	 init?(_ json: JSON) {
 		self.json = json
-		switch json["Action"] {
+		guard let action = try? json.getString(at: "Action") else { return nil }
+		switch action {
 			case "delete":
 				eventType = .deleteImage
 			case "destroy":
@@ -63,12 +64,7 @@ struct DockerEvent: CustomStringConvertible {
 	}
 
 	var description: String {
-		var jsonStr = ""
-		do {
-			jsonStr = try String(data: JSONSerialization.data(withJSONObject: json.rawValue, options: []), encoding:.utf8)!
-		} catch {
-		}
-		return "\(eventType.rawValue): \(jsonStr)"
+		return "\(eventType.rawValue): \(json)"
 	}
 }
 
@@ -106,10 +102,9 @@ final class DockerEventMonitor: NSObject, URLSessionDataDelegate {
 		let messages = str.components(separatedBy: "\n")
 		for aMessage in messages {
 			guard aMessage.characters.count > 0 else { continue }
-			let json = JSON.parse(aMessage)
-			guard json != JSON.null else {
+			guard let jsonData = aMessage.data(using: .utf8), let json = try? JSON(data: jsonData) else {
 				os_log("failed to parse json: %{public}s", aMessage)
-				return
+				continue
 			}
 			if let event = DockerEvent(json) {
 				delegate.handleEvent(event)

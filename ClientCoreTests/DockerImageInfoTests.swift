@@ -8,7 +8,7 @@ import Foundation
 import XCTest
 @testable import ClientCore
 import Mockingjay
-import SwiftyJSON
+import Freddy
 
 class DockerImageInfoTests: XCTestCase {
 	var sessionConfig:URLSessionConfiguration!
@@ -35,8 +35,8 @@ class DockerImageInfoTests: XCTestCase {
 		task.resume()
 		waitForExpectations(timeout: 2) { _ in
 			XCTAssertNil(error)
-			let json = JSON(data: fetchedData!)
-			let info = RequiredImageInfo(json:json)!
+			let json = try! JSON(data: fetchedData!)
+			let info = RequiredImageInfo(from:json)!
 			XCTAssertEqual(info.version, 1)
 			XCTAssertEqual(info.dbserver.size, 442069860)
 			XCTAssertEqual(info.computeserver.name, "compute")

@@ -23,7 +23,7 @@ class DockerUrlProtocolTests: XCTestCase, URLSessionDataDelegate {
 		queue.underlyingQueue = DispatchQueue.global(qos: .userInitiated)
 		continueAfterFailure = false
 		sessionConfig = URLSessionConfiguration.default
-		sessionConfig?.protocolClasses = [TestDockerProtocol.self] as [AnyClass]
+		sessionConfig?.protocolClasses = [TestDockerProtocol.self, DockerUrlProtocol.self] as [AnyClass] + sessionConfig!.protocolClasses!
 		sessionConfig?.timeoutIntervalForRequest = 5000
 		session = URLSession(configuration: sessionConfig!, delegate: self, delegateQueue: queue)
 //		xpect = expectation(description: "bg url")
@@ -100,17 +100,18 @@ class DockerUrlProtocolTests: XCTestCase, URLSessionDataDelegate {
 //		}
 //	}
 
-	func testChunkedResponse() {
-		xpect = expectation(description: "foo bar")
-		let url = URL(string: "unix:///events")!
-		let request = NSMutableURLRequest(url: url)
-		request.rc2_chunkedResponse = true
-		let task = session?.dataTask(with: request as URLRequest)
-		task?.resume()
-		waitForExpectations(timeout: 300) { (error) in
-			expect(error).to(beNil())
-		}
-	}
+	// TODO: this doesn't work because we need to mock the communication to docker since it will always timeout
+//	func testChunkedResponse() {
+//		xpect = expectation(description: "foo bar")
+//		let url = URL(string: "unix:///events")!
+//		let request = NSMutableURLRequest(url: url)
+//		request.rc2_chunkedResponse = true
+//		let task = session?.dataTask(with: request as URLRequest)
+//		task?.resume()
+//		waitForExpectations(timeout: 5) { (error) in
+//			expect(error).to(beNil())
+//		}
+//	}
 	
 //	func testVersionRequest() {
 //		let expect = expectation(description: "contact docker daemon")
@@ -158,7 +159,7 @@ class DockerUrlProtocolTests: XCTestCase, URLSessionDataDelegate {
 }
 
 public class TestDockerProtocol: DockerUrlProtocol {
-	override func writeRequestData(data: Data, fileHandle: FileHandle) {
+	override public func writeRequestData(data: Data, fileHandle: FileHandle) {
 	}
 }
 

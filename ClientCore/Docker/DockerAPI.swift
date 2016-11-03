@@ -6,7 +6,7 @@
 
 import Foundation
 import ReactiveSwift
-import SwiftyJSON
+import Freddy
 
 //MARK: -
 /// simple operations that can be performed on a container

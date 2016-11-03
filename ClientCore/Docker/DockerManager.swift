@@ -7,7 +7,7 @@
 // TODO: backup database to dataDirectory
 
 import Foundation
-import SwiftyJSON
+import Freddy
 import BrightFutures
 import ReactiveSwift
 import Result
@@ -91,7 +91,7 @@ public final class DockerManager: NSObject {
 		session = URLSession(configuration: sessionConfig)
 		api = DockerAPIImplementation(baseUrl: baseUrl, sessionConfig: sessionConfig, log: dockerLog)
 		//read image info if it is there
-		imageInfo = RequiredImageInfo(json: defaults[.cachedImageInfo])
+		imageInfo = RequiredImageInfo(from: defaults[.cachedImageInfo])
 		super.init()
 		setupDataDirectory()
 		//check for a host specified as an environment variable - useful for testing
@@ -109,16 +109,10 @@ public final class DockerManager: NSObject {
 		assert(baseUrl != nil, "hostUrl not specified as argument or environment variable")
 		//load static docker info we'll use throughout this class
 		let path: String = Bundle(for: type(of: self)).path(forResource: "dockerInfo", ofType: "json")!
-		let containerInfo = JSON(data: URL(fileURLWithPath: path).contents()!)
-		assert(containerInfo.dictionary?.count == ContainerType.all.count)
-		containers = containerInfo.dictionaryValue.map { key, value in
-			guard let type = ContainerType.from(imageName: key) else {
-				fatalError("failed to find container of type \(key)")
-			}
-			let dc = DockerContainer(type: type, createInfo: value)
-			dc.createInfo = value
-			return dc
-		}
+		guard let containerJson = try? JSON(data: URL(fileURLWithPath: path).contents()!) else { fatalError() }
+		// swiftlint:disable:next force_try //if our static file isn't encoded properly, a crash is the right thing to do
+		containers = try! containerJson.decodedArray(at: "containers", type: DockerContainer.self)
+		assert(containers.count == ContainerType.all.count)
 		self.eventMonitor = DockerEventMonitor(baseUrl: self.baseUrl, delegate: self, sessionConfig: self.sessionConfig)
 	}
 
@@ -199,7 +193,7 @@ public final class DockerManager: NSObject {
 			return SignalProducer<Bool, DockerError>(value: true)
 		}
 		return api.fetchJson(url: URL(string:"\(baseInfoUrl)imageInfo.json")!).map { json in
-			self.imageInfo = RequiredImageInfo(json: json)
+			self.imageInfo = RequiredImageInfo(from: json)
 			self.defaults[.cachedImageInfo] = json
 			self.defaults[.lastImageInfoCheck] = Date.timeIntervalSinceReferenceDate
 			return true
@@ -256,13 +250,14 @@ extension DockerManager: DockerEventMonitorDelegate {
 	func handleEvent(_ event: DockerEvent) {
 		os_log("got event: %{public}s", log:dockerLog, type:.info, event.description)
 		//only care if it is one of our containers
-		guard let from = event.json["from"].string,
+		guard let from = try? event.json.getString(at:"from"),
 			let ctype = ContainerType.from(imageName:from),
 			let container = containers[ctype] else { return }
 		switch event.eventType {
 			case .die:
 				os_log("warning: container died: %{public}s", log:dockerLog, from)
-				if let exitStatusStr = event.json["exitCode"].string, let exitStatus = Int(exitStatusStr), exitStatus != 0
+				if let exitStatusStr = try? event.json.getString(at: "exitCode"),
+					let exitStatus = Int(exitStatusStr), exitStatus != 0
 				{
 					//abnormally died
 					//TODO: handle abnormal death of container

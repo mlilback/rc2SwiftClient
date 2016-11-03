@@ -5,39 +5,37 @@
 //
 
 import Foundation
-import SwiftyJSON
+import Freddy
 
-public struct DockerImage: JSONSerializable, Named {
+public struct DockerImage: JSONDecodable, Named {
 	let id: String
 	let tags: [DockerTag]
 	let size: Int
 	var labels: [String:String] = [:]
 
-	public init?(json: JSON?) {
-		guard let json = json else { return nil }
-		id = json["Id"].stringValue
-		self.size = json["Size"].intValue
+	/// convenience initializer that return nil if an error was thrown by the JSON initializer
+	public init?(from: JSON) {
+		do {
+			try self.init(json: from)
+		} catch {
+		}
+		return nil
+	}
+
+	/// JSONDecodable support. not implemented in an extension because is not a convience initializer
+	public init(json: JSON) throws {
+		id = try json.getString(at: "Id")
+		self.size = try json.getInt(at: "Size")
 		var localTags: [DockerTag] = []
-		for aTag in json["RepoTags"].arrayValue {
-			if let tag = DockerTag(tag: aTag.stringValue), tag.name != "none" {
+		for aTag in try json.decodedArray(at: "RepoTags", type: String.self) {
+			if let tag = DockerTag(tag: aTag), tag.name != "none" {
 				localTags.append(tag)
 			}
 		}
 		self.tags = localTags
-		for (key, value) in json["Labels"].dictionaryValue {
-			labels[key] = value.stringValue
+		for (key, value) in try json.decodedDictionary(at: "Labels", type: String.self) {
+			labels[key] = value
 		}
-	}
-
-	public func serialize() throws -> JSON {
-		var dict: [String:AnyObject] = [:]
-		dict["Id"] = id as AnyObject?
-		dict["Size"] = size as AnyObject?
-		var outTags: [JSON] = []
-		for aTag in tags {
-			outTags.append(try aTag.serialize())
-		}
-		return JSON(["Id": JSON(id), "Size": JSON(size), "RepoTags": JSON(outTags)])
 	}
 
 	public func isNamed(_ str: String) -> Bool {
@@ -45,6 +43,16 @@ public struct DockerImage: JSONSerializable, Named {
 			if aTag.description.hasPrefix(str) { return true }
 		}
 		return false
+	}
+}
+
+extension DockerImage: JSONEncodable {
+	public func toJSON() -> JSON {
+		var dict: [String:AnyObject] = [:]
+		dict["Id"] = id as AnyObject?
+		dict["Size"] = size as AnyObject?
+		let outTags = tags.map { $0.toJSON() }
+		return .dictionary(["Id": .string(id), "Size": .int(size), "RepoTags": .array(outTags)])
 	}
 }
 

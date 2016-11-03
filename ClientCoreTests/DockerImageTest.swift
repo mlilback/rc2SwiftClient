@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import SwiftyJSON
+import Freddy
 @testable import ClientCore
 
 class DockerImageTest: XCTestCase {
@@ -17,7 +17,7 @@ class DockerImageTest: XCTestCase {
 		super.setUp()
 		let path : String = Bundle(for: DockerImageTest.self).path(forResource: "dockerImages", ofType: "json")!
 		let resultData = try! Data(contentsOf: URL(fileURLWithPath: path))
-		jsonArray = JSON(data:resultData)
+		jsonArray = try! JSON(data:resultData)
 	}
 	
 	override func tearDown() {
@@ -26,25 +26,9 @@ class DockerImageTest: XCTestCase {
 	}
 
 	func testReadImages() {
-		var images:[DockerImage] = []
-		for anImageJson in jsonArray!.arrayValue {
-			images.append(DockerImage(json: anImageJson)!)
-		}
+		var images:[DockerImage] = try! jsonArray!.decodedArray(at: "images")
 		XCTAssertEqual(images.count, 1)
 		XCTAssertEqual(images[0].tags.count, 1)
 		XCTAssertEqual(images[0].tags.first?.name, "dbserver")
-	}
-	
-	func testImageSerialization() {
-		let original:[DockerImage] = (jsonArray?.arrayValue.map() { return DockerImage(json: $0)! })!
-		let json = JSON(original.map() { try! $0.serialize() })
-		var images:[DockerImage] = []
-		for anImageJson in json.arrayValue {
-			images.append(DockerImage(json: anImageJson)!)
-		}
-		XCTAssertEqual(original.count, images.count)
-		for (idx, obj) in images.enumerated() {
-			XCTAssertEqual(obj, original[idx])
-		}
 	}
 }

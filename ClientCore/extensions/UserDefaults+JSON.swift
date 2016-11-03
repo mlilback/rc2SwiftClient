@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import SwiftyJSON
+import Freddy
 import SwiftyUserDefaults
 import os
 
@@ -13,12 +13,14 @@ public extension UserDefaults {
 	///allow storing JSON objects via SwiftyUserDefaults (serialized as Data)
 	public subscript(key: DefaultsKey<JSON?>) -> JSON? {
 		get {
-			guard let data = data(forKey: key._key) else { return nil }
-			return JSON(data: data)
+			guard let data = data(forKey: key._key), let json = try? JSON(data: data) else {
+				return nil
+			}
+			return json
 		}
 		set {
 			do {
-				set(try newValue?.rawData(), forKey: key._key)
+				set(try newValue?.serialize(), forKey: key._key)
 			} catch let err {
 				os_log("error saving a JSON object to UserDefaults:%{public}s", err as NSError)
 			}
