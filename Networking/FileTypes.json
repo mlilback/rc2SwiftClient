@@ -1,0 +1,99 @@
+{
+  "FileTypes": [
+    {
+      "Extension": "R",
+      "Importable": true,
+      "Creatable": true,
+      "IsSrc": true,
+      "Executable": true,
+      "Name": "R file",
+      "IsTextFile": true,
+      "Description": "R source File (.R)",
+      "IconName": "Rdoc"
+    },
+    {
+      "Extension": "Rnw",
+      "Importable": true,
+      "Creatable": true,
+      "IsSrc": true,
+      "Executable": true,
+      "IsSweave": true,
+      "Name": "Sweave",
+      "IsTextFile": true,
+      "Description": "Sweave source file (.Rnw)",
+      "IconName": "Rnw"
+    },
+    {
+      "Extension": "Rmd",
+      "Importable": true,
+      "Creatable": true,
+      "IsSrc": true,
+      "Executable": true,
+      "IsRMarkdown": true,
+      "Name": "R markdown",
+      "IsTextFile": true,
+      "Description": "R markdown file (.Rmd)",
+      "IconName": "Rmd"
+    },
+    {
+      "Extension": "txt",
+      "Importable": true,
+      "Creatable": true,
+      "Name": "Text",
+      "IsTextFile": true,
+      "Description": "Text file (.txt)"
+    },
+    {
+      "Extension": "csv",
+      "Importable": true,
+      "Creatable": true,
+      "Name": "CSV file",
+      "IsTextFile": true,
+      "Description": "Comma Separated Values (.csv)"
+    },
+    {
+      "Extension": "log",
+      "Name": "Log file",
+      "IsTextFile": true
+    },
+    {
+      "Extension": "html",
+      "Importable": true,
+      "Creatable": true,
+      "MimeType": "text/html",
+      "Name": "HTML file",
+      "IsTextFile": true,
+      "Description": "HTML source file (.html)",
+      "IconName": "htmldoc"
+    },
+    {
+      "Extension": "pdf",
+      "Importable": true,
+      "MimeType": "application/pdf",
+      "Name": "PDF",
+      "IsTextFile": false,
+      "IconName": "pdfdoc"
+    },
+    {
+      "Extension": "png",
+      "Importable": false,
+      "IsImage": true,
+      "MimeType": "image/png",
+      "Name": "PNG image"
+    },
+    {
+      "Extension": "jpg",
+      "Importable": false,
+      "IsImage": true,
+      "MimeType": "image/jpeg",
+      "Name": "JPEG image"
+    },
+    {
+      "Extension": "gif",
+      "Importable": false,
+      "IsImage": true,
+      "MimeType": "image/gif",
+      "Name": "GIF image"
+    }
+  ]
+}

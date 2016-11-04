@@ -1,0 +1,46 @@
+{
+	"user": {
+		"id": 100,
+		"version": 1,
+		"login": "local",
+		"firstName": "Local",
+		"lastName": "Account",
+		"email": "singlesignin@rc2.io",
+		"admin": false,
+		"enabled": true
+	},
+	"token": "1_-6673679035999338665_-5094905675301261464",
+	"projects": [{
+				 "id": 100,
+				 "version": 1,
+				 "userId": 100,
+				 "name": "default",
+				 "workspaces": [{
+								"id": 100,
+								"version": 1,
+								"projectId": 100,
+								"name": "default",
+								"project": null,
+								"files": [{
+										  "id": 1,
+										  "wspaceId": 1,
+										  "name": "sample.R",
+										  "version": 0,
+										  "dateCreated": 1439407405827,
+										  "lastModified": 1439407505827,
+										  "fileSize": 28,
+										  "etag": "f/1/0"
+										  }, {
+										  "id": 2,
+										  "wspaceId": 1,
+										  "name": "foo.R",
+										  "version": 0,
+										  "dateCreated": 1439407405853,
+										  "lastModified": 1439407405853,
+										  "fileSize": 28,
+										  "etag": "f/2/0"
+										  }]
+								}]
+				 }],
+	"token": "100_-7403875190602125547_-3606670007811684995"
+}
