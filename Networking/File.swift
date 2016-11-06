@@ -9,12 +9,12 @@ import Freddy
 
 public final class File: JSONDecodable, CustomStringConvertible, Equatable {
 	let fileId : Int
-	fileprivate(set) var name : String
-	fileprivate(set) var version : Int
-	fileprivate(set) var fileSize : Int
-	fileprivate(set) var dateCreated : Date
-	fileprivate(set) var lastModified : Date
-	fileprivate(set) var fileType: FileType
+	fileprivate(set) var name : String!
+	fileprivate(set) var version : Int!
+	fileprivate(set) var fileSize : Int!
+	fileprivate(set) var dateCreated : Date!
+	fileprivate(set) var lastModified : Date!
+	fileprivate(set) var fileType: FileType!
 	
 	public init(json:JSON) throws {
 		fileId = try json.getInt(at: "id")

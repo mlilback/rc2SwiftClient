@@ -18,7 +18,7 @@ class FileTypeSpec: QuickSpec {
 		}
 		
 		it("Rmd type is valid") {
-			let rawRmd = FileType.fileTypeWithExtension("Rmd")
+			let rawRmd = FileType.fileType(withExtension: "Rmd")
 			expect(rawRmd).toNot(beNil())
 			let rmd = rawRmd!
 			expect(rmd.name).to(equal("R markdown"))
@@ -34,7 +34,7 @@ class FileTypeSpec: QuickSpec {
 		}
 
 		it("png type is valid") {
-			let rawType = FileType.fileTypeWithExtension("png")
+			let rawType = FileType.fileType(withExtension: "png")
 			expect(rawType).toNot(beNil())
 			let type = rawType!
 			expect(type.name).to(equal("PNG image"))

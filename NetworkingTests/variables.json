@@ -1,0 +1,90 @@
+{
+	"msg": "variables",
+	"delta": false,
+	"singleValue": false,
+	"variables": {
+		"str": {
+			"name": "str",
+			"length": 2,
+			"primitive": true,
+			"class": "string",
+			"type": "s",
+			"value": ["foo", "bar"]
+		},
+		"logic": {
+			"name": "logic",
+			"length": 2,
+			"primitive": true,
+			"class": "logical",
+			"type": "b",
+			"value": [true, false]
+		},
+		"doubleVal": {
+			"name": "doubleVal",
+			"length": 1,
+			"primitive": true,
+			"class": "numeric vector",
+			"type": "d",
+			"value": [12.1]
+		},
+		"intVal": {
+			"name": "intVal",
+			"length": 3,
+			"primitive": true,
+			"class": "numeric vector",
+			"type": "i",
+			"value": [1, 3, 4]
+		},
+		"specialId": {
+			"name": "speciald",
+			"length": 4,
+			"primitive": true,
+			"class": "numeric vector",
+			"type": "d",
+			"value": ["NaN", "Inf", "-Inf", 3.14]
+		},
+		"dct": {
+			"name": "dct",
+			"class": "POSIXct",
+			"type": "date",
+			"value": 1462016050.3478991985
+		},
+		"date": {
+			"name": "aDate",
+			"class": "Date",
+			"type": "date",
+			"value": "1954/4/18"
+		},
+		"f": {
+			"name": "f",
+			"class": "factor",
+			"type": "f",
+			"levels": ["a", "b", "c", "d", "e"],
+			"value": [1, 1, 3, 4, 2, 5]
+		},
+		"cpx": {
+			"name": "cpx",
+			"length": 2,
+			"primitive": true,
+			"class": "complex",
+			"type": "c",
+			"value": ["0.09899058348162+1.28356775897029i", "0.31678933299843-2.17259909989559i"]
+		},
+		"r1": {
+			"name": "r1",
+			"length": 4,
+			"primitive": true,
+			"class": "raw",
+			"type": "r",
+			"value": []
+		},
+		"nn": {
+			"name": "nn",
+			"notAVector": true,
+			"primitive": true,
+			"class": "NULL",
+			"type": "n",
+			"value": []
+		}
+	}
+}

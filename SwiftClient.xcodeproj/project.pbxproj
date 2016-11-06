@@ -183,6 +183,9 @@
 		08765C7E1DC57AE200F75D8E /* NSURLRequest+Rc2Docker.m in Sources */ = {isa = PBXBuildFile; fileRef = 08765C7C1DC57AE200F75D8E /* NSURLRequest+Rc2Docker.m */; };
 		08765C801DC57F7500F75D8E /* NSURLRequest+RcDocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C7F1DC57F7500F75D8E /* NSURLRequest+RcDocker.swift */; };
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
+		0881B5041DCD23FD00679DB3 /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B5031DCD23FD00679DB3 /* Variable.swift */; };
+		0881B5061DCD329300679DB3 /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B5051DCD329300679DB3 /* VariableSpec.swift */; };
+		0881B5081DCD336500679DB3 /* variables.json in Resources */ = {isa = PBXBuildFile; fileRef = 0881B5071DCD336500679DB3 /* variables.json */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
 		088CE6741C4B0AF400153414 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6721C4B0AF400153414 /* Main.storyboard */; };
@@ -625,6 +628,9 @@
 		08765C7F1DC57F7500F75D8E /* NSURLRequest+RcDocker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURLRequest+RcDocker.swift"; sourceTree = "<group>"; };
 		08765C811DC58AB300F75D8E /* DispatchReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchReader.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
+		0881B5031DCD23FD00679DB3 /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
+		0881B5051DCD329300679DB3 /* VariableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableSpec.swift; sourceTree = "<group>"; };
+		0881B5071DCD336500679DB3 /* variables.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = variables.json; sourceTree = "<group>"; };
 		088CE6691C4B0AF400153414 /* Rc².app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Rc².app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MacAppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		088CE6701C4B0AF400153414 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -870,9 +876,11 @@
 			children = (
 				080E82D21DCBE31D0048F36C /* Info.plist */,
 				080E82FD1DCCD77D0048F36C /* loginResults.json */,
+				0881B5071DCD336500679DB3 /* variables.json */,
 				080E82EB1DCC001E0048F36C /* FileTypeSpec.swift */,
 				080E82F91DCCD4E90048F36C /* FileSpec.swift */,
 				080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */,
+				0881B5051DCD329300679DB3 /* VariableSpec.swift */,
 			);
 			path = NetworkingTests;
 			sourceTree = "<group>";
@@ -994,6 +1002,7 @@
 				080E82F71DCCD4620048F36C /* File.swift */,
 				080E82E01DCBEE590048F36C /* User.swift */,
 				080E82E21DCBEF830048F36C /* Project.swift */,
+				0881B5031DCD23FD00679DB3 /* Variable.swift */,
 				080E82E41DCBF4520048F36C /* Workspace.swift */,
 			);
 			name = model;
@@ -1635,6 +1644,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				080E82FE1DCCD77D0048F36C /* loginResults.json in Resources */,
+				0881B5081DCD336500679DB3 /* variables.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1780,6 +1790,7 @@
 				080E82EE1DCC00850048F36C /* FileType.swift in Sources */,
 				080E82E31DCBEF830048F36C /* Project.swift in Sources */,
 				080E82E81DCBFE720048F36C /* Freddy+Rc2.swift in Sources */,
+				0881B5041DCD23FD00679DB3 /* Variable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1789,6 +1800,7 @@
 			files = (
 				080E82FA1DCCD4E90048F36C /* FileSpec.swift in Sources */,
 				080E82FC1DCCD56F0048F36C /* NetworkingBaseSpec.swift in Sources */,
+				0881B5061DCD329300679DB3 /* VariableSpec.swift in Sources */,
 				080E82EC1DCC001E0048F36C /* FileTypeSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
