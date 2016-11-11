@@ -6,8 +6,10 @@
 
 import Foundation
 import Freddy
+import NotifyingCollection
 
-public final class File: JSONDecodable, CustomStringConvertible, Equatable {
+public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashable, UpdateInPlace
+{
 	let fileId : Int
 	fileprivate(set) var name : String!
 	fileprivate(set) var version : Int!
@@ -20,6 +22,18 @@ public final class File: JSONDecodable, CustomStringConvertible, Equatable {
 		fileId = try json.getInt(at: "id")
 		try applyJson(json: json)
 	}
+	
+	public init(instance: File) {
+		fileId = instance.fileId
+		name = instance.name
+		version = instance.version
+		fileSize = instance.fileSize
+		dateCreated = instance.dateCreated
+		lastModified = instance.lastModified
+		fileType = instance.fileType
+	}
+	
+	public var hashValue: Int { return ObjectIdentifier(self).hashValue }
 	
 	///initialize with native dictionary from a MessagePackDictionary
 //	init(dict:[String:AnyObject]) {
@@ -43,8 +57,14 @@ public final class File: JSONDecodable, CustomStringConvertible, Equatable {
 	///
 	/// - Parameter json: latest information from the server
 	/// - Throws: any json parsing errors
-	internal func update(json: JSON) throws {
-		try applyJson(json: json)
+	public func update(to other: File) throws {
+		assert(fileId == other.fileId)
+		name = other.name
+		version = other.version
+		fileSize = other.fileSize
+		dateCreated = other.dateCreated
+		lastModified = other.lastModified
+		fileType = other.fileType
 	}
 
 	public var description : String {

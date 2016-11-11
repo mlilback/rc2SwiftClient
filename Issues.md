@@ -35,3 +35,5 @@
 * make sure docker stuff works with sleep
 
 * switching help topics adjusts width of split view
+
+* switch all use of KVO in File to use signals

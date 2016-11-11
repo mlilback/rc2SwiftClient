@@ -20,6 +20,20 @@
                ReferencedContainer = "container:SwiftClient.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "0881B5231DD2361700679DB3"
+               BuildableName = "NotifyingCollection.framework"
+               BlueprintName = "NotifyingCollection"
+               ReferencedContainer = "container:vendor/CollectionNotifier/NotifyingCollection.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

@@ -6,7 +6,9 @@
 
 import Foundation
 
-public enum NetworkingError: String, Error {
+public enum NetworkingError: Error {
 	case invalidJson
 	case unsupportedFileType
+	case connectionError(Error)
+	case canceled
 }

@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "container:SwiftClient.xcodeproj">
+      location = "group:SwiftClient.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:vendor/CollectionNotifier/NotifyingCollection.xcodeproj">
    </FileRef>
 </Workspace>
