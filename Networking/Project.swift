@@ -19,15 +19,16 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 	var workspaces: [Workspace] { return _workspaces.values }
 	var workspaceChangeSignal: Signal<[CollectionChange<Workspace>], NoError> { return _workspaces.changeSignal }
 
-	private var _workspaces = CollectionNotifier<Workspace>()
-	
+	private var _workspaces = NestingCollectionNotifier<Workspace>()
+
 	//documentation inherited from protocol
 	public init(json: JSON) throws {
 		projectId = try json.getInt(at: "id")
 		userId = try json.getInt(at: "userId")
 		version = try json.getInt(at: "version")
 		name = try json.getString(at: "name")
-		try _workspaces.append(contentsOf: json.decodedArray(at: "workspaces", type: Workspace.self))
+		let wspaces = try json.decodedArray(at: "workspaces", type: Workspace.self)
+		try _workspaces.append(contentsOf: wspaces)
 	}
 
 	//documentation inherited from protocol
@@ -60,8 +61,9 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 	
 	//documentation inherited from protocol
 	public func update(to other: Project) throws {
+		print("vers=\(other.workspaces[0].files[0].version)")
 		assert(projectId == other.projectId)
-		assert(version < other.version)
+		assert(version <= other.version) //TODO: verify the server actually increments this if a file changes
 		assert(userId == other.userId)
 		name = other.name
 		version = other.version
@@ -86,6 +88,14 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 		try wspacesToRemove.forEach { (aWspace) in try _workspaces.remove(aWspace) }
 	}
 	
+	public func addWorkspaceObserver(identifier: String, observer: @escaping (Workspace) -> Disposable?) {
+		_workspaces.observe(identifier: identifier, observer: observer)
+	}
+	
+	public func removeObWorkspaceOserver(identifier: String) {
+		_workspaces.removeObserver(identifier: identifier)
+	}
+
 	public static func == (lhs: Project, rhs: Project) -> Bool {
 		return lhs.projectId == rhs.projectId && lhs.version == rhs.version
 	}

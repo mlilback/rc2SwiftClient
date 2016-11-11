@@ -10,10 +10,11 @@ import Nimble
 import Freddy
 
 class NetworkingBaseSpec: QuickSpec {
-	/// Load a data file
+	/// Load Data from a resource file
 	///
-	/// - Parameter fileName: name of the file without the ".json"
-	/// - Returns: the parsed json
+	/// - Parameter fileName: name of the resource to load w/o file extension
+	/// - Parameter fileExtension: the file extension of the resource to load
+	/// - Returns: the Data object with the contents of the file
 	func loadFileData(_ fileName: String, fileExtension: String) -> Data? {
 		let bundle = Bundle(for: type(of: self))
 		guard let url = bundle.url(forResource: fileName, withExtension: fileExtension),

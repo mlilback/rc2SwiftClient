@@ -7,15 +7,18 @@
 import Foundation
 import Freddy
 import NotifyingCollection
+import ReactiveSwift
+import Result
 
 /// Encapsulates the host and properties returned from a login request
-public struct ConnectionInfo: CustomStringConvertible {
+public class ConnectionInfo: CustomStringConvertible {
 	let host: ServerHost
 	let user: User
 	let authToken: String
-	var projects: [Project]
+	var projects: [Project] { return _projects.values }
+	public var projectChangeSignal: Signal<[CollectionChange<Project>], NoError> { return _projects.changeSignal }
 	
-	let _projects = CollectionNotifier<Project>()
+	private let _projects = CollectionNotifier<Project>()
 	
 	/// initializer
 	///
@@ -27,7 +30,7 @@ public struct ConnectionInfo: CustomStringConvertible {
 		self.host = host
 		authToken = try json.getString(at: "token")
 		user = try json.decode(at: "user")
-		projects = try json.decodedArray(at: "projects")
+		try _projects.append(contentsOf: try json.decodedArray(at: "projects"))
 	}
 	
 	//documentation inherited from protocol

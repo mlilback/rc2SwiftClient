@@ -23,6 +23,7 @@ public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashab
 		try applyJson(json: json)
 	}
 	
+	//documentation inherited from protocol
 	public init(instance: File) {
 		fileId = instance.fileId
 		name = instance.name

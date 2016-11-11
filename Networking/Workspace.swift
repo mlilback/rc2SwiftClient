@@ -39,6 +39,7 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 		//these two sets are repeated in update()
 		version = try json.getInt(at: "version")
 		name = try json.getString(at: "name")
+		try _files.append(contentsOf: try json.decodedArray(at: "files"))
 	}
 
 	//documentation inherited from protocol
@@ -80,7 +81,7 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 		defer { _files.stopGroupingChanges() }
 		name = other.name
 		version = other.version
-		var filesToRemove = Set<File>(_files)
+		var filesToRemove = Set<File>(_files.values)
 		var filesToAdd = [File]()
 		try other.files.forEach { (aFile) in
 			guard let file = file(withId: aFile.fileId) else {
@@ -92,7 +93,7 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 			//force is ok because we know it is there since we just found it via workspace(withId:)
 			let idx = _files.index(of: file)!
 			try _files.update(at: idx, to: aFile)
-			filesToRemove.remove(aFile)
+			filesToRemove.remove(file)
 		}
 		try _files.append(contentsOf: filesToAdd)
 		//all files have been inserted or updated, just need to remove remaining

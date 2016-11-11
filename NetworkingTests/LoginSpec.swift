@@ -33,9 +33,8 @@ class LoginSpec: NetworkingBaseSpec {
 				expect(conInfo).toNot(beNil())
 				expect(conInfo?.user.userId).to(equal(100))
 				expect(conInfo?.user.email).to(equal("singlesignin@rc2.io"))
-				expect(conInfo?.projects.count).to(equal(1))
-//				let proj = conInfo!.projects[0]
-//				expect(proj.workspaces.value).to(equal(1))
+				expect(conInfo?.projects.count).to(equal(2))
+				//project testing in ModelSpec.swift
 			}
 		}
 	}
