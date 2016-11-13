@@ -29,7 +29,7 @@
 		080E82DF1DCBE3690048F36C /* SwiftWebSocket.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C11C7F321B00CCC27F /* SwiftWebSocket.framework */; };
 		080E82E11DCBEE590048F36C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82E01DCBEE590048F36C /* User.swift */; };
 		080E82E31DCBEF830048F36C /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82E21DCBEF830048F36C /* Project.swift */; };
-		080E82E51DCBF4520048F36C /* Workspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82E41DCBF4520048F36C /* Workspace.swift */; };
+		080E82E51DCBF4520048F36C /* xattr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82E41DCBF4520048F36C /* xattr.swift */; };
 		080E82E71DCBF8840048F36C /* FileTypes.json in Resources */ = {isa = PBXBuildFile; fileRef = 080E82E61DCBF8840048F36C /* FileTypes.json */; };
 		080E82E81DCBFE720048F36C /* Freddy+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82B61DCBC2D50048F36C /* Freddy+Rc2.swift */; };
 		080E82E91DCBFFBA0048F36C /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; };
@@ -127,7 +127,6 @@
 		083305FB1C519B8500E27F66 /* Rc2FileTypeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305F61C519B8500E27F66 /* Rc2FileTypeTest.swift */; };
 		083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 083306061C51A0B200E27F66 /* CommonDefaults.plist */; };
 		083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F01C64341C00D40EEB /* AppStatusView.swift */; };
-		083382F31C653B6300D40EEB /* xattr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F21C653B6300D40EEB /* xattr.swift */; };
 		083382F61C68E59300D40EEB /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F51C68E59300D40EEB /* FileCache.swift */; };
 		083382F81C68EBC200D40EEB /* FileCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F71C68EBC200D40EEB /* FileCacheTests.swift */; };
 		083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F91C68F2A900D40EEB /* BaseTest.swift */; };
@@ -320,6 +319,11 @@
 		08F6ADAA1DD643C900AF0722 /* Copyable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADA81DD643C900AF0722 /* Copyable.swift */; };
 		08F6ADAC1DD6502000AF0722 /* ModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADAB1DD6502000AF0722 /* ModelSpec.swift */; };
 		08F6ADAE1DD66CAB00AF0722 /* modelChanges.json in Resources */ = {isa = PBXBuildFile; fileRef = 08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */; };
+		08F6ADB01DD8F60200AF0722 /* Rc2RestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */; };
+		08F6ADB21DD90E3600AF0722 /* Rc2FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADB11DD90E3600AF0722 /* Rc2FileManager.swift */; };
+		08F6ADB51DD90F2D00AF0722 /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */; };
+		08F6ADB61DD90F3500AF0722 /* CryptoSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08F6ADB91DD911D500AF0722 /* Workspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADB81DD911D500AF0722 /* Workspace.swift */; };
 		08F8EDB71D89E3460037245C /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
 		08F8EDB91D89E3770037245C /* BrightFutures.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08FDB1991C591409006FCD1A /* ImageCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDB1981C591409006FCD1A /* ImageCacheTests.swift */; };
@@ -418,6 +422,7 @@
 				0881B5111DCFAFB000679DB3 /* Mockingjay.framework in CopyFiles */,
 				0881B5131DCFAFFB00679DB3 /* URITemplate.framework in CopyFiles */,
 				080E82F01DCC03810048F36C /* Freddy.framework in CopyFiles */,
+				08F6ADB61DD90F3500AF0722 /* CryptoSwift.framework in CopyFiles */,
 				080E82F31DCC03B40048F36C /* Result.framework in CopyFiles */,
 				080E82F21DCC038B0048F36C /* Nimble.framework in CopyFiles */,
 				080E82F51DCCCDB40048F36C /* SwiftWebSocket.framework in CopyFiles */,
@@ -508,7 +513,7 @@
 		080E82D21DCBE31D0048F36C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		080E82E01DCBEE590048F36C /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		080E82E21DCBEF830048F36C /* Project.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
-		080E82E41DCBF4520048F36C /* Workspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Workspace.swift; sourceTree = "<group>"; };
+		080E82E41DCBF4520048F36C /* xattr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = xattr.swift; sourceTree = "<group>"; };
 		080E82E61DCBF8840048F36C /* FileTypes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = FileTypes.json; sourceTree = "<group>"; };
 		080E82EB1DCC001E0048F36C /* FileTypeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTypeSpec.swift; sourceTree = "<group>"; };
 		080E82ED1DCC00850048F36C /* FileType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileType.swift; sourceTree = "<group>"; };
@@ -596,7 +601,6 @@
 		083305F81C519B8500E27F66 /* RestServerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = RestServerTest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		083306061C51A0B200E27F66 /* CommonDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CommonDefaults.plist; sourceTree = "<group>"; };
 		083382F01C64341C00D40EEB /* AppStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStatusView.swift; sourceTree = "<group>"; };
-		083382F21C653B6300D40EEB /* xattr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = xattr.swift; sourceTree = "<group>"; };
 		083382F51C68E59300D40EEB /* FileCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
 		083382F71C68EBC200D40EEB /* FileCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = FileCacheTests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		083382F91C68F2A900D40EEB /* BaseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BaseTest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -771,6 +775,9 @@
 		08F6ADA81DD643C900AF0722 /* Copyable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Copyable.swift; sourceTree = "<group>"; };
 		08F6ADAB1DD6502000AF0722 /* ModelSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelSpec.swift; sourceTree = "<group>"; };
 		08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = modelChanges.json; sourceTree = "<group>"; };
+		08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2RestClient.swift; sourceTree = "<group>"; };
+		08F6ADB11DD90E3600AF0722 /* Rc2FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2FileManager.swift; sourceTree = "<group>"; };
+		08F6ADB81DD911D500AF0722 /* Workspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Workspace.swift; sourceTree = "<group>"; };
 		08FDB1981C591409006FCD1A /* ImageCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCacheTests.swift; sourceTree = "<group>"; };
 		08FDB19A1C5917C3006FCD1A /* graph.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graph.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -783,6 +790,7 @@
 				080E82DE1DCBE3590048F36C /* Freddy.framework in Frameworks */,
 				080E82DF1DCBE3690048F36C /* SwiftWebSocket.framework in Frameworks */,
 				08F6ADA71DD63C7100AF0722 /* NotifyingCollection.framework in Frameworks */,
+				08F6ADB51DD90F2D00AF0722 /* CryptoSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -892,6 +900,8 @@
 				080E82C31DCBE31D0048F36C /* Networking.h */,
 				080E82C41DCBE31D0048F36C /* Info.plist */,
 				080E82FF1DCD07930048F36C /* NetworkingError.swift */,
+				08F6ADB11DD90E3600AF0722 /* Rc2FileManager.swift */,
+				080E82E41DCBF4520048F36C /* xattr.swift */,
 				0881B5091DCF84DB00679DB3 /* network */,
 				0881B5021DCD17B400679DB3 /* model */,
 			);
@@ -1032,8 +1042,8 @@
 				080E82F71DCCD4620048F36C /* File.swift */,
 				080E82E01DCBEE590048F36C /* User.swift */,
 				080E82E21DCBEF830048F36C /* Project.swift */,
+				08F6ADB81DD911D500AF0722 /* Workspace.swift */,
 				0881B5031DCD23FD00679DB3 /* Variable.swift */,
-				080E82E41DCBF4520048F36C /* Workspace.swift */,
 			);
 			name = model;
 			sourceTree = "<group>";
@@ -1043,6 +1053,7 @@
 			children = (
 				08F189B01D19B0D500866A05 /* ServerHost.swift */,
 				0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */,
+				08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */,
 				0881B50D1DCF896500679DB3 /* LoginFactory.swift */,
 			);
 			name = network;
@@ -1217,7 +1228,6 @@
 				08A01FD51CC95C58001EDFAA /* HelpController.swift */,
 				083174151C587F7F00071408 /* ImageCache.swift */,
 				08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */,
-				083382F21C653B6300D40EEB /* xattr.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -1826,15 +1836,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				0881B50C1DCF85B500679DB3 /* ServerHost.swift in Sources */,
-				080E82E51DCBF4520048F36C /* Workspace.swift in Sources */,
+				080E82E51DCBF4520048F36C /* xattr.swift in Sources */,
+				08F6ADB01DD8F60200AF0722 /* Rc2RestClient.swift in Sources */,
 				080E82F81DCCD4620048F36C /* File.swift in Sources */,
 				0881B50E1DCF896500679DB3 /* LoginFactory.swift in Sources */,
 				08F6ADAA1DD643C900AF0722 /* Copyable.swift in Sources */,
 				080E82E11DCBEE590048F36C /* User.swift in Sources */,
 				0881B50B1DCF856B00679DB3 /* ConnectionInfo.swift in Sources */,
 				080E83001DCD07930048F36C /* NetworkingError.swift in Sources */,
+				08F6ADB21DD90E3600AF0722 /* Rc2FileManager.swift in Sources */,
 				080E82EE1DCC00850048F36C /* FileType.swift in Sources */,
 				080E82E31DCBEF830048F36C /* Project.swift in Sources */,
+				08F6ADB91DD911D500AF0722 /* Workspace.swift in Sources */,
 				080E82E81DCBFE720048F36C /* Freddy+Rc2.swift in Sources */,
 				0881B5041DCD23FD00679DB3 /* Variable.swift in Sources */,
 			);
@@ -1874,7 +1887,6 @@
 				08A01FCA1CC7FCA3001EDFAA /* FMResultSet.m in Sources */,
 				08F189A61D09EE4000866A05 /* NSViewController+Rc2.swift in Sources */,
 				0827A4E21C7ED9CE001F0AFB /* CodeHighlighter.swift in Sources */,
-				083382F31C653B6300D40EEB /* xattr.swift in Sources */,
 				083305E41C517FC000E27F66 /* SidebarVariableController.swift in Sources */,
 				088CE6AA1C4B605D00153414 /* Workspace.swift in Sources */,
 				088CE6A51C4B605D00153414 /* File.swift in Sources */,

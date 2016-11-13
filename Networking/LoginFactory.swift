@@ -9,6 +9,8 @@ import Freddy
 import ReactiveSwift
 import os
 
+/// Factory class used to login and return a ConnectionInfo for that connection
+// must subclass NSObject to be a delegate to URLSession api
 public final class LoginFactory: NSObject {
 	// MARK: - properties
 	let sessionConfig: URLSessionConfiguration
@@ -23,6 +25,9 @@ public final class LoginFactory: NSObject {
 	
 	// MARK: - methods
 	
+	/// factory object to perform a login
+	///
+	/// - Parameter config: should include any necessary headers such as User-Agent
 	public required init(config: URLSessionConfiguration = .default) {
 		self.sessionConfig = config
 		responseData = Data()
@@ -31,6 +36,13 @@ public final class LoginFactory: NSObject {
 		networkLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "networking")
 	}
 	
+	/// returns a SignalProducer to start the login process
+	///
+	/// - Parameters:
+	///   - destHost: the host to connect to
+	///   - login: the user's login name
+	///   - password: the user's password
+	/// - Returns: a signal producer that returns the ConnectionInfo or an Error
 	public func login(to destHost: ServerHost, as login: String, password: String) -> SignalProducer<ConnectionInfo, NetworkingError>
 	{
 		assert(urlSession != nil, "login can only be called once")
@@ -54,6 +66,7 @@ public final class LoginFactory: NSObject {
 		}
 	}
 	
+	/// Cancels the outstanding login request
 	public func cancel() {
 		urlSession?.invalidateAndCancel()
 		urlSession = nil

@@ -11,6 +11,7 @@ import NotifyingCollection
 public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashable, UpdateInPlace
 {
 	let fileId : Int
+	let wspaceId: Int
 	fileprivate(set) var name : String!
 	fileprivate(set) var version : Int!
 	fileprivate(set) var fileSize : Int!
@@ -20,12 +21,14 @@ public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashab
 	
 	public init(json:JSON) throws {
 		fileId = try json.getInt(at: "id")
+		wspaceId = try json.getInt(at: "wspaceId")
 		try applyJson(json: json)
 	}
 	
 	//documentation inherited from protocol
 	public init(instance: File) {
 		fileId = instance.fileId
+		wspaceId = instance.wspaceId
 		name = instance.name
 		version = instance.version
 		fileSize = instance.fileSize
