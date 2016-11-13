@@ -56,5 +56,15 @@
 								  "etag": "f/212/0"
 								  }]
 						}]
-		}
+		},
+	"update_f202_bar": {
+		"id": 202,
+		"wspaceId": 201,
+		"name": "bar.R",
+		"version": 1,
+		"dateCreated": 1439407405853,
+		"lastModified": 1439407405853,
+		"fileSize": 121,
+		"etag": "f/202/0"
+	}
 }

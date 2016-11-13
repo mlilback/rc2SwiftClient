@@ -75,22 +75,36 @@ class ModelSpec: NetworkingBaseSpec {
 				}
 			}
 			afterEach {
-				fileDisposable = nil
+				fileDisposable?.dispose()
 			}
-			
+
+			// listen to nested file changes via a workspace of a project
 			it("listen to file changes") {
 				let json = updateJson["update_200_201_201"]
 				expect(json).toNot(beNil())
 				let updatedProject = try! Project(json: json!)
 				proj?.addWorkspaceObserver(identifier: "test") { (wspace) -> Disposable? in
-					return wspace.fileChangeSignal.observe { [weak self] event in
+					return wspace.fileChangeSignal.observe { /*[weak self]*/ event in
 						guard let changes = event.value else { return }
-						print("changes=\(changes)")
+						lastChanges = changes
+						print("w changes=\(changes)")
 					}
 				}
 				expect{ try proj?.update(to: updatedProject) }.toNot(throwError())
-				let file = wspace?.file(withId: 201)
-				expect(file?.name).to(equal("sample2.R"))
+				let file = wspace?.file(withId: 202)
+				expect(file?.version).to(equal(0))
+				expect(file?.name).to(equal("foo.R"))
+				
+				lastChanges = nil
+				let fjson = updateJson["update_f202_bar"]
+				let updatedFile = try! File(json: fjson!)
+				try! wspace?.update(fileId: 202, to: updatedFile)
+				//try! file?.update(to: updatedFile)
+				expect(lastChanges?.count).to(equal(1))
+				expect(lastChanges?.first?.changeType).to(equal(ChangeType.update))
+				expect(lastChanges?.first?.object).to(equal(file))
+				expect(file?.version).to(equal(1))
+				expect(file?.name).to(equal("bar.R"))
 			}
 		}
 	}

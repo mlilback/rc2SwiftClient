@@ -61,7 +61,6 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 	
 	//documentation inherited from protocol
 	public func update(to other: Project) throws {
-		print("vers=\(other.workspaces[0].files[0].version)")
 		assert(projectId == other.projectId)
 		assert(version <= other.version) //TODO: verify the server actually increments this if a file changes
 		assert(userId == other.userId)

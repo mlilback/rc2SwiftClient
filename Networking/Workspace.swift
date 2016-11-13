@@ -100,6 +100,34 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 		try filesToRemove.forEach { (aFile) in try _files.remove(aFile) }
 	}
 	
+	/// Updates a specific file, sending a change notification
+	///
+	/// - Parameters:
+	///   - fileId: the id of the file to update
+	///   - other: the version to update from
+	/// - Throws: .noSuchElement if not an element of the file collection
+	public func update(fileId: Int, to other: File) throws {
+		guard let ourFile = file(withId: fileId), let fileIdx = _files.index(of: ourFile) else {
+			throw CollectionNotifierError.noSuchElement
+		}
+		try _files.update(at: fileIdx, to: other)
+		
+	}
+
+	/// Updates a specific file, sending a change notification
+	///
+	/// - Parameters:
+	///   - file: the file to update
+	///   - other: the version to update from
+	/// - Throws: .noSuchElement if file is not owned by this workspace
+	public func update(file: File, to other: File) throws {
+		guard let fileIdx = _files.index(of: file) else {
+			throw CollectionNotifierError.noSuchElement
+		}
+		try _files.update(at: fileIdx, to: other)
+		
+	}
+	
 	public static func == (lhs: Workspace, rhs: Workspace) -> Bool {
 		return lhs.wspaceId == rhs.wspaceId && lhs.version == rhs.version && lhs.hashValue == rhs.hashValue
 	}

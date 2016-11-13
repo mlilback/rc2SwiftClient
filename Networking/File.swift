@@ -69,7 +69,7 @@ public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashab
 	}
 
 	public var description : String {
-		return "<File: \(name) (\(fileId) v\(version))>";
+		return "<File: \(name!) (\(fileId) v\(version!))>";
 	}
 	
 	public static func ==(a: File, b: File) -> Bool {
