@@ -58,13 +58,19 @@
 		08127CD71DAD2434002E0D01 /* ClientCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; };
 		08127CDF1DAD5BA9002E0D01 /* ReactiveSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		081468371C755A1E006DF8FC /* FileImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081468361C755A1E006DF8FC /* FileImporterTests.swift */; };
-		0814CB721CF894AC0008DE6B /* ConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814CB711CF894AC0008DE6B /* ConsoleAttachment.swift */; };
 		0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */; };
 		081559701DDA763A0047B3CE /* ClientCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		081559731DDB82970047B3CE /* NotifyingCollection.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		081559741DDB84C70047B3CE /* BrightFutures.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		081559761DDB85390047B3CE /* PMKVObserver.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		081559771DDB854F0047B3CE /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		081559791DDB92650047B3CE /* WebSocketSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559781DDB92650047B3CE /* WebSocketSource.swift */; };
+		0815597D1DDB9F630047B3CE /* ServerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815597C1DDB9F630047B3CE /* ServerResponse.swift */; };
+		0815597F1DDBAEB30047B3CE /* ServerResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815597E1DDBAEB30047B3CE /* ServerResponseHandler.swift */; };
+		081559811DDBAF030047B3CE /* ConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559801DDBAF030047B3CE /* ConsoleAttachment.swift */; };
+		081559831DDBB1000047B3CE /* ColorEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559821DDBB1000047B3CE /* ColorEnums.swift */; };
+		081559851DDBB3760047B3CE /* SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559841DDBB3760047B3CE /* SessionDelegate.swift */; };
+		081559871DDBB4310047B3CE /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559861DDBB4310047B3CE /* Session.swift */; };
 		08159D1E1C77656C004A205A /* NSProgressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08159D1D1C77656C004A205A /* NSProgressTests.m */; };
 		0816F89C1C6D2BA000A6120B /* SessionDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */; };
 		0816F89E1C6D320D00A6120B /* DefaultSessionFileHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89D1C6D320D00A6120B /* DefaultSessionFileHandler.swift */; };
@@ -111,7 +117,6 @@
 		083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174051C56BE7B00071408 /* SessionSplitController.swift */; };
 		0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0831740D1C577A2500071408 /* ConsoleTextField.swift */; };
 		083174101C57B2E200071408 /* CommandHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0831740F1C57B2E200071408 /* CommandHistory.swift */; };
-		083174121C58014500071408 /* ServerResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174111C58014500071408 /* ServerResponseHandler.swift */; };
 		083174141C5828B400071408 /* ResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174131C5828B400071408 /* ResultsView.swift */; };
 		083174161C587F7F00071408 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174151C587F7F00071408 /* ImageCache.swift */; };
 		083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */; };
@@ -188,7 +193,6 @@
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
 		088CE6741C4B0AF400153414 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6721C4B0AF400153414 /* Main.storyboard */; };
-		088CE6A41C4B605D00153414 /* ColorEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6951C4B605D00153414 /* ColorEnums.swift */; };
 		088CE6A51C4B605D00153414 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6971C4B605D00153414 /* File.swift */; };
 		088CE6A61C4B605D00153414 /* FileType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6981C4B605D00153414 /* FileType.swift */; };
 		088CE6A71C4B605D00153414 /* FileTypes.plist in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6991C4B605D00153414 /* FileTypes.plist */; };
@@ -197,9 +201,7 @@
 		088CE6AA1C4B605D00153414 /* Workspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE69C1C4B605D00153414 /* Workspace.swift */; };
 		088CE6AB1C4B605D00153414 /* RestHosts.json in Resources */ = {isa = PBXBuildFile; fileRef = 088CE69E1C4B605D00153414 /* RestHosts.json */; };
 		088CE6AC1C4B605D00153414 /* RestServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE69F1C4B605D00153414 /* RestServer.swift */; };
-		088CE6AD1C4B605D00153414 /* ServerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6A01C4B605D00153414 /* ServerResponse.swift */; };
 		088CE6AE1C4B605D00153414 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6A11C4B605D00153414 /* Session.swift */; };
-		088CE6AF1C4B605D00153414 /* WebSocketSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6A21C4B605D00153414 /* WebSocketSource.swift */; };
 		088CE6B61C4B71F300153414 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6B51C4B71F300153414 /* Constants.swift */; };
 		088CE6B81C4C44A800153414 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6B71C4C44A800153414 /* Keychain.swift */; };
 		088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 088CE6B91C4C44BD00153414 /* Security.framework */; };
@@ -580,10 +582,17 @@
 		08127CD41DAD2434002E0D01 /* ClientCoreIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCoreIntegrationTests.swift; sourceTree = "<group>"; };
 		08127CD61DAD2434002E0D01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		081468361C755A1E006DF8FC /* FileImporterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporterTests.swift; sourceTree = "<group>"; };
-		0814CB711CF894AC0008DE6B /* ConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleAttachment.swift; sourceTree = "<group>"; };
 		0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacConsoleAttachment.swift; sourceTree = "<group>"; };
 		0814F1EA1D7A2E290093C0C1 /* DockerImageTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerImageTest.swift; sourceTree = "<group>"; };
 		0814F1EC1D7A2E960093C0C1 /* dockerImages.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = dockerImages.json; sourceTree = "<group>"; };
+		081559781DDB92650047B3CE /* WebSocketSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocketSource.swift; sourceTree = "<group>"; };
+		0815597A1DDB92A50047B3CE /* SessionFileHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionFileHandler.swift; sourceTree = "<group>"; };
+		0815597C1DDB9F630047B3CE /* ServerResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerResponse.swift; sourceTree = "<group>"; };
+		0815597E1DDBAEB30047B3CE /* ServerResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerResponseHandler.swift; sourceTree = "<group>"; };
+		081559801DDBAF030047B3CE /* ConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleAttachment.swift; sourceTree = "<group>"; };
+		081559821DDBB1000047B3CE /* ColorEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorEnums.swift; sourceTree = "<group>"; };
+		081559841DDBB3760047B3CE /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
+		081559861DDBB4310047B3CE /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		08159D1D1C77656C004A205A /* NSProgressTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSProgressTests.m; sourceTree = "<group>"; };
 		0816F8991C6D0F7D00A6120B /* HTMLString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLString.swift; sourceTree = "<group>"; };
 		0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegates.swift; sourceTree = "<group>"; };
@@ -623,7 +632,6 @@
 		083174051C56BE7B00071408 /* SessionSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionSplitController.swift; sourceTree = "<group>"; };
 		0831740D1C577A2500071408 /* ConsoleTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleTextField.swift; sourceTree = "<group>"; };
 		0831740F1C57B2E200071408 /* CommandHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandHistory.swift; sourceTree = "<group>"; };
-		083174111C58014500071408 /* ServerResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerResponseHandler.swift; sourceTree = "<group>"; };
 		083174131C5828B400071408 /* ResultsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultsView.swift; sourceTree = "<group>"; };
 		083174151C587F7F00071408 /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarItemHandler.swift; sourceTree = "<group>"; };
@@ -697,7 +705,6 @@
 		088CE6751C4B0AF400153414 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		088CE67A1C4B0AF500153414 /* MacClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		088CE6801C4B0AF500153414 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		088CE6951C4B605D00153414 /* ColorEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorEnums.swift; sourceTree = "<group>"; };
 		088CE6971C4B605D00153414 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = File.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		088CE6981C4B605D00153414 /* FileType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileType.swift; sourceTree = "<group>"; };
 		088CE6991C4B605D00153414 /* FileTypes.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = FileTypes.plist; sourceTree = "<group>"; };
@@ -706,9 +713,7 @@
 		088CE69C1C4B605D00153414 /* Workspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Workspace.swift; sourceTree = "<group>"; };
 		088CE69E1C4B605D00153414 /* RestHosts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = RestHosts.json; sourceTree = "<group>"; };
 		088CE69F1C4B605D00153414 /* RestServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = RestServer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		088CE6A01C4B605D00153414 /* ServerResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerResponse.swift; sourceTree = "<group>"; };
 		088CE6A11C4B605D00153414 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
-		088CE6A21C4B605D00153414 /* WebSocketSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocketSource.swift; sourceTree = "<group>"; };
 		088CE6B51C4B71F300153414 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		088CE6B71C4C44A800153414 /* Keychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		088CE6B91C4C44BD00153414 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -1124,10 +1129,17 @@
 		0881B5091DCF84DB00679DB3 /* network */ = {
 			isa = PBXGroup;
 			children = (
+				081559801DDBAF030047B3CE /* ConsoleAttachment.swift */,
 				08F189B01D19B0D500866A05 /* ServerHost.swift */,
+				0815597C1DDB9F630047B3CE /* ServerResponse.swift */,
+				0815597E1DDBAEB30047B3CE /* ServerResponseHandler.swift */,
 				0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */,
 				08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */,
 				0881B50D1DCF896500679DB3 /* LoginFactory.swift */,
+				081559781DDB92650047B3CE /* WebSocketSource.swift */,
+				081559861DDBB4310047B3CE /* Session.swift */,
+				081559841DDBB3760047B3CE /* SessionDelegate.swift */,
+				0815597A1DDB92A50047B3CE /* SessionFileHandler.swift */,
 			);
 			name = network;
 			sourceTree = "<group>";
@@ -1295,8 +1307,6 @@
 				0827A4D71C7ED9CE001F0AFB /* SyntaxHighlighting */,
 				08F189B81D216E5400866A05 /* Bookmark.swift */,
 				083A567E1D25B818009D3091 /* BookmarkManager.swift */,
-				088CE6951C4B605D00153414 /* ColorEnums.swift */,
-				0814CB711CF894AC0008DE6B /* ConsoleAttachment.swift */,
 				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
 				08B036211C73B131005928B3 /* FileImporter.swift */,
 				080214871C693A69008B55D3 /* FileManager.swift */,
@@ -1328,11 +1338,8 @@
 				0816F89D1C6D320D00A6120B /* DefaultSessionFileHandler.swift */,
 				088CE69E1C4B605D00153414 /* RestHosts.json */,
 				088CE69F1C4B605D00153414 /* RestServer.swift */,
-				088CE6A01C4B605D00153414 /* ServerResponse.swift */,
-				083174111C58014500071408 /* ServerResponseHandler.swift */,
 				088CE6A11C4B605D00153414 /* Session.swift */,
 				0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */,
-				088CE6A21C4B605D00153414 /* WebSocketSource.swift */,
 				08EFF6021C7BB2E600AAF1D4 /* MultipartInputStream.swift */,
 			);
 			path = networking;
@@ -1343,6 +1350,7 @@
 			children = (
 				089794531D7B6C91003339EE /* ClientCore.h */,
 				086BC9AE1C552D43006ABAE0 /* AppStatus.swift */,
+				081559821DDBB1000047B3CE /* ColorEnums.swift */,
 				088CE6B71C4C44A800153414 /* Keychain.swift */,
 				0816F8991C6D0F7D00A6120B /* HTMLString.swift */,
 				08604A4D1D9C0C0500DE2A79 /* Named.swift */,
@@ -2001,6 +2009,8 @@
 				080E82F81DCCD4620048F36C /* File.swift in Sources */,
 				0881B50E1DCF896500679DB3 /* LoginFactory.swift in Sources */,
 				08F6ADAA1DD643C900AF0722 /* Copyable.swift in Sources */,
+				081559851DDBB3760047B3CE /* SessionDelegate.swift in Sources */,
+				081559811DDBAF030047B3CE /* ConsoleAttachment.swift in Sources */,
 				080E82E11DCBEE590048F36C /* User.swift in Sources */,
 				0881B50B1DCF856B00679DB3 /* ConnectionInfo.swift in Sources */,
 				080E83001DCD07930048F36C /* NetworkingError.swift in Sources */,
@@ -2008,8 +2018,12 @@
 				080E82EE1DCC00850048F36C /* FileType.swift in Sources */,
 				080E82E31DCBEF830048F36C /* Project.swift in Sources */,
 				08F6ADB91DD911D500AF0722 /* Workspace.swift in Sources */,
+				0815597D1DDB9F630047B3CE /* ServerResponse.swift in Sources */,
 				080E82E81DCBFE720048F36C /* Freddy+Rc2.swift in Sources */,
+				081559791DDB92650047B3CE /* WebSocketSource.swift in Sources */,
+				081559871DDBB4310047B3CE /* Session.swift in Sources */,
 				08F6AE001DD918CF00AF0722 /* FileCache.swift in Sources */,
+				0815597F1DDBAEB30047B3CE /* ServerResponseHandler.swift in Sources */,
 				0881B5041DCD23FD00679DB3 /* Variable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2040,10 +2054,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */,
-				088CE6AF1C4B605D00153414 /* WebSocketSource.swift in Sources */,
 				08F189AA1D109A4F00866A05 /* TextViewWithContextualMenu.swift in Sources */,
 				08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */,
-				088CE6A41C4B605D00153414 /* ColorEnums.swift in Sources */,
 				08F189B61D2157CF00866A05 /* (null) in Sources */,
 				08A01FCA1CC7FCA3001EDFAA /* FMResultSet.m in Sources */,
 				08F189A61D09EE4000866A05 /* NSViewController+Rc2.swift in Sources */,
@@ -2086,7 +2098,6 @@
 				083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
 				08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */,
-				0814CB721CF894AC0008DE6B /* ConsoleAttachment.swift in Sources */,
 				0864DA661DA2C70A003F3F57 /* DockerViewController.swift in Sources */,
 				083305E61C517FE300E27F66 /* SidebarHelpController.swift in Sources */,
 				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,
@@ -2119,8 +2130,6 @@
 				083174101C57B2E200071408 /* CommandHistory.swift in Sources */,
 				089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */,
 				08F189B91D216E5400866A05 /* Bookmark.swift in Sources */,
-				088CE6AD1C4B605D00153414 /* ServerResponse.swift in Sources */,
-				083174121C58014500071408 /* ServerResponseHandler.swift in Sources */,
 				08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */,
 				080E82B71DCBC2D50048F36C /* Freddy+Rc2.swift in Sources */,
 				0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */,
@@ -2178,6 +2187,7 @@
 				0826109C1DB8E0F000C03422 /* Data+Rc2.swift in Sources */,
 				08E8366B1D94436D00E26EFE /* UserDefaults+JSON.swift in Sources */,
 				08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */,
+				081559831DDBB1000047B3CE /* ColorEnums.swift in Sources */,
 				0897944D1D7B6A8F003339EE /* NSProgress+Rc2.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2727,7 +2737,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient.ClientCore;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.ClientCore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -2764,7 +2774,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient.ClientCore;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.ClientCore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -2799,7 +2809,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient.ClientCoreTests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.ClientCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -2823,7 +2833,7 @@
 				INFOPLIST_FILE = ClientCoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient.ClientCoreTests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.ClientCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

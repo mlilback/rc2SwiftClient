@@ -6,7 +6,7 @@
 
 import Foundation
 
-fileprivate let myBundle = Bundle(identifier: "io.rc2.MacClient.ClientCore")!
+fileprivate let myBundle = Bundle(identifier: "io.rc2.client.ClientCore")!
 
 /// Possible errors from Docker-related types
 ///

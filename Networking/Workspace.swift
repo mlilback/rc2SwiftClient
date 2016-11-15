@@ -71,6 +71,14 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 		return "<Workspace: \(name) (\(wspaceId))"
 	}
 
+	/// removes a file
+	///
+	/// - Parameter file: file to remove
+	/// - Throws: any CollectionNotifierErrors
+	public func remove(file: File) throws {
+		try _files.remove(file)
+	}
+	
 	/// Updates the workspace and files
 	///
 	/// - Parameter json: the updated workspace json

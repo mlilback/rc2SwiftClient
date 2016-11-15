@@ -94,7 +94,7 @@ public enum VariableType: Int {
 	}
 }
 
-open class Variable: CustomStringConvertible {
+public class Variable: Equatable, CustomStringConvertible {
 	fileprivate let jsonData:JSON
 
 	public static func variableForJson(_ json:JSON) throws -> Variable {
@@ -203,6 +203,10 @@ open class Variable: CustomStringConvertible {
 	public var functionBody:String? { return nil }
 	///if a factor, returns the levels
 	public var levels:[String]? { return nil }
+	
+	public static func == (lhs: Variable, rhs: Variable) -> Bool {
+		return lhs.jsonData == rhs.jsonData
+	}
 }
 
 public protocol PrimitiveValue {}
