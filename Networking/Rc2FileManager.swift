@@ -8,6 +8,7 @@ import Foundation
 import BrightFutures
 import os
 import CryptoSwift
+import ReactiveSwift
 
 let FileAttrVersion = "io.rc2.FileAttr.Version"
 let FileAttrChecksum = "io.rc2.FileAttr.SHA256"
@@ -30,6 +31,8 @@ public protocol Rc2FileManager {
 //	func createDirectory(at url: URL, withIntermediateDirectories createIntermediates: Bool, attributes: [String : Any]?) throws
 	func createDirectoryHierarchy(at url: URL) throws
 	func move(tempFile: URL, to toUrl:URL, file:File?, promise:inout Promise<URL?,FileError>)
+	/// synchronously move the file setting xattrs
+	func move(tempFile: URL, to toUrl: URL, file: File?) throws
 }
 
 public class Rc2DefaultFileManager: Rc2FileManager {
@@ -90,6 +93,27 @@ public class Rc2DefaultFileManager: Rc2FileManager {
 		} catch let err as NSError {
 			os_log("got error downloading file %{public}s: %{public}s", tmpFile.lastPathComponent, err)
 			promise.failure(FileError.failedToSaveFile)
+		}
+	}
+	
+	///Moves the tmpFile downloaded via NSURLSession (or elsewher) to toUrl, setting the appropriate
+	/// metadata including xattributes for validating cached File objects
+	public func move(tempFile: URL, to toUrl: URL, file: File?) throws {
+		do {
+			if try toUrl.checkResourceIsReachable() {
+				try self.removeItem(at: toUrl)
+			}
+			try self.moveItem(at:tempFile, to: toUrl)
+			//if a File, set mod/creation date, ignoring any errors
+			if let fileRef = file {
+				//TODO: fix this to use native URL methods
+				_ = try? (toUrl as NSURL).setResourceValue(fileRef.lastModified, forKey: URLResourceKey.contentModificationDateKey)
+				_ = try? (toUrl as NSURL).setResourceValue(fileRef.dateCreated, forKey: URLResourceKey.creationDateKey)
+				fileRef.writeXAttributes(toUrl)
+			}
+		} catch let err as NSError {
+			os_log("got error downloading file %{public}s: %{public}s", tempFile.lastPathComponent, err)
+			throw FileError.failedToSaveFile
 		}
 	}
 }
