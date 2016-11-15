@@ -18,8 +18,6 @@
 		0803FCBE1C84C47400F17E4A /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		080834561C84C13300F5A190 /* SyntaxParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080834551C84C13300F5A190 /* SyntaxParserTests.swift */; };
 		080E82B51DCBB3DD0048F36C /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; };
-		080E82B71DCBC2D50048F36C /* Freddy+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82B61DCBC2D50048F36C /* Freddy+Rc2.swift */; };
-		080E82B81DCBC2D50048F36C /* Freddy+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82B61DCBC2D50048F36C /* Freddy+Rc2.swift */; };
 		080E82BB1DCBE26A0048F36C /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82BA1DCBE26A0048F36C /* Project.swift */; };
 		080E82CA1DCBE31D0048F36C /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; };
 		080E82D31DCBE31D0048F36C /* Networking.h in Headers */ = {isa = PBXBuildFile; fileRef = 080E82C31DCBE31D0048F36C /* Networking.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -31,7 +29,6 @@
 		080E82E31DCBEF830048F36C /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82E21DCBEF830048F36C /* Project.swift */; };
 		080E82E51DCBF4520048F36C /* xattr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82E41DCBF4520048F36C /* xattr.swift */; };
 		080E82E71DCBF8840048F36C /* FileTypes.json in Resources */ = {isa = PBXBuildFile; fileRef = 080E82E61DCBF8840048F36C /* FileTypes.json */; };
-		080E82E81DCBFE720048F36C /* Freddy+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82B61DCBC2D50048F36C /* Freddy+Rc2.swift */; };
 		080E82E91DCBFFBA0048F36C /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; };
 		080E82EA1DCBFFBE0048F36C /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; };
 		080E82EC1DCC001E0048F36C /* FileTypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82EB1DCC001E0048F36C /* FileTypeSpec.swift */; };
@@ -71,6 +68,7 @@
 		081559831DDBB1000047B3CE /* ColorEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559821DDBB1000047B3CE /* ColorEnums.swift */; };
 		081559851DDBB3760047B3CE /* SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559841DDBB3760047B3CE /* SessionDelegate.swift */; };
 		081559871DDBB4310047B3CE /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559861DDBB4310047B3CE /* Session.swift */; };
+		081559891DDBD7DA0047B3CE /* Freddy+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */; };
 		08159D1E1C77656C004A205A /* NSProgressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08159D1D1C77656C004A205A /* NSProgressTests.m */; };
 		0816F89C1C6D2BA000A6120B /* SessionDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */; };
 		0816F89E1C6D320D00A6120B /* DefaultSessionFileHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89D1C6D320D00A6120B /* DefaultSessionFileHandler.swift */; };
@@ -553,7 +551,6 @@
 		08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = EmbeddedFrameworkDebug.xcconfig; path = config/EmbeddedFrameworkDebug.xcconfig; sourceTree = "<group>"; };
 		08037C211D7B74A100006E9E /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = App.xcconfig; path = config/App.xcconfig; sourceTree = "<group>"; };
 		080834551C84C13300F5A190 /* SyntaxParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxParserTests.swift; sourceTree = "<group>"; };
-		080E82B61DCBC2D50048F36C /* Freddy+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Freddy+Rc2.swift"; sourceTree = "<group>"; };
 		080E82BA1DCBE26A0048F36C /* Project.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
 		080E82C11DCBE31D0048F36C /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		080E82C31DCBE31D0048F36C /* Networking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Networking.h; sourceTree = "<group>"; };
@@ -593,6 +590,7 @@
 		081559821DDBB1000047B3CE /* ColorEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorEnums.swift; sourceTree = "<group>"; };
 		081559841DDBB3760047B3CE /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
 		081559861DDBB4310047B3CE /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Freddy+Rc2.swift"; path = "ClientCore/Freddy+Rc2.swift"; sourceTree = SOURCE_ROOT; };
 		08159D1D1C77656C004A205A /* NSProgressTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSProgressTests.m; sourceTree = "<group>"; };
 		0816F8991C6D0F7D00A6120B /* HTMLString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLString.swift; sourceTree = "<group>"; };
 		0816F89B1C6D2BA000A6120B /* SessionDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegates.swift; sourceTree = "<group>"; };
@@ -1296,7 +1294,6 @@
 				088CE6B51C4B71F300153414 /* Constants.swift */,
 				084FEA7F1D3044E700060A7D /* ObjcConstants.h */,
 				084FEA801D3045D800060A7D /* ObjcConstants.m */,
-				080E82B61DCBC2D50048F36C /* Freddy+Rc2.swift */,
 				08F6ADA81DD643C900AF0722 /* Copyable.swift */,
 				08C484F71C9B159000FE824B /* server.cer */,
 				08A01FD11CC81479001EDFAA /* helpindex.db */,
@@ -1392,6 +1389,7 @@
 		089794431D7B6A8F003339EE /* extensions */ = {
 			isa = PBXGroup;
 			children = (
+				081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */,
 				089794441D7B6A8F003339EE /* NSError+Rc2.swift */,
 				089794451D7B6A8F003339EE /* NSProgress+Rc2.h */,
 				089794461D7B6A8F003339EE /* NSProgress+Rc2.m */,
@@ -2019,7 +2017,6 @@
 				080E82E31DCBEF830048F36C /* Project.swift in Sources */,
 				08F6ADB91DD911D500AF0722 /* Workspace.swift in Sources */,
 				0815597D1DDB9F630047B3CE /* ServerResponse.swift in Sources */,
-				080E82E81DCBFE720048F36C /* Freddy+Rc2.swift in Sources */,
 				081559791DDB92650047B3CE /* WebSocketSource.swift in Sources */,
 				081559871DDBB4310047B3CE /* Session.swift in Sources */,
 				08F6AE001DD918CF00AF0722 /* FileCache.swift in Sources */,
@@ -2131,7 +2128,6 @@
 				089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */,
 				08F189B91D216E5400866A05 /* Bookmark.swift in Sources */,
 				08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */,
-				080E82B71DCBC2D50048F36C /* Freddy+Rc2.swift in Sources */,
 				0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */,
 				080314231D2412ED006D668F /* SelectServerViewController.swift in Sources */,
 				088CE6B81C4C44A800153414 /* Keychain.swift in Sources */,
@@ -2181,7 +2177,7 @@
 				08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */,
 				08E8366E1D94715D00E26EFE /* FileManager+Rc2.swift in Sources */,
 				08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */,
-				080E82B81DCBC2D50048F36C /* Freddy+Rc2.swift in Sources */,
+				081559891DDBD7DA0047B3CE /* Freddy+Rc2.swift in Sources */,
 				08037C351D7C5E2200006E9E /* RecursiveFlatMap.swift in Sources */,
 				089794501D7B6A8F003339EE /* String+Rc2Extensions.swift in Sources */,
 				0826109C1DB8E0F000C03422 /* Data+Rc2.swift in Sources */,

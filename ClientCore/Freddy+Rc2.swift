@@ -7,7 +7,7 @@
 import Foundation
 import Freddy
 
-extension JSON {
+public extension JSON {
 	/// Assuming self is an array, return self as an array of JSON
 	///
 	/// - throws: valueNotConvertible if self is not an .array
@@ -59,7 +59,7 @@ extension JSON {
 	///
 	/// - Parameter at: path type to get the value of
 	/// - Returns: the requested value or nil
-	func getOptionalDobule(at: JSONPathType) -> Double? {
+	func getOptionalDouble(at: JSONPathType) -> Double? {
 		guard let val = try? getDouble(at: at) else { return nil }
 		return val
 	}
@@ -70,6 +70,15 @@ extension JSON {
 	/// - Returns: the requested value or nil
 	func getOptionalInt(at: JSONPathType) -> Int? {
 		guard let val = try? getInt(at: at) else { return nil }
+		return val
+	}
+
+	/// Returns default value instead of throwing an error if value does not exist
+	///
+	/// - Parameter at: path type to get the value of
+	/// - Returns: the requested value or default value
+	func getOptionalInt(at: JSONPathType, or: Int) -> Int {
+		guard let val = try? getInt(at: at) else { return or }
 		return val
 	}
 
