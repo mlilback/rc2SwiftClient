@@ -7,6 +7,7 @@
 import Foundation
 import Freddy
 import os
+import ClientCore
 
 enum DockerEventType: String {
 	//don't care

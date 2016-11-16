@@ -331,7 +331,7 @@
 		08F6ADF71DD9172C00AF0722 /* DockerPullOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADE81DD9172C00AF0722 /* DockerPullOperation.swift */; };
 		08F6ADF81DD9172C00AF0722 /* DockerTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADE91DD9172C00AF0722 /* DockerTag.swift */; };
 		08F6ADF91DD9172C00AF0722 /* DockerUrlProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADEA1DD9172C00AF0722 /* DockerUrlProtocol.swift */; };
-		08F6ADFA1DD9172C00AF0722 /* NSURLRequest+Rc2Docker.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F6ADEB1DD9172C00AF0722 /* NSURLRequest+Rc2Docker.h */; };
+		08F6ADFA1DD9172C00AF0722 /* NSURLRequest+Rc2Docker.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F6ADEB1DD9172C00AF0722 /* NSURLRequest+Rc2Docker.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		08F6ADFB1DD9172C00AF0722 /* NSURLRequest+Rc2Docker.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADEC1DD9172C00AF0722 /* NSURLRequest+Rc2Docker.m */; };
 		08F6ADFC1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADED1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift */; };
 		08F6ADFD1DD9178A00AF0722 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
@@ -2393,6 +2393,7 @@
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";

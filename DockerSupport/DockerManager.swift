@@ -14,6 +14,7 @@ import Result
 import ServiceManagement
 import os
 import SwiftyUserDefaults
+import ClientCore
 
 // MARK: Keys for UserDefaults
 extension DefaultsKeys {

@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import ClientCore
 
 public extension URLRequest {
 	public var isChunkedResponse: Bool {
