@@ -99,7 +99,7 @@ public class Session {
 	///opens the websocket with the specified request
 	/// - parameter request: a ws:// or wss:// request to use for the websocket
 	/// - returns: future for the open session (with file loading started) or an error
-	func open(_ request:URLRequest) -> SignalProducer<Double, SessionError> {
+	public func open(_ request:URLRequest) -> SignalProducer<Double, SessionError> {
 		return SignalProducer<Double, SessionError>() { observer, disposable in
 			guard nil == self.openObserver else {
 				observer.send(error: .openAlreadyInProgress)
@@ -111,7 +111,7 @@ public class Session {
 	}
 	
 	///closes the websocket, which can not be reopened
-	func close() {
+	public func close() {
 		keepAliveTimer.cancel()
 		self.wsSource.close(1000, reason: "") //default values that can't be specified in a protocol
 	}
@@ -121,7 +121,7 @@ public class Session {
 	///Sends an execute request to the server
 	/// - parameter srcScript: the script code to send to the server
 	/// - parameter type: whether to run or source the script
-	func executeScript(_ srcScript: String, type:ExecuteType = .Run) {
+	public func executeScript(_ srcScript: String, type:ExecuteType = .Run) {
 		//don't send empty scripts
 		guard srcScript.characters.count > 0 else {
 			return
@@ -143,29 +143,29 @@ public class Session {
 	/// sends a request to execute a script file
 	/// - parameter fileId: the id of the file to execute
 	/// - parameter type: whether to run or source the file
-	func executeScriptFile(_ fileId:Int, type:ExecuteType = .Run) {
+	public func executeScriptFile(_ fileId:Int, type:ExecuteType = .Run) {
 		sendMessage(["msg":"execute" as AnyObject, "type":type.rawValue as AnyObject, "fileId":fileId as AnyObject])
 	}
 	
 	/// clears all variables in the global environment
-	func clearVariables() {
+	public func clearVariables() {
 		executeScript("rc2.clearEnvironment()");
 	}
 	
 	/// asks the server for a refresh of all environment variables
-	func forceVariableRefresh() {
+	public func forceVariableRefresh() {
 		sendMessage(["msg":"watchVariables" as AnyObject, "watch":true as AnyObject])
 	}
 	
 	/// ask the server to send a message with current variable values and delta messages as they change
-	func startWatchingVariables() {
+	public func startWatchingVariables() {
 		if (watchingVariables) { return; }
 		sendMessage(["msg":"watchVariables" as AnyObject, "watch":true as AnyObject])
 		watchingVariables = true
 	}
 
 	/// ask the server to stop sending environment delta messages
-	func stopWatchingVariables() {
+	public func stopWatchingVariables() {
 		if (!watchingVariables) { return }
 		sendMessage(["msg":"watchVariables" as AnyObject, "watch":false as AnyObject])
 		watchingVariables = false
@@ -175,7 +175,7 @@ public class Session {
 
 	/// asks the server to remove a file
 	/// - parameter file: The file to remove
-	func remove(file: File) -> SignalProducer<Void, SessionError> {
+	public func remove(file: File) -> SignalProducer<Void, SessionError> {
 		return SignalProducer<Void, SessionError>() { observer, _ in
 			let transId = UUID().uuidString
 			self.sendMessage(["msg":"fileop" as AnyObject, "fileId":file.fileId as AnyObject, "fileVersion":file.version as AnyObject, "operation":"rm" as AnyObject, "transId":transId as AnyObject])
@@ -192,7 +192,7 @@ public class Session {
 	///   - contents: the contents to save
 	///   - executeType: should the saved code be executed
 	/// - Returns: a signal producer for success or error
-	func sendSaveFileMessage(file: File, contents: String, executeType: ExecuteType = .None) -> SignalProducer<Void, SessionError> {
+	public func sendSaveFileMessage(file: File, contents: String, executeType: ExecuteType = .None) -> SignalProducer<Void, SessionError> {
 		let uniqueIdent = UUID().uuidString
 		let encoder = MessagePackEncoder()
 		var attrs = ["msg":MessageValue.forValue("save"), "apiVersion":MessageValue.forValue(Int(1))]

@@ -18,7 +18,7 @@ public extension JSON {
 		}
 		return array
 	}
-	
+
 	/// Assuming self is an array, decodes self to the desired type
 	///
 	/// - Returns: an array of the desired type
@@ -32,10 +32,10 @@ public extension JSON {
 	/// - Parameter of: the type of object to be decoded
 	/// - Returns: an array of the desired type
 	/// - Throws: if self is not an array of json or if array elements aren't of desired type
-	func asArray<T:JSONDecodable>(of: T) throws -> [T] {
+	func asArray<T: JSONDecodable>(of: T) throws -> [T] {
 		return try asJsonArray().map(T.init)
 	}
-	
+
 	/// Returns nil instead of throwing an error if value does not exist
 	///
 	/// - Parameter at: path type to get the value of

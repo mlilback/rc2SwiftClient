@@ -12,12 +12,12 @@ import NotifyingCollection
 
 public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomStringConvertible, Hashable
 {
-	let projectId: Int
-	let userId: Int
+	public let projectId: Int
+	public let userId: Int
 	public fileprivate(set) var name: String
 	public fileprivate(set) var version: Int
-	var workspaces: [Workspace] { return _workspaces.values }
-	var workspaceChangeSignal: Signal<[CollectionChange<Workspace>], NoError> { return _workspaces.changeSignal }
+	public var workspaces: [Workspace] { return _workspaces.values }
+	public var workspaceChangeSignal: Signal<[CollectionChange<Workspace>], NoError> { return _workspaces.changeSignal }
 
 	private var _workspaces = NestingCollectionNotifier<Workspace>()
 

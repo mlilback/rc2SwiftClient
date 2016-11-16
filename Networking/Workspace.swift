@@ -21,14 +21,14 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 
 	typealias FileChange = CollectionChange<File>
 
-	let wspaceId: Int
-	let projectId: Int
-	let uniqueId: String
-	fileprivate(set) var name: String = ""
-	fileprivate(set) var version: Int = 0
+	public let wspaceId: Int
+	public let projectId: Int
+	public let uniqueId: String
+	public fileprivate(set) var name: String = ""
+	public fileprivate(set) var version: Int = 0
 	fileprivate let _files = CollectionNotifier<File>()
 	
-	var files: [File] { return _files.values }
+	public var files: [File] { return _files.values }
 	public var fileChangeSignal: Signal<[CollectionChange<File>], NoError> { return _files.changeSignal }
 	
 	//documentation inherited from protocol

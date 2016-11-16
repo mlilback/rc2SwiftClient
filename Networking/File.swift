@@ -10,14 +10,14 @@ import NotifyingCollection
 
 public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashable, UpdateInPlace
 {
-	let fileId : Int
-	let wspaceId: Int
-	fileprivate(set) var name : String!
-	fileprivate(set) var version : Int!
-	fileprivate(set) var fileSize : Int!
-	fileprivate(set) var dateCreated : Date!
-	fileprivate(set) var lastModified : Date!
-	fileprivate(set) var fileType: FileType!
+	public let fileId : Int
+	public let wspaceId: Int
+	public fileprivate(set) var name : String!
+	public fileprivate(set) var version : Int!
+	public fileprivate(set) var fileSize : Int!
+	public fileprivate(set) var dateCreated : Date!
+	public fileprivate(set) var lastModified : Date!
+	public fileprivate(set) var fileType: FileType!
 	
 	public init(json:JSON) throws {
 		fileId = try json.getInt(at: "id")

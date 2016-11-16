@@ -42,14 +42,14 @@ public class FileType : JSONDecodable {
 		return fileType(withExtension: fileName.substring(from: range.upperBound))
 	}
 	
-	let name: String
-	let fileExtension: String
-	let details: String?
-	let iconName: String?
+	public let name: String
+	public let fileExtension: String
+	public let details: String?
+	public let iconName: String?
 	private let rawMimeType: String?
 	private let json: JSON
 	
-	var mimeType: String {
+	public var mimeType: String {
 		if rawMimeType != nil { return rawMimeType! }
 		return (isTextFile ? "text/plain": "application/octet-string") as String
 	}

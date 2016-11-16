@@ -12,10 +12,10 @@ import Result
 
 /// Encapsulates the host and properties returned from a login request
 public class ConnectionInfo: CustomStringConvertible {
-	let host: ServerHost
-	let user: User
-	let authToken: String
-	var projects: [Project] { return _projects.values }
+	public let host: ServerHost
+	public let user: User
+	public let authToken: String
+	public var projects: [Project] { return _projects.values }
 	public var projectChangeSignal: Signal<[CollectionChange<Project>], NoError> { return _projects.changeSignal }
 	
 	private let _projects = CollectionNotifier<Project>()
