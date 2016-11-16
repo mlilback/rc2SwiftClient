@@ -20,7 +20,7 @@ public enum FileCacheError: Error {
 	case unknownError(Error)
 }
 
-protocol FileCache {
+public protocol FileCache {
 	var fileManager:Rc2FileManager { get }
 
 	func isFileCached(_ file:File) -> Bool
@@ -59,12 +59,11 @@ protocol FileCache {
 
 public final class DefaultFileCache: NSObject, FileCache {
 	//MARK: properties
-	var fileManager:Rc2FileManager
+	public var fileManager:Rc2FileManager
 	fileprivate var baseUrl: URL
 	fileprivate let workspace: Workspace
 	fileprivate var urlSession: URLSession?
 	fileprivate var tasks:[Int:DownloadTask] = [:] //key is task identifier
-	fileprivate let taskLock: NSLock = NSLock()
 	fileprivate var downloadingAllFiles: Bool = false
 	///if downloadingAllFiles, the size of all files being downloaded
 	fileprivate var totalDownloadSize: Int = 0
@@ -76,6 +75,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 	fileprivate var downloadInProgressSignal: Signal<Bool, NoError>?
 	fileprivate var downloadInProgressObserver: Signal<Bool, NoError>.Observer?
 	fileprivate let saveQueue: DispatchQueue
+	fileprivate let taskLockQueue: DispatchQueue
 	
 	lazy var fileCacheUrl: URL = { () -> URL in
 		var fileDir: URL? = nil
@@ -104,6 +104,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 		self.workspace = workspace
 		self.baseUrl = baseUrl
 		self.saveQueue = DispatchQueue(label: "rc2.filecache.save.serial")
+		self.taskLockQueue = DispatchQueue(label: "rc2.filecache.tasklock")
 		super.init()
 		let myConfig = config
 		if myConfig.httpAdditionalHeaders == nil {
@@ -117,11 +118,11 @@ public final class DefaultFileCache: NSObject, FileCache {
 		urlSession?.invalidateAndCancel()
 	}
 	
-	internal func isFileCached(_ file:File) -> Bool {
+	public func isFileCached(_ file:File) -> Bool {
 		return cachedUrl(file:file).fileExists()
 	}
 
-	@discardableResult func flushCache(workspace:Workspace) {
+	@discardableResult public func flushCache(workspace:Workspace) {
 		
 	}
 	
@@ -132,29 +133,29 @@ public final class DefaultFileCache: NSObject, FileCache {
 				observer.send(error: .downloadAlreadyInProgress)
 				return
 			}
-			self.taskLock.lock()
-			defer { self.taskLock.unlock() }
-			guard self.downloadTaskWithFileId(file.fileId) == nil else {
-				//download already in progress. should we cancel it and start again? maybe if a large file?
-				observer.send(error: .downloadAlreadyInProgress)
-				return
-			}
-			do {
-				try self.fileManager.removeItem(at:self.cachedUrl(file:file))
-			} catch let err as NSError {
-				//don't care if doesn't exist
-				if !(err.domain == NSCocoaErrorDomain && err.code == 4) {
-					os_log("got err removing file in flushCacheForFile: %@", type:.info, err)
+			self.taskLockQueue.sync {
+				guard self.downloadTaskWithFileId(file.fileId) == nil else {
+					//download already in progress. should we cancel it and start again? maybe if a large file?
+					observer.send(error: .downloadAlreadyInProgress)
+					return
 				}
-			}
-			
-			self.observer = observer
-			self.disposable = disposable
-			let task = DownloadTask(file: file, cache: self)
-			self.tasks[task.task.taskIdentifier] = task
-			//start task next time through event loop
-			DispatchQueue.main.async {
-				task.task.resume()
+				do {
+					try self.fileManager.removeItem(at:self.cachedUrl(file:file))
+				} catch let err as NSError {
+					//don't care if doesn't exist
+					if !(err.domain == NSCocoaErrorDomain && err.code == 4) {
+						os_log("got err removing file in flushCacheForFile: %@", type:.info, err)
+					}
+				}
+				
+				self.observer = observer
+				self.disposable = disposable
+				let task = DownloadTask(file: file, cache: self)
+				self.tasks[task.task.taskIdentifier] = task
+				//start task next time through event loop
+				DispatchQueue.main.async {
+					task.task.resume()
+				}
 			}
 		}
 	}
@@ -168,29 +169,29 @@ public final class DefaultFileCache: NSObject, FileCache {
 		precondition(!downloadingAllFiles)
 		assert(tasks.count == 0)
 		return SignalProducer<Double, FileCacheError>() { observer, disposable in
-			self.taskLock.lock()
-			defer { self.taskLock.unlock() }
-			assert(self.tasks.count == 0)
-			if self.workspace.files.count < 1 {
-				observer.sendCompleted()
-				return
+			self.taskLockQueue.sync {
+				assert(self.tasks.count == 0)
+				if self.workspace.files.count < 1 {
+					observer.sendCompleted()
+					return
+				}
+				self.totalDownloadSize = self.workspace.files.reduce(0) { $0 + $1.fileSize }
+				for aFile in self.workspace.files {
+					let theTask = DownloadTask(file: aFile, cache: self)
+					self.tasks[theTask.task.taskIdentifier] = theTask
+				}
+				//prepare signal for success notification
+				let (signal, sobserver) = Signal<Bool, NoError>.pipe()
+				self.downloadInProgressSignal = signal
+				self.downloadInProgressObserver = sobserver
+				//only start after all tasks are created
+				DispatchQueue.main.async {
+					self.taskLockQueue.sync {
+						self.tasks.forEach { $0.value.task.resume() }
+					}
+				}
+				self.downloadingAllFiles = true
 			}
-			self.totalDownloadSize = self.workspace.files.reduce(0) { $0 + $1.fileSize }
-			for aFile in self.workspace.files {
-				let theTask = DownloadTask(file: aFile, cache: self)
-				self.tasks[theTask.task.taskIdentifier] = theTask
-			}
-			//prepare signal for success notification
-			let (signal, sobserver) = Signal<Bool, NoError>.pipe()
-			self.downloadInProgressSignal = signal
-			self.downloadInProgressObserver = sobserver
-			//only start after all tasks are created
-			DispatchQueue.main.async {
-				self.taskLock.lock()
-				defer { self.taskLock.unlock() }
-				self.tasks.forEach { $0.value.task.resume() }
-			}
-			self.downloadingAllFiles = true
 		}
 	}
 	
@@ -221,19 +222,19 @@ extension DefaultFileCache {
 	/// - Returns: a signal producer that returns the file data or an error
 	public func contents(of file: File) -> SignalProducer<Data, FileError> {
 		return SignalProducer<Data, FileError>() { observer, _ in
-			self.taskLock.lock();
-			defer { self.taskLock.unlock() }
-			guard nil == self.downloadInProgressSignal else
-			{
-				//download is in progress. wait until completed. use ! because should not change while taskLock is locked
-				_ = self.downloadInProgressSignal!.observeCompleted {
+			self.taskLockQueue.sync {
+				guard nil == self.downloadInProgressSignal else
+				{
+					//download is in progress. wait until completed. use ! because should not change while taskLock is locked
+					_ = self.downloadInProgressSignal!.observeCompleted {
+						self.loadContents(file: file, observer: observer)
+					}
+					return
+				}
+				//want to release lock before actually load the contents
+				DispatchQueue.main.async {
 					self.loadContents(file: file, observer: observer)
 				}
-				return
-			}
-			//want to release lock before actually load the contents
-			DispatchQueue.main.async {
-				self.loadContents(file: file, observer: observer)
 			}
 		}
 	}
@@ -317,60 +318,59 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 	
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
 	{
-		taskLock.lock()
-		defer { taskLock.unlock() }
-		if downloadingAllFiles {
-			if tasks.count > 1 {
+		taskLockQueue.sync {
+			if downloadingAllFiles {
+				if tasks.count > 1 {
+					tasks.removeValue(forKey: task.taskIdentifier)
+					return
+				}
+				downloadingAllFiles = false
+				tasks.removeAll()
+				downloadInProgressObserver?.send(value: true)
+				downloadInProgressObserver?.sendCompleted()
+				downloadInProgressObserver = nil
+				downloadInProgressSignal = nil
+			} else {
+				guard let _ = tasks[task.taskIdentifier] else {
+					fatalError("no DownloadTask for Session Task")
+				}
 				tasks.removeValue(forKey: task.taskIdentifier)
+			}
+			defer {
+				observer = nil
+				disposable = nil
+			}
+			guard error == nil else {
+				observer?.send(error: .downloadError(urlError: error!))
 				return
 			}
-			downloadingAllFiles = false
-			tasks.removeAll()
-			downloadInProgressObserver?.send(value: true)
-			downloadInProgressObserver?.sendCompleted()
-			downloadInProgressObserver = nil
-			downloadInProgressSignal = nil
-		} else {
-			guard let _ = tasks[task.taskIdentifier] else {
-				fatalError("no DownloadTask for Session Task")
-			}
-			tasks.removeValue(forKey: task.taskIdentifier)
+			observer?.sendCompleted()
 		}
-		defer {
-			observer = nil
-			disposable = nil
-		}
-		guard error == nil else {
-			observer?.send(error: .downloadError(urlError: error!))
-			return
-		}
-		observer?.sendCompleted()
 	}
 	
 	//called when a task has finished downloading a file
 	public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL)
 	{
-		taskLock.lock()
-		defer { taskLock.unlock() }
-		guard let cacheTask = tasks[downloadTask.taskIdentifier] else {
-			fatalError("no DownloadTask for Session Task")
-		}
-		
-		let cacheUrl = cachedUrl(file:cacheTask.file)
-		if let status = (downloadTask.response as? HTTPURLResponse)?.statusCode , status == 304
-		{
-			cacheTask.bytesDownloaded = cacheTask.file.fileSize
-			if downloadingAllFiles {
+		taskLockQueue.sync {
+			guard let cacheTask = tasks[downloadTask.taskIdentifier] else {
+				fatalError("no DownloadTask for Session Task")
+			}
+			
+			let cacheUrl = cachedUrl(file:cacheTask.file)
+			if let status = (downloadTask.response as? HTTPURLResponse)?.statusCode , status == 304
+			{
+				cacheTask.bytesDownloaded = cacheTask.file.fileSize
+				if downloadingAllFiles {
+					return
+				}
+			}
+			///move the file to the appropriate local cache url
+			guard let _ = try? fileManager.move(tempFile: location, to: cacheUrl, file: cacheTask.file) else {
+				os_log("error moving downloaded file to final location %{public}s", cacheUrl.absoluteString)
 				return
 			}
 		}
-		///move the file to the appropriate local cache url
-		guard let _ = try? fileManager.move(tempFile: location, to: cacheUrl, file: cacheTask.file) else {
-			os_log("error moving downloaded file to final location %{public}s", cacheUrl.absoluteString)
-			return
-		}
 	}
-	
 }
 
 //MARK: -
@@ -393,4 +393,3 @@ class DownloadTask {
 		task = cache.urlSession!.downloadTask(with: request)
 	}
 }
-
