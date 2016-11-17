@@ -11,18 +11,18 @@ import Freddy
 ///Represents a remote host
 public struct ServerHost: JSONDecodable, JSONEncodable, CustomStringConvertible, Hashable {
 	
-	static let localHost:ServerHost = { return ServerHost(name: "Local Server", host: "localhost", port: 8088, user: "local", secure: false) }()
+	public static let localHost:ServerHost = { return ServerHost(name: "Local Server", host: "localhost", port: 8088, user: "local", secure: false) }()
 	///user-friendly name for the host
-	let name:String
-	let host:String
-	let user:String
-	let port:Int
-	let secure:Bool
+	public let name:String
+	public let host:String
+	public let user:String
+	public let port:Int
+	public let secure:Bool
 	
 	/// the string used to store the password for this host in the keychain
-	var keychainKey:String { return "\(self.user)@\(self.host)" }
+	public var keychainKey:String { return "\(self.user)@\(self.host)" }
 	
-	init(name:String, host:String, port:Int=8088, user:String="local", secure:Bool=false) {
+	public init(name:String, host:String, port:Int=8088, user:String="local", secure:Bool=false) {
 		self.name = name
 		self.host = host
 		self.user = user

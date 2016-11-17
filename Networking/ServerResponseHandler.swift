@@ -12,30 +12,30 @@
 import Freddy
 import ClientCore
 
-enum FileChangeType : String {
+public enum FileChangeType : String {
 	case Update, Insert, Delete
 }
 
-protocol ServerResponseHandlerDelegate {
-	func handleFileUpdate(_ file:File, change:FileChangeType)
-	func handleVariableMessage(_ single:Bool, variables:[Variable])
-	func handleVariableDeltaMessage(_ assigned:[Variable], removed:[String])
-	func consoleAttachment(forImage image:SessionImage) -> ConsoleAttachment
-	func consoleAttachment(forFile file:File) -> ConsoleAttachment
-	func attributedStringForInputFile(_ fileId:Int) -> NSAttributedString
-	func cacheImages(_ images:[SessionImage])
-	func showFile(_ fileId:Int)
+public protocol ServerResponseHandlerDelegate {
+	func handleFileUpdate(_ file:File, change: FileChangeType)
+	func handleVariableMessage(_ single:Bool, variables: [Variable])
+	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String])
+	func consoleAttachment(forImage image: SessionImage) -> ConsoleAttachment
+	func consoleAttachment(forFile file: File) -> ConsoleAttachment
+	func attributedStringForInputFile(_ fileId: Int) -> NSAttributedString
+	func cacheImages(_ images: [SessionImage])
+	func showFile(_ fileId: Int)
 }
 
-class ServerResponseHandler {
+public class ServerResponseHandler {
 	fileprivate let delegate:ServerResponseHandlerDelegate
 	fileprivate let outputColors = OutputColors.colorMap()
 
-	required init(delegate:ServerResponseHandlerDelegate) {
+	required public init(delegate:ServerResponseHandlerDelegate) {
 		self.delegate = delegate
 	}
 
-	func handleResponse(_ response:ServerResponse) -> NSAttributedString? {
+	public func handleResponse(_ response:ServerResponse) -> NSAttributedString? {
 		switch(response) {
 			case .echoQuery(let queryId, let fileId, let query):
 				return formatQueryEcho(query, queryId:queryId, fileId:fileId)
@@ -103,7 +103,7 @@ class ServerResponseHandler {
 		return mstr
 	}
 
-	func formatError(_ error:String) -> NSAttributedString {
+	public func formatError(_ error:String) -> NSAttributedString {
 		return NSAttributedString(string: "\(error)\n", attributes: [NSBackgroundColorAttributeName:outputColors[.Error]!])
 	}
 }

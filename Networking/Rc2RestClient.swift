@@ -80,4 +80,26 @@ public final class Rc2RestClient {
 		task.resume()
 		return p.future
 	}
+
+	public func downloadImage(imageId: Int, from wspace: Workspace, destination:URL) -> SignalProducer<URL, FileError>
+	{
+		return SignalProducer<URL, FileError>() { observer, _ in
+			var req = self.request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET")
+			req.addValue("image/png", forHTTPHeaderField: "Accept")
+			let task = self.urlSession!.downloadTask(with: req) { (dloadUrl, response, error) -> Void in
+				let hresponse = response as? HTTPURLResponse
+				guard error == nil && hresponse?.statusCode == 200 else {
+					observer.send(error: .failedToSaveFile)
+					return
+				}
+				let fileUrl = URL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeTo: destination)
+				do {
+					try self.fileManager.move(tempFile: dloadUrl!, to: fileUrl, file:nil)
+				} catch let err as NSError {
+					observer.send(error: .foundationError(error: err))
+				}
+			}
+			task.resume()
+		}
+	}
 }

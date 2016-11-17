@@ -69,6 +69,11 @@
 		081559871DDBB4310047B3CE /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559861DDBB4310047B3CE /* Session.swift */; };
 		081559891DDBD7DA0047B3CE /* Freddy+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */; };
 		0815598F1DDBE3DC0047B3CE /* AppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815598E1DDBE3DC0047B3CE /* AppStatus.swift */; };
+		081559911DDC84850047B3CE /* SessionImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559901DDC84850047B3CE /* SessionImage.swift */; };
+		081559931DDC889D0047B3CE /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559921DDC889D0047B3CE /* ImageCache.swift */; };
+		081559951DDCCD960047B3CE /* RACSignals+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559941DDCCD960047B3CE /* RACSignals+Rc2.swift */; };
+		081559971DDCFEB00047B3CE /* FileCacheSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559961DDCFEB00047B3CE /* FileCacheSpec.swift */; };
+		081559981DDD06AD0047B3CE /* MessagePackSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08159D1E1C77656C004A205A /* NSProgressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08159D1D1C77656C004A205A /* NSProgressTests.m */; };
 		0816F8A01C6D3A4500A6120B /* SessionHandlerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */; };
 		0825475B1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0825475A1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift */; };
@@ -114,7 +119,6 @@
 		0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0831740D1C577A2500071408 /* ConsoleTextField.swift */; };
 		083174101C57B2E200071408 /* CommandHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0831740F1C57B2E200071408 /* CommandHistory.swift */; };
 		083174141C5828B400071408 /* ResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174131C5828B400071408 /* ResultsView.swift */; };
-		083174161C587F7F00071408 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174151C587F7F00071408 /* ImageCache.swift */; };
 		083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */; };
 		083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305D81C501B7300E27F66 /* MainWindowController.swift */; };
 		083305E01C51571500E27F66 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 083305DE1C51571500E27F66 /* Localizable.strings */; };
@@ -456,6 +460,7 @@
 				081559741DDB84C70047B3CE /* BrightFutures.framework in CopyFiles */,
 				081559771DDB854F0047B3CE /* SwiftyUserDefaults.framework in CopyFiles */,
 				08F6ADB61DD90F3500AF0722 /* CryptoSwift.framework in CopyFiles */,
+				081559981DDD06AD0047B3CE /* MessagePackSwift.framework in CopyFiles */,
 				080E82F21DCC038B0048F36C /* Nimble.framework in CopyFiles */,
 				080E82F51DCCCDB40048F36C /* SwiftWebSocket.framework in CopyFiles */,
 				080E82F61DCCCDD60048F36C /* ReactiveSwift.framework in CopyFiles */,
@@ -576,6 +581,10 @@
 		081559861DDBB4310047B3CE /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Freddy+Rc2.swift"; path = "ClientCore/Freddy+Rc2.swift"; sourceTree = SOURCE_ROOT; };
 		0815598E1DDBE3DC0047B3CE /* AppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStatus.swift; sourceTree = "<group>"; };
+		081559901DDC84850047B3CE /* SessionImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionImage.swift; sourceTree = "<group>"; };
+		081559921DDC889D0047B3CE /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
+		081559941DDCCD960047B3CE /* RACSignals+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RACSignals+Rc2.swift"; sourceTree = "<group>"; };
+		081559961DDCFEB00047B3CE /* FileCacheSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCacheSpec.swift; sourceTree = "<group>"; };
 		08159D1D1C77656C004A205A /* NSProgressTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSProgressTests.m; sourceTree = "<group>"; };
 		0816F8991C6D0F7D00A6120B /* HTMLString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLString.swift; sourceTree = "<group>"; };
 		0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionHandlerProtocols.swift; sourceTree = "<group>"; };
@@ -945,9 +954,10 @@
 			children = (
 				080E82C31DCBE31D0048F36C /* Networking.h */,
 				080E82C41DCBE31D0048F36C /* Info.plist */,
+				08F6ADFF1DD918CF00AF0722 /* FileCache.swift */,
+				081559921DDC889D0047B3CE /* ImageCache.swift */,
 				080E82FF1DCD07930048F36C /* NetworkingError.swift */,
 				08F6ADB11DD90E3600AF0722 /* Rc2FileManager.swift */,
-				08F6ADFF1DD918CF00AF0722 /* FileCache.swift */,
 				080E82E41DCBF4520048F36C /* xattr.swift */,
 				0881B5091DCF84DB00679DB3 /* network */,
 				0881B5021DCD17B400679DB3 /* model */,
@@ -962,12 +972,13 @@
 				080E82FD1DCCD77D0048F36C /* loginResults.json */,
 				08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */,
 				0881B5071DCD336500679DB3 /* variables.json */,
-				080E82EB1DCC001E0048F36C /* FileTypeSpec.swift */,
+				081559961DDCFEB00047B3CE /* FileCacheSpec.swift */,
 				080E82F91DCCD4E90048F36C /* FileSpec.swift */,
-				080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */,
+				080E82EB1DCC001E0048F36C /* FileTypeSpec.swift */,
 				0881B50F1DCFA99A00679DB3 /* LoginSpec.swift */,
-				0881B5051DCD329300679DB3 /* VariableSpec.swift */,
 				08F6ADAB1DD6502000AF0722 /* ModelSpec.swift */,
+				080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */,
+				0881B5051DCD329300679DB3 /* VariableSpec.swift */,
 			);
 			path = NetworkingTests;
 			sourceTree = "<group>";
@@ -1084,13 +1095,13 @@
 		0881B5021DCD17B400679DB3 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				080E82E61DCBF8840048F36C /* FileTypes.json */,
-				080E82ED1DCC00850048F36C /* FileType.swift */,
 				080E82F71DCCD4620048F36C /* File.swift */,
+				080E82ED1DCC00850048F36C /* FileType.swift */,
 				080E82E01DCBEE590048F36C /* User.swift */,
 				080E82E21DCBEF830048F36C /* Project.swift */,
 				08F6ADB81DD911D500AF0722 /* Workspace.swift */,
 				0881B5031DCD23FD00679DB3 /* Variable.swift */,
+				080E82E61DCBF8840048F36C /* FileTypes.json */,
 			);
 			name = model;
 			sourceTree = "<group>";
@@ -1098,16 +1109,17 @@
 		0881B5091DCF84DB00679DB3 /* network */ = {
 			isa = PBXGroup;
 			children = (
+				0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */,
 				081559801DDBAF030047B3CE /* ConsoleAttachment.swift */,
+				0881B50D1DCF896500679DB3 /* LoginFactory.swift */,
+				08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */,
 				08F189B01D19B0D500866A05 /* ServerHost.swift */,
 				0815597C1DDB9F630047B3CE /* ServerResponse.swift */,
-				0815597E1DDBAEB30047B3CE /* ServerResponseHandler.swift */,
-				0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */,
-				08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */,
-				0881B50D1DCF896500679DB3 /* LoginFactory.swift */,
-				081559781DDB92650047B3CE /* WebSocketSource.swift */,
 				081559861DDBB4310047B3CE /* Session.swift */,
 				081559841DDBB3760047B3CE /* SessionDelegate.swift */,
+				081559901DDC84850047B3CE /* SessionImage.swift */,
+				0815597E1DDBAEB30047B3CE /* ServerResponseHandler.swift */,
+				081559781DDB92650047B3CE /* WebSocketSource.swift */,
 			);
 			name = network;
 			sourceTree = "<group>";
@@ -1341,6 +1353,7 @@
 				08E8366A1D94436D00E26EFE /* UserDefaults+JSON.swift */,
 				08E8366D1D94715D00E26EFE /* FileManager+Rc2.swift */,
 				0826109B1DB8E0F000C03422 /* Data+Rc2.swift */,
+				081559941DDCCD960047B3CE /* RACSignals+Rc2.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -1939,6 +1952,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				081559911DDC84850047B3CE /* SessionImage.swift in Sources */,
 				0881B50C1DCF85B500679DB3 /* ServerHost.swift in Sources */,
 				080E82E51DCBF4520048F36C /* xattr.swift in Sources */,
 				08F6ADB01DD8F60200AF0722 /* Rc2RestClient.swift in Sources */,
@@ -1953,6 +1967,7 @@
 				08F6ADB21DD90E3600AF0722 /* Rc2FileManager.swift in Sources */,
 				080E82EE1DCC00850048F36C /* FileType.swift in Sources */,
 				080E82E31DCBEF830048F36C /* Project.swift in Sources */,
+				081559931DDC889D0047B3CE /* ImageCache.swift in Sources */,
 				08F6ADB91DD911D500AF0722 /* Workspace.swift in Sources */,
 				0815597D1DDB9F630047B3CE /* ServerResponse.swift in Sources */,
 				081559791DDB92650047B3CE /* WebSocketSource.swift in Sources */,
@@ -1968,6 +1983,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				080E82FA1DCCD4E90048F36C /* FileSpec.swift in Sources */,
+				081559971DDCFEB00047B3CE /* FileCacheSpec.swift in Sources */,
 				0881B5101DCFA99A00679DB3 /* LoginSpec.swift in Sources */,
 				080E82FC1DCCD56F0048F36C /* NetworkingBaseSpec.swift in Sources */,
 				0881B5061DCD329300679DB3 /* VariableSpec.swift in Sources */,
@@ -2042,7 +2058,6 @@
 				08A01FC81CC7FCA3001EDFAA /* FMDatabaseQueue.m in Sources */,
 				0827A4E41C7ED9CE001F0AFB /* RCodeHighlighter.swift in Sources */,
 				0827A4E11C7ED9CE001F0AFB /* DocumentChunk.swift in Sources */,
-				083174161C587F7F00071408 /* ImageCache.swift in Sources */,
 				083174141C5828B400071408 /* ResultsView.swift in Sources */,
 				089346061C7FB14B00100CF6 /* SyntaxColor.swift in Sources */,
 				08A01FC21CC7FCA3001EDFAA /* FMDatabase.m in Sources */,
@@ -2097,6 +2112,7 @@
 			files = (
 				089794421D7B6A0F003339EE /* SharedConstants.swift in Sources */,
 				089794511D7B6A8F003339EE /* SystemExtensions.swift in Sources */,
+				081559951DDCCD960047B3CE /* RACSignals+Rc2.swift in Sources */,
 				0897944B1D7B6A8F003339EE /* NSError+Rc2.swift in Sources */,
 				0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */,
 				0897944F1D7B6A8F003339EE /* NSURL+Rc2.swift in Sources */,

@@ -50,7 +50,7 @@ public enum ServerResponse : Equatable {
 				}
 				//we override batchId because it is per-session, we need it unique across sessions
 				let batchId = max(UserDefaults.standard[.nextBatchId], 1)
-				let images = imagesJson.flatMap({ try? SessionImage($0, batchId: batchId) })
+				let images = imagesJson.flatMap({ try? SessionImage(json: $0, batchId: batchId) })
 				UserDefaults.standard[.nextBatchId] = batchId + 1
 				return ServerResponse.execComplete(queryId: queryId, batchId: jsonObj.getOptionalInt(at: "imageBatchId", or: -1), images: images)
 			case "showOutput":
@@ -131,77 +131,4 @@ public func == (a: ServerResponse, b: ServerResponse) -> Bool {
 		default:
 			return false
 	}
-}
-
-///an immutable class representing an image stored on the server and serializable for local caching
-open class SessionImage: NSObject, NSSecureCoding, NSCopying {
-	let id:Int
-	let batchId:Int
-	let name:String!
-	let imageData:Data?
-	let dateCreated:Date!
-	
-	public static var supportsSecureCoding : Bool {
-		return true
-	}
-	
-	fileprivate static var dateFormatter:DateFormatter = {
-		let formatter = DateFormatter()
-		formatter.locale = Locale(identifier: "en_US_POSIX")
-		formatter.dateFormat = "YYYY-MM-dd"
-		return formatter
-	}()
-	
-	init(_ jsonObj: JSON, batchId: Int = 0) throws {
-		do {
-			self.id = try jsonObj.getInt(at: "id")
-			self.batchId = batchId == 0 ? try jsonObj.getInt(at: "batchId") : batchId
-			self.name = try jsonObj.getString(at: "name")
-			self.dateCreated = SessionImage.dateFormatter.date(from: try jsonObj.getString(at: "dateCreated"))
-			self.imageData = Data(base64Encoded: try jsonObj.getString(at: "imageData"))
-		} catch {
-			os_log("error decoding SessionImage from json")
-			throw error
-		}
-	}
-	
-	fileprivate init(imgId: Int, batchId: Int, name: String, date: Date) {
-		self.id = imgId
-		self.batchId = batchId
-		self.name = name
-		self.dateCreated = date
-		self.imageData = nil
-	}
-	
-	public required init?(coder decoder: NSCoder) {
-		self.id = decoder.decodeInteger(forKey: "imageId")
-		self.batchId = decoder.decodeInteger(forKey: "batchId")
-		self.name = decoder.decodeObject(of: NSString.self, forKey: "name") as String?
-		self.dateCreated = decoder.decodeObject(of: NSDate.self, forKey: "dateCreated") as Date?
-		self.imageData = nil
-		super.init()
-		if (name.isEmpty || dateCreated == nil) { return nil }
-	}
-	
-	open func encode(with coder: NSCoder) {
-		coder.encode(self.id, forKey: "imageId")
-		coder.encode(self.batchId, forKey: "batchId")
-		coder.encode(self.name, forKey: "name")
-		coder.encode(self.dateCreated, forKey: "dateCreated")
-	}
-	
-	open func copy(with zone: NSZone?) -> Any {
-		return SessionImage(imgId: id, batchId: batchId, name:name, date: dateCreated)
-	}
-	
-	open override func isEqual(_ object: Any?) -> Bool {
-		if let other = object as? SessionImage {
-			return self.id == other.id && self.batchId == other.batchId && self.name == other.name && self.dateCreated == other.dateCreated
-		}
-		return false
-	}
-}
-
-public func ==(a:SessionImage, b:SessionImage) -> Bool {
-	return a.id == b.id 
 }

@@ -9,6 +9,7 @@ import Freddy
 import ReactiveSwift
 import Result
 import NotifyingCollection
+import os
 #if os(OSX)
 	import AppKit
 #else
@@ -134,6 +135,33 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 		}
 		try _files.update(at: fileIdx, to: other)
 		
+	}
+	
+	/// called to update with a change from the network
+	///
+	/// - Parameters:
+	///   - file: the file sent from the server
+	///   - change: the type of change it represents
+	internal func update(file: File, change: FileChangeType) {
+		let ourFile = self.file(withId: file.fileId)
+		switch(change) {
+		case .Update:
+			guard let ofile = ourFile else {
+				os_log("got file change update w/o a known file")
+				return
+			}
+			guard let _ = try? update(file: ofile, to: file) else {
+				os_log("file change update failed"); return
+			}
+		case .Insert:
+			guard let _ = try? _files.append(file) else {
+				os_log("file change insert failed"); return
+			}
+		case .Delete:
+			guard let _ = try? _files.remove(ourFile!) else {
+				os_log("file change delete failed"); return
+			}
+		}
 	}
 	
 	public static func == (lhs: Workspace, rhs: Workspace) -> Bool {

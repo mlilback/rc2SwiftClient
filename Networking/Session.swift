@@ -30,16 +30,19 @@ public class Session {
 	//MARK: properties
 
 	///connection information
-	let conInfo: ConnectionInfo
+	public let conInfo: ConnectionInfo
 	//the workspace this session represents
-	let workspace : Workspace
+	public let workspace : Workspace
 	///the WebSocket for communicating with the server
 	let wsSource : WebSocketSource
 	///abstraction of file handling
-	let fileCache: FileCache
+	public let fileCache: FileCache
+	public let imageCache: ImageCache
 	///
-	weak var delegate : SessionDelegate?
+	public weak var delegate : SessionDelegate?
 
+	public var project: Project { return conInfo.project(withId: workspace.projectId)! }
+	
 	///regex used to catch user entered calls to help so we can hijack and display through our mechanism
 	var helpRegex : NSRegularExpression = {
 		return try! NSRegularExpression(pattern: "(help\\(\\\"?([\\w\\d]+)\\\"?\\))\\s*;?\\s?", options: [.dotMatchesLineSeparators])
@@ -63,12 +66,13 @@ public class Session {
 	//MARK: init/open/close
 	
 	/// without a super class, can't use self in designated initializer. So use a private init, and a convenience init for outside use
-	private init(connectionInfo: ConnectionInfo, workspace: Workspace, source:WebSocketSource, fileCache: FileCache)
+	private init(connectionInfo: ConnectionInfo, workspace: Workspace, source:WebSocketSource, fileCache: FileCache, imageCache: ImageCache)
 	{
 		self.workspace = workspace
 		self.wsSource = source
 		self.conInfo = connectionInfo
 		self.fileCache = fileCache
+		self.imageCache = imageCache
 	}
 	
 	convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, source:WebSocketSource = WebSocket(), delegate:SessionDelegate?=nil, config: URLSessionConfiguration = .default, fileCache: FileCache? = nil)
@@ -78,8 +82,9 @@ public class Session {
 		if nil == fc {
 			fc = DefaultFileCache(workspace: workspace, baseUrl: connectionInfo.host.url!, config: config)
 		}
-		
-		self.init(connectionInfo:  connectionInfo, workspace: workspace, source: source, fileCache: fc)
+		let rc = Rc2RestClient(connectionInfo, sessionConfig: config, fileManager: fc!.fileManager)
+		let ic = ImageCache(restClient: rc, hostIdentifier: connectionInfo.host.name)
+		self.init(connectionInfo: connectionInfo, workspace: workspace, source: source, fileCache: fc!, imageCache: ic)
 		self.delegate = delegate
 		setupWebSocketHandlers()
 		
@@ -211,6 +216,8 @@ public class Session {
 			self.wsSource.send(data)
 		}
 	}
+	
+	
 }
 
 //MARK: private methods
@@ -298,9 +305,12 @@ private extension Session {
 			}
 			os_log("got message %{public}s", msg)
 			if let response = ServerResponse.parseResponse(jsonMessage) {
-				if case let .fileOperationResponse(transId, operation, file) = response {
+				switch response {
+				case .fileOperationResponse(let transId, let operation, let file):
 					handleFileResponse(transId, operation:operation, file:file)
-				} else {
+				case .fileChanged(let changeType, let file):
+					workspace.update(file: file, change: FileChangeType(rawValue: changeType)!)
+				default:
 					self.delegate?.sessionMessageReceived(response)
 				}
 			}

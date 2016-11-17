@@ -24,9 +24,11 @@ public protocol FileCache {
 	var fileManager:Rc2FileManager { get }
 
 	func isFileCached(_ file:File) -> Bool
-	func flushCache(workspace:Workspace)
+//	func flushCache(workspace:Workspace)
 	///recaches the specified file if it has changed
 	func flushCache(file:File) -> SignalProducer<Double, FileCacheError>
+	//recaches an array of files
+	func flushCache(files: [File]) -> SignalProducer<Double, FileCacheError>
 	///caches all the files in the workspace that aren't already cached with the current version of the file
 	//observer fractionCompleted on returned progress for completion handling
 	func cacheAllFiles() -> SignalProducer<Double, FileCacheError>
@@ -59,6 +61,7 @@ public protocol FileCache {
 
 public final class DefaultFileCache: NSObject, FileCache {
 	//MARK: properties
+	public let mainQueue: DispatchQueue
 	public var fileManager:Rc2FileManager
 	fileprivate var baseUrl: URL
 	fileprivate let workspace: Workspace
@@ -94,13 +97,14 @@ public final class DefaultFileCache: NSObject, FileCache {
 	}()
 	
 	//MARK: methods
-	public init(workspace: Workspace, baseUrl: URL, config: URLSessionConfiguration, fileManager:Rc2FileManager? = nil)
+	public init(workspace: Workspace, baseUrl: URL, config: URLSessionConfiguration, fileManager:Rc2FileManager? = nil, queue: DispatchQueue = DispatchQueue.main)
 	{
 		if fileManager != nil {
 			self.fileManager = fileManager!
 		} else {
 			self.fileManager = Rc2DefaultFileManager()
 		}
+		self.mainQueue = queue
 		self.workspace = workspace
 		self.baseUrl = baseUrl
 		self.saveQueue = DispatchQueue(label: "rc2.filecache.save.serial")
@@ -111,7 +115,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 			myConfig.httpAdditionalHeaders = [:]
 		}
 		myConfig.httpAdditionalHeaders!["Accept"] = "application/octet-stream"
-		urlSession = URLSession(configuration: myConfig, delegate: self, delegateQueue: OperationQueue.main)
+		urlSession = URLSession(configuration: myConfig, delegate: self, delegateQueue: nil)
 	}
 	
 	deinit {
@@ -122,9 +126,9 @@ public final class DefaultFileCache: NSObject, FileCache {
 		return cachedUrl(file:file).fileExists()
 	}
 
-	@discardableResult public func flushCache(workspace:Workspace) {
-		
-	}
+//	@discardableResult public func flushCache(workspace:Workspace) {
+//		
+//	}
 	
 	///recaches the specified file if it has changed
 	public func flushCache(file:File) -> SignalProducer<Double, FileCacheError> {
@@ -150,14 +154,40 @@ public final class DefaultFileCache: NSObject, FileCache {
 				
 				self.observer = observer
 				self.disposable = disposable
-				let task = DownloadTask(file: file, cache: self)
+				let task = self.makeTask(file: file)
 				self.tasks[task.task.taskIdentifier] = task
 				//start task next time through event loop
-				DispatchQueue.main.async {
+				self.mainQueue.async {
 					task.task.resume()
 				}
 			}
 		}
+	}
+	
+	public func flushCache(files: [File]) -> SignalProducer<Double, FileCacheError>
+	{
+		let sortedFiles = files.sorted { (f1, f2) in
+			return f1.fileSize < f2.fileSize
+		}
+		let totalSize = sortedFiles.reduce(0) { $0 + $1.fileSize }
+		var downloadedSize = 0
+		var producers = [SignalProducer<Double, FileCacheError>]()
+		sortedFiles.forEach { file in
+			// create a producer that flushes the cache, mapping a single file's percent complete to the percent complete of all files and when finished, adding the size of that file to downloadedSize
+			let producer = self.flushCache(file: file).map( { percentDone -> Double in
+				guard percentDone.isFinite else { return Double(1) }
+				let fdownloaded = Int(Double(file.fileSize) * percentDone)
+				return Double(downloadedSize + fdownloaded) / Double(totalSize)
+			}).on(completed: { 
+				downloadedSize += file.fileSize
+			})
+			producers.append(producer)
+		}
+		//combine all the producers into a single producer of producers, and flatten the results into a single producer
+		let combinedProducer = SignalProducer< SignalProducer<Double, FileCacheError>, FileCacheError >(values: producers)
+		return combinedProducer.flatten(.concat).on(event: { (event) in
+			print("got event: \(event)")
+		})
 	}
 	
 	///caches all the files in the workspace that aren't already cached with the current version of the file
@@ -177,15 +207,19 @@ public final class DefaultFileCache: NSObject, FileCache {
 				}
 				self.totalDownloadSize = self.workspace.files.reduce(0) { $0 + $1.fileSize }
 				for aFile in self.workspace.files {
-					let theTask = DownloadTask(file: aFile, cache: self)
+					let theTask = self.makeTask(file: aFile)
 					self.tasks[theTask.task.taskIdentifier] = theTask
 				}
 				//prepare signal for success notification
 				let (signal, sobserver) = Signal<Bool, NoError>.pipe()
 				self.downloadInProgressSignal = signal
 				self.downloadInProgressObserver = sobserver
+				signal.observeResult { result in
+					observer.send(value: 1.0)
+					observer.sendCompleted()
+				}
 				//only start after all tasks are created
-				DispatchQueue.main.async {
+				self.mainQueue.async {
 					self.taskLockQueue.sync {
 						self.tasks.forEach { $0.value.task.resume() }
 					}
@@ -210,7 +244,20 @@ public final class DefaultFileCache: NSObject, FileCache {
 	
 	fileprivate func calculateAndSendProgress() {
 		let progress = tasks.reduce(0) { (result, tuple) in return result + tuple.value.bytesDownloaded }
-		observer?.send(value: Double(progress) / Double(totalDownloadSize))
+		var val = Double(progress) / Double(totalDownloadSize)
+		if !val.isFinite { val = 1.0 }
+		observer?.send(value: val)
+	}
+	
+	func makeTask(file: File) -> DownloadTask {
+		let fileUrl = URL(string: "workspaces/\(workspace.wspaceId)/files/\(file.fileId)", relativeTo: baseUrl)!
+		var request = URLRequest(url: fileUrl.absoluteURL)
+		let cacheUrl = cachedUrl(file: file)
+		if (cacheUrl as NSURL).checkResourceIsReachableAndReturnError(nil) {
+			request.addValue(file.eTag, forHTTPHeaderField: "If-None-Match")
+		}
+		let dtask = urlSession!.downloadTask(with: request)
+		return DownloadTask(file: file, task: dtask)
 	}
 }
 
@@ -232,7 +279,7 @@ extension DefaultFileCache {
 					return
 				}
 				//want to release lock before actually load the contents
-				DispatchQueue.main.async {
+				self.mainQueue.async {
 					self.loadContents(file: file, observer: observer)
 				}
 			}
@@ -292,11 +339,11 @@ extension DefaultFileCache {
 			self.saveQueue.async {
 				do {
 					try contents.write(to: url, atomically: true, encoding: .utf8)
-					DispatchQueue.main.async {
+					self.mainQueue.async {
 						observer.sendCompleted()
 					}
 				} catch let err as NSError {
-					DispatchQueue.main.async {
+					self.mainQueue.async {
 						observer.send(error: FileError.foundationError(error: err))
 					}
 				}
@@ -335,16 +382,21 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 					fatalError("no DownloadTask for Session Task")
 				}
 				tasks.removeValue(forKey: task.taskIdentifier)
-			}
-			defer {
-				observer = nil
-				disposable = nil
+				self.mainQueue.async {
+					self.observer?.send(value: 1.0)
+				}
 			}
 			guard error == nil else {
-				observer?.send(error: .downloadError(urlError: error!))
+				self.mainQueue.async { self.observer?.send(error: .downloadError(urlError: error!)) }
 				return
 			}
-			observer?.sendCompleted()
+			self.mainQueue.async {
+				//need to nil out before sending completion otherwise if another download is in progress we'd nil out that task
+				let obs = self.observer
+				self.observer = nil
+				self.disposable = nil
+				obs?.sendCompleted()
+			}
 		}
 	}
 	
@@ -373,23 +425,14 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 	}
 }
 
-//MARK: -
 class DownloadTask {
-	weak var fileCache:DefaultFileCache?
-	let file:File
-	let task:URLSessionDownloadTask
+	let file: File
+	let task: URLSessionDownloadTask
 	var bytesDownloaded: Int = 0
 	
-	init(file aFile:File, cache:DefaultFileCache)
+	init(file aFile: File, task: URLSessionDownloadTask)
 	{
 		file = aFile
-		fileCache = cache
-		let fileUrl = URL(string: "workspaces/\(cache.workspace.wspaceId)/files/\(file.fileId)", relativeTo: cache.baseUrl)!
-		var request = URLRequest(url: fileUrl.absoluteURL)
-		let cacheUrl = cache.cachedUrl(file:file)
-		if (cacheUrl as NSURL).checkResourceIsReachableAndReturnError(nil) {
-			request.addValue("\"f/\(file.fileId)/\(file.version)\"", forHTTPHeaderField: "If-None-Match")
-		}
-		task = cache.urlSession!.downloadTask(with: request)
+		self.task = task
 	}
 }

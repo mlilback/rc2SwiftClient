@@ -100,7 +100,7 @@ public class Rc2DefaultFileManager: Rc2FileManager {
 	/// metadata including xattributes for validating cached File objects
 	public func move(tempFile: URL, to toUrl: URL, file: File?) throws {
 		do {
-			if try toUrl.checkResourceIsReachable() {
+			if let _ = try? toUrl.checkResourceIsReachable() {
 				try self.removeItem(at: toUrl)
 			}
 			try self.moveItem(at:tempFile, to: toUrl)

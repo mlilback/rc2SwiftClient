@@ -39,6 +39,8 @@ public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashab
 	
 	public var hashValue: Int { return ObjectIdentifier(self).hashValue }
 	
+	public var eTag: String { return "f/\(fileId)/\(version)" }
+	
 	///initialize with native dictionary from a MessagePackDictionary
 	//TODO: get rid of force unwraps
 	init(dict: [String: AnyObject]) {
