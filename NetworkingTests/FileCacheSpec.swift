@@ -10,6 +10,7 @@ import Nimble
 import ReactiveSwift
 import Mockingjay
 import Result
+import ClientCore
 @testable import Networking
 
 class FileCacheSpec: NetworkingBaseSpec {
@@ -68,9 +69,9 @@ class FileCacheSpec: NetworkingBaseSpec {
 		}
 	}
 	
-	func makeValueRequest<T>(producer: SignalProducer<T, FileCacheError>, queue: DispatchQueue) -> Result<T, FileCacheError>
+	func makeValueRequest<T>(producer: SignalProducer<T, Rc2Error>, queue: DispatchQueue) -> Result<T, Rc2Error>
 	{
-		var result: Result<T, FileCacheError>!
+		var result: Result<T, Rc2Error>!
 		let group = DispatchGroup()
 		queue.async(group: group) {
 			result = producer.last()
