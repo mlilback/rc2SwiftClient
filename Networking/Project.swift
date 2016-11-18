@@ -59,6 +59,16 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 		return _workspaces[idx]
 	}
 	
+	/// searches for a workspace with the specified name
+	/// - Parameter withName: the name to look for
+	/// - returns: a matching workspace or nil if not found
+	public func workspace(withName: String) -> Workspace? {
+		guard let idx =  _workspaces.index(where: { $0.name == withName }) else {
+			return nil
+		}
+		return _workspaces[idx]
+	}
+	
 	//documentation inherited from protocol
 	public func update(to other: Project) throws {
 		assert(projectId == other.projectId)

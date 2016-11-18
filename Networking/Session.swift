@@ -14,12 +14,14 @@ import ReactiveSwift
 import SwiftWebSocket
 import os
 import NotifyingCollection
+import ClientCore
+
+public extension Rc2Error {
+	public var isSessionError: Bool { return nestedError is SessionError }
+}
 
 public enum SessionError: Error {
 	case openAlreadyInProgress
-	case fileCacheError(FileCacheError)
-	case websocketError(NSError)
-	case internalError
 }
 
 public enum ExecuteType: String {
@@ -48,7 +50,7 @@ public class Session {
 		return try! NSRegularExpression(pattern: "(help\\(\\\"?([\\w\\d]+)\\\"?\\))\\s*;?\\s?", options: [.dotMatchesLineSeparators])
 	}()
 	
-	fileprivate var openObserver: Signal<Double, SessionError>.Observer?
+	fileprivate var openObserver: Signal<Double, Rc2Error>.Observer?
 	fileprivate(set) var connectionOpen:Bool = false
 	fileprivate var keepAliveTimer:DispatchSource = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: DispatchQueue.main) /*Migrator FIXME: Use DispatchSourceTimer to avoid the cast*/ as! DispatchSource
 	
@@ -75,7 +77,7 @@ public class Session {
 		self.imageCache = imageCache
 	}
 	
-	convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, source:WebSocketSource = WebSocket(), delegate:SessionDelegate?=nil, config: URLSessionConfiguration = .default, fileCache: FileCache? = nil)
+	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, source:WebSocketSource = WebSocket(), delegate:SessionDelegate?=nil, config: URLSessionConfiguration = .default, fileCache: FileCache? = nil)
 	{
 		//create a file cache if one wasn't provided
 		var fc = fileCache
@@ -104,10 +106,10 @@ public class Session {
 	///opens the websocket with the specified request
 	/// - parameter request: a ws:// or wss:// request to use for the websocket
 	/// - returns: future for the open session (with file loading started) or an error
-	public func open(_ request:URLRequest) -> SignalProducer<Double, SessionError> {
-		return SignalProducer<Double, SessionError>() { observer, disposable in
+	public func open(_ request:URLRequest) -> SignalProducer<Double, Rc2Error> {
+		return SignalProducer<Double, Rc2Error>() { observer, disposable in
 			guard nil == self.openObserver else {
-				observer.send(error: .openAlreadyInProgress)
+				observer.send(error: Rc2Error(type: .network, nested: SessionError.openAlreadyInProgress))
 				return
 			}
 			self.openObserver = observer
@@ -197,7 +199,7 @@ public class Session {
 	///   - contents: the contents to save
 	///   - executeType: should the saved code be executed
 	/// - Returns: a signal producer for success or error
-	public func sendSaveFileMessage(file: File, contents: String, executeType: ExecuteType = .None) -> SignalProducer<Void, SessionError> {
+	public func sendSaveFileMessage(file: File, contents: String, executeType: ExecuteType = .None) -> SignalProducer<Void, Rc2Error> {
 		let uniqueIdent = UUID().uuidString
 		let encoder = MessagePackEncoder()
 		var attrs = ["msg":MessageValue.forValue("save"), "apiVersion":MessageValue.forValue(Int(1))]
@@ -208,11 +210,11 @@ public class Session {
 		encoder.encodeValue(MessageValue.DictionaryValue(MessageValueDictionary(attrs)))
 		guard let data = encoder.data else {
 			os_log("failed to encode save file message")
-			return SignalProducer<Void, SessionError>(error: .internalError)
+			return SignalProducer<Void, Rc2Error>(error: Rc2Error(type: .logic, explanation: "failed to encode save file message"))
 		}
 		//for debug purposes
 		_ = try? data.write(to: URL(fileURLWithPath: "/tmp/lastSaveToServer"), options: .atomicWrite)
-		return SignalProducer<Void, SessionError>() { observer, _ in
+		return SignalProducer<Void, Rc2Error>() { observer, _ in
 			self.wsSource.send(data)
 		}
 	}
@@ -310,6 +312,9 @@ private extension Session {
 					handleFileResponse(transId, operation:operation, file:file)
 				case .fileChanged(let changeType, let file):
 					workspace.update(file: file, change: FileChangeType(rawValue: changeType)!)
+				case .execComplete(_, _, let images):
+					imageCache.cacheImagesFromServer(images)
+					fallthrough
 				default:
 					self.delegate?.sessionMessageReceived(response)
 				}
@@ -345,7 +350,7 @@ private extension Session {
 		fileCache.cacheAllFiles().on(value: { (progPercent) in
 			self.openObserver?.send(value: progPercent)
 		}, failed: { (cacheError) in
-			self.openObserver?.send(error: .fileCacheError(cacheError))
+			self.openObserver?.send(error: cacheError)
 		}, completed: {
 			self.connectionOpen = true
 			self.openObserver?.sendCompleted()
@@ -368,7 +373,7 @@ private extension Session {
 		}
 		wsSource.event.error = { [unowned self] error in
 			guard nil == self.openObserver else {
-				self.openObserver?.send(error: .websocketError(error as NSError))
+				self.openObserver?.send(error: Rc2Error(type: .websocket, nested: error))
 				self.openObserver = nil
 				return
 			}

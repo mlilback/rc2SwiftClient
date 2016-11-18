@@ -9,17 +9,14 @@ import BrightFutures
 import os
 import CryptoSwift
 import ReactiveSwift
+import ClientCore
 
 let FileAttrVersion = "io.rc2.FileAttr.Version"
 let FileAttrChecksum = "io.rc2.FileAttr.SHA256"
 
 public enum FileError: Error {
-	case fileNotFound
-	case failedToSaveFile
-	case failedToLoadFile
-	case readError
+	case failedToSave
 	case failedToDownload
-	case foundationError(error:NSError)
 }
 
 ///Protocol for functions of NSFileManager that we use so we can inject a mock version in unit tests
@@ -30,7 +27,7 @@ public protocol Rc2FileManager {
 	func removeItem(at: URL) throws
 //	func createDirectory(at url: URL, withIntermediateDirectories createIntermediates: Bool, attributes: [String : Any]?) throws
 	func createDirectoryHierarchy(at url: URL) throws
-	func move(tempFile: URL, to toUrl:URL, file:File?, promise:inout Promise<URL?,FileError>)
+//	func move(tempFile: URL, to toUrl:URL, file:File?, promise:inout Promise<URL?,FileError>)
 	/// synchronously move the file setting xattrs
 	func move(tempFile: URL, to toUrl: URL, file: File?) throws
 }
@@ -43,29 +40,50 @@ public class Rc2DefaultFileManager: Rc2FileManager {
 	}
 
 	public func moveItem(at: URL, to: URL) throws {
-		try fm.moveItem(at: at, to: to)
+		do {
+			try fm.moveItem(at: at, to: to)
+		} catch {
+			throw Rc2Error(type: .file, nested: error)
+		}
 	}
 	
 	public func copyItem(at: URL, to: URL) throws {
-		try fm.copyItem(at: at, to: to)
+		do {
+			try fm.copyItem(at: at, to: to)
+		} catch {
+			throw Rc2Error(type: .file, nested: error, severity: .error, explanation: "failed to copy \(to.lastPathComponent)")
+		}
 	}
 	
 	public func removeItem(at: URL) throws {
-		try fm.removeItem(at: at)
+		do {
+			try fm.removeItem(at: at)
+		} catch {
+			throw Rc2Error(type: .file, nested: error)
+		}
 	}
 	
 	public func createDirectoryHierarchy(at url: URL) throws {
-		try Foundation.FileManager.default.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+		do {
+			try fm.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+		} catch {
+			throw Rc2Error(type: .file, nested: error)
+		}
 	}
 	
 	public func Url(for directory: FileManager.SearchPathDirectory, domain: FileManager.SearchPathDomainMask, appropriateFor url: URL? = nil, create shouldCreate: Bool = false) throws -> URL
 	{
-		return try fm.url(for: directory, in: domain, appropriateFor: url, create: shouldCreate)
+		do {
+			return try fm.url(for: directory, in: domain, appropriateFor: url, create: shouldCreate)
+		} catch {
+			throw Rc2Error(type: .file, nested: error)
+		}
 	}
 	
 	///copies url to a new location in a temporary directory that can be passed to the user or another application
 	/// (i.e. it is not in our sandbox/app support/cache directories)
 	func copyURLToTemporaryLocation(_ url:URL) throws -> URL {
+		//all errors are already wrapped since we only call internal methods
 		let tmpDir = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Rc2", isDirectory: true)
 		_ = try createDirectoryHierarchy(at: tmpDir)
 		let destUrl = URL(fileURLWithPath: url.lastPathComponent, relativeTo: tmpDir)
@@ -76,25 +94,25 @@ public class Rc2DefaultFileManager: Rc2FileManager {
 	
 	///Moves the tmpFile downloaded via NSURLSession (or elsewher) to toUrl, setting the appropriate
 	/// metadata including xattributes for validating cached File objects
-	public func move(tempFile tmpFile: URL, to toUrl:URL, file:File?, promise:inout Promise<URL?,FileError>) {
-		do {
-			if try toUrl.checkResourceIsReachable() {
-				try removeItem(at: toUrl)
-			}
-			try moveItem(at:tmpFile, to: toUrl)
-			//if a File, set mod/creation date, ignoring any errors
-			if let fileRef = file {
-				//TODO: fix this to use native URL methods
-				_ = try? (toUrl as NSURL).setResourceValue(fileRef.lastModified, forKey: URLResourceKey.contentModificationDateKey)
-				_ = try? (toUrl as NSURL).setResourceValue(fileRef.dateCreated, forKey: URLResourceKey.creationDateKey)
-				fileRef.writeXAttributes(toUrl)
-			}
-			promise.success(toUrl)
-		} catch let err as NSError {
-			os_log("got error downloading file %{public}s: %{public}s", tmpFile.lastPathComponent, err)
-			promise.failure(FileError.failedToSaveFile)
-		}
-	}
+//	public func move(tempFile tmpFile: URL, to toUrl:URL, file:File?, promise:inout Promise<URL?,FileError>) {
+//		do {
+//			if try toUrl.checkResourceIsReachable() {
+//				try removeItem(at: toUrl)
+//			}
+//			try moveItem(at:tmpFile, to: toUrl)
+//			//if a File, set mod/creation date, ignoring any errors
+//			if let fileRef = file {
+//				//TODO: fix this to use native URL methods
+//				_ = try? (toUrl as NSURL).setResourceValue(fileRef.lastModified, forKey: URLResourceKey.contentModificationDateKey)
+//				_ = try? (toUrl as NSURL).setResourceValue(fileRef.dateCreated, forKey: URLResourceKey.creationDateKey)
+//				fileRef.writeXAttributes(toUrl)
+//			}
+//			promise.success(toUrl)
+//		} catch let err as NSError {
+//			os_log("got error downloading file %{public}s: %{public}s", tmpFile.lastPathComponent, err)
+//			promise.failure(FileError.failedToSaveFile)
+//		}
+//	}
 	
 	///Moves the tmpFile downloaded via NSURLSession (or elsewher) to toUrl, setting the appropriate
 	/// metadata including xattributes for validating cached File objects
@@ -111,9 +129,9 @@ public class Rc2DefaultFileManager: Rc2FileManager {
 				_ = try? (toUrl as NSURL).setResourceValue(fileRef.dateCreated, forKey: URLResourceKey.creationDateKey)
 				fileRef.writeXAttributes(toUrl)
 			}
-		} catch let err as NSError {
-			os_log("got error downloading file %{public}s: %{public}s", tempFile.lastPathComponent, err)
-			throw FileError.failedToSaveFile
+		} catch {
+			os_log("got error downloading file %{public}s: %{public}s", tempFile.lastPathComponent, error.localizedDescription)
+			throw Rc2Error(type: .cocoa, nested: error, explanation: tempFile.lastPathComponent)
 		}
 	}
 }

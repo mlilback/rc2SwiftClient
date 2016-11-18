@@ -5,9 +5,9 @@
 //
 
 import Foundation
+import ClientCore
 
 public enum NetworkingError: Error {
-	case invalidJson
 	case unsupportedFileType
 	case connectionError(Error)
 	case canceled

@@ -19,10 +19,13 @@ public enum Rc2ErrorCode: Int {
 	case alreadyExists = 107
 }
 
+//TODO: remove this, as should no longer  be used
 public typealias ProgressHandler = (Progress?) -> Void
 
+/// a static reference to the app's bundle
 public struct AppInfo {
+	/// the info dictionary of the application
 	private static let bundleInfo = Bundle.main.infoDictionary
-
+	/// the bundle identifier of the application
 	public static var bundleIdentifier: String? { return bundleInfo?["CFBundleIdentifier"] as? String }
 }

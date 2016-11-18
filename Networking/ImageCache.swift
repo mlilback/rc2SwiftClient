@@ -108,7 +108,7 @@ public class ImageCache: JSONEncodable {
 		}
 	}
 	
-	func sessionImages(forBatch batchId:Int) -> [SessionImage] {
+	public func sessionImages(forBatch batchId:Int) -> [SessionImage] {
 		var matches:[SessionImage] = []
 		for anImage in metaCache.values {
 			if anImage.batchId == batchId {
@@ -118,13 +118,13 @@ public class ImageCache: JSONEncodable {
 		return matches.sorted(by: { $0.id < $1.id })
 	}
 	
-	func clearCache() {
+	public func clearCache() {
 		cache.removeAllObjects()
 		metaCache.removeAll()
 	}
 	
 	///imageWithId: should have been called at some point to make sure the image is cached
-	func urlForCachedImage(_ imageId: Int) -> URL {
+	public func urlForCachedImage(_ imageId: Int) -> URL {
 		return URL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeTo: self.cacheUrl).absoluteURL
 	}
 	

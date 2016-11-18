@@ -23,7 +23,6 @@ public protocol ServerResponseHandlerDelegate {
 	func consoleAttachment(forImage image: SessionImage) -> ConsoleAttachment
 	func consoleAttachment(forFile file: File) -> ConsoleAttachment
 	func attributedStringForInputFile(_ fileId: Int) -> NSAttributedString
-	func cacheImages(_ images: [SessionImage])
 	func showFile(_ fileId: Int)
 }
 
@@ -93,7 +92,6 @@ public class ServerResponseHandler {
 	
 	fileprivate func formatExecComplete(_ queryId:Int, batchId:Int, images:[SessionImage]) -> NSAttributedString? {
 		guard images.count > 0 else { return nil }
-		delegate.cacheImages(images)
 		let mstr = NSMutableAttributedString()
 		for image in images {
 			let aStr = delegate.consoleAttachment(forImage: image).serializeToAttributedString()

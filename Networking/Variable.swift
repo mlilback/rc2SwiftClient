@@ -6,6 +6,7 @@
 
 import Foundation
 import Freddy
+import ClientCore
 
 /// The possible primitive value types
 ///
@@ -275,7 +276,7 @@ public final class DoublePrimitiveVariable: Variable {
 			case .int(let ival):
 				return Double(ival)
 			default:
-				throw NetworkingError.invalidJson
+				throw Rc2Error(type: .invalidJson, severity: .warning, explanation: "error parsing varaible json")
 			}
 		}
 		try super.init(json: json)
@@ -359,13 +360,13 @@ public final class DateVariable: Variable {
 		switch type {
 			case .date:
 				guard let dateVal = DateVariable.dateFormatter.date(from: try json.getString(at: "value")) else {
-					throw NetworkingError.invalidJson
+					throw Rc2Error(type: .invalidJson, severity: .warning, explanation: "error parsing date varaible json")
 				}
 				value = dateVal
 			case .dateTime:
 				value = Date(timeIntervalSince1970: try json.getDouble(at: "value"))
 			default:
-				throw NetworkingError.invalidJson
+				throw Rc2Error(type: .invalidJson, severity: .warning, explanation: "error parsing date varaible json")
 		}
 	}
 }

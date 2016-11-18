@@ -32,7 +32,7 @@ public enum ServerResponse : Equatable {
 	case fileOperationResponse(transId:String, operation:FileOperation, file:File)
 	
 	
-	func isEcho() -> Bool {
+	public func isEcho() -> Bool {
 		if case .echoQuery(_, _, _) = self { return true }
 		return false
 	}

@@ -8,6 +8,7 @@ import Foundation
 import Freddy
 import ReactiveSwift
 import os
+import ClientCore
 
 /// Factory class used to login and return a ConnectionInfo for that connection
 // must subclass NSObject to be a delegate to URLSession api
@@ -18,7 +19,7 @@ public final class LoginFactory: NSObject {
 	fileprivate var networkLog: OSLog! // we will create before init is complete
 	fileprivate var loginResponse: URLResponse?
 	fileprivate var responseData: Data
-	fileprivate var signalObserver: Observer<ConnectionInfo, NetworkingError>?
+	fileprivate var signalObserver: Observer<ConnectionInfo, Rc2Error>?
 	fileprivate var signalDisposable: Disposable?
 	fileprivate var host: ServerHost?
 	fileprivate var task: URLSessionDataTask?
@@ -43,7 +44,7 @@ public final class LoginFactory: NSObject {
 	///   - login: the user's login name
 	///   - password: the user's password
 	/// - Returns: a signal producer that returns the ConnectionInfo or an Error
-	public func login(to destHost: ServerHost, as login: String, password: String) -> SignalProducer<ConnectionInfo, NetworkingError>
+	public func login(to destHost: ServerHost, as login: String, password: String) -> SignalProducer<ConnectionInfo, Rc2Error>
 	{
 		assert(urlSession != nil, "login can only be called once")
 		host = destHost
@@ -52,7 +53,7 @@ public final class LoginFactory: NSObject {
 			os_log("json serialization of login info failed", log: networkLog, type: .error)
 			fatalError()
 		}
-		return SignalProducer<ConnectionInfo, NetworkingError>() { observer, disposable in
+		return SignalProducer<ConnectionInfo, Rc2Error>() { observer, disposable in
 			self.signalObserver = observer
 			self.signalDisposable = disposable
 			let url = URL(string: "login", relativeTo: destHost.url!)!
@@ -96,7 +97,7 @@ extension LoginFactory: URLSessionDataDelegate {
 		defer { self.task = nil; self.urlSession = nil }
 		guard error == nil else {
 			os_log("login error: %{public}s", log: networkLog, type: .default, error!.localizedDescription)
-			signalObserver?.send(error: .connectionError(error!))
+			signalObserver?.send(error: Rc2Error(type: .network, nested: error, severity: .warning))
 			return
 		}
 		do {
@@ -105,7 +106,7 @@ extension LoginFactory: URLSessionDataDelegate {
 			signalObserver?.sendCompleted()
 		} catch {
 			os_log("error parsing login info: %{public}s", log: networkLog, type: .default, error.localizedDescription)
-			signalObserver?.send(error: .invalidJson)
+			signalObserver?.send(error: Rc2Error(type: .invalidJson, nested: error))
 		}
 	}
 }

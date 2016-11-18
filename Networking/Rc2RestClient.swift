@@ -7,8 +7,8 @@
 import Foundation
 import Freddy
 import ReactiveSwift
+import ClientCore
 import os
-import BrightFutures
 
 public final class Rc2RestClient {
 	let conInfo: ConnectionInfo
@@ -34,69 +34,24 @@ public final class Rc2RestClient {
 		request.httpMethod = method
 		return request
 	}
-
-	public func downloadFile(_ wspace:Workspace, file:File, to destDirUrl:URL) -> Future<URL?, FileError>
-	{
-		var p = Promise<URL?,FileError>()
-		let cacheUrl = URL(fileURLWithPath: file.name, relativeTo: destDirUrl)
-		var req = request("workspaces/\(wspace.wspaceId)/files/\(file.fileId)", method: "GET")
-		do {
-			if try cacheUrl.checkResourceIsReachable() {
-				req.addValue("f/\(file.fileId)/\(file.version)", forHTTPHeaderField: "If-None-Match")
-			}
-		} catch {
-		}
-		req.addValue(file.fileType.mimeType, forHTTPHeaderField: "Accept")
-		let task = urlSession!.downloadTask(with: req) { (dloadUrl, response, error) -> Void in
-			let hresponse = response as! HTTPURLResponse
-			guard error == nil else { p.failure(.fileNotFound); return }
-			switch (hresponse.statusCode) {
-			case 304: //use existing
-				p.success(cacheUrl)
-			case 200: //dloaded it
-				self.fileManager.move(tempFile:dloadUrl!, to: cacheUrl, file:file, promise: &p)
-			default:
-				break
-			}
-		}
-		task.resume()
-		return p.future
-	}
 	
-	public func downloadImage(_ wspace:Workspace, imageId:Int, destination:URL) -> Future<URL?,FileError>
+	public func downloadImage(imageId: Int, from wspace: Workspace, destination:URL) -> SignalProducer<URL, Rc2Error>
 	{
-		var p = Promise<URL?, FileError>()
-		var req = request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET")
-		req.addValue("image/png", forHTTPHeaderField: "Accept")
-		let task = urlSession!.downloadTask(with: req) { (dloadUrl, response, error) -> Void in
-			let hresponse = response as? HTTPURLResponse
-			if error == nil && hresponse?.statusCode == 200 {
-				let fileUrl = URL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeTo: destination)
-				self.fileManager.move(tempFile: dloadUrl!, to: fileUrl, file:nil, promise: &p)
-			} else {
-				p.failure(FileError.failedToSaveFile)
-			}
-		}
-		task.resume()
-		return p.future
-	}
-
-	public func downloadImage(imageId: Int, from wspace: Workspace, destination:URL) -> SignalProducer<URL, FileError>
-	{
-		return SignalProducer<URL, FileError>() { observer, _ in
+		return SignalProducer<URL, Rc2Error>() { observer, _ in
 			var req = self.request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET")
 			req.addValue("image/png", forHTTPHeaderField: "Accept")
 			let task = self.urlSession!.downloadTask(with: req) { (dloadUrl, response, error) -> Void in
 				let hresponse = response as? HTTPURLResponse
 				guard error == nil && hresponse?.statusCode == 200 else {
-					observer.send(error: .failedToSaveFile)
+					let err = Rc2Error(type: .file, nested: FileError.failedToSave)
+					observer.send(error: err)
 					return
 				}
 				let fileUrl = URL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeTo: destination)
 				do {
 					try self.fileManager.move(tempFile: dloadUrl!, to: fileUrl, file:nil)
-				} catch let err as NSError {
-					observer.send(error: .foundationError(error: err))
+				} catch {
+					observer.send(error: Rc2Error(type: .file, nested: FileError.failedToDownload, severity: .warning, explanation: "image \(imageId)"))
 				}
 			}
 			task.resume()

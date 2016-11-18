@@ -85,7 +85,7 @@ public class FileType : JSONDecodable {
 extension FileType {
 	///image function differs based on platform
 	#if os(OSX)
-	func image() -> NSImage? {
+	public func image() -> NSImage? {
 		let imgName = "file-\(fileExtension)"
 		if let img = NSImage(named: imgName) {
 			img.backgroundColor = NSColor.clear
@@ -108,14 +108,14 @@ extension FileType {
 		return image()
 	}
 	#else
-	func image() -> UIImage? {
-	if let img = UIImage(named: "console/\(self.fileExtension)-file") {
-	return img
-	}
-	return UIImage(named:"console/plain-file")
+	public func image() -> UIImage? {
+		if let img = UIImage(named: "console/\(self.fileExtension)-file") {
+			return img
+		}
+		return UIImage(named:"console/plain-file")
 	}
 	func fileImage() -> UIImage? {
-	return image()
+		return image()
 	}
 	#endif
 }

@@ -74,6 +74,7 @@
 		081559951DDCCD960047B3CE /* RACSignals+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559941DDCCD960047B3CE /* RACSignals+Rc2.swift */; };
 		081559971DDCFEB00047B3CE /* FileCacheSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559961DDCFEB00047B3CE /* FileCacheSpec.swift */; };
 		081559981DDD06AD0047B3CE /* MessagePackSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559991DDE83250047B3CE /* Rc2Error.swift */; };
 		08159D1E1C77656C004A205A /* NSProgressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08159D1D1C77656C004A205A /* NSProgressTests.m */; };
 		0816F8A01C6D3A4500A6120B /* SessionHandlerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */; };
 		0825475B1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0825475A1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift */; };
@@ -585,6 +586,7 @@
 		081559921DDC889D0047B3CE /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		081559941DDCCD960047B3CE /* RACSignals+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RACSignals+Rc2.swift"; sourceTree = "<group>"; };
 		081559961DDCFEB00047B3CE /* FileCacheSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCacheSpec.swift; sourceTree = "<group>"; };
+		081559991DDE83250047B3CE /* Rc2Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2Error.swift; sourceTree = "<group>"; };
 		08159D1D1C77656C004A205A /* NSProgressTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSProgressTests.m; sourceTree = "<group>"; };
 		0816F8991C6D0F7D00A6120B /* HTMLString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLString.swift; sourceTree = "<group>"; };
 		0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionHandlerProtocols.swift; sourceTree = "<group>"; };
@@ -1115,10 +1117,10 @@
 				08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */,
 				08F189B01D19B0D500866A05 /* ServerHost.swift */,
 				0815597C1DDB9F630047B3CE /* ServerResponse.swift */,
+				0815597E1DDBAEB30047B3CE /* ServerResponseHandler.swift */,
 				081559861DDBB4310047B3CE /* Session.swift */,
 				081559841DDBB3760047B3CE /* SessionDelegate.swift */,
 				081559901DDC84850047B3CE /* SessionImage.swift */,
-				0815597E1DDBAEB30047B3CE /* ServerResponseHandler.swift */,
 				081559781DDB92650047B3CE /* WebSocketSource.swift */,
 			);
 			name = network;
@@ -1304,6 +1306,7 @@
 				0816F8991C6D0F7D00A6120B /* HTMLString.swift */,
 				08604A4D1D9C0C0500DE2A79 /* Named.swift */,
 				089794411D7B6A0F003339EE /* SharedConstants.swift */,
+				081559991DDE83250047B3CE /* Rc2Error.swift */,
 				083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */,
 				08765C811DC58AB300F75D8E /* DispatchReader.swift */,
 				089794431D7B6A8F003339EE /* extensions */,
@@ -2114,6 +2117,7 @@
 				089794511D7B6A8F003339EE /* SystemExtensions.swift in Sources */,
 				081559951DDCCD960047B3CE /* RACSignals+Rc2.swift in Sources */,
 				0897944B1D7B6A8F003339EE /* NSError+Rc2.swift in Sources */,
+				0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */,
 				0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */,
 				0897944F1D7B6A8F003339EE /* NSURL+Rc2.swift in Sources */,
 				08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */,

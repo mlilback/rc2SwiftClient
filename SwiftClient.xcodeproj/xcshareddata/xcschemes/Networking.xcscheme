@@ -28,6 +28,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "089794191D7B68F0003339EE"
+               BuildableName = "ClientCore.framework"
+               BlueprintName = "ClientCore"
+               ReferencedContainer = "container:SwiftClient.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "080E82C01DCBE31D0048F36C"
                BuildableName = "Networking.framework"
                BlueprintName = "Networking"
