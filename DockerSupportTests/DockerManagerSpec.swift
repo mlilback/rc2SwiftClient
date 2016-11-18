@@ -11,7 +11,7 @@ import ReactiveSwift
 import Mockingjay
 import Result
 import Freddy
-@testable import ClientCore
+@testable import DockerSupport
 
 class DockerManagerSpec: QuickSpec {
 	override func spec() {
