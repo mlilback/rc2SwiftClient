@@ -21,7 +21,8 @@ public enum FileCacheError: Error {
 }
 
 public protocol FileCache {
-	var fileManager:Rc2FileManager { get }
+	var fileManager: Rc2FileManager { get }
+	var workspace: Workspace { get }
 
 	func isFileCached(_ file:File) -> Bool
 //	func flushCache(workspace:Workspace)
@@ -63,8 +64,8 @@ public final class DefaultFileCache: NSObject, FileCache {
 	//MARK: properties
 	public let mainQueue: DispatchQueue
 	public var fileManager:Rc2FileManager
+	public let workspace: Workspace
 	fileprivate var baseUrl: URL
-	fileprivate let workspace: Workspace
 	fileprivate var urlSession: URLSession?
 	fileprivate var tasks:[Int:DownloadTask] = [:] //key is task identifier
 	fileprivate var downloadingAllFiles: Bool = false

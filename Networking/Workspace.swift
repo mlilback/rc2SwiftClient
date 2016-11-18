@@ -9,6 +9,7 @@ import Freddy
 import ReactiveSwift
 import Result
 import NotifyingCollection
+import ClientCore
 import os
 #if os(OSX)
 	import AppKit
@@ -34,13 +35,17 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 	
 	//documentation inherited from protocol
 	public init(json: JSON) throws {
-		wspaceId = try json.getInt(at: "id")
-		projectId = try json.getInt(at: "projectId")
-		uniqueId = try json.getString(at: "uniqueId")
-		//these two sets are repeated in update()
-		version = try json.getInt(at: "version")
-		name = try json.getString(at: "name")
-		try _files.append(contentsOf: try json.decodedArray(at: "files"))
+		do {
+			wspaceId = try json.getInt(at: "id")
+			projectId = try json.getInt(at: "projectId")
+			uniqueId = try json.getString(at: "uniqueId")
+			//these two sets are repeated in update()
+			version = try json.getInt(at: "version")
+			name = try json.getString(at: "name")
+			try _files.append(contentsOf: try json.decodedArray(at: "files"))
+		} catch {
+			throw Rc2Error(type: .invalidJson, nested: error)
+		}
 	}
 
 	//documentation inherited from protocol
@@ -75,15 +80,19 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 	/// removes a file
 	///
 	/// - Parameter file: file to remove
-	/// - Throws: any CollectionNotifierErrors
+	/// - Throws: Rc2Error.updateFailed with a CollectionNotifierError
 	public func remove(file: File) throws {
-		try _files.remove(file)
+		do {
+			try _files.remove(file)
+		} catch {
+			throw Rc2Error(type: .updateFailed, nested: error)
+		}
 	}
 	
 	/// Updates the workspace and files
 	///
-	/// - Parameter json: the updated workspace json
-	/// - Throws: json parsing errors
+	/// - Parameter to: workspace to copy all updateable data from
+	/// - Throws: Rc2Error.updateFailed
 	public func update(to other: Workspace) throws {
 		assert(wspaceId == other.wspaceId)
 		_files.startGroupingChanges()
@@ -92,48 +101,77 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 		version = other.version
 		var filesToRemove = Set<File>(_files.values)
 		var filesToAdd = [File]()
-		try other.files.forEach { (aFile) in
-			guard let file = file(withId: aFile.fileId) else {
-				//a new file to add
-				filesToAdd.append(aFile.copy())
-				return
+		do {
+			try other.files.forEach { (aFile) in
+				guard let file = file(withId: aFile.fileId) else {
+					//a new file to add
+					filesToAdd.append(aFile.copy())
+					return
+				}
+				//a file to update
+				//force is ok because we know it is there since we just found it via workspace(withId:)
+				let idx = _files.index(of: file)!
+				try _files.update(at: idx, to: aFile)
+				filesToRemove.remove(file)
 			}
-			//a file to update
-			//force is ok because we know it is there since we just found it via workspace(withId:)
-			let idx = _files.index(of: file)!
-			try _files.update(at: idx, to: aFile)
-			filesToRemove.remove(file)
+			try _files.append(contentsOf: filesToAdd)
+			//all files have been inserted or updated, just need to remove remaining
+			try filesToRemove.forEach { (aFile) in try _files.remove(aFile) }
+		} catch {
+			throw Rc2Error(type: .updateFailed, nested: error)
 		}
-		try _files.append(contentsOf: filesToAdd)
-		//all files have been inserted or updated, just need to remove remaining
-		try filesToRemove.forEach { (aFile) in try _files.remove(aFile) }
+	}
+	
+	/// Adds file to the workspace
+	///
+	/// - Parameter file: a file sent from the server in response to an upload
+	/// - Returns: the file that was copied and inserted into the file array
+	/// - Throws: Rc2Error.updateFailed
+	@discardableResult
+	public func imported(file: File) throws -> File {
+		guard self.file(withId: file.fileId) == nil else {
+			throw Rc2Error(type: .updateFailed, explanation: "attempt to import existing file \(file.name) to workspace \(name)")
+		}
+		do {
+			try _files.append(file)
+		} catch {
+			throw Rc2Error(type: .updateFailed, nested: error)
+		}
+		return self.file(withId: file.fileId)!
 	}
 	
 	/// Updates a specific file, sending a change notification
 	///
 	/// - Parameters:
 	///   - fileId: the id of the file to update
-	///   - other: the version to update from
-	/// - Throws: .noSuchElement if not an element of the file collection
+	///   - other: the version to update to
+	/// - Throws: Rc2Error.noSuchElement if not an element of the file collection, .updatFailed
 	public func update(fileId: Int, to other: File) throws {
 		guard let ourFile = file(withId: fileId), let fileIdx = _files.index(of: ourFile) else {
-			throw CollectionNotifierError.noSuchElement
+			throw Rc2Error(type: .noSuchElement)
 		}
-		try _files.update(at: fileIdx, to: other)
-		
+		do {
+			try _files.update(at: fileIdx, to: other)
+		} catch {
+			throw Rc2Error(type: .updateFailed, nested: error)
+		}
 	}
 
 	/// Updates a specific file, sending a change notification
 	///
 	/// - Parameters:
 	///   - file: the file to update
-	///   - other: the version to update from
-	/// - Throws: .noSuchElement if file is not owned by this workspace
+	///   - other: the version to update to
+	/// - Throws: .noSuchElement or .updateFailed
 	public func update(file: File, to other: File) throws {
 		guard let fileIdx = _files.index(of: file) else {
-			throw CollectionNotifierError.noSuchElement
+			throw Rc2Error(type: .noSuchElement)
 		}
-		try _files.update(at: fileIdx, to: other)
+		do {
+			try _files.update(at: fileIdx, to: other)
+		} catch {
+			throw Rc2Error(type: .updateFailed, nested: error)
+		}
 		
 	}
 	

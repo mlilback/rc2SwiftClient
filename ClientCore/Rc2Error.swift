@@ -10,6 +10,8 @@ import Foundation
 public struct Rc2Error: Error {
 	/// basic categories of errors
 	public enum Rc2ErrorType: String, Error {
+		/// a requested object was not found
+		case noSuchElement
 		/// problem parsing json, Freddy error is nested
 		case invalidJson
 		/// nestedError will be the NSError

@@ -75,6 +75,7 @@
 		081559971DDCFEB00047B3CE /* FileCacheSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559961DDCFEB00047B3CE /* FileCacheSpec.swift */; };
 		081559981DDD06AD0047B3CE /* MessagePackSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559991DDE83250047B3CE /* Rc2Error.swift */; };
+		0815599C1DDF396E0047B3CE /* FileImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815599B1DDF396E0047B3CE /* FileImporter.swift */; };
 		08159D1E1C77656C004A205A /* NSProgressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08159D1D1C77656C004A205A /* NSProgressTests.m */; };
 		0816F8A01C6D3A4500A6120B /* SessionHandlerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */; };
 		0825475B1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0825475A1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift */; };
@@ -238,7 +239,6 @@
 		08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FD91CC9692C001EDFAA /* BasicOutlineDataSource.swift */; };
 		08A01FDC1CCA8B2F001EDFAA /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */; };
 		08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */; };
-		08B036221C73B131005928B3 /* FileImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B036211C73B131005928B3 /* FileImporter.swift */; };
 		08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
 		08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; };
 		08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -587,6 +587,7 @@
 		081559941DDCCD960047B3CE /* RACSignals+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RACSignals+Rc2.swift"; sourceTree = "<group>"; };
 		081559961DDCFEB00047B3CE /* FileCacheSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCacheSpec.swift; sourceTree = "<group>"; };
 		081559991DDE83250047B3CE /* Rc2Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2Error.swift; sourceTree = "<group>"; };
+		0815599B1DDF396E0047B3CE /* FileImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporter.swift; sourceTree = "<group>"; };
 		08159D1D1C77656C004A205A /* NSProgressTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSProgressTests.m; sourceTree = "<group>"; };
 		0816F8991C6D0F7D00A6120B /* HTMLString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLString.swift; sourceTree = "<group>"; };
 		0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionHandlerProtocols.swift; sourceTree = "<group>"; };
@@ -741,7 +742,6 @@
 		08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpOutputController.swift; sourceTree = "<group>"; };
 		08ABCF001D82FCCE007C6A5E /* DockerUrlProtocolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DockerUrlProtocolTests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		08B036211C73B131005928B3 /* FileImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = FileImporter.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessagePackSwift.framework; path = Carthage/Build/Mac/MessagePackSwift.framework; sourceTree = "<group>"; };
 		08BFD3E71C90B5AC0041EB1C /* MessagePackSwift.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = MessagePackSwift.framework.dSYM; path = Carthage/Build/Mac/MessagePackSwift.framework.dSYM; sourceTree = "<group>"; };
 		08C484F71C9B159000FE824B /* server.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = server.cer; path = resources/server.cer; sourceTree = "<group>"; };
@@ -1113,6 +1113,7 @@
 			children = (
 				0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */,
 				081559801DDBAF030047B3CE /* ConsoleAttachment.swift */,
+				0815599B1DDF396E0047B3CE /* FileImporter.swift */,
 				0881B50D1DCF896500679DB3 /* LoginFactory.swift */,
 				08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */,
 				08F189B01D19B0D500866A05 /* ServerHost.swift */,
@@ -1288,7 +1289,6 @@
 				08F189B81D216E5400866A05 /* Bookmark.swift */,
 				083A567E1D25B818009D3091 /* BookmarkManager.swift */,
 				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
-				08B036211C73B131005928B3 /* FileImporter.swift */,
 				080214871C693A69008B55D3 /* FileManager.swift */,
 				08A01FD51CC95C58001EDFAA /* HelpController.swift */,
 				083174151C587F7F00071408 /* ImageCache.swift */,
@@ -1978,6 +1978,7 @@
 				08F6AE001DD918CF00AF0722 /* FileCache.swift in Sources */,
 				0815597F1DDBAEB30047B3CE /* ServerResponseHandler.swift in Sources */,
 				0881B5041DCD23FD00679DB3 /* Variable.swift in Sources */,
+				0815599C1DDF396E0047B3CE /* FileImporter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2032,7 +2033,6 @@
 				08D610761CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m in Sources */,
 				08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */,
 				08F6ADA91DD643C900AF0722 /* Copyable.swift in Sources */,
-				08B036221C73B131005928B3 /* FileImporter.swift in Sources */,
 				08F448FC1C4E244500C64706 /* SessionOutputController.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
 				08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */,

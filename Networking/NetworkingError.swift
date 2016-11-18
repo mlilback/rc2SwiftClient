@@ -11,4 +11,6 @@ public enum NetworkingError: Error {
 	case unsupportedFileType
 	case connectionError(Error)
 	case canceled
+	case uploadFailed(Error)
+	case invalidHttpStatusCode(HTTPURLResponse)
 }

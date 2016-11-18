@@ -64,17 +64,17 @@ public class FileType : JSONDecodable {
 	}
 	
 	/// Is the user allowed to upload files of this type
-	var isImportable:Bool { return boolPropertyValue("Importable") }
+	public var isImportable:Bool { return boolPropertyValue("Importable") }
 	// can the user create a new file of this type in the editor
-	var isCreatable:Bool { return boolPropertyValue("Creatable") }
+	public var isCreatable:Bool { return boolPropertyValue("Creatable") }
 	/// is this a file we can tell the server to execute
-	var isExecutable:Bool { return boolPropertyValue("Executable") }
+	public var isExecutable:Bool { return boolPropertyValue("Executable") }
 	/// is this a source file that can be edited
-	var isSourceFile:Bool { return boolPropertyValue("IsSrc") }
-	var isTextFile:Bool { return boolPropertyValue("IsTextFile") }
-	var isImage:Bool { return boolPropertyValue("IsImage") }
-	var isSweave:Bool { return boolPropertyValue("IsSweave") }
-	var isRMarkdown:Bool { return boolPropertyValue("IsRMarkdown") }
+	public var isSourceFile:Bool { return boolPropertyValue("IsSrc") }
+	public var isTextFile:Bool { return boolPropertyValue("IsTextFile") }
+	public var isImage:Bool { return boolPropertyValue("IsImage") }
+	public var isSweave:Bool { return boolPropertyValue("IsSweave") }
+	public var isRMarkdown:Bool { return boolPropertyValue("IsRMarkdown") }
 	
 	fileprivate func boolPropertyValue(_ key:String) -> Bool {
 		guard let prop = try? json.getBool(at: key) else { return false }
