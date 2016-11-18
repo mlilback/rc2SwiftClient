@@ -5,27 +5,30 @@
 //
 
 import Foundation
+import Freddy
+import ClientCore
+import Networking
 
-open class MacConsoleAttachment: NSObject, ConsoleAttachment {
-	open let type: ConsoleAttachmentType
+public final class MacConsoleAttachment: ConsoleAttachment {
+	let type: ConsoleAttachmentType
 	let image: SessionImage?
-	let fileId:Int32
-	let fileVersion:Int32
+	let fileId:Int
+	let fileVersion:Int
 	let fileName:String?
 	let fileExtension:String?
 	
-	public static var supportsSecureCoding : Bool {
-		return true
+	public class func from(data: Data) throws -> MacConsoleAttachment {
+		let json = try JSON(data: data)
+		return try MacConsoleAttachment(json: json)
 	}
-
+	
 	public init(file inFile:File) {
 		type = .file
 		image = nil
-		fileId = Int32(inFile.fileId)
-		fileVersion = Int32(inFile.version)
+		fileId = inFile.fileId
+		fileVersion = inFile.version
 		fileName = inFile.name
 		fileExtension = inFile.fileType.fileExtension
-		super.init()
 	}
 	
 	public init(image inImage:SessionImage) {
@@ -35,44 +38,53 @@ open class MacConsoleAttachment: NSObject, ConsoleAttachment {
 		fileExtension = nil
 		fileId = 0
 		fileVersion = 0
-		super.init()
 	}
 
-	public required init?(coder decoder:NSCoder) {
-		self.type = ConsoleAttachmentType(rawValue: Int(decoder.decodeCInt(forKey: "type")))!
-		self.image = decoder.decodeObject(forKey: "image") as? SessionImage
-		self.fileId = decoder.decodeCInt(forKey: "fileId")
-		self.fileVersion = decoder.decodeCInt(forKey: "fileVersion")
-		self.fileName = decoder.decodeObject(forKey: "fileName") as? String
-		self.fileExtension = decoder.decodeObject(forKey: "fileExtension") as? String
+	public init(json: JSON) throws {
+		type = ConsoleAttachmentType(rawValue: try json.getInt(at: "type"))!
+		image = try json.decode(at: "image", type: SessionImage.self)
+		fileId = try json.getInt(at: "fileId")
+		fileVersion = try json.getInt(at: "fileVersion")
+		fileName = json.getOptionalString(at: "fileName")
+		fileExtension = json.getOptionalString(at: "fileExtension")
+		if type == .file && fileExtension == nil && nil == FileType.fileType(withExtension: fileExtension!) {
+			throw Rc2Error(type: .invalidJson, explanation: "file attachment had invalid file extension")
+		}
 	}
-	
-	open func encode(with coder: NSCoder) {
-		coder.encodeCInt(Int32(type.rawValue), forKey: "type")
-		coder.encode(image, forKey: "image")
-		coder.encodeCInt(fileId, forKey: "fileId")
-		coder.encodeCInt(fileVersion, forKey: "fileVersion")
-		coder.encode(fileName, forKey: "fileName")
-		coder.encode(fileExtension, forKey: "fileExtension")
+
+	public func toJSON() -> JSON {
+		var props: [String: JSON] = [
+			"type": .int(type.rawValue),
+			"fileId": .int(fileId),
+			"fileVersion": .int(fileVersion)
+		]
+		switch type {
+		case .image:
+			props["image"] = image!.toJSON()
+		case .file:
+			props["fileName"] = .string(fileName!)
+			props["fileExtension"] = .string(fileExtension!)
+		}
+		return .dictionary(props)
 	}
 	
 	fileprivate func fileAttachmentData() -> (FileWrapper, NSImage?) {
-		let data = NSKeyedArchiver.archivedData(withRootObject: self)
+		let data = try! toJSON().serialize()
 		let file = FileWrapper(regularFileWithContents: data)
 		file.filename = fileName
 		file.preferredFilename = fileName
-		return (file, FileType.fileTypeWithExtension(fileExtension)?.image())
+		return (file, FileType.fileType(withExtension: fileExtension!)?.image())
 	}
 	
 	fileprivate func imageAttachmentData() -> (FileWrapper, NSImage?) {
-		let data = NSKeyedArchiver.archivedData(withRootObject: self)
+		let data = try! toJSON().serialize()
 		let file = FileWrapper(regularFileWithContents: data)
 		file.filename = image?.name
 		file.preferredFilename = image?.name
 		return (file, NSImage(named:"graph")!)
 	}
 	
-	open func serializeToAttributedString() -> NSAttributedString {
+	public func asAttributedString() -> NSAttributedString {
 		var results:(FileWrapper, NSImage?)?
 		switch(type) {
 			case .file:

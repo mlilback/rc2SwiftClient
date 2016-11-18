@@ -182,8 +182,10 @@ public class Session {
 
 	/// asks the server to remove a file
 	/// - parameter file: The file to remove
-	public func remove(file: File) -> SignalProducer<Void, SessionError> {
-		return SignalProducer<Void, SessionError>() { observer, _ in
+	/// - returns: a signal producer that will be complete once the server affirms the file was removed
+	@discardableResult
+	public func remove(file: File) -> SignalProducer<Void, Rc2Error> {
+		return SignalProducer<Void, Rc2Error>() { observer, _ in
 			let transId = UUID().uuidString
 			self.sendMessage(["msg":"fileop" as AnyObject, "fileId":file.fileId as AnyObject, "fileVersion":file.version as AnyObject, "operation":"rm" as AnyObject, "transId":transId as AnyObject])
 			self.pendingTransactions[transId] = { (responseId, json) in
@@ -311,6 +313,7 @@ private extension Session {
 				case .fileOperationResponse(let transId, let operation, let file):
 					handleFileResponse(transId, operation:operation, file:file)
 				case .fileChanged(let changeType, let file):
+					fileCache.flushCache(file: file)
 					workspace.update(file: file, change: FileChangeType(rawValue: changeType)!)
 				case .execComplete(_, _, let images):
 					imageCache.cacheImagesFromServer(images)

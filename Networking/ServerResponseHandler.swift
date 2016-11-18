@@ -84,7 +84,7 @@ public class ServerResponseHandler {
 	}
 
 	fileprivate func formatShowOutput(_ queryId:Int, file:File) -> NSAttributedString? {
-		let str = delegate.consoleAttachment(forFile:file).serializeToAttributedString()
+		let str = delegate.consoleAttachment(forFile:file).asAttributedString()
 		let mstr = str.mutableCopy() as! NSMutableAttributedString
 		mstr.append(NSAttributedString(string: "\n"))
 		return mstr
@@ -94,7 +94,7 @@ public class ServerResponseHandler {
 		guard images.count > 0 else { return nil }
 		let mstr = NSMutableAttributedString()
 		for image in images {
-			let aStr = delegate.consoleAttachment(forImage: image).serializeToAttributedString()
+			let aStr = delegate.consoleAttachment(forImage: image).asAttributedString()
 			mstr.append(aStr)
 		}
 		mstr.append(NSAttributedString(string: "\n"))

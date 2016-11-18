@@ -6,7 +6,7 @@
 
 import Cocoa
 import ClientCore
-
+import DockerSupport
 
 public class DockerViewController: NSViewController {
 	dynamic var manager: DockerManager? { didSet {

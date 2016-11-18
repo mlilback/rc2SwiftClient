@@ -5,95 +5,92 @@
 //
 
 import Foundation
-import BrightFutures
 import os
+import ReactiveSwift
+import Networking
 
 let MinTimeBetweenAutoSaves:TimeInterval = 2
 
 class EditorDocument: NSObject {
-	let oldContentsUserInfoKey = "OldContentsUserInfoKey"
-
-	fileprivate(set) var file:File
-	let fileUrl:URL
-	let fileHandler:SessionFileHandler
-	let undoManager:UndoManager
-	fileprivate(set) var savedContents:String?
-	var editedContents:String?
-	fileprivate(set) var lastSaveTime:TimeInterval = 0
-	var topVisibleIndex:Int = 0
-	fileprivate(set) var isLoaded:Bool = false
+	typealias SaveSignalProducer = SignalProducer<(old: String, new: String), NSError>
 	
-	var currentContents:String {
+	fileprivate(set) var file: File
+	let fileUrl: URL
+	let fileCache:  FileCache
+	let undoManager: UndoManager
+	fileprivate(set) var savedContents: String?
+	var editedContents: String?
+	fileprivate(set) var lastSaveTime:TimeInterval = 0
+	var topVisibleIndex: Int = 0
+	fileprivate(set) var isLoaded: Bool = false
+
+	var currentContents: String {
 		assert(isLoaded);
 		return editedContents != nil ? editedContents! : savedContents!
 	}
-	var dirty:Bool {
+	var dirty: Bool {
 		if nil == editedContents { return false }
 		return editedContents != savedContents
 	}
-	
-	init(file:File, fileHandler:SessionFileHandler) {
+
+	init(file: File, fileCache: FileCache) {
 		self.file = file
-		self.fileHandler = fileHandler
-		self.fileUrl = fileHandler.fileCache.cachedUrl(file:file)
+		self.fileCache = fileCache
+		self.fileUrl = fileCache.cachedUrl(file: file)
 		self.undoManager = UndoManager()
 		super.init()
 	}
-	
-	func loadContents() -> Future<String, NSError> {
-		let promise = Promise<String, NSError>()
-		if nil == savedContents {
-			fileHandler.contentsOfFile(file).onSuccess { fileData in
-				self.savedContents = String(data: fileData! as Data, encoding: String.Encoding.utf8)
+
+	func loadContents() -> SignalProducer<String, NSError> {
+		return SignalProducer<String, NSError>() { observer, _ in
+			guard nil == self.savedContents else {
+				observer.send(value: self.savedContents!)
+				observer.sendCompleted()
+				return
+			}
+			self.fileCache.contents(of: self.file).startWithResult { result in
+				guard let data = result.value else {
+					//TODO: handle error
+					os_log("failed to load contents of %{public}s: %{public}s", self.file.name, result.error!.localizedDescription)
+					observer.send(error: result.error! as NSError)
+					return
+				}
+				self.savedContents = String(data: data, encoding: String.Encoding.utf8)
 				self.isLoaded = true
-				promise.success(self.savedContents!)
-			}.onFailure { error in
-				//TODO: handle error
-				os_log("failed to load contents of %{public}s: %{public}s", self.file.name, error as NSError)
-				promise.failure(error as NSError)
+				observer.send(value: self.savedContents!)
+				observer.sendCompleted()
 			}
 		}
-		return promise.future
 	}
 	
 	func willBecomeActive() {
 		
 	}
 	
-	func willBecomeInactive(_ text:String?) {
+	func willBecomeInactive(_ text: String?) {
 		editedContents = text
 	}
-	
-	func updateFile(_ newFile:File) {
+
+	func updateFile(_ newFile: File) {
 		precondition(isLoaded)
 		self.editedContents = nil
 		self.file = newFile
 	}
 	
-	///any completion blocks added to progress will be executed on the main queue after the
-	///save is complete, but before the document replaces the savedContents with the editedContents
-	///this allows observers to access the previous and new content
-	///@returns nil if autosave and has been a while since last save, else progress
-	func saveContents(isAutoSave autosave:Bool=false) -> Progress? {
+	/// - returns: nil if autosave and has been a while since last save, else producer to save contents
+	func saveContents(isAutoSave autosave: Bool=false) -> SaveSignalProducer? {
 		precondition(isLoaded)
 		if autosave {
 			let curTime = Date.timeIntervalSinceReferenceDate
 			guard curTime - lastSaveTime < MinTimeBetweenAutoSaves else { return nil }
 		}
-		self.lastSaveTime = Date.timeIntervalSinceReferenceDate
-		let prog = Progress(totalUnitCount: -1) //indeterminate
-		fileHandler.saveFile(file, contents: editedContents!) { err in
-			//only mark self as saved if no error
-			if err == nil {
+		return SaveSignalProducer { observer, _ in
+			self.lastSaveTime = Date.timeIntervalSinceReferenceDate
+			self.fileCache.save(file: self.file, contents: self.editedContents!).startWithCompleted {
 				self.savedContents = self.editedContents
 				self.editedContents = nil
 				self.lastSaveTime = Date.timeIntervalSinceReferenceDate
 			}
-			//mark progress complete, reporting error if there was one
-			prog.totalUnitCount = 1 //makes it determinate so it can be completed
-			prog.setUserInfoObject(self.savedContents, forKey: ProgressUserInfoKey(rawValue: self.oldContentsUserInfoKey))
-			prog.rc2_complete(err) //complete with an error
 		}
-		return prog
 	}
 }

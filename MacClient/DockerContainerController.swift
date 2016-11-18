@@ -7,6 +7,7 @@
 import Cocoa
 import ClientCore
 import ReactiveSwift
+import DockerSupport
 
 public class DockerContainerController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
 	@IBOutlet dynamic var containerTable: NSTableView?

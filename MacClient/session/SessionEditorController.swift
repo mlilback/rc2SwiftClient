@@ -6,11 +6,14 @@
 
 import Cocoa
 import os
+import ReactiveSwift
+import ClientCore
+import Networking
+import NotifyingCollection
 
 ///selectors used in this file, aliased with shorter, descriptive names
 private extension Selector {
 	static let autoSave = #selector(SessionEditorController.autosaveCurrentDocument)
-	static let fileChangedNotification = #selector(SessionEditorController.fileChanged(_:))
 	static let findPanelAction = #selector(NSTextView.performFindPanelAction(_:))
 	static let previousChunkAction = #selector(SessionEditorController.previousChunkAction(_:))
 	static let nextChunkAction = #selector(SessionEditorController.nextChunkAction(_:))
@@ -20,15 +23,15 @@ class SessionEditorController: AbstractSessionViewController
 {
 	//MARK: properties
 	@IBOutlet var editor: SessionEditor?
-	@IBOutlet var runButton:NSButton?
-	@IBOutlet var sourceButton:NSButton?
-	@IBOutlet var fileNameField:NSTextField?
+	@IBOutlet var runButton: NSButton?
+	@IBOutlet var sourceButton: NSButton?
+	@IBOutlet var fileNameField: NSTextField?
 	
 	let defaultUndoManager = UndoManager()
-	var parser:SyntaxParser?
-	fileprivate(set) var currentDocument:EditorDocument?
-	fileprivate var openDocuments:[Int:EditorDocument] = [:]
-	fileprivate var defaultAttributes:[String:AnyObject] = [:]
+	var parser: SyntaxParser?
+	fileprivate(set) var currentDocument: EditorDocument?
+	fileprivate var openDocuments: [Int: EditorDocument] = [:]
+	fileprivate var defaultAttributes: [String: AnyObject] = [:]
 	fileprivate var currentChunkIndex = 0
 	
 	///true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
@@ -55,7 +58,6 @@ class SessionEditorController: AbstractSessionViewController
 				let ncenter = NotificationCenter.default
 				ncenter.addObserver(self, selector: .autoSave, name: NSNotification.Name.NSApplicationDidResignActive, object: NSApp)
 				ncenter.addObserver(self, selector: .autoSave, name: NSNotification.Name.NSApplicationWillTerminate, object: NSApp)
-				ncenter.addObserver(self, selector: .fileChangedNotification, name: WorkspaceFileChangedNotification, object: nil)
 				let nswspace = NSWorkspace.shared()
 				nswspace.notificationCenter.addObserver(self, selector: .autoSave, name: NSNotification.Name.NSWorkspaceWillSleep, object: nswspace)
 			}
@@ -104,6 +106,12 @@ class SessionEditorController: AbstractSessionViewController
 			currentFontDescriptor = fontDesc as! NSFontDescriptor
 		}
 	}
+	
+	override func sessionChanged() {
+		session.workspace.fileChangeSignal.observeValues { [unowned self] (values) in
+			self.process(changes: values)
+		}
+	}
 
 	//called when file has changed in UI
 	func fileSelectionChanged(_ file:File?) {
@@ -117,52 +125,35 @@ class SessionEditorController: AbstractSessionViewController
 	}
 	
 	//called when a file in the workspace file array has changed
-	func fileChanged(_ note:Notification) {
-		if (note as NSNotification).userInfo?["change"] == nil {
-			os_log("got filechangenotification without a change object", type:.error)
-			return
-		}
-		let change = (note as NSNotification).userInfo?["change"] as! WorkspaceFileChange
+	func process(changes: [CollectionChange<File>]) {
 		//if it was a file change (content or metadata)
-		if change.changeType == .change {
-			if currentDocument?.file.fileId == change.newFile?.fileId && currentDocument?.file != change.newFile {
-				let newFile = change.newFile!
-				self.currentDocument?.updateFile(change.newFile!)
-				self.fileSelectionChanged(newFile)
-			} else if currentDocument?.file.fileId == change.newFile?.fileId {
-				let progress = session.fileHandler.fileCache.flushCache(file: change.newFile!)
-				progress?.rc2_addCompletionHandler() {
-					let newFile = change.newFile!
-					self.currentDocument?.updateFile(change.newFile!)
-					self.fileSelectionChanged(newFile)
-				}
-			}
+		guard let change = changes.first(where: { $0.object?.fileId == currentDocument?.file.fileId }) , let file = change.object else { return }
+		if change.changeType == .update {
+			guard currentDocument?.file.fileId == file.fileId else { return }
+			self.currentDocument?.updateFile(file)
+			self.adjustCurrentDocumentForFile(file)
 		} else if change.changeType == .remove {
-			if change.oldFile?.fileId == currentDocument?.file.fileId
-			{
-				//document being editied was removed
-				fileSelectionChanged(nil)
-			}
+			//document being editied was removed
+			fileSelectionChanged(nil)
 		}
 	}
 	
 	func autosaveCurrentDocument() {
 		guard currentDocument?.dirty ?? false else { return }
-		let prog = currentDocument!.saveContents(isAutoSave: true)
-		prog?.rc2_addCompletionHandler() {
+		currentDocument!.saveContents(isAutoSave: true)?.startWithCompleted {
 			self.saveDocumentToServer(self.currentDocument!)
 		}
 	}
 	
 	//should be called when document is locally saved but stil marked as dirty (e.g. from progress completion handler)
-	func saveDocumentToServer(_ document:EditorDocument) {
+	func saveDocumentToServer(_ document: EditorDocument) {
+		precondition(currentDocument != nil, "can't save a nil document")
 		//TODO: enable busy status
-		session.sendSaveFileMessage(document) { (doc, err) -> Void in
+		session.sendSaveFileMessage(file: currentDocument!.file, contents: document.currentContents).startWithCompleted {
 			//ideally should remove busy progress added before this call
 			os_log("saved to server", type:.info)
 		}
 	}
-	
 }
 
 //MARK: Actions
@@ -296,14 +287,12 @@ private extension SessionEditorController {
 		assert(currentDocument != nil, "runQuery called with no file selected")
 		if currentDocument!.dirty {
 			//not passing autosave param, so will always return progress
-			let progress = currentDocument!.saveContents()
-			progress!.rc2_addCompletionHandler() {
-				self.session.sendSaveFileMessage(self.currentDocument!, executeType: type) {doc, error in
+			currentDocument!.saveContents()?.startWithResult { (result) in
+				self.session.sendSaveFileMessage(file: self.currentDocument!.file, contents: result.value!.new, executeType: type).startWithCompleted {
 					//TODO notify user of error
-					self.session.executeScriptFile(doc.file.fileId, type: type)
+					self.session.executeScriptFile(self.currentDocument!.file.fileId, type: type)
 				}
 			}
-			self.appStatus?.currentProgress = progress
 		} else {
 			session.executeScriptFile(currentDocument!.file.fileId, type: type)
 		}
@@ -324,15 +313,17 @@ private extension SessionEditorController {
 		}
 		currentDocument = openDocuments[theFile.fileId]
 		if currentDocument == nil {
-			currentDocument = EditorDocument(file: theFile, fileHandler: session.fileHandler)
+			currentDocument = EditorDocument(file: theFile, fileCache: session.fileCache)
 			openDocuments[theFile.fileId] = currentDocument!
 		}
 		let doc = currentDocument!
-		doc.loadContents().onSuccess { theText in
-			self.documentContentsLoaded(doc, content: theText)
-		}.onFailure { error in
-			//TODO: handle error
-			os_log("error loading document contents %{public}s", type:.error, error as NSError)
+		doc.loadContents().startWithResult { result in
+			guard let contents = result.value else {
+				//TODO: handle error
+				os_log("error loading document contents %{public}s", type:.error, result.error!.localizedDescription)
+				return
+			}
+			self.documentContentsLoaded(doc, content: contents)
 		}
 	}
 	
@@ -368,11 +359,7 @@ private extension SessionEditorController {
 		doc.topVisibleIndex = idx
 		doc.willBecomeInactive(contents)
 		if doc.dirty {
-			let prog = doc.saveContents()
-			self.appStatus?.currentProgress = prog
-			prog?.rc2_addCompletionHandler() {
-				self.saveDocumentToServer(doc)
-			}
+			doc.saveContents()?.start() //should happen pretty instantainously
 		}
 	}
 	

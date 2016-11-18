@@ -5,11 +5,12 @@
 //
 
 import Foundation
+import Freddy
 
 public enum ConsoleAttachmentType: Int {
 	case image, file
 }
 
-public protocol ConsoleAttachment: NSObjectProtocol, NSSecureCoding {
-	func serializeToAttributedString() -> NSAttributedString
+public protocol ConsoleAttachment: JSONDecodable, JSONEncodable {
+	func asAttributedString() -> NSAttributedString
 }

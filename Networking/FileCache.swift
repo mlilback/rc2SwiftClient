@@ -26,8 +26,10 @@ public protocol FileCache {
 
 	func isFileCached(_ file:File) -> Bool
 //	func flushCache(workspace:Workspace)
+	//removes the cached file
+	func flushCache(file: File)
 	///recaches the specified file if it has changed
-	func flushCache(file:File) -> SignalProducer<Double, Rc2Error>
+	func recache(file:File) -> SignalProducer<Double, Rc2Error>
 	//recaches an array of files
 	func flushCache(files: [File]) -> SignalProducer<Double, Rc2Error>
 	///caches all the files in the workspace that aren't already cached with the current version of the file
@@ -131,8 +133,21 @@ public final class DefaultFileCache: NSObject, FileCache {
 //		
 //	}
 	
+	public func flushCache(file: File) {
+		self.taskLockQueue.sync {
+			guard self.downloadTaskWithFileId(file.fileId) == nil else {
+				//download already in progress. no need to erase
+				return
+			}
+			do {
+				try self.fileManager.removeItem(at:self.cachedUrl(file:file))
+			} catch {
+			}
+		}
+	}
+	
 	///recaches the specified file if it has changed
-	public func flushCache(file:File) -> SignalProducer<Double, Rc2Error> {
+	public func recache(file:File) -> SignalProducer<Double, Rc2Error> {
 		return SignalProducer<Double, Rc2Error>() { observer, disposable in
 			guard !self.downloadingAllFiles else {
 				observer.send(error: Rc2Error(type: .network, nested: FileCacheError.downloadAlreadyInProgress))
@@ -175,7 +190,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 		var producers = [SignalProducer<Double, Rc2Error>]()
 		sortedFiles.forEach { file in
 			// create a producer that flushes the cache, mapping a single file's percent complete to the percent complete of all files and when finished, adding the size of that file to downloadedSize
-			let producer = self.flushCache(file: file).map( { percentDone -> Double in
+			let producer = self.recache(file: file).map( { percentDone -> Double in
 				guard percentDone.isFinite else { return Double(1) }
 				let fdownloaded = Int(Double(file.fileSize) * percentDone)
 				return Double(downloadedSize + fdownloaded) / Double(totalSize)

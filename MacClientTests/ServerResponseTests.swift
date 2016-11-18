@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import MacClient
-import SwiftyJSON
+import Freddy
 
 class ServerResponseTests: XCTestCase {
 

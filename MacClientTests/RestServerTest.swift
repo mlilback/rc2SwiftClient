@@ -8,7 +8,7 @@
 import XCTest
 @testable import MacClient
 import Mockingjay
-import SwiftyJSON
+import Freddy
 
 class RestServerTest: XCTestCase {
 	var server : RestServer?

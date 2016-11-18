@@ -7,7 +7,7 @@
 
 import Foundation
 import XCTest
-import SwiftyJSON
+import Freddy
 @testable import MacClient
 
 class BookmarkTest: XCTestCase {

@@ -8,6 +8,8 @@ import Cocoa
 import ClientCore
 import CoreServices
 import os
+import ReactiveSwift
+import Networking
 
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
@@ -20,7 +22,6 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   }
 }
 
-
 class DisplayableImage: NSObject {
 	let imageId:Int
 	let name:String
@@ -31,7 +32,7 @@ class DisplayableImage: NSObject {
 		self.name = name
 	}
 	
-	convenience init(_ simage:SessionImage) {
+	convenience init(_ simage: SessionImage) {
 		self.init(imageId: simage.id, name:simage.name)
 	}
 }
@@ -75,7 +76,7 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		}
 	}
 	
-	func displayImageAtIndex(_ index:Int, images:[SessionImage]) {
+	func displayImage(atIndex index:Int, images:[SessionImage]) {
 		batchImages = images.map { (simg) -> DisplayableImage in
 			return DisplayableImage(imageId: simg.id, name: simg.name)
 		}
@@ -151,10 +152,9 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		let index = Int(identifier)!
 		let displayedImage = batchImages[index]
 		if let img = displayedImage.image {
-			iv.image = img
-		} else {
-			displayedImage.image = imageCache?.imageWithId(displayedImage.imageId)
-			iv.image = displayedImage.image
+			vc.setImage(image: img)
+		} else if let producer = imageCache?.image(withId: displayedImage.imageId) {
+			vc.setImage(producer: producer)
 		}
 		vc.view = iv
 		return vc
@@ -168,7 +168,9 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 			return
 		}
 		if dimg.image == nil {
-			dimg.image = imageCache?.imageWithId(dimg.imageId)
+			imageCache?.image(withId: dimg.imageId).startWithResult { result in
+				dimg.image = result.value
+			}
 		}
 		iview?.image = dimg.image
 		labelField?.stringValue = dimg.name
@@ -181,6 +183,27 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 
 class ImageViewController: NSViewController {
 	var didAddConstraints = false
+	var imageLoadDisposable: Disposable?
+	
+	var imageView: NSImageView? { return view as? NSImageView }
+	
+	func setImage(image: NSImage) {
+		imageLoadDisposable = nil
+		imageView?.image = image
+	}
+	
+	func setImage(producer: SignalProducer<PlatformImage, ImageCacheError>) {
+		imageLoadDisposable?.dispose() //dispose of any currently loading image
+		producer.startWithResult { result in
+			guard let newImage = result.value else {
+				os_log("failed to load image: %{public}s", result.error!.localizedDescription)
+				return
+			}
+			self.imageLoadDisposable = nil
+			self.imageView?.image = newImage
+		}
+	}
+	
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		guard !didAddConstraints else { return }

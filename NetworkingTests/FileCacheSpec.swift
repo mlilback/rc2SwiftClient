@@ -46,7 +46,7 @@ class FileCacheSpec: NetworkingBaseSpec {
 			it("single flushCache works") {
 				let file = wspace.file(withId: 202)!
 				expect(fileCache.isFileCached(file)).to(beFalse())
-				let result = self.makeValueRequest(producer: fileCache.flushCache(file: file), queue: DispatchQueue.global())
+				let result = self.makeValueRequest(producer: fileCache.recache(file: file), queue: DispatchQueue.global())
 				expect(result.value).to(beCloseTo(1.0))
 				expect(fileCache.isFileCached(file)).to(beTrue())
 			}

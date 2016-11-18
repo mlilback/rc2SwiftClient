@@ -7,6 +7,7 @@
 import Cocoa
 import ClientCore
 import os
+import Networking
 
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
@@ -138,7 +139,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 
 	func clearConsole(_ sender:AnyObject?) {
 		consoleController?.clearConsole(sender)
-		sessionController?.imageCache?.clearCache()
+		imageCache?.clearCache()
 	}
 	
 	func consoleButtonClicked(_ sender:AnyObject?) {
@@ -147,14 +148,14 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	func displayFileAttachment(_ fileWrapper: FileWrapper) {
 		os_log("told to display file %{public}s", type:.info, fileWrapper.filename!)
-		guard let attachment = NSKeyedUnarchiver.unarchiveObject(with: fileWrapper.regularFileContents!) as? MacConsoleAttachment else {
+		guard let attachment = try? MacConsoleAttachment.from(data: fileWrapper.regularFileContents!) else {
 			os_log("asked to display invalid attachment")
 			return
 		}
 		switch (attachment.type) {
 			case .file:
-				if let file = sessionController?.session.workspace.fileWithId(Int(attachment.fileId)) {
-					webController?.loadLocalFile(sessionController!.session.fileHandler.fileCache.cachedUrl(file:file))
+				if let file = sessionController?.session.workspace.file(withId: (Int(attachment.fileId))) {
+					webController?.loadLocalFile(sessionController!.session.fileCache.cachedUrl(file:file))
 					selectedOutputTab = .webKit
 					//TODO: implement option to check by filename if not found by id
 				} else {
@@ -162,10 +163,10 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 				}
 			case .image:
 				if let image = attachment.image,
-				let images = sessionController!.imageCache?.sessionImagesForBatch(image.batchId),
+				let images = imageCache?.sessionImages(forBatch: image.batchId),
 				let index = images.index(where: {$0.id == image.id})
 			{
-				imageController?.displayImageAtIndex(index, images:images)
+				imageController?.displayImage(atIndex: index, images:images)
 				selectedOutputTab = .image
 				tabView.window?.toolbar?.validateVisibleItems()
 			}
@@ -174,10 +175,10 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	func showFile(_ fileId:Int) {
 		displayedFileId = fileId
-		if let file = sessionController?.session.workspace.fileWithId(fileId) {
+		if let file = sessionController?.session.workspace.file(withId: fileId) {
 			//TODO: need to specially handle images
 			delay(0.5) { //delay is to give previous async file save time to actually write file to disk.
-				self.webController?.loadLocalFile(self.sessionController!.session.fileHandler.fileCache.cachedUrl(file:file))
+				self.webController?.loadLocalFile(self.sessionController!.session.fileCache.cachedUrl(file: file))
 				self.selectedOutputTab = .webKit
 			}
 		} else {

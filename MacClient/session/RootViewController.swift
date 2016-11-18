@@ -6,17 +6,13 @@
 
 import Cocoa
 import CryptoSwift
-import SwiftyJSON
+import Freddy
 import os
+import Networking
 
 class RootViewController: AbstractSessionViewController, ToolbarItemHandler, ManageFontMenu
 {
 	//MARK: - properties
-	var restServer: RestServer? { didSet {
-		let variableHandler:VariableHandler = firstChildViewController(self)!
-		sessionController = SessionController(session: restServer!.session!, delegate: self, outputHandler: outputHandler!, variableHandler:variableHandler)
-		outputHandler?.sessionController = sessionController
-	} }
 	var sessionController: SessionController?
 	
 	@IBOutlet var progressView: NSProgressIndicator?
@@ -35,6 +31,12 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 	
 	deinit {
 		sessionController?.close()
+	}
+	
+	override func sessionChanged() {
+		let variableHandler:VariableHandler = firstChildViewController(self)!
+		sessionController = SessionController(session: session, delegate: self, outputHandler: outputHandler!, variableHandler:variableHandler)
+		outputHandler?.sessionController = sessionController
 	}
 	
 	//MARK: - Lifecycle
@@ -72,7 +74,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 	
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		switch(menuItem.action) {
-		case (#selector(FileHandler.promptToImportFiles(_:)))?:
+		case (#selector(RootViewController.promptToImportFiles(_:)))?:
 			return fileHandler!.validateMenuItem(menuItem)
 		case (#selector(ManageFontMenu.showFonts(_:)))?:
 			if let fontHandler = currentFontUser(view.window?.firstResponder) {
@@ -163,7 +165,7 @@ extension RootViewController {
 		sessionController?.clearFileCache()
 	}
 	
-	@IBAction func promptToImportFiles(_ sender:AnyObject?) {
+	@IBAction @objc func promptToImportFiles(_ sender:AnyObject?) {
 		fileHandler?.promptToImportFiles(sender)
 	}
 }

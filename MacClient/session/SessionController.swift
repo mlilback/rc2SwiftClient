@@ -6,12 +6,14 @@
 
 import Cocoa
 import os
+import Networking
+import Freddy
 
 @objc protocol SessionControllerDelegate {
 	func filesRefreshed()
 	func sessionClosed()
-	func saveState() -> [String:AnyObject]
-	func restoreState(_ state:[String:AnyObject])
+	func saveState() -> [String: AnyObject]
+	func restoreState(_ state:[String: AnyObject])
 }
 
 /// manages a Session object
@@ -22,13 +24,10 @@ import os
 	var responseHandler: ServerResponseHandler!
 	let outputHandler: OutputHandler
 	let varHandler: VariableHandler
-	///not a constant because it can be saved/loaded
-	var imageCache: ImageCache!
-
-	let session:Session
+	let session: Session
 
 	var savedStateHash: Data?
-	fileprivate var properlyClosed:Bool = false
+	fileprivate var properlyClosed: Bool = false
 
 	init(session:Session, delegate: SessionControllerDelegate, outputHandler output:OutputHandler, variableHandler:VariableHandler)
 	{
@@ -38,8 +37,6 @@ import os
 		self.session = session
 		super.init()
 		session.delegate = self
-		imageCache = ImageCache(restServer: session.restServer!, fileManager:Foundation.FileManager(), hostIdentifier: UUID().uuidString)
-		imageCache.workspace = session.workspace
 		self.responseHandler = ServerResponseHandler(delegate: self)
 		let nc = NotificationCenter.default
 		nc.addObserver(self, selector: #selector(SessionController.appWillTerminate), name: NSNotification.Name.NSApplicationWillTerminate, object: nil)
@@ -65,7 +62,7 @@ import os
 	}
 	
 	func clearFileCache() {
-		session.fileHandler.fileCache.flushCache(workspace:session.workspace)
+		session.fileCache.flushCache(files: session.workspace.files).start()
 	}
 	
 	func formatErrorMessage(_ error:String) -> NSAttributedString {
@@ -76,8 +73,8 @@ import os
 //MARK: - ServerResponseHandlerDelegate
 extension SessionController: ServerResponseHandlerDelegate {
 	func handleFileUpdate(_ file:File, change:FileChangeType) {
-		os_log("got file update %d v%d", type:.info, file.fileId, file.version)
-		session.fileHandler.handleFileUpdate(file, change: change)
+//		os_log("got file update %d v%d", type:.info, file.fileId, file.version)
+//		handleFileUpdate(file, change: change)
 	}
 	
 	func handleVariableMessage(_ single:Bool, variables:[Variable]) {
@@ -88,24 +85,20 @@ extension SessionController: ServerResponseHandlerDelegate {
 		varHandler.handleVariableDeltaMessage(assigned, removed: removed)
 	}
 
-	func consoleAttachment(forImage image:SessionImage) -> ConsoleAttachment {
-		return MacConsoleAttachment(image:image)
+	func consoleAttachment(forImage image: SessionImage) -> ConsoleAttachment {
+		return MacConsoleAttachment(image: image)
 	}
 	
 	func consoleAttachment(forFile file:File) -> ConsoleAttachment {
 		return MacConsoleAttachment(file:file)
 	}
 	
-	func attributedStringForInputFile(_ fileId:Int) -> NSAttributedString {
-		let file = session.workspace.fileWithId(fileId)
+	func attributedStringForInputFile(_ fileId: Int) -> NSAttributedString {
+		let file = session.workspace.file(withId: fileId)
 		return NSAttributedString(string: "[\(file!.name)]")
 	}
 	
-	func cacheImages(_ images:[SessionImage]) {
-		imageCache.cacheImagesFromServer(images)
-	}
-	
-	func showFile(_ fileId:Int) {
+	func showFile(_ fileId: Int) {
 		outputHandler.showFile(fileId)
 	}
 }
@@ -117,17 +110,20 @@ extension SessionController {
 		let appSupportUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
 		let dataDirUrl = URL(string: "Rc2/sessions/", relativeTo: appSupportUrl)?.absoluteURL
 		try fileManager.createDirectory(at: dataDirUrl!, withIntermediateDirectories: true, attributes: nil)
-		let fname = "\(session.restServer!.host.name)--\(session.workspace.project!.userId)--\(session.workspace.wspaceId).plist"
+		let fname = "\(session.conInfo.host.name)--\(session.project.userId)--\(session.workspace.wspaceId).plist"
 		let furl = dataDirUrl?.appendingPathComponent(fname)
 		return furl!
 	}
 	
 	func saveSessionState() {
 		//save data related to this session
-		var dict = [String:AnyObject]()
+		var dict = [String:Any]()
 		dict["outputController"] = outputHandler.saveSessionState()
-		dict["imageCache"] = imageCache
-		dict["delegate"] = delegate?.saveState() as AnyObject?
+		do {
+			dict["imageCache"] = try session.imageCache.toJSON().serialize()
+		} catch {
+		}
+		dict["delegate"] = delegate?.saveState()
 		do {
 			let data = NSKeyedArchiver.archivedData(withRootObject: dict)
 			//only write to disk if has changed
@@ -157,9 +153,8 @@ extension SessionController {
 				if let edict = dict["delegate"] as? [String : AnyObject] {
 					delegate?.restoreState(edict)
 				}
-				if let ic = dict["imageCache"] as! ImageCache? {
-					ic.workspace = self.session.workspace
-					imageCache = ic
+				if let ic = dict["imageCache"] as? Data, let json = try? JSON(data: ic) {
+					try session.imageCache.load(from: json)
 				}
 				savedStateHash = data.sha256()
 			}
@@ -188,15 +183,14 @@ extension SessionController: SessionDelegate {
 	}
 	
 	func sessionMessageReceived(_ response:ServerResponse) {
+		//TODO: have session handle all of the file update stuff before it gets to here
 		if case ServerResponse.showOutput( _, let updatedFile) = response {
-			if updatedFile != session.workspace.fileWithId(updatedFile.fileId) {
+			if updatedFile != session.workspace.file(withId: updatedFile.fileId) {
 				//need to refetch file from server, then show it
-				let prog = session.fileHandler.updateFile(updatedFile, withData: nil)
-				prog?.rc2_addCompletionHandler() {
+				session.fileCache.update(file: updatedFile, withData: nil).startWithCompleted {
 					if let astr = self.responseHandler.handleResponse(response) {
 						self.outputHandler.appendFormattedString(astr, type: response.isEcho() ? .input : .default)
 					}
-					//					self.outputHandler?.appendFormattedString(self.consoleAttachment(forFile:updatedFile).serializeToAttributedString(), type:.Default)
 				}
 				return
 			}

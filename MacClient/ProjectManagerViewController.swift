@@ -5,6 +5,8 @@
 //
 
 import Cocoa
+import Networking
+
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):
@@ -31,14 +33,14 @@ struct ProjectAndWorkspace {
 	let workspace:String
 }
 
-open class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
+class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
 	@IBOutlet var projectOutline:NSOutlineView?
 	@IBOutlet var addRemoveButtons:NSSegmentedControl?
 	
 	dynamic var canContinue:Bool = false
 	
 	var host:ServerHost?
-	var loginSession:LoginSession?
+	var connectInfo: ConnectionInfo?
 
 	override open func viewDidAppear() {
 		super.viewDidAppear()
@@ -48,7 +50,7 @@ open class ProjectManagerViewController: NSViewController, EmbeddedDialogControl
 	
 	func continueAction(_ callback: @escaping (_ value:Any?, _ error:NSError?) -> Void) {
 		if let wspace = projectOutline?.item(atRow: projectOutline!.selectedRow) as? Workspace,
-			let project = loginSession?.project(withId: wspace.projectId)
+			let project = connectInfo!.project(withId: wspace.projectId)
 		{
 			let pw = ProjectAndWorkspace(project: project.name, workspace: wspace.name)
 			callback(pw, nil)
@@ -66,7 +68,7 @@ extension ProjectManagerViewController: NSOutlineViewDataSource {
 	
 	public func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
 		if nil == item {
-			return loginSession?.projects.count ?? 0
+			return connectInfo!.projects.count
 		} else if let proj = item as? Project {
 			return proj.workspaces.count
 		}
@@ -81,7 +83,7 @@ extension ProjectManagerViewController: NSOutlineViewDataSource {
 		if let proj = item as? Project {
 			return proj.workspaces[index]
 		}
-		return loginSession!.projects[index]
+		return connectInfo!.projects[index]
 	}
 }
 

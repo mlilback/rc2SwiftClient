@@ -6,38 +6,59 @@
 
 import Cocoa
 import os
+import ReactiveSwift
+import SwiftyUserDefaults
+import NotifyingCollection
+import ClientCore
+import Networking
+
+// MARK: Keys for UserDefaults
+extension DefaultsKeys {
+	static let lastExportDirectory = DefaultsKey<Data?>("rc2.LastExportDirectory")
+}
+
+///selectors used in this file, aliased with shorter, descriptive names
+private extension Selector {
+	static let addDocument = #selector(SidebarFileController.addDocumentOfType(_:))
+	static let addFileMenu =  #selector(SidebarFileController.addFileMenuAction(_:))
+	static let addButtonClicked = #selector(SidebarFileController.addButtonClicked(_:))
+	static let receivedStatusChange = #selector(SidebarFileController.receivedStatusChange(_:))
+	static let promptToImport = #selector(SidebarFileController.promptToImportFiles(_:))
+	static let exportSelectedFile = #selector(SidebarFileController.exportSelectedFile(_:))
+	static let exportAll = #selector(SidebarFileController.exportAllFiles(_:))
+}
 
 class FileRowData {
-	var sectionName:String?
-	var file:File?
-	init(name:String?, file:File?) {
+	var sectionName: String?
+	var file: File?
+	init(name: String?, file: File?) {
 		self.sectionName = name
 		self.file = file
 	}
 }
 
 protocol FileViewControllerDelegate: class {
-	func fileSelectionChanged(_ file:File?)
-	func renameFile(_ file:File, to:String)
-	func importFiles(_ files:[URL])
+	func fileSelectionChanged(_ file: File?)
+	func renameFile(_ file:File, to: String)
+	func importFiles(_ files: [URL])
 }
 
 let FileDragTypes = [kUTTypeFileURL as String]
-let LastExportDirectoryKey = "rc2.LastExportDirectory"
 
 //TODO: make sure when delegate renames file our list gets updated
 
 class SidebarFileController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler, NSOpenSavePanelDelegate, NSMenuDelegate
 {
 	//MARK: properties
-	let sectionNames:[String] = ["Source Files", "Images", "Other"]
+	let sectionNames: [String] = ["Source Files", "Images", "Other"]
 
 	@IBOutlet var tableView: NSTableView!
-	@IBOutlet var addRemoveButtons:NSSegmentedControl?
-	var rowData:[FileRowData] = [FileRowData]()
-	var delegate:FileViewControllerDelegate?
-	lazy var importPrompter:MacFileImportSetup? = { MacFileImportSetup() }()
-	var fileImporter:FileImporter?
+	@IBOutlet var addRemoveButtons: NSSegmentedControl?
+	var rowData: [FileRowData] = [FileRowData]()
+	var delegate: FileViewControllerDelegate?
+	lazy var importPrompter: MacFileImportSetup? = { MacFileImportSetup() }()
+	var fileImporter: FileImporter?
+	private var fileChangeDisposable: Disposable?
 	
 	var selectedFile:File? {
 		guard tableView.selectedRow >= 0 else { return nil }
@@ -55,26 +76,27 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		if addRemoveButtons != nil {
 			let menu = NSMenu(title: "new document format")
 			for (index, aType) in FileType.creatableFileTypes.enumerated() {
-				let mi = NSMenuItem(title: aType.details, action: #selector(SidebarFileController.addDocumentOfType(_:)), keyEquivalent: "")
+				let mi = NSMenuItem(title: aType.details ?? "unknown", action: .addDocument, keyEquivalent: "")
 				mi.representedObject = index
 				menu.addItem(mi)
 			}
 			menu.autoenablesItems = false
 			//NOTE: the action method of the menu item wasn't being called the first time. This works all times.
-			NotificationCenter.default.addObserver(self, selector: #selector(SidebarFileController.addFileMenuAction(_:)), name: NSNotification.Name.NSMenuDidSendAction, object: menu)
+			NotificationCenter.default.addObserver(self, selector: .addFileMenu, name: NSNotification.Name.NSMenuDidSendAction, object: menu)
 			addRemoveButtons?.setMenu(menu, forSegment: 0)
 			addRemoveButtons?.target = self
-			addRemoveButtons?.action = #selector(SidebarFileController.addButtonClicked(_:))
+			addRemoveButtons?.action = .addButtonClicked
 		}
 		if tableView != nil {
 			tableView.setDraggingSourceOperationMask(.copy, forLocal: true)
 			tableView.draggingDestinationFeedbackStyle = .none
 			tableView.register(forDraggedTypes: FileDragTypes)
-			NotificationCenter.default.addObserver(self, selector: #selector(FileHandler.filesRefreshed(_:)), name: WorkspaceFileChangedNotification, object: nil)
 		}
 	}
 	
 	override func sessionChanged() {
+		fileChangeDisposable?.dispose()
+		fileChangeDisposable = session.workspace.fileChangeSignal.observeValues(filesRefreshed)
 		loadData()
 		tableView.reloadData()
 	}
@@ -91,7 +113,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	override func appStatusChanged() {
-		NotificationCenter.default.addObserver(self, selector: #selector(SidebarFileController.receivedStatusChange(_:)), name: NSNotification.Name(rawValue: Notifications.AppStatusChanged), object: nil)
+		NotificationCenter.default.addObserver(self, selector: .receivedStatusChange, name: NSNotification.Name(rawValue: Notifications.AppStatusChanged), object: nil)
 	}
 	
 	func loadData() {
@@ -119,12 +141,15 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
-		switch(menuItem.action) {
-			case (#selector(FileHandler.promptToImportFiles(_:)))?:
+		guard let action = menuItem.action else {
+			return super.validateMenuItem(menuItem)
+		}
+		switch(action) {
+			case Selector.promptToImport:
 				return true
-			case (#selector(SidebarFileController.exportSelectedFile(_:)))?:
+			case Selector.exportSelectedFile:
 				return selectedFile != nil
-			case (#selector(SidebarFileController.exportAllFiles(_:)))?:
+			case Selector.exportAll:
 				return true
 			default:
 				return super.validateMenuItem(menuItem)
@@ -133,7 +158,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	func menuNeedsUpdate(_ menu: NSMenu) {
 		menu.items.filter() { item in
-			return item.action == #selector(SidebarFileController.exportSelectedFile(_:))
+			return item.action == .promptToImport
 		}.first?.isEnabled = selectedFile != nil
 	}
 	
@@ -160,8 +185,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		guard let file = selectedFile else { return }
 		let defaults = UserDefaults.standard
 		if defaults.bool(forKey: PrefKeys.SupressDeleteFileWarning) {
-			session.removeFile(file)
-			return
+			session.remove(file: file)
 		}
 		let alert = NSAlert()
 		alert.showsSuppressionButton = true
@@ -174,7 +198,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				defaults.set(true, forKey: PrefKeys.SupressDeleteFileWarning)
 			}
 			if response != NSAlertFirstButtonReturn { return }
-			self.session.removeFile(file)
+			self.session.remove(file: file)
 			self.delegate?.fileSelectionChanged(nil)
 		}) 
 	}
@@ -205,7 +229,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 
 	//MARK: - import/export
-	@IBAction func promptToImportFiles(_ sender:AnyObject?) {
+	@IBAction func promptToImportFiles(_ sender:Any?) {
 		if nil == importPrompter {
 			importPrompter = MacFileImportSetup()
 		}
@@ -214,35 +238,32 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			self.importFiles(files!)
 		}
 	}
-	
-	func importFiles(_ files:[FileToImport]) {
-		let importer = FileImporter(files, fileHandler:self.session.fileHandler, baseUrl:session.restServer!.baseUrl!, configuration: session.restServer!.urlConfig)
-		{ (progress:Progress) in
-			if progress.rc2_error != nil {
-				//TODO: handle error
-				os_log("got import error %{public}s", type:.error, progress.rc2_error as! NSError)
-			}
-			self.appStatus?.currentProgress = nil
+
+	func importFiles(_ files:[FileImporter.FileToImport]) {
+		let importer = try! FileImporter(files, fileCache:self.session.fileCache, connectInfo: session.conInfo)
+		let (psignal, pobserver) = Signal<Double, Rc2Error>.pipe()
+		appStatus?.monitorProgress(signal: psignal)
+		importer.start().on(value: { (progress: FileImporter.ImportProgress) in
+			pobserver.send(value: progress.percentComplete)
+		}, failed: { (error) in
+			//TODO: handle error
+			os_log("got import error %{public}s", type:.error, error.localizedDescription)
+			pobserver.send(error: error)
+		}, completed: {
+			pobserver.sendCompleted()
 			self.fileImporter = nil //free up importer
-		}
-		self.appStatus?.currentProgress = importer.progress
-		do {
-			try importer.startImport()
-		} catch let err {
-			os_log("failed to start import: %{public}s", type:.error, err as NSError)
-			//TODO: report error to user
-		}
+		}).start()
 		//save reference so ARC does not dealloc importer
 		self.fileImporter = importer
 	}
-	
+
 	@IBAction func exportSelectedFile(_ sender:AnyObject?) {
 		let defaults = UserDefaults.standard
 		let savePanel = NSSavePanel()
 		savePanel.isExtensionHidden = false
 		savePanel.allowedFileTypes = [(selectedFile?.fileType.fileExtension)!]
 		savePanel.nameFieldStringValue = (selectedFile?.name)!
-		if let bmarkData = defaults.object(forKey: LastExportDirectoryKey) as? Data {
+		if let bmarkData = defaults[.lastExportDirectory] {
 			do {
 				savePanel.directoryURL = try (NSURL(resolvingBookmarkData: bmarkData, options: [], relativeTo: nil, bookmarkDataIsStale: nil) as URL)
 			} catch {
@@ -251,14 +272,14 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		savePanel.beginSheetModal(for: view.window!) { result in
 			do {
 				let bmark = try (savePanel.directoryURL as NSURL?)?.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
-				defaults.set(bmark, forKey: LastExportDirectoryKey)
+				defaults[.lastExportDirectory] = bmark
 			} catch let err as NSError {
 				os_log("why did we get error creating export bookmark: %{public}s", type:.error, err)
 			}
 			savePanel.close()
 			if result == NSFileHandlingPanelOKButton && savePanel.url != nil {
 				do {
-					try Foundation.FileManager.default.copyItem(at: self.session.fileHandler.fileCache.cachedUrl(file:self.selectedFile!), to: savePanel.url!)
+					try Foundation.FileManager.default.copyItem(at: self.session.fileCache.cachedUrl(file:self.selectedFile!), to: savePanel.url!)
 				} catch let error as NSError {
 					os_log("failed to copy file for export: %{public}s", type:.error, error)
 					let alert = NSAlert(error:error)
@@ -275,18 +296,11 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 
 	//MARK: - FileHandler implementation
-	func filesRefreshed(_ note:Notification?) {
-		if let _ = (note as NSNotification?)?.userInfo?["change"] as? WorkspaceFileChange {
-			//TODO: ideally should figure out what file was changed and animate the tableview update instead of refreshing all rows
-			//TODO: updated file always shows last, which is wrong
-			loadData()
-			tableView.reloadData()
-		} else {
-			os_log("got filechangenotification without a change object", type:.error)
-			//reload it all
-			loadData()
-			tableView.reloadData()
-		}
+	func filesRefreshed(_ changes: [CollectionChange<File>]?) {
+		//TODO: ideally should figure out what file was changed and animate the tableview update instead of refreshing all rows
+		//TODO: updated file always shows last, which is wrong
+		loadData()
+		tableView.reloadData()
 	}
 	
 	//MARK: - TableView datasource/delegate implementation

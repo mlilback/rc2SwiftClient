@@ -5,11 +5,13 @@
 //
 
 import Cocoa
+import Networking
+import NotifyingCollection
 
 ///These protocols exist to decouple various view controllers
 
 /// Abstracts the idea of processing variable messages
-@objc protocol VariableHandler {
+public protocol VariableHandler {
 	///parameter variables: key is a string, value is an ObjcBox of a JSON value
 	/// - parameter single: if this is an update for a single variable, or a delta
 	/// - paramter variables: the variable objects from the server
@@ -38,8 +40,8 @@ import Cocoa
 	func showHelp(_ topics:[HelpTopic])
 }
 
-@objc protocol FileHandler {
-	func filesRefreshed(_ note:Notification?)
-	func promptToImportFiles(_ sender:AnyObject?)
+protocol FileHandler: class {
+	func filesRefreshed(_ changes: [CollectionChange<File>]?)
+	func promptToImportFiles(_ sender: Any?)
 	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
 }

@@ -6,13 +6,14 @@
 
 import Cocoa
 import ClientCore
+import Networking
 
 class AbstractSessionViewController: NSViewController {
-	dynamic weak var sessionOptional: Session? { didSet { sessionChanged() } }
+	weak var sessionOptional: Session? { didSet { sessionChanged() } }
 	///convience accessor so don't have to constantly unwrap optional
 	var session: Session { get { return sessionOptional! } }
 	//injected by Swinject
-	dynamic weak var appStatus: AppStatus? { didSet {
+	weak var appStatus: AppStatus? { didSet {
 		appStatusChanged()
 	} }
 	

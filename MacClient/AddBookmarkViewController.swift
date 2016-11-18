@@ -6,6 +6,7 @@
 
 import Cocoa
 import os
+import Networking
 
 class AddBookmarkViewController: NSViewController {
 	@IBOutlet var continueButton:NSButton?
@@ -64,32 +65,32 @@ class AddBookmarkViewController: NSViewController {
 		os_log("error: %{public}s", type:.error, error)
 	}
 	
-	func switchToProjectManager(_ serverInfo:SelectServerResponse) {
-		tabViewController?.selectedTabViewItemIndex = 1
-		projectManagerController!.host = serverInfo.server
-		projectManagerController!.loginSession = serverInfo.loginSession
-		canContinue = projectManagerController!.canContinue
-	}
-	
-	@IBAction func continueAction(_ sender:AnyObject?) {
-		if selectServerController == tabViewController?.currentTabItemViewController {
-			selectServerController!.continueAction() { (value, error) in
-				guard error == nil else {
-					self.displayError(error!)
-					return
-				}
-				let serverResponse = value as! SelectServerResponse
-				self.selectedServer = serverResponse.server
-				self.switchToProjectManager(serverResponse)
-			}
-		} else if projectManagerController == tabViewController?.currentTabItemViewController {
-			projectManagerController!.continueAction() { (value, error) in
-				guard error == nil else { self.displayError(error!); return }
-				
-				self.bookmarkAddedClosure?(self.selectedServer!, value as! ProjectAndWorkspace)
-			}
-		}
-	}
+//	func switchToProjectManager(_ serverInfo:SelectServerResponse) {
+//		tabViewController?.selectedTabViewItemIndex = 1
+//		projectManagerController!.host = serverInfo.server
+//		projectManagerController!.connectInfo = serverInfo.loginSession
+//		canContinue = projectManagerController!.canContinue
+//	}
+//	
+//	@IBAction func continueAction(_ sender:AnyObject?) {
+//		if selectServerController == tabViewController?.currentTabItemViewController {
+//			selectServerController!.continueAction() { (value, error) in
+//				guard error == nil else {
+//					self.displayError(error!)
+//					return
+//				}
+//				let serverResponse = value as! SelectServerResponse
+//				self.selectedServer = serverResponse.server
+//				self.switchToProjectManager(serverResponse)
+//			}
+//		} else if projectManagerController == tabViewController?.currentTabItemViewController {
+//			projectManagerController!.continueAction() { (value, error) in
+//				guard error == nil else { self.displayError(error!); return }
+//				
+//				self.bookmarkAddedClosure?(self.selectedServer!, value as! ProjectAndWorkspace)
+//			}
+//		}
+//	}
 	
 	@IBAction func cancelAction(_ sender:AnyObject?) {
 		self.presenting?.dismissViewController(self)

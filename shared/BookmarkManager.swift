@@ -5,11 +5,19 @@
 //
 
 import Foundation
-import SwiftyJSON
+import Freddy
+import SwiftyUserDefaults
 import os
+import Networking
+
+// MARK: Keys for UserDefaults
+extension DefaultsKeys {
+	static let bookmarks = DefaultsKey<Data?>("Bookmarks")
+	static let hosts = DefaultsKey<Data?>("ServerHosts")
+}
 
 ///manages access to Bookmarks and ServerHosts
-open class BookmarkManager {
+class BookmarkManager {
 	///all existing bookmarks
 	fileprivate(set) var bookmarks: [Bookmark] = []
 	///bookmarks grouped by ServerHost.name
@@ -24,13 +32,11 @@ open class BookmarkManager {
 	///saves bookmarks and hosts to NSUserDefaults
 	func save() {
 		let defaults = UserDefaults.standard
-		do {
-			let bmarks = try JSON(bookmarks.map() { try $0.serialize() })
-			defaults.set(bmarks.rawString(), forKey: PrefKeys.Bookmarks)
-			let jhosts = try JSON(hosts.map() { try $0.serialize() })
-			defaults.set(jhosts.rawString(), forKey: PrefKeys.Hosts)
-		} catch let err as NSError {
-			os_log("failed to serialize bookmarks: %{public}s", type:.error, err)
+		if let bmarks = try? bookmarks.toJSON().serialize() {
+			defaults.set(bmarks, forKey: PrefKeys.Bookmarks)
+		}
+		if let jhosts = try? hosts.toJSON().serialize() {
+			defaults.set(jhosts, forKey: PrefKeys.Hosts)
 		}
 	}
 	
@@ -60,10 +66,11 @@ open class BookmarkManager {
 		let defaults = UserDefaults.standard
 		bookmarks.removeAll()
 		//load them, or create default ones
-		if let bmstr = defaults.string(forKey: PrefKeys.Bookmarks) {
-			for aJsonObj in JSON.parse(bmstr).arrayValue {
-				bookmarks.append(Bookmark(json: aJsonObj)!)
-			}
+		if let bmdata = defaults[.bookmarks],
+			let json = try? JSON(data: bmdata),
+			let bmarks: [Bookmark] = try? json.asArray()
+		{
+			bookmarks.append(contentsOf: bmarks)
 		}
 		if bookmarks.count < 1 {
 			bookmarks = createDefaultBookmarks()
@@ -101,10 +108,11 @@ open class BookmarkManager {
 		let defaults = UserDefaults.standard
 		var hostSet = Set<ServerHost>()
 		hosts.removeAll()
-		if let hostsStr = defaults.string(forKey: PrefKeys.Hosts) {
-			for aJsonObj in JSON.parse(hostsStr).arrayValue {
-				hostSet.insert(ServerHost(json: aJsonObj)!)
-			}
+		if let hostData = defaults[.hosts],
+			let json = try? JSON(data: hostData),
+			let jhosts: [ServerHost] = try? json.asArray()
+		{
+			hostSet = hostSet.union(jhosts)
 		}
 		for aMark in bookmarks {
 			if aMark.server != nil { hostSet.insert(aMark.server!) }

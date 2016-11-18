@@ -7,6 +7,7 @@
 import Cocoa
 import os
 import ClientCore
+import DockerSupport
 
 public class ServerSetupController: NSViewController {
 	@IBOutlet fileprivate dynamic var progressBar:NSProgressIndicator?

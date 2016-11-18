@@ -8,11 +8,17 @@ import Cocoa
 import os
 import SwinjectStoryboard
 import Swinject
-import SwiftyJSON
+import Freddy
 import ClientCore
 import ReactiveSwift
+import SwiftyUserDefaults
+import DockerSupport
+import Networking
 
-//let log = XCGLogger.defaultInstance()
+// MARK: Keys for UserDefaults
+extension DefaultsKeys {
+	static let openSessions = DefaultsKey<Data?>("OpenSessions")
+}
 
 @NSApplicationMain
 class MacAppDelegate: NSObject, NSApplicationDelegate {
@@ -56,17 +62,13 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		//save info to restore open sessions
 		var reopen = [Bookmark]()
 		for controller in sessionWindowControllers {
-			if let session = controller.session, let rest = session.restServer, let proj = session.workspace.project {
-				let bmark = Bookmark(name: "irrelevant", server: rest.host, project: proj.name, workspace: session.workspace.name)
+			if let session = controller.session {
+				let bmark = Bookmark(name: "irrelevant", server: session.conInfo.host, project: session.project.name, workspace: session.workspace.name)
 				reopen.append(bmark)
 			}
 		}
-		do {
-			let bmarks = try JSON(reopen.map() { try $0.serialize() })
-			defaults.set(bmarks.rawString(), forKey: PrefKeys.OpenSessions)
-		} catch let err {
-			os_log("failed to serialize bookmarks: %{public}s", type:.error, err as NSError)
-		}
+		let bmarks = reopen.toJSON()
+		defaults.set(bmarks, forKey: PrefKeys.OpenSessions)
 		dockerManager = nil
 	}
 
@@ -139,11 +141,9 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	func restoreSessions() {
 		let defaults = UserDefaults.standard
 		//load them, or create default ones
-		var bookmarks = [Bookmark]()
-		if let bmstr = defaults.string(forKey: PrefKeys.OpenSessions) {
-			for aJsonObj in JSON.parse(bmstr).arrayValue {
-				bookmarks.append(Bookmark(json: aJsonObj)!)
-			}
+		var bookmarks: [Bookmark] = []
+		if let bmdata = defaults[.openSessions], let bmarks: [Bookmark] = try? JSON(data:bmdata).asArray() {
+			bookmarks = bmarks
 		}
 		guard let bmarkController = bookmarkWindowController?.contentViewController as? BookmarkViewController else
 		{
@@ -181,8 +181,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
 	}
 	
-	func openSession(_ restServer:RestServer) {
-		let appStatus = MacAppStatus(windowAccessor: windowForAppStatus)
+	func openSession(_ session: Session) {
+		let appStatus = AppStatus(windowAccessor: windowForAppStatus)
 		let wc = MainWindowController.createFromNib()
 		sessionWindowControllers.insert(wc)
 		
@@ -203,9 +203,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		let root = sboard.instantiateController(withIdentifier: "rootController") as? RootViewController
 		wc.contentViewController = root
 		wc.appStatus = appStatus
-		restServer.appStatus = appStatus
-		wc.session = restServer.session
-		wc.setupChildren(restServer)
+		wc.session = session
+		wc.setupChildren()
 	}
 	
 	@IBAction func showDockerControl(_ sender:Any?) {
@@ -232,7 +231,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	
 	func windowControllerForSession(_ session:Session) -> MainWindowController? {
 		for wc in sessionWindowControllers {
-			if wc.session == session { return wc }
+			if wc.session === session { return wc }
 		}
 		return nil
 	}

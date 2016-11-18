@@ -5,60 +5,16 @@
 //
 
 import Cocoa
+import Networking
 
-class MacAppStatus: NSObject, AppStatus {
+class MacAppStatus: AppStatus {
 
-	fileprivate dynamic var _currentProgress: Progress?
-	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
-	fileprivate let getWindow: (Session?) -> NSWindow
-	
-	dynamic  var currentProgress: Progress? {
-		get {
-			var result: Progress? = nil
-			_statusQueue.sync { result = self._currentProgress }
-			return result
-		}
-		set { updateStatus(newValue) }
-	}
-	
-	dynamic var busy: Bool {
-		get {
-			var result = false
-			_statusQueue.sync { result = self._currentProgress != nil }
-			return result
-		}
-	}
-	
-	dynamic var statusMessage: NSString {
-		get {
-			var status = ""
-			_statusQueue.sync { status = self._currentProgress?.localizedDescription ?? "" }
-			return status as NSString
-		}
-	}
-	
-	init(windowAccessor:@escaping (Session?) -> NSWindow) {
-		getWindow = windowAccessor
-		super.init()
-	}
-	
-	func updateStatus(_ progress: Progress?) {
-		assert(_currentProgress == nil || progress == nil, "can't set progress when there already is one")
-		_statusQueue.sync {
-			self._currentProgress = progress
-			self._currentProgress?.rc2_addCompletionHandler() {
-				self.updateStatus(nil)
-			}
-		}
-		NotificationCenter.default.postNotificationNameOnMainThread(Notifications.AppStatusChanged, object: self)
-	}
-	
-	func presentError(_ error: NSError, session:Session?) {
+	override func presentError(_ error: NSError, session: AnyObject?) {
 		let alert = NSAlert(error: error)
-		alert.beginSheetModal(for: getWindow(session), completionHandler:nil)
+		alert.beginSheetModal(for: getWindow((session as! Session)), completionHandler:nil)
 	}
 	
-	func presentAlert(_ session:Session?, message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
+	override func presentAlert(_ session:AnyObject?, message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
 	{
 		let alert = NSAlert()
 		alert.messageText = message
@@ -71,7 +27,7 @@ class MacAppStatus: NSObject, AppStatus {
 			}
 		}
 		alert.alertStyle = isCritical ? .critical : .warning
-		alert.beginSheetModal(for: getWindow(session), completionHandler: { (rsp) in
+		alert.beginSheetModal(for: getWindow((session as! Session)), completionHandler: { (rsp) in
 			guard buttons.count > 1 else { return }
 			DispatchQueue.main.async {
 				//convert rsp to an index to buttons
@@ -79,5 +35,4 @@ class MacAppStatus: NSObject, AppStatus {
 			}
 		}) 
 	}
-
 }

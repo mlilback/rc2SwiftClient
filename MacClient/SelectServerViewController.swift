@@ -8,11 +8,7 @@ import Cocoa
 import ClientCore
 import BrightFutures
 import os
-
-struct SelectServerResponse {
-	let server:ServerHost?
-	let loginSession:LoginSession
-}
+import Networking
 
 class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	///specify keys that should trigger KVO notification for canContinue property
@@ -32,14 +28,14 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	@IBOutlet var serverNameField: NSTextField?
 	
 	var bookmarkManager: BookmarkManager?
-	dynamic var canContinue:Bool = false
-	dynamic var valuesEditable:Bool = false
-	dynamic var busy:Bool = false
-	dynamic var serverName:String = "" { didSet { adjustCanContinue() } }
-	dynamic var hostName:String = "" { didSet { adjustCanContinue() } }
-	dynamic var login:String = "" { didSet { adjustCanContinue() } }
-	dynamic var password:String = "" { didSet { adjustCanContinue() } }
-	var selectedServer:ServerHost?
+	dynamic var canContinue: Bool = false
+	dynamic var valuesEditable: Bool = false
+	dynamic var busy: Bool = false
+	dynamic var serverName: String = "" { didSet { adjustCanContinue() } }
+	dynamic var hostName: String = "" { didSet { adjustCanContinue() } }
+	dynamic var login: String = "" { didSet { adjustCanContinue() } }
+	dynamic var password: String = "" { didSet { adjustCanContinue() } }
+	var selectedServer: ServerHost?
 	fileprivate let keychain = Keychain()
 	
 	dynamic var selectedServerIndex:Int = 0 { didSet {
@@ -96,22 +92,23 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	}
 	
 	func continueAction(_ callback:@escaping (_ value:Any?, _ error:NSError?) -> Void) {
-		let future = attemptLogin()
-		future.onSuccess { (loginsession) in
-			os_log("logged in successfully", type:.info)
-			if !(self.bookmarkManager!.hosts.contains(self.selectedServer!)) {
-				self.bookmarkManager?.addHost(self.selectedServer!)
-				self.bookmarkManager?.save()
-				self.savePassword(self.selectedServer!)
-			}
+//		let future = attemptLogin()
+//		future.onSuccess { (loginsession) in
+//			os_log("logged in successfully", type:.info)
+//			if !(self.bookmarkManager!.hosts.contains(self.selectedServer!)) {
+//				self.bookmarkManager?.addHost(self.selectedServer!)
+//				self.bookmarkManager?.save()
+//				self.savePassword(self.selectedServer!)
+//			}
 			//for some reason, Xcode 7 compiler crashes if the result tuple is defined in the callback() call
-			let result = SelectServerResponse(server: self.selectedServer, loginSession: loginsession)
-			callback(result, nil)
+//			let result = SelectServerResponse(server: self.selectedServer, loginSession: loginsession)
+//			callback(result, nil)
+//			self.busy = false
+//		}.onFailure { (error) in
+//			callback(nil, error)
+			callback(nil, nil)
 			self.busy = false
-		}.onFailure { (error) in
-			callback(nil, error)
-			self.busy = false
-		}
+//		}
 	}
 	
 	func savePassword(_ host:ServerHost) {
@@ -122,22 +119,22 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		}
 	}
 	
-	func attemptLogin() -> Future<LoginSession, NSError> {
-		valuesEditable = false
-		busy = true
-		var pass = password
-		var server:ServerHost? = nil
-		if let boxedServer = serverMenu?.itemArray[selectedServerIndex].representedObject as? Box<ServerHost> {
-			selectedServer = boxedServer.unbox
-			server = selectedServer
-		} else if selectedServerIndex + 1 == serverMenu?.menu?.items.count {
-			selectedServer = ServerHost(name: serverName, host: hostName, port: 8088, user: login, secure: false)
-			server = selectedServer
-		} else {
-			server = ServerHost.localHost
-			pass = Constants.LocalServerPassword
-		}
-		let restServer = RestServer(host: server!)
-		return restServer.login(pass)
-	}
+//	func attemptLogin() -> Future<ConnectionInfo, NSError> {
+//		valuesEditable = false
+//		busy = true
+//		var pass = password
+//		var server:ServerHost? = nil
+//		if let boxedServer = serverMenu?.itemArray[selectedServerIndex].representedObject as? Box<ServerHost> {
+//			selectedServer = boxedServer.unbox
+//			server = selectedServer
+//		} else if selectedServerIndex + 1 == serverMenu?.menu?.items.count {
+//			selectedServer = ServerHost(name: serverName, host: hostName, port: 8088, user: login, secure: false)
+//			server = selectedServer
+//		} else {
+//			server = ServerHost.localHost
+//			pass = Constants.LocalServerPassword
+//		}
+//		let restServer = RestServer(host: server!)
+//		return restServer.login(pass)
+//	}
 }

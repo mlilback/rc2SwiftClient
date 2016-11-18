@@ -14,7 +14,7 @@ import os
 /// need unit tests with multiple uploads
 
 public class FileImporter: NSObject {
-	typealias ProgressSignalProducer = SignalProducer<ImportProgress, Rc2Error>
+	public typealias ProgressSignalProducer = SignalProducer<ImportProgress, Rc2Error>
 	
 	public let fileCache: FileCache
 	public var workspace: Workspace { return fileCache.workspace }
@@ -29,7 +29,17 @@ public class FileImporter: NSObject {
 	fileprivate var progressDisposable: Disposable?
 	fileprivate let fileManager: FileManager
 	
-	init(_ files:[FileToImport], fileCache: FileCache, connectInfo: ConnectionInfo, configuration config: URLSessionConfiguration = .default, queue: DispatchQueue = .main, fileManager: FileManager = FileManager.default) throws
+	/// Imports files to the server
+	///
+	/// - Parameters:
+	///   - files: array of wrapped files to import
+	///   - fileCache: the file cache to use for file system interaction
+	///   - connectInfo: the server connection info
+	///   - config: the URLSession configuration to use. defaults to standard
+	///   - queue: the queue to send progress notifications on. defaults to main queue
+	///   - fileManager: the file manager to use for caching files. defaults to FileManager()
+	/// - Throws: .file with a nested error from fileManager
+	public init(_ files:[FileToImport], fileCache: FileCache, connectInfo: ConnectionInfo, configuration config: URLSessionConfiguration = .default, queue: DispatchQueue = .main, fileManager: FileManager = FileManager()) throws
 	{
 		self.files = files
 		self.fileCache = fileCache
@@ -50,7 +60,7 @@ public class FileImporter: NSObject {
 		self.uploadSession = URLSession(configuration: config, delegate: self, delegateQueue: nil)
 	}
 	
-	func start() -> ProgressSignalProducer {
+	public func start() -> ProgressSignalProducer {
 		precondition(progressObserver == nil)
 		let baseUrl = conInfo.host.url!
 		for (index, aFileToImport) in files.enumerated() {
@@ -88,9 +98,9 @@ public class FileImporter: NSObject {
 
 	///represents a file to import along with the name to use for it (in case there already is a file with that name. If the name is nil, use the existing file name.
 	public struct FileToImport {
-		var fileUrl: URL
-		var uniqueFileName: String?
-		init(url: URL, uniqueName: String?) {
+		public private(set) var fileUrl: URL
+		public private(set) var uniqueFileName: String?
+		public init(url: URL, uniqueName: String?) {
 			self.fileUrl = url
 			self.uniqueFileName = uniqueName
 			if nil == uniqueFileName {
@@ -114,8 +124,8 @@ public class FileImporter: NSObject {
 	}
 
 	public struct ImportProgress {
-		let percentComplete: Double
-		let status: String?
+		public let percentComplete: Double
+		public let status: String?
 		
 		init(_ percent: Double, status: String?) {
 			let per = percent.isFinite ? percent : 1.0

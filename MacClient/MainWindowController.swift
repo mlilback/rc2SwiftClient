@@ -6,6 +6,7 @@
 
 import Cocoa
 import  ClientCore
+import Networking
 
 class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolbarDelegate {
 	///Object that lets us monitor the status of the application. Nededed to pass on to the statusView once setup is finished
@@ -29,18 +30,18 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 		window!.titleVisibility = .hidden
 	}
 	
-	func setupChildren(_ restServer:RestServer) {
+	func setupChildren() {
 		statusView?.appStatus = appStatus
 		let rootVC = contentViewController as! RootViewController
-		rootVC.restServer = restServer
-		rootVC.sessionClosedHandler = {
+		rootVC.sessionOptional = session
+		rootVC.sessionClosedHandler = { [weak self] in 
 			DispatchQueue.main.async {
-				self.window?.close()
+				self?.window?.close()
 			}
 		}
 		let viewControllers = recursiveFlatMap(rootVC, transform: { $0 as? AbstractSessionViewController }, children: { $0.childViewControllers })
 		for aController in viewControllers {
-			aController.sessionOptional = restServer.session
+			aController.sessionOptional = session
 		}
 	}
 

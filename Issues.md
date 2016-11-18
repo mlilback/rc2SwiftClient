@@ -37,3 +37,7 @@
 * switching help topics adjusts width of split view
 
 * switch all use of KVO in File to use signals
+
+* session needs to send delegate its own error type
+
+* need to move framework required defaults to each framework, and have app load them allowing each succeeding framework to overwrite lower ones

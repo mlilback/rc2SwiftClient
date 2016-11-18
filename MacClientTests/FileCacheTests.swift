@@ -9,7 +9,7 @@ import XCTest
 @testable import MacClient
 import BrightFutures
 import Mockingjay
-import SwiftyJSON
+import Freddy
 
 class FileCacheTests: BaseTest {
 	var cache:FileCache!

@@ -8,6 +8,8 @@
 import Cocoa
 import SwiftyJSON
 import os
+import Networking
+import ReactiveSwift
 
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
@@ -41,7 +43,7 @@ open class BookmarkViewController: NSViewController {
 	fileprivate let dateFormatter: DateFormatter = DateFormatter()
 	var addController: AddBookmarkViewController?
 	var bookmarkManager: BookmarkManager?
-	var openSessionCallback:((RestServer) -> Void)?
+	var openSessionCallback:((Session) -> Void)?
 	fileprivate var appStatus: MacAppStatus?
 
 	var entries: [BookmarkEntry] = []
@@ -119,32 +121,7 @@ open class BookmarkViewController: NSViewController {
 	
 	@IBAction func openBookmark(_ sender:AnyObject?) {
 		if case .mark(let aMark) = entries[tableView!.selectedRow] {
-			var host = ServerHost.localHost
-			var password = Constants.LocalServerPassword
-			if let bmserver = aMark.server {
-				host = bmserver
-				password = Keychain().getString(bmserver.keychainKey)!
-			}
-			let restServer = RestServer(host: host)
-			restServer.login(password).onSuccess { loginsession in
-				guard let wspace = loginsession.project(withName:aMark.projectName)?.workspace(withName:aMark.workspaceName!) else
-				{
-					self.appStatus?.presentError(NSError.error(withCode: .noSuchObject, description: nil), session:nil)
-					return
-				}
-				do {
-					try restServer.createSession(workspace: wspace, appStatus:self.appStatus!).onSuccess
-					{ _ in
-						self.openSessionCallback?(restServer)
-					}.onFailure { error in
-						self.appStatus?.presentError(error, session:nil)
-					}
-				} catch let innerError {
-					os_log("error opening session: %{public}s", type:.error, innerError as NSError)
-				}
-			}.onFailure { error in
-				self.appStatus?.presentError(error, session:nil)
-			}
+			openSession(withBookmark: aMark, password: nil)
 		}
 	}
 	
@@ -159,27 +136,19 @@ open class BookmarkViewController: NSViewController {
 				pass = password!
 			}
 		}
-		let restServer = RestServer(host: host)
-		restServer.login(pass).onSuccess { loginsession in
-			guard let wspace = loginsession.project(withName:bookmark.projectName)?.workspace(withName:bookmark.workspaceName!) else
-			{
-				self.presentError(NSError.error(withCode: .noSuchObject, description: nil))
+		let loginFactory = LoginFactory()
+		loginFactory.login(to: host, as: host.user, password: pass).start(on: UIScheduler()).startWithResult { (result) in
+			guard let conInfo = result.value else {
+				self.appStatus?.presentError(result.error! as NSError, session: nil)
 				return
 			}
-			do {
-				try restServer.createSession(workspace: wspace, appStatus: self.appStatus!).onSuccess
-				{ _ in
-					self.openSessionCallback?(restServer)
-					}.onFailure { error in
-						self.appStatus?.presentError(error, session:nil)
-					}
-			} catch let outerError {
-				os_log("error opening session: %{public}s", type:.error, outerError as NSError)
-				self.appStatus?.presentError(outerError as NSError, session: nil)
+			guard let wspace = conInfo.project(withName: bookmark.projectName)?.workspace(withName: bookmark.workspaceName!) else
+			{
+				self.appStatus?.presentError(NSError.error(withCode: .noSuchObject, description: nil), session:nil)
+				return
 			}
-		
-		}.onFailure { error in
-			self.appStatus?.presentError(error, session:nil)
+			let session = Session(connectionInfo: conInfo, workspace: wspace)
+			self.openSessionCallback?(session)
 		}
 	}
 

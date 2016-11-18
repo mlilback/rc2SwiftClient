@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import Networking
 
 enum SessionStateKey: String {
 	case History = "history"
@@ -121,9 +122,10 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 		}
 	}
 	
-	func attachmentCellForAttachment(_ attachment:NSTextAttachment) -> NSTextAttachmentCell {
-		let fdict = NSKeyedUnarchiver.unarchiveObject(with: (attachment.fileWrapper?.regularFileContents)!) as? NSDictionary
-		let fileType = FileType.fileTypeWithExtension(fdict?.object(forKey: "ext") as? String)
+	func attachmentCellForAttachment(_ attachment: NSTextAttachment) -> NSTextAttachmentCell? {
+		guard let attach = try? MacConsoleAttachment.from(data: attachment.fileWrapper!.regularFileContents!) else { return nil }
+		assert(attach.type == .file)
+		let fileType = FileType.fileType(withExtension: attach.fileExtension!)
 		let img = fileType?.image()
 		img?.size = ConsoleAttachmentImageSize
 		return NSTextAttachmentCell(imageCell: img)

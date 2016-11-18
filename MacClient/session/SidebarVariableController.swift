@@ -5,6 +5,8 @@
 //
 
 import Cocoa
+import Networking
+
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):
@@ -124,7 +126,7 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 	{
 		guard proposedSelectionIndexes.count > 0 else { return proposedSelectionIndexes }
 		let variable = rootVariables[proposedSelectionIndexes.first!]
-		if variable.count <= 1 && variable.primitiveType != .NA { return tableView.selectedRowIndexes }
+		if variable.count <= 1 && variable.primitiveType != .na { return tableView.selectedRowIndexes }
 		return proposedSelectionIndexes
 	}
 	

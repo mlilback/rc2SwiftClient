@@ -6,11 +6,12 @@
 //
 
 import Foundation
-import SwiftyJSON
+import Freddy
 import ClientCore
+import Networking
 
 /// represents a bookmark to an rc2 server
-public struct Bookmark: JSONSerializable, CustomStringConvertible, Equatable {
+public struct Bookmark: JSONDecodable, JSONEncodable, CustomStringConvertible, Equatable {
 	let name:String
 	let server:ServerHost?
 	let projectName:String
@@ -25,29 +26,31 @@ public struct Bookmark: JSONSerializable, CustomStringConvertible, Equatable {
 		self.lastUsed = lastUsed
 	}
 	
-	public init?(json:JSON?) {
-		guard let json = json else { return nil }
-		name = json["name"].stringValue
-		projectName = json["project"].stringValue
-		workspaceName = json["workspace"].stringValue
-		lastUsed = json["lastUsed"].doubleValue
-		if let _ = json["server"].dictionary {
-			server = ServerHost(json: json["server"])
+	/// convenience initializer that return nil if an error was thrown by the JSON initializer
+	public init?(from: JSON) {
+		do {
+			try self.init(json: from)
+		} catch {
+		}
+		return nil
+	}
+
+	public init(json:JSON) throws {
+		name = try json.getString(at: "name")
+		projectName = try json.getString(at: "project")
+		workspaceName = try json.getString(at: "workspace")
+		lastUsed = try json.getDouble(at: "lastUsed")
+		if let host = try? json.decode(at: "server", type: ServerHost.self) {
+			server = host
 		} else {
 			server = nil
 		}
 	}
 	
-	public func serialize() throws -> JSON {
-		var dict = [String:JSON]()
-		dict["name"] = JSON(name)
-		dict["project"] = JSON(projectName)
-		if let wsname = workspaceName {
-			dict["workspace"] = JSON(wsname)
-		}
-		dict["lastUsed"] = JSON(lastUsed)
-		dict["server"] = try server?.serialize()
-		return JSON(dict)
+	public func toJSON() -> JSON {
+		let wspaceJson: JSON = (workspaceName == nil) ? .null : .string(workspaceName!)
+		let hostJson = server?.toJSON() ?? .null
+		return .dictionary(["name": .string(name), "project": .string(projectName), "workspace": wspaceJson, "lastUsed": .double(lastUsed), "server": hostJson])
 	}
 	
 	public func withChangedName(_ newName:String) -> Bookmark {
