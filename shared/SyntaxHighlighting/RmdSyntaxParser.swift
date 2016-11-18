@@ -9,6 +9,8 @@ import Foundation
 	import AppKit
 #endif
 import ClientCore
+import Networking
+
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):

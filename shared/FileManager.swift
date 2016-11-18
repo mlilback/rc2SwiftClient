@@ -7,6 +7,8 @@
 import Foundation
 import BrightFutures
 import os
+import Networking
+import ClientCore
 
 let FileAttrVersion = "io.rc2.FileAttr.Version"
 let FileAttrChecksum = "io.rc2.FileAttr.SHA256"

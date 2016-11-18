@@ -9,6 +9,7 @@ import Foundation
 	import AppKit
 #endif
 import os
+import Networking
 
 /** parses the contents of an NSTextStorage into an array of chunks that can be syntax colored */
 open class SyntaxParser: NSObject {

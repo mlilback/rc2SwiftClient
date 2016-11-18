@@ -5,6 +5,8 @@
 //
 
 import Foundation
+import ClientCore
+import Networking
 #if os(OSX)
 	import AppKit
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
