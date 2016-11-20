@@ -89,6 +89,25 @@ public final class DockerContainer: JSONDecodable {
 	/// - returns: true if we know the container exists on the server
 	public var exists: Bool { return state.value != .notAvailable }
 
+	/// Loads default containers from createInfo array under the key "containers"
+	///
+	/// - Parameter json: json with createInfo array at "containers"
+	/// - Returns: array of containers
+	public class func fromCreateInfoJson(json: JSON) -> [DockerContainer] {
+		do {
+			let cjson = try json.getArray(at: "containers")
+			let containers = try cjson.map { createJson -> DockerContainer in
+				guard let type = ContainerType.from(imageName: try createJson.getString(at: "Image")) else {
+					fatalError("failed to find container type for \(createJson)")
+				}
+				return DockerContainer(type: type, createInfo: try createJson.serialize())
+			}
+			return containers
+		} catch {
+			fatalError("error parsing static json")
+		}
+	}
+
 	/// create an empty container of the specified type
 	/// - parameter type: the type of container to create
 	public init(type: ContainerType, createInfo: Data) {

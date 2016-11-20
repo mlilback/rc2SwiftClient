@@ -26,6 +26,11 @@ class DockerManagerSpec: QuickSpec {
 				api = DockerAPIImplementation(sessionConfig: sessionConfig)
 			}
 
+			it("manager can be created") {
+				let dm = DockerManager()
+				expect(dm).toNot(beNil())
+			}
+			
 			context("version info") {
 				beforeEach {
 					let path = Bundle(for: type(of: self)).path(forResource: "version", ofType: "json")

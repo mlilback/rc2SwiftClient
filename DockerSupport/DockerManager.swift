@@ -110,9 +110,9 @@ public final class DockerManager: NSObject {
 		assert(baseUrl != nil, "hostUrl not specified as argument or environment variable")
 		//load static docker info we'll use throughout this class
 		let path: String = Bundle(for: type(of: self)).path(forResource: "dockerInfo", ofType: "json")!
-		guard let containerJson = try? JSON(data: URL(fileURLWithPath: path).contents()!) else { fatalError() }
-		// swiftlint:disable:next force_try //if our static file isn't encoded properly, a crash is the right thing to do
-		containers = try! containerJson.decodedArray(at: "containers", type: DockerContainer.self)
+		let jsonStr = String(data: URL(fileURLWithPath: path).contents()!, encoding: .utf8)!
+		guard let containerJson = try? JSON(jsonString: jsonStr) else { fatalError() }
+		containers = DockerContainer.fromCreateInfoJson(json: containerJson)
 		assert(containers.count == ContainerType.all.count)
 		self.eventMonitor = DockerEventMonitor(baseUrl: self.baseUrl, delegate: self, sessionConfig: self.sessionConfig)
 	}
