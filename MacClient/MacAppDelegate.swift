@@ -198,10 +198,11 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		}
 
 		let sboard = SwinjectStoryboard.create(name: "MainController", bundle: nil, container: container)
-		wc.window?.makeKeyAndOrderFront(self)
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window
 		let root = sboard.instantiateController(withIdentifier: "rootController") as? RootViewController
 		wc.contentViewController = root
+		//we had to set the content before making visible, and have to set variables after visible
+		wc.window?.makeKeyAndOrderFront(self)
 		wc.appStatus = appStatus
 		wc.session = session
 		wc.setupChildren()

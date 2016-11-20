@@ -148,7 +148,9 @@ open class BookmarkViewController: NSViewController {
 				return
 			}
 			let session = Session(connectionInfo: conInfo, workspace: wspace)
-			self.openSessionCallback?(session)
+			DispatchQueue.main.async {
+				self.openSessionCallback?(session)
+			}
 		}
 	}
 
