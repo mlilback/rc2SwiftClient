@@ -12,6 +12,8 @@ The macOS client requires 10.12 Sierra. Development is being done with Xcode 8.
 
 * [CryptoSwift](https://github.com/krzyzanowskim/CryptoSwift.git) a pure swift implementation of cryptographic functions
 
+* [Freddy](https://github.com/bignerdranch/Freddy) for simplified JSON parsing
+
 * [HockeySDK](https://hockeyapp.net/) used for feedback beta distribution. All files are included in the git repository
 
 * [MessagePackSwift](https://github.com/mlilback/MessagePackSwift.git) a Swift implementation of [MessagePack](http://msgpack.org/)
@@ -27,8 +29,6 @@ The macOS client requires 10.12 Sierra. Development is being done with Xcode 8.
 * [Sparkle](https://sparkle-project.org/) enables update notification
 
 * [SwiftWebSocket](https://github.com/tidwall/SwiftWebSocket) for websocket support
-
-* [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) for simplified JSON parsing
 
 * [Swinject](https://github.com/Swinject/Swinject) for dependency injection
 
@@ -82,3 +82,8 @@ OTHER_SWIFT_FLAGS = $(inherited) -DHOCKEYAPP_ENABLED
  
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) HOCKEYAPP_ENABLED=1 HOCKEY_IDENTIFIER='@"7574682489924a239272b421546d00f8"'
 ```
+
+# Logging
+
+Logging is done via os_log. To enable debug logging, use `sudo log config --mode "level:debug" --subsystem io.rc2.MacClient`. To stream in the console, use `sudo log stream --level=debug --predicate 'subsystem contains "io.rc2"'`.
+
