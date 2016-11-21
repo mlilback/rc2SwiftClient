@@ -67,8 +67,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 				reopen.append(bmark)
 			}
 		}
-		let bmarks = reopen.toJSON()
-		defaults.set(try? bmarks.serialize(), forKey: PrefKeys.OpenSessions)
+		defaults[.openSessions] = reopen.toJSON()
 		dockerManager = nil
 	}
 

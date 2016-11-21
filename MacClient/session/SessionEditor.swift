@@ -6,6 +6,12 @@
 
 import Cocoa
 import ClientCore
+import SwiftyUserDefaults
+
+// MARK: Keys for UserDefaults
+extension DefaultsKeys {
+	static let wordWrapEnabled = DefaultsKey<Bool>("WordWrapEnabled")
+}
 
 class SessionEditor: TextViewWithContextualMenu {
 	var wordWrapEnabled:Bool { return textContainer!.widthTracksTextView }
@@ -81,7 +87,7 @@ class SessionEditor: TextViewWithContextualMenu {
 	@IBAction func toggleWordWrap(_ sender:AnyObject?) {
 		let wordWrap = !wordWrapEnabled
 		let defaults = UserDefaults.standard
-		defaults.set(wordWrap, forKey: PrefKeys.WordWrapEnabled)
+		defaults[.wordWrapEnabled] = wordWrap
 		adjustWordWrap(wordWrap)
 	}
 	

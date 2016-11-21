@@ -15,6 +15,7 @@ import Networking
 // MARK: Keys for UserDefaults
 extension DefaultsKeys {
 	static let lastExportDirectory = DefaultsKey<Data?>("rc2.LastExportDirectory")
+	static let supressDeleteFileWarnings = DefaultsKey<Bool>("SupressDeleteFileWarning")
 }
 
 ///selectors used in this file, aliased with shorter, descriptive names
@@ -184,7 +185,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	@IBAction func deleteFile(_ sender:AnyObject?) {
 		guard let file = selectedFile else { return }
 		let defaults = UserDefaults.standard
-		if defaults.bool(forKey: PrefKeys.SupressDeleteFileWarning) {
+		if defaults[.supressDeleteFileWarnings] {
 			session.remove(file: file)
 		}
 		let alert = NSAlert()
@@ -195,7 +196,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
 		alert.beginSheetModal(for: self.view.window!, completionHandler: { [weak alert] response in
 			if let state = alert?.suppressionButton?.state , state == NSOnState {
-				defaults.set(true, forKey: PrefKeys.SupressDeleteFileWarning)
+				defaults[.supressDeleteFileWarnings] = true
 			}
 			if response != NSAlertFirstButtonReturn { return }
 			self.session.remove(file: file)

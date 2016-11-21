@@ -32,12 +32,8 @@ class BookmarkManager {
 	///saves bookmarks and hosts to NSUserDefaults
 	func save() {
 		let defaults = UserDefaults.standard
-		if let bmarks = try? bookmarks.toJSON().serialize() {
-			defaults.set(bmarks, forKey: PrefKeys.Bookmarks)
-		}
-		if let jhosts = try? hosts.toJSON().serialize() {
-			defaults.set(jhosts, forKey: PrefKeys.Hosts)
-		}
+		defaults[.bookmarks] = bookmarks.toJSON()
+		defaults[.hosts] = hosts.toJSON()
 	}
 	
 	///adds a new bookmark to bookmarks array

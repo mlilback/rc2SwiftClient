@@ -5,6 +5,12 @@
 //
 
 import Cocoa
+import SwiftyUserDefaults
+
+// MARK: Keys for UserDefaults
+extension DefaultsKeys {
+	static let maxCommandHistory = DefaultsKey<Int>("MaxCommandHistorySize")
+}
 
 let MinHistoryLength = 1
 let DefaultHistoryLength = 10
@@ -22,7 +28,7 @@ class CommandHistory {
 	}
 	
 	func addToCommandHistory(_ origQuery:String) {
-		var maxLen = UserDefaults.standard.integer(forKey: PrefKeys.MaxCommandHistorySize)
+		var maxLen = UserDefaults.standard[.maxCommandHistory]
 		if (maxLen < MinHistoryLength) { maxLen = DefaultHistoryLength; }
 		if (maxLen > MaxHistoryLength) { maxLen = MaxHistoryLength; }
 		let query = origQuery.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)

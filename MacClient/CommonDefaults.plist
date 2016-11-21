@@ -54,6 +54,8 @@
 	</dict>
 	<key>EditorBGColor</key>
 	<string>FFFFFF</string>
+	<key>MaxCommandHistorySize</key>
+	<integer>10</integer>
 	<key>RCodeHighlighterColors</key>
 	<dict>
 		<key>Comment</key>

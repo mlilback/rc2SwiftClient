@@ -16,26 +16,6 @@ public struct Notifications {
 	static let DisplayHelpTopic = "DisplayHelpTopicNotification"
 }
 
-
-
-struct PrefKeys {
-	static let OpenSessions = "OpenSessions"
-	static let LastWorkspace = "LastWorkspace"
-	static let LocalServerWorkspaces = "LocalServerWorkspaces"
-	static let LastHost = "LastHost"
-	static let LastLogin = "LastLoginName"
-	static let LastWasLocal = "LastWasLocal"
-	
-	static let MaxCommandHistorySize = "MaxCommandHistorySize"
-	static let WordWrapEnabled = "WordWrapEnabled"
-	static let OutputColors = "OutputColors"
-	
-	static let Bookmarks = "Bookmarks"
-	static let Hosts = "ServerHosts"
-	
-	static let SupressDeleteFileWarning = "SupressDeleteFileWarning"
-}
-
 struct LStrings {
 	static let DeleteFileWarning = "DeleteFileWarning"
 	static let DeleteFileWarningInfo = "DeleteFileWarningInfo"
