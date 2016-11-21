@@ -62,7 +62,7 @@ class AddBookmarkViewController: NSViewController {
 	}
 
 	func displayError(_ error:NSError) {
-		os_log("error: %{public}s", type:.error, error)
+		os_log("error: %{public}s", log: .app, type:.error, error)
 	}
 	
 //	func switchToProjectManager(_ serverInfo:SelectServerResponse) {

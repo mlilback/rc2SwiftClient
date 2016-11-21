@@ -11,6 +11,10 @@ import ReactiveSwift
 import Result
 import NotifyingCollection
 
+extension OSLog {
+	static let cache: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "cache")
+}
+
 public enum FileCacheError: Error {
 	case failedToCreateURL(file: File)
 	case downloadAlreadyInProgress
@@ -94,7 +98,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 			}
 			return fileDir!
 		} catch let err as NSError {
-			os_log("failed to create file cache (%{public}s) dir: %{public}s", type:.error, fileDir!.path, err)
+			os_log("failed to create file cache (%{public}s) dir: %{public}s", log: .cache, type: .error, fileDir!.path, err)
 		}
 		fatalError("failed to create file cache")
 	}()
@@ -164,7 +168,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 				} catch let err as NSError {
 					//don't care if doesn't exist
 					if !(err.domain == NSCocoaErrorDomain && err.code == 4) {
-						os_log("got err removing file in flushCacheForFile: %@", type:.info, err)
+						os_log("got err removing file in flushCacheForFile: %@", log: .cache, type:.info, err)
 					}
 				}
 				
@@ -435,7 +439,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 			}
 			///move the file to the appropriate local cache url
 			guard let _ = try? fileManager.move(tempFile: location, to: cacheUrl, file: cacheTask.file) else {
-				os_log("error moving downloaded file to final location %{public}s", cacheUrl.absoluteString)
+				os_log("error moving downloaded file to final location %{public}s", log: .cache, cacheUrl.absoluteString)
 				return
 			}
 		}

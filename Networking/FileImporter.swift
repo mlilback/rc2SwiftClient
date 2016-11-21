@@ -13,6 +13,11 @@ import os
 /// FINISH: not properly handlind multiple task progress, compeltion when all tasks are finished
 /// need unit tests with multiple uploads
 
+extension OSLog {
+	static let importer: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "import")
+}
+
+
 public class FileImporter: NSObject {
 	public typealias ProgressSignalProducer = SignalProducer<ImportProgress, Rc2Error>
 	
@@ -53,7 +58,7 @@ public class FileImporter: NSObject {
 		do {
 			try fileManager.createDirectory(at: tmpDir, withIntermediateDirectories: true, attributes: [:])
 		} catch {
-			os_log("failed to create temporary directory for upload: %{public}s", type:.error, error.localizedDescription)
+			os_log("failed to create temporary directory for upload: %{public}s", log: .importer, type:.error, error.localizedDescription)
 			throw Rc2Error(type: .file, nested: error)
 		}
 		super.init()
@@ -68,7 +73,7 @@ public class FileImporter: NSObject {
 			do {
 				try fileManager.linkItem(at: aFileToImport.fileUrl, to: srcUrl)
 			} catch {
-				os_log("failed to create link for upload: %{public}s", type:.error, error.localizedDescription)
+				os_log("failed to create link for upload: %{public}s", log: .importer, type:.error, error.localizedDescription)
 				return ProgressSignalProducer(error: Rc2Error(type: .file, nested: error, explanation: ""))
 			}
 			let destUrl = URL(string: "/workspaces/\(workspace.wspaceId)/files/upload", relativeTo:baseUrl)!
@@ -138,12 +143,12 @@ public class FileImporter: NSObject {
 extension FileImporter: URLSessionDataDelegate {
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
 	{
-		os_log("url session said complete", type:.info)
+		os_log("url session said complete", log: .importer, type:.info)
 		defer {
 			do { try fileManager.removeItem(at: tmpDir) } catch {}
 		}
 		guard error == nil else {
-			os_log("error uploading file %{public}s", type:.error, (error as? NSError)!)
+			os_log("error uploading file %{public}s", log: .importer, type:.error, (error as? NSError)!)
 			progressObserver?.send(error: Rc2Error(type: .network, nested: NetworkingError.uploadFailed(error!)))
 			return
 		}
@@ -154,7 +159,7 @@ extension FileImporter: URLSessionDataDelegate {
 		}
 		defer { tasks.removeValue(forKey: index) }
 		let httpResponse = task.response as! HTTPURLResponse
-		os_log("upload status=%d", type:.info, httpResponse.statusCode)
+		os_log("upload status=%d", log: .importer, type:.info, httpResponse.statusCode)
 		guard httpResponse.statusCode == 201 else {
 			progressObserver?.send(error: Rc2Error(type: .network, nested: NetworkingError.invalidHttpStatusCode(httpResponse)))
 			return
@@ -171,11 +176,11 @@ extension FileImporter: URLSessionDataDelegate {
 		} catch is Rc2Error {
 			progressObserver?.send(error: error as! Rc2Error)
 		} catch {
-			os_log("error updating file after rest confirmation: %{public}s", type:.error, error.localizedDescription)
+			os_log("error updating file after rest confirmation: %{public}s", log: .importer, type:.error, error.localizedDescription)
 			progressObserver?.send(error: Rc2Error(type: .updateFailed, nested: error))
 		}
 		if tasks.count == 1 { //deferred removal of current task
-			os_log("file importer children done", type:.info)
+			os_log("file importer children done", log: .importer, type:.info)
 			progressObserver?.sendCompleted()
 			progressObserver = nil
 			progressDisposable = nil
@@ -184,7 +189,7 @@ extension FileImporter: URLSessionDataDelegate {
 	
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64)
 	{
-		os_log("session said sent data %d", type:.info, bytesSent)
+		os_log("session said sent data %d", log: .importer, type:.info, bytesSent)
 		let index: Int = tasks.filter {  $1.task == task }.map { $0.0 }.first!
 		guard tasks[index] != nil else {
 			fatalError("failed to find progress for task of \(index)")
@@ -195,7 +200,7 @@ extension FileImporter: URLSessionDataDelegate {
 	
 	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
 	{
-		os_log("session said received data %d", type:.info, data.count)
+		os_log("session said received data %d", log: .importer, type:.info, data.count)
 		let index:Int = tasks.filter {  $1.task == dataTask }.map { $0.0 }.first!
 		guard tasks[index] != nil else {
 			fatalError("failed to find progress for task of \(index)")

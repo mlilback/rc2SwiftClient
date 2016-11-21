@@ -46,7 +46,7 @@ import Freddy
 	
 	deinit {
 		if !properlyClosed {
-			os_log("not properly closed", type:.error)
+			os_log("not properly closed", log: .app, type:.error)
 			close()
 		}
 	}
@@ -73,7 +73,7 @@ import Freddy
 //MARK: - ServerResponseHandlerDelegate
 extension SessionController: ServerResponseHandlerDelegate {
 	func handleFileUpdate(_ file:File, change:FileChangeType) {
-//		os_log("got file update %d v%d", type:.info, file.fileId, file.version)
+//		os_log("got file update %d v%d", log: .app, type:.info, file.fileId, file.version)
 //		handleFileUpdate(file, change: change)
 	}
 	
@@ -134,7 +134,7 @@ extension SessionController {
 				savedStateHash = hash
 			}
 		} catch let err as NSError {
-			os_log("Error saving session state: %{public}s", err)
+			os_log("Error saving session state: %{public}s", log: .app, err)
 		}
 	}
 	
@@ -159,7 +159,7 @@ extension SessionController {
 				savedStateHash = data.sha256()
 			}
 		} catch let err as NSError {
-			os_log("error restoring session state: %{public}s", type:.error, err)
+			os_log("error restoring session state: %{public}s", log: .app, type:.error, err)
 		}
 	}
 }

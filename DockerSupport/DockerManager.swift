@@ -41,7 +41,6 @@ public final class DockerManager: NSObject {
 	let sessionConfig: URLSessionConfiguration
 	let session: URLSession
 	let api: DockerAPI!
-	let dockerLog = OSLog(subsystem: "io.rc2.client", category: "docker")
 	let networkName = "rc2server"
 	let requiredApiVersion = 1.24
 	let baseInfoUrl: String
@@ -90,7 +89,7 @@ public final class DockerManager: NSObject {
 		sessionConfig.protocolClasses = [DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
 		sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
 		session = URLSession(configuration: sessionConfig)
-		api = DockerAPIImplementation(baseUrl: baseUrl, sessionConfig: sessionConfig, log: dockerLog)
+		api = DockerAPIImplementation(baseUrl: baseUrl, sessionConfig: sessionConfig)
 		//read image info if it is there
 		imageInfo = RequiredImageInfo(from: defaults[.cachedImageInfo])
 		super.init()
@@ -190,7 +189,7 @@ public final class DockerManager: NSObject {
 		precondition(state >= .initialized)
 		//short circuit if we don't need to chedk and have valid data
 		guard imageInfo == nil || shouldCheckForUpdate || forceRefresh else {
-			os_log("using cached docker info", log:dockerLog, type:.info)
+			os_log("using cached docker info", log:.docker, type:.info)
 			return SignalProducer<Bool, DockerError>(value: true)
 		}
 		return api.fetchJson(url: URL(string:"\(baseInfoUrl)imageInfo.json")!).map { json in
@@ -213,7 +212,7 @@ public final class DockerManager: NSObject {
 				return true
 			}
 		}
-		os_log("no pull necessary", log:dockerLog, type:.info)
+		os_log("no pull necessary", log: .docker, type: .info)
 		return false
 	}
 
@@ -249,34 +248,34 @@ extension DockerManager: DockerEventMonitorDelegate {
 	/// handles an event from the event monitor
 	// note that the only events that external observers should care about (as currently implemented) are related to specific containers, which will update their observable state property. Probably need a way to inform application if some serious problem ocurred
 	func handleEvent(_ event: DockerEvent) {
-		os_log("got event: %{public}s", log:dockerLog, type:.info, event.description)
+		os_log("got event: %{public}s", log:.docker, type:.info, event.description)
 		//only care if it is one of our containers
 		guard let from = try? event.json.getString(at:"from"),
 			let ctype = ContainerType.from(imageName:from),
 			let container = containers[ctype] else { return }
 		switch event.eventType {
 			case .die:
-				os_log("warning: container died: %{public}s", log:dockerLog, from)
+				os_log("warning: container died: %{public}s", log:.docker, from)
 				if let exitStatusStr = try? event.json.getString(at: "exitCode"),
 					let exitStatus = Int(exitStatusStr), exitStatus != 0
 				{
 					//abnormally died
 					//TODO: handle abnormal death of container
-					os_log("warning: container %{public}s died with non-normal exit code", log:dockerLog, ctype.rawValue)
+					os_log("warning: container %{public}s died with non-normal exit code", log:.docker, ctype.rawValue)
 				}
 				container.update(state: .exited)
 			case .start:
-				os_log("container %{public}s started", log:dockerLog, from)
+				os_log("container %{public}s started", log:.docker, from)
 				container.update(state: .running)
 			case .pause:
 				container.update(state: .paused)
 			case .unpause:
 				container.update(state: .running)
 			case .destroy:
-				os_log("one of our containers was destroyed", log:dockerLog, type:.error)
+				os_log("one of our containers was destroyed", log:.docker, type:.error)
 				//TODO: need to handle container being destroyed
 			case .deleteImage:
-				os_log("one of our images was deleted", log:dockerLog, type:.error)
+				os_log("one of our images was deleted", log:.docker, type:.error)
 				//TODO: need to handle image being deleted
 			default:
 				break
@@ -286,7 +285,7 @@ extension DockerManager: DockerEventMonitorDelegate {
 	func eventMonitorClosed(error: Error?) {
 		eventMonitor = nil
 		//TODO: actually handle by reseting everything related to docker
-		os_log("event monitor closed. should really do something", log:dockerLog)
+		os_log("event monitor closed. should really do something", log:.docker)
 	}
 }
 
@@ -388,8 +387,7 @@ fileprivate extension DockerManager {
 		do {
 			let fm = FileManager()
 			let appdir = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-			let bundleId = AppInfo.bundleIdentifier ?? "io.rc2.Client"
-			dataDirectory = appdir.appendingPathComponent(bundleId, isDirectory: true).appendingPathComponent("v1", isDirectory: true)
+			dataDirectory = appdir.appendingPathComponent(AppInfo.bundleIdentifier, isDirectory: true).appendingPathComponent("v1", isDirectory: true)
 			if !fm.directoryExists(at: dataDirectory!) {
 				try fm.createDirectory(at: dataDirectory!, withIntermediateDirectories: true, attributes: nil)
 			}
@@ -398,7 +396,7 @@ fileprivate extension DockerManager {
 				try fm.createDirectory(at: pgdir, withIntermediateDirectories: true, attributes: nil)
 			}
 		} catch let err {
-			os_log("error setting up data diretory: %{public}s", log:dockerLog, err as NSError)
+			os_log("error setting up data diretory: %{public}s", log:.docker, err as NSError)
 		}
 	}
 }

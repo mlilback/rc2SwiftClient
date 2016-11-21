@@ -134,7 +134,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 
 	func receivedStatusNotification(_ note:Notification) {
 		guard self.appStatus != nil else {
-			os_log("appStatus not set on RootViewController", type:.error)
+			os_log("appStatus not set on RootViewController", log: .app, type:.error)
 			return
 		}
 		self.busy = (self.appStatus?.busy)!

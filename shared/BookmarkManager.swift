@@ -12,8 +12,8 @@ import Networking
 
 // MARK: Keys for UserDefaults
 extension DefaultsKeys {
-	static let bookmarks = DefaultsKey<Data?>("Bookmarks")
-	static let hosts = DefaultsKey<Data?>("ServerHosts")
+	static let bookmarks = DefaultsKey<JSON?>("Bookmarks")
+	static let hosts = DefaultsKey<JSON?>("ServerHosts")
 }
 
 ///manages access to Bookmarks and ServerHosts
@@ -66,8 +66,7 @@ class BookmarkManager {
 		let defaults = UserDefaults.standard
 		bookmarks.removeAll()
 		//load them, or create default ones
-		if let bmdata = defaults[.bookmarks],
-			let json = try? JSON(data: bmdata),
+		if let json = defaults[.bookmarks],
 			let bmarks: [Bookmark] = try? json.asArray()
 		{
 			bookmarks.append(contentsOf: bmarks)
@@ -108,9 +107,7 @@ class BookmarkManager {
 		let defaults = UserDefaults.standard
 		var hostSet = Set<ServerHost>()
 		hosts.removeAll()
-		if let hostData = defaults[.hosts],
-			let json = try? JSON(data: hostData),
-			let jhosts: [ServerHost] = try? json.asArray()
+		if let json = defaults[.hosts], let jhosts: [ServerHost] = try? json.asArray()
 		{
 			hostSet = hostSet.union(jhosts)
 		}

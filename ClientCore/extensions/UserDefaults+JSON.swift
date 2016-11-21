@@ -22,7 +22,7 @@ public extension UserDefaults {
 			do {
 				set(try newValue?.serialize(), forKey: key._key)
 			} catch let err {
-				os_log("error saving a JSON object to UserDefaults:%{public}s", err as NSError)
+				os_log("error saving a JSON object to UserDefaults:%{public}s", log: .core, err as NSError)
 			}
 		}
 	}

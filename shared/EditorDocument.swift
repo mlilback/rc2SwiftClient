@@ -51,7 +51,7 @@ class EditorDocument: NSObject {
 			self.fileCache.contents(of: self.file).startWithResult { result in
 				guard let data = result.value else {
 					//TODO: handle error
-					os_log("failed to load contents of %{public}s: %{public}s", self.file.name, result.error!.localizedDescription)
+					os_log("failed to load contents of %{public}s: %{public}s", log: .app, self.file.name, result.error!.localizedDescription)
 					observer.send(error: result.error! as NSError)
 					return
 				}

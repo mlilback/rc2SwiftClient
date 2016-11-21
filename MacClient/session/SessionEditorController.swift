@@ -151,7 +151,7 @@ class SessionEditorController: AbstractSessionViewController
 		//TODO: enable busy status
 		session.sendSaveFileMessage(file: currentDocument!.file, contents: document.currentContents).startWithCompleted {
 			//ideally should remove busy progress added before this call
-			os_log("saved to server", type:.info)
+			os_log("saved to server", log: .app, type:.info)
 		}
 	}
 }
@@ -160,7 +160,7 @@ class SessionEditorController: AbstractSessionViewController
 extension SessionEditorController {
 	@IBAction func previousChunkAction(_ sender:AnyObject) {
 		guard currentChunkIndex > 0 else {
-			os_log("called with invalid currentChunkIndex", type:.error);
+			os_log("called with invalid currentChunkIndex", log: .app, type:.error);
 			assertionFailure() //called for debug builds only
 			return
 		}
@@ -170,7 +170,7 @@ extension SessionEditorController {
 
 	@IBAction func nextChunkAction(_ sender:AnyObject) {
 		guard currentChunkIndex + 1 < parser!.chunks.count else {
-			os_log("called with invalid currentChunkIndex", type:.error);
+			os_log("called with invalid currentChunkIndex", log: .app, type:.error);
 			assertionFailure() //called for debug builds only
 			return
 		}
@@ -200,7 +200,7 @@ extension SessionEditorController: UsesAdjustableFont {
 	}
 	
 	func fontChanged(_ menuItem:NSMenuItem) {
-		os_log("font changed: %{public}s", type:.info, (menuItem.representedObject as? NSObject)!)
+		os_log("font changed: %{public}s", log: .app, type:.info, (menuItem.representedObject as? NSObject)!)
 		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
 		let newDesc = newNameDesc.withSize(currentFontDescriptor.pointSize)
 		currentFontDescriptor = newDesc
@@ -320,7 +320,7 @@ private extension SessionEditorController {
 		doc.loadContents().startWithResult { result in
 			guard let contents = result.value else {
 				//TODO: handle error
-				os_log("error loading document contents %{public}s", type:.error, result.error!.localizedDescription)
+				os_log("error loading document contents %{public}s", log: .app, type:.error, result.error!.localizedDescription)
 				return
 			}
 			self.documentContentsLoaded(doc, content: contents)

@@ -5,8 +5,13 @@
 //
 
 import Foundation
+import os
 
-fileprivate let myBundle = Bundle(identifier: "io.rc2.client.ClientCore")!
+extension OSLog {
+	static let docker: OSLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "docker")
+}
+
+fileprivate let myBundle = Bundle(for: DockerManager.self)
 
 /// Possible errors from Docker-related types
 ///

@@ -100,7 +100,7 @@ public class Session {
 	}
 	
 	deinit {
-		os_log("session dealloc", type:.info)
+		os_log("session dealloc", log: .session, type:.info)
 	}
 	
 	///opens the websocket with the specified request
@@ -211,7 +211,7 @@ public class Session {
 		attrs["content"] = MessageValue.forValue(contents)
 		encoder.encodeValue(MessageValue.DictionaryValue(MessageValueDictionary(attrs)))
 		guard let data = encoder.data else {
-			os_log("failed to encode save file message")
+			os_log("failed to encode save file message", log: .session)
 			return SignalProducer<Void, Rc2Error>(error: Rc2Error(type: .logic, explanation: "failed to encode save file message"))
 		}
 		//for debug purposes
@@ -235,11 +235,11 @@ private extension Session {
 		do {
 			parsedValues = try decoder.parse()
 		} catch let err {
-			os_log("error parsing binary message:%{public}s", type:.error, err as NSError)
+			os_log("error parsing binary message:%{public}s", log: .session, type:.error, err as NSError)
 		}
 		//get the dictionary of messagevalues
 		guard case MessageValue.DictionaryValue(let msgDict) = parsedValues![0] else {
-			os_log("received invalid binary response from server")
+			os_log("received invalid binary response from server", log: .session)
 			return
 		}
 		let dict = msgDict.nativeValue()
@@ -252,7 +252,7 @@ private extension Session {
 			delegate?.sessionMessageReceived(response)
 			fileCache.update(file: file, withData: data).start()
 		default:
-			os_log("received unknown binary message: %{public}s", dict["msg"] as! String)
+			os_log("received unknown binary message: %{public}s", log: .session, dict["msg"] as! String)
 			return
 		}
 	}
@@ -265,7 +265,7 @@ private extension Session {
 		}
 		if let errorDict = rawDict["error"] as? Dictionary<String,AnyObject> {
 			//TODO: inform user
-			os_log("got save response error: %{public}s", type:.error, (errorDict["message"] as? String)!)
+			os_log("got save response error: %{public}s", log: .session, type:.error, (errorDict["message"] as? String)!)
 			return
 		}
 		do {
@@ -274,9 +274,9 @@ private extension Session {
 			let file = try File(json: json)
 			try workspace.update(fileId: file.fileId, to: file)
 		} catch let updateErr as CollectionNotifierError {
-			os_log("update to file failed: %{public}s", updateErr.localizedDescription)
+			os_log("update to file failed: %{public}s", log: .session, updateErr.localizedDescription)
 		} catch let err as NSError {
-			os_log("error parsing binary message: %{public}s", type:.error, err)
+			os_log("error parsing binary message: %{public}s", log: .session, type:.error, err)
 		}
 	}
 	
@@ -292,7 +292,7 @@ private extension Session {
 			do {
 				try workspace.remove(file: file)
 			} catch {
-				os_log("error removing a file")
+				os_log("error removing a file", log: .session)
 				self.delegate?.sessionErrorReceived(error)
 			}
 			break
@@ -304,10 +304,10 @@ private extension Session {
 			guard  let jsonMessage = try? JSON(jsonString: stringMessage),
 				let msg = try? jsonMessage.getString(at: "msg") else
 			{
-				os_log("failed to parse received json: %{public}s", stringMessage)
+				os_log("failed to parse received json: %{public}s", log: .session, stringMessage)
 				return
 			}
-			os_log("got message %{public}s", msg)
+			os_log("got message %{public}s", log: .session, msg)
 			if let response = ServerResponse.parseResponse(jsonMessage) {
 				switch response {
 				case .fileOperationResponse(let transId, let operation, let file):
@@ -329,7 +329,7 @@ private extension Session {
 		} else if let _ = message as? Data {
 			processBinaryResponse(message as! Data)
 		} else {
-			os_log("invalid binary data format received: %{public}s", type:.error)
+			os_log("invalid binary data format received: %{public}s", log: .session, type:.error)
 		}
 	}
 	
@@ -342,7 +342,7 @@ private extension Session {
 			let jsonStr = NSString(data: json, encoding: String.Encoding.utf8.rawValue)
 			self.wsSource.send(jsonStr as! String)
 		} catch let err as NSError {
-			os_log("error sending json message on websocket: %{public}s", type:.error, err)
+			os_log("error sending json message on websocket: %{public}s", log: .session, type:.error, err)
 			return false
 		}
 		return true

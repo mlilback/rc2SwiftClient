@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import os
 
 let Rc2ErrorDomain = "Rc2ErrorDomain"
 
@@ -27,5 +28,14 @@ public struct AppInfo {
 	/// the info dictionary of the application
 	private static let bundleInfo = Bundle.main.infoDictionary
 	/// the bundle identifier of the application
-	public static var bundleIdentifier: String? { return bundleInfo?["CFBundleIdentifier"] as? String }
+	public static var bundleIdentifier: String { return bundleInfo?["CFBundleIdentifier"] as? String ?? "io.rc2.MacClient" }
+}
+
+public extension OSLog {
+	static let docker: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "docker")
+	static let network: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "network")
+	static let model: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "model")
+	static let session: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "session")
+	static let app: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "app")
+	static let core: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "core")
 }

@@ -16,7 +16,6 @@ final class DockerAPIImplementation: DockerAPI {
 	public let baseUrl: URL
 	fileprivate let sessionConfig: URLSessionConfiguration
 	fileprivate var session: URLSession
-	fileprivate let log: OSLog
 	public let scheduler: QueueScheduler
 
 	// MARK: - init
@@ -25,10 +24,9 @@ final class DockerAPIImplementation: DockerAPI {
 	///
 	/// - parameter baseUrl:       The base URL of the docker socket (e.g. "http://..." or "unix://...")
 	/// - parameter sessionConfig: configuration to use for httpsession, defaults to .default
-	/// - parameter log:           the log object to use for os_log, defaults to sensible one
 	///
 	/// - returns: an instance of this class
-	init(baseUrl: URL = URL(string: "unix://")!, sessionConfig: URLSessionConfiguration = URLSessionConfiguration.default, log: OSLog = OSLog(subsystem: "io.rc2.client", category: "docker"))
+	init(baseUrl: URL = URL(string: "unix://")!, sessionConfig: URLSessionConfiguration = URLSessionConfiguration.default)
 	{
 		precondition(baseUrl.absoluteString.hasPrefix("unix:") || !baseUrl.absoluteString.hasSuffix("/"))
 		self.scheduler = QueueScheduler(qos: .default, name: "rc2.dockerAPI")
@@ -39,7 +37,6 @@ final class DockerAPIImplementation: DockerAPI {
 		}
 		sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
 		session = URLSession(configuration: sessionConfig)
-		self.log = log
 	}
 
 	// MARK: - general

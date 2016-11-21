@@ -16,7 +16,6 @@ public final class LoginFactory: NSObject {
 	// MARK: - properties
 	let sessionConfig: URLSessionConfiguration
 	fileprivate var urlSession: URLSession?
-	fileprivate var networkLog: OSLog! // we will create before init is complete
 	fileprivate var loginResponse: URLResponse?
 	fileprivate var responseData: Data
 	fileprivate var signalObserver: Observer<ConnectionInfo, Rc2Error>?
@@ -34,7 +33,6 @@ public final class LoginFactory: NSObject {
 		responseData = Data()
 		super.init()
 		urlSession = URLSession(configuration: sessionConfig, delegate: self, delegateQueue: nil)
-		networkLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "networking")
 	}
 	
 	/// returns a SignalProducer to start the login process
@@ -50,7 +48,7 @@ public final class LoginFactory: NSObject {
 		host = destHost
 		guard let requestData = try? JSONSerialization.data(withJSONObject: ["login": login, "password": password], options: []) else
 		{
-			os_log("json serialization of login info failed", log: networkLog, type: .error)
+			os_log("json serialization of login info failed", log: .network, type: .error)
 			fatalError()
 		}
 		return SignalProducer<ConnectionInfo, Rc2Error>() { observer, disposable in
@@ -96,7 +94,7 @@ extension LoginFactory: URLSessionDataDelegate {
 	{
 		defer { self.task = nil; self.urlSession = nil }
 		guard error == nil else {
-			os_log("login error: %{public}s", log: networkLog, type: .default, error!.localizedDescription)
+			os_log("login error: %{public}s", log: .network, type: .default, error!.localizedDescription)
 			signalObserver?.send(error: Rc2Error(type: .network, nested: error, severity: .warning))
 			return
 		}
@@ -105,7 +103,7 @@ extension LoginFactory: URLSessionDataDelegate {
 			signalObserver?.send(value: info)
 			signalObserver?.sendCompleted()
 		} catch {
-			os_log("error parsing login info: %{public}s", log: networkLog, type: .default, error.localizedDescription)
+			os_log("error parsing login info: %{public}s", log: .network, type: .default, error.localizedDescription)
 			signalObserver?.send(error: Rc2Error(type: .invalidJson, nested: error))
 		}
 	}

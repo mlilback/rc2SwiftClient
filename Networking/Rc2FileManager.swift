@@ -82,7 +82,7 @@ public class Rc2DefaultFileManager: Rc2FileManager {
 	
 	///copies url to a new location in a temporary directory that can be passed to the user or another application
 	/// (i.e. it is not in our sandbox/app support/cache directories)
-	func copyURLToTemporaryLocation(_ url:URL) throws -> URL {
+	public func copyURLToTemporaryLocation(_ url:URL) throws -> URL {
 		//all errors are already wrapped since we only call internal methods
 		let tmpDir = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Rc2", isDirectory: true)
 		_ = try createDirectoryHierarchy(at: tmpDir)
@@ -91,28 +91,6 @@ public class Rc2DefaultFileManager: Rc2FileManager {
 		try copyItem(at: url, to: destUrl)
 		return destUrl
 	}
-	
-	///Moves the tmpFile downloaded via NSURLSession (or elsewher) to toUrl, setting the appropriate
-	/// metadata including xattributes for validating cached File objects
-//	public func move(tempFile tmpFile: URL, to toUrl:URL, file:File?, promise:inout Promise<URL?,FileError>) {
-//		do {
-//			if try toUrl.checkResourceIsReachable() {
-//				try removeItem(at: toUrl)
-//			}
-//			try moveItem(at:tmpFile, to: toUrl)
-//			//if a File, set mod/creation date, ignoring any errors
-//			if let fileRef = file {
-//				//TODO: fix this to use native URL methods
-//				_ = try? (toUrl as NSURL).setResourceValue(fileRef.lastModified, forKey: URLResourceKey.contentModificationDateKey)
-//				_ = try? (toUrl as NSURL).setResourceValue(fileRef.dateCreated, forKey: URLResourceKey.creationDateKey)
-//				fileRef.writeXAttributes(toUrl)
-//			}
-//			promise.success(toUrl)
-//		} catch let err as NSError {
-//			os_log("got error downloading file %{public}s: %{public}s", tmpFile.lastPathComponent, err)
-//			promise.failure(FileError.failedToSaveFile)
-//		}
-//	}
 	
 	///Moves the tmpFile downloaded via NSURLSession (or elsewher) to toUrl, setting the appropriate
 	/// metadata including xattributes for validating cached File objects
@@ -130,7 +108,7 @@ public class Rc2DefaultFileManager: Rc2FileManager {
 				fileRef.writeXAttributes(toUrl)
 			}
 		} catch {
-			os_log("got error downloading file %{public}s: %{public}s", tempFile.lastPathComponent, error.localizedDescription)
+			os_log("got error downloading file %{public}s: %{public}s", log: .network, tempFile.lastPathComponent, error.localizedDescription)
 			throw Rc2Error(type: .cocoa, nested: error, explanation: tempFile.lastPathComponent)
 		}
 	}
@@ -138,7 +116,7 @@ public class Rc2DefaultFileManager: Rc2FileManager {
 
 extension File {
 	///checks to see if file at url is the file we represent
-	func urlXAttributesMatch(_ url:URL) -> Bool {
+	public func urlXAttributesMatch(_ url:URL) -> Bool {
 		if let versionData = dataForXAttributeNamed(FileAttrVersion, atURL: url).data,
 			let readString = String(data:versionData, encoding:String.Encoding.utf8),
 			let readVersion = Int(readString),
@@ -151,7 +129,7 @@ extension File {
 	}
 	
 	///writes data to xattributes to later validate if a url points to a file reprsented this object
-	func writeXAttributes(_ toUrl:URL) {
+	public func writeXAttributes(_ toUrl:URL) {
 		let versionData = String(version).data(using: String.Encoding.utf8)
 		setXAttributeWithName(FileAttrVersion, data: versionData!, atURL: toUrl)
 		if let fileData = try? Data(contentsOf: toUrl)
@@ -159,7 +137,7 @@ extension File {
 			let shaData = fileData.sha256()
 			setXAttributeWithName(FileAttrChecksum, data: shaData, atURL: toUrl)
 		} else {
-			os_log("failed to create sha256 checksum for %{public}s", type:.error, toUrl.path)
+			os_log("failed to create sha256 checksum for %{public}s", log: .network, type:.error, toUrl.path)
 		}
 	}
 }

@@ -94,7 +94,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	func continueAction(_ callback:@escaping (_ value:Any?, _ error:NSError?) -> Void) {
 //		let future = attemptLogin()
 //		future.onSuccess { (loginsession) in
-//			os_log("logged in successfully", type:.info)
+//			os_log("logged in successfully", log: .app, type:.info)
 //			if !(self.bookmarkManager!.hosts.contains(self.selectedServer!)) {
 //				self.bookmarkManager?.addHost(self.selectedServer!)
 //				self.bookmarkManager?.save()
@@ -115,7 +115,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		do {
 			try keychain.setString(host.keychainKey, value: self.password)
 		} catch let err as NSError {
-			os_log("error saving password: %{public}s", type:.info, err)
+			os_log("error saving password: %{public}s", log: .app, type:.info, err)
 		}
 	}
 	

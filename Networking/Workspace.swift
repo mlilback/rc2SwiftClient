@@ -185,19 +185,19 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 		switch(change) {
 		case .Update:
 			guard let ofile = ourFile else {
-				os_log("got file change update w/o a known file")
+				os_log("got file change update w/o a known file", log: .session)
 				return
 			}
 			guard let _ = try? update(file: ofile, to: file) else {
-				os_log("file change update failed"); return
+				os_log("file change update failed", log: .session); return
 			}
 		case .Insert:
 			guard let _ = try? _files.append(file) else {
-				os_log("file change insert failed"); return
+				os_log("file change insert failed", log: .session); return
 			}
 		case .Delete:
 			guard let _ = try? _files.remove(ourFile!) else {
-				os_log("file change delete failed"); return
+				os_log("file change delete failed", log: .session); return
 			}
 		}
 	}

@@ -75,7 +75,7 @@ open class WebViewController: NSViewController, WKNavigationDelegate {
 	}
 	
 	open func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-		os_log("failed to navigate:%{public}s", type:.error, error as NSError)
+		os_log("failed to navigate:%{public}s", log: .app, type:.error, error as NSError)
 	}
 	
 	open func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {

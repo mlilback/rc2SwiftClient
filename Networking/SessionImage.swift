@@ -48,7 +48,7 @@ public struct SessionImage: JSONDecodable, JSONEncodable, Equatable {
 			}
 			self.imageData = imgData
 		} catch {
-			os_log("error decoding SessionImage from json")
+			os_log("error decoding SessionImage from json", log: .session)
 			throw error
 		}
 	}

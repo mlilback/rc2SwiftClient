@@ -17,7 +17,7 @@ import Networking
 
 // MARK: Keys for UserDefaults
 extension DefaultsKeys {
-	static let openSessions = DefaultsKey<Data?>("OpenSessions")
+	static let openSessions = DefaultsKey<JSON?>("OpenSessions")
 }
 
 @NSApplicationMain
@@ -68,7 +68,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			}
 		}
 		let bmarks = reopen.toJSON()
-		defaults.set(bmarks, forKey: PrefKeys.OpenSessions)
+		defaults.set(try? bmarks.serialize(), forKey: PrefKeys.OpenSessions)
 		dockerManager = nil
 	}
 
@@ -142,12 +142,12 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		let defaults = UserDefaults.standard
 		//load them, or create default ones
 		var bookmarks: [Bookmark] = []
-		if let bmdata = defaults[.openSessions], let bmarks: [Bookmark] = try? JSON(data:bmdata).asArray() {
-			bookmarks = bmarks
+		if let json: JSON = defaults[.openSessions] {
+			bookmarks = (try? json.asArray()) ?? []
 		}
 		guard let bmarkController = bookmarkWindowController?.contentViewController as? BookmarkViewController else
 		{
-			os_log("failed to get bookmarkViewController to restore sessions", type:.error)
+			os_log("failed to get bookmarkViewController to restore sessions", log: .app, type: .error)
 			return
 		}
 		//TODO: show progress dialog

@@ -39,7 +39,7 @@ public enum ServerResponse : Equatable {
 	
 	static func parseResponse(_ jsonObj:JSON) -> ServerResponse? {
 		guard let msg = try? jsonObj.getString(at: "msg") else {
-			os_log("failed to parse 'msg' from server response")
+			os_log("failed to parse 'msg' from server response", log: .session)
 			return nil
 		}
 		let queryId = jsonObj.getOptionalInt(at: "queryId") ?? 0
@@ -55,7 +55,7 @@ public enum ServerResponse : Equatable {
 				return ServerResponse.execComplete(queryId: queryId, batchId: jsonObj.getOptionalInt(at: "imageBatchId", or: -1), images: images)
 			case "showOutput":
 				guard let sfile: File = try? jsonObj.decode(at: "file") else {
-					os_log("failed to decode file parameter to showOutput response")
+					os_log("failed to decode file parameter to showOutput response", log: .session)
 					return nil
 				}
 				return ServerResponse.showOutput(queryId: queryId, updatedFile: sfile)
@@ -63,13 +63,13 @@ public enum ServerResponse : Equatable {
 				return ServerResponse.error(queryId: queryId, error: jsonObj.getOptionalString(at: "error", or: "unknown error"))
 			case "echo":
 				guard let fileId = try? jsonObj.getInt(at: "fileId"), let query = try? jsonObj.getString(at: "query") else {
-					os_log("failed to parse echo response")
+					os_log("failed to parse echo response", log: .session)
 					return nil
 				}
 				return ServerResponse.echoQuery(queryId: queryId, fileId: fileId, query: query)
 			case "filechanged":
 				guard let ftype = try? jsonObj.getString(at: "type"), let file: File = try? jsonObj.decode(at: "file") else {
-					os_log("failed to parse filechanged response")
+					os_log("failed to parse filechanged response", log: .session)
 					return nil
 				}
 				return ServerResponse.fileChanged(changeType: ftype, file: file)
@@ -90,7 +90,7 @@ public enum ServerResponse : Equatable {
 				}
 				return ServerResponse.fileOperationResponse(transId: transId, operation: op, file: file)
 			default:
-				os_log("unknown message from server:%{public}s", msg)
+				os_log("unknown message from server:%{public}s", log: .session, msg)
 				return nil
 		}
 	}
@@ -98,13 +98,13 @@ public enum ServerResponse : Equatable {
 	static func parseVariables(jsonObj: JSON) -> ServerResponse? {
 		guard jsonObj.getOptionalBool(at: "delta") else {
 			guard let vars: [Variable] = try? jsonObj.getArray(at: "variables").map({ try Variable.variableForJson($0) }) else {
-				os_log("failed to parse variables from response")
+				os_log("failed to parse variables from response", log: .session)
 				return nil
 			}
 			return ServerResponse.variables(single: jsonObj.getOptionalBool(at: "single"), variables: vars)
 		}
 		//TODO: server results changed, no longer sends assigned and removed arrays
-		os_log("ignoring non-delta variable changes")
+		os_log("ignoring non-delta variable changes", log: .session, type: .info)
 		return nil
 //		let assigned = Variable.variablesForJsonDictionary(jsonObj["variables"]["assigned"].dictionaryValue)
 //		let removed = jsonObj.getDictionary(at: "variables").dictionaryValue["assigned"]?.arrayValue.map() { $0.stringValue } ?? []
