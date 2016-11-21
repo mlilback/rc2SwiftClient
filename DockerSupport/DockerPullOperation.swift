@@ -5,9 +5,10 @@
 //
 
 import Foundation
-import BrightFutures
+import ReactiveSwift
 import Freddy
 import os
+import ClientCore
 
 ///progress information on the pull
 public struct PullProgress {
@@ -39,21 +40,18 @@ struct LayerProgress {
 	}
 }
 
-public typealias PullProgressHandler = (PullProgress) -> Void
-
-open class DockerPullOperation: NSObject, URLSessionDataDelegate {
+public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	fileprivate let url: URL
 	fileprivate let urlConfig: URLSessionConfiguration
 	fileprivate var urlSession: Foundation.URLSession?
 	fileprivate var _task: URLSessionDataTask?
-	fileprivate var _progressHandler: PullProgressHandler?
 	fileprivate(set) var pullProgress: PullProgress
 	fileprivate var _lastUpdate: Double = 0
 	let estimatedSize: Int64
-	let promise = Promise<Bool, NSError>()
 	var layers = [String:LayerProgress]()
 	var totalDownloaded: Int64 = 0
 	var statuses = Set<String>()
+	fileprivate var pullObserver: Signal<PullProgress, DockerError>.Observer?
 
 	/// - parameter baseUrl: the scheme/host/port to use for the connection
 	/// - parameter imageName: the name of the image to pull
@@ -71,26 +69,27 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 		assert(urlConfig.protocolClasses!.filter({ $0 == DockerUrlProtocol.self }).count > 0)
 	}
 
-	open func startPull(progressHandler:@escaping PullProgressHandler) -> Future<Bool, NSError> {
-		_progressHandler = progressHandler
-		os_log("starting pull: %{public}@", type:.info, url.absoluteString)
-		urlSession = Foundation.URLSession(configuration: urlConfig, delegate: self, delegateQueue:OperationQueue.main)
-		var req = URLRequest(url: url)
-		req.httpMethod = "POST"
-		req.addValue("application/json", forHTTPHeaderField:"Content-Type")
-		req.addValue("application/json", forHTTPHeaderField: "Accept")
+	public func pull() -> SignalProducer<PullProgress, DockerError> {
+		return SignalProducer<PullProgress, DockerError>() { observer, _ in
+			os_log("starting pull: %{public}@", type:.info, self.url.absoluteString)
+			self.pullObserver = observer
+			self.urlSession = Foundation.URLSession(configuration: self.urlConfig, delegate: self, delegateQueue:OperationQueue.main)
+			var req = URLRequest(url: self.url)
+			req.httpMethod = "POST"
+			req.addValue("application/json", forHTTPHeaderField:"Content-Type")
+			req.addValue("application/json", forHTTPHeaderField: "Accept")
 
-		_task = urlSession!.dataTask(with: req)
-		_task?.resume()
-		return promise.future
+			self._task = self.urlSession!.dataTask(with: req)
+			self._task?.resume()
+		}
 	}
-
-	open func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)
+	
+	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)
 	{
 		completionHandler(Foundation.URLSession.ResponseDisposition.allow)
 	}
 
-	open func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
 		let oldTotal = totalDownloaded
 		let str = String(data: data, encoding:String.Encoding.utf8)!
 		let messages = str.components(separatedBy: "\r\n")
@@ -111,10 +110,10 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 		if oldTotal == 0 || (curTime - _lastUpdate) > 0.1 {
 			if totalDownloaded > oldTotal {
 				pullProgress.currentSize = totalDownloaded
-				_progressHandler?(pullProgress)
+				pullObserver?.send(value: pullProgress)
 			} else if totalDownloaded >= estimatedSize {
 				pullProgress.extracting = true
-				_progressHandler?(pullProgress)
+				pullObserver?.send(value: pullProgress)
 			}
 			_lastUpdate = curTime
 		}
@@ -140,7 +139,7 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 				}
 			case "download complete":
 				if var layer = layers[layerId] {
-					os_log("finished layer %{public}@", type:.info, layer.id)
+					os_log("finished layer %{public}@", log: .docker, type:.info, layer.id)
 					layer.complete = true
 					totalDownloaded += layer.finalSize
 				}
@@ -150,14 +149,18 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 		}
 	}
 
-	open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-		guard nil == error else { promise.failure(error! as NSError); return }
-		os_log("pull finished: %d", type:.info, totalDownloaded)
+	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+		guard nil == error else {
+			pullObserver?.send(error: DockerError.cocoaError(error as NSError?))
+			return
+		}
+		os_log("pull finished: %d", log: .docker, type:.info, totalDownloaded)
 		pullProgress.currentSize = totalDownloaded
 		pullProgress.complete = true
-		promise.success(true)
+		pullObserver?.send(value: pullProgress)
+		pullObserver?.sendCompleted()
 		for aLayer in layers.values {
-			os_log("layer %{public}@ is %d", type:.info, aLayer.id, aLayer.finalSize)
+			os_log("layer %{public}@ is %d", log: .docker, type:.info, aLayer.id, aLayer.finalSize)
 		}
 	}
 

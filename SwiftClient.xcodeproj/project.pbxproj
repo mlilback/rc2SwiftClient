@@ -97,7 +97,6 @@
 		081559C61DDFB4DA0047B3CE /* Freddy.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		081559C71DDFB4E00047B3CE /* ReactiveSwift.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		081559C81DDFB4E30047B3CE /* Result.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		081559C91DDFB54E0047B3CE /* BrightFutures.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08159D1E1C77656C004A205A /* NSProgressTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08159D1D1C77656C004A205A /* NSProgressTests.m */; };
 		0816F8A01C6D3A4500A6120B /* SessionHandlerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */; };
 		0825475B1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0825475A1C7A37C400CBB0B9 /* WorkspaceKVOTests.swift */; };
@@ -115,8 +114,6 @@
 		0827A4E61C7ED9CE001F0AFB /* RmdSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4DD1C7ED9CE001F0AFB /* RmdSyntaxParser.swift */; };
 		0827A4E71C7ED9CE001F0AFB /* RnwSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4DE1C7ED9CE001F0AFB /* RnwSyntaxParser.swift */; };
 		0827A4E91C7ED9CE001F0AFB /* SyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4E01C7ED9CE001F0AFB /* SyntaxParser.swift */; };
-		082FF1C51C7F321B00CCC27F /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
-		082FF1C61C7F321B00CCC27F /* BrightFutures.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082FF1C71C7F321B00CCC27F /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */; };
 		082FF1C81C7F321B00CCC27F /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082FF1CB1C7F321B00CCC27F /* PMKVObserver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */; };
@@ -153,7 +150,6 @@
 		0833A8231D2D7EAD0033654B /* HockeySDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8211D2D7E770033654B /* HockeySDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; };
 		0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		083A4B021C7F347E0007AC46 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
 		083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		083A4B041C7F347E0007AC46 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		083A566F1D246D85009D3091 /* ProjectManagement.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A566D1D246D85009D3091 /* ProjectManagement.storyboard */; };
@@ -255,7 +251,6 @@
 		08DB1A9D1D32EFC10079DA6B /* SwinjectStoryboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */; };
 		08DB1A9E1D32EFC10079DA6B /* SwinjectStoryboard.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08DB1AA01D32EFC70079DA6B /* Swinject.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A971D32EF930079DA6B /* Swinject.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		08E7E0961D8AE8A7000C4C87 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
 		08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		08E7E0981D8AE926000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		08E7E0991D8AEC38000C4C87 /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -331,7 +326,6 @@
 		08F6ADFD1DD9178A00AF0722 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
 		08F6ADFE1DD917A900AF0722 /* ClientCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; };
 		08F6AE001DD918CF00AF0722 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADFF1DD918CF00AF0722 /* FileCache.swift */; };
-		08F8EDB71D89E3460037245C /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
 		08F8EDB91D89E3770037245C /* BrightFutures.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08FDB1991C591409006FCD1A /* ImageCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDB1981C591409006FCD1A /* ImageCacheTests.swift */; };
 		08FDB19B1C5917C3006FCD1A /* graph.png in Resources */ = {isa = PBXBuildFile; fileRef = 08FDB19A1C5917C3006FCD1A /* graph.png */; };
@@ -485,7 +479,6 @@
 				08F03E3E1DDFB60C00D02153 /* Mockingjay.framework in Copy Frameworks */,
 				081559C81DDFB4E30047B3CE /* Result.framework in Copy Frameworks */,
 				08F03E401DDFB62900D02153 /* PMKVObserver.framework in Copy Frameworks */,
-				081559C91DDFB54E0047B3CE /* BrightFutures.framework in Copy Frameworks */,
 				081559C61DDFB4DA0047B3CE /* Freddy.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
@@ -512,7 +505,6 @@
 				08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */,
 				089794301D7B68F0003339EE /* ClientCore.framework in Embed Frameworks */,
 				089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */,
-				082FF1C61C7F321B00CCC27F /* BrightFutures.framework in Embed Frameworks */,
 				082FF1C81C7F321B00CCC27F /* CryptoSwift.framework in Embed Frameworks */,
 				08DB1A9E1D32EFC10079DA6B /* SwinjectStoryboard.framework in Embed Frameworks */,
 				082FF1EF1C7F339400CCC27F /* URITemplate.framework in Embed Frameworks */,
@@ -874,7 +866,6 @@
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				0897942F1D7B68F0003339EE /* ClientCore.framework in Frameworks */,
-				082FF1C51C7F321B00CCC27F /* BrightFutures.framework in Frameworks */,
 				082FF1CF1C7F321B00CCC27F /* SwiftWebSocket.framework in Frameworks */,
 				0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */,
 			);
@@ -884,7 +875,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				083A4B021C7F347E0007AC46 /* BrightFutures.framework in Frameworks */,
 				083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */,
 				083A4B041C7F347E0007AC46 /* Result.framework in Frameworks */,
 			);
@@ -895,7 +885,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				089794401D7B69C7003339EE /* PMKVObserver.framework in Frameworks */,
-				08E7E0961D8AE8A7000C4C87 /* BrightFutures.framework in Frameworks */,
 				08678C981DCA78CE00F9F283 /* Freddy.framework in Frameworks */,
 				0841993B1D91B2770089A1AC /* URITemplate.framework in Frameworks */,
 				08E836661D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
@@ -910,7 +899,6 @@
 			files = (
 				08037C221D7C571D00006E9E /* PMKVObserver.framework in Frameworks */,
 				089794231D7B68F0003339EE /* ClientCore.framework in Frameworks */,
-				08F8EDB71D89E3460037245C /* BrightFutures.framework in Frameworks */,
 				0841993A1D91B0760089A1AC /* Mockingjay.framework in Frameworks */,
 				0841993C1D91B2830089A1AC /* URITemplate.framework in Frameworks */,
 				08678CC71DCB9B9100F9F283 /* Freddy.framework in Frameworks */,

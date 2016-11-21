@@ -368,17 +368,10 @@ fileprivate extension DockerManager {
 	{
 		pullProgress?.extracting = false
 		let alreadyDownloaded = pullProgress!.currentSize
-		return SignalProducer<PullProgress, DockerError> { (observer, disposable) in
-			let future = pull.startPull { pp in
-				self.pullProgress?.currentSize = pp.currentSize + alreadyDownloaded
-				self.pullProgress?.extracting = pp.extracting
-				observer.send(value: self.pullProgress!)
-			}
-			future.onSuccess { _ in
-				observer.sendCompleted()
-			}.onFailure { err in
-				observer.send(error: .cocoaError(err))
-			}
+		return pull.pull().map { pp in
+			var npp = pp
+			npp.currentSize = pp.currentSize + alreadyDownloaded
+			return npp
 		}
 	}
 

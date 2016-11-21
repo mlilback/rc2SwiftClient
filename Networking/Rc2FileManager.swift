@@ -5,7 +5,6 @@
 //
 
 import Foundation
-import BrightFutures
 import os
 import CryptoSwift
 import ReactiveSwift
@@ -27,7 +26,6 @@ public protocol Rc2FileManager {
 	func removeItem(at: URL) throws
 //	func createDirectory(at url: URL, withIntermediateDirectories createIntermediates: Bool, attributes: [String : Any]?) throws
 	func createDirectoryHierarchy(at url: URL) throws
-//	func move(tempFile: URL, to toUrl:URL, file:File?, promise:inout Promise<URL?,FileError>)
 	/// synchronously move the file setting xattrs
 	func move(tempFile: URL, to toUrl: URL, file: File?) throws
 }

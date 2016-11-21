@@ -6,7 +6,6 @@
 
 import Cocoa
 import ClientCore
-import BrightFutures
 import os
 import Networking
 

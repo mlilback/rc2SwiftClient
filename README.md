@@ -8,8 +8,6 @@ This version is a complete rewrite in Swift, though where possible it is a prett
 
 The macOS client requires 10.12 Sierra. Development is being done with Xcode 8.
 
-* [Bright Futures](https://github.com/Thomvis/BrightFutures.git) a promise/future library to make async code look a lot cleaner
-
 * [CryptoSwift](https://github.com/krzyzanowskim/CryptoSwift.git) a pure swift implementation of cryptographic functions
 
 * [Freddy](https://github.com/bignerdranch/Freddy) for simplified JSON parsing
@@ -24,7 +22,9 @@ The macOS client requires 10.12 Sierra. Development is being done with Xcode 8.
 
 * [PMKVObserver](https://github.com/postmates/PMKVObserver.git) a wrapper around KVO to make it thread-safe and type-safe
 
-* [Result] used by BrightFutures
+* [ReactiveSwift](https://github.com/ReactiveCocoa/ReactiveSwift) the latest core library of ReactiveCocoa.
+
+* [Result] used by ReactiveSwift
 
 * [Sparkle](https://sparkle-project.org/) enables update notification
 

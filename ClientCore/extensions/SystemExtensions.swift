@@ -5,7 +5,6 @@
 //
 
 import Foundation
-import BrightFutures
 import CryptoSwift
 
 public func delay(_ delay: Double, _ closure:@escaping ()->()) {
