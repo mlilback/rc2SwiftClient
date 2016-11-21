@@ -108,7 +108,7 @@ public class Rc2DefaultFileManager: Rc2FileManager {
 				fileRef.writeXAttributes(toUrl)
 			}
 		} catch {
-			os_log("got error downloading file %{public}s: %{public}s", log: .network, tempFile.lastPathComponent, error.localizedDescription)
+			os_log("got error downloading file %{public}@: %{public}@", log: .network, tempFile.lastPathComponent, error.localizedDescription)
 			throw Rc2Error(type: .cocoa, nested: error, explanation: tempFile.lastPathComponent)
 		}
 	}
@@ -137,7 +137,7 @@ extension File {
 			let shaData = fileData.sha256()
 			setXAttributeWithName(FileAttrChecksum, data: shaData, atURL: toUrl)
 		} else {
-			os_log("failed to create sha256 checksum for %{public}s", log: .network, type:.error, toUrl.path)
+			os_log("failed to create sha256 checksum for %{public}@", log: .network, type:.error, toUrl.path)
 		}
 	}
 }

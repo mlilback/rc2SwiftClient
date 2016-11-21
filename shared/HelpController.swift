@@ -96,7 +96,7 @@ class HelpController {
 			self.allTopicNames = names
 			self.topicsByName = topsByName
 		} catch let error as NSError {
-			os_log("error loading help index: %{public}s", log: .app, type:.error, error)
+			os_log("error loading help index: %{public}@", log: .app, type:.error, error)
 			fatalError("failed to load help index")
 		}
 	}
@@ -130,7 +130,7 @@ class HelpController {
 			let rs = try db.executeQuery("select * from helpidx where helpidx match ?", values: [searchString])
 			results = try parseResultSet(rs)
 		} catch let error as NSError {
-			os_log("error searching help: %{public}s", log: .app, error)
+			os_log("error searching help: %{public}@", log: .app, error)
 		}
 		return results
 	}

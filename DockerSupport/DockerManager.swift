@@ -248,24 +248,24 @@ extension DockerManager: DockerEventMonitorDelegate {
 	/// handles an event from the event monitor
 	// note that the only events that external observers should care about (as currently implemented) are related to specific containers, which will update their observable state property. Probably need a way to inform application if some serious problem ocurred
 	func handleEvent(_ event: DockerEvent) {
-		os_log("got event: %{public}s", log:.docker, type:.info, event.description)
+		os_log("got event: %{public}@", log:.docker, type:.info, event.description)
 		//only care if it is one of our containers
 		guard let from = try? event.json.getString(at:"from"),
 			let ctype = ContainerType.from(imageName:from),
 			let container = containers[ctype] else { return }
 		switch event.eventType {
 			case .die:
-				os_log("warning: container died: %{public}s", log:.docker, from)
+				os_log("warning: container died: %{public}@", log:.docker, from)
 				if let exitStatusStr = try? event.json.getString(at: "exitCode"),
 					let exitStatus = Int(exitStatusStr), exitStatus != 0
 				{
 					//abnormally died
 					//TODO: handle abnormal death of container
-					os_log("warning: container %{public}s died with non-normal exit code", log:.docker, ctype.rawValue)
+					os_log("warning: container %{public}@ died with non-normal exit code", log:.docker, ctype.rawValue)
 				}
 				container.update(state: .exited)
 			case .start:
-				os_log("container %{public}s started", log:.docker, from)
+				os_log("container %{public}@ started", log:.docker, from)
 				container.update(state: .running)
 			case .pause:
 				container.update(state: .paused)
@@ -396,7 +396,7 @@ fileprivate extension DockerManager {
 				try fm.createDirectory(at: pgdir, withIntermediateDirectories: true, attributes: nil)
 			}
 		} catch let err {
-			os_log("error setting up data diretory: %{public}s", log:.docker, err as NSError)
+			os_log("error setting up data diretory: %{public}@", log:.docker, err as NSError)
 		}
 	}
 }

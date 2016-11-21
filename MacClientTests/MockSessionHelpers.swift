@@ -103,7 +103,7 @@ class MockSessionFileHandler: SessionFileHandler {
 		do {
 			try contents.write(to: url, atomically: true, encoding: String.Encoding.utf8)
 		} catch let err as NSError? {
-			os_log("error saving file %{public}s: %{public}s", type:.error, file.description, err!)
+			os_log("error saving file %{public}@: %{public}@", type:.error, file.description, err!)
 			error = err
 		}
 		completionHandler(error)

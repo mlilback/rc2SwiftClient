@@ -29,6 +29,7 @@ public struct AppInfo {
 	private static let bundleInfo = Bundle.main.infoDictionary
 	/// the bundle identifier of the application
 	public static var bundleIdentifier: String { return bundleInfo?["CFBundleIdentifier"] as? String ?? "io.rc2.MacClient" }
+	public static var buildNumber: String { return bundleInfo?["CFBundleVersion"] as? String ?? "??" }
 }
 
 public extension OSLog {

@@ -73,7 +73,7 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 
 	open func startPull(progressHandler:@escaping PullProgressHandler) -> Future<Bool, NSError> {
 		_progressHandler = progressHandler
-		os_log("starting pull: %{public}s", type:.info, url.absoluteString)
+		os_log("starting pull: %{public}@", type:.info, url.absoluteString)
 		urlSession = Foundation.URLSession(configuration: urlConfig, delegate: self, delegateQueue:OperationQueue.main)
 		var req = URLRequest(url: url)
 		req.httpMethod = "POST"
@@ -97,11 +97,11 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 		for aMessage in messages {
 			guard aMessage.characters.count > 0 else { continue }
 			guard let json = try? JSON(jsonString: aMessage) else {
-				os_log("invalid json chunk: %{public}s", type: .info, aMessage)
+				os_log("invalid json chunk: %{public}@", type: .info, aMessage)
 				continue
 			}
 			guard let status = try? json.getString(at: "status") else {
-				os_log("invalid json chunk from pull %{public}s", type: .info, aMessage)
+				os_log("invalid json chunk from pull %{public}@", type: .info, aMessage)
 				continue
 			}
 			statuses.insert(status)
@@ -140,7 +140,7 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 				}
 			case "download complete":
 				if var layer = layers[layerId] {
-					os_log("finished layer %{public}s", type:.info, layer.id)
+					os_log("finished layer %{public}@", type:.info, layer.id)
 					layer.complete = true
 					totalDownloaded += layer.finalSize
 				}
@@ -157,7 +157,7 @@ open class DockerPullOperation: NSObject, URLSessionDataDelegate {
 		pullProgress.complete = true
 		promise.success(true)
 		for aLayer in layers.values {
-			os_log("layer %{public}s is %d", type:.info, aLayer.id, aLayer.finalSize)
+			os_log("layer %{public}@ is %d", type:.info, aLayer.id, aLayer.finalSize)
 		}
 	}
 

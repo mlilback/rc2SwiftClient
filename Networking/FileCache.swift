@@ -98,7 +98,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 			}
 			return fileDir!
 		} catch let err as NSError {
-			os_log("failed to create file cache (%{public}s) dir: %{public}s", log: .cache, type: .error, fileDir!.path, err)
+			os_log("failed to create file cache (%{public}@) dir: %{public}@", log: .cache, type: .error, fileDir!.path, err)
 		}
 		fatalError("failed to create file cache")
 	}()
@@ -439,7 +439,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 			}
 			///move the file to the appropriate local cache url
 			guard let _ = try? fileManager.move(tempFile: location, to: cacheUrl, file: cacheTask.file) else {
-				os_log("error moving downloaded file to final location %{public}s", log: .cache, cacheUrl.absoluteString)
+				os_log("error moving downloaded file to final location %{public}@", log: .cache, cacheUrl.absoluteString)
 				return
 			}
 		}

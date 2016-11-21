@@ -200,7 +200,7 @@ extension SessionEditorController: UsesAdjustableFont {
 	}
 	
 	func fontChanged(_ menuItem:NSMenuItem) {
-		os_log("font changed: %{public}s", log: .app, type:.info, (menuItem.representedObject as? NSObject)!)
+		os_log("font changed: %{public}@", log: .app, type:.info, (menuItem.representedObject as? NSObject)!)
 		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
 		let newDesc = newNameDesc.withSize(currentFontDescriptor.pointSize)
 		currentFontDescriptor = newDesc
@@ -320,7 +320,7 @@ private extension SessionEditorController {
 		doc.loadContents().startWithResult { result in
 			guard let contents = result.value else {
 				//TODO: handle error
-				os_log("error loading document contents %{public}s", log: .app, type:.error, result.error!.localizedDescription)
+				os_log("error loading document contents %{public}@", log: .app, type:.error, result.error!.localizedDescription)
 				return
 			}
 			self.documentContentsLoaded(doc, content: contents)

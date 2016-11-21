@@ -94,7 +94,7 @@ extension LoginFactory: URLSessionDataDelegate {
 	{
 		defer { self.task = nil; self.urlSession = nil }
 		guard error == nil else {
-			os_log("login error: %{public}s", log: .network, type: .default, error!.localizedDescription)
+			os_log("login error: %{public}@", log: .network, type: .default, error!.localizedDescription)
 			signalObserver?.send(error: Rc2Error(type: .network, nested: error, severity: .warning))
 			return
 		}
@@ -103,7 +103,7 @@ extension LoginFactory: URLSessionDataDelegate {
 			signalObserver?.send(value: info)
 			signalObserver?.sendCompleted()
 		} catch {
-			os_log("error parsing login info: %{public}s", log: .network, type: .default, error.localizedDescription)
+			os_log("error parsing login info: %{public}@", log: .network, type: .default, error.localizedDescription)
 			signalObserver?.send(error: Rc2Error(type: .invalidJson, nested: error))
 		}
 	}

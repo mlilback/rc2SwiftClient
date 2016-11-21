@@ -36,7 +36,8 @@ public class Session {
 	//the workspace this session represents
 	public let workspace : Workspace
 	///the WebSocket for communicating with the server
-	let wsSource : WebSocketSource
+	// goddamn swift won't let us set a constant that requires invoking a method
+	var wsSource : WebSocketSource!
 	///abstraction of file handling
 	public let fileCache: FileCache
 	public let imageCache: ImageCache
@@ -68,16 +69,16 @@ public class Session {
 	//MARK: init/open/close
 	
 	/// without a super class, can't use self in designated initializer. So use a private init, and a convenience init for outside use
-	private init(connectionInfo: ConnectionInfo, workspace: Workspace, source:WebSocketSource, fileCache: FileCache, imageCache: ImageCache)
+	private init(connectionInfo: ConnectionInfo, workspace: Workspace, fileCache: FileCache, imageCache: ImageCache)
 	{
 		self.workspace = workspace
-		self.wsSource = source
 		self.conInfo = connectionInfo
 		self.fileCache = fileCache
 		self.imageCache = imageCache
+		self.wsSource = WebSocket(request: createWebSocketRequest())
 	}
 	
-	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, source:WebSocketSource = WebSocket(), delegate:SessionDelegate?=nil, config: URLSessionConfiguration = .default, fileCache: FileCache? = nil)
+	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, delegate:SessionDelegate?=nil, config: URLSessionConfiguration = .default, fileCache: FileCache? = nil)
 	{
 		//create a file cache if one wasn't provided
 		var fc = fileCache
@@ -86,7 +87,7 @@ public class Session {
 		}
 		let rc = Rc2RestClient(connectionInfo, sessionConfig: config, fileManager: fc!.fileManager)
 		let ic = ImageCache(restClient: rc, hostIdentifier: connectionInfo.host.name)
-		self.init(connectionInfo: connectionInfo, workspace: workspace, source: source, fileCache: fc!, imageCache: ic)
+		self.init(connectionInfo: connectionInfo, workspace: workspace, fileCache: fc!, imageCache: ic)
 		self.delegate = delegate
 		setupWebSocketHandlers()
 		
@@ -235,7 +236,7 @@ private extension Session {
 		do {
 			parsedValues = try decoder.parse()
 		} catch let err {
-			os_log("error parsing binary message:%{public}s", log: .session, type:.error, err as NSError)
+			os_log("error parsing binary message:%{public}@", log: .session, type:.error, err as NSError)
 		}
 		//get the dictionary of messagevalues
 		guard case MessageValue.DictionaryValue(let msgDict) = parsedValues![0] else {
@@ -252,7 +253,7 @@ private extension Session {
 			delegate?.sessionMessageReceived(response)
 			fileCache.update(file: file, withData: data).start()
 		default:
-			os_log("received unknown binary message: %{public}s", log: .session, dict["msg"] as! String)
+			os_log("received unknown binary message: %{public}@", log: .session, dict["msg"] as! String)
 			return
 		}
 	}
@@ -265,7 +266,7 @@ private extension Session {
 		}
 		if let errorDict = rawDict["error"] as? Dictionary<String,AnyObject> {
 			//TODO: inform user
-			os_log("got save response error: %{public}s", log: .session, type:.error, (errorDict["message"] as? String)!)
+			os_log("got save response error: %{public}@", log: .session, type:.error, (errorDict["message"] as? String)!)
 			return
 		}
 		do {
@@ -274,9 +275,9 @@ private extension Session {
 			let file = try File(json: json)
 			try workspace.update(fileId: file.fileId, to: file)
 		} catch let updateErr as CollectionNotifierError {
-			os_log("update to file failed: %{public}s", log: .session, updateErr.localizedDescription)
+			os_log("update to file failed: %{public}@", log: .session, updateErr.localizedDescription)
 		} catch let err as NSError {
-			os_log("error parsing binary message: %{public}s", log: .session, type:.error, err)
+			os_log("error parsing binary message: %{public}@", log: .session, type:.error, err)
 		}
 	}
 	
@@ -301,13 +302,14 @@ private extension Session {
 	
 	func handleReceivedMessage(_ message:Any) {
 		if let stringMessage = message as? String {
+			os_log("from websocket: %{public}@", log: .session, stringMessage)
 			guard  let jsonMessage = try? JSON(jsonString: stringMessage),
 				let msg = try? jsonMessage.getString(at: "msg") else
 			{
-				os_log("failed to parse received json: %{public}s", log: .session, stringMessage)
+				os_log("failed to parse received json: %{public}@", log: .session, stringMessage)
 				return
 			}
-			os_log("got message %{public}s", log: .session, msg)
+			os_log("got message %{public}@", log: .session, msg)
 			if let response = ServerResponse.parseResponse(jsonMessage) {
 				switch response {
 				case .fileOperationResponse(let transId, let operation, let file):
@@ -329,7 +331,7 @@ private extension Session {
 		} else if let _ = message as? Data {
 			processBinaryResponse(message as! Data)
 		} else {
-			os_log("invalid binary data format received: %{public}s", log: .session, type:.error)
+			os_log("invalid binary data format received: %{public}@", log: .session, type:.error)
 		}
 	}
 	
@@ -342,10 +344,29 @@ private extension Session {
 			let jsonStr = NSString(data: json, encoding: String.Encoding.utf8.rawValue)
 			self.wsSource.send(jsonStr as! String)
 		} catch let err as NSError {
-			os_log("error sending json message on websocket: %{public}s", log: .session, type:.error, err)
+			os_log("error sending json message on websocket: %{public}@", log: .session, type:.error, err)
 			return false
 		}
 		return true
+	}
+	
+	func createWebSocketRequest() -> URLRequest {
+		#if os(OSX)
+			let client = "osx"
+		#else
+			let client = "ios"
+		#endif
+		var components = URLComponents()
+		components.host = conInfo.host.host
+		components.port = conInfo.host.port
+		components.path = "/ws/\(workspace.wspaceId)"
+		components.scheme = conInfo.host.secure ? "wss" : "ws"
+		components.queryItems = [URLQueryItem(name: "client", value: client),
+		URLQueryItem(name: "build", value: "\(AppInfo.buildNumber)")]
+		var req = URLRequest(url: components.url!)
+		//TODO: add header field as constant
+		req.addValue(conInfo.authToken, forHTTPHeaderField: "Rc2-Auth")
+		return req
 	}
 	
 	/// starts file caching and forwards responses to observer from open() call
@@ -368,13 +389,16 @@ private extension Session {
 			}
 		}
 		wsSource.event.close = { [unowned self] (code, reason, clear)in
+			os_log("websocket closed: %d, %{public}@", log: .session, code, reason)
 			self.connectionOpen = false
 			self.delegate?.sessionClosed()
 		}
 		wsSource.event.message = { [unowned self] message in
+			os_log("from websocket: %{public}@", log: .session, type: .debug, message as! String)
 			self.handleReceivedMessage(message)
 		}
 		wsSource.event.error = { [unowned self] error in
+			os_log("error from websocket: %{public}@", log: .session, type: .error, error as NSError)
 			guard nil == self.openObserver else {
 				self.openObserver?.send(error: Rc2Error(type: .websocket, nested: error))
 				self.openObserver = nil

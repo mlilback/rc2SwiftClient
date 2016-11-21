@@ -215,7 +215,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	@IBAction func addDocumentOfType(_ menuItem:NSMenuItem) {
 		//TODO: implement addDocumentOfType
-		os_log("add file of type %{public}s", log: .app, type:.info, menuItem)
+		os_log("add file of type %{public}@", log: .app, type:.info, menuItem)
 	}
 	
 	@IBAction func segButtonClicked(_ sender:AnyObject?) {
@@ -247,7 +247,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			pobserver.send(value: progress.percentComplete)
 		}, failed: { (error) in
 			//TODO: handle error
-			os_log("got import error %{public}s", log: .app, type:.error, error.localizedDescription)
+			os_log("got import error %{public}@", log: .app, type:.error, error.localizedDescription)
 			pobserver.send(error: error)
 		}, completed: {
 			pobserver.sendCompleted()
@@ -274,14 +274,14 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				let bmark = try (savePanel.directoryURL as NSURL?)?.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
 				defaults[.lastExportDirectory] = bmark
 			} catch let err as NSError {
-				os_log("why did we get error creating export bookmark: %{public}s", log: .app, type:.error, err)
+				os_log("why did we get error creating export bookmark: %{public}@", log: .app, type:.error, err)
 			}
 			savePanel.close()
 			if result == NSFileHandlingPanelOKButton && savePanel.url != nil {
 				do {
 					try Foundation.FileManager.default.copyItem(at: self.session.fileCache.cachedUrl(file:self.selectedFile!), to: savePanel.url!)
 				} catch let error as NSError {
-					os_log("failed to copy file for export: %{public}s", log: .app, type:.error, error)
+					os_log("failed to copy file for export: %{public}@", log: .app, type:.error, error)
 					let alert = NSAlert(error:error)
 					alert.beginSheetModal(for: self.view.window!, completionHandler: { (response) -> Void in
 						//do nothing

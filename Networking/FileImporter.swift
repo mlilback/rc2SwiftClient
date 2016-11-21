@@ -58,7 +58,7 @@ public class FileImporter: NSObject {
 		do {
 			try fileManager.createDirectory(at: tmpDir, withIntermediateDirectories: true, attributes: [:])
 		} catch {
-			os_log("failed to create temporary directory for upload: %{public}s", log: .importer, type:.error, error.localizedDescription)
+			os_log("failed to create temporary directory for upload: %{public}@", log: .importer, type:.error, error.localizedDescription)
 			throw Rc2Error(type: .file, nested: error)
 		}
 		super.init()
@@ -73,7 +73,7 @@ public class FileImporter: NSObject {
 			do {
 				try fileManager.linkItem(at: aFileToImport.fileUrl, to: srcUrl)
 			} catch {
-				os_log("failed to create link for upload: %{public}s", log: .importer, type:.error, error.localizedDescription)
+				os_log("failed to create link for upload: %{public}@", log: .importer, type:.error, error.localizedDescription)
 				return ProgressSignalProducer(error: Rc2Error(type: .file, nested: error, explanation: ""))
 			}
 			let destUrl = URL(string: "/workspaces/\(workspace.wspaceId)/files/upload", relativeTo:baseUrl)!
@@ -148,7 +148,7 @@ extension FileImporter: URLSessionDataDelegate {
 			do { try fileManager.removeItem(at: tmpDir) } catch {}
 		}
 		guard error == nil else {
-			os_log("error uploading file %{public}s", log: .importer, type:.error, (error as? NSError)!)
+			os_log("error uploading file %{public}@", log: .importer, type:.error, (error as? NSError)!)
 			progressObserver?.send(error: Rc2Error(type: .network, nested: NetworkingError.uploadFailed(error!)))
 			return
 		}
@@ -176,7 +176,7 @@ extension FileImporter: URLSessionDataDelegate {
 		} catch is Rc2Error {
 			progressObserver?.send(error: error as! Rc2Error)
 		} catch {
-			os_log("error updating file after rest confirmation: %{public}s", log: .importer, type:.error, error.localizedDescription)
+			os_log("error updating file after rest confirmation: %{public}@", log: .importer, type:.error, error.localizedDescription)
 			progressObserver?.send(error: Rc2Error(type: .updateFailed, nested: error))
 		}
 		if tasks.count == 1 { //deferred removal of current task

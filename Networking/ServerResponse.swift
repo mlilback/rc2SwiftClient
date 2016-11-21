@@ -90,7 +90,7 @@ public enum ServerResponse : Equatable {
 				}
 				return ServerResponse.fileOperationResponse(transId: transId, operation: op, file: file)
 			default:
-				os_log("unknown message from server:%{public}s", log: .session, msg)
+				os_log("unknown message from server:%{public}@", log: .session, msg)
 				return nil
 		}
 	}

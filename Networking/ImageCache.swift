@@ -42,7 +42,7 @@ public class ImageCache: JSONEncodable {
 				}
 				result = imgDir
 			} catch let error as NSError {
-				os_log("got error creating image cache direcctory: %{public}s", log: .cache, type:.error, error)
+				os_log("got error creating image cache direcctory: %{public}@", log: .cache, type:.error, error)
 				assertionFailure("failed to create image cache dir")
 			}
 			return result!

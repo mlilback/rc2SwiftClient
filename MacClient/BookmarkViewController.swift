@@ -6,7 +6,6 @@
 //
 
 import Cocoa
-import SwiftyJSON
 import os
 import Networking
 import ReactiveSwift

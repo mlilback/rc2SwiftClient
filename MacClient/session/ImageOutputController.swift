@@ -112,7 +112,7 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 						let fm = Rc2DefaultFileManager()
 						try urlToUse = fm.copyURLToTemporaryLocation(imgUrl!)
 					} catch let err as NSError {
-						os_log("error copying to tmp: %{public}s", log: .app, type: .error, err)
+						os_log("error copying to tmp: %{public}@", log: .app, type: .error, err)
 					}
 					wspace.openFile(urlToUse.path, withApplication: appUrl.path)
 				}))
@@ -196,7 +196,7 @@ class ImageViewController: NSViewController {
 		imageLoadDisposable?.dispose() //dispose of any currently loading image
 		producer.startWithResult { result in
 			guard let newImage = result.value else {
-				os_log("failed to load image: %{public}s", log: .app, result.error!.localizedDescription)
+				os_log("failed to load image: %{public}@", log: .app, result.error!.localizedDescription)
 				return
 			}
 			self.imageLoadDisposable = nil

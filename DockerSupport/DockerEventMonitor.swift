@@ -104,7 +104,7 @@ final class DockerEventMonitor: NSObject, URLSessionDataDelegate {
 		for aMessage in messages {
 			guard aMessage.characters.count > 0 else { continue }
 			guard let jsonData = aMessage.data(using: .utf8), let json = try? JSON(data: jsonData) else {
-				os_log("failed to parse json: %{public}s", log: .docker, aMessage)
+				os_log("failed to parse json: %{public}@", log: .docker, aMessage)
 				continue
 			}
 			if let event = DockerEvent(json) {
@@ -114,7 +114,7 @@ final class DockerEventMonitor: NSObject, URLSessionDataDelegate {
 	}
 
 	open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-		os_log("why did our session end?: %{public}s", log: .docker, error as? NSError ?? "unknown")
+		os_log("why did our session end?: %{public}@", log: .docker, error as? NSError ?? "unknown")
 		delegate.eventMonitorClosed(error: error)
 	}
 }

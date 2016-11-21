@@ -134,7 +134,7 @@ extension SessionController {
 				savedStateHash = hash
 			}
 		} catch let err as NSError {
-			os_log("Error saving session state: %{public}s", log: .app, err)
+			os_log("Error saving session state: %{public}@", log: .app, err)
 		}
 	}
 	
@@ -159,7 +159,7 @@ extension SessionController {
 				savedStateHash = data.sha256()
 			}
 		} catch let err as NSError {
-			os_log("error restoring session state: %{public}s", log: .app, type:.error, err)
+			os_log("error restoring session state: %{public}@", log: .app, type:.error, err)
 		}
 	}
 }

@@ -115,7 +115,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		do {
 			try keychain.setString(host.keychainKey, value: self.password)
 		} catch let err as NSError {
-			os_log("error saving password: %{public}s", log: .app, type:.info, err)
+			os_log("error saving password: %{public}@", log: .app, type:.info, err)
 		}
 	}
 	
