@@ -8,6 +8,7 @@ import Cocoa
 import ClientCore
 import Networking
 import ReactiveSwift
+import os
 
 public class AppStatus: NSObject {
 	fileprivate dynamic var _currentProgress: Progress?
@@ -70,9 +71,10 @@ public class AppStatus: NSObject {
 		assert(_currentProgress == nil || progress == nil, "can't set progress when there already is one")
 		_statusQueue.sync {
 			self._currentProgress = progress
-			self._currentProgress?.rc2_addCompletionHandler() {
-				self.updateStatus(nil)
-			}
+			os_log("Progress no longer supported in AppStatus", log: .app, type: .error)
+//			self._currentProgress?.rc2_addCompletionHandler() {
+//				self.updateStatus(nil)
+//			}
 		}
 		NotificationCenter.default.postNotificationNameOnMainThread(Notifications.AppStatusChanged, object: self)
 	}
