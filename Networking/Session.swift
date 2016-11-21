@@ -78,14 +78,14 @@ public class Session {
 		self.wsSource = WebSocket(request: createWebSocketRequest())
 	}
 	
-	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, delegate:SessionDelegate?=nil, config: URLSessionConfiguration = .default, fileCache: FileCache? = nil)
+	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, delegate:SessionDelegate?=nil, fileCache: FileCache? = nil)
 	{
 		//create a file cache if one wasn't provided
 		var fc = fileCache
 		if nil == fc {
-			fc = DefaultFileCache(workspace: workspace, baseUrl: connectionInfo.host.url!, config: config)
+			fc = DefaultFileCache(workspace: workspace, baseUrl: connectionInfo.host.url!, config: connectionInfo.urlSessionConfig)
 		}
-		let rc = Rc2RestClient(connectionInfo, sessionConfig: config, fileManager: fc!.fileManager)
+		let rc = Rc2RestClient(connectionInfo, fileManager: fc!.fileManager)
 		let ic = ImageCache(restClient: rc, hostIdentifier: connectionInfo.host.name)
 		self.init(connectionInfo: connectionInfo, workspace: workspace, fileCache: fc!, imageCache: ic)
 		self.delegate = delegate

@@ -20,6 +20,12 @@ public class ConnectionInfo: CustomStringConvertible {
 	
 	private let _projects = CollectionNotifier<Project>()
 	
+	public var urlSessionConfig: URLSessionConfiguration {
+		let conf = URLSessionConfiguration.default
+		conf.httpAdditionalHeaders = ["Rc2-Auth": authToken]
+		return conf
+	}
+	
 	/// initializer
 	///
 	/// - Parameters:

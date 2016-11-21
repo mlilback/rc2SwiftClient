@@ -17,12 +17,12 @@ public final class Rc2RestClient {
 	fileprivate var networkLog: OSLog! // we will create before init is complete
 	let fileManager: Rc2FileManager
 	
-	public init(_ conInfo: ConnectionInfo, sessionConfig: URLSessionConfiguration = .default, fileManager: Rc2FileManager = Rc2DefaultFileManager())
+	public init(_ conInfo: ConnectionInfo, fileManager: Rc2FileManager = Rc2DefaultFileManager())
 	{
 		self.conInfo = conInfo
 		self.fileManager = fileManager
-		self.sessionConfig = sessionConfig
-		self.sessionConfig.httpAdditionalHeaders = ["Accept": "application/json", "Rc2-Auth": conInfo.authToken]
+		self.sessionConfig = conInfo.urlSessionConfig
+		self.sessionConfig.httpAdditionalHeaders = ["Accept": "application/json"]
 		urlSession = URLSession(configuration: sessionConfig)
 		networkLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "networking")
 	}

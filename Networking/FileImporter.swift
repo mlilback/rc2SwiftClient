@@ -40,11 +40,10 @@ public class FileImporter: NSObject {
 	///   - files: array of wrapped files to import
 	///   - fileCache: the file cache to use for file system interaction
 	///   - connectInfo: the server connection info
-	///   - config: the URLSession configuration to use. defaults to standard
 	///   - queue: the queue to send progress notifications on. defaults to main queue
 	///   - fileManager: the file manager to use for caching files. defaults to FileManager()
 	/// - Throws: .file with a nested error from fileManager
-	public init(_ files:[FileToImport], fileCache: FileCache, connectInfo: ConnectionInfo, configuration config: URLSessionConfiguration = .default, queue: DispatchQueue = .main, fileManager: FileManager = FileManager()) throws
+	public init(_ files:[FileToImport], fileCache: FileCache, connectInfo: ConnectionInfo, queue: DispatchQueue = .main, fileManager: FileManager = FileManager()) throws
 	{
 		self.files = files
 		self.fileCache = fileCache
@@ -62,7 +61,7 @@ public class FileImporter: NSObject {
 			throw Rc2Error(type: .file, nested: error)
 		}
 		super.init()
-		self.uploadSession = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+		self.uploadSession = URLSession(configuration: conInfo.urlSessionConfig, delegate: self, delegateQueue: nil)
 	}
 	
 	public func start() -> ProgressSignalProducer {
