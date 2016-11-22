@@ -33,7 +33,6 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 	func setupChildren() {
 		statusView?.appStatus = appStatus
 		let rootVC = contentViewController as! RootViewController
-		rootVC.sessionOptional = session
 		rootVC.sessionClosedHandler = { [weak self] in 
 			DispatchQueue.main.async {
 				self?.window?.close()
