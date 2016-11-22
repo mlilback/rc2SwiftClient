@@ -389,23 +389,23 @@ private extension Session {
 				self.websocketOpened()
 			}
 		}
-		wsSource.event.close = { [unowned self] (code, reason, clear)in
+		wsSource.event.close = { [weak self] (code, reason, clear)in
 			os_log("websocket closed: %d, %{public}@", log: .session, code, reason)
-			self.connectionOpen = false
-			self.delegate?.sessionClosed()
+			self?.connectionOpen = false
+			self?.delegate?.sessionClosed()
 		}
-		wsSource.event.message = { [unowned self] message in
+		wsSource.event.message = { [weak self] message in
 			os_log("from websocket: %{public}@", log: .session, type: .debug, message as! String)
-			self.handleReceivedMessage(message)
+			self?.handleReceivedMessage(message)
 		}
-		wsSource.event.error = { [unowned self] error in
+		wsSource.event.error = { [weak self] error in
 			os_log("error from websocket: %{public}@", log: .session, type: .error, error as NSError)
-			guard nil == self.openObserver else {
-				self.openObserver?.send(error: Rc2Error(type: .websocket, nested: error))
-				self.openObserver = nil
+			guard nil == self?.openObserver else {
+				self?.openObserver?.send(error: Rc2Error(type: .websocket, nested: error))
+				self?.openObserver = nil
 				return
 			}
-			self.delegate?.sessionErrorReceived(error)
+			self?.delegate?.sessionErrorReceived(error)
 		}
 	}
 }

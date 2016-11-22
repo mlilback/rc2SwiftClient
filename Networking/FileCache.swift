@@ -274,7 +274,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 		var request = URLRequest(url: fileUrl.absoluteURL)
 		let cacheUrl = cachedUrl(file: file)
 		if (cacheUrl as NSURL).checkResourceIsReachableAndReturnError(nil) {
-			request.addValue(file.eTag, forHTTPHeaderField: "If-None-Match")
+			request.addValue("\"\(file.eTag)\"", forHTTPHeaderField: "If-None-Match")
 		}
 		let dtask = urlSession!.downloadTask(with: request)
 		return DownloadTask(file: file, task: dtask)
@@ -385,6 +385,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 	
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
 	{
+		print("code=\((task.response! as! HTTPURLResponse).statusCode)")
 		taskLockQueue.sync {
 			if downloadingAllFiles {
 				if tasks.count > 1 {
@@ -409,6 +410,13 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 			guard error == nil else {
 				let rc2err = Rc2Error(type: .network, nested: FileCacheError.downloadError(urlError: error!))
 				self.mainQueue.async { self.observer?.send(error: rc2err) }
+				return
+			}
+			let hresponse = task.response?.httpResponse
+			guard let statusCode = hresponse?.statusCode, statusCode < 400 else {
+				//some type of http error
+				let httperror = Rc2Error(type: .network, nested: NetworkingError.invalidHttpStatusCode(hresponse!))
+				self.mainQueue.async { self.observer?.send(error: httperror) }
 				return
 			}
 			self.mainQueue.async {
