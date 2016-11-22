@@ -21,7 +21,7 @@ import Freddy
 	fileprivate weak var delegate: SessionControllerDelegate?
 
 	///var! used because we can't pass self as delegate in constructor until variables initialized
-	var responseHandler: ServerResponseHandler!
+	weak var responseHandler: ServerResponseHandler?
 	let outputHandler: OutputHandler
 	let varHandler: VariableHandler
 	let session: Session
@@ -188,14 +188,14 @@ extension SessionController: SessionDelegate {
 			if updatedFile != session.workspace.file(withId: updatedFile.fileId) {
 				//need to refetch file from server, then show it
 				session.fileCache.update(file: updatedFile, withData: nil).startWithCompleted {
-					if let astr = self.responseHandler.handleResponse(response) {
+					if let astr = self.responseHandler?.handleResponse(response) {
 						self.outputHandler.appendFormattedString(astr, type: response.isEcho() ? .input : .default)
 					}
 				}
 				return
 			}
 		}
-		if let astr = responseHandler.handleResponse(response) {
+		if let astr = responseHandler?.handleResponse(response) {
 			outputHandler.appendFormattedString(astr, type: response.isEcho() ? .input : .default)
 		}
 	}

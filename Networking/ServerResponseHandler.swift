@@ -16,7 +16,7 @@ public enum FileChangeType : String {
 	case Update, Insert, Delete
 }
 
-public protocol ServerResponseHandlerDelegate {
+public protocol ServerResponseHandlerDelegate: class {
 	func handleFileUpdate(_ file:File, change: FileChangeType)
 	func handleVariableMessage(_ single:Bool, variables: [Variable])
 	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String])
@@ -27,7 +27,7 @@ public protocol ServerResponseHandlerDelegate {
 }
 
 public class ServerResponseHandler {
-	fileprivate let delegate:ServerResponseHandlerDelegate
+	fileprivate weak var delegate: ServerResponseHandlerDelegate?
 	fileprivate let outputColors = OutputColors.colorMap()
 
 	required public init(delegate:ServerResponseHandlerDelegate) {
@@ -45,14 +45,14 @@ public class ServerResponseHandler {
 			case .execComplete(let queryId, let batchId, let images):
 				return formatExecComplete(queryId, batchId: batchId, images: images)
 			case .fileChanged(let changeType, let file):
-				delegate.handleFileUpdate(file, change: FileChangeType.init(rawValue: changeType)!)
+				delegate?.handleFileUpdate(file, change: FileChangeType.init(rawValue: changeType)!)
 			case .variables(let single, let variables):
-				delegate.handleVariableMessage(single, variables: variables)
+				delegate?.handleVariableMessage(single, variables: variables)
 			case .variablesDelta(let assigned, let removed):
-				delegate.handleVariableDeltaMessage(assigned, removed: removed)
+				delegate?.handleVariableDeltaMessage(assigned, removed: removed)
 			case .showOutput(let queryId, let updatedFile):
 				let str = formatShowOutput(queryId, file:updatedFile)
-				delegate.showFile(updatedFile.fileId)
+				delegate?.showFile(updatedFile.fileId)
 				return str
 			case .saveResponse( _):
 				//handled by the session, never passed to delegate
@@ -66,7 +66,7 @@ public class ServerResponseHandler {
 
 	fileprivate func formatQueryEcho(_ query:String, queryId:Int, fileId:Int) -> NSAttributedString? {
 		if fileId > 0 {
-			let mstr = NSMutableAttributedString(attributedString: delegate.attributedStringForInputFile(fileId))
+			let mstr = NSMutableAttributedString(attributedString: delegate!.attributedStringForInputFile(fileId))
 			mstr.append(NSAttributedString(string: "\n"))
 			mstr.addAttribute(NSBackgroundColorAttributeName, value: outputColors[.Input]!, range: NSMakeRange(0, mstr.length))
 			return mstr
@@ -84,7 +84,7 @@ public class ServerResponseHandler {
 	}
 
 	fileprivate func formatShowOutput(_ queryId:Int, file:File) -> NSAttributedString? {
-		let str = delegate.consoleAttachment(forFile:file).asAttributedString()
+		let str = delegate!.consoleAttachment(forFile:file).asAttributedString()
 		let mstr = str.mutableCopy() as! NSMutableAttributedString
 		mstr.append(NSAttributedString(string: "\n"))
 		return mstr
@@ -94,7 +94,7 @@ public class ServerResponseHandler {
 		guard images.count > 0 else { return nil }
 		let mstr = NSMutableAttributedString()
 		for image in images {
-			let aStr = delegate.consoleAttachment(forImage: image).asAttributedString()
+			let aStr = delegate!.consoleAttachment(forImage: image).asAttributedString()
 			mstr.append(aStr)
 		}
 		mstr.append(NSAttributedString(string: "\n"))
