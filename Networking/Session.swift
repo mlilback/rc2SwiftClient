@@ -88,6 +88,7 @@ public class Session {
 		let rc = Rc2RestClient(connectionInfo, fileManager: fc!.fileManager)
 		let ic = ImageCache(restClient: rc, hostIdentifier: connectionInfo.host.name)
 		self.init(connectionInfo: connectionInfo, workspace: workspace, fileCache: fc!, imageCache: ic)
+		ic.workspace = workspace
 		self.delegate = delegate
 		setupWebSocketHandlers()
 		

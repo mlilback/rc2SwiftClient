@@ -8,6 +8,7 @@ import Cocoa
 import ClientCore
 import os
 import Networking
+import ReactiveSwift
 
 class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	///specify keys that should trigger KVO notification for canContinue property
@@ -51,6 +52,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	var customServerSelected:Bool { return selectedServerIndex == (serverMenu?.menu?.items.count ?? 0) - 1 }
 	var localServerSelected:Bool { return selectedServerIndex == 0 }
 	
+	//MARK: Methods
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		serverDetailsView?.isHidden = true

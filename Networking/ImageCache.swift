@@ -94,6 +94,7 @@ public class ImageCache: JSONEncodable {
 	///caches to disk and in memory
 	public func cacheImageFromServer(_ img: SessionImage) {
 		//cache to disk
+		os_log("caching image %d", log: .cache, type: .info, img.id)
 		let destUrl = URL(fileURLWithPath: "\(img.id).png", isDirectory: false, relativeTo: cacheUrl)
 		try? img.imageData!.write(to: destUrl, options: [.atomic])
 		//cache in memory
@@ -109,6 +110,7 @@ public class ImageCache: JSONEncodable {
 	}
 	
 	public func sessionImages(forBatch batchId:Int) -> [SessionImage] {
+		os_log("look for batch %d", log: .cache, type: .debug, batchId)
 		var matches:[SessionImage] = []
 		for anImage in metaCache.values {
 			if anImage.batchId == batchId {

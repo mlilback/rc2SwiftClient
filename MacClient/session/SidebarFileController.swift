@@ -157,10 +157,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 	
+	//as the delegate for the action menu, need to enable/disable items
 	func menuNeedsUpdate(_ menu: NSMenu) {
-		menu.items.filter() { item in
-			return item.action == .promptToImport
-		}.first?.isEnabled = selectedFile != nil
+		menu.items.forEach { $0.isEnabled = selectedFile != nil }
+		menu.items.first(where: { $0.action == .promptToImport} )?.isEnabled = true
 	}
 	
 	//MARK: - actions

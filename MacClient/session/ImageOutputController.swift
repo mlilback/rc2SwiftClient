@@ -145,7 +145,8 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 		let vc = ImageViewController()
 		let iv = NSImageView(frame: (containerView?.frame)!)
 		iv.imageFrameStyle = .none
-		iv.translatesAutoresizingMaskIntoConstraints = false
+		//pagecontroller does not work with autolayout
+	//	iv.translatesAutoresizingMaskIntoConstraints = false
 		iv.setContentHuggingPriority(200, for: .horizontal)
 		iv.setContentCompressionResistancePriority(200, for: .horizontal)
 		iv.imageScaling = .scaleProportionallyDown
@@ -162,17 +163,16 @@ class ImageOutputController: NSViewController, NSPageControllerDelegate, NSShari
 	
 	func pageController(_ pageController: NSPageController, prepare viewController: NSViewController, with object: Any?)
 	{
-		let iview = viewController.view as? NSImageView
+		guard let myViewController = viewController as? ImageViewController else { return }
 		guard let dimg = object as? DisplayableImage else {
-			iview?.image = nil
+			myViewController.setImage(image: nil)
 			return
 		}
-		if dimg.image == nil {
-			imageCache?.image(withId: dimg.imageId).startWithResult { result in
-				dimg.image = result.value
-			}
+		guard let img = dimg.image else {
+			myViewController.setImage(producer: imageCache!.image(withId: dimg.imageId))
+			return
 		}
-		iview?.image = dimg.image
+		myViewController.imageView?.image = img
 		labelField?.stringValue = dimg.name
 	}
 	
@@ -187,7 +187,12 @@ class ImageViewController: NSViewController {
 	
 	var imageView: NSImageView? { return view as? NSImageView }
 	
-	func setImage(image: NSImage) {
+	//starting with sierra, all viewcontrollers must have a view after this call. We setup a dummy one that will be replaced by our parent controller
+	override func loadView() {
+		self.view = NSView(frame: NSRect(x: 0, y: 0, width: 100, height: 100))
+	}
+	
+	func setImage(image: NSImage?) {
 		imageLoadDisposable = nil
 		imageView?.image = image
 	}
@@ -204,16 +209,16 @@ class ImageViewController: NSViewController {
 		}
 	}
 	
-	override func viewWillAppear() {
-		super.viewWillAppear()
-		guard !didAddConstraints else { return }
-		if let sv = view.superview, let ssv = sv.superview {
-			ssv.addConstraint(view.widthAnchor.constraint(equalTo: sv.widthAnchor, multiplier: 1))
-			ssv.addConstraint(view.heightAnchor.constraint(equalTo: sv.heightAnchor, multiplier: 1))
-			ssv.addConstraint(view.centerXAnchor.constraint(equalTo: sv.centerXAnchor, constant: 0))
-			ssv.addConstraint(view.centerYAnchor.constraint(equalTo: sv.centerYAnchor, constant: 0))
-			ssv.needsLayout = true
-			didAddConstraints = true
-		}
-	}
+//	override func viewWillAppear() {
+//		super.viewWillAppear()
+//		guard !didAddConstraints else { return }
+//		if let sv = view.superview, let ssv = sv.superview {
+//			ssv.addConstraint(view.widthAnchor.constraint(equalTo: sv.widthAnchor, multiplier: 1).identifier("width"))
+//			ssv.addConstraint(view.heightAnchor.constraint(equalTo: sv.heightAnchor, multiplier: 1).identifier("height"))
+//			ssv.addConstraint(view.centerXAnchor.constraint(equalTo: sv.centerXAnchor, constant: 0).identifier(" centerX"))
+//			ssv.addConstraint(view.centerYAnchor.constraint(equalTo: sv.centerYAnchor, constant: 0).identifier("centerY"))
+//			ssv.needsLayout = true
+//			didAddConstraints = true
+//		}
+//	}
 }

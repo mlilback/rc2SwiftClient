@@ -39,8 +39,8 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	var imageController: ImageOutputController?
 	var webController: WebKitOutputController?
 	var helpController: HelpOutputController?
-	var imageCache: ImageCache?
-	weak var sessionController: SessionController?
+	var imageCache: ImageCache? { return sessionController?.session.imageCache }
+	weak var sessionController: SessionController? { didSet { imageController?.imageCache = imageCache } }
 	var consoleToolbarControl: NSSegmentedControl?
 	var segmentItem: NSToolbarItem?
 	var segmentControl: NSSegmentedControl?

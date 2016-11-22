@@ -48,7 +48,7 @@ public struct SessionImage: JSONDecodable, JSONEncodable, Equatable {
 			}
 			self.imageData = imgData
 		} catch {
-			os_log("error decoding SessionImage from json", log: .session)
+			os_log("error decoding SessionImage from json: %{public}@", log: .session, error.localizedDescription)
 			throw error
 		}
 	}
@@ -65,7 +65,7 @@ public struct SessionImage: JSONDecodable, JSONEncodable, Equatable {
 	}
 	
 	public func toJSON() -> JSON {
-		return .dictionary(["imageId": .int(id), "batchId": .int(batchId), "name": .string(name), "dateCreated": .string(SessionImage.dateFormatter.string(from: dateCreated))])
+		return .dictionary(["id": .int(id), "batchId": .int(batchId), "name": .string(name), "dateCreated": .string(SessionImage.dateFormatter.string(from: dateCreated))])
 	}
 	
 	public static func == (lhs: SessionImage, rhs: SessionImage) -> Bool {
