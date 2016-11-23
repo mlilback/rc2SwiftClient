@@ -273,6 +273,7 @@
 		08F03E411DDFB63400D02153 /* URITemplate.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08F03E431DE3323100D02153 /* NetworkingConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F03E421DE3323100D02153 /* NetworkingConstants.swift */; };
 		08F03E451DE4BF0A00D02153 /* URLResponse+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F03E441DE4BF0A00D02153 /* URLResponse+Rc2.swift */; };
+		08F03E471DE4EEBA00D02153 /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F03E461DE4EEBA00D02153 /* Atomic.swift */; };
 		08F189A21D09AA0300866A05 /* SessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189A11D09AA0300866A05 /* SessionController.swift */; };
 		08F189A61D09EE4000866A05 /* NSViewController+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189A51D09EE4000866A05 /* NSViewController+Rc2.swift */; };
 		08F189A81D0A0E7200866A05 /* static_html in Resources */ = {isa = PBXBuildFile; fileRef = 08F189A71D0A0E7200866A05 /* static_html */; };
@@ -753,6 +754,7 @@
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
 		08F03E421DE3323100D02153 /* NetworkingConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingConstants.swift; sourceTree = "<group>"; };
 		08F03E441DE4BF0A00D02153 /* URLResponse+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLResponse+Rc2.swift"; sourceTree = "<group>"; };
+		08F03E461DE4EEBA00D02153 /* Atomic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
 		08F189A11D09AA0300866A05 /* SessionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SessionController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F189A51D09EE4000866A05 /* NSViewController+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSViewController+Rc2.swift"; path = "../NSViewController+Rc2.swift"; sourceTree = "<group>"; };
 		08F189A71D0A0E7200866A05 /* static_html */ = {isa = PBXFileReference; lastKnownFileType = folder; name = static_html; path = resources/static_html; sourceTree = "<group>"; };
@@ -1299,6 +1301,7 @@
 				089794431D7B6A8F003339EE /* extensions */,
 				089794371D7B6925003339EE /* ClientCore-Bridging-Header.h */,
 				0897941D1D7B68F0003339EE /* Info.plist */,
+				08F03E461DE4EEBA00D02153 /* Atomic.swift */,
 			);
 			path = ClientCore;
 			sourceTree = "<group>";
@@ -2094,6 +2097,7 @@
 				0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */,
 				0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */,
 				0897944F1D7B6A8F003339EE /* NSURL+Rc2.swift in Sources */,
+				08F03E471DE4EEBA00D02153 /* Atomic.swift in Sources */,
 				08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */,
 				08E8366E1D94715D00E26EFE /* FileManager+Rc2.swift in Sources */,
 				08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */,
