@@ -8,6 +8,7 @@ import Foundation
 import os
 import ReactiveSwift
 import Networking
+import ClientCore
 
 let MinTimeBetweenAutoSaves:TimeInterval = 2
 
@@ -23,6 +24,7 @@ class EditorDocument: NSObject {
 	fileprivate(set) var lastSaveTime:TimeInterval = 0
 	var topVisibleIndex: Int = 0
 	fileprivate(set) var isLoaded: Bool = false
+	private var saveInProgress: ClientCore.Atomic<Bool> = ClientCore.Atomic<Bool>(false)
 
 	var currentContents: String {
 		assert(isLoaded);
@@ -81,15 +83,20 @@ class EditorDocument: NSObject {
 	func saveContents(isAutoSave autosave: Bool=false) -> SaveSignalProducer? {
 		precondition(isLoaded)
 		if autosave {
+			guard !saveInProgress.value else { return nil }
 			let curTime = Date.timeIntervalSinceReferenceDate
 			guard curTime - lastSaveTime < MinTimeBetweenAutoSaves else { return nil }
 		}
 		return SaveSignalProducer { observer, _ in
 			self.lastSaveTime = Date.timeIntervalSinceReferenceDate
+			self.saveInProgress.value = true
+			os_log("saving contents of file %d", log: .app, type: .info, self.file.fileId)
 			self.fileCache.save(file: self.file, contents: self.editedContents!).startWithCompleted {
 				self.savedContents = self.editedContents
 				self.editedContents = nil
 				self.lastSaveTime = Date.timeIntervalSinceReferenceDate
+				self.saveInProgress.value = false
+				observer.sendCompleted()
 			}
 		}
 	}
