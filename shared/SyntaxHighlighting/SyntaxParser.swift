@@ -9,7 +9,12 @@ import Foundation
 	import AppKit
 #endif
 import os
+import ClientCore
 import Networking
+
+extension OSLog {
+	static let syntax = OSLog(subsystem: AppInfo.bundleIdentifier, category: "parser")
+}
 
 /** parses the contents of an NSTextStorage into an array of chunks that can be syntax colored */
 open class SyntaxParser: NSObject {
@@ -89,7 +94,7 @@ open class SyntaxParser: NSObject {
 				}
 			}
 		}
-		os_log("looking for %{public}@", log: .app, type:.debug, NSStringFromRange(range))
+		os_log("looking for %{public}@", log: .syntax, type:.debug, NSStringFromRange(range))
 		var outArray:[DocumentChunk] = []
 		for aChunk in chunks {
 			if NSIntersectionRange(aChunk.parsedRange, range).length > 0

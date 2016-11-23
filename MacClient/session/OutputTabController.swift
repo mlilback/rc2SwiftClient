@@ -154,12 +154,13 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		}
 		switch (attachment.type) {
 			case .file:
-				if let file = sessionController?.session.workspace.file(withId: (Int(attachment.fileId))) {
+				if let file = sessionController?.session.workspace.file(withId: attachment.fileId) {
 					webController?.loadLocalFile(sessionController!.session.fileCache.cachedUrl(file:file))
 					selectedOutputTab = .webKit
 					//TODO: implement option to check by filename if not found by id
 				} else {
 					//TODO: report error
+					os_log("error getting file attachment to display: %d", log: .app, attachment.fileId)
 				}
 			case .image:
 				if let image = attachment.image,

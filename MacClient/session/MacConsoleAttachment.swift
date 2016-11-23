@@ -12,17 +12,17 @@ import Networking
 public final class MacConsoleAttachment: ConsoleAttachment {
 	let type: ConsoleAttachmentType
 	let image: SessionImage?
-	let fileId:Int
-	let fileVersion:Int
-	let fileName:String?
-	let fileExtension:String?
+	let fileId: Int
+	let fileVersion: Int
+	let fileName: String?
+	let fileExtension: String?
 	
 	public class func from(data: Data) throws -> MacConsoleAttachment {
 		let json = try JSON(data: data)
 		return try MacConsoleAttachment(json: json)
 	}
 	
-	public init(file inFile:File) {
+	public init(file inFile: File) {
 		type = .file
 		image = nil
 		fileId = inFile.fileId
@@ -31,7 +31,7 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 		fileExtension = inFile.fileType.fileExtension
 	}
 	
-	public init(image inImage:SessionImage) {
+	public init(image inImage: SessionImage) {
 		type = .image
 		image = inImage
 		fileName = nil
@@ -42,7 +42,7 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 
 	public init(json: JSON) throws {
 		type = ConsoleAttachmentType(rawValue: try json.getInt(at: "type"))!
-		image = try json.decode(at: "image", type: SessionImage.self)
+		image = try json.decode(at: "image", alongPath: .MissingKeyBecomesNil, type: SessionImage.self)
 		fileId = try json.getInt(at: "fileId")
 		fileVersion = try json.getInt(at: "fileVersion")
 		fileName = json.getOptionalString(at: "fileName")

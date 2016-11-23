@@ -245,6 +245,7 @@ extension SessionEditorController: NSTextStorageDelegate {
 		currentChunkIndex = parser!.indexOfChunkForRange(range: editedRange)
 		if currentDocument?.editedContents != textStorage.string {
 			currentDocument?.editedContents = textStorage.string
+			os_log("updated contents of current document", log: .app, type: .debug)
 		}
 	}
 }

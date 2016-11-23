@@ -8,6 +8,7 @@ import Cocoa
 import os
 import Networking
 import Freddy
+import ClientCore
 
 @objc protocol SessionControllerDelegate {
 	func filesRefreshed()
@@ -20,8 +21,7 @@ import Freddy
 @objc class SessionController: NSObject {
 	fileprivate weak var delegate: SessionControllerDelegate?
 
-	///var! used because we can't pass self as delegate in constructor until variables initialized
-	weak var responseHandler: ServerResponseHandler?
+	var responseHandler: ServerResponseHandler?
 	let outputHandler: OutputHandler
 	let varHandler: VariableHandler
 	let session: Session
@@ -94,8 +94,9 @@ extension SessionController: ServerResponseHandlerDelegate {
 	}
 	
 	func attributedStringForInputFile(_ fileId: Int) -> NSAttributedString {
-		let file = session.workspace.file(withId: fileId)
-		return NSAttributedString(string: "[\(file!.name)]")
+		let file = session.workspace.file(withId: fileId)!
+		let str = "[\(file.name)]"
+		return NSAttributedString(string: str)
 	}
 	
 	func showFile(_ fileId: Int) {
@@ -108,11 +109,11 @@ extension SessionController {
 	func stateFileUrl() throws -> URL {
 		let fileManager = Foundation.FileManager()
 		let appSupportUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-		let dataDirUrl = URL(string: "Rc2/sessions/", relativeTo: appSupportUrl)?.absoluteURL
-		try fileManager.createDirectory(at: dataDirUrl!, withIntermediateDirectories: true, attributes: nil)
+		let dataDirUrl = appSupportUrl.appendingPathComponent(AppInfo.bundleIdentifier).appendingPathComponent("sessions", isDirectory: true)
+		try fileManager.createDirectory(at: dataDirUrl, withIntermediateDirectories: true, attributes: nil)
 		let fname = "\(session.conInfo.host.name)--\(session.project.userId)--\(session.workspace.wspaceId).plist"
-		let furl = dataDirUrl?.appendingPathComponent(fname)
-		return furl!
+		let furl = dataDirUrl.appendingPathComponent(fname)
+		return furl
 	}
 	
 	func saveSessionState() {
