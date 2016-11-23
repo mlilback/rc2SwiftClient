@@ -12,17 +12,27 @@ public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashab
 {
 	public let fileId : Int
 	public let wspaceId: Int
-	public fileprivate(set) var name : String!
-	public fileprivate(set) var version : Int!
-	public fileprivate(set) var fileSize : Int!
-	public fileprivate(set) var dateCreated : Date!
-	public fileprivate(set) var lastModified : Date!
-	public fileprivate(set) var fileType: FileType!
+	public fileprivate(set) var name : String
+	public fileprivate(set) var version : Int
+	public fileprivate(set) var fileSize : Int
+	public fileprivate(set) var dateCreated : Date
+	public fileprivate(set) var lastModified : Date
+	public fileprivate(set) var fileType: FileType
 	
 	public init(json:JSON) throws {
 		fileId = try json.getInt(at: "id")
 		wspaceId = try json.getInt(at: "wspaceId")
-		try applyJson(json: json)
+		let fileName = try json.getString(at: "name")
+		guard let ft = FileType.fileType(forFileName: fileName) else {
+			throw NetworkingError.unsupportedFileType
+		}
+		name = fileName
+		fileType = ft
+		
+		version = try json.getInt(at: "version")
+		fileSize = try json.getInt(at: "fileSize")
+		dateCreated = Date(timeIntervalSince1970: try json.getDouble(at: "dateCreated") / 1000.0)
+		lastModified = Date(timeIntervalSince1970: try json.getDouble(at: "lastModified") / 1000.0)
 	}
 	
 	//documentation inherited from protocol
@@ -39,7 +49,7 @@ public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashab
 	
 	public var hashValue: Int { return ObjectIdentifier(self).hashValue }
 	
-	public var eTag: String { return "f/\(fileId)/\(version!)" }
+	public var eTag: String { return "f/\(fileId)/\(version)" }
 	
 	///initialize with native dictionary from a MessagePackDictionary
 	//TODO: get rid of force unwraps
@@ -75,26 +85,10 @@ public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashab
 	}
 
 	public var description : String {
-		return "<File: \(name!) (\(fileId) v\(version!))>";
+		return "<File: \(name) (\(fileId) v\(version))>";
 	}
 	
 	public static func ==(a: File, b: File) -> Bool {
 		return a.fileId == b.fileId && a.version == b.version;
-	}
-}
-
-extension File {
-	fileprivate func applyJson(json: JSON) throws {
-		let fileName = try json.getString(at: "name")
-		guard let ft = FileType.fileType(forFileName: fileName) else {
-			throw NetworkingError.unsupportedFileType
-		}
-		name = fileName
-		fileType = ft
-
-		version = try json.getInt(at: "version")
-		fileSize = try json.getInt(at: "fileSize")
-		dateCreated = Date(timeIntervalSince1970: try json.getDouble(at: "dateCreated") / 1000.0)
-		lastModified = Date(timeIntervalSince1970: try json.getDouble(at: "lastModified") / 1000.0)
 	}
 }
