@@ -303,11 +303,11 @@ private extension Session {
 	
 	func handleReceivedMessage(_ message:Any) {
 		if let stringMessage = message as? String {
-			os_log("from websocket: %{public}@", log: .session, stringMessage)
+			os_log("from websocket: %{public}@", log: .session, type: .debug, stringMessage)
 			guard  let jsonMessage = try? JSON(jsonString: stringMessage),
 				let msg = try? jsonMessage.getString(at: "msg") else
 			{
-				os_log("failed to parse received json: %{public}@", log: .session, stringMessage)
+				os_log("failed to parse received json: %{public}@", log: .session, type: .info, stringMessage)
 				return
 			}
 			os_log("got message %{public}@", log: .session, msg)
@@ -367,6 +367,7 @@ private extension Session {
 		var req = URLRequest(url: components.url!)
 		//TODO: add header field as constant
 		req.addValue(conInfo.authToken, forHTTPHeaderField: "Rc2-Auth")
+		req.timeoutInterval = 120
 		return req
 	}
 	

@@ -51,7 +51,7 @@ public class ServerResponseHandler {
 			case .variablesDelta(let assigned, let removed):
 				delegate?.handleVariableDeltaMessage(assigned, removed: removed)
 			case .showOutput(let queryId, let updatedFile):
-				let str = formatShowOutput(queryId, file:updatedFile)
+				let str = formatShowOutput(queryId, file: updatedFile)
 				delegate?.showFile(updatedFile.fileId)
 				return str
 			case .saveResponse( _):

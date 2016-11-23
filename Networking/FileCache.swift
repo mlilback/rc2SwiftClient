@@ -344,7 +344,9 @@ extension DefaultFileCache {
 					return Rc2Error(type: .file, nested: ferr)
 				}).concat(updateSP)
 		}
-		return updateSP
+		//need to download it
+		let dloadSP = recache(file: file).map({ _ in return () })
+		return updateSP.concat(dloadSP)
 	}
 	
 	/// saves file contents (does not update file object)
@@ -385,8 +387,8 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 	
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
 	{
-		print("code=\((task.response! as! HTTPURLResponse).statusCode)")
 		taskLockQueue.sync {
+			let theFile = tasks[task.taskIdentifier]?.file
 			if downloadingAllFiles {
 				if tasks.count > 1 {
 					tasks.removeValue(forKey: task.taskIdentifier)
@@ -419,6 +421,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 				self.mainQueue.async { self.observer?.send(error: httperror) }
 				return
 			}
+			os_log("finished downloading file %d", log: .cache, type: .info, theFile?.fileId ?? -1)
 			self.mainQueue.async {
 				//need to nil out before sending completion otherwise if another download is in progress we'd nil out that task
 				let obs = self.observer

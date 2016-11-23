@@ -64,7 +64,8 @@ public class ImageCache: JSONEncodable {
 	/// - Parameter json: the input json
 	/// - Throws: json decoding errors
 	public func load(from json: JSON) throws {
-		let images: [SessionImage] = try json.asArray()
+		self.hostIdentifier = try json.getString(at: "hostIdentifier")
+		let images: [SessionImage] = try json.decodedArray(at: "images")
 		images.forEach { metaCache[$0.id] = $0 }
 	}
 	
@@ -72,7 +73,7 @@ public class ImageCache: JSONEncodable {
 	///
 	/// - Returns: data encoded as JSON
 	public func toJSON() -> JSON {
-		return .dictionary(["hostIdentifier": .string(hostIdentifier), "metaCache": Array(metaCache.values).toJSON()])
+		return .dictionary(["hostIdentifier": .string(hostIdentifier), "images": Array(metaCache.values).toJSON()])
 	}
 	
 	func image(withId imageId: Int) -> PlatformImage? {
