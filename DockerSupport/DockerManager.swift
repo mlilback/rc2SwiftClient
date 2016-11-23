@@ -19,7 +19,6 @@ import ClientCore
 // MARK: Keys for UserDefaults
 extension DefaultsKeys {
 	static let lastImageInfoCheck = DefaultsKey<Double>("lastImageInfoCheck")
-	static let dockerImageVersion = DefaultsKey<Int>("dockerImageVersion")
 	static let cachedImageInfo = DefaultsKey<JSON?>("cachedImageInfo")
 }
 

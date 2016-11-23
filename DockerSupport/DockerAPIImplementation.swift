@@ -140,6 +140,7 @@ final class DockerAPIImplementation: DockerAPI {
 	// documentation in DockerAPI protocol
 	public func perform(operation: DockerContainerOperation, container: DockerContainer) -> SignalProducer<Void, DockerError>
 	{
+		os_log("performing %{public}@ on %{public}@", log: .docker, type: .info, operation.rawValue, container.name)
 		let url = baseUrl.appendingPathComponent("/containers/\(container.name)/\(operation.rawValue)")
 		var request = URLRequest(url: url)
 		request.httpMethod = "POST"
@@ -155,6 +156,7 @@ final class DockerAPIImplementation: DockerAPI {
 	// documentation in DockerAPI protocol
 	func create(container: DockerContainer) -> SignalProducer<DockerContainer, DockerError> {
 		return SignalProducer<DockerContainer, DockerError> { observer, _ in
+			os_log("creating %{public}@", log: .docker, type: .info, container.name)
 			guard container.state.value == .notAvailable else {
 				observer.send(value: container)
 				observer.sendCompleted()
@@ -184,6 +186,7 @@ final class DockerAPIImplementation: DockerAPI {
 		var request = URLRequest(url: url)
 		request.httpMethod = "DELETE"
 		return SignalProducer<Void, DockerError> { observer, _ in
+			os_log("removing %{public}@", log: .docker, type: .info, container.name)
 			self.session.dataTask(with: request) { (data, response, error) in
 				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {
 					observer.send(value: ())
