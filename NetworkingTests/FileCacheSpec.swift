@@ -21,7 +21,7 @@ class FileCacheSpec: NetworkingBaseSpec {
 		}
 		let sessionConfig = URLSessionConfiguration.default
 		sessionConfig.protocolClasses = [MockingjayProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
-		let rawData = Data(bytes: Array<UInt8>(repeating: 0, count: 2048))
+		let rawData = Data(bytes: Array<UInt8>(repeating: 1, count: 2048))
 		let builder: (URLRequest) -> Response = { request in
 			return http(download: .streamContent(data: rawData, inChunksOf: 1024))(request)
 		}
@@ -65,6 +65,29 @@ class FileCacheSpec: NetworkingBaseSpec {
 				for aFile in wspace.files {
 					expect(fileCache.isFileCached(aFile)).to(beTrue())
 				}
+			}
+
+			it("validUrl downloads if not cached") {
+				let file = wspace.file(withId: 202)!
+				fileCache.flushCache(file: file)
+				expect(fileCache.isFileCached(file)).to(beFalse())
+				let result = self.makeValueRequest(producer: fileCache.validUrl(for: file), queue: DispatchQueue.global())
+				expect(result.error).to(beNil())
+				let fdata = try! Data(contentsOf: result.value!)
+				expect(fdata).to(equal(rawData))
+			}
+
+			it("validUrl doesn't download if already cached") {
+				let file = wspace.file(withId: 202)!
+				fileCache.flushCache(file: file)
+				expect(fileCache.isFileCached(file)).to(beFalse())
+				let customData = Data(bytes: Array<UInt8>(repeating: 122, count: 2048))
+				try! customData.write(to: fileCache.cachedUrl(file: file))
+				expect(fileCache.isFileCached(file)).to(beTrue())
+				let result = self.makeValueRequest(producer: fileCache.validUrl(for: file), queue: DispatchQueue.global())
+				expect(result.error).to(beNil())
+				let fdata = try! Data(contentsOf: result.value!)
+				expect(fdata).to(equal(customData))
 			}
 		}
 	}

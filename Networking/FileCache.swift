@@ -33,14 +33,18 @@ public protocol FileCache {
 	//removes the cached file
 	func flushCache(file: File)
 	///recaches the specified file if it has changed
-	func recache(file:File) -> SignalProducer<Double, Rc2Error>
+	func recache(file: File) -> SignalProducer<Double, Rc2Error>
 	//recaches an array of files
 	func flushCache(files: [File]) -> SignalProducer<Double, Rc2Error>
 	///caches all the files in the workspace that aren't already cached with the current version of the file
 	//observer fractionCompleted on returned progress for completion handling
 	func cacheAllFiles() -> SignalProducer<Double, Rc2Error>
 	///returns the file system url where the file is/will be stored
-	func cachedUrl(file:File) -> URL
+	func cachedUrl(file: File) -> URL
+	///calls cachedUrl, but downloads the file if correct version is not cached on disk
+	/// - Parameter file: the file whose url is desired
+	/// - Returns: signal producer that returns the URL to the cached contents of file
+	func validUrl(for file: File) -> SignalProducer<URL, Rc2Error>
 	/// get the contents of a file
 	///
 	/// - Parameter file: the file whose contents should be returned
@@ -249,6 +253,16 @@ public final class DefaultFileCache: NSObject, FileCache {
 		}
 	}
 	
+	//documentation in protocol
+	public func validUrl(for file: File) -> SignalProducer<URL, Rc2Error> {
+		let url = cachedUrl(file: file)
+		if isFileCached(file) {
+			return SignalProducer<URL, Rc2Error>(value: url)
+		}
+		return recache(file: file)
+			.map { _ in url }
+	}
+	
 	///returns the file system url where the file is/will be stored
 	public func cachedUrl(file:File) -> URL {
 		let fileUrl = URL(fileURLWithPath: "\(file.fileId).\(file.fileType.fileExtension)", relativeTo: fileCacheUrl).absoluteURL
@@ -277,6 +291,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 			request.addValue("\"\(file.eTag)\"", forHTTPHeaderField: "If-None-Match")
 		}
 		let dtask = urlSession!.downloadTask(with: request)
+		os_log("creating download task for %d", log: .cache, type: .info, file.fileId)
 		return DownloadTask(file: file, task: dtask)
 	}
 }
