@@ -11,11 +11,7 @@ import ReactiveSwift
 import Result
 import NotifyingCollection
 
-extension OSLog {
-	static let cache: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "cache")
-}
-
-public enum FileCacheError: Error {
+public enum FileCacheError: Error, Rc2DomainError {
 	case failedToCreateURL(file: File)
 	case downloadAlreadyInProgress
 	case downloadError(urlError: Error)

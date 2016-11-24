@@ -8,6 +8,6 @@ import Foundation
 import os
 import ClientCore
 
-extension OSLog {
-	static let network: OSLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "network")
-}
+//extension OSLog {
+//	static let network: OSLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "network")
+//}

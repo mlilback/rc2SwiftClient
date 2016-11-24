@@ -13,7 +13,7 @@ import ClientCore
 let FileAttrVersion = "io.rc2.FileAttr.Version"
 let FileAttrChecksum = "io.rc2.FileAttr.SHA256"
 
-public enum FileError: Error {
+public enum FileError: Error, Rc2DomainError {
 	case failedToSave
 	case failedToDownload
 }

@@ -6,10 +6,7 @@
 
 import Foundation
 import os
-
-extension OSLog {
-	static let docker: OSLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "docker")
-}
+import ClientCore
 
 fileprivate let myBundle = Bundle(for: DockerManager.self)
 
@@ -23,7 +20,7 @@ fileprivate let myBundle = Bundle(for: DockerManager.self)
 /// - alreadyExists:     the object to be created already exists
 /// - noSuchObject:      the requested/specified object does not exist
 /// - conflict:          a conflict (container can't be removed, name already assigned, etc.)
-public enum DockerError: LocalizedError {
+public enum DockerError: LocalizedError, Rc2DomainError {
 	case dockerNotInstalled
 	case unsupportedDockerVersion
 	case networkError(NSError?)

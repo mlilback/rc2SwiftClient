@@ -10,7 +10,7 @@ import os
 import Freddy
 import ReactiveSwift
 
-public enum ImageCacheError: Error {
+public enum ImageCacheError: Error, Rc2DomainError {
 	case noSuchImage
 	case failedToLoadFromNetwork
 }

@@ -39,4 +39,5 @@ public extension OSLog {
 	static let session: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "session")
 	static let app: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "app")
 	static let core: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "core")
+	static let cache: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "cache")
 }

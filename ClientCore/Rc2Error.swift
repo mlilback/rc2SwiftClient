@@ -6,12 +6,17 @@
 
 import Foundation
 
+/// A protocol to group domain-specific errors that will be nested inside an Rc2Error
+public protocol Rc2DomainError {}
+
 //error object used throughoout project
 public struct Rc2Error: Error {
 	/// basic categories of errors
 	public enum Rc2ErrorType: String, Error {
 		/// a requested object was not found
 		case noSuchElement
+		/// a requested operation is already in progress
+		case alreadyInProgress
 		/// problem parsing json, Freddy error is nested
 		case invalidJson
 		/// nestedError will be the NSError

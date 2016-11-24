@@ -20,7 +20,7 @@ public extension Rc2Error {
 	public var isSessionError: Bool { return nestedError is SessionError }
 }
 
-public enum SessionError: Error {
+public enum SessionError: Error, Rc2DomainError {
 	case openAlreadyInProgress
 }
 

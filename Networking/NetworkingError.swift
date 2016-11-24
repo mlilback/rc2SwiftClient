@@ -7,7 +7,7 @@
 import Foundation
 import ClientCore
 
-public enum NetworkingError: Error {
+public enum NetworkingError: Error, Rc2DomainError {
 	case unsupportedFileType
 	case connectionError(Error)
 	case canceled
