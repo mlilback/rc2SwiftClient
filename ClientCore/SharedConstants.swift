@@ -20,9 +20,6 @@ public enum Rc2ErrorCode: Int {
 	case alreadyExists = 107
 }
 
-//TODO: remove this, as should no longer  be used
-public typealias ProgressHandler = (Progress?) -> Void
-
 /// a static reference to the app's bundle
 public struct AppInfo {
 	/// the info dictionary of the application
@@ -32,6 +29,7 @@ public struct AppInfo {
 	public static var buildNumber: String { return bundleInfo?["CFBundleVersion"] as? String ?? "??" }
 }
 
+///constants for log categories used by this project
 public extension OSLog {
 	static let docker: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "docker")
 	static let network: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "network")
