@@ -369,19 +369,13 @@ extension DefaultFileCache {
 	public func save(file: File, contents: String) -> SignalProducer<Void, Rc2Error> {
 		return SignalProducer<Void, Rc2Error> { observer, _ in
 			let url = self.cachedUrl(file: file)
-			self.saveQueue.async {
-				do {
-					try contents.write(to: url, atomically: true, encoding: .utf8)
-					self.mainQueue.async {
-						observer.sendCompleted()
-					}
-				} catch {
-					self.mainQueue.async {
-						observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "failed to save \(file.name) to file cache"))
-					}
-				}
+			do {
+				try contents.write(to: url, atomically: true, encoding: .utf8)
+				observer.sendCompleted()
+			} catch {
+				observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "failed to save \(file.name) to file cache"))
 			}
-		}
+		}.observe(on: QueueScheduler(targeting: self.mainQueue))
 	}
 }
 

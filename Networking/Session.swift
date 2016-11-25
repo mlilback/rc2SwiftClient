@@ -76,6 +76,7 @@ public class Session {
 		self.fileCache = fileCache
 		self.imageCache = imageCache
 		self.wsSource = WebSocket(request: createWebSocketRequest())
+		wsSource.binaryType = .nsData
 	}
 	
 	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, delegate:SessionDelegate?=nil, fileCache: FileCache? = nil)
@@ -203,7 +204,9 @@ public class Session {
 	///   - contents: the contents to save
 	///   - executeType: should the saved code be executed
 	/// - Returns: a signal producer for success or error
-	public func sendSaveFileMessage(file: File, contents: String, executeType: ExecuteType = .None) -> SignalProducer<Void, Rc2Error> {
+	public func sendSaveFileMessage(file: File, contents: String, executeType: ExecuteType = .None) throws
+	{
+		os_log("sendSaveFileMessage called on file %d", log: .session, type: .info, file.fileId)
 		let uniqueIdent = UUID().uuidString
 		let encoder = MessagePackEncoder()
 		var attrs = ["msg":MessageValue.forValue("save"), "apiVersion":MessageValue.forValue(Int(1))]
@@ -214,13 +217,11 @@ public class Session {
 		encoder.encodeValue(MessageValue.DictionaryValue(MessageValueDictionary(attrs)))
 		guard let data = encoder.data else {
 			os_log("failed to encode save file message", log: .session)
-			return SignalProducer<Void, Rc2Error>(error: Rc2Error(type: .logic, explanation: "failed to encode save file message"))
+			throw Rc2Error(type: .logic, explanation: "failed to encode save file message")
 		}
 		//for debug purposes
 		_ = try? data.write(to: URL(fileURLWithPath: "/tmp/lastSaveToServer"), options: .atomicWrite)
-		return SignalProducer<Void, Rc2Error>() { observer, _ in
-			self.wsSource.send(data)
-		}
+		self.wsSource.send(data)
 	}
 	
 	
@@ -261,7 +262,9 @@ private extension Session {
 	
 	//we've got a dictionary of the save response. keys should be transId, success, file, error
 	func handleSaveResponse(_ rawDict:[String:AnyObject]) {
+		os_log("handleSaveResponse called", log: .session, type: .info)
 		if let transId = rawDict["transId"] as? String {
+			os_log("sendSaveFileMessage calling pending transaction", log: .session, type: .info)
 			pendingTransactions[transId]?(transId, nil)
 			pendingTransactions.removeValue(forKey: transId)
 		}
@@ -396,7 +399,7 @@ private extension Session {
 			self?.delegate?.sessionClosed()
 		}
 		wsSource.event.message = { [weak self] message in
-			os_log("from websocket: %{public}@", log: .session, type: .debug, message as! String)
+			os_log("websocket message: %{public}@", log: .session, type: .debug, message as? String ?? "<binary>")
 			self?.handleReceivedMessage(message)
 		}
 		wsSource.event.error = { [weak self] error in
