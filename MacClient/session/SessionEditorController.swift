@@ -140,7 +140,7 @@ class SessionEditorController: AbstractSessionViewController
 	
 	func autosaveCurrentDocument() {
 		guard currentDocument?.dirty ?? false else { return }
-		currentDocument!.saveContents(isAutoSave: true)?.startWithCompleted {
+		currentDocument!.saveContents(isAutoSave: true).startWithCompleted {
 			self.saveDocumentToServer(self.currentDocument!)
 		}
 	}
@@ -148,11 +148,8 @@ class SessionEditorController: AbstractSessionViewController
 	//should be called when document is locally saved but stil marked as dirty (e.g. from progress completion handler)
 	func saveDocumentToServer(_ document: EditorDocument) {
 		precondition(currentDocument != nil, "can't save a nil document")
-		//TODO: enable busy status
-		session.sendSaveFileMessage(file: currentDocument!.file, contents: document.currentContents).startWithCompleted {
-			//ideally should remove busy progress added before this call
-			os_log("saved to server", log: .app, type:.info)
-		}
+		try? session.sendSaveFileMessage(file: currentDocument!.file, contents: document.currentContents)
+		os_log("saved to server", log: .app, type:.info)
 	}
 }
 
@@ -245,7 +242,6 @@ extension SessionEditorController: NSTextStorageDelegate {
 		currentChunkIndex = parser!.indexOfChunkForRange(range: editedRange)
 		if currentDocument?.editedContents != textStorage.string {
 			currentDocument?.editedContents = textStorage.string
-			os_log("updated contents of current document", log: .app, type: .debug)
 		}
 	}
 }
@@ -283,19 +279,29 @@ private extension SessionEditorController {
 		editor!.scrollRangeToVisible(desiredRange)
 	}
 	
-	///actually implements running a query
+	///actually implements running a query, saving first if document is dirty
 	func executeQuery(type:ExecuteType) {
-		assert(currentDocument != nil, "runQuery called with no file selected")
-		if currentDocument!.dirty {
-			//not passing autosave param, so will always return progress
-			currentDocument!.saveContents()?.startWithResult { (result) in
-				self.session.sendSaveFileMessage(file: self.currentDocument!.file, contents: result.value!.new, executeType: type).startWithCompleted {
-					//TODO notify user of error
-					self.session.executeScriptFile(self.currentDocument!.file.fileId, type: type)
-				}
+		guard let currentDocument = currentDocument else {
+			fatalError("runQuery called with no file selected")
+		}
+		let file = currentDocument.file
+		guard currentDocument.dirty else {
+			os_log("executeQuery executing without save", log: .app, type: .info)
+			session.executeScriptFile(file.fileId, type: type)
+			return
+		}
+		currentDocument.saveContents().startWithResult { result in
+			guard nil == result.error else {
+				os_log("save for execute returned an error: %{public}@", log: .app, type: .info, result.error! as NSError)
+				return
 			}
-		} else {
-			session.executeScriptFile(currentDocument!.file.fileId, type: type)
+			do {
+				try self.session.sendSaveFileMessage(file: file, contents: result.value!)
+				os_log("executeQuery saved file, now executing", log: .app, type: .info)
+				self.session.executeScriptFile(file.fileId, type: type)
+			} catch {
+				os_log("error saving file for execution: %{public}s", log: .app, error as NSError)
+			}
 		}
 	}
 	
@@ -350,7 +356,7 @@ private extension SessionEditorController {
 		self.updateUIForCurrentDocument()
 	}
 	
-	func saveDocument(_ doc:EditorDocument, contents:String) {
+	func saveDocument(_ doc: EditorDocument, contents: String) {
 		let editor = self.editor!
 		let lm = editor.layoutManager!
 		//save the index of the character at the top left of the text container
@@ -360,7 +366,7 @@ private extension SessionEditorController {
 		doc.topVisibleIndex = idx
 		doc.willBecomeInactive(contents)
 		if doc.dirty {
-			doc.saveContents()?.start() //should happen pretty instantainously
+			doc.saveContents().start() //should happen pretty instantainously
 		}
 	}
 	
