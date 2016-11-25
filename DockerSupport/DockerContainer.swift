@@ -154,14 +154,13 @@ public final class DockerContainer: JSONDecodable {
 	///
 	/// - parameter json: the JSON to update from
 	///
-	/// - throws: an NSError with a Rc2ErrorCode
 	func update(json: JSON) throws {
 		let jid = try json.getString(at: "Id")
 		let jiname = try json.getString(at: "Image")
 		let jstateStr = try json.getString(at: "State")
 		guard let jstate = ContainerState(rawValue:jstateStr) else
 		{
-			throw NSError.error(withCode: .invalidJson, description: "JSON missing required container property")
+			throw DockerError.invalidJson
 		}
 		id = jid
 		imageName = jiname
