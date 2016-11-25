@@ -202,7 +202,7 @@ extension SessionController: SessionDelegate {
 	}
 	
 	//TODO: impelment sessionErrorReceived
-	func sessionErrorReceived(_ error:Error) {
+	func sessionErrorReceived(_ error: Rc2Error) {
 		
 	}
 }

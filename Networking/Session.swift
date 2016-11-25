@@ -298,7 +298,7 @@ private extension Session {
 				try workspace.remove(file: file)
 			} catch {
 				os_log("error removing a file", log: .session)
-				self.delegate?.sessionErrorReceived(error)
+				self.delegate?.sessionErrorReceived(error as! Rc2Error)
 			}
 			break
 		}
@@ -409,7 +409,7 @@ private extension Session {
 				self?.openObserver = nil
 				return
 			}
-			self?.delegate?.sessionErrorReceived(error)
+			self?.delegate?.sessionErrorReceived(Rc2Error(type: .websocket, nested: error))
 		}
 	}
 }
