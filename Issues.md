@@ -8,8 +8,6 @@
 
 * compute engine barfs on markdown files with a space in their name
 
-* add output segmented control (console, html, pdf, image)
-
 * RestServerTests and EditorDocumentTests are disabled and need fixing.
 
 * SystemExtensionsTests is incomplete
@@ -38,6 +36,8 @@
 
 * switch all use of KVO in File to use signals
 
-* session needs to send delegate its own error type
-
 * need to move framework required defaults to each framework, and have app load them allowing each succeeding framework to overwrite lower ones
+
+* if a dbserver image is updated, the dbdata volume still has the data in it. need to backup the sql and then restore it after creating a new volume. The rc2.last file created on first db run is there, which causes db container to fail.
+
+* DockerErrors need to be transformed somewhere to Rc2Errors
