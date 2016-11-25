@@ -53,7 +53,7 @@ public class Session {
 	
 	fileprivate var openObserver: Signal<Double, Rc2Error>.Observer?
 	public fileprivate(set) var connectionOpen:Bool = false
-	fileprivate var keepAliveTimer:DispatchSource = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: DispatchQueue.main) /*Migrator FIXME: Use DispatchSourceTimer to avoid the cast*/ as! DispatchSource
+	fileprivate var keepAliveTimer: DispatchSourceTimer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: DispatchQueue.main)
 	
 	///closure syntax for a transaction complete callback
 	/// - parameter $0: the transaction id (key in the pendingTransaction dictionary)
