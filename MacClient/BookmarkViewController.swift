@@ -119,6 +119,8 @@ open class BookmarkViewController: NSViewController {
 	}
 	
 	@IBAction func openBookmark(_ sender:AnyObject?) {
+		//if double click where there is no row, selectedRow is -1
+		guard tableView!.selectedRow >= 0 else { return }
 		if case .mark(let aMark) = entries[tableView!.selectedRow] {
 			openSession(withBookmark: aMark, password: nil)
 		}

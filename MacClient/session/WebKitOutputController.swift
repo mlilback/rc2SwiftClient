@@ -7,17 +7,37 @@
 
 import Cocoa
 import WebKit
+import os
+import ClientCore
+import ReactiveSwift
+import Result
 
 class WebKitOutputController: WebViewController {
-	override func viewDidLoad() {
-		super.viewDidLoad()
-	}
-
+	private var loadDisposable: Disposable?
+	
+	///removes displayed contents
 	func clearContents() {
+		loadDisposable?.dispose()
+		loadDisposable = nil
 		_ = webView?.load(URLRequest(url: URL(string: "about:blank")!));
 	}
 	
-	func loadLocalFile(_ url:URL) {
+	/// loads the URL returned via the producer. Will dispose of any load currently in process when called
+	func loadLocalFile(_ producer: SignalProducer<URL, Rc2Error>) {
+		loadDisposable?.dispose()
+		loadDisposable = producer.startWithResult { result in
+			guard let url = result.value else {
+				os_log("failed to load file for viewing: %{public}@", log: .app, result.error!.localizedDescription)
+				return
+			}
+			self.loadLocalFile(url)
+		}
+	}
+
+	///displays the file in our webview
+	/// - Parameter url: the file to load. Must be on the local file system.
+	func loadLocalFile(_ url: URL) {
+		assert(url.isFileURL)
 		guard webView !=  nil else {
 			DispatchQueue.main.async { self.loadLocalFile(url) }
 			return
