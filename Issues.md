@@ -41,3 +41,5 @@
 * if a dbserver image is updated, the dbdata volume still has the data in it. need to backup the sql and then restore it after creating a new volume. The rc2.last file created on first db run is there, which causes db container to fail.
 
 * DockerErrors need to be transformed somewhere to Rc2Errors
+
+* make sure [restore windows full screen](http://mjtsai.com/blog/2016/11/18/full-screen-is-a-preference/) if that is how they were on last quit 
