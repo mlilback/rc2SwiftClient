@@ -107,6 +107,7 @@ final class DockerEventMonitor: NSObject, URLSessionDataDelegate {
 				continue
 			}
 			if let event = DockerEvent(json) {
+				os_log("got event: %{public}@", log:.dockerEvt, type:.info, event.description)
 				delegate.handleEvent(event)
 			}
 		}

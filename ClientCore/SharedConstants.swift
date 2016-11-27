@@ -32,6 +32,7 @@ public struct AppInfo {
 ///constants for log categories used by this project
 public extension OSLog {
 	static let docker: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "docker")
+	static let dockerEvt: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "docker-evt")
 	static let network: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "network")
 	static let model: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "model")
 	static let session: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "session")

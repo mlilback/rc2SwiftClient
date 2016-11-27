@@ -254,7 +254,6 @@ extension DockerManager: DockerEventMonitorDelegate {
 	/// handles an event from the event monitor
 	// note that the only events that external observers should care about (as currently implemented) are related to specific containers, which will update their observable state property. Probably need a way to inform application if some serious problem ocurred
 	func handleEvent(_ event: DockerEvent) {
-		os_log("got event: %{public}@", log:.docker, type:.info, event.description)
 		//only care if it is one of our containers
 		guard let from = try? event.json.getString(at:"from"),
 			let ctype = ContainerType.from(imageName:from),
