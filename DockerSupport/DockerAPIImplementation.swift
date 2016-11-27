@@ -86,10 +86,10 @@ final class DockerAPIImplementation: DockerAPI {
 			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
 				return SignalProducer<Bool, DockerError> { observer, _ in
 					self.jsonCheckHandler(observer: observer, data: data) { json in
-						let filteredVolumes = try json.getArray(at: "Volumes").filter( { aVolume in
+						guard let filteredVolumes = try? json.getArray(at: "Volumes") else { return false }
+						return try filteredVolumes.filter( { aVolume in
 							return try aVolume.getString(at: "Name") == name
-						})
-						return filteredVolumes.count == 1
+						}).count == 1
 					}
 				}
 			}).observe(on: scheduler)
