@@ -13,7 +13,7 @@ public struct DockerImageInfo: JSONDecodable, JSONEncodable {
 	let tag: String
 	let name: String
 	let id: String
-	var fullName: String { return "rc2server/\(name)" }
+	var fullName: String { return tag }
 
 	public init?(from: JSON?) {
 		guard let json = from else { return nil }
