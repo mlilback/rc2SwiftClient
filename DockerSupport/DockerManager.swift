@@ -131,7 +131,9 @@ public final class DockerManager: NSObject {
 			state = .unknown
 			versionInfo = nil
 		}
+		os_log("dm.initialize called", log: .docker, type: .debug)
 		guard state < .initialized && versionInfo == nil else {
+			os_log("dm.initialize already initialized", log: .docker, type: .debug)
 			return SignalProducer<Bool, DockerError>(value: true)
 		}
 		let producer = self.api.loadVersion()
@@ -152,6 +154,7 @@ public final class DockerManager: NSObject {
 	public func pullImages() -> SignalProducer<PullProgress, DockerError> {
 		precondition(imageInfo != nil)
 		precondition(imageInfo!.dbserver.size > 0)
+		os_log("dm.pullImages called", log: .docker, type: .debug)
 		let fullSize = imageInfo!.reduce(0) { val, info in val + info.size }
 		pullProgress = PullProgress(name: "all", size: fullSize)
 		let producers = imageInfo!.map { img -> SignalProducer<PullProgress, DockerError> in
@@ -167,6 +170,7 @@ public final class DockerManager: NSObject {
 	///
 	/// - returns: a signal producer with no values
 	public func prepareContainers() -> SignalProducer<(), DockerError> {
+		os_log("dm.prepareContainers called", log: .docker, type: .debug)
 		return self.api.refreshContainers()
 			.flatMap(.concat) { containers in return self.mergeContainers(containers) }
 			.flatMap(.concat) { containers in return self.createUnavailable(containers: containers) }
@@ -186,6 +190,7 @@ public final class DockerManager: NSObject {
 	public func checkForImageUpdate(forceRefresh: Bool = false) -> SignalProducer<Bool, DockerError>
 	{
 		precondition(state >= .initialized)
+		os_log("dm.checkForImageUpdate", log: .docker, type: .debug)
 		//short circuit if we don't need to chedk and have valid data
 		guard imageInfo == nil || shouldCheckForUpdate || forceRefresh else {
 			os_log("using cached docker info", log:.docker, type:.info)
@@ -298,11 +303,13 @@ fileprivate extension DockerManager {
 	func verifyValidVersion(version: DockerVersion) -> SignalProducer<DockerVersion, DockerError> {
 		return SignalProducer<DockerVersion, DockerError>() { observer, _ in
 			//force cast because only should be called if versionInfo was set
+			os_log("dm.verifyValidVersion: %f", log: .docker, type: .debug, version.apiVersion)
 			if version.apiVersion >= self.requiredApiVersion {
 				self.versionInfo = version
 				observer.send(value: version)
 				observer.sendCompleted()
 			} else {
+				os_log("dm unsupported docker version", log: .docker, type: .default)
 				observer.send(error: .unsupportedDockerVersion)
 			}
 		}
@@ -351,6 +358,7 @@ fileprivate extension DockerManager {
 	fileprivate func mergeContainers(_ containers: [DockerContainer]) -> SignalProducer<[DockerContainer], DockerError>
 	{
 		return SignalProducer<[DockerContainer], DockerError> { observer, _ in
+			os_log("dm.mergeContainers called", log: .docker, type: .debug)
 //			precondition(self.containers.count == containers.count)
 			self.containers.forEach { aContainer in
 				if let c2 = containers[aContainer.type] {
@@ -365,6 +373,7 @@ fileprivate extension DockerManager {
 	//for now maps promise/future pull operation to a signal producer
 	func pullSingleImage(pull: DockerPullOperation) -> SignalProducer<PullProgress, DockerError>
 	{
+		os_log("dm.pullSingleImage called for %{public}@", log: .docker, type: .debug, pull.pullProgress.name)
 		pullProgress?.extracting = false
 		let alreadyDownloaded = pullProgress!.currentSize
 		return pull.pull().map { pp in

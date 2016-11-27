@@ -45,6 +45,7 @@ final class DockerAPIImplementation: DockerAPI {
 	public func loadVersion() -> SignalProducer<DockerVersion, DockerError>
 	{
 		let req = URLRequest(url: baseUrl.appendingPathComponent("/version"))
+		os_log("dm.loadVersion called to %{public}s", log: .docker, type: .debug, req.debugDescription)
 		return makeRequest(request: req)
 			.map({ $0.0 }) //transform from (Data, HTTPURLResponse) to Data
 			.flatMap(.concat, transform: dataToJson)
@@ -268,6 +269,7 @@ extension DockerAPIImplementation {
 	{
 		return SignalProducer<DockerVersion, DockerError> { observer, _ in
 			do {
+				os_log("parsing version info: %{public}s", log: .docker, type: .debug, try json.serializeString())
 				let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
 				let verStr = try json.getString(at: "Version")
 				guard let match = regex.firstMatch(in: verStr, options: [], range: verStr.fullNSRange),
@@ -366,6 +368,7 @@ extension DockerAPIImplementation {
 					return
 				}
 				guard rsp.statusCode >= 200 && rsp.statusCode < 400 else {
+					os_log("docker request got bad status: %d response = %{public}s", log: .docker, rsp.statusCode, String(data: data!, encoding: .utf8)!)
 					observer.send(error: DockerError.generateHttpError(from: rsp, body: data))
 					return
 				}

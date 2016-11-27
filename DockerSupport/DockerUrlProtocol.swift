@@ -16,6 +16,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	fileprivate var chunkObserver: BackgroundReader?
 
 	override open class func canInit(with request: URLRequest) -> Bool {
+		os_log("DUP queried about %{public}s", log: .docker, type: .debug, "\(request)")
 		return request.url!.scheme == "unix"
 	}
 
