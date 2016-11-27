@@ -8,7 +8,6 @@
 
 import Foundation
 import Freddy
-import BrightFutures
 import ReactiveSwift
 import Result
 import ServiceManagement
@@ -112,7 +111,6 @@ public final class DockerManager: NSObject {
 		guard let containerJson = try? JSON(jsonString: jsonStr) else { fatalError() }
 		containers = DockerContainer.fromCreateInfoJson(json: containerJson)
 		assert(containers.count == ContainerType.all.count)
-		self.eventMonitor = DockerEventMonitor(baseUrl: self.baseUrl, delegate: self, sessionConfig: self.sessionConfig)
 	}
 
 	deinit {
@@ -136,7 +134,11 @@ public final class DockerManager: NSObject {
 		}
 		let producer = self.api.loadVersion()
 			.flatMap(.concat, transform: verifyValidVersion)
-			.map { v in self.versionInfo = v; self.state = .initialized }
+			.map { v in
+				self.versionInfo = v
+				self.state = .initialized
+				self.eventMonitor = DockerEventMonitor(baseUrl: self.baseUrl, delegate: self, sessionConfig: self.sessionConfig)
+			}
 			.flatMap(.concat, transform: validateNetwork)
 			.flatMap(.concat, transform: validateVolumes)
 			.flatMap(.concat, transform: api.loadImages)
@@ -155,7 +157,7 @@ public final class DockerManager: NSObject {
 		let fullSize = imageInfo!.reduce(0) { val, info in val + info.size }
 		pullProgress = PullProgress(name: "all", size: fullSize)
 		let producers = imageInfo!.map { img -> SignalProducer<PullProgress, DockerError> in
-			print("got pull for \(img.fullName)")
+			os_log("got pull for %{public}s", log:.docker, type:.debug, img.fullName)
 			return self.pullSingleImage(pull: DockerPullOperation(baseUrl: self.baseUrl, imageName: img.fullName, estimatedSize: img.size, config: sessionConfig))
 		}
 		return SignalProducer.merge(producers)
