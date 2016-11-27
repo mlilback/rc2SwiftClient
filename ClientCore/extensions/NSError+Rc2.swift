@@ -6,6 +6,7 @@
 
 import Foundation
 
+// TODO: remove
 public extension NSError {
 	///returns a NSError with the domain of Rc2ErrorDomain
 	/// - parameter withCode: the Rc2 error code for this error

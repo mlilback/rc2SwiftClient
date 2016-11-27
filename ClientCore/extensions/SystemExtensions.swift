@@ -26,6 +26,7 @@ public enum ColorInputError: Error {
 	public typealias PlatformImage = UIImage
 #endif
 
+// TODO: remove Box and ObjCBox
 public final class Box<T> {
 	public let unbox: T
 	public init(_ value: T) {
@@ -41,6 +42,7 @@ public final class ObjcBox<T>: NSObject {
 }
 
 public extension PlatformColor {
+	// TODO: 'swiftize' method names, e.g. below as color(HexString hex: String...
 	public static func colorWithHexString(_ hex: String, alpha: CGFloat = 1.0) -> PlatformColor? {
 		do {
 			return try PlatformColor(hex:hex, alpha:alpha)
@@ -68,6 +70,7 @@ public extension PlatformColor {
 	}
 }
 
+// TODO: possibily get rid of NotificationCenter
 public extension NotificationCenter {
 	func postNotificationNameOnMainThread(_ noteName: String, object: AnyObject, userInfo: [AnyHashable: Any]?=nil) {
 		if !Thread.isMainThread {
