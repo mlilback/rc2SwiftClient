@@ -98,13 +98,15 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			os_log("pull not needed, preparing containers", log: .app, type: .debug)
 			return docker.prepareContainers()
 		}
-		return docker.pullImages().on(
-			starting: {
-				self.setupController?.statusMesssage = "Pulling Images…"
-			}, value: { (pprogress) in
-				self.setupController?.pullProgress = pprogress
-		})
-			.map( { _ in } )
+		return docker.pullImages()
+			.on( //inject side-effect to update the progress bar
+				starting: {
+					self.setupController?.statusMesssage = "Pulling Images…"
+				}, value: { (pprogress) in
+					self.setupController?.pullProgress = pprogress
+			})
+			.collect() // colalesce individual PullProgress values into a single array sent when pullImages is complete
+			.map( { _ in } ) //map [PullProgress] to () as that is the input parameter to prepareContainers
 			.flatMap(.concat) { docker.prepareContainers() }
 	}
 	
