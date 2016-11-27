@@ -157,6 +157,7 @@
 		083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */; };
 		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
 		083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
+		083D11831DE8C24C00549268 /* BuildInfo.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 083D11821DE8C24C00549268 /* BuildInfo.xcconfig */; };
 		084199261D903F7A0089A1AC /* ServerSetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* ServerSetupController.swift */; };
 		0841993A1D91B0760089A1AC /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		0841993B1D91B2770089A1AC /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; };
@@ -661,6 +662,7 @@
 		083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbeddedDialogController.swift; sourceTree = "<group>"; };
 		083A567C1D25AFE7009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/BookmarkManager.storyboard; sourceTree = "<group>"; };
 		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BookmarkManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		083D11821DE8C24C00549268 /* BuildInfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = BuildInfo.xcconfig; path = config/BuildInfo.xcconfig; sourceTree = "<group>"; };
 		084199251D903F7A0089A1AC /* ServerSetupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerSetupController.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* MockFileManagers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManagers.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
@@ -1091,6 +1093,7 @@
 				08F189AB1D18816A00866A05 /* Debug.xcconfig */,
 				08F189AC1D18817E00866A05 /* Release.xcconfig */,
 				08F189AD1D18818700866A05 /* Shared.xcconfig */,
+				083D11821DE8C24C00549268 /* BuildInfo.xcconfig */,
 				08037C211D7B74A100006E9E /* App.xcconfig */,
 				08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */,
 			);
@@ -1533,7 +1536,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 088CE6831C4B0AF500153414 /* Build configuration list for PBXNativeTarget "MacClient" */;
 			buildPhases = (
-				0833A8241D2D853B0033654B /* increment build number */,
 				08A01FCF1CC80928001EDFAA /* create help index */,
 				088CE6651C4B0AF400153414 /* Sources */,
 				088CE6661C4B0AF400153414 /* Frameworks */,
@@ -1796,6 +1798,7 @@
 				08C484F81C9B159000FE824B /* server.cer in Resources */,
 				08F448FD1C4E244500C64706 /* MainController.storyboard in Resources */,
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
+				083D11831DE8C24C00549268 /* BuildInfo.xcconfig in Resources */,
 				0827A4E51C7ED9CE001F0AFB /* RKeywords.txt in Resources */,
 				08A01FD21CC81479001EDFAA /* helpindex.db in Resources */,
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
@@ -1871,21 +1874,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n    (cd ClientCore; swiftlint)\nelse\n    echo \"Warning: swiftlint not installed\"\nfi\n";
-		};
-		0833A8241D2D853B0033654B /* increment build number */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "increment build number";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/sh;
-			shellScript = "buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\"";
-			showEnvVarsInLog = 0;
 		};
 		085846CC1C7A883600F92EFE /* codesign unit tests for keychain */ = {
 			isa = PBXShellScriptBuildPhase;

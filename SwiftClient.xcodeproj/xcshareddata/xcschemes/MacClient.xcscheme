@@ -160,6 +160,11 @@
             isEnabled = "NO">
          </EnvironmentVariable>
          <EnvironmentVariable
+            key = "DisableHockeyApp"
+            value = "1"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
             key = "CA_DEBUG_TRANSACTIONS"
             value = "1"
             isEnabled = "YES">
@@ -199,7 +204,7 @@
       buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       revealArchiveInOrganizer = "YES">
       <PostActions>
          <ExecutionAction

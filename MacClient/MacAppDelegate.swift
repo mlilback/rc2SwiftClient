@@ -43,15 +43,15 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
-		//skip showing bookmarks when running unit tests
+		//skip startup actions if running unit tests
 		guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
-//		showBookmarkWindow(nil)
 	#if HOCKEYAPP_ENABLED
-//		log.info("key is \(kHockeyAppIdentifier)")
-//		BITHockeyManager.sharedHockeyManager().configureWithIdentifier(kHockeyAppIdentifier)
-		//BITHockeyManager.sharedHockeyManager().debugLogEnabled = true
-		// Do some additional configuration if needed here
-//		BITHockeyManager.sharedHockeyManager().startManager()
+		if ProcessInfo.processInfo.environment["DisableHockeyApp"] == nil {
+			BITHockeyManager.shared().configure(withIdentifier: kHockeyAppIdentifier)
+			//BITHockeyManager.sharedHockeyManager().debugLogEnabled = true
+			// Do some additional configuration if needed here
+			BITHockeyManager.shared().start()
+		}
 	#endif
 		restoreSessions()
 	}
@@ -92,8 +92,10 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func performPullAndPrepareContainers(_ needPull: Bool) -> SignalProducer<(), DockerError> {
+		os_log("performPullAndPrepareContainers: %d", log: .app, type: .debug, needPull ? 1 : 0)
 		guard let docker = dockerManager else { fatalError() }
 		guard needPull else {
+			os_log("pull not needed, preparing containers", log: .app, type: .debug)
 			return docker.prepareContainers()
 		}
 		return docker.pullImages().on(
@@ -124,7 +126,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			)
 			.on(
 				failed: { error in
-					os_log("failed to start a container: %{public}@", log: .app, type: .error, error.localizedDescription)
+					os_log("failed to start a container: %{public}s", log: .app, type: .error, error as NSError)
 //					fatalError(error.localizedDescription)
 				}, completed: {
 					DispatchQueue.main.async {
@@ -145,9 +147,11 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		if let json: JSON = defaults[.openSessions] {
 			bookmarks = (try? json.asArray()) ?? []
 		}
+		let dinfo = "bwc = \(bookmarkWindowController), bmc = \(bookmarkWindowController?.contentViewController)"
+		os_log("bm info: %{public}s", log: .app, type: .debug, dinfo)
 		guard let bmarkController = bookmarkWindowController?.contentViewController as? BookmarkViewController else
 		{
-			os_log("failed to get bookmarkViewController to restore sessions", log: .app, type: .error)
+			os_log("failed to get bookmarkViewController to restore sessions", log: .app, type: .default)
 			return
 		}
 		//TODO: show progress dialog
