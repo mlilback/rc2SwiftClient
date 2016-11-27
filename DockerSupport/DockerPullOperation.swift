@@ -151,6 +151,7 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
 		guard nil == error else {
+			os_log("error in pull operation %{public}s", log: .docker, type: .debug, error! as NSError)
 			pullObserver?.send(error: DockerError.cocoaError(error as NSError?))
 			return
 		}

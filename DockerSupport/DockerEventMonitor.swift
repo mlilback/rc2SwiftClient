@@ -90,7 +90,6 @@ final class DockerEventMonitor: NSObject, URLSessionDataDelegate {
 		request.rc2_chunkedResponse = true
 		let task = session.dataTask(with: request as URLRequest)
 		task.resume()
-		print("task resumed")
 	}
 
 	open func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)

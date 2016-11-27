@@ -28,7 +28,6 @@ static NSString * const chunkedKey = @"rc2_chunked_response";
 	}
 	NSMutableURLRequest *req = (NSMutableURLRequest*)self;
 	[NSURLProtocol setProperty:[NSNumber numberWithBool:isChunked] forKey: chunkedKey inRequest:req];
-	NSLog(@"set prop");
 	assert(self.rc2_chunkedResponse == isChunked);
 }
 @end
