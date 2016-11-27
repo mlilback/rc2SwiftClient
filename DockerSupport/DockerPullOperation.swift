@@ -58,7 +58,10 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	/// - parameter estimatedSize: the size of the download, used for progress calculation
 	/// - parameter config: sesion configuration to use. If nil, will use system default
 	public init(baseUrl: URL, imageName: String, estimatedSize size: Int64, config: URLSessionConfiguration) {
-		urlConfig = config
+		let uconfig = config
+		uconfig.timeoutIntervalForRequest = 300
+		uconfig.timeoutIntervalForResource = 86400
+		urlConfig = uconfig
 		var urlparts = URLComponents(url: baseUrl, resolvingAgainstBaseURL: true)
 		urlparts?.path = "/images/create"
 		urlparts?.queryItems = [URLQueryItem(name:"fromImage", value: imageName)]
@@ -155,7 +158,7 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 			pullObserver?.send(error: DockerError.cocoaError(error as NSError?))
 			return
 		}
-		os_log("pull finished: %d", log: .docker, type:.info, totalDownloaded)
+		os_log("pull %{public}s finished: %d", log: .docker, type:.info, pullProgress.name, totalDownloaded)
 		pullProgress.currentSize = totalDownloaded
 		pullProgress.complete = true
 		pullObserver?.send(value: pullProgress)
