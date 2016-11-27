@@ -202,6 +202,10 @@ public final class DockerManager: NSObject {
 			self.imageInfo = RequiredImageInfo(from: json)
 			self.defaults[.cachedImageInfo] = json
 			self.defaults[.lastImageInfoCheck] = Date.timeIntervalSinceReferenceDate
+			//need to set the version used to create our containers from the image info we just processed
+			for aType in ContainerType.all {
+				try! self.containers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
+			}
 			return true
 		}
 	}

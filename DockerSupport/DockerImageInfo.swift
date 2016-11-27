@@ -74,6 +74,14 @@ public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
 		}
 	}
 
+	public subscript(type: ContainerType) -> DockerImageInfo {
+		switch type {
+			case .dbserver: return dbserver
+			case .appserver: return appserver
+			case .compute: return computeserver
+		}
+	}
+
 	public func index(after i: Int) -> Int {
 		precondition(i < endIndex)
 		return i + 1

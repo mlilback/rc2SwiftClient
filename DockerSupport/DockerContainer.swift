@@ -186,6 +186,17 @@ public final class DockerContainer: JSONDecodable {
 		self.state.value = state
 		//don't use a state machine because we could become off from what docker says and need to correct"
 	}
+	
+	/// injects the desired image tag/name (e.g. rc2server/dbserver:0.4.2)
+	///
+	/// - Parameter imageTag: the full docker image name, including version
+	/// - Throws: errors from JSONSerialization calls
+	func injectIntoCreate(imageTag: String) throws {
+		assert(createInfo != nil)
+		var info = try JSONSerialization.jsonObject(with: createInfo!, options: []) as! Dictionary<String, Any>
+		info["Image"] = imageTag
+		createInfo = try JSONSerialization.data(withJSONObject: info, options: [])
+	}
 }
 
 extension DockerContainer: JSONEncodable {
