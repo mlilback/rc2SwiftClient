@@ -47,7 +47,6 @@ final class DockerAPIImplementation: DockerAPI {
 		let req = URLRequest(url: baseUrl.appendingPathComponent("/version"))
 		os_log("dm.loadVersion called to %{public}s", log: .docker, type: .debug, req.debugDescription)
 		return makeRequest(request: req)
-			.map({ $0.0 }) //transform from (Data, HTTPURLResponse) to Data
 			.flatMap(.concat, transform: dataToJson)
 			.flatMap(.concat, transform: parseVersionInfo)
 			.observe(on: scheduler)
@@ -56,7 +55,6 @@ final class DockerAPIImplementation: DockerAPI {
 	// documentation in DockerAPI protocol
 	public func fetchJson(url: URL) -> SignalProducer<JSON, DockerError> {
 		return self.makeRequest(request: URLRequest(url: url))
-			.map({ $0.0 })
 			.flatMap(.concat, transform: self.dataToJson)
 	}
 
@@ -66,7 +64,6 @@ final class DockerAPIImplementation: DockerAPI {
 	public func loadImages() -> SignalProducer<[DockerImage], DockerError> {
 		let req = URLRequest(url: baseUrl.appendingPathComponent("/images/json"))
 		return makeRequest(request: req)
-			.map({ $0.0 })
 			.flatMap(.concat, transform: dataToJson)
 			.flatMap(.concat, transform: parseImages)
 			.observe(on: scheduler)
@@ -83,7 +80,6 @@ final class DockerAPIImplementation: DockerAPI {
 		let req = URLRequest(url: urlcomponents.url!)
 
 		return makeRequest(request: req)
-			.map({ $0.0 }) //transform from (Data, HTTPURLResponse) to Data
 			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
 				return SignalProducer<Bool, DockerError> { observer, _ in
 					self.jsonCheckHandler(observer: observer, data: data) { json in
@@ -123,7 +119,6 @@ final class DockerAPIImplementation: DockerAPI {
 	public func refreshContainers() -> SignalProducer<[DockerContainer], DockerError>
 	{
 		return self.makeRequest(request: self.containersRequest())
-			.map({ $0.0 }) //transform from (Data, HTTPURLResponse) to Data
 			.flatMap(.concat, transform: dataToJson)
 			.flatMap(.concat, transform: parseContainers)
 			.observe(on: scheduler)
@@ -225,7 +220,6 @@ final class DockerAPIImplementation: DockerAPI {
 	func networkExists(name: String) -> SignalProducer<Bool, DockerError> {
 		let req = URLRequest(url: baseUrl.appendingPathComponent("/networks"))
 		return makeRequest(request: req)
-			.map({ $0.0 }) //transform from (Data, HTTPURLResponse) to Data
 			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
 				return SignalProducer<Bool, DockerError> { observer, _ in
 					self.jsonCheckHandler(observer: observer, data: data) { json in
@@ -363,19 +357,22 @@ extension DockerAPIImplementation {
 	}
 
 	@discardableResult
-	fileprivate func makeRequest(request: URLRequest) -> SignalProducer<(Data, HTTPURLResponse), DockerError> {
-		return SignalProducer<(Data, HTTPURLResponse), DockerError> { observer, disposable in
+	fileprivate func makeRequest(request: URLRequest) -> SignalProducer<Data, DockerError> {
+		return SignalProducer<Data, DockerError> { observer, disposable in
 			self.session.dataTask(with: request, completionHandler: { (data, response, error) in
-				guard let rawData = data, let rsp = response as? HTTPURLResponse, error == nil else {
+				guard let rawData = data, error == nil else {
 					observer.send(error: .networkError(error as? NSError))
 					return
 				}
-				guard rsp.statusCode >= 200 && rsp.statusCode < 400 else {
+				//default to 200 for non-http status codes (such as file urls)
+				let statusCode = response?.httpResponse?.statusCode ?? 200
+				guard statusCode >= 200 && statusCode < 400 else {
+					let rsp = response!.httpResponse!
 					os_log("docker request got bad status: %d response = %{public}s", log: .docker, rsp.statusCode, String(data: data!, encoding: .utf8)!)
 					observer.send(error: DockerError.generateHttpError(from: rsp, body: data))
 					return
 				}
-				observer.send(value: (rawData, rsp))
+				observer.send(value: rawData)
 				observer.sendCompleted()
 			}).resume()
 		}
