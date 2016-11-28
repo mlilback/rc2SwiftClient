@@ -29,6 +29,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 
 		let fh = FileHandle(fileDescriptor: fd)
 		guard let outStr = buildRequestString(), outStr.characters.count > 0 else { return }
+		os_log("sending request to docker: %{public}s", log: .docker, type: .debug)
 		fh.write(outStr.data(using: String.Encoding.utf8)!)
 		if let body = request.httpBody {
 			fh.write(body)
@@ -42,7 +43,6 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		}
 		let inData = fh.readDataToEndOfFile()
 		close(fd)
-
 		guard let (response, responseData) = processInitialResponse(data: inData) else { return }
 		//report success to client
 		client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
@@ -162,6 +162,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 			reportBadResponse(error: error)
 			throw error
 		}
+		os_log("connection open to docker", log: .docker, type: .debug)
 		return fd
 	}
 
@@ -174,6 +175,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		//split the response into headers and content, create a response object
 		guard let (headersString, contentString) = splitResponseData(inData) else { reportBadResponse(); return nil }
 		guard let (statusCode, httpVersion, headers) = extractHeaders(headersString) else { reportBadResponse(); return nil }
+		os_log("docker returned %d", log: .docker, type: .debug, statusCode)
 		guard let response = HTTPURLResponse(url: request.url!, statusCode: statusCode, httpVersion: httpVersion, headerFields: headers) else { reportBadResponse(); return nil }
 		return (response, contentString.data(using: String.Encoding.utf8)!)
 	}

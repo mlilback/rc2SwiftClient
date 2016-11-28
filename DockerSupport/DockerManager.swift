@@ -146,7 +146,15 @@ public final class DockerManager: NSObject {
 			.flatMap(.concat, transform: api.loadImages)
 			.map { images in self.installedImages = images; return refresh }
 			.flatMap(.concat, transform: checkForImageUpdate)
-			.map { _ in self.pullIsNecessary() }
+			.on(completed: { 
+				//need to set the version used to create our containers from the image info we just processed
+				for aType in ContainerType.all {
+					try! self.containers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
+				}
+			})
+			.map { _ in
+				return self.pullIsNecessary()
+			}
 		return producer
 	}
 
@@ -202,10 +210,6 @@ public final class DockerManager: NSObject {
 			self.imageInfo = RequiredImageInfo(from: json)
 			self.defaults[.cachedImageInfo] = json
 			self.defaults[.lastImageInfoCheck] = Date.timeIntervalSinceReferenceDate
-			//need to set the version used to create our containers from the image info we just processed
-			for aType in ContainerType.all {
-				try! self.containers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
-			}
 			return true
 		}
 	}
