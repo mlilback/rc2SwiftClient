@@ -36,39 +36,4 @@ public extension String {
 		guard let range = range(from: from) else { return nil }
 		return substring(with: range)
 	}
-
-	fileprivate struct CharSetStatics {
-		static var urlAllowedCharacters: CharacterSet = {
-			let unreserved = "-._~/?"
-			let allowed = NSMutableCharacterSet.alphanumeric()
-			allowed.addCharacters(in: unreserved)
-			return allowed as CharacterSet
-		}()
-
-		static var formAllowedCharacters: CharacterSet = {
-			let unreserved = "*-._"
-			let allowed = NSMutableCharacterSet.alphanumeric()
-			allowed.addCharacters(in: unreserved)
-			allowed.addCharacters(in: " ")
-			return allowed as CharacterSet
-		}()
-	}
-
-	///from http://useyourloaf.com/blog/how-to-percent-encode-a-url-string/
-	public func stringByAddingPercentEncodingForURL() -> String? {
-		return addingPercentEncoding(withAllowedCharacters: CharSetStatics.urlAllowedCharacters)
-	}
-
-	///from http://useyourloaf.com/blog/how-to-percent-encode-a-url-string/
-	/// converts spaces to +
-	public func stringByAddingPercentEncodingForFormData() -> String? {
-		let unreserved = "*-._"
-		let allowed = NSMutableCharacterSet.alphanumeric()
-		allowed.addCharacters(in: unreserved)
-		allowed.addCharacters(in: " ")
-
-		var encoded = addingPercentEncoding(withAllowedCharacters: CharSetStatics.formAllowedCharacters)
-		encoded = encoded?.replacingOccurrences(of: " ", with: "+")
-		return encoded
-	}
 }
