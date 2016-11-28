@@ -61,7 +61,9 @@ public final class DockerManager: NSObject {
 	private var state: ManagerState = .unknown
 
 	///has enough time elapsed that we should check to see if there is an update to the docker images
+	/// will always return true if the 'SkipUpdateCache' environment variable is set
 	public var shouldCheckForUpdate: Bool {
+		guard nil == ProcessInfo.processInfo.environment["DMSkipUpdateCache"] else { return true }
 		return defaults[.lastImageInfoCheck] + 86400.0 <= Date.timeIntervalSinceReferenceDate
 	}
 
@@ -69,7 +71,7 @@ public final class DockerManager: NSObject {
 
 	///Default initializer. After creation, initializeConnection or isDockerRunning must be called
 	/// - parameter hostUrl: The base url of the docker daemon (i.e. http://localhost:2375/) to connect to. nil means use /var/run/docker.sock. Also checks for the environment variable "DockerHostUrl" if not specified. If DockerHostUrl is specified, also should define DockerHostSharePath as the path to map to /rc2 in the dbserver container
-	/// - parameter baseInfoUrl: the base url where imageInfo.json can be found. Defaults to www.rc2.io.
+	/// - parameter baseInfoUrl: the base url where imageInfo.json can be found. Defaults to www.rc2.io. Can be overridden by 'ImageInfoBaseUrl' environment variable
 	/// - parameter userDefaults: defaults to standard user defaults. Allows for dependency injection.
 	/// - parameter sessionConfiguration: url configuration to use, defaults to the standard default configuration
 	public init(hostUrl host: String? = nil, baseInfoUrl infoUrl: String? = nil, userDefaults: UserDefaults = .standard, sessionConfiguration: URLSessionConfiguration = .default)
@@ -81,7 +83,7 @@ public final class DockerManager: NSObject {
 		} else {
 			baseUrl = URL(string: "unix://")
 		}
-		self.baseInfoUrl = infoUrl == nil ? "https://www.rc2.io/" : infoUrl!
+		self.baseInfoUrl = ProcessInfo.processInfo.envValue(name: "ImageInfoBaseUrl", defaultValue: infoUrl == nil ? "https://www.rc2.io/" : infoUrl!)
 		defaults = userDefaults
 		sessionConfig = sessionConfiguration
 		sessionConfig.protocolClasses = [DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
@@ -93,12 +95,9 @@ public final class DockerManager: NSObject {
 		super.init()
 		setupDataDirectory()
 		//check for a host specified as an environment variable - useful for testing
-		if nil == host, var envHost = ProcessInfo.processInfo.environment["DockerHostUrl"] {
-			//go through a lot of trouble to remove any trailing slash
-			if envHost.hasSuffix("/") {
-				envHost = envHost.substring(to: envHost.index(envHost.endIndex, offsetBy: -1))
-			}
-			baseUrl = URL(string:envHost)
+		if nil == host, let envHost = ProcessInfo.processInfo.environment["DockerHostUrl"] {
+			//remove any trailing slash as docker doesn't like double slashes in a url
+			baseUrl = URL(string: envHost.truncate(string: "/"))
 			guard let spath = ProcessInfo.processInfo.environment["DockerHostSharePath"] else {
 				fatalError("remote url provided without share path")
 			}
