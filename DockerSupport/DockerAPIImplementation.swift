@@ -157,7 +157,7 @@ final class DockerAPIImplementation: DockerAPI {
 	// documentation in DockerAPI protocol
 	func create(container: DockerContainer) -> SignalProducer<DockerContainer, DockerError> {
 		return SignalProducer<DockerContainer, DockerError> { observer, _ in
-			os_log("creating %{public}@", log: .docker, type: .info, container.name)
+			os_log("creating container %{public}s", log: .docker, type: .info, container.name)
 			guard container.state.value == .notAvailable else {
 				observer.send(value: container)
 				observer.sendCompleted()
@@ -305,9 +305,11 @@ extension DockerAPIImplementation {
 	func statusCodeResponseHandler<T>(observer: Observer<T, DockerError>, data: Data?, response: URLResponse?, error: Error?, valueHandler:(() -> Void))
 	{
 		guard let rsp = response as? HTTPURLResponse, error == nil else {
+			os_log("api remote error: %{public}@", log: .docker, type: .default, error! as NSError)
 			observer.send(error: .networkError(error as? NSError))
 			return
 		}
+		os_log("api status: %d", log: .docker, type: .debug, rsp.statusCode)
 		switch rsp.statusCode {
 		case 201, 204, 304: //spec says 204, but should be 201 for created. we'll handle both
 			valueHandler()

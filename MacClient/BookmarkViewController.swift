@@ -47,9 +47,16 @@ open class BookmarkViewController: NSViewController {
 
 	var entries: [BookmarkEntry] = []
 
+	func windowAccessor(session: Session?) -> NSWindow {
+		guard let win = self.view.window else {
+			os_log("bookmark appstatus has no window", log: .app, type: .error)
+			fatalError()
+		}
+		return win
+	}
 	override open func viewDidLoad() {
 		super.viewDidLoad()
-		appStatus = MacAppStatus(windowAccessor: { [unowned self] _ in self.view.window! })
+		appStatus = MacAppStatus(windowAccessor: windowAccessor)
 		dateFormatter.dateStyle = .short
 		dateFormatter.timeStyle = .short
 		tableView?.doubleAction = #selector(BookmarkViewController.openBookmark(_:))

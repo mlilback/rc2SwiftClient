@@ -19,7 +19,7 @@
 			"Hostname": "appserver",
 			"ExposedPorts": { "8088/tcp": {} },
 			"Labels": { "rc2.live": "" },
-			"HostConfig": { "NetworkMode": "rc2server", "PortBindings": { "8088/tcp": [{ "HostIp": "", "HostPort": "8088" }] } },
+			"HostConfig": { "NetworkMode": "rc2server", "PortBindings": { "8088/tcp": [{ "HostPort": "8088" }] } },
 			"NetworkingConfig": {
 				"EndpointsConfig": {
 					"rc2server": {
