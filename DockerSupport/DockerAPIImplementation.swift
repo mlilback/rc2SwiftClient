@@ -167,6 +167,7 @@ final class DockerAPIImplementation: DockerAPI {
 				observer.send(error: .invalidJson)
 				return
 			}
+//			try! jsonData.write(to: URL(fileURLWithPath: "/tmp/json.\(container.type.rawValue).json"))
 			var comps = URLComponents(url: URL(string:"/containers/create", relativeTo:self.baseUrl)!, resolvingAgainstBaseURL: true)!
 			comps.queryItems = [URLQueryItem(name:"name", value:container.name)]
 			var request = URLRequest(url: comps.url!)
@@ -202,7 +203,7 @@ final class DockerAPIImplementation: DockerAPI {
 	func create(network: String) -> SignalProducer<(), DockerError>
 	{
 		var props = [String:Any]()
-		props["Internal"] = true
+		props["Internal"] = false
 		props["Driver"] = "bridge"
 		props["Name"] = network
 		// swiftlint:disable:next force_try
