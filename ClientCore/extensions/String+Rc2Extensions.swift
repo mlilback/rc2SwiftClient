@@ -36,4 +36,22 @@ public extension String {
 		guard let range = range(from: from) else { return nil }
 		return substring(with: range)
 	}
+
+	/// Returns self with string removed from the end (if present)
+	///
+	/// - Parameter string: the string to remove from the end
+	/// - Returns: self with string removed from the end
+	public func truncate(string: String) -> String {
+		guard hasSuffix(string) else { return self }
+		return substring(to: index(endIndex, offsetBy: -string.characters.count))
+	}
+
+	/// Returns self with a specified number of characters removed from the end
+	///
+	/// - Parameter by: the number of characters to remove from the end
+	/// - Returns: self with by characters removed from the end
+	public func truncate(by: Int) -> String {
+		guard characters.count > by else { return self }
+		return substring(to: index(endIndex, offsetBy: -by))
+	}
 }

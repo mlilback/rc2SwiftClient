@@ -158,6 +158,7 @@
 		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
 		083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
 		083D11831DE8C24C00549268 /* BuildInfo.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 083D11821DE8C24C00549268 /* BuildInfo.xcconfig */; };
+		083D11861DECC37900549268 /* Process+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11851DECC37900549268 /* Process+Rc2.swift */; };
 		084199261D903F7A0089A1AC /* ServerSetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* ServerSetupController.swift */; };
 		0841993A1D91B0760089A1AC /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		0841993B1D91B2770089A1AC /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; };
@@ -663,6 +664,7 @@
 		083A567C1D25AFE7009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/BookmarkManager.storyboard; sourceTree = "<group>"; };
 		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BookmarkManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		083D11821DE8C24C00549268 /* BuildInfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = BuildInfo.xcconfig; path = config/BuildInfo.xcconfig; sourceTree = "<group>"; };
+		083D11851DECC37900549268 /* Process+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Process+Rc2.swift"; sourceTree = "<group>"; };
 		084199251D903F7A0089A1AC /* ServerSetupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerSetupController.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* MockFileManagers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManagers.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
@@ -1321,6 +1323,7 @@
 				089794441D7B6A8F003339EE /* NSError+Rc2.swift */,
 				089794471D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift */,
 				089794481D7B6A8F003339EE /* NSURL+Rc2.swift */,
+				083D11851DECC37900549268 /* Process+Rc2.swift */,
 				089794491D7B6A8F003339EE /* String+Rc2Extensions.swift */,
 				0897944A1D7B6A8F003339EE /* SystemExtensions.swift */,
 				08E8366A1D94436D00E26EFE /* UserDefaults+JSON.swift */,
@@ -2070,6 +2073,7 @@
 			files = (
 				089794421D7B6A0F003339EE /* SharedConstants.swift in Sources */,
 				089794511D7B6A8F003339EE /* SystemExtensions.swift in Sources */,
+				083D11861DECC37900549268 /* Process+Rc2.swift in Sources */,
 				081559951DDCCD960047B3CE /* RACSignals+Rc2.swift in Sources */,
 				0897944B1D7B6A8F003339EE /* NSError+Rc2.swift in Sources */,
 				0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */,
