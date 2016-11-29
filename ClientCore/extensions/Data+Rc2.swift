@@ -21,4 +21,28 @@ public extension Data {
 		}
 		inputStream.close()
 	}
+
+	/// Enumerate through slices of contents divided by a particular data value
+	///
+	/// - Parameters:
+	///   - divider: the data to split by
+	///   - handler: a closure that is passed a matching slice of data
+	public func enumerateComponentsSeparated(by divider: Data, handler: (Data) -> Void) {
+		var start = startIndex
+		var remainingRange: Range<Data.Index> = start..<endIndex
+		while true {
+			guard let divRange = range(of: divider, options: [], in: remainingRange) else
+			{
+				//no more dividers, just handle remaing range
+				if remainingRange.count > 0 {
+					handler(subdata(in: remainingRange))
+				}
+				return
+			}
+			let matchRange: Range<Data.Index> = start..<divRange.lowerBound
+			handler(subdata(in: matchRange))
+			start = matchRange.upperBound + divider.count
+			remainingRange = start..<endIndex
+		}
+	}
 }
