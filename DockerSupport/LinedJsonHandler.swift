@@ -11,8 +11,8 @@ import os
 
 ///This class takes a socket that contains the response from a docker api call that returned line-delimeted JSON, such as /images/create, and /events. See [this docker issue](https://github.com/docker/docker/issues/16925).
 
-enum MessageType: Int {
-	case json, complete, error
+enum MessageType {
+	case headers(Data), json, complete, error
 }
 
 enum LinedJsonError: Error {
@@ -120,10 +120,11 @@ class LinedJsonHandler {
 	
 	private func parseInitialContent(_ data: Data) {
 		do {
-			let (_, contentData) = try HttpStringUtils.splitResponseData(data)
+			let (headData, contentData) = try HttpStringUtils.splitResponseData(data)
 			//TODO: confirm 200 response on http status from headData
 			let (jsonArray, remainingData) = try parse(data: contentData)
 			leftoverData = remainingData
+			sendMessage(.headers(headData), json: [])
 			gotHeader = true
 			sendMessage(.json, json: jsonArray)
 		} catch {

@@ -7,13 +7,15 @@
 import Foundation
 import Darwin
 import os
+import Freddy
+import ClientCore
 
 ///DockerUrlProtocol is a subclass of NSURLProtocol for dealing with "unix" URLs
 /// This is used to communicate with the local Docker daemon using a REST-like syntax
 
 open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	fileprivate let socketPath = "/var/run/docker.sock"
-	fileprivate var chunkObserver: BackgroundReader?
+	fileprivate var chunkHandler: LinedJsonHandler?
 
 	override open class func canInit(with request: URLRequest) -> Bool {
 		os_log("DUP queried about %{public}s", log: .docker, type: .debug, "\(request)")
@@ -50,9 +52,9 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		client?.urlProtocolDidFinishLoading(self)
 	}
 
-	// required by protocol, even though we don't user
+	// required by protocol, even though we don't use
 	override open func stopLoading() {
-		chunkObserver = nil
+		chunkHandler = nil
 	}
 
 	//MARK: - private methods
@@ -92,28 +94,29 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		}
 
 		//now start reading any future data asynchronously
-		chunkObserver = BackgroundReader(owner: self, fileHandle: fileHandle)
-		fileHandle.waitForDataInBackgroundAndNotify()
-//		let queue = DispatchQueue.global(qos: .userInitiated)
-//		let source = DispatchSource.makeReadSource(fileDescriptor: fileHandle.fileDescriptor, queue: queue)
-//		source.setEventHandler {
-//			self.client?.urlProtocol(self, didLoad: fileHandle.availableData)
-//		}
-//		source.setCancelHandler {
-//			print("chunk canceled")
-//			self.client?.urlProtocolDidFinishLoading(self)
-//			fileHandle.closeFile()
-//		}
-//		source.activate()
-		// FIXME: we're not doing the actual work right now
-//		DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: DispatchTime.now() + 0.5) {
-//			self.client?.urlProtocol(self, didLoad: "foo".data(using: .utf8)!)
-//			DispatchQueue.global().async {
-//				self.client?.urlProtocolDidFinishLoading(self)
-//			}
-//		}
+		chunkHandler = LinedJsonHandler(fileHandle: fileHandle, handler: chunkedResponseHandler)
+		chunkHandler?.start()
 	}
 
+	fileprivate func chunkedResponseHandler(msgType: MessageType, json: [JSON]) {
+		switch msgType {
+		case .complete:
+			client?.urlProtocolDidFinishLoading(self)
+		case .error:
+			client?.urlProtocol(self, didFailWithError: Rc2Error(type: .invalidJson))
+		case .json:
+			json.forEach { aLine in
+				client?.urlProtocol(self, didLoad: try! aLine.serialize())
+			}
+		case .headers(let headData):
+			guard let response = generateResponse(headerData: headData) else {
+				client?.urlProtocol(self, didFailWithError: Rc2Error(type: .network))
+				return
+			}
+			client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+		}
+	}
+	
 	/// parses the incoming data and forwards it to the client
 	///
 	/// - parameter data: the data to parse
@@ -173,13 +176,29 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	/// - returns: a response and the response data
 	func processInitialResponse(data inData: Data) -> (HTTPURLResponse, Data)? {
 		//split the response into headers and content, create a response object
-		guard let (headersString, contentString) = splitResponseData(inData) else { reportBadResponse(); return nil }
-		guard let (statusCode, httpVersion, headers) = extractHeaders(headersString) else { reportBadResponse(); return nil }
-		os_log("docker returned %d", log: .docker, type: .debug, statusCode)
-		guard let response = HTTPURLResponse(url: request.url!, statusCode: statusCode, httpVersion: httpVersion, headerFields: headers) else { reportBadResponse(); return nil }
-		return (response, contentString.data(using: String.Encoding.utf8)!)
+		guard let (headData, contentData) = try? HttpStringUtils.splitResponseData(inData),
+			let response = generateResponse(headerData: headData)
+			else
+		{
+			reportBadResponse();
+			return nil
+		}
+		return (response, contentData)
 	}
 
+	fileprivate func generateResponse(headerData: Data) -> HTTPURLResponse? {
+		guard let headString = String(data: headerData, encoding: .utf8),
+			let (statusCode, httpVersion, headers) = try? HttpStringUtils.extractHeaders(headString)
+			else
+		{
+			return nil
+		}
+		os_log("docker returned %d", log: .docker, type: .debug, statusCode)
+		guard let response = HTTPURLResponse(url: request.url!, statusCode: statusCode, httpVersion: httpVersion, headerFields: headers) else
+		{ return nil }
+		return response
+	}
+	
 	//convience wrapper for sending an error message to the client
 	fileprivate func reportBadResponse(error: NSError? = nil) {
 		var terror = error
@@ -187,74 +206,5 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 			terror = NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey:request.url!])
 		}
 		client?.urlProtocol(self, didFailWithError: terror!)
-	}
-
-	///splits raw data into headers and content
-	///
-	/// - parameter data: raw data to split
-	/// - returns: a tuple of the header and content strings
-	fileprivate func splitResponseData(_ data: Data) -> (String, String)? {
-		guard let responseString = String(data:data, encoding: String.Encoding.utf8),
-			let endFirstLineRange = responseString.range(of: "\r\n\r\n")
-			else { reportBadResponse(); return nil }
-		let headersString = responseString.substring(with: responseString.startIndex..<endFirstLineRange.lowerBound)
-		let contentString = responseString.substring(from: endFirstLineRange.upperBound)
-		return (headersString, contentString)
-	}
-
-	///extracts headers into a dictionary
-	/// - parameter headerString: the raw headers from an HTTP response
-	/// - returns: tuple of the HTTP status code, HTTP version, and a dictionary of headers
-	func extractHeaders(_ responseString: String) -> (Int, String, [String:String])? {
-		// swiftlint:disable:next force_try
-		let responseRegex = try! NSRegularExpression(pattern: "^(HTTP/1.\\d) (\\d+)( .*?\r\n)(.*)", options: [.anchorsMatchLines, .dotMatchesLineSeparators])
-		guard let matchResult = responseRegex.firstMatch(in: responseString, options: [], range: responseString.fullNSRange), matchResult.numberOfRanges == 5,
-			let statusString = responseString.substring(from: matchResult.rangeAt(2)),
-			let statusCode = Int(statusString),
-			let versionString = responseString.substring(from: matchResult.rangeAt(1)),
-			let headersString = responseString.substring(from: matchResult.rangeAt(4))
-			else { reportBadResponse(); return nil }
-		var headers = [String:String]()
-		// swiftlint:disable:next force_try
-		let headerRegex = try! NSRegularExpression(pattern: "(.+): (.*)", options: [])
-		headerRegex.enumerateMatches(in: headersString, options: [], range: headersString.fullNSRange)
-		{ (matchResult, _, _) in
-			if let match = matchResult,
-				let key = headersString.substring(from: match.rangeAt(1)),
-				let value = headersString.substring(from: match.rangeAt(2))
-			{
-				headers[key] = value
-			}
-		}
-		return (statusCode, versionString, headers)
-	}
-}
-
-/// Reads data from a FileHandle and sends the data to a URLProtocol's client, finishing when EOF is reached
-class BackgroundReader {
-	weak var proto: URLProtocol?
-
-	/// Creates an instance that reads data from fileHandle and forwards it to the owner's client, finishing when EOF is reached
-	///
-	/// - parameter owner:      the URLProtocol who's client should be notified of data and finish
-	/// - parameter fileHandle: the fileHandle to read
-	init(owner: URLProtocol, fileHandle: FileHandle) {
-		self.proto = owner
-		let nc = NotificationCenter.default
-		nc.addObserver(self, selector: #selector(BackgroundReader.dataRead(note:)), name: Notification.Name.NSFileHandleDataAvailable, object: fileHandle)
-	}
-
-	/// Callback for NotificationCenter when data is available on the monitored FileHandle
-	///
-	/// - parameter note: the notification object
-	@objc func dataRead(note: Notification) {
-		guard let fh = note.object as? FileHandle else { fatalError() }
-		let data = fh.availableData
-		if data.count < 1 {
-			proto?.client?.urlProtocolDidFinishLoading(proto!)
-			return
-		}
-		proto?.client?.urlProtocol(proto!, didLoad: data)
-		fh.waitForDataInBackgroundAndNotify()
 	}
 }

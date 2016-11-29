@@ -156,11 +156,87 @@ class DockerUrlProtocolTests: XCTestCase, URLSessionDataDelegate {
 		xpect?.fulfill()
 	}
 
+	func testDReader() {
+		let reader = DReader()
+		let exp = expectation(description: "foobar")
+		reader.startLoading(expect: exp)
+		waitForExpectations(timeout: 20.0) { err in
+			NSLog("exp fulfilled")
+		}
+	}
 }
 
 public class TestDockerProtocol: DockerUrlProtocol {
 	override public func writeRequestData(data: Data, fileHandle: FileHandle) {
 	}
+}
+
+class DReader {
+	let socketPath = "/var/run/docker.sock"
+	var lines: [JSON] = []
+	var haveReadHeader = false
+	var headers: String?
+	
+	func startLoading(expect: XCTestExpectation) {
+		let fd = openDockerConnection()
+		let readSrc = DispatchSource.makeReadSource(fileDescriptor: fd, queue: DispatchQueue.global())
+		let fh = FileHandle(fileDescriptor: fd)
+		readSrc.setEventHandler {
+			let sizeRead = readSrc.data
+			NSLog("read \(sizeRead) bytes")
+			if sizeRead == 0 {
+				expect.fulfill()
+				readSrc.cancel()
+				NSLog("got \(self.lines.count) messages")
+				return
+			}
+			let data = fh.readData(ofLength: Int(sizeRead))
+			let dataStr = String(data: data, encoding: .utf8)!
+			if !self.haveReadHeader {
+				//try reading the header from data
+				
+			}
+			NSLog("data: dataStr")
+//			NSLog("read \(data.count)")
+		}
+		readSrc.setCancelHandler {
+			readSrc.cancel()
+		}
+		readSrc.resume()
+		let outStr = "POST /images/create?fromImage=rc2server/appserver:0.4.3 HTTP/1.0\r\n\r\n"
+		fh.write(outStr.data(using: .utf8)!)
+	}
+	
+	func openDockerConnection() -> Int32 {
+		let fd = socket(AF_UNIX, SOCK_STREAM, 0)
+		guard fd >= 0 else {
+			NSLog("error openign socket \(Darwin.errno)")
+			XCTFail()
+			return -1
+		}
+		let pathLen = socketPath.utf8CString.count
+		precondition(pathLen < 104) //size limit of struct
+		var addr = sockaddr_un()
+		addr.sun_family = sa_family_t(AF_LOCAL)
+		addr.sun_len = UInt8(pathLen)
+		_ = withUnsafeMutablePointer(to: &addr.sun_path) { ptr in
+			strncpy(UnsafeMutableRawPointer(ptr).assumingMemoryBound(to: CChar.self), socketPath, pathLen)
+		}
+		//connect, make the request, and fetch result data
+		var code: Int32 = 0
+		withUnsafePointer(to: &addr) { ptr in
+			ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { ar in
+				code = connect(fd, ar, socklen_t(MemoryLayout<sockaddr_un>.size))
+			}
+		}
+		guard code >= 0 else {
+			NSLog("bad response \(code), \(errno)")
+			XCTFail()
+			return -1
+		}
+		return fd
+	}
+
 }
 
 class FHRead {
