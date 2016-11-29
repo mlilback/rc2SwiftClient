@@ -159,6 +159,13 @@
 		083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
 		083D11831DE8C24C00549268 /* BuildInfo.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 083D11821DE8C24C00549268 /* BuildInfo.xcconfig */; };
 		083D11861DECC37900549268 /* Process+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11851DECC37900549268 /* Process+Rc2.swift */; };
+		083D11881DED00D200549268 /* LinedJsonHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11871DED00D200549268 /* LinedJsonHandler.swift */; };
+		083D118A1DED032000549268 /* HttpStringUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11891DED032000549268 /* HttpStringUtils.swift */; };
+		083D118C1DEDEAED00549268 /* LinedJsonHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D118B1DEDEAED00549268 /* LinedJsonHandlerSpec.swift */; };
+		083D118F1DEDECEC00549268 /* linedBadHeader.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D118D1DEDECEC00549268 /* linedBadHeader.json */; };
+		083D11901DEDECEC00549268 /* linedNormal.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D118E1DEDECEC00549268 /* linedNormal.json */; };
+		083D11921DEDF7F000549268 /* HttpStringUtilsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11911DEDF7F000549268 /* HttpStringUtilsSpec.swift */; };
+		083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11931DEE0DF300549268 /* DataRc2Spec.swift */; };
 		084199261D903F7A0089A1AC /* ServerSetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* ServerSetupController.swift */; };
 		0841993A1D91B0760089A1AC /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		0841993B1D91B2770089A1AC /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; };
@@ -263,7 +270,6 @@
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08F03E371DDFB5B500D02153 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
-		08F03E381DDFB5B800D02153 /* BrightFutures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */; };
 		08F03E391DDFB5BB00D02153 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		08F03E3A1DDFB5BE00D02153 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		08F03E3B1DDFB5CB00D02153 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; };
@@ -394,13 +400,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 08F6ADC11DD9169300AF0722;
 			remoteInfo = DockerSupport;
-		};
-		08F6ADCE1DD9169400AF0722 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 088CE6681C4B0AF400153414;
-			remoteInfo = MacClient;
 		};
 		08F6ADD51DD9169400AF0722 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -665,6 +664,13 @@
 		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BookmarkManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		083D11821DE8C24C00549268 /* BuildInfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = BuildInfo.xcconfig; path = config/BuildInfo.xcconfig; sourceTree = "<group>"; };
 		083D11851DECC37900549268 /* Process+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Process+Rc2.swift"; sourceTree = "<group>"; };
+		083D11871DED00D200549268 /* LinedJsonHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinedJsonHandler.swift; sourceTree = "<group>"; };
+		083D11891DED032000549268 /* HttpStringUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpStringUtils.swift; sourceTree = "<group>"; };
+		083D118B1DEDEAED00549268 /* LinedJsonHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinedJsonHandlerSpec.swift; sourceTree = "<group>"; };
+		083D118D1DEDECEC00549268 /* linedBadHeader.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = linedBadHeader.json; sourceTree = "<group>"; };
+		083D118E1DEDECEC00549268 /* linedNormal.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = linedNormal.json; sourceTree = "<group>"; };
+		083D11911DEDF7F000549268 /* HttpStringUtilsSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpStringUtilsSpec.swift; sourceTree = "<group>"; };
+		083D11931DEE0DF300549268 /* DataRc2Spec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRc2Spec.swift; sourceTree = "<group>"; };
 		084199251D903F7A0089A1AC /* ServerSetupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerSetupController.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* MockFileManagers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManagers.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
@@ -936,7 +942,6 @@
 				08F03E3A1DDFB5BE00D02153 /* Result.framework in Frameworks */,
 				08F03E3B1DDFB5CB00D02153 /* Quick.framework in Frameworks */,
 				08F03E3D1DDFB60600D02153 /* Mockingjay.framework in Frameworks */,
-				08F03E381DDFB5B800D02153 /* BrightFutures.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1036,6 +1041,8 @@
 		081559BA1DDFB2F50047B3CE /* test resources */ = {
 			isa = PBXGroup;
 			children = (
+				083D118D1DEDECEC00549268 /* linedBadHeader.json */,
+				083D118E1DEDECEC00549268 /* linedNormal.json */,
 				081559BB1DDFB4230047B3CE /* busybox.jsonData */,
 				081559A01DDFB2D80047B3CE /* containers.json */,
 				081559A31DDFB2D80047B3CE /* dockerImages.json */,
@@ -1301,6 +1308,7 @@
 				081559991DDE83250047B3CE /* Rc2Error.swift */,
 				083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */,
 				08765C811DC58AB300F75D8E /* DispatchReader.swift */,
+				083D11891DED032000549268 /* HttpStringUtils.swift */,
 				089794431D7B6A8F003339EE /* extensions */,
 				089794371D7B6925003339EE /* ClientCore-Bridging-Header.h */,
 				0897941D1D7B68F0003339EE /* Info.plist */,
@@ -1312,6 +1320,8 @@
 			isa = PBXGroup;
 			children = (
 				0897942B1D7B68F0003339EE /* Info.plist */,
+				083D11911DEDF7F000549268 /* HttpStringUtilsSpec.swift */,
+				083D11931DEE0DF300549268 /* DataRc2Spec.swift */,
 			);
 			path = ClientCoreTests;
 			sourceTree = SOURCE_ROOT;
@@ -1424,6 +1434,7 @@
 				08F6ADEB1DD9172C00AF0722 /* NSURLRequest+Rc2Docker.h */,
 				08F6ADEC1DD9172C00AF0722 /* NSURLRequest+Rc2Docker.m */,
 				08F6ADED1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift */,
+				083D11871DED00D200549268 /* LinedJsonHandler.swift */,
 			);
 			path = DockerSupport;
 			sourceTree = "<group>";
@@ -1441,6 +1452,7 @@
 				081559BD1DDFB4300047B3CE /* DefaultDockerAPISpec.swift */,
 				081559BE1DDFB4300047B3CE /* TestDataProtocol.swift */,
 				081559BF1DDFB4300047B3CE /* TestDataProtocolTests.swift */,
+				083D118B1DEDEAED00549268 /* LinedJsonHandlerSpec.swift */,
 				081559BA1DDFB2F50047B3CE /* test resources */,
 				08F6ADD31DD9169400AF0722 /* Info.plist */,
 			);
@@ -1666,7 +1678,6 @@
 			);
 			dependencies = (
 				08F6ADCD1DD9169400AF0722 /* PBXTargetDependency */,
-				08F6ADCF1DD9169400AF0722 /* PBXTargetDependency */,
 			);
 			name = DockerSupportTests;
 			productName = DockerSupportTests;
@@ -1857,8 +1868,10 @@
 				081559AD1DDFB2D80047B3CE /* containers.json in Resources */,
 				081559BC1DDFB4230047B3CE /* busybox.jsonData in Resources */,
 				081559B61DDFB2D80047B3CE /* imageInfo.json in Resources */,
+				083D11901DEDECEC00549268 /* linedNormal.json in Resources */,
 				081559B71DDFB2D80047B3CE /* networks.json in Resources */,
 				081559B01DDFB2D80047B3CE /* dockerImages.json in Resources */,
+				083D118F1DEDECEC00549268 /* linedBadHeader.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2071,6 +2084,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				083D118A1DED032000549268 /* HttpStringUtils.swift in Sources */,
 				089794421D7B6A0F003339EE /* SharedConstants.swift in Sources */,
 				089794511D7B6A8F003339EE /* SystemExtensions.swift in Sources */,
 				083D11861DECC37900549268 /* Process+Rc2.swift in Sources */,
@@ -2097,6 +2111,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */,
+				083D11921DEDF7F000549268 /* HttpStringUtilsSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2130,6 +2146,7 @@
 				08F6ADF11DD9172C00AF0722 /* DockerError.swift in Sources */,
 				08F6ADF41DD9172C00AF0722 /* DockerImageInfo.swift in Sources */,
 				08F6ADF01DD9172C00AF0722 /* DockerContainer.swift in Sources */,
+				083D11881DED00D200549268 /* LinedJsonHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2144,6 +2161,7 @@
 				081559AE1DDFB2D80047B3CE /* DockerContainerSpec.swift in Sources */,
 				081559AF1DDFB2D80047B3CE /* DockerImageInfoTests.swift in Sources */,
 				081559B41DDFB2D80047B3CE /* DockerTagTests.swift in Sources */,
+				083D118C1DEDEAED00549268 /* LinedJsonHandlerSpec.swift in Sources */,
 				081559B11DDFB2D80047B3CE /* DockerImageTest.swift in Sources */,
 				081559B51DDFB2D80047B3CE /* DockerUrlProtocolTests.swift in Sources */,
 				081559C01DDFB4300047B3CE /* DefaultDockerAPISpec.swift in Sources */,
@@ -2197,11 +2215,6 @@
 			isa = PBXTargetDependency;
 			target = 08F6ADC11DD9169300AF0722 /* DockerSupport */;
 			targetProxy = 08F6ADCC1DD9169400AF0722 /* PBXContainerItemProxy */;
-		};
-		08F6ADCF1DD9169400AF0722 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 088CE6681C4B0AF400153414 /* MacClient */;
-			targetProxy = 08F6ADCE1DD9169400AF0722 /* PBXContainerItemProxy */;
 		};
 		08F6ADD61DD9169400AF0722 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2689,6 +2702,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
@@ -2709,6 +2723,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -2717,6 +2733,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
@@ -2732,6 +2749,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
