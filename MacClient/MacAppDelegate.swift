@@ -131,8 +131,10 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			)
 			.on(
 				failed: { error in
-					os_log("failed to start a container: %{public}s", log: .app, type: .error, error as NSError)
-//					fatalError(error.localizedDescription)
+					var errDesc = error.localizedDescription
+					if let rcerr = error as? Rc2Error { errDesc = rcerr.debugDescription }
+					os_log("failed to start a container: %{public}s", log: .app, type: .error, errDesc)
+					fatalError(errDesc)
 				}, completed: {
 					DispatchQueue.main.async {
 						wc.window?.orderOut(nil)
