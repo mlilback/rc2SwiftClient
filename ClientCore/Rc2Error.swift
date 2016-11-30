@@ -10,7 +10,7 @@ import Foundation
 public protocol Rc2DomainError {}
 
 //error object used throughoout project
-public struct Rc2Error: Error {
+public struct Rc2Error: Error, CustomStringConvertible, CustomDebugStringConvertible {
 	/// basic categories of errors
 	public enum Rc2ErrorType: String, Error {
 		/// a requested object was not found
@@ -50,12 +50,26 @@ public struct Rc2Error: Error {
 	public let severity: Severity
 	/// details about the error suitable to show the user
 	public let explanation: String?
+	/// location in source code of where error happened
+	public let location: String
 
+	public var description: String {
+		if explanation != nil { return "\(explanation!) (\(type.rawValue))" }
+		return "\(type) @ \(location)"
+	}
+	public var debugDescription: String { return "\(type) @ \(location)" }
+	
 	/// intialize an error
-	public init(type: Rc2ErrorType = .unknown, nested: Error? = nil, severity: Severity = .error, explanation: String? = nil) {
+	public init(type: Rc2ErrorType = .unknown, nested: Error? = nil, severity: Severity = .error, explanation: String? = nil, fileName: String = #file, lineNumber: Int = #line)
+	{
 		self.type = type
 		self.nestedError = nested
 		self.severity = severity
 		self.explanation = explanation
+		var shortFile = fileName
+		if let lastSlashIdx = fileName.range(of: "/", options: .backwards) {
+			shortFile = fileName.substring(from: lastSlashIdx.upperBound)
+		}
+		self.location = "\(shortFile):\(lineNumber)"
 	}
 }
