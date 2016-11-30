@@ -311,7 +311,7 @@ fileprivate extension DockerManager {
 	func verifyValidVersion(version: DockerVersion) -> SignalProducer<DockerVersion, DockerError> {
 		return SignalProducer<DockerVersion, DockerError>() { observer, _ in
 			//force cast because only should be called if versionInfo was set
-			os_log("dm.verifyValidVersion: %f", log: .docker, type: .debug, version.apiVersion)
+			os_log("dm.verifyValidVersion: %{public}s", log: .docker, type: .debug, version.description)
 			if version.apiVersion >= self.requiredApiVersion {
 				self.versionInfo = version
 				observer.send(value: version)
