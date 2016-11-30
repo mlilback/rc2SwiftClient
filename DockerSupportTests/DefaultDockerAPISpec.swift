@@ -11,6 +11,7 @@ import Nimble
 import Mockingjay
 import Result
 import ReactiveSwift
+import ClientCore
 
 // TODO: create container
 // TODO: load images
@@ -186,6 +187,16 @@ class DefaultDockerAPISpec: QuickSpec {
 					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
 					let producer = api.create(volume: "rc2_fakevol").observe(on: scheduler)
 					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
+					expect(result.error).to(beNil())
+				}
+			}
+			
+			context("test images") {
+				it("load images from big list") {
+					self.stubGetRequest(uriPath: "/images/json", fileName: "complexImages")
+					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
+					let producer = api.loadImages().observe(on: scheduler)
+					let result = self.makeValueRequest(producer: producer, queue: globalQueue)
 					expect(result.error).to(beNil())
 				}
 			}
