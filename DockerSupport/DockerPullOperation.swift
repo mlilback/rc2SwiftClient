@@ -81,7 +81,7 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 			req.httpMethod = "POST"
 			req.addValue("application/json", forHTTPHeaderField:"Content-Type")
 			req.addValue("application/json", forHTTPHeaderField: "Accept")
-
+			req.isChunkedResponse = true
 			self._task = self.urlSession!.dataTask(with: req)
 			self._task?.resume()
 		}
@@ -132,7 +132,7 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 					if let fsize = try? json.getInt(at: "progressDetail", "total"), layer.finalSize == 0 {
 						layer.finalSize = fsize
 					}
-					if let csize = try? json.getInt(at: "progressDetails", "current") {
+					if let csize = try? json.getInt(at: "progressDetail", "current") {
 						layer.currentSize = csize
 					}
 					layers[layerId] = layer

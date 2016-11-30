@@ -179,7 +179,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		if let file = sessionController?.session.workspace.file(withId: fileId) {
 			//TODO: need to specially handle images
 			DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-				//delay is to give previous async file save time to actually write file to disk.
+			//delay is to give previous async file save time to actually write file to disk.
 				self.webController?.loadLocalFile(self.sessionController!.session.fileCache.cachedUrl(file: file))
 				self.selectedOutputTab = .webKit
 			}

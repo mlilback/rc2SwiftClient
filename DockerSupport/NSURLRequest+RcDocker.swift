@@ -9,7 +9,10 @@ import ClientCore
 
 public extension URLRequest {
 	public var isChunkedResponse: Bool {
-		get { return (self as NSURLRequest).rc2_chunkedResponse }
-		set { (self as NSURLRequest).rc2_chunkedResponse = newValue }
+		get { return allHTTPHeaderFields?["Rc2Chunked"] != nil }
+		set {
+			if nil == allHTTPHeaderFields { allHTTPHeaderFields = [:] }
+			allHTTPHeaderFields?["Rc2Chunked"] = newValue ? "true" : nil
+		}
 	}
 }

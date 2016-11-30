@@ -15,6 +15,7 @@ import ClientCore
 
 open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	fileprivate let socketPath = "/var/run/docker.sock"
+	fileprivate let crlnData = Data(bytes: [UInt8(13), UInt8(10)])
 	fileprivate var chunkHandler: LinedJsonHandler?
 
 	override open class func canInit(with request: URLRequest) -> Bool {
@@ -39,7 +40,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 			fh.write(Data(bstream))
 		}
 
-		guard !request.isChunkedResponse else {
+		if request.isChunkedResponse {
 			handleChunkedResponse(fileHandle: fh)
 			return
 		}
@@ -87,13 +88,6 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	///
 	/// - parameter fileHandle: the fileHandle to asynchronously read chunks of data from
 	fileprivate func handleChunkedResponse(fileHandle: FileHandle) {
-		//parse the first chunk of data that is available
-		guard let _ = try? processData(data: fileHandle.availableData) else {
-			print("failed to process initial data")
-			return
-		}
-
-		//now start reading any future data asynchronously
 		chunkHandler = LinedJsonHandler(fileHandle: fileHandle, handler: chunkedResponseHandler)
 		chunkHandler?.start()
 	}
@@ -105,9 +99,12 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		case .error:
 			client?.urlProtocol(self, didFailWithError: Rc2Error(type: .invalidJson))
 		case .json:
+			var jdata = Data()
 			json.forEach { aLine in
-				client?.urlProtocol(self, didLoad: try! aLine.serialize())
+				jdata.append(try! aLine.serialize())
+				jdata.append(crlnData)
 			}
+			client?.urlProtocol(self, didLoad: jdata)
 		case .headers(let headData):
 			guard let response = generateResponse(headerData: headData) else {
 				client?.urlProtocol(self, didFailWithError: Rc2Error(type: .network))

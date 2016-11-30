@@ -117,10 +117,11 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		// load window and setupController
 		let sboard = SwinjectStoryboard.create(name: "Main", bundle: nil)
 		let wc = sboard.instantiateWindowController()
-		guard let setupController = wc.contentViewController as? ServerSetupController else { fatalError() }
+		setupController = wc.contentViewController as? ServerSetupController
+		assert(setupController != nil)
 		wc.window?.makeKeyAndOrderFront(self)
 
-		setupController.statusMesssage = "Initializing Docker…"
+		setupController!.statusMesssage = "Initializing Docker…"
 		_ = docker.initialize()
 			.flatMap(.concat, transform: performPullAndPrepareContainers)
 			.flatMap(.concat, transform: {

@@ -66,7 +66,6 @@ class LinedJsonHandler {
 	private func eventHandler() {
 		guard let source = readSource else { return }
 		let sizeRead = source.data
-		NSLog("size read = \(sizeRead)")
 		//handle end of stream
 		if sizeRead == 0 {
 			sendMessage(.complete, json: [])

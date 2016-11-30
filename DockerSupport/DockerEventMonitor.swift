@@ -85,9 +85,8 @@ final class DockerEventMonitor: NSObject, URLSessionDataDelegate {
 		sessionConfig.timeoutIntervalForRequest = TimeInterval(60 * 60 * 24) //wait a day
 		session = URLSession(configuration: sessionConfig, delegate: self, delegateQueue:nil)
 		let url = URL(string: "/events", relativeTo: baseUrl)!
-		//due to https://bugs.swift.org/browse/SR-2804 we must use an objc object or else chunked property will not be saved
-		let request = NSMutableURLRequest(url: url)
-		request.rc2_chunkedResponse = true
+		var request = URLRequest(url: url)
+		request.isChunkedResponse = true
 		let task = session.dataTask(with: request as URLRequest)
 		task.resume()
 	}
