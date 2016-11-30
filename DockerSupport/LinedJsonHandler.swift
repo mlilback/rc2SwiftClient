@@ -11,8 +11,23 @@ import os
 
 ///This class takes a socket that contains the response from a docker api call that returned line-delimeted JSON, such as /images/create, and /events. See [this docker issue](https://github.com/docker/docker/issues/16925).
 
-enum MessageType {
+enum MessageType: Equatable {
 	case headers(Data), json, complete, error
+
+	static func == (a: MessageType, b: MessageType) -> Bool {
+		switch (a, b) {
+		case (.error, .error):
+			return true
+		case (.complete, .complete):
+			return true
+		case (.json, .json):
+			return true
+		case (.headers(let h1), .headers(let h2)):
+			return h1 == h2
+		default:
+			return false
+		}
+	}
 }
 
 enum LinedJsonError: Error {
