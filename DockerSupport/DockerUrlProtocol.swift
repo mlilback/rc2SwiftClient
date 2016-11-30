@@ -162,7 +162,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 			reportBadResponse(error: error)
 			throw error
 		}
-		os_log("connection open to docker", log: .docker, type: .debug)
+		os_log("connection open to docker %{public}s", log: .docker, type: .debug, request.url!.absoluteString)
 		return fd
 	}
 

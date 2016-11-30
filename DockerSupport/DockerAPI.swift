@@ -15,11 +15,13 @@ public enum DockerContainerOperation: String {
 	public static var all: [DockerContainerOperation] = [.start, .stop, .restart, .pause, .resume]
 }
 
-public struct DockerVersion {
+public struct DockerVersion: CustomStringConvertible {
 	public let major: Int
 	public let minor: Int
 	public let fix: Int
 	public let apiVersion: Double
+	
+	public var description: String { return "docker \(major).\(minor).\(fix)-\(apiVersion)" }
 }
 
 /// Abstracts communicating with docker. Protocol allows for dependency injection.
