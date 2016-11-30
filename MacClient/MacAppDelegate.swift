@@ -83,7 +83,9 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		switch(menuItem.action) {
 			case (#selector(MacAppDelegate.showBookmarkWindow(_:)))?:
-				return NSApp.mainWindow != bookmarkWindowController?.window
+				return true
+			//for some reason this wasn't working properly as another user
+//				return NSApp.mainWindow != bookmarkWindowController?.window
 		case (#selector(MacAppDelegate.showDockerControl(_:)))?:
 				return true
 			default:
