@@ -81,7 +81,7 @@ public final class DockerContainer: JSONDecodable {
 	public let type: ContainerType
 	public let name: String
 	public private(set) var id: String
-	public private(set) var imageName: String
+	public private(set) var imageId: String
 	public private(set) var mountPoints: [DockerMount]
 	public let state: MutableProperty<ContainerState>
 	var createInfo: Data?
@@ -114,7 +114,7 @@ public final class DockerContainer: JSONDecodable {
 		self.type = type
 		self.name = "rc2_\(type.rawValue)"
 		self.id = ""
-		self.imageName = "rc2server/\(type.rawValue)"
+		self.imageId = ""
 		self.state = MutableProperty(.notAvailable)
 		self.mountPoints = []
 		self.createInfo = createInfo
@@ -143,7 +143,7 @@ public final class DockerContainer: JSONDecodable {
 		name = inName!
 		type = jtype
 		//these will be set by update
-		imageName = ""
+		imageId = ""
 		id = ""
 		mountPoints = []
 		state = MutableProperty(.notAvailable)
@@ -156,14 +156,14 @@ public final class DockerContainer: JSONDecodable {
 	///
 	func update(json: JSON) throws {
 		let jid = try json.getString(at: "Id")
-		let jiname = try json.getString(at: "Image")
+		let jimgId = try json.getString(at: "ImageID")
 		let jstateStr = try json.getString(at: "State")
 		guard let jstate = ContainerState(rawValue:jstateStr) else
 		{
 			throw DockerError.invalidJson
 		}
 		id = jid
-		imageName = jiname
+		imageId = jimgId
 		state.value = jstate
 		mountPoints = try json.decodedArray(at: "Mounts", type: DockerMount.self)
 	}
@@ -173,7 +173,7 @@ public final class DockerContainer: JSONDecodable {
 	/// - parameter from: container to copy all non-constant values from
 	func update(from: DockerContainer) {
 		id = from.id
-		imageName = from.imageName
+		imageId	= from.imageId
 		state.value = from.state.value
 		mountPoints = from.mountPoints
 		createInfo = from.createInfo
@@ -201,13 +201,13 @@ public final class DockerContainer: JSONDecodable {
 
 extension DockerContainer: JSONEncodable {
 	public func toJSON() -> JSON {
-		return .dictionary(["Id": .string(id), "Image": .string(imageName), "Name": [.string(name)], "State": .string(state.value.rawValue)])
+		return .dictionary(["Id": .string(id), "ImageID": .string(imageId), "Name": [.string(name)], "State": .string(state.value.rawValue)])
 	}
 }
 
 extension DockerContainer: Equatable {
 	public static func == (lhs: DockerContainer, rhs: DockerContainer) -> Bool {
-		return lhs.id == rhs.id && lhs.imageName == rhs.imageName && lhs.name == rhs.name && lhs.state.value == rhs.state.value
+		return lhs.id == rhs.id && lhs.imageId == rhs.imageId && lhs.name == rhs.name && lhs.state.value == rhs.state.value
 	}
 }
 
