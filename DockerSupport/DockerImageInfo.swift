@@ -9,7 +9,7 @@ import Freddy
 import os
 
 public struct DockerImageInfo: JSONDecodable, JSONEncodable {
-	let size: Int64
+	let size: Int
 	let tag: String
 	let name: String
 	let id: String
@@ -25,14 +25,14 @@ public struct DockerImageInfo: JSONDecodable, JSONEncodable {
 	}
 
 	public init(json: JSON) throws {
-		size = Int64(try json.getInt(at: "size"))
+		size = try json.getInt(at: "size")
 		tag = try json.getString(at: "tag", or:"")
 		name = try json.getString(at:"name")
 		id = try json.getString(at: "id")
 	}
 
 	public func toJSON() -> JSON {
-		return .dictionary(["size": .int(Int(size)), "tag": .string(tag), "name": .string(name), "id": .string(id)])
+		return .dictionary(["size": .int(size), "tag": .string(tag), "name": .string(name), "id": .string(id)])
 	}
 }
 

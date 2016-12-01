@@ -15,14 +15,14 @@ public struct PullProgress {
 	///the name of the pull
 	public let name: String
 	///the estimated size used for progress calcuations
-	public let estSize: Int64
+	public let estSize: Int
 	///the number of bytes downloaded so far
-	public var currentSize: Int64 = 0
+	public var currentSize: Int = 0
 	///true if currently extracting the download
 	public var extracting: Bool = false
 	public var complete: Bool = false
 
-	public init(name: String, size: Int64) {
+	public init(name: String, size: Int) {
 		self.name = name
 		self.estSize = size
 	}
@@ -47,9 +47,9 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	fileprivate var _task: URLSessionDataTask?
 	fileprivate(set) var pullProgress: PullProgress
 	fileprivate var _lastUpdate: Double = 0
-	let estimatedSize: Int64
+	let estimatedSize: Int
 	var layers = [String:LayerProgress]()
-	var totalDownloaded: Int64 = 0
+	var totalDownloaded: Int = 0
 	var statuses = Set<String>()
 	fileprivate var pullObserver: Signal<PullProgress, DockerError>.Observer?
 
@@ -57,7 +57,7 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	/// - parameter imageName: the name of the image to pull
 	/// - parameter estimatedSize: the size of the download, used for progress calculation
 	/// - parameter config: sesion configuration to use. If nil, will use system default
-	public init(baseUrl: URL, imageName: String, estimatedSize size: Int64, config: URLSessionConfiguration) {
+	public init(baseUrl: URL, imageName: String, estimatedSize size: Int, config: URLSessionConfiguration) {
 		let uconfig = config
 		uconfig.timeoutIntervalForRequest = 300
 		uconfig.timeoutIntervalForResource = 86400
