@@ -223,7 +223,7 @@ final class DockerAPIImplementation: DockerAPI {
 			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
 				return SignalProducer<Bool, DockerError> { observer, _ in
 					self.jsonCheckHandler(observer: observer, data: data) { json in
-						guard let networks = try? json.asJsonArray() else { return false }
+						guard let networks = try? json.getArray() else { return false }
 						//nets is now json cast safely to [JSON]
 						let matches = networks.flatMap { network -> JSON? in
 							guard let itemName = try? network.getString(at: "Name") else { return nil }
@@ -339,14 +339,14 @@ extension DockerAPIImplementation {
 	//must not reference self
 	fileprivate func parseContainers(json: JSON) -> SignalProducer<[DockerContainer], DockerError>
 	{
-		guard let containers: [DockerContainer] = try? json.asArray() else {
+		guard let containers: [DockerContainer] = try? json.decodedArray() else {
 			return SignalProducer<[DockerContainer], DockerError>(error: .invalidJson)
 		}
 		return SignalProducer<[DockerContainer], DockerError>(value: containers)
 	}
 
 	fileprivate func parseImages(json: JSON) -> SignalProducer<[DockerImage], DockerError> {
-		guard let images = try? json.asJsonArray().flatMap({ return DockerImage(from: $0) }) else {
+		guard let images = try? json.getArray().flatMap({ return DockerImage(from: $0) }) else {
 			return SignalProducer<[DockerImage], DockerError>(error: .invalidJson)
 		}
 		return SignalProducer<[DockerImage], DockerError> { observer, _ in

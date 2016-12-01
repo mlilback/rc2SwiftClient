@@ -63,7 +63,7 @@ class BookmarkManager {
 		bookmarks.removeAll()
 		//load them, or create default ones
 		if let json = defaults[.bookmarks],
-			let bmarks: [Bookmark] = try? json.asArray()
+			let bmarks: [Bookmark] = try? json.decodedArray()
 		{
 			bookmarks.append(contentsOf: bmarks)
 		}
@@ -103,7 +103,7 @@ class BookmarkManager {
 		let defaults = UserDefaults.standard
 		var hostSet = Set<ServerHost>()
 		hosts.removeAll()
-		if let json = defaults[.hosts], let jhosts: [ServerHost] = try? json.asArray()
+		if let json = defaults[.hosts], let jhosts: [ServerHost] = try? json.decodedArray()
 		{
 			hostSet = hostSet.union(jhosts)
 		}

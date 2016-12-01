@@ -8,34 +8,6 @@ import Foundation
 import Freddy
 
 public extension JSON {
-	/// Assuming self is an array, return self as an array of JSON
-	///
-	/// - throws: valueNotConvertible if self is not an .array
-	/// - returns: self as an array of JSON
-	func asJsonArray() throws -> [JSON] {
-		guard case .array(let array) = self else {
-			throw Error.valueNotConvertible(value: self, to: Array<JSON>.self)
-		}
-		return array
-	}
-
-	/// Assuming self is an array, decodes self to the desired type
-	///
-	/// - Returns: an array of the desired type
-	/// - Throws: if self is not an array of json or if array elements aren't of desired type
-	func asArray<Decoded: JSONDecodable>() throws -> [Decoded] {
-		return try asJsonArray().map(Decoded.init)
-	}
-
-	/// Assuming self is an array, decodes self to the desired type
-	///
-	/// - Parameter of: the type of object to be decoded
-	/// - Returns: an array of the desired type
-	/// - Throws: if self is not an array of json or if array elements aren't of desired type
-	func asArray<T: JSONDecodable>(of: T) throws -> [T] {
-		return try asJsonArray().map(T.init)
-	}
-
 	/// Returns nil instead of throwing an error if value does not exist
 	///
 	/// - Parameter at: path type to get the value of

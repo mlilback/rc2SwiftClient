@@ -152,7 +152,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		//load them, or create default ones
 		var bookmarks: [Bookmark] = []
 		if let json: JSON = defaults[.openSessions] {
-			bookmarks = (try? json.asArray()) ?? []
+			bookmarks = (try? json.decodedArray()) ?? []
 		}
 		let dinfo = "bwc = \(bookmarkWindowController), bmc = \(bookmarkWindowController?.contentViewController)"
 		os_log("bm info: %{public}s", log: .app, type: .debug, dinfo)

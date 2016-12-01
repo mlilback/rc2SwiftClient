@@ -58,7 +58,7 @@ public struct Rc2Error: Error, CustomStringConvertible, CustomDebugStringConvert
 		return "\(type) @ \(location)"
 	}
 	public var debugDescription: String { return "\(type) @ \(location)" }
-	
+
 	/// intialize an error
 	public init(type: Rc2ErrorType = .unknown, nested: Error? = nil, severity: Severity = .error, explanation: String? = nil, fileName: String = #file, lineNumber: Int = #line)
 	{

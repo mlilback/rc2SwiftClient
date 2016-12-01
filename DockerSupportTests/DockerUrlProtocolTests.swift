@@ -191,7 +191,7 @@ class DReader {
 				return
 			}
 			let data = fh.readData(ofLength: Int(sizeRead))
-			let dataStr = String(data: data, encoding: .utf8)!
+//			let dataStr = String(data: data, encoding: .utf8)!
 			if !self.haveReadHeader {
 				//try reading the header from data
 				
