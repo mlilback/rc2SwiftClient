@@ -74,11 +74,15 @@ protocol DockerEventMonitorDelegate: class {
 	func eventMonitorClosed(error: Error?)
 }
 
-final class DockerEventMonitor: NSObject, URLSessionDataDelegate {
+protocol DockerEventMonitor {
+	init(baseUrl: URL, delegate: DockerEventMonitorDelegate, sessionConfig: URLSessionConfiguration)
+}
+
+final class DockerEventMonitorImpl: NSObject, DockerEventMonitor, URLSessionDataDelegate {
 	var delegate: DockerEventMonitorDelegate
 	var session: URLSession!
 
-	init(baseUrl: URL, delegate: DockerEventMonitorDelegate, sessionConfig: URLSessionConfiguration = URLSessionConfiguration.default)
+	required init(baseUrl: URL, delegate: DockerEventMonitorDelegate, sessionConfig: URLSessionConfiguration)
 	{
 		self.delegate = delegate
 		super.init()

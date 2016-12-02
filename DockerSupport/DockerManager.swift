@@ -62,6 +62,9 @@ public final class DockerManager: NSObject {
 	fileprivate var eventMonitor: DockerEventMonitor?
 	private var state: ManagerState = .unknown
 
+	//for dependency injection
+	var eventMonitorClass: DockerEventMonitor.Type = DockerEventMonitorImpl.self
+	
 	#if DEBUG
 	private let updateDelay = 60.0 //1 minute
 	#else
@@ -152,7 +155,7 @@ public final class DockerManager: NSObject {
 			.map { v in
 				self.versionInfo = v
 				self.state = .initialized
-				self.eventMonitor = DockerEventMonitor(baseUrl: self.baseUrl, delegate: self, sessionConfig: self.sessionConfig)
+				self.eventMonitor = self.eventMonitorClass.init(baseUrl: self.baseUrl, delegate: self, sessionConfig: self.sessionConfig)
 			}
 			.flatMap(.concat, transform: validateNetwork)
 			.flatMap(.concat, transform: validateVolumes)
@@ -195,10 +198,10 @@ public final class DockerManager: NSObject {
 	public func prepareContainers() -> SignalProducer<(), Rc2Error> {
 		os_log("dm.prepareContainers called", log: .docker, type: .debug)
 		return self.api.refreshContainers()
-			.flatMap(.concat) { containers in return self.mergeContainers(containers) }
-			.flatMap(.concat) { _ in self.removeOutdatedContainers() }
-			.map { _ in self.containers }
-			.flatMap(.concat) { containers in return self.createUnavailable(containers: containers) }
+			.map { newContainers in (newContainers, self.containers) }
+			.flatMap(.concat, transform: mergeContainers)
+			.flatMap(.concat, transform: removeOutdatedContainers)
+			.flatMap(.concat, transform: createUnavailable)
 			.map { _ in }
 	}
 
@@ -376,28 +379,44 @@ extension DockerManager {
 		return SignalProducer.merge(producers).collect()
 	}
 
-	//TODO: is this the best place to compare running imageId to the required imageId?
-	fileprivate func removeOutdatedContainers() -> SignalProducer<(), Rc2Error> {
-		return SignalProducer<(), Rc2Error> { observer, _ in
-			observer.sendCompleted()
+	/// Remove any containers whose images are outdated
+	///
+	/// Parameter containers: the containers to examine
+	/// - Returns: a merged array of signal producers that returns in the input containers
+	func removeOutdatedContainers(containers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error> {
+		var containersToRemove = [DockerContainer]()
+		for aContainer in containers {
+			let image = imageInfo![aContainer.type]
+			if image.id != aContainer.imageId {
+				os_log("outdated image for %{public}s", log: .docker, type: .info, aContainer.type.rawValue)
+				containersToRemove.append(aContainer)
+			}
 		}
+		guard containersToRemove.count > 0 else {
+			return SignalProducer<[DockerContainer], Rc2Error>(value: containers)
+		}
+		let producers = containersToRemove.map { container -> SignalProducer<(), Rc2Error> in
+			api.remove(container: container)
+		}
+		return SignalProducer.merge(producers).map { containers }
 	}
 	
 	/// Updates the containers property to match the information in the containers parameter
 	///
-	/// - parameter containers: containers array from docker
+	/// - remark: possible side-effects since DockerContainers are a class not a value-type
+	/// - Parameter containers: containers array from docker
 	///
-	/// - returns: a signal producer whose value is the merged containers
-	fileprivate func mergeContainers(_ containers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error>
+	/// - returns: a signal producer whose value is oldContainers updated to newContainers
+	func mergeContainers(newContainers: [DockerContainer], oldContainers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error>
 	{
 		return SignalProducer<[DockerContainer], Rc2Error> { observer, _ in
 			os_log("dm.mergeContainers called", log: .docker, type: .debug)
-			self.containers.forEach { aContainer in
-				if let c2 = containers[aContainer.type] {
+			oldContainers.forEach { aContainer in
+				if let c2 = newContainers[aContainer.type] {
 					aContainer.update(from: c2)
 				}
 			}
-			observer.send(value: self.containers)
+			observer.send(value: oldContainers)
 			observer.sendCompleted()
 		}
 	}
