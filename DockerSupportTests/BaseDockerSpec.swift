@@ -21,6 +21,18 @@ class BaseDockerSpec: QuickSpec {
 		}
 	}
 
+	/// Loads the data from the resource file (in the tests bundle)
+	///
+	/// - Parameters:
+	///   - fileName: name of resource
+	///   - fileExtension: file extension of resource
+	/// - Returns: contents of fileName.fileExtension
+	func resourceDataFor(fileName: String, fileExtension: String) -> Data {
+		let path = Bundle(for: type(of: self)).path(forResource: fileName, ofType: fileExtension)
+		let data = try! Data(contentsOf: URL(fileURLWithPath: path!))
+		return data
+	}
+
 	/// Completes a signal producer returning the results
 	///
 	/// - Parameters:
