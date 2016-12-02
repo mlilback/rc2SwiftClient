@@ -83,7 +83,6 @@
 		081559B31DDFB2D80047B3CE /* DockerPullTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559A61DDFB2D80047B3CE /* DockerPullTest.swift */; };
 		081559B41DDFB2D80047B3CE /* DockerTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559A71DDFB2D80047B3CE /* DockerTagTests.swift */; };
 		081559B51DDFB2D80047B3CE /* DockerUrlProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559A81DDFB2D80047B3CE /* DockerUrlProtocolTests.swift */; };
-		081559B61DDFB2D80047B3CE /* imageInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 081559A91DDFB2D80047B3CE /* imageInfo.json */; };
 		081559B71DDFB2D80047B3CE /* networks.json in Resources */ = {isa = PBXBuildFile; fileRef = 081559AA1DDFB2D80047B3CE /* networks.json */; };
 		081559B81DDFB2D80047B3CE /* version.json in Resources */ = {isa = PBXBuildFile; fileRef = 081559AB1DDFB2D80047B3CE /* version.json */; };
 		081559B91DDFB2D80047B3CE /* volumes.json in Resources */ = {isa = PBXBuildFile; fileRef = 081559AC1DDFB2D80047B3CE /* volumes.json */; };
@@ -168,6 +167,7 @@
 		083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11931DEE0DF300549268 /* DataRc2Spec.swift */; };
 		083D11961DEF535C00549268 /* complexImages.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D11951DEF535C00549268 /* complexImages.json */; };
 		083D11981DF0B8AF00549268 /* imageInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D11971DF0B8AF00549268 /* imageInfo.json */; };
+		083D119A1DF201BB00549268 /* BaseDockerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11991DF201BB00549268 /* BaseDockerSpec.swift */; };
 		084199261D903F7A0089A1AC /* ServerSetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* ServerSetupController.swift */; };
 		0841993A1D91B0760089A1AC /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		0841993B1D91B2770089A1AC /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; };
@@ -597,7 +597,6 @@
 		081559A61DDFB2D80047B3CE /* DockerPullTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerPullTest.swift; sourceTree = "<group>"; };
 		081559A71DDFB2D80047B3CE /* DockerTagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerTagTests.swift; sourceTree = "<group>"; };
 		081559A81DDFB2D80047B3CE /* DockerUrlProtocolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerUrlProtocolTests.swift; sourceTree = "<group>"; };
-		081559A91DDFB2D80047B3CE /* imageInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = imageInfo.json; sourceTree = "<group>"; };
 		081559AA1DDFB2D80047B3CE /* networks.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = networks.json; sourceTree = "<group>"; };
 		081559AB1DDFB2D80047B3CE /* version.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = version.json; sourceTree = "<group>"; };
 		081559AC1DDFB2D80047B3CE /* volumes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = volumes.json; sourceTree = "<group>"; };
@@ -673,6 +672,7 @@
 		083D11931DEE0DF300549268 /* DataRc2Spec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRc2Spec.swift; sourceTree = "<group>"; };
 		083D11951DEF535C00549268 /* complexImages.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = complexImages.json; sourceTree = "<group>"; };
 		083D11971DF0B8AF00549268 /* imageInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = imageInfo.json; sourceTree = "<group>"; };
+		083D11991DF201BB00549268 /* BaseDockerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseDockerSpec.swift; sourceTree = "<group>"; };
 		084199251D903F7A0089A1AC /* ServerSetupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerSetupController.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* MockFileManagers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManagers.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
@@ -1047,7 +1047,6 @@
 				081559BB1DDFB4230047B3CE /* busybox.jsonData */,
 				081559A01DDFB2D80047B3CE /* containers.json */,
 				081559A31DDFB2D80047B3CE /* dockerImages.json */,
-				081559A91DDFB2D80047B3CE /* imageInfo.json */,
 				081559AA1DDFB2D80047B3CE /* networks.json */,
 				081559AB1DDFB2D80047B3CE /* version.json */,
 				081559AC1DDFB2D80047B3CE /* volumes.json */,
@@ -1442,17 +1441,18 @@
 		08F6ADD01DD9169400AF0722 /* DockerSupportTests */ = {
 			isa = PBXGroup;
 			children = (
+				083D11991DF201BB00549268 /* BaseDockerSpec.swift */,
 				081559A11DDFB2D80047B3CE /* DockerContainerSpec.swift */,
+				081559BD1DDFB4300047B3CE /* DefaultDockerAPISpec.swift */,
+				081559A51DDFB2D80047B3CE /* DockerManagerSpec.swift */,
+				083D118B1DEDEAED00549268 /* LinedJsonHandlerSpec.swift */,
 				081559A21DDFB2D80047B3CE /* DockerImageInfoTests.swift */,
 				081559A41DDFB2D80047B3CE /* DockerImageTest.swift */,
-				081559A51DDFB2D80047B3CE /* DockerManagerSpec.swift */,
 				081559A61DDFB2D80047B3CE /* DockerPullTest.swift */,
 				081559A71DDFB2D80047B3CE /* DockerTagTests.swift */,
 				081559A81DDFB2D80047B3CE /* DockerUrlProtocolTests.swift */,
-				081559BD1DDFB4300047B3CE /* DefaultDockerAPISpec.swift */,
 				081559BE1DDFB4300047B3CE /* TestDataProtocol.swift */,
 				081559BF1DDFB4300047B3CE /* TestDataProtocolTests.swift */,
-				083D118B1DEDEAED00549268 /* LinedJsonHandlerSpec.swift */,
 				081559BA1DDFB2F50047B3CE /* test resources */,
 				08F6ADD31DD9169400AF0722 /* Info.plist */,
 			);
@@ -1868,7 +1868,6 @@
 				083D11961DEF535C00549268 /* complexImages.json in Resources */,
 				081559AD1DDFB2D80047B3CE /* containers.json in Resources */,
 				081559BC1DDFB4230047B3CE /* busybox.jsonData in Resources */,
-				081559B61DDFB2D80047B3CE /* imageInfo.json in Resources */,
 				083D11901DEDECEC00549268 /* linedNormal.json in Resources */,
 				081559B71DDFB2D80047B3CE /* networks.json in Resources */,
 				081559B01DDFB2D80047B3CE /* dockerImages.json in Resources */,
@@ -2159,6 +2158,7 @@
 				081559B21DDFB2D80047B3CE /* DockerManagerSpec.swift in Sources */,
 				081559C21DDFB4300047B3CE /* TestDataProtocolTests.swift in Sources */,
 				081559AE1DDFB2D80047B3CE /* DockerContainerSpec.swift in Sources */,
+				083D119A1DF201BB00549268 /* BaseDockerSpec.swift in Sources */,
 				081559AF1DDFB2D80047B3CE /* DockerImageInfoTests.swift in Sources */,
 				081559B41DDFB2D80047B3CE /* DockerTagTests.swift in Sources */,
 				083D118C1DEDEAED00549268 /* LinedJsonHandlerSpec.swift in Sources */,

@@ -16,7 +16,7 @@ import ClientCore
 // TODO: create container
 // TODO: load images
 
-class DefaultDockerAPISpec: QuickSpec {
+class DefaultDockerAPISpec: BaseDockerSpec {
 	override func spec() {
 		var sessionConfig: URLSessionConfiguration!
 		var api: DockerAPIImplementation!
@@ -201,55 +201,4 @@ class DefaultDockerAPISpec: QuickSpec {
 			}
 		}
 	}
-	
-	func makeValueRequest<T>(producer: SignalProducer<T, Rc2Error>, queue: DispatchQueue) -> Result<T, Rc2Error> {
-		var result: Result<T, Rc2Error>!
-		let group = DispatchGroup()
-		queue.async(group: group) {
-			result = producer.single()
-		}
-		group.wait()
-		return result
-	}
-
-	func makeNoValueRequest(producer: SignalProducer<(), Rc2Error>, queue: DispatchQueue) -> Result<(), Rc2Error> {
-		var result: Result<(), Rc2Error>?
-		let group = DispatchGroup()
-		queue.async(group: group) {
-			result = producer.wait()
-		}
-		group.wait()
-		return result!
-	}
-	
-	func loadContainers(api: DockerAPI, queue:DispatchQueue) -> Result<[DockerContainer], Rc2Error> {
-		let scheduler = QueueScheduler(name: "\(#file)\(#line)")
-		let producer = api.refreshContainers().observe(on: scheduler)
-		var result: Result<[DockerContainer], Rc2Error>?
-		let group = DispatchGroup()
-		
-		 queue.async(group: group) {
-			result = producer.single()
-		}
-		group.wait()
-		guard let r = result else {
-			fatalError("failed to get result from refreshContainers()")
-		}
-		return r
-	}
-
-	/// returns a custom matcher looking for a post request at the specified path
-	func postMatcher(uriPath: String) -> (URLRequest) -> Bool {
-		return { request in
-			return request.httpMethod == "POST" && request.url!.path.hasPrefix(uriPath)
-		}
-	}
-	
-	/// uses Mockingjay to stub out a request for uriPath with the contents of fileName.json
-	func stubGetRequest(uriPath: String, fileName: String) {
-		let path : String = Bundle(for: type(of:self)).path(forResource: fileName, ofType: "json")!
-		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
-		stub(uri(uri: uriPath), builder: jsonData(resultData!))
-	}
-
 }
