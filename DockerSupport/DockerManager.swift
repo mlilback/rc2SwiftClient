@@ -33,6 +33,8 @@ enum ManagerState: Int, Comparable {
 ///manages communicating with the local docker engine
 public final class DockerManager: NSObject {
 	// MARK: - Properties
+	/// the containers managed.
+	// these should always be referred to as self.containers since many parameters have the name containers
 	public fileprivate(set) var containers: [DockerContainer]!
 	public var isReady: Bool { return state == .ready }
 
@@ -226,7 +228,7 @@ public final class DockerManager: NSObject {
 			self.imageInfo = newInfo
 			self.defaults[.cachedImageInfo] = json
 			return true
-		}
+		}.flatMapError  { _ in SignalProducer<Bool, Rc2Error>(value: false) } //ignore errors
 	}
 
 	/// compares installedImages with imageInfo to see if a pull is necessary
@@ -264,7 +266,7 @@ public final class DockerManager: NSObject {
 	/// - returns: a signal producer with no value
 	public func perform(operation: DockerContainerOperation, on inContainers: [DockerContainer]? = nil) -> SignalProducer<(), Rc2Error>
 	{
-		var selectedContainers = containers!
+		var selectedContainers = self.containers!
 		if inContainers != nil {
 			selectedContainers = inContainers!
 		}
@@ -280,7 +282,7 @@ extension DockerManager: DockerEventMonitorDelegate {
 		//only care if it is one of our containers
 		guard let from = try? event.json.getString(at:"from"),
 			let ctype = ContainerType.from(imageName:from),
-			let container = containers[ctype] else { return }
+			let container = self.containers[ctype] else { return }
 		switch event.eventType {
 			case .die:
 				os_log("warning: container died: %{public}@", log:.docker, from)
@@ -318,7 +320,7 @@ extension DockerManager: DockerEventMonitorDelegate {
 }
 
 //MARK: - Private Methods
-fileprivate extension DockerManager {
+extension DockerManager {
 	/// Validates the version parameter meets requirements.
 	///
 	/// - parameter version: the version information to check
