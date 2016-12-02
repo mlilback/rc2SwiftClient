@@ -10,6 +10,7 @@ import os
 
 public struct DockerImageInfo: JSONDecodable, JSONEncodable {
 	let size: Int
+	let estSize: Int
 	let tag: String
 	let name: String
 	let id: String
@@ -29,6 +30,7 @@ public struct DockerImageInfo: JSONDecodable, JSONEncodable {
 		tag = try json.getString(at: "tag", or:"")
 		name = try json.getString(at:"name")
 		id = try json.getString(at: "id")
+		estSize = try json.getInt(at: "estSize")
 	}
 
 	public func toJSON() -> JSON {
@@ -36,8 +38,15 @@ public struct DockerImageInfo: JSONDecodable, JSONEncodable {
 	}
 }
 
+extension DockerImageInfo: Equatable {
+	public static func == (lhs: DockerImageInfo, rhs: DockerImageInfo) -> Bool {
+		return lhs.id == rhs.id && lhs.tag == rhs.tag && lhs.size == rhs.size
+	}
+}
+
 public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
-	let version: Int
+	/// version is a serial number consisting of YYYYMMDDXX where XX is number from 01..99
+	let version: String
 	let dbserver: DockerImageInfo
 	let appserver: DockerImageInfo
 	let computeserver: DockerImageInfo
@@ -52,7 +61,7 @@ public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
 	}
 
 	public init(json: JSON) throws {
-		version = try json.getInt(at: "version")
+		version = try json.getString(at: "version")
 		let imageDict = try json.decodedDictionary(at: "images", type: DockerImageInfo.self)
 		guard let db = imageDict["dbserver"], let app = imageDict["appserver"], let comp = imageDict["compute"] else {
 			throw DockerError.invalidJson
@@ -62,6 +71,15 @@ public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
 		computeserver = comp
 	}
 
+	/// Is this version newer than other
+	///
+	/// - Parameter other: another instance of RequiredImageInfo
+	/// - Returns: true if this version is newer
+	public func newerThan(_ other: RequiredImageInfo?) -> Bool {
+		guard nil != other else { return true }
+		return version > other!.version
+	}
+	
 	public var startIndex: Int { return 0 }
 	public var endIndex: Int { return 3 }
 
@@ -88,6 +106,6 @@ public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
 	}
 
 	public func toJSON() -> JSON {
-		return .dictionary(["version": .int(version), "images": ["dbserver": dbserver, "appserver": appserver, "compute": computeserver].toJSON()])
+		return .dictionary(["version": .string(version), "images": ["dbserver": dbserver, "appserver": appserver, "compute": computeserver].toJSON()])
 	}
 }

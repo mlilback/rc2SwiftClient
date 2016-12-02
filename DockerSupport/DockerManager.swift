@@ -90,9 +90,16 @@ public final class DockerManager: NSObject {
 		sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
 		session = URLSession(configuration: sessionConfig)
 		api = DockerAPIImplementation(baseUrl: baseUrl, sessionConfig: sessionConfig)
-		//read image info if it is there
+		//read image info from defaults
 		imageInfo = RequiredImageInfo(from: defaults[.cachedImageInfo])
 		super.init()
+		let myBundle = Bundle(for: type(of: self))
+		//if we have no imageInfo, load from bundled file
+		if nil == imageInfo {
+			let infoData = try! Data(contentsOf: myBundle.url(forResource: "imageInfo", withExtension: "json")!)
+			imageInfo = RequiredImageInfo(from: try! JSON(data: infoData))
+			assert(imageInfo != nil)
+		}
 		setupDataDirectory()
 		//check for a host specified as an environment variable - useful for testing
 		if nil == host, let envHost = ProcessInfo.processInfo.environment["DockerHostUrl"] {
@@ -105,7 +112,7 @@ public final class DockerManager: NSObject {
 		}
 		assert(baseUrl != nil, "hostUrl not specified as argument or environment variable")
 		//load static docker info we'll use throughout this class
-		let path: String = Bundle(for: type(of: self)).path(forResource: "dockerInfo", ofType: "json")!
+		let path: String = myBundle.path(forResource: "dockerInfo", ofType: "json")!
 		let jsonStr = String(data: URL(fileURLWithPath: path).contents()!, encoding: .utf8)!
 		guard let containerJson = try? JSON(jsonString: jsonStr) else { fatalError() }
 		containers = DockerContainer.fromCreateInfoJson(json: containerJson)
@@ -173,7 +180,7 @@ public final class DockerManager: NSObject {
 		return SignalProducer.merge(producers)
 	}
 
-	/// Ensures docker has the correct containers available and containers property is in sync with docker
+	/// Ensures docker has the correct containers available and the containers property is in sync with docker
 	///
 	/// - precondition: initialize() must have been called
 	///
@@ -195,20 +202,22 @@ public final class DockerManager: NSObject {
 	/// - precondition: initialize() was called
 	/// - remark: called as part of initialize() process. Should only call to force an image update check
 	///
-	/// - returns: a signal producer whose value is always true
+	/// - returns: a signal producer whose value is true if the imageInfo was updated. If true, then prepareContainers needs to be called to update existing containers
 	public func checkForImageUpdate(forceRefresh: Bool = false) -> SignalProducer<Bool, DockerError>
 	{
 		precondition(state >= .initialized)
 		os_log("dm.checkForImageUpdate", log: .docker, type: .debug)
 		//short circuit if we don't need to chedk and have valid data
 		guard imageInfo == nil || shouldCheckForUpdate || forceRefresh else {
-			os_log("using cached docker info", log:.docker, type:.info)
+			os_log("skipping imageInfo fetch", log:.docker, type:.info)
 			return SignalProducer<Bool, DockerError>(value: true)
 		}
 		return api.fetchJson(url: URL(string:"\(baseInfoUrl)imageInfo.json")!).map { json in
-			self.imageInfo = RequiredImageInfo(from: json)
-			self.defaults[.cachedImageInfo] = json
 			self.defaults[.lastImageInfoCheck] = Date.timeIntervalSinceReferenceDate
+			guard let newInfo = RequiredImageInfo(from: json) else { return false }
+			guard newInfo.newerThan(self.imageInfo) else { return false }
+			self.imageInfo = newInfo
+			self.defaults[.cachedImageInfo] = json
 			return true
 		}
 	}
@@ -367,7 +376,6 @@ fileprivate extension DockerManager {
 	{
 		return SignalProducer<[DockerContainer], DockerError> { observer, _ in
 			os_log("dm.mergeContainers called", log: .docker, type: .debug)
-//			precondition(self.containers.count == containers.count)
 			self.containers.forEach { aContainer in
 				if let c2 = containers[aContainer.type] {
 					aContainer.update(from: c2)

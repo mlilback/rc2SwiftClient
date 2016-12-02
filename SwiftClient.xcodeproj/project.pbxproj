@@ -167,6 +167,7 @@
 		083D11921DEDF7F000549268 /* HttpStringUtilsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11911DEDF7F000549268 /* HttpStringUtilsSpec.swift */; };
 		083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11931DEE0DF300549268 /* DataRc2Spec.swift */; };
 		083D11961DEF535C00549268 /* complexImages.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D11951DEF535C00549268 /* complexImages.json */; };
+		083D11981DF0B8AF00549268 /* imageInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D11971DF0B8AF00549268 /* imageInfo.json */; };
 		084199261D903F7A0089A1AC /* ServerSetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* ServerSetupController.swift */; };
 		0841993A1D91B0760089A1AC /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		0841993B1D91B2770089A1AC /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; };
@@ -671,6 +672,7 @@
 		083D11911DEDF7F000549268 /* HttpStringUtilsSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpStringUtilsSpec.swift; sourceTree = "<group>"; };
 		083D11931DEE0DF300549268 /* DataRc2Spec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRc2Spec.swift; sourceTree = "<group>"; };
 		083D11951DEF535C00549268 /* complexImages.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = complexImages.json; sourceTree = "<group>"; };
+		083D11971DF0B8AF00549268 /* imageInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = imageInfo.json; sourceTree = "<group>"; };
 		084199251D903F7A0089A1AC /* ServerSetupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerSetupController.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* MockFileManagers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManagers.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
@@ -1418,6 +1420,7 @@
 			children = (
 				08F6ADC41DD9169300AF0722 /* DockerSupport.h */,
 				08F6ADC51DD9169300AF0722 /* Info.plist */,
+				083D11971DF0B8AF00549268 /* imageInfo.json */,
 				08F6ADDF1DD9172C00AF0722 /* DockerAPI.swift */,
 				08F6ADE01DD9172C00AF0722 /* DockerAPIImplementation.swift */,
 				08F6ADE11DD9172C00AF0722 /* DockerContainer.swift */,
@@ -1720,7 +1723,7 @@
 					};
 					089794211D7B68F0003339EE = {
 						CreatedOnToolsVersion = 8.0;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0810;
 						ProvisioningStyle = Automatic;
 					};
 					08A01FAD1CC7FA28001EDFAA = {
@@ -1852,6 +1855,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				08F6ADF51DD9172C00AF0722 /* dockerInfo.json in Resources */,
+				083D11981DF0B8AF00549268 /* imageInfo.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
