@@ -156,14 +156,15 @@ class DockerUrlProtocolTests: XCTestCase, URLSessionDataDelegate {
 		xpect?.fulfill()
 	}
 
-	func testDReader() {
-		let reader = DReader()
-		let exp = expectation(description: "foobar")
-		reader.startLoading(expect: exp)
-		waitForExpectations(timeout: 20.0) { err in
-			NSLog("exp fulfilled")
-		}
-	}
+	//TODO: fix so it is testing LinedJsonReader, not old method
+//	func testDReader() {
+//		let reader = DReader()
+//		let exp = expectation(description: "foobar")
+//		reader.startLoading(expect: exp)
+//		waitForExpectations(timeout: 20.0) { err in
+//			NSLog("exp fulfilled")
+//		}
+//	}
 }
 
 public class TestDockerProtocol: DockerUrlProtocol {
@@ -183,20 +184,20 @@ class DReader {
 		let fh = FileHandle(fileDescriptor: fd)
 		readSrc.setEventHandler {
 			let sizeRead = readSrc.data
-			NSLog("read \(sizeRead) bytes")
+//			NSLog("read \(sizeRead) bytes")
 			if sizeRead == 0 {
 				expect.fulfill()
 				readSrc.cancel()
 				NSLog("got \(self.lines.count) messages")
 				return
 			}
-			let data = fh.readData(ofLength: Int(sizeRead))
+//			let data = fh.readData(ofLength: Int(sizeRead))
 //			let dataStr = String(data: data, encoding: .utf8)!
 			if !self.haveReadHeader {
 				//try reading the header from data
 				
 			}
-			NSLog("data: dataStr")
+//			NSLog("data: \(dataStr)")
 //			NSLog("read \(data.count)")
 		}
 		readSrc.setCancelHandler {

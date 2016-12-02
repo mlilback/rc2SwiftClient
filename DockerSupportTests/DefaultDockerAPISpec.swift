@@ -61,7 +61,6 @@ class DefaultDockerAPISpec: QuickSpec {
 				let containers = result.value!
 				expect(containers).to(haveCount(3))
 				expect(containers[.dbserver]).toNot(beNil())
-				expect(containers[.dbserver]?.imageName).to(equal("rc2server/dbserver"))
 				expect(containers[.dbserver]?.mountPoints).to(haveCount(1))
 				expect(containers[.dbserver]?.mountPoints.first?.destination).to(equal("/rc2"))
 				expect(containers[.appserver]).toNot(beNil())
@@ -122,7 +121,7 @@ class DefaultDockerAPISpec: QuickSpec {
 					self.stub(uri(uri: "/containers/rc2_dbserver"), builder: http(404))
 					let producer = api.remove(container: dbcontainer).observe(on: scheduler)
 					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
-					expect(result.error).to(matchError(DockerError.noSuchObject))
+					expect(result.error).to(matchError(Rc2Error(type: .noSuchElement)))
 				}
 			}
 			
@@ -163,7 +162,7 @@ class DefaultDockerAPISpec: QuickSpec {
 			}
 
 			context("test volume operations") {
-				let volumeChecker:(String) -> Result<Bool, DockerError> = { name in
+				let volumeChecker:(String) -> Result<Bool, Rc2Error> = { name in
 					self.stubGetRequest(uriPath: "/volumes", fileName: "volumes")
 					let scheduler = QueueScheduler(name: "\(#file)\(#line)")
 					let producer = api.volumeExists(name: name).observe(on: scheduler)
@@ -203,8 +202,8 @@ class DefaultDockerAPISpec: QuickSpec {
 		}
 	}
 	
-	func makeValueRequest<T>(producer: SignalProducer<T, DockerError>, queue: DispatchQueue) -> Result<T, DockerError> {
-		var result: Result<T, DockerError>!
+	func makeValueRequest<T>(producer: SignalProducer<T, Rc2Error>, queue: DispatchQueue) -> Result<T, Rc2Error> {
+		var result: Result<T, Rc2Error>!
 		let group = DispatchGroup()
 		queue.async(group: group) {
 			result = producer.single()
@@ -213,8 +212,8 @@ class DefaultDockerAPISpec: QuickSpec {
 		return result
 	}
 
-	func makeNoValueRequest(producer: SignalProducer<(), DockerError>, queue: DispatchQueue) -> Result<(), DockerError> {
-		var result: Result<(), DockerError>?
+	func makeNoValueRequest(producer: SignalProducer<(), Rc2Error>, queue: DispatchQueue) -> Result<(), Rc2Error> {
+		var result: Result<(), Rc2Error>?
 		let group = DispatchGroup()
 		queue.async(group: group) {
 			result = producer.wait()
@@ -223,10 +222,10 @@ class DefaultDockerAPISpec: QuickSpec {
 		return result!
 	}
 	
-	func loadContainers(api: DockerAPI, queue:DispatchQueue) -> Result<[DockerContainer], DockerError> {
+	func loadContainers(api: DockerAPI, queue:DispatchQueue) -> Result<[DockerContainer], Rc2Error> {
 		let scheduler = QueueScheduler(name: "\(#file)\(#line)")
 		let producer = api.refreshContainers().observe(on: scheduler)
-		var result: Result<[DockerContainer], DockerError>?
+		var result: Result<[DockerContainer], Rc2Error>?
 		let group = DispatchGroup()
 		
 		 queue.async(group: group) {

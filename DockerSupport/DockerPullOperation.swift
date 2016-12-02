@@ -51,7 +51,7 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	var layers = [String:LayerProgress]()
 	var totalDownloaded: Int = 0
 	var statuses = Set<String>()
-	fileprivate var pullObserver: Signal<PullProgress, DockerError>.Observer?
+	fileprivate var pullObserver: Signal<PullProgress, Rc2Error>.Observer?
 
 	/// - parameter baseUrl: the scheme/host/port to use for the connection
 	/// - parameter imageName: the name of the image to pull
@@ -72,8 +72,8 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 		assert(urlConfig.protocolClasses!.filter({ $0 == DockerUrlProtocol.self }).count > 0)
 	}
 
-	public func pull() -> SignalProducer<PullProgress, DockerError> {
-		return SignalProducer<PullProgress, DockerError>() { observer, _ in
+	public func pull() -> SignalProducer<PullProgress, Rc2Error> {
+		return SignalProducer<PullProgress, Rc2Error>() { observer, _ in
 			os_log("starting pull: %{public}@", type:.info, self.url.absoluteString)
 			self.pullObserver = observer
 			self.urlSession = Foundation.URLSession(configuration: self.urlConfig, delegate: self, delegateQueue:OperationQueue.main)
@@ -155,7 +155,7 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
 		guard nil == error else {
 			os_log("error in pull operation %{public}@", log: .docker, type: .debug, error! as NSError)
-			pullObserver?.send(error: DockerError.cocoaError(error as NSError?))
+			pullObserver?.send(error: Rc2Error(type: .cocoa, nested: error))
 			return
 		}
 		os_log("pull %{public}s finished: %d", log: .docker, type:.info, pullProgress.name, totalDownloaded)

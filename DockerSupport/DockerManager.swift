@@ -135,7 +135,7 @@ public final class DockerManager: NSObject {
 	/// - parameter refresh: if true, discards any cached info about version and required image info
 	///
 	/// - returns: a signal producer whose value is true if pullImage is necessary
-	public func initialize(refresh: Bool = false) -> SignalProducer<Bool, DockerError> {
+	public func initialize(refresh: Bool = false) -> SignalProducer<Bool, Rc2Error> {
 		if refresh {
 			state = .unknown
 			versionInfo = nil
@@ -143,7 +143,7 @@ public final class DockerManager: NSObject {
 		os_log("dm.initialize called", log: .docker, type: .debug)
 		guard state < .initialized && versionInfo == nil else {
 			os_log("dm.initialize already initialized", log: .docker, type: .debug)
-			return SignalProducer<Bool, DockerError>(value: true)
+			return SignalProducer<Bool, Rc2Error>(value: true)
 		}
 		let producer = self.api.loadVersion()
 			.flatMap(.concat, transform: verifyValidVersion)
@@ -172,13 +172,13 @@ public final class DockerManager: NSObject {
 	/// pulls any images needed from docker hub
 	///
 	/// - returns: the values are repeated progress handlers
-	public func pullImages() -> SignalProducer<PullProgress, DockerError> {
+	public func pullImages() -> SignalProducer<PullProgress, Rc2Error> {
 		precondition(imageInfo != nil)
 		precondition(imageInfo!.dbserver.size > 0)
 		os_log("dm.pullImages called", log: .docker, type: .debug)
 		let fullSize = imageInfo!.reduce(0) { val, info in val + info.size }
 		pullProgress = PullProgress(name: "all", size: fullSize)
-		let producers = imageInfo!.map { img -> SignalProducer<PullProgress, DockerError> in
+		let producers = imageInfo!.map { img -> SignalProducer<PullProgress, Rc2Error> in
 			os_log("got pull for %{public}s", log:.docker, type:.debug, img.fullName)
 			return self.pullSingleImage(pull: DockerPullOperation(baseUrl: self.baseUrl, imageName: img.fullName, estimatedSize: img.size, config: sessionConfig))
 		}
@@ -190,12 +190,14 @@ public final class DockerManager: NSObject {
 	/// - precondition: initialize() must have been called
 	///
 	/// - returns: a signal producer with no values
-	public func prepareContainers() -> SignalProducer<(), DockerError> {
+	public func prepareContainers() -> SignalProducer<(), Rc2Error> {
 		os_log("dm.prepareContainers called", log: .docker, type: .debug)
 		return self.api.refreshContainers()
 			.flatMap(.concat) { containers in return self.mergeContainers(containers) }
+			.flatMap(.concat) { _ in self.removeOutdatedContainers() }
+			.map { _ in self.containers }
 			.flatMap(.concat) { containers in return self.createUnavailable(containers: containers) }
-			.map { _ in return () }
+			.map { _ in }
 	}
 
 	// MARK: - possibly public for update management
@@ -208,14 +210,14 @@ public final class DockerManager: NSObject {
 	/// - remark: called as part of initialize() process. Should only call to force an image update check
 	///
 	/// - returns: a signal producer whose value is true if the imageInfo was updated. If true, then prepareContainers needs to be called to update existing containers
-	public func checkForImageUpdate(forceRefresh: Bool = false) -> SignalProducer<Bool, DockerError>
+	public func checkForImageUpdate(forceRefresh: Bool = false) -> SignalProducer<Bool, Rc2Error>
 	{
 		precondition(state >= .initialized)
 		os_log("dm.checkForImageUpdate", log: .docker, type: .debug)
 		//short circuit if we don't need to chedk and have valid data
 		guard imageInfo == nil || shouldCheckForUpdate || forceRefresh else {
 			os_log("skipping imageInfo fetch", log:.docker, type:.info)
-			return SignalProducer<Bool, DockerError>(value: true)
+			return SignalProducer<Bool, Rc2Error>(value: true)
 		}
 		return api.fetchJson(url: URL(string:"\(baseInfoUrl)imageInfo.json")!).map { json in
 			self.defaults[.lastImageInfoCheck] = Date.timeIntervalSinceReferenceDate
@@ -251,7 +253,7 @@ public final class DockerManager: NSObject {
 	/// - parameter container: the container to perform the operation on
 	///
 	/// - returns: a signal producer with no values, just completed or error
-	public func perform(operation: DockerContainerOperation, on container: DockerContainer) -> SignalProducer<(), DockerError> {
+	public func perform(operation: DockerContainerOperation, on container: DockerContainer) -> SignalProducer<(), Rc2Error> {
 		return api.perform(operation: operation, container: container)
 	}
 
@@ -260,7 +262,7 @@ public final class DockerManager: NSObject {
 	/// - parameter operation: the operation to perform
 	///
 	/// - returns: a signal producer with no value
-	public func perform(operation: DockerContainerOperation, on inContainers: [DockerContainer]? = nil) -> SignalProducer<(), DockerError>
+	public func perform(operation: DockerContainerOperation, on inContainers: [DockerContainer]? = nil) -> SignalProducer<(), Rc2Error>
 	{
 		var selectedContainers = containers!
 		if inContainers != nil {
@@ -322,8 +324,8 @@ fileprivate extension DockerManager {
 	/// - parameter version: the version information to check
 	///
 	/// - returns: a signal producer whose value is the valid version info
-	func verifyValidVersion(version: DockerVersion) -> SignalProducer<DockerVersion, DockerError> {
-		return SignalProducer<DockerVersion, DockerError>() { observer, _ in
+	func verifyValidVersion(version: DockerVersion) -> SignalProducer<DockerVersion, Rc2Error> {
+		return SignalProducer<DockerVersion, Rc2Error>() { observer, _ in
 			//force cast because only should be called if versionInfo was set
 			os_log("dm.verifyValidVersion: %{public}s", log: .docker, type: .debug, version.description)
 			if version.apiVersion >= self.requiredApiVersion {
@@ -332,31 +334,31 @@ fileprivate extension DockerManager {
 				observer.sendCompleted()
 			} else {
 				os_log("dm unsupported docker version", log: .docker, type: .default)
-				observer.send(error: .unsupportedDockerVersion)
+				observer.send(error: Rc2Error(type: .docker, nested: DockerError.unsupportedDockerVersion))
 			}
 		}
 	}
 
-	fileprivate func validateNetwork() -> SignalProducer<(), DockerError> {
+	fileprivate func validateNetwork() -> SignalProducer<(), Rc2Error> {
 		let nname = "rc2server"
 		return api.networkExists(name: nname)
 			.map { exists in return (nname, exists, self.api.create(network:)) }
 			.flatMap(.concat, transform: optionallyCreateObject)
 	}
 
-	fileprivate func validateVolumes() -> SignalProducer<(), DockerError> {
+	fileprivate func validateVolumes() -> SignalProducer<(), Rc2Error> {
 		let nname = "rc2_dbdata"
 		return api.volumeExists(name: nname)
 			.map { exists in return (nname, exists, self.api.create(volume:)) }
 			.flatMap(.concat, transform: optionallyCreateObject)
 	}
 
-	typealias CreateFunction = (String) -> SignalProducer<(), DockerError>
+	typealias CreateFunction = (String) -> SignalProducer<(), Rc2Error>
 
-	fileprivate func optionallyCreateObject(name: String, exists: Bool, handler: CreateFunction) -> SignalProducer<(), DockerError>
+	fileprivate func optionallyCreateObject(name: String, exists: Bool, handler: CreateFunction) -> SignalProducer<(), Rc2Error>
 	{
 		guard !exists else {
-			return SignalProducer<(), DockerError>(value: ())
+			return SignalProducer<(), Rc2Error>(value: ())
 		}
 		return handler(name)
 	}
@@ -366,20 +368,27 @@ fileprivate extension DockerManager {
 	/// - parameter containers: the containers to create if necessary
 	///
 	/// - returns: the containers unchanged
-	fileprivate func createUnavailable(containers: [DockerContainer]) -> SignalProducer<[DockerContainer], DockerError>
+	fileprivate func createUnavailable(containers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error>
 	{
 		let producers = containers.map { self.api.create(container: $0) }
 		return SignalProducer.merge(producers).collect()
 	}
 
+	//TODO: is this the best place to compare running imageId to the required imageId?
+	fileprivate func removeOutdatedContainers() -> SignalProducer<(), Rc2Error> {
+		return SignalProducer<(), Rc2Error> { observer, _ in
+			observer.sendCompleted()
+		}
+	}
+	
 	/// Updates the containers property to match the information in the containers parameter
 	///
 	/// - parameter containers: containers array from docker
 	///
 	/// - returns: a signal producer whose value is the merged containers
-	fileprivate func mergeContainers(_ containers: [DockerContainer]) -> SignalProducer<[DockerContainer], DockerError>
+	fileprivate func mergeContainers(_ containers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error>
 	{
-		return SignalProducer<[DockerContainer], DockerError> { observer, _ in
+		return SignalProducer<[DockerContainer], Rc2Error> { observer, _ in
 			os_log("dm.mergeContainers called", log: .docker, type: .debug)
 			self.containers.forEach { aContainer in
 				if let c2 = containers[aContainer.type] {
@@ -392,7 +401,7 @@ fileprivate extension DockerManager {
 	}
 
 	//for now maps promise/future pull operation to a signal producer
-	func pullSingleImage(pull: DockerPullOperation) -> SignalProducer<PullProgress, DockerError>
+	func pullSingleImage(pull: DockerPullOperation) -> SignalProducer<PullProgress, Rc2Error>
 	{
 		os_log("dm.pullSingleImage called for %{public}@", log: .docker, type: .debug, pull.pullProgress.name)
 		pullProgress?.extracting = false

@@ -124,6 +124,8 @@ class LinedJsonHandlerSpec: QuickSpec {
 		switch msgType {
 			case .json:
 				return
+			case .headers(_):
+				return
 			default:
 				jsonExpect?.fulfill()
 		}

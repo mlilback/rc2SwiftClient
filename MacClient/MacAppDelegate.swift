@@ -93,7 +93,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		}
 	}
 	
-	func performPullAndPrepareContainers(_ needPull: Bool) -> SignalProducer<(), DockerError> {
+	func performPullAndPrepareContainers(_ needPull: Bool) -> SignalProducer<(), Rc2Error> {
 		os_log("performPullAndPrepareContainers: %d", log: .app, type: .debug, needPull ? 1 : 0)
 		guard let docker = dockerManager else { fatalError() }
 		guard needPull else {

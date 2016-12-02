@@ -20,7 +20,7 @@ class DockerImageInfoTests: XCTestCase {
 	}
 
 	func testParseInfo() {
-		let path : String = Bundle(for: DockerImageInfoTests.self).path(forResource: "imageInfo", ofType: "json")!
+		let path : String = Bundle(for: DockerManager.self).path(forResource: "imageInfo", ofType: "json")!
 		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
 		stub(http(method: .get, uri: "/imageInfo.json"), builder: jsonData(resultData!))
 		var fetchedData: Data?
@@ -37,8 +37,7 @@ class DockerImageInfoTests: XCTestCase {
 			XCTAssertNil(error)
 			let json = try! JSON(data: fetchedData!)
 			let info = RequiredImageInfo(from:json)!
-			XCTAssertEqual(info.version, 1)
-			XCTAssertEqual(info.dbserver.size, 442069860)
+			XCTAssertEqual(info.dbserver.size, 416309581)
 			XCTAssertEqual(info.computeserver.name, "compute")
 		}
 	}
