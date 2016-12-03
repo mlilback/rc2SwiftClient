@@ -96,7 +96,9 @@ public final class DockerManager: NSObject {
 		self.baseInfoUrl = ProcessInfo.processInfo.envValue(name: "ImageInfoBaseUrl", defaultValue: infoUrl == nil ? "https://www.rc2.io/" : infoUrl!)
 		defaults = userDefaults
 		sessionConfig = sessionConfiguration
-		sessionConfig.protocolClasses = [DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
+		if sessionConfig.protocolClasses?.filter({ $0 == DockerUrlProtocol.self }).count == 0 {
+			sessionConfig.protocolClasses = [DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
+		}
 		sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
 		session = URLSession(configuration: sessionConfig)
 		api = DockerAPIImplementation(baseUrl: baseUrl, sessionConfig: sessionConfig)
