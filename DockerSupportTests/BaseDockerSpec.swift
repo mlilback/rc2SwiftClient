@@ -95,9 +95,20 @@ class BaseDockerSpec: QuickSpec {
 	}
 	
 	/// uses Mockingjay to stub out a request for uriPath with the contents of fileName.json
-	func stubGetRequest(uriPath: String, fileName: String) {
+	@discardableResult
+	func stubDockerGetRequest(uriPath: String, fileName: String) -> Stub {
 		let path : String = Bundle(for: type(of:self)).path(forResource: fileName, ofType: "json")!
 		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
-		stub(uri(uri: uriPath), builder: jsonData(resultData!))
+		return stub({ request in
+			return request.url!.scheme! == "unix" && request.url!.path == uriPath
+		}, builder: jsonData(resultData!))
+	}
+
+	/// uses Mockingjay to stub out a request for uriPath with the contents of fileName.json
+	@discardableResult
+	func stubGetRequest(uriPath: String, fileName: String) -> Stub {
+		let path : String = Bundle(for: type(of:self)).path(forResource: fileName, ofType: "json")!
+		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
+		return stub(uri(uri: uriPath), builder: jsonData(resultData!))
 	}
 }

@@ -206,6 +206,8 @@
 		088CE6B81C4C44A800153414 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6B71C4C44A800153414 /* Keychain.swift */; };
 		088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 088CE6B91C4C44BD00153414 /* Security.framework */; };
 		088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6BB1C4C508000153414 /* KeychainTests.swift */; };
+		088D1F931DF36B7F00BC891E /* updatedImageInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 088D1F921DF36B7F00BC891E /* updatedImageInfo.json */; };
+		088D1F951DF36E4D00BC891E /* updatedContainers.json in Resources */ = {isa = PBXBuildFile; fileRef = 088D1F941DF36E4D00BC891E /* updatedContainers.json */; };
 		089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BE1D21938F00866A05 /* BookmarkViewController.swift */; };
 		0890650B1D26F59300C7CA5D /* MacAppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0890650A1D26F59300C7CA5D /* MacAppStatus.swift */; };
 		089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -706,6 +708,8 @@
 		088CE6B71C4C44A800153414 /* Keychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		088CE6B91C4C44BD00153414 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		088CE6BB1C4C508000153414 /* KeychainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
+		088D1F921DF36B7F00BC891E /* updatedImageInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedImageInfo.json; sourceTree = "<group>"; };
+		088D1F941DF36E4D00BC891E /* updatedContainers.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedContainers.json; sourceTree = "<group>"; };
 		0890650A1D26F59300C7CA5D /* MacAppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacAppStatus.swift; sourceTree = "<group>"; };
 		089346021C7F661400100CF6 /* PEGKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PEGKit.framework; path = Carthage/Build/Mac/PEGKit.framework; sourceTree = "<group>"; };
 		089346051C7FB14B00100CF6 /* SyntaxColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxColor.swift; sourceTree = "<group>"; };
@@ -1048,6 +1052,8 @@
 				081559A01DDFB2D80047B3CE /* containers.json */,
 				081559A31DDFB2D80047B3CE /* dockerImages.json */,
 				081559AA1DDFB2D80047B3CE /* networks.json */,
+				088D1F941DF36E4D00BC891E /* updatedContainers.json */,
+				088D1F921DF36B7F00BC891E /* updatedImageInfo.json */,
 				081559AB1DDFB2D80047B3CE /* version.json */,
 				081559AC1DDFB2D80047B3CE /* volumes.json */,
 			);
@@ -1868,8 +1874,10 @@
 				083D11961DEF535C00549268 /* complexImages.json in Resources */,
 				081559AD1DDFB2D80047B3CE /* containers.json in Resources */,
 				081559BC1DDFB4230047B3CE /* busybox.jsonData in Resources */,
+				088D1F951DF36E4D00BC891E /* updatedContainers.json in Resources */,
 				083D11901DEDECEC00549268 /* linedNormal.json in Resources */,
 				081559B71DDFB2D80047B3CE /* networks.json in Resources */,
+				088D1F931DF36B7F00BC891E /* updatedImageInfo.json in Resources */,
 				081559B01DDFB2D80047B3CE /* dockerImages.json in Resources */,
 				083D118F1DEDECEC00549268 /* linedBadHeader.json in Resources */,
 			);

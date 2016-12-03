@@ -64,7 +64,6 @@ class DefaultDockerAPISpec: BaseDockerSpec {
 				expect(containers[.dbserver]?.mountPoints).to(haveCount(1))
 				expect(containers[.dbserver]?.mountPoints.first?.destination).to(equal("/rc2"))
 				expect(containers[.appserver]).toNot(beNil())
-				expect(containers[.appserver]?.state.value).to(equal(ContainerState.created))
 			}
 			
 			context("use the dbserver container") {

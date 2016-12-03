@@ -12,8 +12,8 @@
 			 }
 			 ],
   "Created" : 1480519391,
-  "ImageID" : "sha256:26b540e285dfef430d183b0677151dc371a7553df326777e96d43f1af61897d1",
-  "Image" : "rc2server/compute:0.4.2",
+  "ImageID" : "sha256:12f22a6ac93151274b28590a95cb0debd049c3aa6141287a864ca3205a4cad8c",
+  "Image" : "rc2server/compute:0.4.3",
   "Mounts" : [],
   "Command" : "/rc2compute/rserver",
   "NetworkSettings" : {

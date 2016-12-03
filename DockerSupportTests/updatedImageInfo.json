@@ -1,0 +1,29 @@
+{
+   "images" : {
+      "dbserver" : {
+         "size" : 416309581,
+         "version" : "0.4.3",
+         "estSize" : 416309581,
+         "tag" : "rc2server/dbserver:0.4.3",
+         "name" : "dbserver",
+         "id" : "sha256:95eb6c69abbf19157cb8b7d03f09f4c6a462985cd5c3f834436b8bf186c25873"
+      },
+      "appserver" : {
+         "tag" : "rc2server/appserver:0.4.3",
+         "name" : "appserver",
+         "id" : "sha256:b4aa49baa2396590ad193ebfd8e6be675e400ebac3e7a0447a33461f6d22e7dc",
+         "size" : 501508197,
+         "version" : "0.4.3",
+         "estSize" : 374446627
+      },
+      "compute" : {
+         "estSize" : 1695885483,
+         "version" : "0.4.3",
+         "size" : 2112195064,
+         "id" : "sha256:12f22a6ac93151274b28590a95cb0debd049c3aa6141287a864ca3205a4cad8c",
+         "name" : "compute",
+         "tag" : "rc2server/compute:0.4.3"
+      }
+   },
+   "version" : "2016120201"
+}
