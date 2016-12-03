@@ -340,10 +340,12 @@ extension DockerAPIImplementation {
 	//must not reference self
 	fileprivate func parseContainers(json: JSON) -> SignalProducer<[DockerContainer], Rc2Error>
 	{
-		guard let containers: [DockerContainer] = try? json.decodedArray() else {
-			return SignalProducer<[DockerContainer], Rc2Error>(error: Rc2Error(type: .invalidJson))
+		do {
+			let containers: [DockerContainer] = try json.decodedArray()
+			return SignalProducer<[DockerContainer], Rc2Error>(value: containers)
+		} catch {
+			return SignalProducer<[DockerContainer], Rc2Error>(error: Rc2Error(type: .invalidJson, nested: error))
 		}
-		return SignalProducer<[DockerContainer], Rc2Error>(value: containers)
 	}
 
 	fileprivate func parseImages(json: JSON) -> SignalProducer<[DockerImage], Rc2Error> {

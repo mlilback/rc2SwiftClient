@@ -32,7 +32,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 
 		let fh = FileHandle(fileDescriptor: fd)
 		guard let outStr = buildRequestString(), outStr.characters.count > 0 else { return }
-		os_log("sending request to docker: %{public}s", log: .docker, type: .debug)
+		os_log("sending request to docker: %{public}s", log: .docker, type: .debug, outStr)
 		fh.write(outStr.data(using: String.Encoding.utf8)!)
 		if let body = request.httpBody {
 			fh.write(body)
