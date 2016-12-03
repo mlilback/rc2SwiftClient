@@ -28,6 +28,9 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	}
 
 	override open func startLoading() {
+		//do not allow to be used from a unit test. All calls to docker should be mocked
+		guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { fatalError("mock all docker calls") }
+
 		guard let fd = try? openDockerConnection() else { return }
 
 		let fh = FileHandle(fileDescriptor: fd)
