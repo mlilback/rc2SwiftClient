@@ -32,13 +32,6 @@ class DockerManagerSpec: BaseDockerSpec {
 			// stub /networks for networkExists(_)
 			// stub /images/json for loadImages()
 			// defaults passed to DM.init needs to have lastImageInfoCheck set to Date.distantFuture.timeIntervalSinceReferenceDate
-			// stub www.rc2.io/imageInfo.json
-			
-			//TODO: need mock userDefaults
-//			it("manager can be created") {
-//				let dm = DockerManager()
-//				expect(dm).toNot(beNil())
-//			}
 			
 			context("stubbed DM") {
 				var dockerM: DockerManager?
@@ -54,6 +47,7 @@ class DockerManagerSpec: BaseDockerSpec {
 					self.stubDockerGetRequest(uriPath: "/imageInfo.json", fileName: "updatedImageInfo")
 				}
 				
+				//test that all stages of .initialize() and .prepareContainers() works properly
 				it("dm prepare containers logic works") {
 					let compute42Id = "sha256:26b540e285dfef430d183b0677151dc371a7553df326777e96d43f1af61897d1"
 					let compute43Id = "sha256:12f22a6ac93151274b28590a95cb0debd049c3aa6141287a864ca3205a4cad8c"
@@ -84,9 +78,19 @@ class DockerManagerSpec: BaseDockerSpec {
 					expect(mergedResult.error).to(beNil())
 					let mergedContainers = mergedResult.value!
 					expect(mergedContainers[.compute]?.imageId).to(equal(compute43Id))
-					///confirm removeOutdatedContianers() returns proper signal producer
-//					let outdatedProducer = dm.removeOutdatedContainers(containers: mergedContainers)
-					//expect(out)
+					//stub all deletes to fail
+					self.stub({ request -> Bool in
+						request.httpMethod == "DELETE"
+					}, builder: http(404))
+					//stub desired delete to succeed
+					self.stub({ request -> Bool in
+						request.httpMethod! == "DELETE" && request.url!.path == "/containers/\(mergedContainers[.compute]!.name)"
+					}, builder: http(204))
+					///confirm removeOutdatedContainers() returns proper signal producer
+					let outdatedProducer = dm.removeOutdatedContainers(containers: mergedContainers)
+					let outdatedResult = self.makeValueRequest(producer: outdatedProducer, queue: .global())
+					expect(outdatedResult.error).to(beNil())
+					expect(outdatedResult.value![.compute]!.state.value).to(equal(ContainerState.notAvailable))
 				}
 			}
 		}

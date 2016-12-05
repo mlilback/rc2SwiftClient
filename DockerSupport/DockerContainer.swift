@@ -184,7 +184,7 @@ public final class DockerContainer: JSONDecodable {
 	/// - parameter state: the new state of the container
 	public func update(state: ContainerState) {
 		self.state.value = state
-		//don't use a state machine because we could become off from what docker says and need to correct"
+		//don't use a state machine because we could become off from what docker says and need to correct
 	}
 	
 	/// injects the desired image tag/name (e.g. rc2server/dbserver:0.4.2)

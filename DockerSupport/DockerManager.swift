@@ -384,7 +384,7 @@ extension DockerManager {
 	/// Remove any containers whose images are outdated
 	///
 	/// Parameter containers: the containers to examine
-	/// - Returns: a merged array of signal producers that returns in the input containers
+	/// - Returns: a merged array of signal producers that returns the input containers with their state updated
 	func removeOutdatedContainers(containers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error> {
 		var containersToRemove = [DockerContainer]()
 		for aContainer in containers {
@@ -398,7 +398,9 @@ extension DockerManager {
 			return SignalProducer<[DockerContainer], Rc2Error>(value: containers)
 		}
 		let producers = containersToRemove.map { container -> SignalProducer<(), Rc2Error> in
-			api.remove(container: container)
+			api.remove(container: container).on(completed: {
+				container.update(state: .notAvailable)
+			})
 		}
 		return SignalProducer.merge(producers).map { containers }
 	}
