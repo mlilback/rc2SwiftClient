@@ -9,6 +9,7 @@ import Cocoa
 import os
 import Networking
 import ReactiveSwift
+import ClientCore
 
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
@@ -145,14 +146,15 @@ open class BookmarkViewController: NSViewController {
 			}
 		}
 		let loginFactory = LoginFactory()
-		loginFactory.login(to: host, as: host.user, password: pass).start(on: UIScheduler()).startWithResult { (result) in
+		loginFactory.login(to: host, as: host.user, password: pass).observe(on: UIScheduler()).startWithResult { (result) in
 			guard let conInfo = result.value else {
-				self.appStatus?.presentError(result.error! as NSError, session: nil)
+				self.appStatus?.presentError(result.error!, session: nil)
 				return
 			}
 			guard let wspace = conInfo.project(withName: bookmark.projectName)?.workspace(withName: bookmark.workspaceName!) else
 			{
-				self.appStatus?.presentError(NSError.error(withCode: .noSuchObject, description: nil), session:nil)
+				let desc = String.localizedStringWithFormat(NSLocalizedString("Failed to find workspace %@", comment: ""), bookmark.workspaceName!)
+				self.appStatus?.presentError(Rc2Error(type: .noSuchElement, explanation: desc), session:nil)
 				return
 			}
 			let session = Session(connectionInfo: conInfo, workspace: wspace)
@@ -169,10 +171,6 @@ open class BookmarkViewController: NSViewController {
 			}
 		}
 		return nil
-	}
-	
-	func displayError(_ error:NSError) {
-		appStatus?.presentError(error, session: nil)
 	}
 }
 

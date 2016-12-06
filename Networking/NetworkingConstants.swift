@@ -11,3 +11,7 @@ import ClientCore
 //extension OSLog {
 //	static let network: OSLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "network")
 //}
+
+func localizedNetworkString(_ key: String) -> String {
+	return NSLocalizedString(key, tableName: "Networking", bundle: Bundle(for: Rc2DefaultFileManager.self), comment: "")
+}

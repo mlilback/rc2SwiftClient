@@ -7,10 +7,10 @@
 import Foundation
 
 /// A protocol to group domain-specific errors that will be nested inside an Rc2Error
-public protocol Rc2DomainError {}
+public protocol Rc2DomainError: LocalizedError {}
 
 //error object used throughoout project
-public struct Rc2Error: Error, CustomStringConvertible, CustomDebugStringConvertible {
+public struct Rc2Error: LocalizedError, CustomStringConvertible, CustomDebugStringConvertible {
 	/// basic categories of errors
 	public enum Rc2ErrorType: String, Error {
 		/// a requested object was not found
@@ -19,6 +19,8 @@ public struct Rc2Error: Error, CustomStringConvertible, CustomDebugStringConvert
 		case alreadyInProgress
 		/// problem parsing json, Freddy error is nested
 		case invalidJson
+		/// an invalid argument was passed (or parsed from json)
+		case invalidArgument
 		/// nestedError will be the NSError
 		case cocoa
 		/// nested error is related to the file system
@@ -53,11 +55,17 @@ public struct Rc2Error: Error, CustomStringConvertible, CustomDebugStringConvert
 	/// location in source code of where error happened
 	public let location: String
 
+	public var errorDescription: String? {
+		return description
+	}
+
 	public var description: String {
-		if explanation != nil { return "\(explanation!) (\(type.rawValue))" }
+		if explanation != nil { return explanation! }
 		return "\(type) @ \(location)"
 	}
 	public var debugDescription: String { return "\(type) @ \(location)" }
+
+	public var nestedDescription: String? { return nestedError?.localizedDescription }
 
 	/// intialize an error
 	public init(type: Rc2ErrorType = .unknown, nested: Error? = nil, severity: Severity = .error, explanation: String? = nil, fileName: String = #file, lineNumber: Int = #line)

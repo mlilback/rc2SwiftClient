@@ -248,6 +248,7 @@
 		08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
 		08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; };
 		08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08C2C3C91DF74DE200397DD3 /* Networking.strings in Resources */ = {isa = PBXBuildFile; fileRef = 08C2C3C81DF74DE200397DD3 /* Networking.strings */; };
 		08C484F81C9B159000FE824B /* server.cer in Resources */ = {isa = PBXBuildFile; fileRef = 08C484F71C9B159000FE824B /* server.cer */; };
 		08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */; };
 		08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */; };
@@ -748,6 +749,7 @@
 		08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpOutputController.swift; sourceTree = "<group>"; };
 		08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessagePackSwift.framework; path = Carthage/Build/Mac/MessagePackSwift.framework; sourceTree = "<group>"; };
+		08C2C3C81DF74DE200397DD3 /* Networking.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Networking.strings; sourceTree = "<group>"; };
 		08C484F71C9B159000FE824B /* server.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = server.cer; path = resources/server.cer; sourceTree = "<group>"; };
 		08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManager.swift; sourceTree = "<group>"; };
 		08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManagerTests.swift; sourceTree = "<group>"; };
@@ -961,6 +963,7 @@
 				08F6ADFF1DD918CF00AF0722 /* FileCache.swift */,
 				081559921DDC889D0047B3CE /* ImageCache.swift */,
 				080E82FF1DCD07930048F36C /* NetworkingError.swift */,
+				08C2C3C81DF74DE200397DD3 /* Networking.strings */,
 				08F6ADB11DD90E3600AF0722 /* Rc2FileManager.swift */,
 				080E82E41DCBF4520048F36C /* xattr.swift */,
 				0881B5091DCF84DB00679DB3 /* network */,
@@ -1786,6 +1789,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				080E82E71DCBF8840048F36C /* FileTypes.json in Resources */,
+				08C2C3C91DF74DE200397DD3 /* Networking.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -79,7 +79,7 @@ public class AppStatus: NSObject {
 		NotificationCenter.default.postNotificationNameOnMainThread(Notifications.AppStatusChanged, object: self)
 	}
 	
-	open func presentError(_ error: NSError, session: AnyObject?) {
+	open func presentError(_ error: Rc2Error, session: AnyObject?) {
 		fatalError("subclasses must override prsentError()")
 	}
 	

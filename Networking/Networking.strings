@@ -1,0 +1,11 @@
+/* 
+  Networking.strings
+  SwiftClient
+
+  Created by Mark Lilback on 12/6/16.
+  Copyright © 2016 Rc2. All rights reserved.
+*/
+"unauthorized" = "Invalid login/password";
+"unknown" = "An unknown networking error occurred";
+"unsupportedFileType" = "The file type selected is not supported";
+"Login Error" = "Login Error";

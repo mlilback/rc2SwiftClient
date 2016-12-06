@@ -74,6 +74,21 @@ public final class LoginFactory: NSObject {
 		signalDisposable?.dispose()
 	}
 	
+	func loginSuccessful(data: Data) {
+		do {
+			let info = try ConnectionInfo(host: host!, json: try JSON(data: data))
+			signalObserver?.send(value: info)
+			signalObserver?.sendCompleted()
+		} catch {
+			os_log("error parsing login info: %{public}s", log: .network, type: .default, error.localizedDescription)
+			signalObserver?.send(error: Rc2Error(type: .invalidJson, nested: error))
+		}
+	}
+	
+	func loginFailed(response: HTTPURLResponse, data: Data) {
+		let explain = localizedNetworkString("Login Error")
+		signalObserver?.send(error: Rc2Error(type: .network, nested: NetworkingError.errorFor(response: response, data: data), explanation: explain))
+	}
 }
 
 // MARK: - URLSessionDataDelegate implementation
@@ -82,6 +97,12 @@ extension LoginFactory: URLSessionDataDelegate {
 	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)
 	{
 		loginResponse = response
+		if response.httpResponse?.statusCode == 401 {
+			completionHandler(.cancel)
+			let err = Rc2Error(type: .network, nested: NetworkingError.unauthorized, explanation: "Invalid login information")
+			signalObserver?.send(error: err)
+			return
+		}
 		completionHandler(.allow)
 	}
 	
@@ -95,16 +116,14 @@ extension LoginFactory: URLSessionDataDelegate {
 		defer { self.task = nil; self.urlSession = nil }
 		guard error == nil else {
 			os_log("login error: %{public}@", log: .network, type: .default, error!.localizedDescription)
-			signalObserver?.send(error: Rc2Error(type: .network, nested: error, severity: .warning))
+			signalObserver?.send(error: Rc2Error(type: .network, nested: error, severity: .warning, explanation: "Unknown login error"))
 			return
 		}
-		do {
-			let info = try ConnectionInfo(host: host!, json: try JSON(data: responseData))
-			signalObserver?.send(value: info)
-			signalObserver?.sendCompleted()
-		} catch {
-			os_log("error parsing login info: %{public}s", log: .network, type: .default, error.localizedDescription)
-			signalObserver?.send(error: Rc2Error(type: .invalidJson, nested: error))
+		switch task.response!.httpResponse!.statusCode {
+			case 200:
+				loginSuccessful(data: responseData)
+			default:
+				loginFailed(response: task.response!.httpResponse!, data: responseData)
 		}
 	}
 }

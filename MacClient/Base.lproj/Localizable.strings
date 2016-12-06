@@ -5,6 +5,7 @@
 "InitialServerPromptInfo" = "Rc2 can download and install a local copy of the server.";
 
 "Rc2ErrorCode.noSuchObject" = "There is no project/workspace with that name";
+"Failed to find workspace %@" = "Failed to find workspace %@";
 
 "DeleteFileWarning" = "Confirm Delete File";
 "DeleteFileWarningInfo" = "This action can not be undone.";

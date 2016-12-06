@@ -6,12 +6,16 @@
 
 import Cocoa
 import Networking
+import ClientCore
 
 class MacAppStatus: AppStatus {
 
-	override func presentError(_ error: NSError, session: AnyObject?) {
-		let alert = NSAlert(error: error)
-		alert.beginSheetModal(for: getWindow((session as! Session)), completionHandler:nil)
+	override func presentError(_ error: Rc2Error, session: AnyObject?) {
+		let alert = NSAlert()
+		alert.messageText = error.localizedDescription
+		alert.informativeText = error.nestedError?.localizedDescription ?? ""
+		alert.addButton(withTitle: NSLocalizedString("Ok", comment: ""))
+		alert.beginSheetModal(for: getWindow(session as? Session), completionHandler:nil)
 	}
 	
 	override func presentAlert(_ session:AnyObject?, message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)

@@ -144,7 +144,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 				}, interrupted: {
 					fatalError() //should never happen
 				}
-			).start(on: UIScheduler()).start()
+			).observe(on: UIScheduler()).start()
 	}
 	
 	func restoreSessions() {
