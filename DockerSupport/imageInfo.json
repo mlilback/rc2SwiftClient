@@ -1,5 +1,6 @@
 {
-   "version" : "2016120101",
+   "version" : 2,
+   "timestamp":"2016-12-04T20:50:24Z",
    "images" : {
       "appserver" : {
          "estSize" : 374446627,

@@ -105,6 +105,7 @@ public final class DockerManager: NSObject {
 		//read image info from defaults
 		imageInfo = RequiredImageInfo(from: defaults[.cachedImageInfo])
 		super.init()
+		assert(baseInfoUrl.hasSuffix("/"))
 		let myBundle = Bundle(for: type(of: self))
 		//if we have no imageInfo, load from bundled file
 		if nil == imageInfo {
@@ -189,7 +190,9 @@ public final class DockerManager: NSObject {
 			os_log("got pull for %{public}s", log:.docker, type:.debug, img.fullName)
 			return self.pullSingleImage(pull: DockerPullOperation(baseUrl: self.baseUrl, imageName: img.fullName, estimatedSize: img.size, config: sessionConfig))
 		}
-		return SignalProducer.merge(producers)
+		//use concat instead of merge because progress depends on order of download (layer sizes)
+		let producer = SignalProducer< SignalProducer<PullProgress, Rc2Error>, Rc2Error >(values: producers)
+		return producer.flatten(.concat)
 	}
 
 	/// Ensures docker has the correct containers available and the containers property is in sync with docker
@@ -221,19 +224,30 @@ public final class DockerManager: NSObject {
 	{
 		precondition(state >= .initialized)
 		os_log("dm.checkForImageUpdate", log: .docker, type: .debug)
-		//short circuit if we don't need to chedk and have valid data
+		//short circuit if we don't need to check and have valid data
 		guard imageInfo == nil || shouldCheckForUpdate || forceRefresh else {
 			os_log("skipping imageInfo fetch", log:.docker, type:.info)
 			return SignalProducer<Bool, Rc2Error>(value: true)
 		}
 		return api.fetchJson(url: URL(string:"\(baseInfoUrl)imageInfo.json")!).map { json in
 			self.defaults[.lastImageInfoCheck] = Date.timeIntervalSinceReferenceDate
-			guard let newInfo = RequiredImageInfo(from: json) else { return false }
-			guard newInfo.newerThan(self.imageInfo) else { return false }
-			self.imageInfo = newInfo
-			self.defaults[.cachedImageInfo] = json
+			do {
+				let newInfo = try RequiredImageInfo(json: json)
+				guard newInfo.newerThan(self.imageInfo) else {
+					os_log("dm.checkForImageUpdate: newInfo not newer", log: .docker, type: .debug)
+					return false
+				}
+				self.imageInfo = newInfo
+				self.defaults[.cachedImageInfo] = json
+			} catch {
+				os_log("got imageInfo error: %{public}s", log: .docker, error as NSError)
+				return false
+			}
 			return true
-		}.flatMapError  { _ in SignalProducer<Bool, Rc2Error>(value: false) } //ignore errors
+		}.flatMapError  { err in
+			os_log("dm.checkForImageUpdate error %{public}@", log: .docker, type: .debug, err as NSError)
+			return SignalProducer<Bool, Rc2Error>(value: false)
+		}
 	}
 
 	/// compares installedImages with imageInfo to see if a pull is necessary
@@ -389,7 +403,7 @@ extension DockerManager {
 		var containersToRemove = [DockerContainer]()
 		for aContainer in containers {
 			let image = imageInfo![aContainer.type]
-			if image.id != aContainer.imageId {
+			if image.id != aContainer.imageId && aContainer.state.value != .notAvailable {
 				os_log("outdated image for %{public}s", log: .docker, type: .info, aContainer.type.rawValue)
 				containersToRemove.append(aContainer)
 			}
@@ -397,12 +411,18 @@ extension DockerManager {
 		guard containersToRemove.count > 0 else {
 			return SignalProducer<[DockerContainer], Rc2Error>(value: containers)
 		}
-		let producers = containersToRemove.map { container -> SignalProducer<(), Rc2Error> in
-			api.remove(container: container).on(completed: {
-				container.update(state: .notAvailable)
-			})
+		var producers = [SignalProducer<(), Rc2Error>]()
+		containersToRemove.forEach { aContainer in
+			if aContainer.state.value == .running {
+				producers.append(api.perform(operation: .stop, container: aContainer))
+			}
+			producers.append(api.remove(container: aContainer).on(completed: {
+				aContainer.update(state: .notAvailable)
+			}))
 		}
-		return SignalProducer.merge(producers).map { containers }
+		let combinedProducer = SignalProducer< SignalProducer<(), Rc2Error>, Rc2Error >(values: producers)
+		//combinedProducers will produce no values. Need to folow with a second producer that returns the containers as a value
+		return combinedProducer.flatten(.concat).then(SignalProducer<[DockerContainer], Rc2Error>(value: containers))
 	}
 	
 	/// Updates the containers property to match the information in the containers parameter

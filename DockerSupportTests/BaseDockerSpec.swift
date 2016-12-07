@@ -40,13 +40,14 @@ class BaseDockerSpec: QuickSpec {
 	///   - queue: the queue to run it on (should not be main queue in a unit test)
 	/// - Returns: the result of the producer
 	func makeValueRequest<T>(producer: SignalProducer<T, Rc2Error>, queue: DispatchQueue) -> Result<T, Rc2Error> {
-		var result: Result<T, Rc2Error>!
+		var result: Result<T, Rc2Error>?
 		let group = DispatchGroup()
 		queue.async(group: group) {
 			result = producer.single()
 		}
 		group.wait()
-		return result
+		expect(result).toNot(beNil())
+		return result!
 	}
 	
 	/// Completes a signal producer that has no value

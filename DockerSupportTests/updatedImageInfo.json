@@ -25,5 +25,6 @@
          "tag" : "rc2server/compute:0.4.3"
       }
    },
-   "version" : "2016120201"
+   "version" : 2,
+   "timestamp":"2016-12-05T21:50:24Z"
 }

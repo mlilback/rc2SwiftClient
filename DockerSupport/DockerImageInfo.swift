@@ -7,6 +7,7 @@
 import Foundation
 import Freddy
 import os
+import ClientCore
 
 public struct DockerImageInfo: JSONDecodable, JSONEncodable {
 	let size: Int
@@ -45,12 +46,22 @@ extension DockerImageInfo: Equatable {
 }
 
 public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
-	/// version is a serial number consisting of YYYYMMDDXX where XX is number from 01..99
-	let version: String
+	static let supportedVersion = 2
+	
+	let version: Int
+	let timestamp: Date
 	let dbserver: DockerImageInfo
 	let appserver: DockerImageInfo
 	let computeserver: DockerImageInfo
 
+	static let timestampFormatter: ISO8601DateFormatter = {
+		var df = ISO8601DateFormatter()
+		df.formatOptions = [.withInternetDateTime]
+		return df
+	}()
+	
+	var timestampString: String { return RequiredImageInfo.timestampFormatter.string(from: timestamp) }
+	
 	public init?(from: JSON?) {
 		guard let json = from else { return nil }
 		do {
@@ -61,7 +72,14 @@ public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
 	}
 
 	public init(json: JSON) throws {
-		version = try json.getString(at: "version")
+		version = try json.getInt(at: "version")
+		guard version == RequiredImageInfo.supportedVersion else {
+			throw Rc2Error(type: .invalidArgument, explanation: "unsupported imageInfo version (\(version))")
+		}
+		guard let ts = type(of: self).timestampFormatter.date(from: try json.getString(at: "timestamp")) else {
+			throw Rc2Error(type: .invalidJson, explanation: "timestamp format invalid")
+		}
+		timestamp = ts
 		let imageDict = try json.decodedDictionary(at: "images", type: DockerImageInfo.self)
 		guard let db = imageDict["dbserver"], let app = imageDict["appserver"], let comp = imageDict["compute"] else {
 			throw DockerError.invalidJson
@@ -77,7 +95,7 @@ public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
 	/// - Returns: true if this version is newer
 	public func newerThan(_ other: RequiredImageInfo?) -> Bool {
 		guard nil != other else { return true }
-		return version > other!.version
+		return version == other!.version && timestamp > other!.timestamp
 	}
 	
 	public var startIndex: Int { return 0 }
@@ -106,6 +124,6 @@ public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
 	}
 
 	public func toJSON() -> JSON {
-		return .dictionary(["version": .string(version), "images": ["dbserver": dbserver, "appserver": appserver, "compute": computeserver].toJSON()])
+		return .dictionary(["version": .int(version), "timestamp": .string(timestampString), "images": ["dbserver": dbserver, "appserver": appserver, "compute": computeserver].toJSON()])
 	}
 }
