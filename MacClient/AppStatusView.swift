@@ -16,7 +16,7 @@ class AppStatusView: NSView {
 	fileprivate var realDetProgress:NSProgressIndicator?
 
 	@IBOutlet var cancelButton: NSButton?
-	weak var appStatus: AppStatus? { didSet { self.statusChanged(nil) } }
+	weak var appStatus: MacAppStatus? { didSet { self.statusChanged(nil) } }
 	var progressContext: KVObserver?
 	
 	override var intrinsicContentSize:NSSize { return NSSize(width:220, height:22) }

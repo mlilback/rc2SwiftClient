@@ -10,7 +10,7 @@ import Networking
 
 class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolbarDelegate {
 	///Object that lets us monitor the status of the application. Nededed to pass on to the statusView once setup is finished
-	dynamic weak var appStatus: AppStatus?
+	weak var appStatus: MacAppStatus?
 	
 	weak var session: Session?
 	

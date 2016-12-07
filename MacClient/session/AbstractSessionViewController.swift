@@ -13,7 +13,7 @@ class AbstractSessionViewController: NSViewController {
 	///convience accessor so don't have to constantly unwrap optional
 	var session: Session { get { return sessionOptional! } }
 	//injected by Swinject
-	weak var appStatus: AppStatus? { didSet {
+	weak var appStatus: MacAppStatus? { didSet {
 		appStatusChanged()
 	} }
 	
