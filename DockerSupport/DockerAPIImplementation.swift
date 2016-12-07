@@ -106,9 +106,7 @@ final class DockerAPIImplementation: DockerAPI {
 		request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 		return SignalProducer<(), Rc2Error> { observer, _ in
 			let task = self.session.uploadTask(with: request, from: jsonData) { (data, response, error) in
-				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {
-					observer.send(value: ())
-				}
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {}
 			}
 			task.resume()
 		}.observe(on: scheduler)
@@ -137,15 +135,13 @@ final class DockerAPIImplementation: DockerAPI {
 	// documentation in DockerAPI protocol
 	public func perform(operation: DockerContainerOperation, container: DockerContainer) -> SignalProducer<Void, Rc2Error>
 	{
-		os_log("performing %{public}@ on %{public}@", log: .docker, type: .info, operation.rawValue, container.name)
+		os_log("performing %{public}s on %{public}@", log: .docker, type: .info, operation.rawValue, container.name)
 		let url = baseUrl.appendingPathComponent("/containers/\(container.name)/\(operation.rawValue)")
 		var request = URLRequest(url: url)
 		request.httpMethod = "POST"
 		return SignalProducer<Void, Rc2Error> { observer, disposable in
 			self.session.dataTask(with: request) { (data, response, error) in
-				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {
-					observer.send(value: ())
-				}
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {}
 			}.resume()
 		}.observe(on: scheduler)
 	}
@@ -186,9 +182,7 @@ final class DockerAPIImplementation: DockerAPI {
 		return SignalProducer<Void, Rc2Error> { observer, _ in
 			os_log("removing %{public}@", log: .docker, type: .info, container.name)
 			self.session.dataTask(with: request) { (data, response, error) in
-				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {
-					observer.send(value: ())
-				}
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {}
 			}.resume()
 		}.observe(on: scheduler)
 	}
@@ -209,9 +203,7 @@ final class DockerAPIImplementation: DockerAPI {
 		request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 		return SignalProducer<(), Rc2Error> { observer, _ in
 			let task = self.session.uploadTask(with: request, from: jsonData) { (data, response, error) in
-				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {
-					observer.send(value: ())
-				}
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {}
 			}
 			task.resume()
 		}.observe(on: scheduler)
