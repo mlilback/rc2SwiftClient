@@ -28,6 +28,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	dynamic var dockerManager: DockerManager?
 	var setupController: ServerSetupController?
 	private var dockerWindowController: NSWindowController?
+	private var appStatus: MacAppStatus?
 
 	fileprivate dynamic var _currentProgress: Progress?
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
@@ -131,10 +132,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			)
 			.on(
 				failed: { error in
-					var errDesc = error.localizedDescription
-					if let rcerr = error as? Rc2Error { errDesc = rcerr.debugDescription }
-					os_log("failed to start a container: %{public}s", log: .app, type: .error, errDesc)
-					fatalError(errDesc)
+					os_log("failed to start a container: %{public}s", log: .app, type: .error, error.debugDescription)
+					self.appStatus?.presentError(error, session: nil)
 				}, completed: {
 					DispatchQueue.main.async {
 						wc.window?.orderOut(nil)
@@ -193,19 +192,21 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func openSession(_ session: Session) {
-		let appStatus = AppStatus(windowAccessor: windowForAppStatus)
+		if nil == appStatus {
+			appStatus = MacAppStatus(windowAccessor: windowForAppStatus)
+		}
 		let wc = MainWindowController.createFromNib()
 		sessionWindowControllers.insert(wc)
 		
 		let container = Container()
 		container.registerForStoryboard(RootViewController.self) { r, c in
-			c.appStatus = appStatus
+			c.appStatus = self.appStatus
 		}
 		container.registerForStoryboard(SidebarFileController.self) { r, c in
-			c.appStatus = appStatus
+			c.appStatus = self.appStatus
 		}
 		container.registerForStoryboard(AbstractSessionViewController.self) { r, c in
-			c.appStatus = appStatus
+			c.appStatus = self.appStatus
 		}
 
 		let sboard = SwinjectStoryboard.create(name: "MainController", bundle: nil, container: container)
