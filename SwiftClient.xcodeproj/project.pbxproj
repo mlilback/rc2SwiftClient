@@ -1425,7 +1425,9 @@
 			children = (
 				08F6ADC41DD9169300AF0722 /* DockerSupport.h */,
 				08F6ADC51DD9169300AF0722 /* Info.plist */,
+				08F6ADE61DD9172C00AF0722 /* dockerInfo.json */,
 				083D11971DF0B8AF00549268 /* imageInfo.json */,
+				08F6ADE71DD9172C00AF0722 /* DockerManager.swift */,
 				08F6ADDF1DD9172C00AF0722 /* DockerAPI.swift */,
 				08F6ADE01DD9172C00AF0722 /* DockerAPIImplementation.swift */,
 				08F6ADE11DD9172C00AF0722 /* DockerContainer.swift */,
@@ -1433,8 +1435,6 @@
 				08F6ADE31DD9172C00AF0722 /* DockerEventMonitor.swift */,
 				08F6ADE41DD9172C00AF0722 /* DockerImage.swift */,
 				08F6ADE51DD9172C00AF0722 /* DockerImageInfo.swift */,
-				08F6ADE61DD9172C00AF0722 /* dockerInfo.json */,
-				08F6ADE71DD9172C00AF0722 /* DockerManager.swift */,
 				08F6ADE81DD9172C00AF0722 /* DockerPullOperation.swift */,
 				08F6ADE91DD9172C00AF0722 /* DockerTag.swift */,
 				08F6ADEA1DD9172C00AF0722 /* DockerUrlProtocol.swift */,
