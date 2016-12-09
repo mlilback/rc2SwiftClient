@@ -200,7 +200,7 @@ public final class DockerManager: NSObject {
 			.on(value: { newContainers in
 				//need to set the version used to create our containers from the image info we just processed
 				for aType in ContainerType.all {
-					newContainers[aType]!.createInfo = self.containers[aType]!.createInfo
+					newContainers[aType]?.createInfo = self.containers[aType]!.createInfo
 					try! newContainers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
 				}
 			})
@@ -392,6 +392,9 @@ extension DockerManager {
 	/// - returns: the containers unchanged
 	fileprivate func createUnavailable(containers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error>
 	{
+		for aType in ContainerType.all {
+			try! containers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
+		}
 		let producers = containers.map { self.api.create(container: $0) }
 		return SignalProducer.merge(producers).collect()
 	}
