@@ -323,6 +323,22 @@ extension DefaultFileCache {
 	///   - file: the file to load contents of
 	///   - observer: observer to signal data/completed or error
 	private func loadContents(file: File, observer: Signal<Data, Rc2Error>.Observer) {
+		let fileUrl = cachedUrl(file: file)
+		guard fileUrl.fileExists() else {
+			self.recache(file: file).startWithResult { result in
+				guard result.error == nil else {
+					observer.send(error: result.error!)
+					return
+				}
+				self.readDataFromFile(file: file, observer: observer)
+			}
+			return
+		}
+		readDataFromFile(file: file, observer: observer)
+	}
+	
+	/// reads raw data of file from filesystem, sends along to observer
+	private func readDataFromFile(file: File, observer: Signal<Data, Rc2Error>.Observer) {
 		do {
 			let data = try Data(contentsOf: self.cachedUrl(file: file))
 			observer.send(value: data)

@@ -306,7 +306,6 @@ private extension Session {
 	
 	func handleReceivedMessage(_ message:Any) {
 		if let stringMessage = message as? String {
-			os_log("from websocket: %{public}@", log: .session, type: .debug, stringMessage)
 			guard  let jsonMessage = try? JSON(jsonString: stringMessage),
 				let msg = try? jsonMessage.getString(at: "msg") else
 			{
