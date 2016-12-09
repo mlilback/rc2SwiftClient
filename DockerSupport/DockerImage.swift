@@ -14,15 +14,6 @@ public struct DockerImage: JSONDecodable, Named {
 	let size: Int
 	var labels: [String:String] = [:]
 
-	/// convenience initializer that return nil if an error was thrown by the JSON initializer
-	public init?(from: JSON) {
-		do {
-			try self.init(json: from)
-		} catch {
-		}
-		return nil
-	}
-
 	/// JSONDecodable support. not implemented in an extension because is not a convience initializer
 	public init(json: JSON) throws {
 		id = try json.getString(at: "Id")

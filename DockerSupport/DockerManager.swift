@@ -165,12 +165,6 @@ public final class DockerManager: NSObject {
 			.flatMap(.concat, transform: api.loadImages)
 			.map { images in self.installedImages = images; return refresh }
 			.flatMap(.concat, transform: checkForImageUpdate)
-			.on(completed: { 
-				//need to set the version used to create our containers from the image info we just processed
-				for aType in ContainerType.all {
-					try! self.containers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
-				}
-			})
 			.map { _ in
 				return self.pullIsNecessary()
 			}
@@ -203,7 +197,14 @@ public final class DockerManager: NSObject {
 	public func prepareContainers() -> SignalProducer<(), Rc2Error> {
 		os_log("dm.prepareContainers called", log: .docker, type: .debug)
 		return self.api.refreshContainers()
-			.map { newContainers in (newContainers, self.containers) }
+			.on(value: { newContainers in
+				//need to set the version used to create our containers from the image info we just processed
+				for aType in ContainerType.all {
+					newContainers[aType]!.createInfo = self.containers[aType]!.createInfo
+					try! newContainers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
+				}
+			})
+			.map { newContainers in return (newContainers, self.containers) }
 			.flatMap(.concat, transform: mergeContainers)
 			.flatMap(.concat, transform: removeOutdatedContainers)
 			.flatMap(.concat, transform: createUnavailable)
@@ -440,8 +441,10 @@ extension DockerManager {
 					aContainer.update(from: c2)
 				}
 			}
-			observer.send(value: oldContainers)
-			observer.sendCompleted()
+			DispatchQueue.global().async {
+				observer.send(value: oldContainers)
+				observer.sendCompleted()
+			}
 		}
 	}
 

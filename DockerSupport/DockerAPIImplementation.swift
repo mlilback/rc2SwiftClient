@@ -341,7 +341,10 @@ extension DockerAPIImplementation {
 	}
 
 	fileprivate func parseImages(json: JSON) -> SignalProducer<[DockerImage], Rc2Error> {
-		guard let images = try? json.getArray().flatMap({ return DockerImage(from: $0) }) else {
+		guard let images = try? json.getArray().flatMap({ (imgJson: JSON) -> DockerImage? in
+			guard let img = try? DockerImage(json: imgJson) else { return nil }
+			return img
+		}) else {
 			return SignalProducer<[DockerImage], Rc2Error>(error: Rc2Error(type: .invalidJson))
 		}
 		return SignalProducer<[DockerImage], Rc2Error> { observer, _ in
