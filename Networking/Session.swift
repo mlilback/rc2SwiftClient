@@ -400,7 +400,9 @@ private extension Session {
 		}
 		wsSource.event.message = { [weak self] message in
 			os_log("websocket message: %{public}@", log: .session, type: .debug, message as? String ?? "<binary>")
-			self?.handleReceivedMessage(message)
+			DispatchQueue.main.async {
+				self?.handleReceivedMessage(message)
+			}
 		}
 		wsSource.event.error = { [weak self] error in
 			os_log("error from websocket: %{public}@", log: .session, type: .error, error as NSError)
