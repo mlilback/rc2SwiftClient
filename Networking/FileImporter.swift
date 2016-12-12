@@ -23,6 +23,8 @@ public class FileImporter: NSObject {
 	
 	public let fileCache: FileCache
 	public var workspace: Workspace { return fileCache.workspace }
+	/// array of files that were imported. Only available after the import is completed
+	public fileprivate(set) var importedFiles: [File]
 	fileprivate let files: [FileToImport]
 	fileprivate var uploadSession: URLSession!
 	fileprivate var tasks: [Int: ImportData] = [:]
@@ -50,6 +52,7 @@ public class FileImporter: NSObject {
 		self.conInfo = connectInfo
 		self.queue = queue
 		self.fileManager = fileManager
+		self.importedFiles = []
 		totalSize = files.reduce(0) { (size, fileInfo) -> Int in
 			return size + Int(fileInfo.fileUrl.fileSize())
 		}
@@ -172,6 +175,7 @@ extension FileImporter: URLSessionDataDelegate {
 			fileCache.update(file: newFile, withData: fileData).startWithFailed { updateError in
 				self.progressObserver?.send(error: updateError)
 			}
+			importedFiles.append(newFile)
 		} catch let err as Rc2Error {
 			progressObserver?.send(error: err)
 		} catch {
