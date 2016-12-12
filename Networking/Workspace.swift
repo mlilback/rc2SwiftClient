@@ -147,6 +147,7 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 	///   - other: the version to update to
 	/// - Throws: Rc2Error.noSuchElement if not an element of the file collection, .updatFailed
 	public func update(fileId: Int, to other: File) throws {
+		os_log("update file %d to other called", log: .model, type: .debug, fileId)
 		guard let ourFile = file(withId: fileId), let fileIdx = _files.index(of: ourFile) else {
 			throw Rc2Error(type: .noSuchElement)
 		}
@@ -164,6 +165,7 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 	///   - other: the version to update to
 	/// - Throws: .noSuchElement or .updateFailed
 	public func update(file: File, to other: File) throws {
+		os_log("update file to other called %d", log: .model, type: .debug, file.fileId)
 		guard let fileIdx = _files.index(of: file) else {
 			throw Rc2Error(type: .noSuchElement)
 		}
@@ -181,6 +183,7 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 	///   - file: the file sent from the server
 	///   - change: the type of change it represents
 	internal func update(file: File, change: FileChangeType) {
+		os_log("update change to %d", log: .model, type: .debug, file.fileId)
 		let ourFile = self.file(withId: file.fileId)
 		switch(change) {
 		case .Update:

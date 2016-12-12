@@ -324,7 +324,7 @@ private extension Session {
 					imageCache.cacheImagesFromServer(images)
 					fallthrough
 				default:
-					self.delegate?.sessionMessageReceived(response)
+					DispatchQueue.main.async { self.delegate?.sessionMessageReceived(response) }
 				}
 			}
 			if let transId = try? jsonMessage.getString(at: "transId") {

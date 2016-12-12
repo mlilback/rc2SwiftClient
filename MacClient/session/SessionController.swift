@@ -8,6 +8,7 @@ import Cocoa
 import os
 import Networking
 import Freddy
+import ReactiveSwift
 import ClientCore
 
 @objc protocol SessionControllerDelegate {
@@ -29,7 +30,7 @@ import ClientCore
 	var savedStateHash: Data?
 	fileprivate var properlyClosed: Bool = false
 
-	init(session:Session, delegate: SessionControllerDelegate, outputHandler output:OutputHandler, variableHandler:VariableHandler)
+	init(session: Session, delegate: SessionControllerDelegate, outputHandler output: OutputHandler, variableHandler: VariableHandler)
 	{
 		self.delegate = delegate
 		self.outputHandler = output
@@ -65,19 +66,19 @@ import ClientCore
 		session.fileCache.flushCache(files: session.workspace.files).start()
 	}
 	
-	func formatErrorMessage(_ error:String) -> NSAttributedString {
+	func formatErrorMessage(_ error: String) -> NSAttributedString {
 		return responseHandler!.formatError(error)
 	}
 }
 
 //MARK: - ServerResponseHandlerDelegate
 extension SessionController: ServerResponseHandlerDelegate {
-	func handleFileUpdate(_ file:File, change:FileChangeType) {
+	func handleFileUpdate(_ file: File, change: FileChangeType) {
 //		os_log("got file update %d v%d", log: .app, type:.info, file.fileId, file.version)
 //		handleFileUpdate(file, change: change)
 	}
 	
-	func handleVariableMessage(_ single:Bool, variables:[Variable]) {
+	func handleVariableMessage(_ single: Bool, variables: [Variable]) {
 		varHandler.handleVariableMessage(single, variables: variables)
 	}
 	
@@ -89,7 +90,7 @@ extension SessionController: ServerResponseHandlerDelegate {
 		return MacConsoleAttachment(image: image)
 	}
 	
-	func consoleAttachment(forFile file:File) -> ConsoleAttachment {
+	func consoleAttachment(forFile file: File) -> ConsoleAttachment {
 		return MacConsoleAttachment(file:file)
 	}
 	
@@ -100,7 +101,7 @@ extension SessionController: ServerResponseHandlerDelegate {
 	}
 	
 	func showFile(_ fileId: Int) {
-		outputHandler.showFile(fileId)
+		DispatchQueue.main.async { self.outputHandler.showFile(fileId) }
 	}
 }
 
@@ -175,7 +176,7 @@ extension SessionController: SessionDelegate {
 		delegate?.sessionClosed()
 	}
 	
-	func sessionFilesLoaded(_ session:Session) {
+	func sessionFilesLoaded(_ session: Session) {
 		delegate?.filesRefreshed()
 	}
 	
@@ -183,19 +184,44 @@ extension SessionController: SessionDelegate {
 		outputHandler.showHelp(HelpController.sharedInstance.topicsWithName(helpTopic))
 	}
 	
-	func sessionMessageReceived(_ response:ServerResponse) {
-		//TODO: have session handle all of the file update stuff before it gets to here
-		if case ServerResponse.showOutput( _, let updatedFile) = response {
-			if updatedFile != session.workspace.file(withId: updatedFile.fileId) {
-				//need to refetch file from server, then show it
-				session.fileCache.update(file: updatedFile, withData: nil).startWithCompleted {
-					if let astr = self.responseHandler?.handleResponse(response) {
-						self.outputHandler.appendFormattedString(astr, type: response.isEcho() ? .input : .default)
-					}
-				}
+	func sessionMessageReceived(_ response: ServerResponse) {
+		//if not a showoutput message, actually handle the response
+		guard case ServerResponse.showOutput( _, let updatedFile) = response else {
+			handle(response: response)
+			return
+		}
+		//if the file doesn't exist, wait until it does and then handle the response
+		guard let oldFile = session.workspace.file(withId: updatedFile.fileId) else {
+			listenForInsert(fileId: updatedFile.fileId) { fileId in
+				self.handle(response: response)
+			}
+			return
+		}
+		//need to refetch file from server, then show it
+		session.fileCache.update(file: oldFile, withData: nil).startWithResult { result in
+			guard nil == result.error else {
+				os_log("error updating file cache: %{public}s", log: .session, result.error!.errorDescription ?? "??")
 				return
 			}
+			self.handle(response: response)
 		}
+	}
+	
+	/// listen for the specified file to be inserted, and then call the handler
+	fileprivate func listenForInsert(fileId: Int, handler: @escaping (Int) -> Void) {
+		var disp: Disposable?
+		disp = session.workspace.fileChangeSignal.observeValues { values in
+			values.forEach { change in
+				if change.changeType == .insert && change.object?.fileId == fileId {
+					disp?.dispose()
+					handler(fileId)
+				}
+			}
+		}
+	}
+	
+	/// actually handle the response by formatting it and sending it to the output handler
+	fileprivate func handle(response: ServerResponse) {
 		if let astr = responseHandler?.handleResponse(response) {
 			outputHandler.appendFormattedString(astr, type: response.isEcho() ? .input : .default)
 		}
