@@ -172,8 +172,8 @@ extension FileImporter: URLSessionDataDelegate {
 			fileCache.update(file: newFile, withData: fileData).startWithFailed { updateError in
 				self.progressObserver?.send(error: updateError)
 			}
-		} catch is Rc2Error {
-			progressObserver?.send(error: error as! Rc2Error)
+		} catch let err as Rc2Error {
+			progressObserver?.send(error: err)
 		} catch {
 			os_log("error updating file after rest confirmation: %{public}@", log: .importer, type:.error, error.localizedDescription)
 			progressObserver?.send(error: Rc2Error(type: .updateFailed, nested: error))
