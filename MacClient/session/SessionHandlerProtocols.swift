@@ -40,8 +40,26 @@ public protocol VariableHandler {
 	func showHelp(_ topics:[HelpTopic])
 }
 
+/// Implemented by objects that need to response to changes related to files
 protocol FileHandler: class {
+	/// Select the specified file
+	///
+	/// - Parameter file: the file to select
+	func select(file: File)
+
+	/// Updates data for file changes
+	///
+	/// - Parameter changes: the file changes
 	func filesRefreshed(_ changes: [CollectionChange<File>]?)
+
+	/// prompts the user to import file(s)
+	///
+	/// - Parameter sender: the sender of the import. unused
 	func promptToImportFiles(_ sender: Any?)
+
+	/// called to validate any menu items the FileHandler uses
+	///
+	/// - Parameter menuItem: the menu item to validate
+	/// - Returns: true if the menu item was handled
 	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool
 }
