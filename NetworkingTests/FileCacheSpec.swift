@@ -9,50 +9,65 @@ import Quick
 import Nimble
 import ReactiveSwift
 import Mockingjay
+import URITemplate
 import Result
 import ClientCore
 @testable import Networking
 
 class FileCacheSpec: NetworkingBaseSpec {
+	let baseUrlString = "http://localhost:9876"
+	let wsfilesUrlString = "workspaces/201/files"
+	
+	func stub(file: File, template: URITemplate) {
+		let data = Data(bytes: Array<UInt8>(repeating: 1, count: file.fileSize))
+		self.stub({ request in
+			return template.extract(url: request.url!.absoluteString)!["fileId"] == String(file.fileId)
+		}, builder: http(200, headers: ["Content-Length": String(file.fileId)], download: .content(data)))
+	}
+	
 	override func spec() {
-		let cacheDir = URL(fileURLWithPath: NSTemporaryDirectory())
-		defer {
-			do { try FileManager.default.removeItem(at: cacheDir) } catch {}
-		}
 		let sessionConfig = URLSessionConfiguration.default
 		sessionConfig.protocolClasses = [MockingjayProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
 		let rawData = Data(bytes: Array<UInt8>(repeating: 1, count: 2048))
 		let builder: (URLRequest) -> Response = { request in
-			return http(download: .streamContent(data: rawData, inChunksOf: 1024))(request)
+//			return http(download: .streamContent(data: rawData, inChunksOf: 1024))(request)
+			return http(download: .content(rawData))(request)
 		}
 		let loginResultsJson = loadTestJson("loginResults")
 		let cleanWspace = try! loginResultsJson.decode(at: "projects", 1, "workspaces", 0, type: Workspace.self)
+		let fileTemplate = URITemplate(template: "\(baseUrlString)/\(wsfilesUrlString)/{fileId}")
 
 		describe("validate file cache") {
 			var wspace: Workspace!
 			var fileCache: DefaultFileCache!
 			
 			beforeEach {
+				let cacheDir = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString, isDirectory: true)
 				wspace = Workspace(instance: cleanWspace)
-				fileCache = DefaultFileCache(workspace: wspace, baseUrl: URL(string: "http://localhost:9876/")!, config: sessionConfig, queue: DispatchQueue.global())
+				fileCache = DefaultFileCache(workspace: wspace, baseUrl: URL(string: "\(self.baseUrlString)/")!, config: sessionConfig, queue: .global())
 				fileCache.fileCacheUrl = cacheDir
+				try! fileCache.fileManager.createDirectoryHierarchy(at: cacheDir)
 				let matcher: (URLRequest) -> Bool = { request in
-					print("req=\(request.url)")
-					return request.url!.path.hasPrefix("/workspaces/201/files/")
+					return request.url!.path.hasPrefix("/\(self.wsfilesUrlString)/")
 				}
 				self.stub(matcher, builder: builder)
+			}
+			
+			afterEach {
+				do { try FileManager.default.removeItem(at: fileCache.fileCacheUrl) } catch {}
 			}
 			
 			it("single flushCache works") {
 				let file = wspace.file(withId: 202)!
 				expect(fileCache.isFileCached(file)).to(beFalse())
-				let result = self.makeValueRequest(producer: fileCache.recache(file: file), queue: DispatchQueue.global())
+				let result = self.makeValueRequest(producer: fileCache.recache(file: file), queue: .global())
 				expect(result.value).to(beCloseTo(1.0))
 				expect(fileCache.isFileCached(file)).to(beTrue())
 			}
 			
 			it("cacheAllFiles works") {
-				let result = self.makeValueRequest(producer: fileCache.cacheAllFiles(), queue: DispatchQueue.global())
+				wspace.files.forEach { self.stub(file: $0, template: fileTemplate) }
+				let result = self.makeCompletedRequest(producer: fileCache.cacheAllFiles(), queue: .global())
 				expect(result.error).to(beNil())
 				for aFile in wspace.files {
 					expect(fileCache.isFileCached(aFile)).to(beTrue())
@@ -60,7 +75,7 @@ class FileCacheSpec: NetworkingBaseSpec {
 			}
 			
 			it("cache multiple files works") {
-				let result = self.makeValueRequest(producer: fileCache.flushCache(files: wspace.files), queue: DispatchQueue.global())
+				let result = self.makeValueRequest(producer: fileCache.flushCache(files: wspace.files), queue: .global())
 				expect(result.error).to(beNil())
 				for aFile in wspace.files {
 					expect(fileCache.isFileCached(aFile)).to(beTrue())
@@ -71,7 +86,7 @@ class FileCacheSpec: NetworkingBaseSpec {
 				let file = wspace.file(withId: 202)!
 				fileCache.flushCache(file: file)
 				expect(fileCache.isFileCached(file)).to(beFalse())
-				let result = self.makeValueRequest(producer: fileCache.validUrl(for: file), queue: DispatchQueue.global())
+				let result = self.makeValueRequest(producer: fileCache.validUrl(for: file), queue: .global())
 				expect(result.error).to(beNil())
 				let fdata = try! Data(contentsOf: result.value!)
 				expect(fdata).to(equal(rawData))
@@ -84,10 +99,21 @@ class FileCacheSpec: NetworkingBaseSpec {
 				let customData = Data(bytes: Array<UInt8>(repeating: 122, count: 2048))
 				try! customData.write(to: fileCache.cachedUrl(file: file))
 				expect(fileCache.isFileCached(file)).to(beTrue())
-				let result = self.makeValueRequest(producer: fileCache.validUrl(for: file), queue: DispatchQueue.global())
+				let result = self.makeValueRequest(producer: fileCache.validUrl(for: file), queue: .global())
 				expect(result.error).to(beNil())
 				let fdata = try! Data(contentsOf: result.value!)
 				expect(fdata).to(equal(customData))
+			}
+
+			it("follows redirect") {
+				let file = wspace.file(withId: 202)!
+				expect(fileCache.isFileCached(file)).to(beFalse())
+				let fakeUrlStr = "\(self.baseUrlString)/\(self.wsfilesUrlString)/xxx"
+				self.stub(uri(uri: fakeUrlStr), builder: http(304))
+				self.stub(file: file, template: fileTemplate)
+				let result = self.makeValueRequest(producer: fileCache.recache(file: file), queue: .global())
+				expect(result.value).to(beCloseTo(1.0))
+				expect(fileCache.isFileCached(file)).to(beTrue())
 			}
 		}
 	}
@@ -100,6 +126,34 @@ class FileCacheSpec: NetworkingBaseSpec {
 			result = producer.last()
 		}
 		group.wait()
+		return result
+	}
+
+	func makeCompletedRequest<T>(producer: SignalProducer<T, Rc2Error>, queue: DispatchQueue) -> Result<Bool, Rc2Error>
+	{
+		var result = Result<Bool, Rc2Error>(false)
+		let group = DispatchGroup()
+		group.enter()
+		queue.async(group: group) {
+			producer.start { event in
+				switch event {
+				case .failed(let err):
+					result = Result<Bool, Rc2Error>(error: err)
+					group.leave()
+				case .value(_):
+					break
+				case .completed:
+					result = Result<Bool, Rc2Error>(true)
+					fallthrough
+				case .interrupted:
+					group.leave()
+				}
+			}
+		}
+		let success = group.wait(timeout: .now() + .seconds(90))
+		if case .timedOut = success {
+			result = Result<Bool, Rc2Error>(error: Rc2Error(type: .unknown, explanation: "timed out"))
+		}
 		return result
 	}
 }

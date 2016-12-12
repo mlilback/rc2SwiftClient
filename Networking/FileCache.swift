@@ -33,7 +33,6 @@ public protocol FileCache {
 	//recaches an array of files
 	func flushCache(files: [File]) -> SignalProducer<Double, Rc2Error>
 	///caches all the files in the workspace that aren't already cached with the current version of the file
-	//observer fractionCompleted on returned progress for completion handling
 	func cacheAllFiles() -> SignalProducer<Double, Rc2Error>
 	///returns the file system url where the file is/will be stored
 	func cachedUrl(file: File) -> URL
@@ -66,6 +65,70 @@ public protocol FileCache {
 
 //MARK: FileCache implementation
 
+fileprivate class DownloadTask {
+	let file: File
+	let task: URLSessionDownloadTask
+	var bytesDownloaded: Int = 0
+	var partOfDownloadAll: Bool
+	fileprivate var signal: Signal<Double, Rc2Error>
+	fileprivate var observer: Signal<Double, Rc2Error>.Observer
+	
+	init(file aFile: File, task: URLSessionDownloadTask, forAll: Bool = false)
+	{
+		file = aFile
+		self.task = task
+		let (sig, obs) = Signal<Double, Rc2Error>.pipe()
+		signal = sig
+		observer = obs
+		self.partOfDownloadAll = forAll
+	}
+}
+
+fileprivate struct DownloadAll {
+	let signal: Signal<Double, Rc2Error>
+	let observer: Signal<Double, Rc2Error>.Observer
+	let totalSize: Int
+	private var sizeDownloaded: Int = 0
+	private var filesRemaining: Int = 0
+	
+	var completed: Bool { return filesRemaining < 1 }
+	
+	init(totalSize: Int, fileCount: Int) {
+		assert(totalSize > 0)
+		let (sig, obs) = Signal<Double, Rc2Error>.pipe()
+		signal = sig
+		observer = obs
+		self.totalSize = totalSize
+		self.filesRemaining = fileCount
+	}
+
+	private func calculateAndSendProgress() {
+		guard sizeDownloaded > 0 else { return }
+		var val = Double(sizeDownloaded) / Double(totalSize)
+		if !val.isFinite { val = 1.0 }
+		observer.send(value: val)
+	}
+	
+	mutating func adjust(completedTask: DownloadTask, error: Rc2Error? = nil) {
+		guard completedTask.partOfDownloadAll else { return }
+		guard filesRemaining > 0 else {
+			os_log("adjust called too many times", log: .cache, type: .error)
+			fatalError()
+		}
+		filesRemaining -= 1
+		guard error == nil else {
+			//TODO: should we send errors or not? i.e. with 10 files, if file 4 fails should we stop downloading 6-10?
+			return
+		}
+		sizeDownloaded += completedTask.bytesDownloaded
+		calculateAndSendProgress()
+		//only continue if all files downloaded
+		if filesRemaining == 0 {
+			observer.sendCompleted()
+		}
+	}
+}
+
 public final class DefaultFileCache: NSObject, FileCache {
 	//MARK: properties
 	public let mainQueue: DispatchQueue
@@ -73,19 +136,10 @@ public final class DefaultFileCache: NSObject, FileCache {
 	public let workspace: Workspace
 	fileprivate var baseUrl: URL
 	fileprivate var urlSession: URLSession?
-	fileprivate var tasks:[Int:DownloadTask] = [:] //key is task identifier
-	fileprivate var downloadingAllFiles: Bool = false
-	///if downloadingAllFiles, the size of all files being downloaded
-	fileprivate var totalDownloadSize: Int = 0
-	///observer for current download all signal
-	fileprivate var observer: Signal<Double, Rc2Error>.Observer?
-	///disposable for current download all signal
-	fileprivate var disposable: Disposable?
-	///signal to know when downloading all files is complete
-	fileprivate var downloadInProgressSignal: Signal<Bool, NoError>?
-	fileprivate var downloadInProgressObserver: Signal<Bool, NoError>.Observer?
+	fileprivate var tasks:[Int: DownloadTask] = [:] //key is task identifier
 	fileprivate let saveQueue: DispatchQueue
 	fileprivate let taskLockQueue: DispatchQueue
+	fileprivate var downloadAll: DownloadAll?
 	
 	lazy var fileCacheUrl: URL = { () -> URL in
 		var fileDir: URL? = nil
@@ -129,8 +183,9 @@ public final class DefaultFileCache: NSObject, FileCache {
 		urlSession?.invalidateAndCancel()
 	}
 	
-	public func isFileCached(_ file:File) -> Bool {
-		return cachedUrl(file:file).fileExists()
+	public func isFileCached(_ file: File) -> Bool {
+		let url = cachedUrl(file: file)
+		return url.fileExists()
 	}
 
 //	@discardableResult public func flushCache(workspace:Workspace) {
@@ -143,45 +198,32 @@ public final class DefaultFileCache: NSObject, FileCache {
 				//download already in progress. no need to erase
 				return
 			}
-			do {
-				try self.fileManager.removeItem(at:self.cachedUrl(file:file))
-			} catch {
-			}
+			self.removeFile(fileUrl: self.cachedUrl(file: file))
 		}
 	}
 	
 	///recaches the specified file if it has changed
-	public func recache(file:File) -> SignalProducer<Double, Rc2Error> {
-		return SignalProducer<Double, Rc2Error>() { observer, disposable in
-			guard !self.downloadingAllFiles else {
-				observer.send(error: Rc2Error(type: .network, nested: FileCacheError.downloadAlreadyInProgress))
+	public func recache(file: File) -> SignalProducer<Double, Rc2Error> {
+		os_log("recache of %d started", log: .cache, type: .debug, file.fileId)
+		var producer: SignalProducer<Double, Rc2Error>?
+		self.taskLockQueue.sync {
+			if let fileTask = self.downloadTaskWithFileId(file.fileId) {
+				//download in progress, return a producer that sends progress for the existing download
+				producer = self.producer(signal: fileTask.signal)
 				return
 			}
-			self.taskLockQueue.sync {
-				guard self.downloadTaskWithFileId(file.fileId) == nil else {
-					//download already in progress. should we cancel it and start again? maybe if a large file?
-					observer.send(error: Rc2Error(type: .network, nested: FileCacheError.downloadAlreadyInProgress))
-					return
-				}
-				do {
-					try self.fileManager.removeItem(at:self.cachedUrl(file:file))
-				} catch let err as NSError {
-					//don't care if doesn't exist
-					if !(err.domain == NSCocoaErrorDomain && err.code == 4) {
-						os_log("got err removing file in flushCacheForFile: %@", log: .cache, type:.info, err)
-					}
-				}
-				
-				self.observer = observer
-				self.disposable = disposable
-				let task = self.makeTask(file: file)
-				self.tasks[task.task.taskIdentifier] = task
-				//start task next time through event loop
-				self.mainQueue.async {
-					task.task.resume()
-				}
+			//download not in progress. remove currently cached file
+			self.removeFile(fileUrl: self.cachedUrl(file: file))
+			//create task and add observer to it
+			let task = self.makeTask(file: file)
+			self.tasks[task.task.taskIdentifier] = task
+			//start task next time through event loop
+			self.mainQueue.async {
+				task.task.resume()
 			}
+			producer = self.producer(signal: task.signal)
 		}
+		return producer!
 	}
 	
 	public func flushCache(files: [File]) -> SignalProducer<Double, Rc2Error>
@@ -205,46 +247,52 @@ public final class DefaultFileCache: NSObject, FileCache {
 		}
 		//combine all the producers into a single producer of producers, and flatten the results into a single producer
 		let combinedProducer = SignalProducer< SignalProducer<Double, Rc2Error>, Rc2Error >(values: producers)
-		return combinedProducer.flatten(.concat).on(event: { (event) in
-			print("got event: \(event)")
-		})
+		return combinedProducer.flatten(.concat)
 	}
 	
-	///caches all the files in the workspace that aren't already cached with the current version of the file
-	//observer fractionCompleted on returned progress for completion handling
-	/// - parameter setupHandler: called once all download tasks are created, but before they are resumed
-	/// if the progress parameter is nil, caching was not necessary
+	//caches all the files in the workspace that aren't already cached with the current version of the file
 	public func cacheAllFiles() -> SignalProducer<Double, Rc2Error>
 	{
-		precondition(!downloadingAllFiles)
-		assert(tasks.count == 0)
+		guard nil == downloadAll else {
+			return producer(signal: self.downloadAll!.signal)
+		}
 		return SignalProducer<Double, Rc2Error>() { observer, disposable in
 			self.taskLockQueue.sync {
-				assert(self.tasks.count == 0)
+				//if no files, completed
 				if self.workspace.files.count < 1 {
 					observer.sendCompleted()
 					return
 				}
-				self.totalDownloadSize = self.workspace.files.reduce(0) { $0 + $1.fileSize }
-				for aFile in self.workspace.files {
-					let theTask = self.makeTask(file: aFile)
-					self.tasks[theTask.task.taskIdentifier] = theTask
-				}
-				//prepare signal for success notification
-				let (signal, sobserver) = Signal<Bool, NoError>.pipe()
-				self.downloadInProgressSignal = signal
-				self.downloadInProgressObserver = sobserver
-				signal.observeResult { result in
-					observer.send(value: 1.0)
-					observer.sendCompleted()
-				}
-				//only start after all tasks are created
-				self.mainQueue.async {
-					self.taskLockQueue.sync {
-						self.tasks.forEach { $0.value.task.resume() }
+				self.downloadAll = DownloadAll(totalSize: self.workspace.files.reduce(0) { $0 + $1.fileSize }, fileCount: self.workspace.files.count)
+				_ = self.downloadAll?.signal.observe { event in
+					switch event {
+					case .value(let val):
+						observer.send(value: val)
+					case .completed:
+						observer.sendCompleted()
+					case .failed(let err):
+						observer.send(error: err)
+					case .interrupted:
+						observer.sendInterrupted()
 					}
 				}
-				self.downloadingAllFiles = true
+				//create tasks that don't already exist
+				var createdTasks = [DownloadTask]()
+				for aFile in self.workspace.files {
+					var theTask = self.downloadTaskWithFileId(aFile.fileId)
+					if nil == theTask {
+						theTask = self.makeTask(file: aFile, partOfDownloadAll: true)
+						self.tasks[theTask!.task.taskIdentifier] = theTask!
+						createdTasks.append(theTask!)
+					}
+					theTask?.partOfDownloadAll = true
+				}
+				//start new tasks after all are created
+				self.mainQueue.async {
+					self.taskLockQueue.sync {
+						createdTasks.forEach { $0.task.resume() }
+					}
+				}
 			}
 		}
 	}
@@ -272,14 +320,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 		return nil
 	}
 	
-	fileprivate func calculateAndSendProgress() {
-		let progress = tasks.reduce(0) { (result, tuple) in return result + tuple.value.bytesDownloaded }
-		var val = Double(progress) / Double(totalDownloadSize)
-		if !val.isFinite { val = 1.0 }
-		observer?.send(value: val)
-	}
-	
-	func makeTask(file: File) -> DownloadTask {
+	fileprivate func makeTask(file: File, partOfDownloadAll: Bool = false) -> DownloadTask {
 		let fileUrl = URL(string: "workspaces/\(workspace.wspaceId)/files/\(file.fileId)", relativeTo: baseUrl)!
 		var request = URLRequest(url: fileUrl.absoluteURL)
 		let cacheUrl = cachedUrl(file: file)
@@ -288,7 +329,45 @@ public final class DefaultFileCache: NSObject, FileCache {
 		}
 		let dtask = urlSession!.downloadTask(with: request)
 		os_log("creating download task for %d", log: .cache, type: .info, file.fileId)
-		return DownloadTask(file: file, task: dtask)
+		return DownloadTask(file: file, task: dtask, forAll: partOfDownloadAll)
+	}
+	
+	/// removes file via fileManager, ignoring errors but logging them
+	fileprivate func removeFile(fileUrl: URL) {
+		do {
+			try self.fileManager.removeItem(at: fileUrl)
+		} catch let error as Rc2Error {
+			guard error.type == .file, let nserr = error.nestedError as? NSError, nserr.domain == NSCocoaErrorDomain && nserr.code == 4 else {
+				os_log("got err removing file in recache: %{public}@", log: .cache, type:.info, error.nestedError!.localizedDescription)
+				return
+			}
+			//don't care if doesn't exist
+		} catch {
+			os_log("got err removing file in recache: %{public}@", log: .cache, type:.info, error.localizedDescription)
+		}
+	}
+
+	///returns a producer that forwards values/completed from our progress signal, converting an interrupted into completed.
+	/// This is because signals send interrupted if they are already closed, but the caller expects a normal signal producer.
+	func producer<E: Error>(signal: Signal<Double, E>) -> SignalProducer<Double, Rc2Error> {
+		var theProducer: SignalProducer<Double, Rc2Error>?
+		var nestedObserver: Signal<Double, Rc2Error>.Observer?
+		let obsClosure = { (cObserver: Signal<Double, Rc2Error>.Observer, disp: Disposable?) in
+			nestedObserver = cObserver
+		}
+		theProducer = SignalProducer<Double, Rc2Error>(obsClosure).on(started: {
+			signal.observe { event in
+				switch event {
+				case .interrupted, .completed:
+					nestedObserver?.sendCompleted()
+				case .value(let val):
+					nestedObserver?.send(value: val)
+				default:
+					break
+				}
+			}
+		})
+		return theProducer!
 	}
 }
 
@@ -301,17 +380,17 @@ extension DefaultFileCache {
 	public func contents(of file: File) -> SignalProducer<Data, Rc2Error> {
 		return SignalProducer<Data, Rc2Error>() { observer, _ in
 			self.taskLockQueue.sync {
-				guard nil == self.downloadInProgressSignal else
-				{
-					//download is in progress. wait until completed. use ! because should not change while taskLock is locked
-					_ = self.downloadInProgressSignal!.observeCompleted {
+				if let dinfo = self.downloadAll {
+					//download is in progress. wait until completed
+					dinfo.signal.observeCompleted {
+						self.loadContents(file: file, observer: observer)
+					}
+				} else {
+					//want to release lock before loading the contents
+					self.mainQueue.async {
 						self.loadContents(file: file, observer: observer)
 					}
 					return
-				}
-				//want to release lock before actually load the contents
-				self.mainQueue.async {
-					self.loadContents(file: file, observer: observer)
 				}
 			}
 		}
@@ -397,59 +476,50 @@ extension DefaultFileCache {
 
 //MARK: - URLSessionDownloadDelegate
 extension DefaultFileCache: URLSessionDownloadDelegate {
-	public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
+	public func urlSession(_ session: URLSession, downloadTask urlTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
 	{
-		guard let task = tasks[downloadTask.taskIdentifier] else {
+		guard let task = tasks[urlTask.taskIdentifier] else {
 			fatalError("no cacheTask for task that thinks we are its delegate")
 		}
 		task.bytesDownloaded = Int(totalBytesWritten)
-		calculateAndSendProgress()
+//		downloadAll?.adjust(completedTask: task)
 	}
 	
-	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
+	//called when a task is complete adn the data has been saved
+	public func urlSession(_ session: URLSession, task urlTask: URLSessionTask, didCompleteWithError error: Error?)
 	{
 		taskLockQueue.sync {
-			let theFile = tasks[task.taskIdentifier]?.file
-			if downloadingAllFiles {
-				if tasks.count > 1 {
-					tasks.removeValue(forKey: task.taskIdentifier)
-					return
+			guard let dloadTask = tasks[urlTask.taskIdentifier] else {
+				os_log("unknown url task did complete", log: .cache, type: .error)
+				return
+			}
+			var generatedError: Rc2Error?
+			defer {
+				self.downloadAll?.adjust(completedTask: dloadTask, error: generatedError)
+				if self.downloadAll?.completed ?? false {
+					self.downloadAll?.observer.sendCompleted()
+					self.downloadAll = nil
 				}
-				downloadingAllFiles = false
-				tasks.removeAll()
-				downloadInProgressObserver?.send(value: true)
-				downloadInProgressObserver?.sendCompleted()
-				downloadInProgressObserver = nil
-				downloadInProgressSignal = nil
-			} else {
-				guard let _ = tasks[task.taskIdentifier] else {
-					fatalError("no DownloadTask for Session Task")
-				}
-				tasks.removeValue(forKey: task.taskIdentifier)
-				self.mainQueue.async {
-					self.observer?.send(value: 1.0)
+				self.tasks.removeValue(forKey: urlTask.taskIdentifier)
+				if generatedError != nil {
+					os_log("failure downloading file %d: %{public}s", log: .network, type: .error, dloadTask.file.fileId, generatedError!.errorDescription ?? "unknown")
+					self.mainQueue.async { dloadTask.observer.send(error: generatedError!) }
 				}
 			}
 			guard error == nil else {
-				let rc2err = Rc2Error(type: .network, nested: FileCacheError.downloadError(urlError: error!))
-				self.mainQueue.async { self.observer?.send(error: rc2err) }
+				generatedError = Rc2Error(type: .network, nested: FileCacheError.downloadError(urlError: error!))
 				return
 			}
-			let hresponse = task.response?.httpResponse
-			guard let statusCode = hresponse?.statusCode, statusCode < 400 else {
-				//some type of http error
-				let httperror = Rc2Error(type: .network, nested: NetworkingError.invalidHttpStatusCode(hresponse!))
-				self.mainQueue.async { self.observer?.send(error: httperror) }
-				return
+			//check for http error
+			if let hresponse = urlTask.response?.httpResponse {
+				if hresponse.statusCode >= 400 {
+					generatedError = Rc2Error(type: .network, nested: NetworkingError.invalidHttpStatusCode(hresponse))
+					return
+				}
 			}
-			os_log("finished downloading file %d", log: .cache, type: .info, theFile?.fileId ?? -1)
-			self.mainQueue.async {
-				//need to nil out before sending completion otherwise if another download is in progress we'd nil out that task
-				let obs = self.observer
-				self.observer = nil
-				self.disposable = nil
-				obs?.sendCompleted()
-			}
+			dloadTask.observer.send(value: 1.0)
+			dloadTask.observer.sendCompleted()
+			os_log("successfully downloaded file %d", log: .cache, type: .info, dloadTask.file.fileId)
 		}
 	}
 	
@@ -462,30 +532,15 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 			}
 			
 			let cacheUrl = cachedUrl(file:cacheTask.file)
-			if let status = (downloadTask.response as? HTTPURLResponse)?.statusCode , status == 304
-			{
+			//TODO: does this make sense? make a unit test
+			if let status = (downloadTask.response?.httpResponse)?.statusCode, status == 304 {
 				cacheTask.bytesDownloaded = cacheTask.file.fileSize
-				if downloadingAllFiles {
-					return
-				}
 			}
 			///move the file to the appropriate local cache url
 			guard let _ = try? fileManager.move(tempFile: location, to: cacheUrl, file: cacheTask.file) else {
-				os_log("error moving downloaded file to final location %{public}@", log: .cache, cacheUrl.absoluteString)
+				os_log("error moving downloaded file to final location %{public}s", log: .cache, cacheUrl.absoluteString)
 				return
 			}
 		}
-	}
-}
-
-class DownloadTask {
-	let file: File
-	let task: URLSessionDownloadTask
-	var bytesDownloaded: Int = 0
-	
-	init(file aFile: File, task: URLSessionDownloadTask)
-	{
-		file = aFile
-		self.task = task
 	}
 }
