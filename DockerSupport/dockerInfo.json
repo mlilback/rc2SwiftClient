@@ -7,7 +7,7 @@
 			"HostConfig": { "Binds": ["rc2_dbdata:/rc2"] },
 			"HostConfig": {
 				"NetworkMode": "rc2server",
-				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "2k" } }
+				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "500k" } }
 			},
 			"NetworkingConfig": {
 				"EndpointsConfig": {
@@ -25,7 +25,7 @@
 			"HostConfig": {
 				"NetworkMode": "rc2server",
 				"PortBindings": { "8088/tcp": [{ "HostPort": "8088" }] },
-				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "2k" } }
+				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "500k" } }
 			},
 			"NetworkingConfig": {
 				"EndpointsConfig": {
@@ -41,7 +41,7 @@
 			"Labels": { "rc2.live": "" },
 			"HostConfig": {
 				"NetworkMode": "rc2server",
-				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "2k" } }
+				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "500k" } }
 			},
 			"NetworkingConfig": {
 				"EndpointsConfig": {
