@@ -55,7 +55,8 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 	override func viewDidAppear() {
 		super.viewDidAppear()
 		self.hookupToToolbarItems(self, window: view.window!)
-		NotificationCenter.default.addObserver(self, selector: #selector(RootViewController.windowWillClose(_:)), name: NSNotification.Name.NSWindowWillClose, object:view.window!)
+		NotificationCenter.default.addObserver(self, selector: #selector(RootViewController.windowWillClose(_:)), name: .NSWindowWillClose, object:view.window!)
+		NotificationCenter.default.addObserver(self, selector: #selector(RootViewController.receivedImportNotification(_:)), name: .FilesImported, object: nil)
 		//create dimming view
 		dimmingView = DimmingView(frame: view.bounds)
 		view.addSubview(dimmingView!)
@@ -132,7 +133,15 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 		statusMessage = ""
 	}
 
-	func receivedStatusNotification(_ note:Notification) {
+	/// selects the first file imported if it is a source file
+	func receivedImportNotification(_ note: Notification) {
+		guard let importer = note.object as? FileImporter else { return }
+		guard let file = importer.importedFiles.first, file.fileType.isSourceFile else { return }
+		os_log("selecting imported file", log: .app, type: .info)
+		fileHandler?.select(file: importer.importedFiles.first!)
+	}
+	
+	func receivedStatusNotification(_ note: Notification) {
 		guard self.appStatus != nil else {
 			os_log("appStatus not set on RootViewController", log: .app, type:.error)
 			return
@@ -155,7 +164,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 	}
 	
 	override func appStatusChanged() {
-		NotificationCenter.default.addObserver(self, selector: #selector(RootViewController.receivedStatusNotification(_:)), name: NSNotification.Name(rawValue: Notifications.AppStatusChanged), object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(RootViewController.receivedStatusNotification(_:)), name: .AppStatusChanged, object: nil)
 	}
 }
 

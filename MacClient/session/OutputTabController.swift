@@ -52,8 +52,9 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		NotificationCenter.default.addObserver(self, selector: #selector(OutputTabController.handleDisplayHelp(_:)), name: NSNotification.Name(rawValue: Notifications.DisplayHelpTopic), object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(OutputTabController.handleDisplayHelp(_:)), name: .DisplayHelpTopic, object: nil)
 	}
+	
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		selectedOutputTab = .console

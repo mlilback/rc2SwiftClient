@@ -123,6 +123,6 @@ class SidebarHelpController : AbstractSessionViewController, NSOutlineViewDataSo
 		if let topic = outline!.item(atRow: outline!.selectedRow) as? TopicWrapper {
 			obj = topic.topic
 		}
-		NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.DisplayHelpTopic), object:obj, userInfo:nil)
+		NotificationCenter.default.post(name: .DisplayHelpTopic, object:obj, userInfo:nil)
 	}
 }

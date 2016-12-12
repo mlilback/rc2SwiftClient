@@ -75,7 +75,7 @@ class MacAppStatus {
 			//				self.updateStatus(nil)
 			//			}
 		}
-		NotificationCenter.default.postNotificationNameOnMainThread(Notifications.AppStatusChanged, object: self)
+		NotificationCenter.default.postNotificationNameOnMainThread(.AppStatusChanged, object: self)
 	}
 
 	func presentError(_ error: Rc2Error, session: AnyObject?) {

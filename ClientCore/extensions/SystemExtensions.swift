@@ -72,16 +72,16 @@ public extension PlatformColor {
 
 // TODO: possibily get rid of NotificationCenter
 public extension NotificationCenter {
-	func postNotificationNameOnMainThread(_ noteName: String, object: AnyObject, userInfo: [AnyHashable: Any]?=nil) {
+	func postNotificationNameOnMainThread(_ name: NSNotification.Name, object: AnyObject, userInfo: [AnyHashable: Any]?=nil) {
 		if !Thread.isMainThread {
-			postAsyncNotificationNameOnMainThread(noteName, object: object, userInfo:userInfo)
+			postAsyncNotificationNameOnMainThread(name, object: object, userInfo:userInfo)
 		} else {
-			post(name: Notification.Name(rawValue: noteName), object: object, userInfo: userInfo)
+			post(name: name, object: object, userInfo: userInfo)
 		}
 	}
-	func postAsyncNotificationNameOnMainThread(_ noteName: String, object: AnyObject, userInfo: [AnyHashable: Any]?=nil) {
+	func postAsyncNotificationNameOnMainThread(_ name: Notification.Name, object: AnyObject, userInfo: [AnyHashable: Any]?=nil) {
 		DispatchQueue.main.async(execute: {
-			self.post(name: Notification.Name(rawValue: noteName), object: object, userInfo: userInfo)
+			self.post(name: name, object: object, userInfo: userInfo)
 		})
 	}
 }

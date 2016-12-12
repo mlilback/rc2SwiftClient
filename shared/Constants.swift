@@ -9,11 +9,13 @@ import ClientCore
 
 let Rc2ErrorDomain = "Rc2ErrorDomain"
 
-public struct Notifications {
+extension Notification.Name {
 	///will always be posted on the main thread
-	static let AppStatusChanged = "AppStatusChangedNotification"
+	static let AppStatusChanged = Notification.Name("AppStatusChangedNotification")
 	///The object can be either a HelpTopic or a String
-	static let DisplayHelpTopic = "DisplayHelpTopicNotification"
+	static let DisplayHelpTopic = Notification.Name("DisplayHelpTopicNotification")
+	///The object is the FileImporter used
+	static let FilesImported = Notification.Name("FilesImportedNotification")
 }
 
 struct LStrings {

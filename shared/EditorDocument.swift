@@ -73,6 +73,7 @@ public class EditorDocument: NSObject {
 	}
 
 	public func updateFile(_ newFile: File) {
+		guard isLoaded else { return }
 		precondition(isLoaded)
 		self.editedContents = nil
 		self.file = newFile

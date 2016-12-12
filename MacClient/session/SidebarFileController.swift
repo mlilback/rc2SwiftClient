@@ -114,7 +114,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	override func appStatusChanged() {
-		NotificationCenter.default.addObserver(self, selector: .receivedStatusChange, name: NSNotification.Name(rawValue: Notifications.AppStatusChanged), object: nil)
+		NotificationCenter.default.addObserver(self, selector: .receivedStatusChange, name: .AppStatusChanged, object: nil)
 	}
 	
 	func loadData() {
@@ -161,6 +161,13 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	func menuNeedsUpdate(_ menu: NSMenu) {
 		menu.items.forEach { $0.isEnabled = selectedFile != nil }
 		menu.items.first(where: { $0.action == .promptToImport} )?.isEnabled = true
+	}
+	
+	func fileDataIndex(fileId: Int) -> Int? {
+		for (idx, data) in rowData.enumerated() {
+			if data.file?.fileId == fileId { return idx }
+		}
+		return nil
 	}
 	
 	//MARK: - actions
@@ -252,6 +259,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			pobserver.send(error: error)
 		}, completed: {
 			pobserver.sendCompleted()
+			NotificationCenter.default.post(name: .FilesImported, object: self.fileImporter!)
 			self.fileImporter = nil //free up importer
 		}).start()
 		//save reference so ARC does not dealloc importer
@@ -302,6 +310,16 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		//TODO: updated file always shows last, which is wrong
 		loadData()
 		tableView.reloadData()
+	}
+	
+	func select(file: File) {
+		guard let idx = fileDataIndex(fileId: file.fileId) else {
+			os_log("failed to find file to select", log: .app, type: .info)
+			return
+		}
+		DispatchQueue.main.async {
+			self.tableView.selectRowIndexes(IndexSet(integer: idx), byExtendingSelection: false)
+		}
 	}
 	
 	//MARK: - TableView datasource/delegate implementation
