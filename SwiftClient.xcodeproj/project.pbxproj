@@ -1149,6 +1149,29 @@
 			name = network;
 			sourceTree = "<group>";
 		};
+		088935801DFF30D100C94B19 /* bookmarks */ = {
+			isa = PBXGroup;
+			children = (
+				083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */,
+				083A56701D24722C009D3091 /* ProjectManagerViewController.swift */,
+				083A566D1D246D85009D3091 /* ProjectManagement.storyboard */,
+				08F189BE1D21938F00866A05 /* BookmarkViewController.swift */,
+				083A56721D247B52009D3091 /* AddBookmarkViewController.swift */,
+				080314221D2412ED006D668F /* SelectServerViewController.swift */,
+			);
+			name = bookmarks;
+			sourceTree = "<group>";
+		};
+		088935811DFF30EA00C94B19 /* docker */ = {
+			isa = PBXGroup;
+			children = (
+				0864DA621DA2BDC1003F3F57 /* DockerControl.storyboard */,
+				0864DA651DA2C70A003F3F57 /* DockerViewController.swift */,
+				0864DA671DA2C8D1003F3F57 /* DockerContainerController.swift */,
+			);
+			name = docker;
+			sourceTree = "<group>";
+		};
 		088CE6601C4B0AF400153414 = {
 			isa = PBXGroup;
 			children = (
@@ -1195,21 +1218,14 @@
 				084199251D903F7A0089A1AC /* ServerSetupController.swift */,
 				083305D81C501B7300E27F66 /* MainWindowController.swift */,
 				088CE6721C4B0AF400153414 /* Main.storyboard */,
-				083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */,
-				083A56701D24722C009D3091 /* ProjectManagerViewController.swift */,
-				083A566D1D246D85009D3091 /* ProjectManagement.storyboard */,
-				08F189BE1D21938F00866A05 /* BookmarkViewController.swift */,
-				083A56721D247B52009D3091 /* AddBookmarkViewController.swift */,
-				080314221D2412ED006D668F /* SelectServerViewController.swift */,
 				086659991CA1F3E5007AC555 /* MainWindow.xib */,
 				08F448F81C4E244500C64706 /* MainController.storyboard */,
 				083382F01C64341C00D40EEB /* AppStatusView.swift */,
 				083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */,
 				08F673CF1D020B2700B87049 /* MiscProtocols.swift */,
-				0864DA621DA2BDC1003F3F57 /* DockerControl.storyboard */,
-				0864DA651DA2C70A003F3F57 /* DockerViewController.swift */,
-				0864DA671DA2C8D1003F3F57 /* DockerContainerController.swift */,
 				08F448F31C4E244500C64706 /* session */,
+				088935801DFF30D100C94B19 /* bookmarks */,
+				088935811DFF30EA00C94B19 /* docker */,
 				081263141C85D2E0003E37A5 /* generic views */,
 				083305D11C4FC76C00E27F66 /* extensions */,
 				088CE6751C4B0AF400153414 /* Info.plist */,
