@@ -14,7 +14,7 @@ open class HelpOutputController: WebViewController {
 	
 	func loadHelpTopic(_ topic:HelpTopic) {
 		let url = HelpController.sharedInstance.urlForTopic(topic)
-		_ = webView?.load(URLRequest(url: url))
+		DispatchQueue.main.async { _ = self.webView?.load(URLRequest(url: url)) }
 	}
 	
 	open func webView(_ webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void)
