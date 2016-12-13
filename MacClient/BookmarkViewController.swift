@@ -9,6 +9,7 @@ import Cocoa
 import os
 import Networking
 import ReactiveSwift
+import Result
 import ClientCore
 
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
@@ -147,23 +148,33 @@ open class BookmarkViewController: NSViewController {
 		}
 		let loginFactory = LoginFactory()
 		loginFactory.login(to: host, as: host.user, password: pass).observe(on: UIScheduler()).startWithResult { (result) in
-			guard let conInfo = result.value else {
-				self.appStatus?.presentError(result.error!, session: nil)
-				return
-			}
-			guard let wspace = conInfo.project(withName: bookmark.projectName)?.workspace(withName: bookmark.workspaceName!) else
-			{
-				let desc = String.localizedStringWithFormat(NSLocalizedString("Failed to find workspace %@", comment: ""), bookmark.workspaceName!)
-				self.appStatus?.presentError(Rc2Error(type: .noSuchElement, explanation: desc), session:nil)
-				return
-			}
-			let session = Session(connectionInfo: conInfo, workspace: wspace)
-			DispatchQueue.main.async {
-				self.openSessionCallback?(session)
-			}
+			self.handleLogin(bookmark: bookmark, result: result)
 		}
 	}
 
+	/// Takes action with the result from an attempt to login
+	///
+	/// - Parameters:
+	///   - bookmark: the bookmark to connect to
+	///   - result: the result from a LoginFactory
+	open func handleLogin(bookmark: Bookmark, result: Result<ConnectionInfo, Rc2Error>) {
+		guard let conInfo = result.value else {
+			self.appStatus?.presentError(result.error!, session: nil)
+			return
+		}
+		guard let wspace = conInfo.project(withName: bookmark.projectName)?.workspace(withName: bookmark.workspaceName!) else
+		{
+			let desc = String.localizedStringWithFormat(NSLocalizedString("Failed to find workspace %@", comment: ""), bookmark.workspaceName!)
+			self.appStatus?.presentError(Rc2Error(type: .noSuchElement, explanation: desc), session:nil)
+			return
+		}
+		let session = Session(connectionInfo: conInfo, workspace: wspace)
+		DispatchQueue.main.async {
+			self.openSessionCallback?(session)
+		}
+		
+	}
+	
 	func entryIndexForBookmark(_ bmark:Bookmark) -> Int? {
 		for idx in 0..<entries.count {
 			if case .mark(let aMark) = entries[idx] , aMark == bmark {
