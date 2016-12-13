@@ -69,17 +69,28 @@ public class Session {
 	//MARK: init/open/close
 	
 	/// without a super class, can't use self in designated initializer. So use a private init, and a convenience init for outside use
-	private init(connectionInfo: ConnectionInfo, workspace: Workspace, fileCache: FileCache, imageCache: ImageCache)
+	private init(connectionInfo: ConnectionInfo, workspace: Workspace, fileCache: FileCache, imageCache: ImageCache, webSocket: WebSocketSource?)
 	{
 		self.workspace = workspace
 		self.conInfo = connectionInfo
 		self.fileCache = fileCache
 		self.imageCache = imageCache
-		self.wsSource = WebSocket(request: createWebSocketRequest())
+		var ws = webSocket
+		if nil == ws {
+			ws = WebSocket(request: createWebSocketRequest())
+		}
 		wsSource.binaryType = .nsData
 	}
 	
-	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, delegate:SessionDelegate?=nil, fileCache: FileCache? = nil)
+	/// Create a session object
+	///
+	/// - Parameters:
+	///   - connectionInfo: the connection info used for creating REST calls
+	///   - workspace: the workspace to use for the session
+	///   - delegate: a delegate to handle certain tasks
+	///   - fileCache: the file cache to use. Default is to create one
+	///   - webSocket: the websocket to use. Defaults to a sensible implementation
+	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, delegate:SessionDelegate?=nil, fileCache: FileCache? = nil, webSocket: WebSocketSource? = nil)
 	{
 		//create a file cache if one wasn't provided
 		var fc = fileCache
@@ -88,7 +99,7 @@ public class Session {
 		}
 		let rc = Rc2RestClient(connectionInfo, fileManager: fc!.fileManager)
 		let ic = ImageCache(restClient: rc, hostIdentifier: connectionInfo.host.name)
-		self.init(connectionInfo: connectionInfo, workspace: workspace, fileCache: fc!, imageCache: ic)
+		self.init(connectionInfo: connectionInfo, workspace: workspace, fileCache: fc!, imageCache: ic, webSocket: webSocket)
 		ic.workspace = workspace
 		self.delegate = delegate
 		setupWebSocketHandlers()
