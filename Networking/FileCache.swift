@@ -145,7 +145,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 		var fileDir: URL? = nil
 		do {
 			let cacheDir = try self.fileManager.Url(for:.cachesDirectory, domain: .userDomainMask, appropriateFor: nil, create: true)
-			let ourDir = cacheDir.appendingPathComponent(Bundle.main.bundleIdentifier!, isDirectory:true)
+			let ourDir = cacheDir.appendingPathComponent(AppInfo.bundleIdentifier, isDirectory:true)
 			fileDir = ourDir.appendingPathComponent(self.workspace.uniqueId, isDirectory: true)
 			if !fileDir!.fileExists() {
 				try self.fileManager.createDirectoryHierarchy(at: fileDir!)

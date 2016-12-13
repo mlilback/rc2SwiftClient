@@ -35,7 +35,7 @@ public class ImageCache: JSONEncodable {
 			do {
 				let fm = self.fileManager
 				let cacheDir = try fm.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-				let ourDir = cacheDir.appendingPathComponent(Bundle.main.bundleIdentifier!, isDirectory:true)
+				let ourDir = cacheDir.appendingPathComponent(AppInfo.bundleIdentifier, isDirectory:true)
 				let imgDir = ourDir.appendingPathComponent("\(self.hostIdentifier)/images", isDirectory: true)
 				if !(imgDir as NSURL).checkResourceIsReachableAndReturnError(nil) {
 					try self.fileManager.createDirectory(at: imgDir, withIntermediateDirectories: true, attributes: nil)

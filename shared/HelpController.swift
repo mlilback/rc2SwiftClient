@@ -60,7 +60,7 @@ class HelpController {
 	
 	///loads topics from storage
 	init() {
-		let dbpath = Bundle.main.path(forResource: "helpindex", ofType: "db")
+		let dbpath = Bundle(for: type(of: self)).path(forResource: "helpindex", ofType: "db")
 		do {
 			db = FMDatabase(path: dbpath)
 			db.open()
