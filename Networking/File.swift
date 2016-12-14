@@ -51,6 +51,12 @@ public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashab
 	
 	public var eTag: String { return "f/\(fileId)/\(version)" }
 	
+	/// returns the file name w/o a file extension
+	public var baseName: String {
+		guard let idx = name.range(of: ".", options: .backwards) else { return name }
+		return name.substring(from: idx.upperBound)
+	}
+	
 	///initialize with native dictionary from a MessagePackDictionary
 	//TODO: get rid of force unwraps
 	init(dict: [String: AnyObject]) {
