@@ -38,7 +38,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		DispatchQueue.main.async {
 			self.startSetup()
 		}
-		let cdUrl = Bundle.main.url(forResource: "CommonDefaults", withExtension: "plist")
+		let cdUrl = Bundle(for: type(of: self)).url(forResource: "CommonDefaults", withExtension: "plist")
 		UserDefaults.standard.register(defaults: NSDictionary(contentsOf: cdUrl!)! as! [String : AnyObject])
 		NotificationCenter.default.addObserver(self, selector: #selector(MacAppDelegate.windowWillClose), name: NSNotification.Name.NSWindowWillClose, object: nil)
 	}

@@ -185,6 +185,10 @@ extension SessionController: SessionDelegate {
 	}
 	
 	func sessionMessageReceived(_ response: ServerResponse) {
+		guard Thread.isMainThread else {
+			DispatchQueue.main.async { self.sessionMessageReceived(response) }
+			return
+		}
 		//if not a showoutput message, actually handle the response
 		guard case ServerResponse.showOutput( _, let updatedFile) = response else {
 			handle(response: response)
@@ -223,7 +227,9 @@ extension SessionController: SessionDelegate {
 	/// actually handle the response by formatting it and sending it to the output handler
 	fileprivate func handle(response: ServerResponse) {
 		if let astr = responseHandler?.handleResponse(response) {
-			outputHandler.appendFormattedString(astr, type: response.isEcho() ? .input : .default)
+			DispatchQueue.main.async {
+				self.outputHandler.appendFormattedString(astr, type: response.isEcho() ? .input : .default)
+			}
 		}
 	}
 	

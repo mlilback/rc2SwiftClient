@@ -29,9 +29,9 @@ public protocol VariableHandler {
 
 @objc protocol OutputHandler {
 	var sessionController: SessionController? { get set }
-	func appendFormattedString(_ string:NSAttributedString, type:OutputStringType)
+	func appendFormattedString(_ string: NSAttributedString, type: OutputStringType)
 	func saveSessionState() -> AnyObject
-	func restoreSessionState(_ state:[String:AnyObject])
+	func restoreSessionState(_ state: [String: AnyObject])
 	func prepareForSearch()
 	func initialFirstResponder() -> NSResponder
 	//use fileId instead of file object because File is a swift struct and can't be used in an objc protocol
