@@ -43,3 +43,11 @@
 * DockerErrors need to be transformed somewhere to Rc2Errors
 
 * make sure [restore windows full screen](http://mjtsai.com/blog/2016/11/18/full-screen-is-a-preference/) if that is how they were on last quit 
+
+* Validate image versions of containers. If a current container is using rc2server/appserver:0.4.1 and we've just pulled 0.4.2, the container needs to be deleted and recreated with the newer image.
+
+* need to handle error with bad network
+
+* need to add help for installed packages
+
+* need to remove old images after a pull of a new image
