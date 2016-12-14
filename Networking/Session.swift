@@ -53,7 +53,7 @@ public class Session {
 	
 	fileprivate var openObserver: Signal<Double, Rc2Error>.Observer?
 	public fileprivate(set) var connectionOpen:Bool = false
-	fileprivate var keepAliveTimer: DispatchSourceTimer = DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: DispatchQueue.main)
+	fileprivate lazy var keepAliveTimer: DispatchSourceTimer = { DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: self.queue) }()
 	
 	///closure syntax for a transaction complete callback
 	/// - parameter $0: the transaction id (key in the pendingTransaction dictionary)
@@ -64,21 +64,24 @@ public class Session {
 	fileprivate var pendingTransactions: [String: TransactionCompletion] = [:]
 	///if we are getting variable updates from the server
 	fileprivate var watchingVariables:Bool = false
-	
+	///queue used for async operations
+	fileprivate let queue: DispatchQueue
 	
 	//MARK: init/open/close
 	
 	/// without a super class, can't use self in designated initializer. So use a private init, and a convenience init for outside use
-	private init(connectionInfo: ConnectionInfo, workspace: Workspace, fileCache: FileCache, imageCache: ImageCache, webSocket: WebSocketSource?)
+	private init(connectionInfo: ConnectionInfo, workspace: Workspace, fileCache: FileCache, imageCache: ImageCache, webSocket: WebSocketSource?, queue: DispatchQueue = .main)
 	{
 		self.workspace = workspace
 		self.conInfo = connectionInfo
 		self.fileCache = fileCache
 		self.imageCache = imageCache
+		self.queue = queue
 		var ws = webSocket
 		if nil == ws {
 			ws = WebSocket(request: createWebSocketRequest())
 		}
+		wsSource = ws
 		wsSource.binaryType = .nsData
 	}
 	
@@ -90,7 +93,8 @@ public class Session {
 	///   - delegate: a delegate to handle certain tasks
 	///   - fileCache: the file cache to use. Default is to create one
 	///   - webSocket: the websocket to use. Defaults to a sensible implementation
-	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, delegate:SessionDelegate?=nil, fileCache: FileCache? = nil, webSocket: WebSocketSource? = nil)
+	///   - queue: the queue to perform operations on. Defaults to main queue
+	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, delegate:SessionDelegate?=nil, fileCache: FileCache? = nil, webSocket: WebSocketSource? = nil, queue: DispatchQueue? = nil)
 	{
 		//create a file cache if one wasn't provided
 		var fc = fileCache
@@ -235,7 +239,28 @@ public class Session {
 		self.wsSource.send(data)
 	}
 	
-	
+	/// Internally used, and useful for creating a mock websocket
+	///
+	/// - Returns: a request to open a websocket for this session
+	func createWebSocketRequest() -> URLRequest {
+		#if os(OSX)
+			let client = "osx"
+		#else
+			let client = "ios"
+		#endif
+		var components = URLComponents()
+		components.host = conInfo.host.host
+		components.port = conInfo.host.port
+		components.path = "/ws/\(workspace.wspaceId)"
+		components.scheme = conInfo.host.secure ? "wss" : "ws"
+		components.queryItems = [URLQueryItem(name: "client", value: client),
+		                         URLQueryItem(name: "build", value: "\(AppInfo.buildNumber)")]
+		var req = URLRequest(url: components.url!)
+		//TODO: add header field as constant
+		req.addValue(conInfo.authToken, forHTTPHeaderField: "Rc2-Auth")
+		req.timeoutInterval = 120
+		return req
+	}
 }
 
 //MARK: private methods
@@ -335,7 +360,7 @@ private extension Session {
 					imageCache.cacheImagesFromServer(images)
 					fallthrough
 				default:
-					DispatchQueue.main.async { self.delegate?.sessionMessageReceived(response) }
+					queue.async { self.delegate?.sessionMessageReceived(response) }
 				}
 			}
 			if let transId = try? jsonMessage.getString(at: "transId") {
@@ -364,26 +389,6 @@ private extension Session {
 		return true
 	}
 	
-	func createWebSocketRequest() -> URLRequest {
-		#if os(OSX)
-			let client = "osx"
-		#else
-			let client = "ios"
-		#endif
-		var components = URLComponents()
-		components.host = conInfo.host.host
-		components.port = conInfo.host.port
-		components.path = "/ws/\(workspace.wspaceId)"
-		components.scheme = conInfo.host.secure ? "wss" : "ws"
-		components.queryItems = [URLQueryItem(name: "client", value: client),
-		URLQueryItem(name: "build", value: "\(AppInfo.buildNumber)")]
-		var req = URLRequest(url: components.url!)
-		//TODO: add header field as constant
-		req.addValue(conInfo.authToken, forHTTPHeaderField: "Rc2-Auth")
-		req.timeoutInterval = 120
-		return req
-	}
-	
 	/// starts file caching and forwards responses to observer from open() call
 	private func websocketOpened() {
 		fileCache.cacheAllFiles().on(value: { (progPercent) in
@@ -399,7 +404,7 @@ private extension Session {
 	
 	func setupWebSocketHandlers() {
 		wsSource.event.open = { [unowned self] in
-			DispatchQueue.main.async {
+			DispatchQueue.global().async {
 				self.websocketOpened()
 			}
 		}
@@ -410,7 +415,7 @@ private extension Session {
 		}
 		wsSource.event.message = { [weak self] message in
 			os_log("websocket message: %{public}@", log: .session, type: .debug, message as? String ?? "<binary>")
-			DispatchQueue.main.async {
+			self?.queue.async {
 				self?.handleReceivedMessage(message)
 			}
 		}
