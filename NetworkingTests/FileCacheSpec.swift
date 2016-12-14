@@ -117,43 +117,4 @@ class FileCacheSpec: NetworkingBaseSpec {
 			}
 		}
 	}
-	
-	func makeValueRequest<T>(producer: SignalProducer<T, Rc2Error>, queue: DispatchQueue) -> Result<T, Rc2Error>
-	{
-		var result: Result<T, Rc2Error>!
-		let group = DispatchGroup()
-		queue.async(group: group) {
-			result = producer.last()
-		}
-		group.wait()
-		return result
-	}
-
-	func makeCompletedRequest<T>(producer: SignalProducer<T, Rc2Error>, queue: DispatchQueue) -> Result<Bool, Rc2Error>
-	{
-		var result = Result<Bool, Rc2Error>(false)
-		let group = DispatchGroup()
-		group.enter()
-		queue.async(group: group) {
-			producer.start { event in
-				switch event {
-				case .failed(let err):
-					result = Result<Bool, Rc2Error>(error: err)
-					group.leave()
-				case .value(_):
-					break
-				case .completed:
-					result = Result<Bool, Rc2Error>(true)
-					fallthrough
-				case .interrupted:
-					group.leave()
-				}
-			}
-		}
-		let success = group.wait(timeout: .now() + .seconds(90))
-		if case .timedOut = success {
-			result = Result<Bool, Rc2Error>(error: Rc2Error(type: .unknown, explanation: "timed out"))
-		}
-		return result
-	}
 }

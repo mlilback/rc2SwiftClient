@@ -8,6 +8,9 @@ import Foundation
 import Quick
 import Nimble
 import Freddy
+import Result
+import ReactiveSwift
+import ClientCore
 
 class NetworkingBaseSpec: QuickSpec {
 	/// Load Data from a resource file
@@ -40,5 +43,56 @@ class NetworkingBaseSpec: QuickSpec {
 			fatalError("failed to load \(fileName).json")
 		}
 		return json
+	}
+
+	/// Executes a producer returning the last value
+	///
+	/// - Parameters:
+	///   - producer: the producer to execute
+	///   - queue: the queue to execute on, defaults to .global()
+	/// - Returns: a result with the last value
+	func makeValueRequest<T>(producer: SignalProducer<T, Rc2Error>, queue: DispatchQueue = .global()) -> Result<T, Rc2Error>
+	{
+		var result: Result<T, Rc2Error>!
+		let group = DispatchGroup()
+		queue.async(group: group) {
+			result = producer.last()
+		}
+		group.wait()
+		return result
+	}
+	
+	/// Starts the producer and blocks until completed or an error happens
+	///
+	/// - Parameters:
+	///   - producer: the producer to start
+	///   - queue: the queue to perform on, defaults to global queue
+	/// - Returns: a result with true if completed, error if failed
+	func makeCompletedRequest<T>(producer: SignalProducer<T, Rc2Error>, queue: DispatchQueue = .global()) -> Result<Bool, Rc2Error>
+	{
+		var result = Result<Bool, Rc2Error>(false)
+		let group = DispatchGroup()
+		group.enter()
+		queue.async(group: group) {
+			producer.start { event in
+				switch event {
+				case .failed(let err):
+					result = Result<Bool, Rc2Error>(error: err)
+					group.leave()
+				case .value(_):
+					break
+				case .completed:
+					result = Result<Bool, Rc2Error>(true)
+					fallthrough
+				case .interrupted:
+					group.leave()
+				}
+			}
+		}
+		let success = group.wait(timeout: .now() + .seconds(90))
+		if case .timedOut = success {
+			result = Result<Bool, Rc2Error>(error: Rc2Error(type: .unknown, explanation: "timed out"))
+		}
+		return result
 	}
 }
