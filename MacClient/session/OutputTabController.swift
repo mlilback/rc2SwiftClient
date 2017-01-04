@@ -221,7 +221,7 @@ private extension OutputTabController {
 		let index = selectedOutputTab.rawValue
 		//		guard index != selectedTabViewItemIndex else { return }
 		segmentControl?.animator().setSelected(true, forSegment: index)
-		for idx in 0..<3 {
+		for idx in 0..<tabView.numberOfTabViewItems {
 			segmentControl?.setEnabled(idx == index ? false : true, forSegment: idx)
 		}
 	}
