@@ -108,7 +108,7 @@ class SessionEditorController: AbstractSessionViewController
 	}
 	
 	override func sessionChanged() {
-		session.workspace.fileChangeSignal.observeValues { [unowned self] (values) in
+		session.workspace.fileChangeSignal.observe(on: UIScheduler()).observeValues { [unowned self] (values) in
 			self.process(changes: values)
 		}
 	}
@@ -324,7 +324,7 @@ private extension SessionEditorController {
 			openDocuments[theFile.fileId] = currentDocument!
 		}
 		let doc = currentDocument!
-		doc.loadContents().startWithResult { result in
+		doc.loadContents().observe(on: UIScheduler()).startWithResult { result in
 			guard let contents = result.value else {
 				//TODO: handle error
 				os_log("error loading document contents %{public}@", log: .app, type:.error, result.error!.localizedDescription)
