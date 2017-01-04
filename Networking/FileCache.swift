@@ -140,6 +140,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 	fileprivate let saveQueue: DispatchQueue
 	fileprivate let taskLockQueue: DispatchQueue
 	fileprivate var downloadAll: DownloadAll?
+	fileprivate var lastModTimes: [Int: TimeInterval] = [:]
 	
 	lazy var fileCacheUrl: URL = { () -> URL in
 		var fileDir: URL? = nil
@@ -198,6 +199,14 @@ public final class DefaultFileCache: NSObject, FileCache {
 				//download already in progress. no need to erase
 				return
 			}
+			if let mtime = self.lastModTimes[file.fileId] {
+				let timediff = Date.timeIntervalSinceReferenceDate - mtime
+				if timediff < 0.5 {
+					os_log("skipping flush because too recent", log: .cache, type: .info)
+					return
+				}
+			}
+			os_log("flushing file %d", log: .cache, type: .info, file.fileId)
 			self.removeFile(fileUrl: self.cachedUrl(file: file))
 		}
 	}
@@ -403,7 +412,8 @@ extension DefaultFileCache {
 	///   - observer: observer to signal data/completed or error
 	private func loadContents(file: File, observer: Signal<Data, Rc2Error>.Observer) {
 		let fileUrl = cachedUrl(file: file)
-		guard fileUrl.fileExists() else {
+		//for some unknown reason the cached file could be empty and cause a crash
+		guard fileUrl.fileExists() && fileUrl.fileSize() > 0 else {
 			self.recache(file: file).startWithResult { result in
 				guard result.error == nil else {
 					observer.send(error: result.error!)
@@ -500,6 +510,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 					self.downloadAll?.observer.sendCompleted()
 					self.downloadAll = nil
 				}
+				self.lastModTimes[dloadTask.file.fileId] = Date.timeIntervalSinceReferenceDate
 				self.tasks.removeValue(forKey: urlTask.taskIdentifier)
 				if generatedError != nil {
 					os_log("failure downloading file %d: %{public}s", log: .network, type: .error, dloadTask.file.fileId, generatedError!.errorDescription ?? "unknown")
