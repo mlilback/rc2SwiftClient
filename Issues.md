@@ -22,7 +22,7 @@
 
 * add unit test for scanning installed images for a specific docker tag
 
-* eventually need to be able to reopen everthing network related (DockerEventManager)
+* eventually need to be able to reopen everything network related (DockerEventManager)
 
 * add localization of strings using NSLocalizedString
 
@@ -34,13 +34,11 @@
 
 * switching help topics adjusts width of split view
 
-* switch all use of KVO in File to use signals
+* switch all use of KVO in AddBookmarkViewController to use signals
 
 * need to move framework required defaults to each framework, and have app load them allowing each succeeding framework to overwrite lower ones
 
 * if a dbserver image is updated, the dbdata volume still has the data in it. need to backup the sql and then restore it after creating a new volume. The rc2.last file created on first db run is there, which causes db container to fail.
-
-* DockerErrors need to be transformed somewhere to Rc2Errors
 
 * make sure [restore windows full screen](http://mjtsai.com/blog/2016/11/18/full-screen-is-a-preference/) if that is how they were on last quit 
 
