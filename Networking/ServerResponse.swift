@@ -96,19 +96,19 @@ public enum ServerResponse : Equatable {
 	}
 	
 	static func parseVariables(jsonObj: JSON) -> ServerResponse? {
-		guard jsonObj.getOptionalBool(at: "delta") else {
-			guard let vars: [Variable] = try? jsonObj.getArray(at: "variables").map({ try Variable.variableForJson($0) }) else {
-				os_log("failed to parse variables from response", log: .session)
-				return nil
+		do {
+			guard jsonObj.getOptionalBool(at: "delta") else {
+				let jsonArray = try jsonObj.getDictionary(at: "variables")
+				let vars: [Variable] = try jsonArray.map({ try Variable.variableForJson($0.value) })
+				return ServerResponse.variables(single: jsonObj.getOptionalBool(at: "single"), variables: vars)
 			}
-			return ServerResponse.variables(single: jsonObj.getOptionalBool(at: "single"), variables: vars)
+			let assigned: [Variable] = try jsonObj.getDictionary(at: "variables", "assigned").map({ try Variable.variableForJson($0.value) })
+			let removed: [String] = try jsonObj.decodedArray(at: "variables", "removed")
+			return ServerResponse.variablesDelta(assigned: assigned, removed: removed)
+		} catch {
+			os_log("error parsing variable message: %{public}s", log: .session, type: .error, error.localizedDescription)
 		}
-		//TODO: server results changed, no longer sends assigned and removed arrays
-		os_log("ignoring non-delta variable changes", log: .session, type: .info)
 		return nil
-//		let assigned = Variable.variablesForJsonDictionary(jsonObj["variables"]["assigned"].dictionaryValue)
-//		let removed = jsonObj.getDictionary(at: "variables").dictionaryValue["assigned"]?.arrayValue.map() { $0.stringValue } ?? []
-//		return ServerResponse.variablesDelta(assigned: assigned, removed: removed)
 	}
 }
 
