@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0810"
+   LastUpgradeVersion = "0820"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -157,6 +157,16 @@
          <EnvironmentVariable
             key = "CFNETWORK_DIAGNOSTICS"
             value = "1"
+            isEnabled = "NO">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "DMSkipUpdateCache"
+            value = "1"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "ImageInfoBaseUrl"
+            value = "file:///tmp/"
             isEnabled = "NO">
          </EnvironmentVariable>
          <EnvironmentVariable

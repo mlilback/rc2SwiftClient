@@ -155,7 +155,6 @@
 		083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */; };
 		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
 		083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
-		083D11831DE8C24C00549268 /* BuildInfo.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 083D11821DE8C24C00549268 /* BuildInfo.xcconfig */; };
 		083D11861DECC37900549268 /* Process+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11851DECC37900549268 /* Process+Rc2.swift */; };
 		083D11881DED00D200549268 /* LinedJsonHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11871DED00D200549268 /* LinedJsonHandler.swift */; };
 		083D118A1DED032000549268 /* HttpStringUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11891DED032000549268 /* HttpStringUtils.swift */; };
@@ -1721,7 +1720,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0810;
-				LastUpgradeCheck = 0810;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = Rc2;
 				TargetAttributes = {
 					080E82C01DCBE31D0048F36C = {
@@ -1843,7 +1842,6 @@
 				08C484F81C9B159000FE824B /* server.cer in Resources */,
 				08F448FD1C4E244500C64706 /* MainController.storyboard in Resources */,
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
-				083D11831DE8C24C00549268 /* BuildInfo.xcconfig in Resources */,
 				0827A4E51C7ED9CE001F0AFB /* RKeywords.txt in Resources */,
 				08A01FD21CC81479001EDFAA /* helpindex.db in Resources */,
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
