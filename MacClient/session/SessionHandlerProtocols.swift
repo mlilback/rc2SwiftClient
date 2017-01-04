@@ -23,21 +23,16 @@ public protocol VariableHandler {
 	func handleVariableDeltaMessage(_ assigned:[Variable], removed:[String])
 }
 
-@objc enum OutputStringType: Int {
-	case `default`, input
-}
-
-@objc protocol OutputHandler {
+protocol OutputHandler: class {
 	var sessionController: SessionController? { get set }
-	func appendFormattedString(_ string: NSAttributedString, type: OutputStringType)
+	func append(responseString: ResponseString)
 	func saveSessionState() -> AnyObject
 	func restoreSessionState(_ state: [String: AnyObject])
 	func prepareForSearch()
 	func initialFirstResponder() -> NSResponder
-	//use fileId instead of file object because File is a swift struct and can't be used in an objc protocol
-	//also get weird compile errors if fileId is made Int?. so passing a zero is the same as nil
-	func showFile(_ fileId:Int)
-	func showHelp(_ topics:[HelpTopic])
+	//can't use File as parameter class because it isn't available in ObjC. We let the bridge pass the object around using AnyObject and the destination will have to cast it to a File object.
+	func showFile(_ file: AnyObject?)
+	func showHelp(_ topics: [HelpTopic])
 }
 
 /// Implemented by objects that need to response to changes related to files

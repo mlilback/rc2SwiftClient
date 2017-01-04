@@ -26,6 +26,21 @@ public protocol ServerResponseHandlerDelegate: class {
 	func showFile(_ fileId: Int)
 }
 
+/// encapsulates an attributed string and what that string represents
+public struct ResponseString {
+	/// Possible types of response strings
+	/// - input: an echo of user input
+	/// - output: displayable results
+	/// - error: an error message
+	/// - attachment: links to generated documents or images
+	/// - notice: a response that doesn't require the user's attention
+	public enum StringType { case input, output, error, attachment, notice }
+	/// a response string
+	public let string: NSAttributedString
+	/// the purpose of the string
+	public let type: StringType
+}
+
 public class ServerResponseHandler {
 	fileprivate weak var delegate: ServerResponseHandlerDelegate?
 	fileprivate let outputColors = OutputColors.colorMap()
@@ -34,7 +49,7 @@ public class ServerResponseHandler {
 		self.delegate = delegate
 	}
 
-	public func handleResponse(_ response:ServerResponse) -> NSAttributedString? {
+	public func handleResponse(_ response:ServerResponse) -> ResponseString? {
 		switch(response) {
 			case .echoQuery(let queryId, let fileId, let query):
 				return formatQueryEcho(query, queryId:queryId, fileId:fileId)
@@ -64,33 +79,34 @@ public class ServerResponseHandler {
 		return nil
 	}
 
-	fileprivate func formatQueryEcho(_ query:String, queryId:Int, fileId:Int) -> NSAttributedString? {
+	fileprivate func formatQueryEcho(_ query:String, queryId:Int, fileId:Int) -> ResponseString? {
 		if fileId > 0 {
 			let mstr = NSMutableAttributedString(attributedString: delegate!.attributedStringForInputFile(fileId))
 			mstr.append(NSAttributedString(string: "\n"))
 			mstr.addAttribute(NSBackgroundColorAttributeName, value: outputColors[.Input]!, range: NSMakeRange(0, mstr.length))
-			return mstr
+			return ResponseString(string: mstr, type: .input)
 		}
-		return NSAttributedString(string: "\(query)\n", attributes: [NSBackgroundColorAttributeName:outputColors[.Input]!])
+		let fstr = NSAttributedString(string: "\(query)\n", attributes: [NSBackgroundColorAttributeName:outputColors[.Input]!])
+		return ResponseString(string: fstr, type: .input)
 	}
 	
-	fileprivate func formatResults(_ text:String, queryId:Int) -> NSAttributedString? {
+	fileprivate func formatResults(_ text:String, queryId:Int) -> ResponseString? {
 		let mstr = NSMutableAttributedString()
 		if text.characters.count > 0 {
 			let formString = "\(text)\n"
 			mstr.append(NSAttributedString(string: formString))
 		}
-		return mstr
+		return ResponseString(string: mstr, type: .output)
 	}
 
-	fileprivate func formatShowOutput(_ queryId:Int, file:File) -> NSAttributedString? {
+	fileprivate func formatShowOutput(_ queryId:Int, file:File) -> ResponseString? {
 		let str = delegate!.consoleAttachment(forFile:file).asAttributedString()
 		let mstr = str.mutableCopy() as! NSMutableAttributedString
 		mstr.append(NSAttributedString(string: "\n"))
-		return mstr
+		return ResponseString(string: mstr, type: .attachment)
 	}
 	
-	fileprivate func formatExecComplete(_ queryId:Int, batchId:Int, images:[SessionImage]) -> NSAttributedString? {
+	fileprivate func formatExecComplete(_ queryId:Int, batchId:Int, images:[SessionImage]) -> ResponseString? {
 		guard images.count > 0 else { return nil }
 		let mstr = NSMutableAttributedString()
 		for image in images {
@@ -98,11 +114,12 @@ public class ServerResponseHandler {
 			mstr.append(aStr)
 		}
 		mstr.append(NSAttributedString(string: "\n"))
-		return mstr
+		return ResponseString(string: mstr, type: .attachment)
 	}
 
-	public func formatError(_ error:String) -> NSAttributedString {
-		return NSAttributedString(string: "\(error)\n", attributes: [NSBackgroundColorAttributeName:outputColors[.Error]!])
+	public func formatError(_ error:String) -> ResponseString {
+		let str = NSAttributedString(string: "\(error)\n", attributes: [NSBackgroundColorAttributeName:outputColors[.Error]!])
+		return ResponseString(string: str, type: .error)
 	}
 }
 

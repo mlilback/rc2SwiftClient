@@ -267,11 +267,11 @@ extension RootViewController: FileViewControllerDelegate {
 	func fileSelectionChanged(_ file:File?) {
 		if nil == file {
 			self.editor?.fileSelectionChanged(nil)
-			self.outputHandler?.showFile(0)
+			self.outputHandler?.showFile(nil)
 		} else if file!.fileType.isSourceFile {
 			self.editor?.fileSelectionChanged(file)
 		} else {
-			self.outputHandler?.showFile(file!.fileId)
+			self.outputHandler?.showFile(file)
 		}
 	}
 	

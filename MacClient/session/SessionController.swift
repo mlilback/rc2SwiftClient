@@ -10,6 +10,7 @@ import Networking
 import Freddy
 import ReactiveSwift
 import ClientCore
+import NotifyingCollection
 
 @objc protocol SessionControllerDelegate {
 	func filesRefreshed()
@@ -29,6 +30,7 @@ import ClientCore
 
 	var savedStateHash: Data?
 	fileprivate var properlyClosed: Bool = false
+	fileprivate var fileLoadDisposable: Disposable?
 
 	init(session: Session, delegate: SessionControllerDelegate, outputHandler output: OutputHandler, variableHandler: VariableHandler)
 	{
@@ -53,6 +55,7 @@ import ClientCore
 	}
 	
 	func close() {
+		fileLoadDisposable?.dispose()
 		saveSessionState()
 		session.close()
 		properlyClosed = true
@@ -66,8 +69,8 @@ import ClientCore
 		session.fileCache.flushCache(files: session.workspace.files).start()
 	}
 	
-	func formatErrorMessage(_ error: String) -> NSAttributedString {
-		return responseHandler!.formatError(error)
+	func format(errorString: String) -> ResponseString {
+		return responseHandler!.formatError(errorString)
 	}
 }
 
@@ -100,8 +103,29 @@ extension SessionController: ServerResponseHandlerDelegate {
 		return NSAttributedString(string: str)
 	}
 	
+	//the file might not be in session yet. if not, wait until it has been added
 	func showFile(_ fileId: Int) {
-		DispatchQueue.main.async { self.outputHandler.showFile(fileId) }
+		fileLoadDisposable?.dispose()
+		if let existingFile = session.workspace.file(withId: fileId) {
+			DispatchQueue.main.async {
+				self.outputHandler.showFile(existingFile)
+			}
+			return
+		}
+		//TODO: need to wait until file exists then load it
+		let handler = { (changes: [CollectionChange<File>]) in
+			for aChange in changes {
+				if aChange.object?.fileId == fileId {
+					//our file was inserted, we can show it
+					DispatchQueue.main.async {
+						self.outputHandler.showFile(self.session.workspace.file(withId: fileId))
+//						self.showFile(fileId)
+					}
+					break
+				}
+			}
+		}
+		fileLoadDisposable = session.workspace.fileChangeSignal.observeValues(handler)
 	}
 }
 
@@ -211,13 +235,20 @@ extension SessionController: SessionDelegate {
 		}
 	}
 	
+	//TODO: impelment sessionErrorReceived
+	func sessionErrorReceived(_ error: Rc2Error) {
+		
+	}
+}
+
+//MARK: - private methods
+extension SessionController {
 	/// listen for the specified file to be inserted, and then call the handler
 	fileprivate func listenForInsert(fileId: Int, handler: @escaping (Int) -> Void) {
-		var disp: Disposable?
-		disp = session.workspace.fileChangeSignal.observeValues { values in
+		fileLoadDisposable = session.workspace.fileChangeSignal.observeValues { values in
 			values.forEach { change in
 				if change.changeType == .insert && change.object?.fileId == fileId {
-					disp?.dispose()
+					self.fileLoadDisposable?.dispose()
 					handler(fileId)
 				}
 			}
@@ -228,14 +259,8 @@ extension SessionController: SessionDelegate {
 	fileprivate func handle(response: ServerResponse) {
 		if let astr = responseHandler?.handleResponse(response) {
 			DispatchQueue.main.async {
-				self.outputHandler.appendFormattedString(astr, type: response.isEcho() ? .input : .default)
+				self.outputHandler.append(responseString: astr)
 			}
 		}
 	}
-	
-	//TODO: impelment sessionErrorReceived
-	func sessionErrorReceived(_ error: Rc2Error) {
-		
-	}
 }
-

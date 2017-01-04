@@ -67,9 +67,9 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 	}
 	
 	//MARK: SessionOutputHandler
-	func appendFormattedString(_ string:NSAttributedString, type:OutputStringType = .default) {
-		let mutStr = string.mutableCopy() as! NSMutableAttributedString
-		mutStr.addAttributes([NSFontAttributeName:outputFont], range: NSMakeRange(0, string.length))
+	func append(responseString: ResponseString) {
+		let mutStr = responseString.string.mutableCopy() as! NSMutableAttributedString
+		mutStr.addAttributes([NSFontAttributeName:outputFont], range: NSMakeRange(0, mutStr.length))
 		resultsView!.textStorage?.append(mutStr)
 		resultsView!.scrollToEndOfDocument(nil)
 	}

@@ -8,6 +8,7 @@ import Cocoa
 import ClientCore
 import os
 import Networking
+import ReactiveSwift
 
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
@@ -44,7 +45,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	var consoleToolbarControl: NSSegmentedControl?
 	var segmentItem: NSToolbarItem?
 	var segmentControl: NSSegmentedControl?
-	var displayedFileId: Int?
+	weak var displayedFile: File?
 	var selectedOutputTab:OutputTabType {
 		get { return OutputTabType(rawValue: selectedTabViewItemIndex)! }
 		set { selectedTabViewItemIndex = newValue.rawValue ; adjustOutputTabSwitcher() }
@@ -117,7 +118,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 
 	func showHelp(_ topics: [HelpTopic]) {
 		guard topics.count > 0 else {
-			consoleController?.appendFormattedString(sessionController!.formatErrorMessage("No help found"))
+			consoleController?.append(responseString: sessionController!.format(errorString: "No help found"))
 			return
 		}
 		if topics.count == 1 {
@@ -175,26 +176,38 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		}
 	}
 	
-	func showFile(_ fileId:Int) {
-		displayedFileId = fileId
-		if let file = sessionController?.session.workspace.file(withId: fileId) {
-			//TODO: need to specially handle images
-			DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-			//delay is to give previous async file save time to actually write file to disk.
-				self.webController?.loadLocalFile(self.sessionController!.session.fileCache.cachedUrl(file: file))
-				self.selectedOutputTab = .webKit
-			}
-		} else {
+	func showFile(_ fileObject: AnyObject?) {
+		//strip optional
+		guard let file = fileObject as? File else {
 			webController?.clearContents()
 			selectedOutputTab = .console
+			displayedFile = nil
+			return
 		}
+		let url = self.sessionController!.session.fileCache.cachedUrl(file: file)
+		guard url.fileSize() > 0 else {
+			//caching/download bug. not sure what causes it. recache the file and then call again
+			sessionController?.session.fileCache.recache(file: file).observe(on: UIScheduler()).startWithCompleted {
+				self.showFile(file)
+			}
+			return
+		}
+		displayedFile = file
+		//TODO: need to specially handle images
+		self.selectedOutputTab = .webKit
+		self.webController?.loadLocalFile(url)
 	}
 
-	func appendFormattedString(_ string:NSAttributedString, type:OutputStringType = .default) {
-		consoleController?.appendFormattedString(string, type:type)
-		//switch back to console view
-		if selectedOutputTab != .console {
-			selectedOutputTab = .console
+	func append(responseString: ResponseString) {
+		consoleController?.append(responseString: responseString)
+		//switch back to console view if appropriate type
+		switch responseString.type {
+		case .input, .output, .error:
+			if selectedOutputTab != .console {
+				selectedOutputTab = .console
+			}
+		default:
+			break
 		}
 	}
 
