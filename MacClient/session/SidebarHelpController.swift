@@ -38,13 +38,13 @@ class TopicWrapper: NSObject {
 
 class SidebarHelpController : AbstractSessionViewController, NSOutlineViewDataSource, NSOutlineViewDelegate, NSMenuDelegate {
 	
-	@IBOutlet var outline:NSOutlineView?
+	@IBOutlet var outline: NSOutlineView?
 	@IBOutlet var searchField: NSSearchField?
 	@IBOutlet var searchMenu: NSMenu?
-	let help:HelpController = HelpController.sharedInstance
-	fileprivate var searchNameOnly:Bool = false
-	fileprivate var helpPackages:[TopicWrapper] = []
-	fileprivate var expandedBeforeSearch:[TopicWrapper]?
+	let help: HelpController = HelpController.shared
+	fileprivate var searchNameOnly: Bool = false
+	fileprivate var helpPackages: [TopicWrapper] = []
+	fileprivate var expandedBeforeSearch: [TopicWrapper]?
 	
 	//MARK: lifecycle
 	override func  viewDidLoad() {

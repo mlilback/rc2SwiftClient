@@ -34,6 +34,17 @@ extension URL {
 		return false
 	}
 
+	/// calls resourceValues and to check if self is a directory
+	///
+	/// - Returns: true if this URL represents a directory on the local file system
+	public func directoryExists() -> Bool {
+		guard isFileURL else { return false }
+		if let values = try? resourceValues(forKeys: [.isDirectoryKey]) {
+			return values.isDirectory!
+		}
+		return false
+	}
+
 	/// Convience method to load data from a file URL
 	///
 	/// - returns: contents or nil if Data(contentsOf:) throws an error
@@ -44,7 +55,7 @@ extension URL {
 			return nil
 		}
 	}
-
+	
 	/// gets the file size without throwing an error.
 	/// - returns: the size of the file. returns 0 if the URL is not a file or on an error
 	public func fileSize() -> Int64 {

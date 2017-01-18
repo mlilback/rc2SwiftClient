@@ -133,7 +133,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		if let topic:HelpTopic = note.object as? HelpTopic {
 			showHelpTopic(topic)
 		} else if let topicName:String = note.object as? String {
-			showHelp(HelpController.sharedInstance.topicsWithName(topicName))
+			showHelp(HelpController.shared.topicsWithName(topicName))
 		} else { //told to show without a topic. switch back to console.
 			selectedOutputTab = .console
 		}

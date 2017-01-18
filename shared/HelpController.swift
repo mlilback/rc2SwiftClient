@@ -6,6 +6,7 @@
 
 import Foundation
 import os
+import ClientCore
 
 class HelpTopic: NSObject {
 	let name:String
@@ -50,18 +51,28 @@ class HelpTopic: NSObject {
 }
 
 class HelpController {
-	static let sharedInstance = HelpController()
+	static let shared = HelpController()
 	fileprivate let db:FMDatabase
 	
 	let packages:[HelpTopic]
 	let allTopics:Set<HelpTopic>
 	let allTopicNames:Set<String>
 	fileprivate let topicsByName:Dictionary<String, [HelpTopic]>
+	fileprivate var baseHelpUrl: URL
 	
 	///loads topics from storage
 	init() {
+		//make sure our help directory exists
+		let fileManager = FileManager()
 		let dbpath = Bundle(for: type(of: self)).path(forResource: "helpindex", ofType: "db")
 		do {
+			let supportUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+				.appendingPathComponent(AppInfo.bundleIdentifier, isDirectory: true)
+			baseHelpUrl = supportUrl.appendingPathComponent("rdocs", isDirectory: true)
+			if !baseHelpUrl.directoryExists() {
+				try fileManager.createDirectory(at: baseHelpUrl, withIntermediateDirectories: true, attributes: nil)
+			}
+			//load help index
 			db = FMDatabase(path: dbpath)
 			db.open()
 			var topsByPack = [String:[HelpTopic]]()
@@ -103,6 +114,24 @@ class HelpController {
 	
 	deinit {
 		db.close()
+	}
+	
+	/// checks to make sure help files exist and if not, extract them from tarball
+	func verifyDocumentationInstallation() {
+		let versionUrl = baseHelpUrl.appendingPathComponent("rc2help.json")
+		if versionUrl.fileExists() { return }
+		let tar = Process()
+		tar.currentDirectoryPath = baseHelpUrl.path
+		let tarball = Bundle(for: type(of: self)).url(forResource: "rdocs", withExtension: "tgz")
+		precondition(tarball != nil && tarball!.fileExists())
+		tar.arguments = ["zxf", tarball!.path]
+		tar.launchPath = "/usr/bin/tar"
+		tar.terminationHandler = { process in
+			if process.terminationStatus != 0 {
+				os_log("help extraction failed: %d", log: .app, type: .default, process.terminationReason.rawValue)
+			}
+		}
+		tar.launch()
 	}
 	
 	func hasTopic(_ name:String) -> Bool {
@@ -169,7 +198,7 @@ class HelpController {
 	}
 	
 	func urlForTopic(_ topic:HelpTopic) -> URL {
-		let str = "\(HelpUrlBase)/\(topic.packageName)\(HelpUrlFuncSeperator)/\(topic.name).html"
-		return URL(string: str)!
+		let str = "helpdocs/library/\(topic.packageName)\(HelpUrlFuncSeperator)/\(topic.name).html"
+		return baseHelpUrl.appendingPathComponent(str)
 	}
 }

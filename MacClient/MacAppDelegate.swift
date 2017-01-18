@@ -54,6 +54,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			BITHockeyManager.shared().start()
 		}
 	#endif
+		HelpController.shared.verifyDocumentationInstallation()
 		restoreSessions()
 	}
 

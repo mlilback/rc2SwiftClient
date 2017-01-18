@@ -205,7 +205,7 @@ extension SessionController: SessionDelegate {
 	}
 	
 	func respondToHelp(_ helpTopic: String) {
-		outputHandler.showHelp(HelpController.sharedInstance.topicsWithName(helpTopic))
+		outputHandler.showHelp(HelpController.shared.topicsWithName(helpTopic))
 	}
 	
 	func sessionMessageReceived(_ response: ServerResponse) {

@@ -13,8 +13,9 @@ open class HelpOutputController: WebViewController {
 	}
 	
 	func loadHelpTopic(_ topic:HelpTopic) {
-		let url = HelpController.sharedInstance.urlForTopic(topic)
-		DispatchQueue.main.async { _ = self.webView?.load(URLRequest(url: url)) }
+		let url = HelpController.shared.urlForTopic(topic)
+//		DispatchQueue.main.async { _ = self.webView?.load(URLRequest(url: url)) }
+		DispatchQueue.main.async { _ = self.webView?.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent()) }
 	}
 	
 	open func webView(_ webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void)

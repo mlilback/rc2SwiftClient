@@ -176,6 +176,7 @@
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08525E501E204672008A332E /* URLStaleChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E4F1E204672008A332E /* URLStaleChecker.swift */; };
 		08525E731E256A8B008A332E /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E721E256A8B008A332E /* Reachability.swift */; };
+		08525E761E300185008A332E /* rdocs.tgz in Resources */ = {isa = PBXBuildFile; fileRef = 08525E751E300185008A332E /* rdocs.tgz */; };
 		08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08604A4D1D9C0C0500DE2A79 /* Named.swift */; };
 		08634DB91D2DA93A00445462 /* syntax2.Rmd in Resources */ = {isa = PBXBuildFile; fileRef = 08634DB81D2DA93A00445462 /* syntax2.Rmd */; };
 		08634DBB1D2DA9CB00445462 /* syntax1.Rnw in Resources */ = {isa = PBXBuildFile; fileRef = 08634DBA1D2DA9CB00445462 /* syntax1.Rnw */; };
@@ -686,6 +687,7 @@
 		08525E4F1E204672008A332E /* URLStaleChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLStaleChecker.swift; sourceTree = "<group>"; };
 		08525E721E256A8B008A332E /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		08525E741E2D7D4E008A332E /* Rc².entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Rc².entitlements"; sourceTree = "<group>"; };
+		08525E751E300185008A332E /* rdocs.tgz */ = {isa = PBXFileReference; lastKnownFileType = file; name = rdocs.tgz; path = vendor/rdocs.tgz; sourceTree = SOURCE_ROOT; };
 		08604A4D1D9C0C0500DE2A79 /* Named.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Named.swift; sourceTree = "<group>"; };
 		08634DB81D2DA93A00445462 /* syntax2.Rmd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syntax2.Rmd; sourceTree = "<group>"; };
 		08634DBA1D2DA9CB00445462 /* syntax1.Rnw */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syntax1.Rnw; sourceTree = "<group>"; };
@@ -1328,6 +1330,7 @@
 				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
 				08A01FD51CC95C58001EDFAA /* HelpController.swift */,
 				08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */,
+				08525E751E300185008A332E /* rdocs.tgz */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -1853,6 +1856,7 @@
 				088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */,
 				083305E01C51571500E27F66 /* Localizable.strings in Resources */,
 				08C484F81C9B159000FE824B /* server.cer in Resources */,
+				08525E761E300185008A332E /* rdocs.tgz in Resources */,
 				08F448FD1C4E244500C64706 /* MainController.storyboard in Resources */,
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
 				0827A4E51C7ED9CE001F0AFB /* RKeywords.txt in Resources */,
