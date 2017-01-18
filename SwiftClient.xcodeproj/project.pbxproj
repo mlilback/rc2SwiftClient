@@ -681,6 +681,7 @@
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		084FEA7F1D3044E700060A7D /* ObjcConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcConstants.h; sourceTree = "<group>"; };
 		084FEA801D3045D800060A7D /* ObjcConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjcConstants.m; sourceTree = "<group>"; };
+		08525E741E2D7D4E008A332E /* Rc².entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Rc².entitlements"; sourceTree = "<group>"; };
 		08604A4D1D9C0C0500DE2A79 /* Named.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Named.swift; sourceTree = "<group>"; };
 		08634DB81D2DA93A00445462 /* syntax2.Rmd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syntax2.Rmd; sourceTree = "<group>"; };
 		08634DBA1D2DA9CB00445462 /* syntax1.Rnw */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syntax1.Rnw; sourceTree = "<group>"; };
@@ -1220,6 +1221,7 @@
 		088CE66B1C4B0AF400153414 /* MacClient */ = {
 			isa = PBXGroup;
 			children = (
+				08525E741E2D7D4E008A332E /* Rc².entitlements */,
 				088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */,
 				0890650A1D26F59300C7CA5D /* MacAppStatus.swift */,
 				088CE6701C4B0AF400153414 /* Assets.xcassets */,
@@ -1740,6 +1742,11 @@
 					088CE6681C4B0AF400153414 = {
 						CreatedOnToolsVersion = 7.2;
 						LastSwiftMigration = 0800;
+						SystemCapabilities = {
+							com.apple.iCloud = {
+								enabled = 0;
+							};
+						};
 					};
 					088CE6791C4B0AF500153414 = {
 						CreatedOnToolsVersion = 7.2;
@@ -2567,6 +2574,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "MacClient/Rc².entitlements";
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -2590,6 +2598,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "MacClient/Rc².entitlements";
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
