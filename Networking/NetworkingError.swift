@@ -11,6 +11,7 @@ import Freddy
 public enum NetworkingError: LocalizedError, Rc2DomainError {
 	case unauthorized
 	case unsupportedFileType
+	case timeout
 	case connectionError(Error)
 	case canceled
 	case uploadFailed(Error)

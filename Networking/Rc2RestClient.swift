@@ -35,6 +35,33 @@ public final class Rc2RestClient {
 		return request
 	}
 	
+	public func createEmptyFile(name: String, workspace: Workspace) -> SignalProducer<File, Rc2Error> {
+		return SignalProducer<File, Rc2Error> { observer, _ in
+			var req = self.request("workspaces/\(workspace.wspaceId)/files/upload", method: "POST")
+			req.addValue("0", forHTTPHeaderField: "Content-Length")
+			req.addValue("application/octet-string", forHTTPHeaderField: "Content-Encoding")
+			req.addValue(name, forHTTPHeaderField: "Rc2-Filename")
+			req.addValue(self.conInfo.authToken, forHTTPHeaderField: "Rc2-Auth")
+			let task = self.urlSession!.dataTask(with: req) { (data, response, error) in
+				guard nil == error else { observer.send(error: Rc2Error(type: .cocoa, nested: error)); return }
+				switch response?.httpResponse?.statusCode ?? 500 {
+					case 201:
+						do {
+							let json = try JSON(data: data!)
+							let file = try File(json: json)
+							observer.send(value: file)
+							observer.sendCompleted()
+						} catch {
+							observer.send(error: Rc2Error(type: .invalidJson, explanation: "error parsing create file response"))
+						}
+					default:
+						observer.send(error: Rc2Error(type: .network, nested: NetworkingError.invalidHttpStatusCode(response as! HTTPURLResponse)))
+				}
+			}
+			task.resume()
+		}
+	}
+	
 	public func downloadImage(imageId: Int, from wspace: Workspace, destination:URL) -> SignalProducer<URL, Rc2Error>
 	{
 		return SignalProducer<URL, Rc2Error>() { observer, _ in

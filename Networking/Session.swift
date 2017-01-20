@@ -11,6 +11,7 @@ import Foundation
 import Freddy
 import MessagePackSwift
 import ReactiveSwift
+import Result
 import SwiftWebSocket
 import os
 import NotifyingCollection
@@ -198,6 +199,48 @@ public class Session {
 	
 	//TODO: pendingTransactions need to pass errors
 
+	/// Creates an empty file on the server
+	///
+	/// - Parameters:
+	///   - fileName: the name of the file. should be unique
+	///   - timeout: how long to wait for a file inserted message
+	///   - completionHandler: callback with the new file id (after it has been inserted in workspace.files) or an error
+	public func create(fileName: String, timeout: TimeInterval = 2.0, completionHandler: ((Result<Int, Rc2Error>) -> Void)?)
+	{
+		precondition(workspace.file(withName: fileName) == nil)
+		imageCache.restClient.createEmptyFile(name: fileName, workspace: workspace)
+			.observe(on: UIScheduler()).startWithResult
+		{ result in
+			guard let file = result.value else {
+				completionHandler?(Result<Int, Rc2Error>(error: result.error!))
+				return
+			}
+			let targetFileId = result.value!.fileId
+			//if the file is already there (shouldn't really ever happen)
+			guard self.workspace.file(withId: targetFileId) == nil else {
+				completionHandler?(Result<Int, Rc2Error>(value: file.fileId))
+				return
+			}
+			//need to wait until file is inserted
+			SignalProducer(signal: self.workspace.fileChangeSignal)
+				.promoteErrors(Rc2Error.self)
+				.timeout(after: timeout, raising: Rc2Error(type: .network, nested: NetworkingError.timeout, explanation: "timeout for inserted file notification"), on: QueueScheduler.main)
+				.filter({ (changes) -> Bool in
+					changes.filter( { change in
+						return change.changeType == .insert && change.object?.fileId == targetFileId
+					} ).count == 1
+				})
+				.take(first: 1)
+				.startWithResult { changeResult in
+					guard changeResult.error == nil else {
+						completionHandler?(Result<Int, Rc2Error>(error: changeResult.error!))
+						return
+					}
+					completionHandler?(Result<Int, Rc2Error>(value: targetFileId))
+				}
+		}
+	}
+	
 	/// asks the server to remove a file
 	/// - parameter file: The file to remove
 	/// - returns: a signal producer that will be complete once the server affirms the file was removed

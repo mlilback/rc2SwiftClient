@@ -259,6 +259,8 @@
 		08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB554F1C5AC727002CB7EE /* SessionEditor.swift */; };
 		08CB55521C5C06B2002CB7EE /* OutputTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB55511C5C06B2002CB7EE /* OutputTabController.swift */; };
 		08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB55531C5C096E002CB7EE /* ImageOutputController.swift */; };
+		08CE0E8E1E32669600DC567A /* createfile.json in Resources */ = {isa = PBXBuildFile; fileRef = 08CE0E8D1E32669600DC567A /* createfile.json */; };
+		08CE0E901E326A4C00DC567A /* createdUpdate.json in Resources */ = {isa = PBXBuildFile; fileRef = 08CE0E8F1E326A4C00DC567A /* createdUpdate.json */; };
 		08D6106F1CD2C53100258D8E /* listvars.json in Resources */ = {isa = PBXBuildFile; fileRef = 08D6106E1CD2C53100258D8E /* listvars.json */; };
 		08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */; };
 		08D610761CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */; };
@@ -766,6 +768,8 @@
 		08CB554F1C5AC727002CB7EE /* SessionEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditor.swift; sourceTree = "<group>"; };
 		08CB55511C5C06B2002CB7EE /* OutputTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OutputTabController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08CB55531C5C096E002CB7EE /* ImageOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageOutputController.swift; sourceTree = "<group>"; };
+		08CE0E8D1E32669600DC567A /* createfile.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = createfile.json; sourceTree = "<group>"; };
+		08CE0E8F1E326A4C00DC567A /* createdUpdate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = createdUpdate.json; sourceTree = "<group>"; };
 		08D6106E1CD2C53100258D8E /* listvars.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = listvars.json; sourceTree = "<group>"; };
 		08D610711CE3CA3C00258D8E /* TAAdaptiveSpaceItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAAdaptiveSpaceItem.h; sourceTree = "<group>"; };
 		08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItem.m; sourceTree = "<group>"; };
@@ -986,6 +990,8 @@
 			isa = PBXGroup;
 			children = (
 				080E82D21DCBE31D0048F36C /* Info.plist */,
+				08CE0E8D1E32669600DC567A /* createfile.json */,
+				08CE0E8F1E326A4C00DC567A /* createdUpdate.json */,
 				080E82FD1DCCD77D0048F36C /* loginResults.json */,
 				08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */,
 				0881B5071DCD336500679DB3 /* variables.json */,
@@ -1834,9 +1840,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08CE0E901E326A4C00DC567A /* createdUpdate.json in Resources */,
 				080E82FE1DCCD77D0048F36C /* loginResults.json in Resources */,
 				08F6ADAE1DD66CAB00AF0722 /* modelChanges.json in Resources */,
 				0881B5081DCD336500679DB3 /* variables.json in Resources */,
+				08CE0E8E1E32669600DC567A /* createfile.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

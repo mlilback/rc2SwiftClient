@@ -68,6 +68,78 @@ class SessionSpec: NetworkingBaseSpec {
 				expect(result.error).to(beNil())
 			}
 		}
+		
+		describe("create file") {
+			beforeEach {
+				self.open(session: session)
+			}
+			it("success") {
+				let updateJson = String(data: self.loadFileData("createdUpdate", fileExtension: "json")!, encoding: .utf8)!
+				self.stub(uri(uri: "/workspaces/100/files/upload"), builder: { request in
+					DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
+						fakeSocket.serverSent(updateJson)
+					}
+					return jsonData(self.loadFileData("createfile", fileExtension: "json")!, status: 201)(request)
+				})
+				let createExpectation = self.expectation(description: "create file")
+				var createdResult: Result<Int, Rc2Error>?
+				session.create(fileName: "created.R") { result in
+					createdResult = result
+					createExpectation.fulfill()
+				}
+				self.waitForExpectations(timeout: 2.0, handler: nil)
+				expect(createdResult?.error).to(beNil())
+				expect(createdResult?.value).to(equal(212))
+			}
+
+			it("never inserted") {
+				self.stub(uri(uri: "/workspaces/100/files/upload"), builder: jsonData(self.loadFileData("createfile", fileExtension: "json")!, status: 201))
+				let createExpectation = self.expectation(description: "create file")
+				var createdResult: Result<Int, Rc2Error>?
+				session.create(fileName: "created.R", timeout: 0.5) { result in
+					createdResult = result
+					createExpectation.fulfill()
+				}
+				self.waitForExpectations(timeout: 1.0, handler: nil)
+				expect(createdResult?.error).toNot(beNil())
+				expect(createdResult?.error?.type).to(equal(Rc2Error.Rc2ErrorType.network))
+				expect(createdResult?.error?.nestedError).to(matchError(NetworkingError.timeout))
+			}
+
+			it("server error") {
+				self.stub(uri(uri: "/workspaces/100/files/upload"), builder: http(500))
+				let createExpectation = self.expectation(description: "create file")
+				var createdResult: Result<Int, Rc2Error>?
+				session.create(fileName: "created.R", timeout: 0.5) { result in
+					createdResult = result
+					createExpectation.fulfill()
+				}
+				self.waitForExpectations(timeout: 1.0, handler: nil)
+				expect(createdResult?.error).toNot(beNil())
+				expect(createdResult?.error?.type).to(equal(Rc2Error.Rc2ErrorType.network))
+				expect(createdResult?.error?.nestedError).to( MatcherFunc<Error?> { expression, message in
+					guard let actualVal = try expression.evaluate() as? NetworkingError else { return false }
+					if case .invalidHttpStatusCode(let rsp) = actualVal, rsp.statusCode == 500 { return true }
+					return false
+				})
+			}
+		}
+	}
+
+	func open(session: Session) {
+		let starter = session.open(session.createWebSocketRequest())
+		let result = self.makeCompletedRequest(producer: starter)
+		expect(result.error).to(beNil())
+	}
+	
+	func cacheFiles(for wspace: Workspace, cache: FakeFileCache) {
+		let bundle = Bundle(for: type(of: self))
+		for aFile in wspace.files {
+			let fileUrl = bundle.url(forResource: aFile.baseName, withExtension: aFile.fileType.fileExtension, subdirectory: "testFiles")!
+			let data = try! Data(contentsOf: fileUrl)
+			cache.fileInfo[aFile.fileId] = FakeFileInfo(fileId: aFile.fileId, data: data, url: nil, cached: false)
+		}
 	}
 }
+
 

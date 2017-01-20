@@ -73,6 +73,17 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 		return _files[idx]
 	}
 	
+	/// Get a file with a specific name
+	///
+	/// - Parameter withName: the name of the file to find
+	/// - Returns: the matching file or nil
+	public func file(withName: String) -> File? {
+		guard let idx =  _files.index(where: { $0.name.caseInsensitiveCompare(withName) == .orderedSame }) else {
+			return nil
+		}
+		return _files[idx]
+	}
+	
 	public var description: String {
 		return "<Workspace: \(name) (\(wspaceId))"
 	}
