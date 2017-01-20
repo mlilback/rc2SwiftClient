@@ -7,6 +7,7 @@
 import Cocoa
 import os
 import ReactiveSwift
+import Result
 import SwiftyUserDefaults
 import NotifyingCollection
 import ClientCore
@@ -22,7 +23,6 @@ extension DefaultsKeys {
 private extension Selector {
 	static let addDocument = #selector(SidebarFileController.addDocumentOfType(_:))
 	static let addFileMenu =  #selector(SidebarFileController.addFileMenuAction(_:))
-	static let addButtonClicked = #selector(SidebarFileController.addButtonClicked(_:))
 	static let receivedStatusChange = #selector(SidebarFileController.receivedStatusChange(_:))
 	static let promptToImport = #selector(SidebarFileController.promptToImportFiles(_:))
 	static let exportSelectedFile = #selector(SidebarFileController.exportSelectedFile(_:))
@@ -45,6 +45,9 @@ protocol FileViewControllerDelegate: class {
 }
 
 let FileDragTypes = [kUTTypeFileURL as String]
+
+let addFileSegmentIndex: Int = 0
+let removeFileSegmentIndex: Int = 1
 
 //TODO: make sure when delegate renames file our list gets updated
 
@@ -86,13 +89,13 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			NotificationCenter.default.addObserver(self, selector: .addFileMenu, name: NSNotification.Name.NSMenuDidSendAction, object: menu)
 			addRemoveButtons?.setMenu(menu, forSegment: 0)
 			addRemoveButtons?.target = self
-			addRemoveButtons?.action = .addButtonClicked
 		}
 		if tableView != nil {
 			tableView.setDraggingSourceOperationMask(.copy, forLocal: true)
 			tableView.draggingDestinationFeedbackStyle = .none
 			tableView.register(forDraggedTypes: FileDragTypes)
 		}
+		adjustForFileSelectionChange()
 	}
 	
 	override func sessionChanged() {
@@ -141,6 +144,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 	
+	fileprivate func adjustForFileSelectionChange() {
+		addRemoveButtons?.setEnabled(selectedFile != nil, forSegment: removeFileSegmentIndex)
+	}
+	
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else {
 			return super.validateMenuItem(menuItem)
@@ -170,25 +177,18 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		return nil
 	}
 	
-	//MARK: - actions
-	func addButtonClicked(_ sender:AnyObject?) {
-		os_log("called for %d", log: .app, type:.info, (addRemoveButtons?.selectedSegment)!)
-		if addRemoveButtons?.selectedSegment == 0 {
-			//add file
-			//TODO: implement add file
-		} else {
-			//delete file
-			deleteFile(sender)
-		}
-	}
-	
+	// NSMenu calls this method before an item's action is called. we listen to it from the addFileMenu
 	func addFileMenuAction(_ note:Notification) {
 		let menuItem = (note as NSNotification).userInfo!["MenuItem"] as! NSMenuItem
 		let index = menuItem.representedObject as! Int
 		let fileType = FileType.creatableFileTypes[index]
+		DispatchQueue.main.async {
+			self.promptToAddFile(type: fileType)
+		}
 		print("add file of type \(fileType.name)")
 	}
 	
+	//MARK: - actions
 	@IBAction func deleteFile(_ sender:AnyObject?) {
 		guard let file = selectedFile else { return }
 		let defaults = UserDefaults.standard
@@ -197,8 +197,8 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 		let alert = NSAlert()
 		alert.showsSuppressionButton = true
-		alert.messageText = NSLocalizedString(LStrings.DeleteFileWarning, comment: "")
-		alert.informativeText = NSLocalizedString(LStrings.DeleteFileWarningInfo, comment: "")
+		alert.messageText = NSLocalizedString(LocalStrings.deleteFileWarning, comment: "")
+		alert.informativeText = NSLocalizedString(LocalStrings.deleteFileWarningInfo, comment: "")
 		alert.addButton(withTitle: NSLocalizedString("Delete", comment: ""))
 		alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
 		alert.beginSheetModal(for: self.view.window!, completionHandler: { [weak alert] response in
@@ -221,21 +221,56 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		os_log("rename selcted file", log: .app, type:.info)
 	}
 	
+	// never gets called, but file type menu items must have an action or addFileMenuAction never gets called
 	@IBAction func addDocumentOfType(_ menuItem:NSMenuItem) {
 		//TODO: implement addDocumentOfType
 		os_log("add file of type %{public}@", log: .app, type:.info, menuItem)
 	}
 	
 	@IBAction func segButtonClicked(_ sender:AnyObject?) {
-		if addRemoveButtons?.selectedSegment == 0 {
-			//add file
-			//TODO: implement add file
-		} else {
-			//delete file
-			deleteFile(sender)
+		switch addRemoveButtons!.selectedSegment {
+			case addFileSegmentIndex:
+				//should never be called since a menu is attached
+				assertionFailure("segButtonClicked should never be called for addSegment")
+			case removeFileSegmentIndex:
+				deleteFile(sender)
+			default:
+				assertionFailure("unknown segment selected")
 		}
 	}
 
+	//MARK: - add file
+	/// displays sheet to prompt for file name and then calls addFile()
+	func promptToAddFile(type: FileType) {
+		let fileExtension = ".\(type.fileExtension)"
+		let prompter = InputPrompter(prompt: NSLocalizedString("Filename:", comment: ""), defaultValue: "Untitled\(fileExtension)", suffix: fileExtension)
+		prompter.minimumStringLength = 3
+		let fileNames = session.workspace.files.map { return $0.name }
+		prompter.validator = { (proposedName) in
+			return fileNames.filter({$0.caseInsensitiveCompare(proposedName) == .orderedSame}).count == 0
+		}
+		prompter.prompt(window: self.view.window!) { (gotValue, value) in
+			guard gotValue, var value = value else { return }
+			if !value.hasSuffix(fileExtension) {
+				value = value + fileExtension
+			}
+			self.addFile(name: value, type: type)
+		}
+	}
+	
+	//actually starts the add file process
+	fileprivate func addFile(name: String, type: FileType) {
+		session.create(fileName: name) { result in
+			// the id of the file that was created
+			guard let fid = result.value, let fidx = self.fileDataIndex(fileId: fid) else {
+				//TODO: handle error
+				os_log("error creating empty file: %{public}s", log: .app, result.error!.localizedDescription)
+				return
+			}
+			self.tableView.selectRowIndexes(IndexSet(integer: fidx), byExtendingSelection: false)
+		}
+	}
+	
 	//MARK: - import/export
 	@IBAction func promptToImportFiles(_ sender:Any?) {
 		if nil == importPrompter {
@@ -346,6 +381,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	func tableViewSelectionDidChange(_ notification: Notification) {
+		adjustForFileSelectionChange()
 		delegate?.fileSelectionChanged(selectedFile)
 	}
 	

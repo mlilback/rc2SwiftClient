@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="InputPrompter" customModule="MacClient" customModuleProvider="target">
+            <connections>
+                <outlet property="okButton" destination="MxM-KO-FPZ" id="bm2-Cd-0Pm"/>
+                <outlet property="promptLabel" destination="zEg-pv-cM9" id="yYm-wg-CM4"/>
+                <outlet property="textField" destination="3ny-7l-GHF" id="c6V-RJ-t7V"/>
+                <outlet property="window" destination="IVZ-dF-cDN" id="6Py-vA-txF"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="InputPrompterWindow" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" tabbingMode="disallowed" id="IVZ-dF-cDN">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="213" y="227" width="295" height="117"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2048" height="1129"/>
+            <view key="contentView" id="ZiQ-0w-7df">
+                <rect key="frame" x="0.0" y="0.0" width="295" height="117"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3ny-7l-GHF">
+                        <rect key="frame" x="20" y="49" width="255" height="23"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="8LY-e8-vmd"/>
+                        </constraints>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="QLn-9i-PMg">
+                            <font key="font" metaFont="system" size="14"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <action selector="saveValue:" target="-2" id="zaO-gb-WI9"/>
+                            <outlet property="delegate" destination="-2" id="sbK-kc-ryA"/>
+                        </connections>
+                    </textField>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MxM-KO-FPZ">
+                        <rect key="frame" x="199" y="13" width="82" height="32"/>
+                        <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="caL-O5-H0Y">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="saveValue:" target="-2" id="32c-wD-ayF"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8GA-YM-r6J">
+                        <rect key="frame" x="117" y="13" width="82" height="32"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="PCC-Nf-6QO">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                            <connections>
+                                <action selector="cancel:" target="-2" id="Q1c-uM-DPF"/>
+                            </connections>
+                        </buttonCell>
+                    </button>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zEg-pv-cM9">
+                        <rect key="frame" x="18" y="80" width="80" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="String value:" id="kFF-cD-whD">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="MxM-KO-FPZ" firstAttribute="width" secondItem="8GA-YM-r6J" secondAttribute="width" id="D4C-hS-tFU"/>
+                    <constraint firstAttribute="bottom" secondItem="8GA-YM-r6J" secondAttribute="bottom" constant="20" symbolic="YES" id="Fcc-rW-JNe"/>
+                    <constraint firstItem="MxM-KO-FPZ" firstAttribute="leading" secondItem="8GA-YM-r6J" secondAttribute="trailing" constant="12" symbolic="YES" id="HH0-kJ-Cvh"/>
+                    <constraint firstAttribute="trailing" secondItem="MxM-KO-FPZ" secondAttribute="trailing" constant="20" symbolic="YES" id="K8t-pw-WBy"/>
+                    <constraint firstItem="MxM-KO-FPZ" firstAttribute="top" secondItem="3ny-7l-GHF" secondAttribute="bottom" constant="8" id="Kgf-Hf-Iu0"/>
+                    <constraint firstItem="zEg-pv-cM9" firstAttribute="leading" secondItem="ZiQ-0w-7df" secondAttribute="leading" constant="20" symbolic="YES" id="SSZ-zr-bso"/>
+                    <constraint firstAttribute="bottom" secondItem="MxM-KO-FPZ" secondAttribute="bottom" constant="20" symbolic="YES" id="UD6-J4-KWv"/>
+                    <constraint firstItem="3ny-7l-GHF" firstAttribute="top" secondItem="zEg-pv-cM9" secondAttribute="bottom" constant="8" id="VhI-Lv-3MG"/>
+                    <constraint firstItem="3ny-7l-GHF" firstAttribute="leading" secondItem="ZiQ-0w-7df" secondAttribute="leading" constant="20" symbolic="YES" id="XQy-6U-tsU"/>
+                    <constraint firstAttribute="trailing" secondItem="3ny-7l-GHF" secondAttribute="trailing" constant="20" symbolic="YES" id="fkE-t6-UEv"/>
+                    <constraint firstItem="zEg-pv-cM9" firstAttribute="top" secondItem="ZiQ-0w-7df" secondAttribute="top" constant="20" symbolic="YES" id="hsw-s3-FWW"/>
+                    <constraint firstItem="3ny-7l-GHF" firstAttribute="top" secondItem="zEg-pv-cM9" secondAttribute="bottom" constant="8" id="vV5-rh-BDI"/>
+                </constraints>
+            </view>
+            <point key="canvasLocation" x="16.5" y="27.5"/>
+        </window>
+    </objects>
+</document>

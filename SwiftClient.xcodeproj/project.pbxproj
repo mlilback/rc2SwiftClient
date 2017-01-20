@@ -177,6 +177,8 @@
 		08525E501E204672008A332E /* URLStaleChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E4F1E204672008A332E /* URLStaleChecker.swift */; };
 		08525E731E256A8B008A332E /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E721E256A8B008A332E /* Reachability.swift */; };
 		08525E761E300185008A332E /* rdocs.tgz in Resources */ = {isa = PBXBuildFile; fileRef = 08525E751E300185008A332E /* rdocs.tgz */; };
+		08525E781E3143C3008A332E /* InputPrompter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E771E3143C3008A332E /* InputPrompter.swift */; };
+		08525E7A1E314558008A332E /* InputPrompter.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08525E791E314558008A332E /* InputPrompter.xib */; };
 		08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08604A4D1D9C0C0500DE2A79 /* Named.swift */; };
 		08634DB91D2DA93A00445462 /* syntax2.Rmd in Resources */ = {isa = PBXBuildFile; fileRef = 08634DB81D2DA93A00445462 /* syntax2.Rmd */; };
 		08634DBB1D2DA9CB00445462 /* syntax1.Rnw in Resources */ = {isa = PBXBuildFile; fileRef = 08634DBA1D2DA9CB00445462 /* syntax1.Rnw */; };
@@ -690,6 +692,8 @@
 		08525E721E256A8B008A332E /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		08525E741E2D7D4E008A332E /* Rc².entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Rc².entitlements"; sourceTree = "<group>"; };
 		08525E751E300185008A332E /* rdocs.tgz */ = {isa = PBXFileReference; lastKnownFileType = file; name = rdocs.tgz; path = vendor/rdocs.tgz; sourceTree = SOURCE_ROOT; };
+		08525E771E3143C3008A332E /* InputPrompter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputPrompter.swift; path = MacClient/InputPrompter.swift; sourceTree = SOURCE_ROOT; };
+		08525E791E314558008A332E /* InputPrompter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputPrompter.xib; sourceTree = "<group>"; };
 		08604A4D1D9C0C0500DE2A79 /* Named.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Named.swift; sourceTree = "<group>"; };
 		08634DB81D2DA93A00445462 /* syntax2.Rmd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syntax2.Rmd; sourceTree = "<group>"; };
 		08634DBA1D2DA9CB00445462 /* syntax1.Rnw */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = syntax1.Rnw; sourceTree = "<group>"; };
@@ -1040,6 +1044,8 @@
 				08ED575E1C724383002B2558 /* MacFileImportSetup.swift */,
 				0831740F1C57B2E200071408 /* CommandHistory.swift */,
 				08A01FD91CC9692C001EDFAA /* BasicOutlineDataSource.swift */,
+				08525E771E3143C3008A332E /* InputPrompter.swift */,
+				08525E791E314558008A332E /* InputPrompter.xib */,
 			);
 			name = data/helpers;
 			sourceTree = "<group>";
@@ -1860,6 +1866,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0864DA641DA2BDC1003F3F57 /* DockerControl.storyboard in Resources */,
+				08525E7A1E314558008A332E /* InputPrompter.xib in Resources */,
 				0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */,
 				088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */,
 				083305E01C51571500E27F66 /* Localizable.strings in Resources */,
@@ -2111,6 +2118,7 @@
 				083A56711D24722C009D3091 /* ProjectManagerViewController.swift in Sources */,
 				08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */,
 				0827A4E91C7ED9CE001F0AFB /* SyntaxParser.swift in Sources */,
+				08525E781E3143C3008A332E /* InputPrompter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
