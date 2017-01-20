@@ -49,3 +49,11 @@
 * need to add help for installed packages
 
 * need to remove old images after a pull of a new image
+
+* need to work without a network connection if docker images already loaded
+
+* history icon not appearing
+
+* fix status area to actually work
+
+* write unit tests for InputPrompter validation
