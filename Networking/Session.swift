@@ -215,29 +215,17 @@ public class Session {
 				completionHandler?(Result<Int, Rc2Error>(error: result.error!))
 				return
 			}
-			let targetFileId = result.value!.fileId
-			//if the file is already there (shouldn't really ever happen)
-			guard self.workspace.file(withId: targetFileId) == nil else {
-				completionHandler?(Result<Int, Rc2Error>(value: file.fileId))
-				return
+			//write empty file to cache
+			do {
+				let updatedFile = try self.workspace.imported(file: file)
+				let destUrl = self.fileCache.cachedUrl(file: updatedFile)
+				try Data().write(to: destUrl)
+				completionHandler?(Result<Int, Rc2Error>(value: updatedFile.fileId))
+			} catch let rc2Err as Rc2Error {
+				completionHandler?(Result<Int, Rc2Error>(error: rc2Err))
+			} catch {
+				completionHandler?(Result<Int, Rc2Error>(error: Rc2Error(type: .cocoa, nested: error)))
 			}
-			//need to wait until file is inserted
-			SignalProducer(signal: self.workspace.fileChangeSignal)
-				.promoteErrors(Rc2Error.self)
-				.timeout(after: timeout, raising: Rc2Error(type: .network, nested: NetworkingError.timeout, explanation: "timeout for inserted file notification"), on: QueueScheduler.main)
-				.filter({ (changes) -> Bool in
-					changes.filter( { change in
-						return change.changeType == .insert && change.object?.fileId == targetFileId
-					} ).count == 1
-				})
-				.take(first: 1)
-				.startWithResult { changeResult in
-					guard changeResult.error == nil else {
-						completionHandler?(Result<Int, Rc2Error>(error: changeResult.error!))
-						return
-					}
-					completionHandler?(Result<Int, Rc2Error>(value: targetFileId))
-				}
 		}
 	}
 	
