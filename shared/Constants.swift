@@ -18,9 +18,11 @@ extension Notification.Name {
 	static let FilesImported = Notification.Name("FilesImportedNotification")
 }
 
-struct LStrings {
-	static let DeleteFileWarning = "DeleteFileWarning"
-	static let DeleteFileWarningInfo = "DeleteFileWarningInfo"
+struct LocalStrings {
+	static let addFileMessage = "File Name: "
+	static let addFileDefaultName = "Untitled"
+	static let deleteFileWarning = "DeleteFileWarning"
+	static let deleteFileWarningInfo = "DeleteFileWarningInfo"
 }
 
 struct Constants {
