@@ -25,6 +25,7 @@ open class CodeHighlighter: NSObject {
 	}
 	
 	func highlightText(_ content:NSMutableAttributedString, range:NSRange) {
+		guard range.length > 0 else { return }
 		content.removeAttribute(NSForegroundColorAttributeName, range: range)
 		addAttributes(content, range:range)
 		let sourceStr = content.string.substring(with: range.toStringRange(content.string)!)
