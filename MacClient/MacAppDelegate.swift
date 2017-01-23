@@ -30,7 +30,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	private var dockerWindowController: NSWindowController?
 	private var appStatus: MacAppStatus?
 
-	fileprivate dynamic var _currentProgress: Progress?
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 
 	func applicationWillFinishLaunching(_ notification: Notification) {
