@@ -20,16 +20,16 @@ public enum FileOperation: String {
 }
 
 public enum ServerResponse : Equatable {
-	case error(queryId:Int, error:String)
-	case echoQuery(queryId:Int, fileId:Int, query:String)
-	case execComplete(queryId:Int, batchId:Int, images:[SessionImage])
-	case fileChanged(changeType:String, file:File)
-	case results(queryId:Int, text:String)
-	case saveResponse(transId:String)
-	case showOutput(queryId:Int, updatedFile:File)
-	case variables(single:Bool, variables:[Variable])
-	case variablesDelta(assigned:[Variable], removed:[String])
-	case fileOperationResponse(transId:String, operation:FileOperation, file:File)
+	case error(queryId: Int, error: String)
+	case echoQuery(queryId: Int, fileId: Int, query: String)
+	case execComplete(queryId: Int, batchId: Int, images: [SessionImage])
+	case results(queryId: Int, text: String)
+	case saveResponse(transId: String)
+	case fileChanged(changeType: String, file: File)
+	case showOutput(queryId: Int, updatedFile: File)
+	case variables(single: Bool, variables: [Variable])
+	case variablesDelta(assigned: [Variable], removed: [String])
+	case fileOperationResponse(transId: String, operation: FileOperation, file: File)
 	
 	
 	public func isEcho() -> Bool {
