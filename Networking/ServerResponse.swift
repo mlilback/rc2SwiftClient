@@ -25,7 +25,7 @@ public enum ServerResponse : Equatable {
 	case execComplete(queryId: Int, batchId: Int, images: [SessionImage])
 	case results(queryId: Int, text: String)
 	case saveResponse(transId: String)
-	case fileChanged(changeType: String, file: File)
+	case fileChanged(changeType: String, fileId: Int, file: File?)
 	case showOutput(queryId: Int, updatedFile: File)
 	case variables(single: Bool, variables: [Variable])
 	case variablesDelta(assigned: [Variable], removed: [String])
@@ -69,11 +69,13 @@ public enum ServerResponse : Equatable {
 				}
 				return ServerResponse.echoQuery(queryId: queryId, fileId: fileId, query: query)
 			case "filechanged":
-				guard let ftype = try? jsonObj.getString(at: "type"), let file: File = try? jsonObj.decode(at: "file") else {
+				guard let ftype = try? jsonObj.getString(at: "type"), let fileId = try? jsonObj.getInt(at: "fileId") else
+				{
 					os_log("failed to parse filechanged response", log: .session)
 					return nil
 				}
-				return ServerResponse.fileChanged(changeType: ftype, file: file)
+				let file: File? = try? jsonObj.decode(at: "file")
+				return ServerResponse.fileChanged(changeType: ftype, fileId: fileId, file: file)
 			case "variables":
 				return parseVariables(jsonObj: jsonObj)
 			case "saveResponse":

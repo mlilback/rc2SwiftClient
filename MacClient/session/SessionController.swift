@@ -76,7 +76,7 @@ import NotifyingCollection
 
 //MARK: - ServerResponseHandlerDelegate
 extension SessionController: ServerResponseHandlerDelegate {
-	func handleFileUpdate(_ file: File, change: FileChangeType) {
+	func handleFileUpdate(fileId: Int, file: File?, change: FileChangeType) {
 //		os_log("got file update %d v%d", log: .app, type:.info, file.fileId, file.version)
 //		handleFileUpdate(file, change: change)
 	}

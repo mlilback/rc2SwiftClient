@@ -57,3 +57,7 @@
 * fix status area to actually work
 
 * write unit tests for InputPrompter validation
+
+* pending transactions need a timeout
+
+* reevaluate all os_log calls to make sure using correct level

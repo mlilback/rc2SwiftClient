@@ -17,8 +17,8 @@ public enum FileChangeType : String {
 }
 
 public protocol ServerResponseHandlerDelegate: class {
-	func handleFileUpdate(_ file:File, change: FileChangeType)
-	func handleVariableMessage(_ single:Bool, variables: [Variable])
+	func handleFileUpdate(fileId: Int, file:File?, change: FileChangeType)
+	func handleVariableMessage(_ single: Bool, variables: [Variable])
 	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String])
 	func consoleAttachment(forImage image: SessionImage) -> ConsoleAttachment
 	func consoleAttachment(forFile file: File) -> ConsoleAttachment
@@ -59,8 +59,8 @@ public class ServerResponseHandler {
 				return formatError(error)
 			case .execComplete(let queryId, let batchId, let images):
 				return formatExecComplete(queryId, batchId: batchId, images: images)
-			case .fileChanged(let changeType, let file):
-				delegate?.handleFileUpdate(file, change: FileChangeType.init(rawValue: changeType)!)
+			case .fileChanged(let changeType, let fileId, let file):
+				delegate?.handleFileUpdate(fileId: fileId, file: file, change: FileChangeType.init(rawValue: changeType)!)
 			case .variables(let single, let variables):
 				delegate?.handleVariableMessage(single, variables: variables)
 			case .variablesDelta(let assigned, let removed):

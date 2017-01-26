@@ -408,6 +408,15 @@ private extension Session {
 		}
 	}
 	
+	func handleFileChangedResponse(changeType: FileChangeType, fileId: Int, file: File?) {
+		guard let theFile = file ?? workspace.file(withId: fileId) else {
+			os_log("update for unknown file %d", log: .session, type: .info, fileId)
+			return
+		}
+		fileCache.flushCache(file: theFile)
+		workspace.update(file: theFile, change: changeType)
+	}
+	
 	func handleReceivedMessage(_ message:Any) {
 		if let stringMessage = message as? String {
 			guard  let jsonMessage = try? JSON(jsonString: stringMessage),
@@ -421,9 +430,8 @@ private extension Session {
 				switch response {
 				case .fileOperationResponse(let transId, let operation, let file):
 					handleFileResponse(transId, operation:operation, file:file)
-				case .fileChanged(let changeType, let file):
-					fileCache.flushCache(file: file)
-					workspace.update(file: file, change: FileChangeType(rawValue: changeType)!)
+				case .fileChanged(let changeType, let fileId, let file):
+					handleFileChangedResponse(changeType: FileChangeType(rawValue: changeType)!, fileId: fileId, file: file)
 				case .execComplete(_, _, let images):
 					imageCache.cacheImagesFromServer(images)
 					fallthrough
