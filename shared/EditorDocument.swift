@@ -104,7 +104,7 @@ public class EditorDocument: NSObject {
 					self.savedContents = self.editedContents
 					self.editedContents = nil
 					self.lastSaveTime = Date.timeIntervalSinceReferenceDate
-					os_log("save complete", log: .app, type: .info)
+					os_log("local save complete", log: .app, type: .info)
 					observer.send(value: self.savedContents!)
 					observer.sendCompleted()
 				case .failed(let err):

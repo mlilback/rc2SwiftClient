@@ -59,7 +59,7 @@ open class SyntaxParser: NSObject {
 	
 	///returns the index of the chunk in the specified range
 	func indexOfChunkForRange(range inRange: NSRange) -> Int {
-		assert(chunks.count > 0)
+		guard chunks.count > 0 else { return 0 }
 		return chunks.index(of: chunksForRange(inRange).first!)!
 	}
 	
@@ -86,6 +86,7 @@ open class SyntaxParser: NSObject {
 		if NSEqualRanges(range, NSMakeRange(0, textStorage.length)) {
 			return chunks
 		}
+		guard chunks.count > 0 else { return [] }
 		if range.length == 0 {
 			guard range.length > 0 else { return [chunks[0]] }
 			for aChunk in chunks {
@@ -103,7 +104,6 @@ open class SyntaxParser: NSObject {
 				outArray.append(aChunk)
 			}
 		}
-		assert(outArray.count > 0)
 		return outArray
 	}
 	
