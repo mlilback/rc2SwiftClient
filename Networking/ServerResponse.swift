@@ -62,7 +62,8 @@ public enum ServerResponse : Equatable {
 			case "error":
 				return ServerResponse.error(queryId: queryId, error: jsonObj.getOptionalString(at: "error", or: "unknown error"))
 			case "echo":
-				guard let fileId = try? jsonObj.getInt(at: "fileId"), let query = try? jsonObj.getString(at: "query") else {
+				guard let fileId = try? jsonObj.getInt(at: "fileId"), let query = try? jsonObj.getString(at: "query") else
+				{
 					os_log("failed to parse echo response", log: .session)
 					return nil
 				}

@@ -197,18 +197,20 @@ public class Session {
 		watchingVariables = false
 	}
 	
-	//TODO: pendingTransactions need to pass errors
+	//TODO: pendingTransactions need to pass errors for all functions using it
 
 	/// Creates an empty file on the server
 	///
 	/// - Parameters:
 	///   - fileName: the name of the file. should be unique
+	///   - contentUrl: the contents of the new file if not a copy of an existing file
+	///   - originalFileId: if copying a file, the id of the file being copied
 	///   - timeout: how long to wait for a file inserted message
 	///   - completionHandler: callback with the new file id (after it has been inserted in workspace.files) or an error
-	public func create(fileName: String, timeout: TimeInterval = 2.0, completionHandler: ((Result<Int, Rc2Error>) -> Void)?)
+	public func create(fileName: String, contentUrl: URL? = nil, timeout: TimeInterval = 2.0, completionHandler: ((Result<Int, Rc2Error>) -> Void)?)
 	{
 		precondition(workspace.file(withName: fileName) == nil)
-		imageCache.restClient.createEmptyFile(name: fileName, workspace: workspace)
+		imageCache.restClient.createFile(name: fileName, workspace: workspace, contentUrl: contentUrl)
 			.observe(on: UIScheduler()).startWithResult
 		{ result in
 			guard let file = result.value else {
@@ -219,7 +221,11 @@ public class Session {
 			do {
 				let updatedFile = try self.workspace.imported(file: file)
 				let destUrl = self.fileCache.cachedUrl(file: updatedFile)
-				try Data().write(to: destUrl)
+				if let srcUrl = contentUrl, srcUrl.fileExists() {
+					try self.fileCache.fileManager.copyItem(at: contentUrl!, to: srcUrl)
+				} else {
+					try Data().write(to: destUrl)
+				}
 				completionHandler?(Result<Int, Rc2Error>(value: updatedFile.fileId))
 			} catch let rc2Err as Rc2Error {
 				completionHandler?(Result<Int, Rc2Error>(error: rc2Err))
@@ -236,7 +242,38 @@ public class Session {
 	public func remove(file: File) -> SignalProducer<Void, Rc2Error> {
 		return SignalProducer<Void, Rc2Error>() { observer, _ in
 			let transId = UUID().uuidString
-			self.sendMessage(["msg":"fileop" as AnyObject, "fileId":file.fileId as AnyObject, "fileVersion":file.version as AnyObject, "operation":"rm" as AnyObject, "transId":transId as AnyObject])
+			self.sendMessage(json: .dictionary(["msg": .string("fileop"), "fileId": .int(file.fileId), "fileVersion": .int(file.version), "operation": .string("rm"), "transId": .string(transId)]))
+			self.pendingTransactions[transId] = { (responseId, json) in
+				observer.sendCompleted()
+			}
+		}
+	}
+	
+	/// asks the server to rename a file
+	/// - parameter file: The file to rename
+	/// - parameter to: What to rename it to
+	/// - returns: a signal producer that will be complete once the server affirms the file was renamed
+	@discardableResult
+	public func rename(file: File, to newName: String) -> SignalProducer<Void, Rc2Error> {
+		return SignalProducer<Void, Rc2Error>() { observer, _ in
+			let transId = UUID().uuidString
+			self.sendMessage(json: .dictionary(["msg": .string("fileop"), "fileId": .int(file.fileId), "fileVersion": .int(file.version), "operation": .string("rename"), "newName": .string(newName), "transId": .string(transId)]))
+			self.pendingTransactions[transId] = { (responseId, json) in
+				observer.sendCompleted()
+			}
+		}
+	}
+	
+	/// duplicates a file on the server
+	///
+	/// - Parameters:
+	///   - file: the file to duplicate
+	///   - newName: the name for the duplicate
+	/// - Returns: signal handler with the new file's id or an error
+	public func duplicate(file: File, to newName: String) -> SignalProducer<Int, Rc2Error> {
+		return SignalProducer<Int, Rc2Error>() { observer, _ in
+			let transId = UUID().uuidString
+			self.sendMessage(json: .dictionary(["msg": .string("fileop"), "fileId": .int(file.fileId), "fileVersion": .int(file.version), "operation": .string("duplicate"), "newName": .string(newName), "transId": .string(transId)]))
 			self.pendingTransactions[transId] = { (responseId, json) in
 				observer.sendCompleted()
 			}
@@ -250,7 +287,7 @@ public class Session {
 	///   - contents: the contents to save
 	///   - executeType: should the saved code be executed
 	/// - Returns: a signal producer for success or error
-	public func sendSaveFileMessage(file: File, contents: String, executeType: ExecuteType = .None) throws
+	public func sendSaveFileMessage(file: File, contents: String, executeType: ExecuteType = .None)
 	{
 		os_log("sendSaveFileMessage called on file %d", log: .session, type: .info, file.fileId)
 		let uniqueIdent = UUID().uuidString
@@ -262,8 +299,8 @@ public class Session {
 		attrs["content"] = MessageValue.forValue(contents)
 		encoder.encodeValue(MessageValue.DictionaryValue(MessageValueDictionary(attrs)))
 		guard let data = encoder.data else {
-			os_log("failed to encode save file message", log: .session)
-			throw Rc2Error(type: .logic, explanation: "failed to encode save file message")
+			os_log("failed to encode save file message", log: .session, type: .error)
+			fatalError("failed to encode save file message")
 		}
 		//for debug purposes
 		_ = try? data.write(to: URL(fileURLWithPath: "/tmp/lastSaveToServer"), options: .atomicWrite)
@@ -355,10 +392,10 @@ private extension Session {
 	func handleFileResponse(_ transId:String, operation:FileOperation, file:File) {
 		switch(operation) {
 		case .Duplicate:
-			//TODO: support
+			//no need to do anything, fileUpdated message should arrive
 			break
 		case .Rename:
-			//TODO: support
+			//no need to do anything, fileUpdated message should arrive
 			break
 		case .Remove:
 			do {
@@ -405,7 +442,17 @@ private extension Session {
 		}
 	}
 	
-	@discardableResult func sendMessage(_ message:Dictionary<String,AnyObject>) -> Bool {
+	@discardableResult func sendMessage(json: JSON) -> Bool {
+		do {
+			self.wsSource.send(try json.serializeString())
+		} catch let err as NSError {
+			os_log("error sending json message on websocket: %{public}@", log: .session, type:.error, err)
+			return false
+		}
+		return true
+	}
+	
+	@discardableResult func sendMessage(_ message: Dictionary<String, AnyObject>) -> Bool {
 		guard JSONSerialization.isValidJSONObject(message) else {
 			return false
 		}

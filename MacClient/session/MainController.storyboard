@@ -292,7 +292,7 @@
                                                                 <outlet property="textField" destination="cdI-61-Trg" id="wg1-qM-zbb"/>
                                                             </connections>
                                                         </tableCellView>
-                                                        <tableCellView identifier="file" id="dxY-YX-Pua" customClass="SessionCellView" customModule="MacClient" customModuleProvider="target">
+                                                        <tableCellView identifier="file" id="dxY-YX-Pua" customClass="EditableTableCellView" customModule="MacClient" customModuleProvider="target">
                                                             <rect key="frame" x="1" y="26" width="144" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
@@ -378,7 +378,7 @@
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem isSeparatorItem="YES" id="f1B-5j-Bp6"/>
-                                                    <menuItem title="Duplicate" id="q4a-by-u1C">
+                                                    <menuItem title="Duplicate…" id="q4a-by-u1C">
                                                         <connections>
                                                             <action selector="duplicateFile:" target="XJm-U6-51C" id="PXJ-Tn-4UN"/>
                                                         </connections>
@@ -426,16 +426,28 @@
                 <menu title="OtherViews" autoenablesItems="NO" id="TzK-hM-3Ib" userLabel="table context menu">
                     <items>
                         <menuItem state="on" image="NSActionTemplate" hidden="YES" id="Ao1-mE-2uq"/>
-                        <menuItem title="Rename…" id="WWz-mM-fc7"/>
+                        <menuItem title="Rename…" id="WWz-mM-fc7">
+                            <connections>
+                                <action selector="renameFile:" target="XJm-U6-51C" id="MMU-7l-tik"/>
+                            </connections>
+                        </menuItem>
                         <menuItem title="Export…" id="2mf-vJ-Hk1">
                             <connections>
                                 <action selector="exportSelectedFile:" target="XJm-U6-51C" id="e6g-lb-2mI"/>
                             </connections>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="sTm-NY-SVW"/>
-                        <menuItem title="Duplicate" id="rxA-uF-D15"/>
+                        <menuItem title="Duplicate…" id="rxA-uF-D15">
+                            <connections>
+                                <action selector="duplicateFile:" target="XJm-U6-51C" id="Irj-en-rXd"/>
+                            </connections>
+                        </menuItem>
                         <menuItem isSeparatorItem="YES" id="eaJ-eT-c1f"/>
-                        <menuItem title="Delete…" id="5hA-bK-diZ"/>
+                        <menuItem title="Delete…" id="5hA-bK-diZ">
+                            <connections>
+                                <action selector="deleteFile:" target="XJm-U6-51C" id="flt-i6-Ykr"/>
+                            </connections>
+                        </menuItem>
                     </items>
                     <connections>
                         <outlet property="delegate" destination="XJm-U6-51C" id="CdC-4c-0ln"/>

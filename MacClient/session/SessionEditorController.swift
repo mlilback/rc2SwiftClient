@@ -148,7 +148,7 @@ class SessionEditorController: AbstractSessionViewController
 	//should be called when document is locally saved but stil marked as dirty (e.g. from progress completion handler)
 	func saveDocumentToServer(_ document: EditorDocument) {
 		precondition(currentDocument != nil, "can't save a nil document")
-		try? session.sendSaveFileMessage(file: currentDocument!.file, contents: document.currentContents)
+		session.sendSaveFileMessage(file: currentDocument!.file, contents: document.currentContents)
 		os_log("saved to server", log: .app, type:.info)
 	}
 }
@@ -295,13 +295,9 @@ private extension SessionEditorController {
 				os_log("save for execute returned an error: %{public}@", log: .app, type: .info, result.error! as NSError)
 				return
 			}
-			do {
-				try self.session.sendSaveFileMessage(file: file, contents: result.value!)
-				os_log("executeQuery saved file, now executing", log: .app, type: .info)
-				self.session.executeScriptFile(file.fileId, type: type)
-			} catch {
-				os_log("error saving file for execution: %{public}s", log: .app, error as NSError)
-			}
+			self.session.sendSaveFileMessage(file: file, contents: result.value!)
+			os_log("executeQuery saved file, now executing", log: .app, type: .info)
+			self.session.executeScriptFile(file.fileId, type: type)
 		}
 	}
 	
@@ -366,7 +362,14 @@ private extension SessionEditorController {
 		doc.topVisibleIndex = idx
 		doc.willBecomeInactive(contents)
 		if doc.dirty {
-			doc.saveContents().start() //should happen pretty instantainously
+			//TODO: use progress and report errors
+			doc.saveContents().startWithResult { result in
+				guard nil == result.error else {
+					os_log("editor save returned an error: %{public}@", log: .app, result.error! as NSError)
+					return
+				}
+				self.session.sendSaveFileMessage(file: doc.file, contents: result.value!)
+			}
 		}
 	}
 	

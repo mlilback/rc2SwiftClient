@@ -177,20 +177,36 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		return nil
 	}
 	
-	// NSMenu calls this method before an item's action is called. we listen to it from the addFileMenu
+	// NSMenu calls this method before an item's action is called. we listen to it from the add button's menu
 	func addFileMenuAction(_ note:Notification) {
 		let menuItem = (note as NSNotification).userInfo!["MenuItem"] as! NSMenuItem
 		let index = menuItem.representedObject as! Int
 		let fileType = FileType.creatableFileTypes[index]
+		let prompt = NSLocalizedString("Filename:", comment: "")
+		let baseName = NSLocalizedString("Untitled", comment: "default file name")
 		DispatchQueue.main.async {
-			self.promptToAddFile(type: fileType)
+			self.promptForFilename(prompt: prompt, baseName: baseName, type: fileType) { (name) in
+				guard let newName = name else { return }
+				//TODO: implement new file templates
+				self.session.create(fileName: newName, contentUrl: nil) { result in
+					// the id of the file that was created
+					guard let fid = result.value else {
+						//TODO: handle error
+						self.logMessage("error creating empty file: %{public}s", result.error!.localizedDescription)
+						return
+					}
+					self.select(fileId: fid)
+				}
+			}
 		}
-		print("add file of type \(fileType.name)")
 	}
 	
 	//MARK: - actions
-	@IBAction func deleteFile(_ sender:AnyObject?) {
-		guard let file = selectedFile else { return }
+	@IBAction func deleteFile(_ sender: AnyObject?) {
+		guard let file = selectedFile else {
+			logMessage("deleteFile should never be called without selected file")
+			return
+		}
 		let defaults = UserDefaults.standard
 		if defaults[.supressDeleteFileWarnings] {
 			session.remove(file: file)
@@ -206,28 +222,76 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				defaults[.supressDeleteFileWarnings] = true
 			}
 			if response != NSAlertFirstButtonReturn { return }
-			self.session.remove(file: file)
+			//TODO: implement progress
+			self.session.remove(file: file).startWithResult { result in
+				guard let error = result.error else { return } //worked
+				DispatchQueue.main.async {
+					self.appStatus?.presentError(error, session: self.session)
+				}
+			}
 			self.delegate?.fileSelectionChanged(nil)
 		}) 
 	}
 	
-	@IBAction func duplicateFile(_ sender:AnyObject?) {
-		//TODO: implement duplicateFile
-		os_log("duplicate selected file", log: .app, type:.info)
+	@IBAction func duplicateFile(_ sender: AnyObject?) {
+		guard let file = selectedFile else {
+			logMessage("duplicateFile should never be called without selected file")
+			return
+		}
+		let prompt = NSLocalizedString("Filename:", comment: "")
+		let baseName = NSLocalizedString("Untitled", comment: "default file name")
+		DispatchQueue.main.async {
+			self.promptForFilename(prompt: prompt, baseName: baseName, type: file.fileType) { (name) in
+				guard let newName = name else { return }
+				self.session.duplicate(file: file, to: newName).startWithResult { result in
+					// the id of the file that was created
+					guard let fid = result.value else {
+						//TODO: handle error
+						self.logMessage("error duplicating file: %{public}s", result.error!.localizedDescription)
+						return
+					}
+					self.select(fileId: fid)
+				}
+			}
+		}
 	}
 
-	@IBAction func renameFile(_ sender:AnyObject?) {
-		//TODO: implement renameFile
-		os_log("rename selcted file", log: .app, type:.info)
+	@IBAction func renameFile(_ sender: AnyObject?) {
+		guard let cellView = tableView.view(atColumn: 0, row: tableView.selectedRow, makeIfNecessary: false) as? EditableTableCellView else
+		{
+			logMessage("renameFile: failed to get tableViewCell")
+			return
+		}
+		guard let file = cellView.objectValue as? File else {
+			logMessage("renameFile: no file for file cell view", type: .error)
+			return
+		}
+		cellView.validator = { self.validateRename(file: file, newName: $0) }
+		cellView.textField?.isEditable = true
+		tableView.editColumn(0, row: tableView.selectedRow, with: nil, select: true)
+		cellView.editText { value in
+			cellView.textField?.isEditable = false
+			cellView.textField?.stringValue = file.name
+			guard var name = value else { return }
+			if !name.hasSuffix(".\(file.fileType.fileExtension)") {
+				name += ".\(file.fileType.fileExtension)"
+			}
+			self.session.rename(file: file, to: name).startWithResult { result in
+				guard let error = result.error else {
+					self.select(fileId: file.fileId)
+					return
+				}
+				//TODO: handle error
+				self.logMessage("error duplicating file: %{public}s", error.localizedDescription)
+			}
+		}
 	}
 	
 	// never gets called, but file type menu items must have an action or addFileMenuAction never gets called
-	@IBAction func addDocumentOfType(_ menuItem:NSMenuItem) {
-		//TODO: implement addDocumentOfType
-		os_log("add file of type %{public}@", log: .app, type:.info, menuItem)
+	@IBAction func addDocumentOfType(_ menuItem: NSMenuItem) {
 	}
 	
-	@IBAction func segButtonClicked(_ sender:AnyObject?) {
+	@IBAction func segButtonClicked(_ sender: AnyObject?) {
 		switch addRemoveButtons!.selectedSegment {
 			case addFileSegmentIndex:
 				//should never be called since a menu is attached
@@ -239,39 +303,6 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 
-	//MARK: - add file
-	/// displays sheet to prompt for file name and then calls addFile()
-	func promptToAddFile(type: FileType) {
-		let fileExtension = ".\(type.fileExtension)"
-		let prompter = InputPrompter(prompt: NSLocalizedString("Filename:", comment: ""), defaultValue: "Untitled\(fileExtension)", suffix: fileExtension)
-		prompter.minimumStringLength = 3
-		let fileNames = session.workspace.files.map { return $0.name }
-		prompter.validator = { (proposedName) in
-			return fileNames.filter({$0.caseInsensitiveCompare(proposedName) == .orderedSame}).count == 0
-		}
-		prompter.prompt(window: self.view.window!) { (gotValue, value) in
-			guard gotValue, var value = value else { return }
-			if !value.hasSuffix(fileExtension) {
-				value = value + fileExtension
-			}
-			self.addFile(name: value, type: type)
-		}
-	}
-	
-	//actually starts the add file process
-	fileprivate func addFile(name: String, type: FileType) {
-		session.create(fileName: name) { result in
-			// the id of the file that was created
-			guard let fid = result.value, let fidx = self.fileDataIndex(fileId: fid) else {
-				//TODO: handle error
-				os_log("error creating empty file: %{public}s", log: .app, result.error!.localizedDescription)
-				return
-			}
-			self.tableView.selectRowIndexes(IndexSet(integer: fidx), byExtendingSelection: false)
-		}
-	}
-	
-	//MARK: - import/export
 	@IBAction func promptToImportFiles(_ sender:Any?) {
 		if nil == importPrompter {
 			importPrompter = MacFileImportSetup()
@@ -280,25 +311,6 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			guard files != nil else { return } //user canceled import
 			self.importFiles(files!)
 		}
-	}
-
-	func importFiles(_ files:[FileImporter.FileToImport]) {
-		let importer = try! FileImporter(files, fileCache:self.session.fileCache, connectInfo: session.conInfo)
-		let (psignal, pobserver) = Signal<Double, Rc2Error>.pipe()
-		appStatus?.monitorProgress(signal: psignal)
-		importer.start().on(value: { (progress: FileImporter.ImportProgress) in
-			pobserver.send(value: progress.percentComplete)
-		}, failed: { (error) in
-			//TODO: handle error
-			os_log("got import error %{public}@", log: .app, type:.error, error.localizedDescription)
-			pobserver.send(error: error)
-		}, completed: {
-			pobserver.sendCompleted()
-			NotificationCenter.default.post(name: .FilesImported, object: self.fileImporter!)
-			self.fileImporter = nil //free up importer
-		}).start()
-		//save reference so ARC does not dealloc importer
-		self.fileImporter = importer
 	}
 
 	@IBAction func exportSelectedFile(_ sender:AnyObject?) {
@@ -336,8 +348,83 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	@IBAction func exportAllFiles(_ sender:AnyObject?) {
-		
+		//TODO: implement
 	}
+	
+	//MARK: - private methods
+
+	/// wrapper around os_log
+	fileprivate func logMessage(_ message: StaticString, type: OSLogType = .default, _ args: CVarArg...) {
+		os_log(message, log: .app, type: type, args)
+	}
+	
+	fileprivate func select(fileId: Int) {
+		// the id of the file that was created
+		guard let fidx = self.fileDataIndex(fileId: fileId) else {
+			logMessage("selecting unknown file %d", fileId)
+			return
+		}
+		tableView.selectRowIndexes(IndexSet(integer: fidx), byExtendingSelection: false)
+	}
+
+	/// prompts for a filename
+	///
+	/// - Parameters:
+	///   - prompt: label shown to user
+	///   - baseName: base file name (without extension)
+	///   - type: the type of file being prompted for
+	///   - handler: called when complete. If value is nil, the user canceled the prompt
+	private func promptForFilename(prompt: String, baseName: String, type: FileType, handler: @escaping (String?) -> Void)
+	{
+		let fileExtension = ".\(type.fileExtension)"
+		let prompter = InputPrompter(prompt: prompt, defaultValue: baseName + fileExtension, suffix: fileExtension)
+		prompter.minimumStringLength = type.fileExtension.characters.count + 1
+		let fileNames = session.workspace.files.map { return $0.name }
+		prompter.validator = { (proposedName) in
+			return fileNames.filter({$0.caseInsensitiveCompare(proposedName) == .orderedSame}).count == 0
+		}
+		prompter.prompt(window: self.view.window!) { (gotValue, value) in
+			guard gotValue, var value = value else { handler(nil); return }
+			if !value.hasSuffix(fileExtension) {
+				value = value + fileExtension
+			}
+			handler(value)
+		}
+	}
+	
+	private func validateRename(file: File, newName: String?) -> Bool {
+		guard var name = newName else { return true } //empty is allowable
+		if !name.hasSuffix(".\(file.fileType.fileExtension)") {
+			name += ".\(file.fileType.fileExtension)"
+		}
+		guard name.characters.count > 3 else { return false }
+		//if same name, is valid
+		guard name.caseInsensitiveCompare(file.name) != .orderedSame else { return true }
+		//no duplicate names
+		let fileNames = session.workspace.files.map { return $0.name }
+		guard fileNames.filter({$0.caseInsensitiveCompare(name) == .orderedSame}).count == 0 else { return false }
+		return true
+	}
+	
+	private func importFiles(_ files:[FileImporter.FileToImport]) {
+		let importer = try! FileImporter(files, fileCache:self.session.fileCache, connectInfo: session.conInfo)
+		let (psignal, pobserver) = Signal<Double, Rc2Error>.pipe()
+		appStatus?.monitorProgress(signal: psignal)
+		importer.start().on(value: { (progress: FileImporter.ImportProgress) in
+			pobserver.send(value: progress.percentComplete)
+		}, failed: { (error) in
+			//TODO: handle error
+			os_log("got import error %{public}@", log: .app, type:.error, error.localizedDescription)
+			pobserver.send(error: error)
+		}, completed: {
+			pobserver.sendCompleted()
+			NotificationCenter.default.post(name: .FilesImported, object: self.fileImporter!)
+			self.fileImporter = nil //free up importer
+		}).start()
+		//save reference so ARC does not dealloc importer
+		self.fileImporter = importer
+	}
+
 
 	//MARK: - FileHandler implementation
 	func filesRefreshed(_ changes: [CollectionChange<File>]?) {
@@ -369,9 +456,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			tview.textField!.stringValue = data.sectionName!
 			return tview
 		} else {
-			let fview = tableView.make(withIdentifier: "file", owner: nil) as! SessionCellView
-			fview.file = data.file
-			fview.editComplete = { self.delegate?.renameFile($0.file!, to: $0.nameField.stringValue) }
+			let fview = tableView.make(withIdentifier: "file", owner: nil) as! EditableTableCellView
+			fview.objectValue = data.file
+			fview.textField?.stringValue = data.file!.name
 			return fview
 		}
 	}
@@ -396,21 +483,6 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			self.importFiles(files)
 		}
 		return true
-	}
-}
-
-open class SessionCellView : NSTableCellView, NSTextFieldDelegate {
-	@IBOutlet var nameField: NSTextField!
-	var file:File? {
-		didSet { nameField?.stringValue = (file?.name)! }
-	}
-
-	var editComplete:((_ cell:SessionCellView) -> Void)?
-	
-	open override func controlTextDidEndEditing(_ obj: Notification) {
-		nameField.isEditable = false
-		editComplete?(self)
-		nameField.stringValue = (file?.name)!
 	}
 }
 
