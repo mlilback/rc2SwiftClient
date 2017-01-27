@@ -29,12 +29,17 @@ private extension Selector {
 	static let exportAll = #selector(SidebarFileController.exportAllFiles(_:))
 }
 
-class FileRowData {
+class FileRowData: Equatable {
 	var sectionName: String?
 	var file: File?
 	init(name: String?, file: File?) {
 		self.sectionName = name
 		self.file = file
+	}
+	static public func == (lhs: FileRowData, rhs: FileRowData) -> Bool {
+		if lhs.sectionName != nil && lhs.sectionName == rhs.sectionName { return true }
+		if rhs.file != nil && lhs.file != nil && lhs.file?.fileId == rhs.file?.fileId { return true }
+		return false
 	}
 }
 
@@ -431,7 +436,12 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		//TODO: ideally should figure out what file was changed and animate the tableview update instead of refreshing all rows
 		//TODO: updated file always shows last, which is wrong
 		loadData()
+		//preserve selection
+		let selFile = selectedFile
 		tableView.reloadData()
+		if selFile != nil, let idx = rowData.index(where: { $0.file?.fileId ?? -1 == selFile!.fileId }) {
+			tableView.selectRowIndexes(IndexSet(integer: idx), byExtendingSelection: false)
+		}
 	}
 	
 	func select(file: File) {
@@ -470,6 +480,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	func tableViewSelectionDidChange(_ notification: Notification) {
 		adjustForFileSelectionChange()
 		delegate?.fileSelectionChanged(selectedFile)
+	}
+	
+	func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
+		return rowData[row].file != nil
 	}
 	
 	func tableView(_ tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation dropOperation: NSTableViewDropOperation) -> NSDragOperation
