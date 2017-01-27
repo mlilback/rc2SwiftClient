@@ -94,7 +94,6 @@ fileprivate struct DownloadAll {
 	var completed: Bool { return filesRemaining < 1 }
 	
 	init(totalSize: Int, fileCount: Int) {
-		assert(totalSize > 0)
 		let (sig, obs) = Signal<Double, Rc2Error>.pipe()
 		signal = sig
 		observer = obs

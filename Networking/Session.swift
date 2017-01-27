@@ -286,25 +286,30 @@ public class Session {
 	///   - file: the file being saved
 	///   - contents: the contents to save
 	///   - executeType: should the saved code be executed
-	/// - Returns: a signal producer for success or error
-	public func sendSaveFileMessage(file: File, contents: String, executeType: ExecuteType = .None)
+	/// - Returns: a signal producer for success or error. Success always sends a value of true.
+	public func sendSaveFileMessage(file: File, contents: String, executeType: ExecuteType = .None) -> SignalProducer<Bool, Rc2Error>
 	{
 		os_log("sendSaveFileMessage called on file %d", log: .session, type: .info, file.fileId)
-		let uniqueIdent = UUID().uuidString
-		let encoder = MessagePackEncoder()
-		var attrs = ["msg":MessageValue.forValue("save"), "apiVersion":MessageValue.forValue(Int(1))]
-		attrs["transId"] = MessageValue.forValue(uniqueIdent)
-		attrs["fileId"] = MessageValue.forValue(file.fileId)
-		attrs["fileVersion"] = MessageValue.forValue(file.version)
-		attrs["content"] = MessageValue.forValue(contents)
-		encoder.encodeValue(MessageValue.DictionaryValue(MessageValueDictionary(attrs)))
-		guard let data = encoder.data else {
-			os_log("failed to encode save file message", log: .session, type: .error)
-			fatalError("failed to encode save file message")
+		return SignalProducer<Bool, Rc2Error> { observer, disposable in
+			let transId = UUID().uuidString
+			let encoder = MessagePackEncoder()
+			var attrs = ["msg":MessageValue.forValue("save"), "apiVersion":MessageValue.forValue(Int(1))]
+			attrs["transId"] = MessageValue.forValue(transId)
+			attrs["fileId"] = MessageValue.forValue(file.fileId)
+			attrs["fileVersion"] = MessageValue.forValue(file.version)
+			attrs["content"] = MessageValue.forValue(contents)
+			encoder.encodeValue(MessageValue.DictionaryValue(MessageValueDictionary(attrs)))
+			guard let data = encoder.data else {
+				os_log("failed to encode save file message", log: .session, type: .error)
+				observer.send(error: Rc2Error(type: .logic, explanation:"failed to encode save file message"))
+				return
+			}
+			self.pendingTransactions[transId] = { (responseId, json) in
+				observer.send(value: true)
+				observer.sendCompleted()
+			}
+			self.wsSource.send(data)
 		}
-		//for debug purposes
-		_ = try? data.write(to: URL(fileURLWithPath: "/tmp/lastSaveToServer"), options: .atomicWrite)
-		self.wsSource.send(data)
 	}
 	
 	/// Internally used, and useful for creating a mock websocket
