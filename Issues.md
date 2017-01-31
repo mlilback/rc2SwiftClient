@@ -66,4 +66,4 @@
 
 * why is there a renameFile func in RootViewController?
 
-* context help in editor is broken, help not found
+* opening sidebar on full screen adjust only the size of editor, not results.
