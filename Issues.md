@@ -63,3 +63,7 @@
 * reevaluate all os_log calls to make sure using correct level
 
 * If file list shows foo.Rmd, bar.R, and foo.html and bar.R is selected. If user clicks on foo.html, it is displayed on the right. But bar.R stays in the editor and it is not selected in the file list. Should the editor file always be selected? If an output file is selected, should the selection always revert back to the file loaded in the editor?
+
+* why is there a renameFile func in RootViewController?
+
+* context help in editor is broken, help not found

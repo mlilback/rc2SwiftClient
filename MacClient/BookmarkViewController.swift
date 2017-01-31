@@ -169,10 +169,14 @@ open class BookmarkViewController: NSViewController {
 			return
 		}
 		let session = Session(connectionInfo: conInfo, workspace: wspace)
-		DispatchQueue.main.async {
+		session.open().observe(on: UIScheduler()).startWithResult { result in
+			guard result.error == nil else {
+				//TODO: Fix to show progress
+				os_log("failed to open websocket: %{public}s", log: .session, result.error?.localizedDescription ?? "unknown")
+				fatalError()
+			}
 			self.openSessionCallback?(session)
 		}
-		
 	}
 	
 	func entryIndexForBookmark(_ bmark:Bookmark) -> Int? {

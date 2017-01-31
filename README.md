@@ -28,7 +28,7 @@ The macOS client requires 10.12 Sierra. Development is being done with Xcode 8.
 
 * [Sparkle](https://sparkle-project.org/) enables update notification
 
-* [SwiftWebSocket](https://github.com/tidwall/SwiftWebSocket) for websocket support
+* [Starscream](https://github.com/daltoniam/Starscream) for websocket support
 
 * [Swinject](https://github.com/Swinject/Swinject) for dependency injection
 

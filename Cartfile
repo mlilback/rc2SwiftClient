@@ -1,4 +1,4 @@
-github "tidwall/SwiftWebSocket" "3a77b8925dad45528dfea6e9ea042c6c5b9382ec"
+github "daltoniam/Starscream" "HEAD"
 github "mlilback/pegkit"
 github "mlilback/MessagePackSwift"  "swift3.0"
 github "krzyzanowskim/CryptoSwift" ~> 0.6.0

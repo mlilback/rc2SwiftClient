@@ -12,7 +12,7 @@ import Freddy
 import MessagePackSwift
 import ReactiveSwift
 import Result
-import SwiftWebSocket
+import Starscream
 import os
 import NotifyingCollection
 import ClientCore
@@ -38,7 +38,7 @@ public class Session {
 	public let workspace : Workspace
 	///the WebSocket for communicating with the server
 	// goddamn swift won't let us set a constant that requires invoking a method
-	var wsSource : WebSocketSource!
+	var wsSource : WebSocket!
 	///abstraction of file handling
 	public let fileCache: FileCache
 	public let imageCache: ImageCache
@@ -71,7 +71,7 @@ public class Session {
 	//MARK: init/open/close
 	
 	/// without a super class, can't use self in designated initializer. So use a private init, and a convenience init for outside use
-	private init(connectionInfo: ConnectionInfo, workspace: Workspace, fileCache: FileCache, imageCache: ImageCache, webSocket: WebSocketSource?, queue: DispatchQueue = .main)
+	private init(connectionInfo: ConnectionInfo, workspace: Workspace, fileCache: FileCache, imageCache: ImageCache, webSocket: WebSocket?, queue: DispatchQueue = .main)
 	{
 		self.workspace = workspace
 		self.conInfo = connectionInfo
@@ -80,10 +80,9 @@ public class Session {
 		self.queue = queue
 		var ws = webSocket
 		if nil == ws {
-			ws = WebSocket(request: createWebSocketRequest())
+			ws = createWebSocket()
 		}
 		wsSource = ws
-		wsSource.binaryType = .nsData
 	}
 	
 	/// Create a session object
@@ -95,7 +94,7 @@ public class Session {
 	///   - fileCache: the file cache to use. Default is to create one
 	///   - webSocket: the websocket to use. Defaults to a sensible implementation
 	///   - queue: the queue to perform operations on. Defaults to main queue
-	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, delegate:SessionDelegate?=nil, fileCache: FileCache? = nil, webSocket: WebSocketSource? = nil, queue: DispatchQueue? = nil)
+	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, delegate:SessionDelegate?=nil, fileCache: FileCache? = nil, webSocket: WebSocket? = nil, queue: DispatchQueue? = nil)
 	{
 		//create a file cache if one wasn't provided
 		var fc = fileCache
@@ -113,7 +112,7 @@ public class Session {
 		let start = DispatchTime.now() + DispatchTimeInterval.seconds(120)
 		keepAliveTimer.scheduleRepeating(deadline: start, interval: .seconds(120), leeway: .milliseconds(100))
 		keepAliveTimer.setEventHandler { [unowned self] in
-			_ = self.sendMessage(["msg":"keepAlive" as AnyObject])
+			_ = self.sendMessage(json: .dictionary(["msg": .string("keepAlive")]))
 		}
 		keepAliveTimer.resume()
 	}
@@ -123,23 +122,22 @@ public class Session {
 	}
 	
 	///opens the websocket with the specified request
-	/// - parameter request: a ws:// or wss:// request to use for the websocket
 	/// - returns: future for the open session (with file loading started) or an error
-	public func open(_ request:URLRequest) -> SignalProducer<Double, Rc2Error> {
+	public func open() -> SignalProducer<Double, Rc2Error> {
 		return SignalProducer<Double, Rc2Error>() { observer, disposable in
 			guard nil == self.openObserver else {
 				observer.send(error: Rc2Error(type: .network, nested: SessionError.openAlreadyInProgress))
 				return
 			}
 			self.openObserver = observer
-			self.wsSource.open(request: request, subProtocols: [])
+			self.wsSource.connect()
 		}
 	}
 	
 	///closes the websocket, which can not be reopened
 	public func close() {
 		keepAliveTimer.cancel()
-		self.wsSource.close(1000, reason: "") //default values that can't be specified in a protocol
+		wsSource.disconnect()
 	}
 	
 	//MARK: public request methods
@@ -163,14 +161,14 @@ public class Session {
 			}
 			script = adjScript
 		}
-		sendMessage(["msg":"execute" as AnyObject, "type":type.rawValue as AnyObject, "code":script as AnyObject])
+		sendMessage(json: .dictionary(["msg": .string("execute"), "type": .string(type.rawValue), "code": .string(script)]))
 	}
 	
 	/// sends a request to execute a script file
 	/// - parameter fileId: the id of the file to execute
 	/// - parameter type: whether to run or source the file
 	public func executeScriptFile(_ fileId:Int, type:ExecuteType = .Run) {
-		sendMessage(["msg":"execute" as AnyObject, "type":type.rawValue as AnyObject, "fileId":fileId as AnyObject])
+		sendMessage(json: .dictionary(["msg": .string("execute"), "type": .string(type.rawValue), "fileId": .int(fileId)]))
 	}
 	
 	/// clears all variables in the global environment
@@ -180,20 +178,20 @@ public class Session {
 	
 	/// asks the server for a refresh of all environment variables
 	public func forceVariableRefresh() {
-		sendMessage(["msg":"watchVariables" as AnyObject, "watch":true as AnyObject])
+		sendMessage(json: .dictionary(["msg": .string("watchVariables"), "watch": .bool(true)]))
 	}
 	
 	/// ask the server to send a message with current variable values and delta messages as they change
 	public func startWatchingVariables() {
 		if (watchingVariables) { return; }
-		sendMessage(["msg":"watchVariables" as AnyObject, "watch":true as AnyObject])
+		sendMessage(json: .dictionary(["msg": .string("watchVariables"), "watch": .bool(true)]))
 		watchingVariables = true
 	}
 
 	/// ask the server to stop sending environment delta messages
 	public func stopWatchingVariables() {
 		if (!watchingVariables) { return }
-		sendMessage(["msg":"watchVariables" as AnyObject, "watch":false as AnyObject])
+		sendMessage(json: .dictionary(["msg": .string("watchVariables"), "watch": .bool(false)]))
 		watchingVariables = false
 	}
 	
@@ -315,7 +313,7 @@ public class Session {
 	/// Internally used, and useful for creating a mock websocket
 	///
 	/// - Returns: a request to open a websocket for this session
-	func createWebSocketRequest() -> URLRequest {
+	func createWebSocket() -> WebSocket {
 		#if os(OSX)
 			let client = "osx"
 		#else
@@ -328,11 +326,9 @@ public class Session {
 		components.scheme = conInfo.host.secure ? "wss" : "ws"
 		components.queryItems = [URLQueryItem(name: "client", value: client),
 		                         URLQueryItem(name: "build", value: "\(AppInfo.buildNumber)")]
-		var req = URLRequest(url: components.url!)
-		//TODO: add header field as constant
-		req.addValue(conInfo.authToken, forHTTPHeaderField: "Rc2-Auth")
-		req.timeoutInterval = 120
-		return req
+		let ws = WebSocket(url: components.url!)
+		ws.headers["Rc2-Auth"] = conInfo.authToken
+		return ws
 	}
 }
 
@@ -465,20 +461,20 @@ private extension Session {
 		return true
 	}
 	
-	@discardableResult func sendMessage(_ message: Dictionary<String, AnyObject>) -> Bool {
-		guard JSONSerialization.isValidJSONObject(message) else {
-			return false
-		}
-		do {
-			let json = try JSONSerialization.data(withJSONObject: message, options: [])
-			let jsonStr = NSString(data: json, encoding: String.Encoding.utf8.rawValue)
-			self.wsSource.send(jsonStr as! String)
-		} catch let err as NSError {
-			os_log("error sending json message on websocket: %{public}@", log: .session, type:.error, err)
-			return false
-		}
-		return true
-	}
+//	@discardableResult func sendMessage(_ message: Dictionary<String, AnyObject>) -> Bool {
+//		guard JSONSerialization.isValidJSONObject(message) else {
+//			return false
+//		}
+//		do {
+//			let json = try JSONSerialization.data(withJSONObject: message, options: [])
+//			let jsonStr = NSString(data: json, encoding: String.Encoding.utf8.rawValue)
+//			self.wsSource.send(jsonStr as! String)
+//		} catch let err as NSError {
+//			os_log("error sending json message on websocket: %{public}@", log: .session, type:.error, err)
+//			return false
+//		}
+//		return true
+//	}
 	
 	/// starts file caching and forwards responses to observer from open() call
 	private func websocketOpened() {
@@ -494,30 +490,36 @@ private extension Session {
 	}
 	
 	func setupWebSocketHandlers() {
-		wsSource.event.open = { [unowned self] in
+		wsSource.onConnect = { [unowned self] in
 			DispatchQueue.global().async {
 				self.websocketOpened()
 			}
 		}
-		wsSource.event.close = { [weak self] (code, reason, clear)in
-			os_log("websocket closed: %d, %{public}@", log: .session, code, reason)
+		wsSource.onDisconnect = { [weak self] (error) in
+			os_log("websocket closed: %{public}s", log: .session, error?.localizedDescription ?? "unknown")
 			self?.connectionOpen = false
 			self?.delegate?.sessionClosed()
 		}
-		wsSource.event.message = { [weak self] message in
-			os_log("websocket message: %{public}@", log: .session, type: .debug, message as? String ?? "<binary>")
+		wsSource.onText = { [weak self] message in
+			os_log("websocket message: %{public}@", log: .session, type: .debug, message)
 			self?.queue.async {
 				self?.handleReceivedMessage(message)
 			}
 		}
-		wsSource.event.error = { [weak self] error in
-			os_log("error from websocket: %{public}@", log: .session, type: .error, error as NSError)
-			guard nil == self?.openObserver else {
-				self?.openObserver?.send(error: Rc2Error(type: .websocket, nested: error))
-				self?.openObserver = nil
-				return
+		wsSource.onData = { [weak self] message in
+			os_log("websocket message: <binary>", log: .session, type: .debug)
+			self?.queue.async {
+				self?.handleReceivedMessage(message)
 			}
-			self?.delegate?.sessionErrorReceived(Rc2Error(type: .websocket, nested: error))
 		}
+//		wsSource.event.error = { [weak self] error in
+//			os_log("error from websocket: %{public}@", log: .session, type: .error, error as NSError)
+//			guard nil == self?.openObserver else {
+//				self?.openObserver?.send(error: Rc2Error(type: .websocket, nested: error))
+//				self?.openObserver = nil
+//				return
+//			}
+//			self?.delegate?.sessionErrorReceived(Rc2Error(type: .websocket, nested: error))
+//		}
 	}
 }
