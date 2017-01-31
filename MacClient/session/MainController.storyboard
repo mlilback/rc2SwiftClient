@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12100" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12100"/>
         <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
@@ -314,7 +314,6 @@
                                                                 <constraint firstItem="KQT-lU-PCw" firstAttribute="leading" secondItem="dxY-YX-Pua" secondAttribute="leading" constant="6" id="prZ-e5-cFN"/>
                                                             </constraints>
                                                             <connections>
-                                                                <outlet property="nameField" destination="KQT-lU-PCw" id="U7i-LV-qM3"/>
                                                                 <outlet property="textField" destination="KQT-lU-PCw" id="qNW-w3-dHE"/>
                                                             </connections>
                                                         </tableCellView>
