@@ -169,13 +169,19 @@ open class BookmarkViewController: NSViewController {
 			return
 		}
 		let session = Session(connectionInfo: conInfo, workspace: wspace)
-		session.open().observe(on: UIScheduler()).startWithResult { result in
-			guard result.error == nil else {
-				//TODO: Fix to show progress
-				os_log("failed to open websocket: %{public}s", log: .session, result.error?.localizedDescription ?? "unknown")
+		session.open().observe(on: UIScheduler()).logEvents().start { event in
+			switch event {
+			case .completed:
+				self.openSessionCallback?(session)
+			case .failed(let err):
+				os_log("failed to open websocket: %{public}s", log: .session, err.localizedDescription)
 				fatalError()
+			case .value: //(let _):
+				//TODO: update progress
+				break
+			case .interrupted:
+				break //should never happen
 			}
-			self.openSessionCallback?(session)
 		}
 	}
 	
