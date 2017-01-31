@@ -345,7 +345,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 		do {
 			try self.fileManager.removeItem(at: fileUrl)
 		} catch let error as Rc2Error {
-			guard error.type == .file, let nserr = error.nestedError as? NSError, nserr.domain == NSCocoaErrorDomain && nserr.code == 4 else {
+			guard error.type == .file, let nserr = error.nestedError as NSError?, nserr.domain == NSCocoaErrorDomain && nserr.code == 4 else {
 				os_log("got err removing file in recache: %{public}@", log: .cache, type:.info, error.nestedError!.localizedDescription)
 				return
 			}

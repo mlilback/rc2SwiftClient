@@ -117,7 +117,7 @@ final class DockerEventMonitorImpl: NSObject, DockerEventMonitor, URLSessionData
 	}
 
 	open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-		os_log("why did our session end?: %{public}@", log: .docker, error as? NSError ?? "unknown")
+		os_log("why did our session end?: %{public}@", log: .docker, error as NSError? ?? "unknown")
 		delegate.eventMonitorClosed(error: error)
 	}
 }

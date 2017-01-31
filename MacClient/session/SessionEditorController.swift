@@ -287,7 +287,7 @@ private extension SessionEditorController {
 		}
 		let file = currentDocument.file
 		guard currentDocument.dirty else {
-			os_log("executeQuery executing without save", log: .app, type: .info)
+			os_log("executeQuery executing without save", log: .app, type: .debug)
 			session.executeScriptFile(file.fileId, type: type)
 			return
 		}

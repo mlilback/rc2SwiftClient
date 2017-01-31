@@ -150,7 +150,7 @@ extension FileImporter: URLSessionDataDelegate {
 			do { try fileManager.removeItem(at: tmpDir) } catch {}
 		}
 		guard error == nil else {
-			os_log("error uploading file %{public}@", log: .importer, type:.error, (error as? NSError)!)
+			os_log("error uploading file %{public}@", log: .importer, type:.error, (error as NSError?)!)
 			progressObserver?.send(error: Rc2Error(type: .network, nested: NetworkingError.uploadFailed(error!)))
 			return
 		}
