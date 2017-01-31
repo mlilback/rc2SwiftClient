@@ -41,11 +41,15 @@ enum BookmarkEntry {
 open class BookmarkViewController: NSViewController {
 	@IBOutlet var tableView:NSTableView?
 	@IBOutlet var addRemoveButtons: NSSegmentedControl?
+	@IBOutlet var progressContainer: NSView?
+	@IBOutlet var progressSpinner: NSProgressIndicator?
+	@IBOutlet var progressLabel: NSTextField?
 	fileprivate let dateFormatter: DateFormatter = DateFormatter()
 	var addController: AddBookmarkViewController?
 	var bookmarkManager: BookmarkManager?
 	var openSessionCallback:((Session) -> Void)?
 	fileprivate var appStatus: MacAppStatus?
+	fileprivate var openInProgress: Bool = false
 
 	var entries: [BookmarkEntry] = []
 
@@ -62,6 +66,7 @@ open class BookmarkViewController: NSViewController {
 		dateFormatter.dateStyle = .short
 		dateFormatter.timeStyle = .short
 		tableView?.doubleAction = #selector(BookmarkViewController.openBookmark(_:))
+		progressContainer?.isHidden = true
 	}
 	
 	override open func viewWillAppear() {
@@ -130,6 +135,7 @@ open class BookmarkViewController: NSViewController {
 	@IBAction func openBookmark(_ sender:AnyObject?) {
 		//if double click where there is no row, selectedRow is -1
 		guard tableView!.selectedRow >= 0 else { return }
+		guard !openInProgress else { return }
 		if case .mark(let aMark) = entries[tableView!.selectedRow] {
 			openSession(withBookmark: aMark, password: nil)
 		}
@@ -146,6 +152,7 @@ open class BookmarkViewController: NSViewController {
 				pass = password!
 			}
 		}
+		openInProgress = true
 		let loginFactory = LoginFactory()
 		loginFactory.login(to: host, as: host.user, password: pass).observe(on: UIScheduler()).startWithResult { (result) in
 			self.handleLogin(bookmark: bookmark, result: result)
@@ -169,7 +176,15 @@ open class BookmarkViewController: NSViewController {
 			return
 		}
 		let session = Session(connectionInfo: conInfo, workspace: wspace)
-		session.open().observe(on: UIScheduler()).logEvents().start { event in
+		session.open().observe(on: UIScheduler()).on(starting: { 
+			self.progressContainer?.isHidden = false
+			self.progressSpinner?.startAnimation(self)
+			self.progressLabel?.stringValue = "Connecting to \(conInfo.host)…"
+		}, terminated: {
+			self.progressSpinner?.stopAnimation(self)
+			self.progressContainer?.isHidden = true
+			self.openInProgress = false
+		}).start { event in
 			switch event {
 			case .completed:
 				self.openSessionCallback?(session)
