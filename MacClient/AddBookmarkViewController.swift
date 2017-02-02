@@ -17,8 +17,8 @@ class AddBookmarkViewController: NSViewController {
 	var bookmarkManager:BookmarkManager?
 	fileprivate var selectedServer: ServerHost?
 	var bookmarkAddedClosure:((ServerHost, ProjectAndWorkspace) -> Void)?
-	fileprivate var selectServerKVO:PMKVObserver?
-	fileprivate var projectKVO:PMKVObserver?
+//	fileprivate var selectServerKVO:PMKVObserver?
+//	fileprivate var projectKVO:PMKVObserver?
 	
 	dynamic var isBusy:Bool = false
 	dynamic var canContinue:Bool = false
@@ -39,14 +39,14 @@ class AddBookmarkViewController: NSViewController {
 	override func viewDidAppear() {
 		super.viewDidAppear()
 		self.view.window?.preventsApplicationTerminationWhenModal = false
-		selectServerKVO = KVObserver(object: selectServerController!, keyPath:"canContinue", options: [.initial])
-		{ (object, _, _) in
-			self.adjustCanContinue(object as SelectServerViewController)
-		}
-		projectKVO =  KVObserver(object: projectManagerController!, keyPath:"canContinue", options: [])
-		{ (object, _, _) in
-			self.adjustCanContinue(object as ProjectManagerViewController)
-		}
+//		selectServerKVO = KVObserver(object: selectServerController!, keyPath:"canContinue", options: [.initial])
+//		{ (object, _, _) in
+//			self.adjustCanContinue(object as SelectServerViewController)
+//		}
+//		projectKVO =  KVObserver(object: projectManagerController!, keyPath:"canContinue", options: [])
+//		{ (object, _, _) in
+//			self.adjustCanContinue(object as ProjectManagerViewController)
+//		}
 	}
 	
 	func adjustCanContinue<T>(_ controller:T) where T:NSViewController, T:EmbeddedDialogController {
@@ -57,8 +57,8 @@ class AddBookmarkViewController: NSViewController {
 
 	override func viewDidDisappear() {
 		super.viewDidDisappear()
-		selectServerKVO?.cancel()
-		projectKVO?.cancel()
+//		selectServerKVO?.cancel()
+//		projectKVO?.cancel()
 	}
 
 	func displayError(_ error:NSError) {

@@ -30,12 +30,6 @@
 
 * docker event stream can timeout. need to handle this (takes hours to happen)
 
-* make sure docker stuff works with sleep
-
-* switching help topics adjusts width of split view
-
-* switch all use of KVO in AddBookmarkViewController to use signals
-
 * need to move framework required defaults to each framework, and have app load them allowing each succeeding framework to overwrite lower ones
 
 * if a dbserver image is updated, the dbdata volume still has the data in it. need to backup the sql and then restore it after creating a new volume. The rc2.last file created on first db run is there, which causes db container to fail.
@@ -52,14 +46,10 @@
 
 * need to work without a network connection if docker images already loaded
 
-* fix status area to actually work
-
 * write unit tests for InputPrompter validation
 
 * pending transactions need a timeout
 
 * reevaluate all os_log calls to make sure using correct level
-
-* If file list shows foo.Rmd, bar.R, and foo.html and bar.R is selected. If user clicks on foo.html, it is displayed on the right. But bar.R stays in the editor and it is not selected in the file list. Should the editor file always be selected? If an output file is selected, should the selection always revert back to the file loaded in the editor?
 
 * opening sidebar on full screen adjust only the size of editor, not results.

@@ -10,8 +10,6 @@
 		080214861C692CA1008B55D3 /* xattrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382FB1C69189300D40EEB /* xattrTests.swift */; };
 		080214891C6A923D008B55D3 /* lognormal.R in Resources */ = {isa = PBXBuildFile; fileRef = 083305F51C519B8500E27F66 /* lognormal.R */; };
 		080314231D2412ED006D668F /* SelectServerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080314221D2412ED006D668F /* SelectServerViewController.swift */; };
-		08037C221D7C571D00006E9E /* PMKVObserver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */; };
-		08037C241D7C576C00006E9E /* PMKVObserver.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08037C351D7C5E2200006E9E /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */; };
 		0803FCBE1C84C47400F17E4A /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		080834561C84C13300F5A190 /* SyntaxParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080834551C84C13300F5A190 /* SyntaxParserTests.swift */; };
@@ -53,7 +51,6 @@
 		0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */; };
 		081559701DDA763A0047B3CE /* ClientCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		081559731DDB82970047B3CE /* NotifyingCollection.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		081559761DDB85390047B3CE /* PMKVObserver.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		081559771DDB854F0047B3CE /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		081559791DDB92650047B3CE /* WebSocketSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559781DDB92650047B3CE /* WebSocketSource.swift */; };
 		0815597D1DDB9F630047B3CE /* ServerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815597C1DDB9F630047B3CE /* ServerResponse.swift */; };
@@ -112,8 +109,6 @@
 		0827A4E91C7ED9CE001F0AFB /* SyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4E01C7ED9CE001F0AFB /* SyntaxParser.swift */; };
 		082FF1C71C7F321B00CCC27F /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */; };
 		082FF1C81C7F321B00CCC27F /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		082FF1CB1C7F321B00CCC27F /* PMKVObserver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */; };
-		082FF1CC1C7F321B00CCC27F /* PMKVObserver.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		082FF1CE1C7F321B00CCC27F /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082FF1EE1C7F339400CCC27F /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; };
@@ -222,7 +217,6 @@
 		0897942F1D7B68F0003339EE /* ClientCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; };
 		089794301D7B68F0003339EE /* ClientCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		089794381D7B6925003339EE /* ClientCore-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 089794371D7B6925003339EE /* ClientCore-Bridging-Header.h */; };
-		089794401D7B69C7003339EE /* PMKVObserver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */; };
 		089794421D7B6A0F003339EE /* SharedConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089794411D7B6A0F003339EE /* SharedConstants.swift */; };
 		0897944B1D7B6A8F003339EE /* NSError+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089794441D7B6A8F003339EE /* NSError+Rc2.swift */; };
 		0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089794471D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift */; };
@@ -290,7 +284,6 @@
 		08F03E3D1DDFB60600D02153 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		08F03E3E1DDFB60C00D02153 /* Mockingjay.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08F03E3F1DDFB61B00D02153 /* SwiftyUserDefaults.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		08F03E401DDFB62900D02153 /* PMKVObserver.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08F03E411DDFB63400D02153 /* URITemplate.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08F03E431DE3323100D02153 /* NetworkingConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F03E421DE3323100D02153 /* NetworkingConstants.swift */; };
 		08F03E451DE4BF0A00D02153 /* URLResponse+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F03E441DE4BF0A00D02153 /* URLResponse+Rc2.swift */; };
@@ -434,7 +427,6 @@
 				08F8EDB91D89E3770037245C /* BrightFutures.framework in CopyFiles */,
 				08678CCE1DCBA90400F9F283 /* Freddy.framework in CopyFiles */,
 				08E8366C1D94500900E26EFE /* SwiftyUserDefaults.framework in CopyFiles */,
-				08037C241D7C576C00006E9E /* PMKVObserver.framework in CopyFiles */,
 				08E7E0991D8AEC38000C4C87 /* Result.framework in CopyFiles */,
 				0826108F1DB02FC300C03422 /* Nimble.framework in CopyFiles */,
 				082610901DB02FC300C03422 /* Quick.framework in CopyFiles */,
@@ -463,7 +455,6 @@
 				0881B5131DCFAFFB00679DB3 /* URITemplate.framework in CopyFiles */,
 				080E82F01DCC03810048F36C /* Freddy.framework in CopyFiles */,
 				080E82F31DCC03B40048F36C /* Result.framework in CopyFiles */,
-				081559761DDB85390047B3CE /* PMKVObserver.framework in CopyFiles */,
 				081559771DDB854F0047B3CE /* SwiftyUserDefaults.framework in CopyFiles */,
 				08F6ADB61DD90F3500AF0722 /* CryptoSwift.framework in CopyFiles */,
 				081559981DDD06AD0047B3CE /* MessagePackSwift.framework in CopyFiles */,
@@ -486,7 +477,6 @@
 				08F03E3F1DDFB61B00D02153 /* SwiftyUserDefaults.framework in Copy Frameworks */,
 				08F03E3E1DDFB60C00D02153 /* Mockingjay.framework in Copy Frameworks */,
 				081559C81DDFB4E30047B3CE /* Result.framework in Copy Frameworks */,
-				08F03E401DDFB62900D02153 /* PMKVObserver.framework in Copy Frameworks */,
 				081559C61DDFB4DA0047B3CE /* Freddy.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
@@ -505,7 +495,6 @@
 				0833A8231D2D7EAD0033654B /* HockeySDK.framework in Embed Frameworks */,
 				08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */,
 				08E836681D94240100E26EFE /* SwiftyUserDefaults.framework in Embed Frameworks */,
-				082FF1CC1C7F321B00CCC27F /* PMKVObserver.framework in Embed Frameworks */,
 				08F6ADA61DD63C6600AF0722 /* NotifyingCollection.framework in Embed Frameworks */,
 				08F6ADD81DD9169400AF0722 /* DockerSupport.framework in Embed Frameworks */,
 				080E82D71DCBE31D0048F36C /* Networking.framework in Embed Frameworks */,
@@ -632,7 +621,6 @@
 		082FF1BC1C7F321B00CCC27F /* BrightFutures.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BrightFutures.framework; path = "/Users/mlilback/working/rc2/client-Swift3/Carthage/Build/Mac/BrightFutures.framework"; sourceTree = "<absolute>"; };
 		082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/Mac/CryptoSwift.framework; sourceTree = "<group>"; };
 		082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Build/Mac/Mockingjay.framework; sourceTree = "<group>"; };
-		082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PMKVObserver.framework; path = Carthage/Build/Mac/PMKVObserver.framework; sourceTree = "<group>"; };
 		082FF1C01C7F321B00CCC27F /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/Mac/Result.framework; sourceTree = "<group>"; };
 		082FF1ED1C7F339400CCC27F /* URITemplate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = URITemplate.framework; path = Carthage/Build/Mac/URITemplate.framework; sourceTree = "<group>"; };
 		083174031C5571D300071408 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = RootViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -881,7 +869,6 @@
 				08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
 				08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */,
-				082FF1CB1C7F321B00CCC27F /* PMKVObserver.framework in Frameworks */,
 				08DB1A9D1D32EFC10079DA6B /* SwinjectStoryboard.framework in Frameworks */,
 				08678C971DCA78CE00F9F283 /* Freddy.framework in Frameworks */,
 				080E82B51DCBB3DD0048F36C /* PEGKit.framework in Frameworks */,
@@ -912,7 +899,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				089794401D7B69C7003339EE /* PMKVObserver.framework in Frameworks */,
 				08678C981DCA78CE00F9F283 /* Freddy.framework in Frameworks */,
 				0841993B1D91B2770089A1AC /* URITemplate.framework in Frameworks */,
 				08E836661D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
@@ -925,7 +911,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08037C221D7C571D00006E9E /* PMKVObserver.framework in Frameworks */,
 				089794231D7B68F0003339EE /* ClientCore.framework in Frameworks */,
 				0841993A1D91B0760089A1AC /* Mockingjay.framework in Frameworks */,
 				0841993C1D91B2830089A1AC /* URITemplate.framework in Frameworks */,
@@ -1313,7 +1298,6 @@
 				08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */,
 				082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */,
 				089346021C7F661400100CF6 /* PEGKit.framework */,
-				082FF1BF1C7F321B00CCC27F /* PMKVObserver.framework */,
 				08127CC51DA81192002E0D01 /* ReactiveSwift.framework */,
 				082FF1C01C7F321B00CCC27F /* Result.framework */,
 				088CE6B91C4C44BD00153414 /* Security.framework */,
