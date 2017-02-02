@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12100" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12100"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -427,6 +427,17 @@ CA
 </string>
                                             <connections>
                                                 <action selector="clearConsole:" target="Ady-hI-5gd" id="PhU-BR-PPj"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="ltc-Li-7l0"/>
+                                        <menuItem title="Run Query" keyEquivalent="k" id="ZKV-7K-4BY">
+                                            <connections>
+                                                <action selector="runQuery:" target="Ady-hI-5gd" id="xKp-4R-Hf1"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Source Query" keyEquivalent="K" id="BG2-fO-8aw">
+                                            <connections>
+                                                <action selector="sourceQuery:" target="Ady-hI-5gd" id="6uG-qK-1Dh"/>
                                             </connections>
                                         </menuItem>
                                     </items>

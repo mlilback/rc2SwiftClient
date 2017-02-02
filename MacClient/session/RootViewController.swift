@@ -10,6 +10,10 @@ import Freddy
 import os
 import Networking
 
+extension Selector {
+	static let promptToImport = #selector(RootViewController.promptToImportFiles(_:))
+}
+
 class RootViewController: AbstractSessionViewController, ToolbarItemHandler, ManageFontMenu
 {
 	//MARK: - properties
@@ -74,25 +78,28 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 	}
 	
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
-		switch(menuItem.action) {
-		case (#selector(RootViewController.promptToImportFiles(_:)))?:
+		guard let action = menuItem.action else { return false }
+		switch(action) {
+		case Selector.promptToImport:
 			return fileHandler!.validateMenuItem(menuItem)
-		case (#selector(ManageFontMenu.showFonts(_:)))?:
+		case Selector.showFonts:
 			if let fontHandler = currentFontUser(view.window?.firstResponder) {
 				guard fontHandler.fontsEnabled() else { return false }
 				updateFontFaceMenu(menuItem.submenu!, fontUser:fontHandler)
 				return true
 			}
 			return false
-		case (#selector(ManageFontMenu.showFontSizes(_:)))?:
+		case Selector.showFontSizes:
 			if let fontHandler = currentFontUser(view.window?.firstResponder) {
 				guard fontHandler.fontsEnabled() else { return false }
 				updateFontSizeMenu(menuItem.submenu!, fontUser:fontHandler)
 				return true
 			}
 			return false
-		case (#selector(ManageFontMenu.adjustFontSize(_:)))?:
+		case Selector.adjustFontSize:
 			return true
+		case Selector.runQuery, Selector.sourceQuery:
+			return editor?.validateMenuItem(menuItem) ?? false
 		default:
 			return false
 		}
@@ -174,8 +181,16 @@ extension RootViewController {
 		sessionController?.clearFileCache()
 	}
 	
-	@IBAction @objc func promptToImportFiles(_ sender:AnyObject?) {
+	@IBAction func promptToImportFiles(_ sender:AnyObject?) {
 		fileHandler?.promptToImportFiles(sender)
+	}
+	
+	@IBAction func runQuery(_ sender: AnyObject?) {
+		editor?.runQuery(sender)
+	}
+	
+	@IBAction func sourceQuery(_ sender: AnyObject?) {
+		editor?.sourceQuery(sender)
 	}
 }
 

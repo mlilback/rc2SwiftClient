@@ -24,7 +24,6 @@ private extension Selector {
 	static let addDocument = #selector(SidebarFileController.addDocumentOfType(_:))
 	static let addFileMenu =  #selector(SidebarFileController.addFileMenuAction(_:))
 	static let receivedStatusChange = #selector(SidebarFileController.receivedStatusChange(_:))
-	static let promptToImport = #selector(SidebarFileController.promptToImportFiles(_:))
 	static let exportSelectedFile = #selector(SidebarFileController.exportSelectedFile(_:))
 	static let exportAll = #selector(SidebarFileController.exportAllFiles(_:))
 }

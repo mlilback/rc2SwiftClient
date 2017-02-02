@@ -6,6 +6,12 @@
 
 import Cocoa
 
+extension Selector {
+	static let showFonts = #selector(ManageFontMenu.showFonts(_:))
+	static let showFontSizes = #selector(ManageFontMenu.showFontSizes(_:))
+	static let adjustFontSize = #selector(ManageFontMenu.adjustFontSize(_:))
+}
+
 @objc protocol UsesAdjustableFont {
 	func fontsEnabled() -> Bool
 	///The menu item will have a font descriptor as the representedObject

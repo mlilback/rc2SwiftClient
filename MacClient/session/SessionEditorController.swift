@@ -12,7 +12,9 @@ import Networking
 import NotifyingCollection
 
 ///selectors used in this file, aliased with shorter, descriptive names
-private extension Selector {
+extension Selector {
+	static let runQuery = #selector(SessionEditorController.runQuery(_:))
+	static let sourceQuery = #selector(SessionEditorController.sourceQuery(_:))
 	static let autoSave = #selector(SessionEditorController.autosaveCurrentDocument)
 	static let findPanelAction = #selector(NSTextView.performFindPanelAction(_:))
 	static let previousChunkAction = #selector(SessionEditorController.previousChunkAction(_:))
@@ -95,6 +97,16 @@ class SessionEditorController: AbstractSessionViewController
 		}
 	}
 	
+	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+		guard let action = menuItem.action else { return false }
+		switch(action) {
+		case Selector.runQuery, Selector.sourceQuery:
+			return currentDocument?.currentContents.characters.count ?? 0 > 0
+		default:
+			return false
+		}
+	}
+
 	func saveState() -> [String:AnyObject] {
 		var dict = [String:AnyObject]()
 		dict["font"] = NSKeyedArchiver.archivedData(withRootObject: currentFontDescriptor) as AnyObject?
@@ -182,11 +194,11 @@ extension SessionEditorController {
 		editor?.performFindPanelAction(menuItem)
 	}
 	
-	@IBAction func runQuery(_ sender:AnyObject) {
+	@IBAction func runQuery(_ sender:AnyObject?) {
 		executeQuery(type:.Run)
 	}
 	
-	@IBAction func sourceQuery(_ sender:AnyObject) {
+	@IBAction func sourceQuery(_ sender:AnyObject?) {
 		executeQuery(type:.Source)
 	}
 }
