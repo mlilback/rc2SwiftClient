@@ -17,10 +17,11 @@ class TextViewWithContextualMenu: NSTextView {
 	override func menu(for event: NSEvent) -> NSMenu? {
 		let defaultMenu = super.menu(for: event)
 		let menu = NSMenu(title: "")
-		for anItem in (defaultMenu?.items)! {
-			let targetd = (anItem.target as? NSObject)?.description ?? ""
-			os_log("context item %{public}@ = %{public}@.%{public}@ (%{public}@)", log: .app, type:.info, anItem.title, targetd, anItem.action?.description ?? "<noaction>", anItem.tag)
-		}
+		//debugging code to show what items are in the default contextual menu
+		//for anItem in (defaultMenu?.items)! {
+		//	let targetd = (anItem.target as? NSObject)?.description ?? ""
+		//	os_log("context item %{public}@ = %{public}@.%{public}@ (%{public}@)", log: .app, type:.info, anItem.title, targetd, anItem.action?.description ?? "<noaction>", anItem.tag)
+		//}
 		//copy look up xxx and search with Google menu items
 		if let lookupItem = defaultMenu?.items.filter({ $0.title.hasPrefix("Look Up") }).first {
 			menu.addItem(lookupItem.copy() as! NSMenuItem)
