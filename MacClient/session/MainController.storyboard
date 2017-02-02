@@ -1212,6 +1212,6 @@
         <image name="NSRemoveTemplate" width="11" height="11"/>
         <image name="NSShareTemplate" width="11" height="16"/>
         <image name="clearVariables" width="18" height="18"/>
-        <image name="history" width="128" height="128"/>
+        <image name="history" width="38" height="38"/>
     </resources>
 </document>

@@ -52,8 +52,6 @@
 
 * need to work without a network connection if docker images already loaded
 
-* history icon not appearing
-
 * fix status area to actually work
 
 * write unit tests for InputPrompter validation
