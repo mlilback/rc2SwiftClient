@@ -23,8 +23,8 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 
 	@IBOutlet var serverMenu: NSPopUpButton?
 	@IBOutlet var serverDetailsView: NSStackView?
-	@IBOutlet var spinner:NSProgressIndicator?
-	@IBOutlet var tabView:NSTabView?
+	@IBOutlet var spinner: NSProgressIndicator?
+	@IBOutlet var tabView: NSTabView?
 	@IBOutlet var serverNameField: NSTextField?
 	
 	var bookmarkManager: BookmarkManager?
@@ -38,7 +38,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	var selectedServer: ServerHost?
 	fileprivate let keychain = Keychain()
 	
-	dynamic var selectedServerIndex:Int = 0 { didSet {
+	dynamic var selectedServerIndex: Int = 0 { didSet {
 		serverDetailsView?.animator().isHidden = selectedServerIndex == 0
 		adjustCanContinue()
 		let serverCount = (serverMenu?.menu?.items.count)!
@@ -49,8 +49,8 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		loadServerHost((serverMenu?.selectedItem?.representedObject as? Box<ServerHost>)?.unbox)
 	} }
 	
-	var customServerSelected:Bool { return selectedServerIndex == (serverMenu?.menu?.items.count ?? 0) - 1 }
-	var localServerSelected:Bool { return selectedServerIndex == 0 }
+	var customServerSelected: Bool { return selectedServerIndex == (serverMenu?.menu?.items.count ?? 0) - 1 }
+	var localServerSelected: Bool { return selectedServerIndex == 0 }
 	
 	//MARK: Methods
 	override func viewWillAppear() {
@@ -81,7 +81,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		adjustCanContinue()
 	}
 	
-	func loadServerHost(_ host:ServerHost?) {
+	func loadServerHost(_ host: ServerHost?) {
 		serverName = host?.name ?? ""
 		hostName = host?.host ?? ""
 		login = host?.user ?? ""
@@ -92,7 +92,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		canContinue = selectedServerIndex == 0 || (serverName.characters.count > 0 && hostName.characters.count > 0 && login.characters.count > 0 && password.characters.count > 0)
 	}
 	
-	func continueAction(_ callback:@escaping (_ value:Any?, _ error:NSError?) -> Void) {
+	func continueAction(_ callback:@escaping (_ value: Any?, _ error: Rc2Error?) -> Void) {
 //		let future = attemptLogin()
 //		future.onSuccess { (loginsession) in
 //			os_log("logged in successfully", log: .app, type:.info)
@@ -112,7 +112,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 //		}
 	}
 	
-	func savePassword(_ host:ServerHost) {
+	func savePassword(_ host: ServerHost) {
 		do {
 			try keychain.setString(host.keychainKey, value: self.password)
 		} catch let err as NSError {

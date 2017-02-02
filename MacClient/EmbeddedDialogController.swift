@@ -5,9 +5,10 @@
 //
 
 import Cocoa
+import ClientCore
 
 protocol EmbeddedDialogController {
-	var canContinue:Bool { get }
+	var canContinue: Bool { get }
 	
-	func continueAction(_ callback: @escaping (_ value:Any?, _ error:NSError?) -> Void)
+	func continueAction(_ callback: @escaping (_ value: Any?, _ error: Rc2Error?) -> Void)
 }

@@ -6,6 +6,7 @@
 
 import Cocoa
 import Networking
+import ClientCore
 
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
@@ -34,12 +35,12 @@ struct ProjectAndWorkspace {
 }
 
 class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
-	@IBOutlet var projectOutline:NSOutlineView?
-	@IBOutlet var addRemoveButtons:NSSegmentedControl?
+	@IBOutlet var projectOutline: NSOutlineView?
+	@IBOutlet var addRemoveButtons: NSSegmentedControl?
 	
-	dynamic var canContinue:Bool = false
+	dynamic var canContinue: Bool = false
 	
-	var host:ServerHost?
+	var host: ServerHost?
 	var connectInfo: ConnectionInfo?
 
 	override open func viewDidAppear() {
@@ -48,18 +49,18 @@ class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
 		projectOutline?.expandItem(nil, expandChildren: true)
 	}
 	
-	func continueAction(_ callback: @escaping (_ value:Any?, _ error:NSError?) -> Void) {
+	func continueAction(_ callback: @escaping (_ value: Any?, _ error: Rc2Error?) -> Void) {
 		if let wspace = projectOutline?.item(atRow: projectOutline!.selectedRow) as? Workspace,
 			let project = connectInfo!.project(withId: wspace.projectId)
 		{
 			let pw = ProjectAndWorkspace(project: project.name, workspace: wspace.name)
 			callback(pw, nil)
 		} else {
-			callback(nil, NSError.error(withCode: .impossible, description: "should not be able to continue w/o a workspace selected"))
+			callback(nil, Rc2Error(type: .logic, explanation: "should not be able to continue w/o a workspace selected"))
 		}
 	}
 	
-	@IBAction func addRemoveAction(_ sender:AnyObject?) {
+	@IBAction func addRemoveAction(_ sender: AnyObject?) {
 		
 	}
 }

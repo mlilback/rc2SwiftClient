@@ -7,19 +7,6 @@
 import Foundation
 import os
 
-let Rc2ErrorDomain = "Rc2ErrorDomain"
-
-///localizedDescription will be looked up based on the key Rc2ErrorCode.(enum label)
-public enum Rc2ErrorCode: Int {
-	case serverError = 101
-	case impossible = 102
-	case dockerError = 103
-	case noSuchObject = 104
-	case networkError = 105
-	case invalidJson = 106
-	case alreadyExists = 107
-}
-
 /// a static reference to the app's bundle
 public struct AppInfo {
 	/// the info dictionary of the application

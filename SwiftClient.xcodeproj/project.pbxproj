@@ -218,7 +218,6 @@
 		089794301D7B68F0003339EE /* ClientCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		089794381D7B6925003339EE /* ClientCore-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 089794371D7B6925003339EE /* ClientCore-Bridging-Header.h */; };
 		089794421D7B6A0F003339EE /* SharedConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089794411D7B6A0F003339EE /* SharedConstants.swift */; };
-		0897944B1D7B6A8F003339EE /* NSError+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089794441D7B6A8F003339EE /* NSError+Rc2.swift */; };
 		0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089794471D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift */; };
 		0897944F1D7B6A8F003339EE /* NSURL+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089794481D7B6A8F003339EE /* NSURL+Rc2.swift */; };
 		089794501D7B6A8F003339EE /* String+Rc2Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089794491D7B6A8F003339EE /* String+Rc2Extensions.swift */; };
@@ -724,7 +723,6 @@
 		0897942B1D7B68F0003339EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		089794371D7B6925003339EE /* ClientCore-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ClientCore-Bridging-Header.h"; sourceTree = "<group>"; };
 		089794411D7B6A0F003339EE /* SharedConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedConstants.swift; sourceTree = "<group>"; };
-		089794441D7B6A8F003339EE /* NSError+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+Rc2.swift"; sourceTree = "<group>"; };
 		089794471D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSTextCheckingResult+Rc2.swift"; sourceTree = "<group>"; };
 		089794481D7B6A8F003339EE /* NSURL+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+Rc2.swift"; sourceTree = "<group>"; };
 		089794491D7B6A8F003339EE /* String+Rc2Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Rc2Extensions.swift"; sourceTree = "<group>"; };
@@ -1368,7 +1366,6 @@
 			isa = PBXGroup;
 			children = (
 				081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */,
-				089794441D7B6A8F003339EE /* NSError+Rc2.swift */,
 				089794471D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift */,
 				089794481D7B6A8F003339EE /* NSURL+Rc2.swift */,
 				083D11851DECC37900549268 /* Process+Rc2.swift */,
@@ -2142,7 +2139,6 @@
 				089794511D7B6A8F003339EE /* SystemExtensions.swift in Sources */,
 				083D11861DECC37900549268 /* Process+Rc2.swift in Sources */,
 				081559951DDCCD960047B3CE /* RACSignals+Rc2.swift in Sources */,
-				0897944B1D7B6A8F003339EE /* NSError+Rc2.swift in Sources */,
 				0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */,
 				0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */,
 				0897944F1D7B6A8F003339EE /* NSURL+Rc2.swift in Sources */,
