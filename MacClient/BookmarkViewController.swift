@@ -179,7 +179,7 @@ open class BookmarkViewController: NSViewController {
 		session.open().observe(on: UIScheduler()).on(starting: { 
 			self.progressContainer?.isHidden = false
 			self.progressSpinner?.startAnimation(self)
-			self.progressLabel?.stringValue = "Connecting to \(conInfo.host)…"
+			self.progressLabel?.stringValue = "Connecting to \(conInfo.host.name)…"
 		}, terminated: {
 			self.progressSpinner?.stopAnimation(self)
 			self.progressContainer?.isHidden = true
@@ -192,7 +192,7 @@ open class BookmarkViewController: NSViewController {
 				os_log("failed to open websocket: %{public}s", log: .session, err.localizedDescription)
 				fatalError()
 			case .value: //(let _):
-				//TODO: update progress
+				// do nothing as using indeterminate progress
 				break
 			case .interrupted:
 				break //should never happen

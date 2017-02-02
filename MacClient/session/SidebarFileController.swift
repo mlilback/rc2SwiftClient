@@ -23,7 +23,6 @@ extension DefaultsKeys {
 private extension Selector {
 	static let addDocument = #selector(SidebarFileController.addDocumentOfType(_:))
 	static let addFileMenu =  #selector(SidebarFileController.addFileMenuAction(_:))
-	static let receivedStatusChange = #selector(SidebarFileController.receivedStatusChange(_:))
 	static let exportSelectedFile = #selector(SidebarFileController.exportSelectedFile(_:))
 	static let exportAll = #selector(SidebarFileController.exportAllFiles(_:))
 }
@@ -67,6 +66,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	lazy var importPrompter: MacFileImportSetup? = { MacFileImportSetup() }()
 	var fileImporter: FileImporter?
 	private var fileChangeDisposable: Disposable?
+	private var busyDisposable: Disposable?
 	
 	var selectedFile:File? {
 		guard tableView.selectedRow >= 0 else { return nil }
@@ -109,19 +109,15 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		tableView.reloadData()
 	}
 	
-	func receivedStatusChange(_ note:Notification) {
-		assert(self.appStatus != nil, "appStatus not set on SidebarFileController")
-		if let tv = self.tableView, let apps = self.appStatus {
-			if apps.busy {
+	override func appStatusChanged() {
+		busyDisposable = appStatus?.busySignal.observe(on: UIScheduler()).observeValues { [weak self] isBusy in
+			guard let tv = self?.tableView else { return }
+			if isBusy {
 				tv.unregisterDraggedTypes()
 			} else {
 				tv.register(forDraggedTypes: FileDragTypes)
 			}
 		}
-	}
-	
-	override func appStatusChanged() {
-		NotificationCenter.default.addObserver(self, selector: .receivedStatusChange, name: .AppStatusChanged, object: nil)
 	}
 	
 	func loadData() {
@@ -413,7 +409,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	private func importFiles(_ files:[FileImporter.FileToImport]) {
 		let importer = try! FileImporter(files, fileCache:self.session.fileCache, connectInfo: session.conInfo)
 		let (psignal, pobserver) = Signal<Double, Rc2Error>.pipe()
-		appStatus?.monitorProgress(signal: psignal)
+		//TODO: update progress
 		importer.start().on(value: { (progress: FileImporter.ImportProgress) in
 			pobserver.send(value: progress.percentComplete)
 		}, failed: { (error) in

@@ -10,8 +10,6 @@ import ClientCore
 let Rc2ErrorDomain = "Rc2ErrorDomain"
 
 extension Notification.Name {
-	///will always be posted on the main thread
-	static let AppStatusChanged = Notification.Name("AppStatusChangedNotification")
 	///The object can be either a HelpTopic or a String
 	static let DisplayHelpTopic = Notification.Name("DisplayHelpTopicNotification")
 	///The object is the FileImporter used

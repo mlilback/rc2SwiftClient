@@ -208,6 +208,9 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		container.registerForStoryboard(AbstractSessionViewController.self) { r, c in
 			c.appStatus = self.appStatus
 		}
+		container.registerForStoryboard(SessionEditorController.self) { r, c in
+			c.appStatus = self.appStatus
+		}
 
 		let sboard = SwinjectStoryboard.create(name: "MainController", bundle: nil, container: container)
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window

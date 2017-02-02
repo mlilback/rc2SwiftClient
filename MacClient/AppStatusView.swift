@@ -5,33 +5,107 @@
 //
 
 import Cocoa
+import Result
+import ReactiveSwift
+
+let messageTimeout: DispatchTimeInterval = .seconds(3)
+let messageLeeway: DispatchTimeInterval = .milliseconds(10)
+
+fileprivate struct TimerAction {
+	let timer: DispatchSourceTimer
+	init(interval: DispatchTimeInterval, queue: DispatchQueue, action: @escaping () -> Void) {
+		timer = DispatchSource.makeTimerSource(queue: queue)
+		timer.setEventHandler(handler: action)
+		timer.scheduleOneshot(deadline: .now() + interval, leeway: messageLeeway)
+		timer.resume()
+	}
+}
 
 class AppStatusView: NSView {
 	@IBOutlet var textField: NSTextField?
 	@IBOutlet var progress: NSProgressIndicator?
-	@IBOutlet var determinateProgress: NSProgressIndicator? {
-		get { return self.realDetProgress }
-		set { self.realDetProgress = newValue }
-	}
-	fileprivate var realDetProgress:NSProgressIndicator?
-
+	@IBOutlet var determinateProgress: NSProgressIndicator?
 	@IBOutlet var cancelButton: NSButton?
-	weak var appStatus: MacAppStatus? { didSet { self.statusChanged(nil) } }
-	var progressContext: KVObserver?
+
+	fileprivate var progressDisposable: Disposable?
+	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.appStatusQueue", qos: .userInitiated)
+	private var clearTimer: TimerAction?
+
+	weak var appStatus: MacAppStatus? { didSet {
+		progressDisposable?.dispose()
+		progressDisposable = appStatus?.progressSignal.observe(on: UIScheduler()).observeValues(observe)
+	} }
 	
 	override var intrinsicContentSize:NSSize { return NSSize(width:220, height:22) }
 	
-	deinit {
-		NotificationCenter.default.removeObserver(self)
-	}
-	
 	override func awakeFromNib() {
 		super.awakeFromNib()
+		clearStatus()
+	}
+	
+	fileprivate func clearStatus() {
 		DispatchQueue.main.async {
-			NotificationCenter.default.addObserver(self, selector: #selector(AppStatusView.statusChanged(_:)), name: .AppStatusChanged, object: nil)
+			self.clearTimer = nil
+			self.cancelButton?.isEnabled = false
+			self.cancelButton?.isHidden = true
+			self.textField?.stringValue = ""
+			self.progress?.isHidden = true
+			self.determinateProgress?.isHidden = true
 		}
 	}
 	
+	/// called when a progress update received
+	fileprivate func observe(update: ProgressUpdate) {
+		switch update.stage {
+		case .start:
+			handleStart(update)
+		case .completed, .failed:
+			handleCompleted(update)
+		case .value:
+			handleValue(update)
+		}
+	}
+	
+	fileprivate func handleStart(_ update: ProgressUpdate) {
+		_statusQueue.sync {
+			if update.value == -1 {
+				progress?.isHidden = false
+				determinateProgress?.isHidden = true
+				progress?.startAnimation(self)
+			} else {
+				progress?.isHidden = true
+				determinateProgress?.isHidden = false
+				determinateProgress?.doubleValue = update.value
+				textField?.stringValue = update.message ?? "Starting action…"
+			}
+		}
+	}
+	
+	fileprivate func handleCompleted(_ update: ProgressUpdate) {
+		_statusQueue.sync {
+			clearStatus()
+			textField?.stringValue = update.message ?? ""
+			self.clearTimer = TimerAction(interval: messageTimeout, queue: _statusQueue) { [weak self] in
+				self?.clearStatus()
+			}
+		}
+	}
+
+	fileprivate func handleValue(_ update: ProgressUpdate) {
+		_statusQueue.sync {
+			if update.value >= 0 {
+				determinateProgress?.doubleValue = update.value
+			}
+			if let msg = update.message {
+				textField?.stringValue = msg
+			}
+		}
+	}
+	
+	@IBAction func cancel(_ sender: AnyObject?) {
+		
+	}
+
 	override func draw(_ dirtyRect: NSRect) {
 		NSGraphicsContext.current()?.saveGraphicsState()
 		let path = NSBezierPath(roundedRect: bounds, xRadius: 4, yRadius: 4)
@@ -42,40 +116,5 @@ class AppStatusView: NSView {
 		path.stroke()
 		NSGraphicsContext.current()?.restoreGraphicsState()
 		super.draw(dirtyRect)
-	}
-
-	func statusChanged(_ sender:AnyObject?) {
-		textField?.stringValue = appStatus?.statusMessage ?? ""
-		if let isBusy = appStatus?.busy , isBusy {
-			if appStatus?.currentProgress?.isIndeterminate ?? true {
-				progress?.startAnimation(self)
-			} else {
-				determinateProgress?.doubleValue = 0
-				determinateProgress?.isHidden = false
-				progressContext = KVObserver(object: (appStatus?.currentProgress)!, keyPath: "fractionCompleted")
-					{ prog, _, _ in
-						self.determinateProgress?.doubleValue = prog.fractionCompleted
-						self.textField?.stringValue = prog.localizedDescription
-						if self.determinateProgress?.doubleValue ?? 0 >= 1.0 {
-							DispatchQueue.main.async() {
-								self.appStatus?.currentProgress = nil
-							}
-						}
-					}
-			}
-			cancelButton?.isHidden = appStatus?.currentProgress?.isCancellable ?? false
-		} else {
-			progress?.stopAnimation(self)
-			determinateProgress?.isHidden = true
-			cancelButton?.isHidden = true
-			progressContext?.cancel()
-			progressContext = nil
-		}
-	}
-	
-	@IBAction func cancel(_ sender: AnyObject?) {
-		if appStatus?.currentProgress?.isCancellable ?? true {
-			appStatus?.currentProgress?.cancel()
-		}
 	}
 }

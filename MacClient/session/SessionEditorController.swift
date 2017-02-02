@@ -304,20 +304,20 @@ private extension SessionEditorController {
 			return
 		}
 		//TODO: handle progress/error
-		currentDocument.saveContents().startWithResult { result in
-			guard nil == result.error else {
-				os_log("save for execute returned an error: %{public}@", log: .app, type: .info, result.error! as NSError)
-				return
-			}
-			self.session.sendSaveFileMessage(file: file, contents: result.value!).logEvents().startWithResult { result in
-				guard result.error == nil else {
-					os_log("save to server for execute failed %{public}s", result.error! as NSError)
+		let doc = currentDocument
+		doc.saveContents()
+			.flatMap(.concat, transform: { self.session.sendSaveFileMessage(file: file, contents: $0) })
+			.updateProgress(status: self.appStatus!, actionName: "Save document")
+			.observe(on: UIScheduler())
+			.startWithResult
+			{ result in
+				guard nil == result.error else {
+					os_log("save for execute returned an error: %{public}@", log: .app, type: .info, result.error! as NSError)
 					return
 				}
 				os_log("executeQuery saved file, now executing", log: .app, type: .info)
 				self.session.executeScriptFile(file.fileId, type: type)
 			}
-		}
 	}
 	
 	func adjustCurrentDocumentForFile(_ file:File?) {

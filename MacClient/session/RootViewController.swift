@@ -8,6 +8,7 @@ import Cocoa
 import CryptoSwift
 import Freddy
 import os
+import ReactiveSwift
 import Networking
 
 extension Selector {
@@ -19,14 +20,11 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 	//MARK: - properties
 	var sessionController: SessionController?
 	
-	@IBOutlet var progressView: NSProgressIndicator?
-	@IBOutlet var statusField: NSTextField?
 	var searchButton: NSSegmentedControl?
 	var statusTimer:Timer?
-	dynamic var busy: Bool = false
-	dynamic var statusMessage: String = ""
 	var sessionClosedHandler:((Void)->Void)?
 	
+	fileprivate var progressDisposable: Disposable?
 	fileprivate var dimmingView:DimmingView?
 	weak var editor: SessionEditorController?
 	weak var outputHandler: OutputHandler?
@@ -129,17 +127,6 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 		return false
 	}
 	
-	//MARK: - status display/timer
-	func startTimer() {
-		if statusTimer?.isValid ?? false { statusTimer?.invalidate() }
-		statusTimer = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(RootViewController.clearStatus), userInfo: nil, repeats: false)
-	}
-	
-	func clearStatus() {
-		statusTimer?.invalidate()
-		statusMessage = ""
-	}
-
 	/// selects the first file imported if it is a source file
 	func receivedImportNotification(_ note: Notification) {
 		guard let importer = note.object as? FileImporter else { return }
@@ -148,30 +135,30 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 		fileHandler?.select(file: importer.importedFiles.first!)
 	}
 	
-	func receivedStatusNotification(_ note: Notification) {
-		guard self.appStatus != nil else {
-			os_log("appStatus not set on RootViewController", log: .app, type:.error)
-			return
-		}
-		self.busy = (self.appStatus?.busy)!
-		self.statusMessage = (self.appStatus?.statusMessage) ?? ""
-		//hide/show dimmingView only if
-		if self.editor?.view.isHiddenOrHasHiddenAncestor == false {
-			if self.busy {
-				self.dimmingView?.isHidden = false
-				self.formerFirstResponder = self.view.window?.firstResponder
-				self.view.window?.makeFirstResponder(self.dimmingView)
-			} else {
-				self.dimmingView?.isHidden = true
-				self.startTimer()
-				self.view.window?.makeFirstResponder(self.formerFirstResponder)
-//					self.dimmingView?.animator().hidden = true
-			}
+	private func adjustDimmingView(hide: Bool) {
+		precondition(appStatus != nil)
+		guard self.dimmingView?.isHidden != hide else { return }
+		self.dimmingView?.isHidden = hide
+		if hide {
+			self.formerFirstResponder = self.view.window?.firstResponder
+			self.view.window?.makeFirstResponder(dimmingView)
+		} else {
+			self.view.window?.makeFirstResponder(self.formerFirstResponder)
 		}
 	}
 	
 	override func appStatusChanged() {
-		NotificationCenter.default.addObserver(self, selector: #selector(RootViewController.receivedStatusNotification(_:)), name: .AppStatusChanged, object: nil)
+		progressDisposable = appStatus?.progressSignal.observe(on: UIScheduler()).observeValues
+		{ [weak self] progressUpdate in
+			switch progressUpdate.stage {
+			case .start:
+				self?.adjustDimmingView(hide: !progressUpdate.disableInput)
+			case .completed, .failed:
+				self?.adjustDimmingView(hide: true)
+			case .value:
+				break
+			}
+		}
 	}
 }
 

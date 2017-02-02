@@ -117,10 +117,6 @@ public class Session {
 		keepAliveTimer.resume()
 	}
 	
-	deinit {
-		os_log("session dealloc", log: .session, type:.info)
-	}
-	
 	///opens the websocket with the specified request
 	/// - returns: future for the open session (with file loading started) or an error
 	public func open() -> SignalProducer<Double, Rc2Error> {

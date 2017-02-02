@@ -7,86 +7,145 @@
 import Cocoa
 import Networking
 import ReactiveSwift
+import Result
 import ClientCore
 import os
 
-class MacAppStatus {
-	fileprivate dynamic var _currentProgress: Progress?
-	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
-	public let getWindow: (Session?) -> NSWindow
-	
-	dynamic var currentProgress: Progress? {
-		get {
-			var result: Progress? = nil
-			_statusQueue.sync { result = self._currentProgress }
-			return result
-		}
-		set { updateStatus(newValue) }
+///used to update the progress display for an operation
+struct ProgressUpdate {
+	///possible stages of progress update
+	enum Stage {
+		case start, value, completed, failed
 	}
+	/// the stage of progress represented by this update
+	let stage: Stage
+	/// for a .value stage, a description to display to the user
+	let message: String?
+	/// for a .value stage, the percent complete (0...1) or -1 if indeterminate/not applicable
+	let value: Double
+	/// for a .failed stage, the error that caused the failure
+	let error: Rc2Error?
+	/// for a .start stage, determines if user interaction should be disabled
+	let disableInput: Bool
+	
+	init(_ stage: Stage, message: String? = nil, value: Double = -1, error: Rc2Error? = nil, disableInput: Bool = true) {
+		self.stage = stage
+		self.message = message
+		self.value = value
+		self.error = error
+		self.disableInput = disableInput
+	}
+}
+
+/// represents the status of a session/window pair
+class MacAppStatus {
+	/// a signal to observe to receive progress updates
+	let progressSignal: Signal<ProgressUpdate, NoError>
+	/// a signal to know if the status is busy
+	let busySignal: Signal<Bool, NoError>
+	/// callback to get the window for a particular session
+	public let getWindow: (Session?) -> NSWindow?
+	/// queue used for changes to the current operation
+	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
+	/// tracks if an operation is in progress, and to eventually support canceling
+//	private var currentDisposable: Disposable? {
+//		get {
+//			var disp: Disposable?
+//			_statusQueue.sync { disp = _currentDisposable }
+//			return disp
+//		}
+//		set { _statusQueue.sync { _currentDisposable = newValue } }
+//	}
+	/// underlying value that should always be interacted with via currentDisposable which is thread-safe
+	private var _currentDisposable: Disposable?
+	/// tne name of the current action to display in completed/canceled status messages
+	private var currentActionName: String?
+	/// observer for sending progress updates
+	private let progressObserver: Signal<ProgressUpdate, NoError>.Observer
+	/// observer for sending busy events
+	private let busyObserver: Signal<Bool, NoError>.Observer
 	
 	dynamic var busy: Bool {
 		get {
 			var result = false
-			_statusQueue.sync { result = self._currentProgress != nil }
+			_statusQueue.sync { result = _currentDisposable != nil }
 			return result
 		}
 	}
 	
-	dynamic var statusMessage: String {
-		get {
-			var status = ""
-			_statusQueue.sync { status = self._currentProgress?.localizedDescription ?? "" }
-			return status
-		}
-	}
-	
-	init(windowAccessor:@escaping (Session?) -> NSWindow) {
+	init(windowAccessor: @escaping (Session?) -> NSWindow) {
 		getWindow = windowAccessor
+		(progressSignal, progressObserver) = Signal<ProgressUpdate, NoError>.pipe()
+		(busySignal, busyObserver) = Signal<Bool, NoError>.pipe()
 	}
 	
-	/// Used in a composed producer chain to update window progress indicator as operation is performed. will fatalError if busy
+	/// called when a signal producer to display progress is started
 	///
-	/// - Parameter producer: a SignalProducer that sends progress events from 0..1
-	/// - Returns: a composed producer with an observer added
-	func monitorProgress(producer: SignalProducer<Double, Rc2Error>) -> SignalProducer<Double, Rc2Error> {
-		return producer.on(starting: {
-		}, value: { (per) in
-			print("update percent: \(per)")
-		}, failed: { err in
-		}, completed: {
-			print("progress complete")
-		}, interrupted: {
-		})
-	}
-	
-	func monitorProgress(signal: Signal<Double, Rc2Error>) {
-		signal.observe { observer in
-			
-		}
-	}
-	
-	@available(*, deprecated)
-	func updateStatus(_ progress: Progress?) {
-		assert(_currentProgress == nil || progress == nil, "can't set progress when there already is one")
+	/// - Parameters:
+	///   - name: the name of the action being started
+	///   - disposable: the disposable for the action that is starting
+	fileprivate func actionStarting(name: String, disposable: Disposable) {
 		_statusQueue.sync {
-			self._currentProgress = progress
-			os_log("Progress no longer supported in AppStatus", log: .app, type: .error)
-			//			self._currentProgress?.rc2_addCompletionHandler() {
-			//				self.updateStatus(nil)
-			//			}
+			assert(nil == _currentDisposable)
+			currentActionName = name
+			_currentDisposable = disposable
+			progressObserver.send(value: ProgressUpdate(.start, message: currentActionName))
+			busyObserver.send(value: true)
 		}
-		NotificationCenter.default.postNotificationNameOnMainThread(.AppStatusChanged, object: self)
 	}
-
-	func presentError(_ error: Rc2Error, session: AnyObject?) {
+	
+	/// Handles an progress update for the current action
+	///
+	/// - Parameter event: the progress update event passed on via the progressSignal
+	fileprivate func process(_ event: Event<ProgressUpdate, Rc2Error>) {
+		var ended: Bool = true
+		switch event {
+		case .value(let value):
+			assert(value.stage == .value)
+			progressObserver.send(value: value)
+			ended = false
+		case .failed(let error):
+			progressObserver.send(value: ProgressUpdate(.failed, message: currentActionName, error: error))
+		case .interrupted:
+			progressObserver.send(value: ProgressUpdate(.completed, message: "\(currentActionName ?? "operation") canceled"))
+		case .completed:
+			progressObserver.send(value: ProgressUpdate(.completed, message: "\(currentActionName ?? "operation") completed"))
+		}
+		if ended {
+			busyObserver.send(value: false)
+			_statusQueue.sync { _currentDisposable = nil }
+		}
+	}
+	
+	/// Displays information about error to the user document-modal if session has an associated window, app-modal otherwise
+	///
+	/// - Parameters:
+	///   - error: the error to inform the user about
+	///   - session: the session this error is related to
+	func presentError(_ error: Rc2Error, session: Session?) {
 		let alert = NSAlert()
 		alert.messageText = error.localizedDescription
 		alert.informativeText = error.nestedError?.localizedDescription ?? ""
 		alert.addButton(withTitle: NSLocalizedString("Ok", comment: ""))
-		alert.beginSheetModal(for: getWindow(session as? Session), completionHandler:nil)
+		if let parentWindow = getWindow(session) {
+			alert.beginSheetModal(for: parentWindow, completionHandler:nil)
+		} else {
+			alert.runModal()
+		}
 	}
 	
-	func presentAlert(_ session:AnyObject?, message:String, details:String, buttons:[String], defaultButtonIndex:Int, isCritical:Bool, handler:((Int) -> Void)?)
+	/// Displays an alert to the user document-modal if session has an associated window, app-modal otherwise
+	///
+	/// - Parameters:
+	///   - session: the session this alert is related to
+	///   - message: the message to display
+	///   - details: the details of the message
+	///   - buttons: array of button names, defaults to only showing an OK button
+	///   - defaultButtonIndex: the index of the button that is made the default button
+	///   - isCritical: true if alert is critical
+	///   - queue: the queue to call the handler on, defaults to main queue
+	///   - handler: closure called returning the index of the button clicked by the user
+	func presentAlert(_ session: Session?, message: String, details: String, buttons: [String] = [], defaultButtonIndex: Int = 0, isCritical: Bool = false, queue: DispatchQueue = .main, handler: ((Int) -> Void)?)
 	{
 		let alert = NSAlert()
 		alert.messageText = message
@@ -99,12 +158,52 @@ class MacAppStatus {
 			}
 		}
 		alert.alertStyle = isCritical ? .critical : .warning
-		alert.beginSheetModal(for: getWindow((session as! Session)), completionHandler: { (rsp) in
-			guard buttons.count > 1 else { return }
-			DispatchQueue.main.async {
-				//convert rsp to an index to buttons
-				handler?(rsp - NSAlertFirstButtonReturn)
+		if let parentWindow = getWindow(session) {
+			alert.beginSheetModal(for: parentWindow, completionHandler: { (rsp) in
+				guard buttons.count > 1 else { return }
+				queue.async {
+					//convert rsp to an index to buttons
+					handler?(rsp - NSAlertFirstButtonReturn)
+				}
+			})
+		} else {
+			let result = alert.runModal() - NSAlertFirstButtonReturn
+			handler?(result)
+		}
+	}
+}
+
+extension SignalProducer where Error == Rc2Error {
+	/// have status observe progress from this event stream
+	///
+	/// - Parameters:
+	///   - status: the AppStatus object to observe the event stream
+	///   - actionName: a name for the action taking place, displayed to the user along with " completed" or " canceled"
+	///   - converter: a closure that converts an event stream value to a ProgressUpdate?. Defaults to returning nil which will ignore any value events
+	/// - Returns: self with status attached as an observer
+	func updateProgress(status: MacAppStatus, actionName: String, converter: @escaping ((Value) -> ProgressUpdate?) = { _ in return nil }) -> SignalProducer<Value, Error>
+	{
+		return SignalProducer<Value, Error> { observer, compositeDisposable in
+			self.startWithSignal { signal, disposable in
+				status.actionStarting(name: actionName, disposable: disposable)
+				compositeDisposable += disposable
+				compositeDisposable += signal
+					.on(event: { (original) in
+						switch original {
+						case .completed:
+							status.process(Event<ProgressUpdate, Rc2Error>.completed)
+						case .interrupted:
+							status.process(Event<ProgressUpdate, Rc2Error>.interrupted)
+						case .failed(let err):
+							status.process(Event<ProgressUpdate, Rc2Error>.failed(err))
+						case .value(let val):
+							if let convertedValue = converter(val) {
+								status.process(Event<ProgressUpdate, Rc2Error>.value(convertedValue))
+							}
+						}
+					})
+					.observe(observer)
 			}
-		}) 
+		}
 	}
 }
