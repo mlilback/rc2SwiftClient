@@ -152,17 +152,13 @@ class SessionEditorController: AbstractSessionViewController
 	
 	func autosaveCurrentDocument() {
 		guard currentDocument?.dirty ?? false else { return }
-		currentDocument!.saveContents(isAutoSave: true).startWithCompleted {
-			self.saveDocumentToServer(self.currentDocument!)
+		saveWithProgress(isAutoSave: true).startWithResult { result in
+			guard result.error == nil else {
+				os_log("autosave failed: %{public}s", log: .session, result.error!.localizedDescription)
+				return
+			}
+			//need to do anything when successful?
 		}
-	}
-	
-	//should be called when document is locally saved but stil marked as dirty (e.g. from progress completion handler)
-	func saveDocumentToServer(_ document: EditorDocument) {
-		precondition(currentDocument != nil, "can't save a nil document")
-		//TODO: handle progress/error
-		session.sendSaveFileMessage(file: currentDocument!.file, contents: document.currentContents).start()
-		os_log("saved to server", log: .app, type:.info)
 	}
 }
 
@@ -276,7 +272,7 @@ extension SessionEditorController: NSTextViewDelegate {
 }
 
 //MARK: private methods
-private extension SessionEditorController {
+fileprivate extension SessionEditorController {
 	///adjusts the UI to mark the current chunk
 	func adjustUIForCurrentChunk() {
 		//for now we will move the cursor and scroll so it is visible
@@ -303,21 +299,26 @@ private extension SessionEditorController {
 			session.executeScriptFile(file.fileId, type: type)
 			return
 		}
-		//TODO: handle progress/error
-		let doc = currentDocument
-		doc.saveContents()
+		saveWithProgress().startWithResult { result in
+			guard nil == result.error else {
+				//TODO: display error or updateProgress should
+				os_log("save for execute returned an error: %{public}@", log: .app, type: .info, result.error! as NSError)
+				return
+			}
+			os_log("executeQuery saved file, now executing", log: .app, type: .info)
+			self.session.executeScriptFile(file.fileId, type: type)
+		}
+	}
+	
+	//should be the only place an actual save is performed
+	fileprivate func saveWithProgress(isAutoSave: Bool = false) -> SignalProducer<Bool, Rc2Error> {
+		guard let doc = currentDocument, let file = currentDocument?.file else {
+			return SignalProducer<Bool, Rc2Error>(error: Rc2Error(type: .logic, severity: .error, explanation: "save called with nothing to save"))
+		}
+		return doc.saveContents(isAutoSave: isAutoSave)
 			.flatMap(.concat, transform: { self.session.sendSaveFileMessage(file: file, contents: $0) })
 			.updateProgress(status: self.appStatus!, actionName: "Save document")
 			.observe(on: UIScheduler())
-			.startWithResult
-			{ result in
-				guard nil == result.error else {
-					os_log("save for execute returned an error: %{public}@", log: .app, type: .info, result.error! as NSError)
-					return
-				}
-				os_log("executeQuery saved file, now executing", log: .app, type: .info)
-				self.session.executeScriptFile(file.fileId, type: type)
-			}
 	}
 	
 	func adjustCurrentDocumentForFile(_ file:File?) {
@@ -381,13 +382,12 @@ private extension SessionEditorController {
 		doc.topVisibleIndex = idx
 		doc.willBecomeInactive(contents)
 		if doc.dirty {
-			//TODO: use progress and report errors
-			doc.saveContents().startWithResult { result in
+			saveWithProgress().startWithResult { result in
 				guard nil == result.error else {
+					//TODO: handle error
 					os_log("editor save returned an error: %{public}@", log: .app, result.error! as NSError)
 					return
 				}
-				self.session.sendSaveFileMessage(file: doc.file, contents: result.value!).start()
 			}
 		}
 	}

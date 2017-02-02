@@ -220,8 +220,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				defaults[.supressDeleteFileWarnings] = true
 			}
 			if response != NSAlertFirstButtonReturn { return }
-			//TODO: implement progress
-			self.session.remove(file: file).startWithResult { result in
+			self.session.remove(file: file)
+				.updateProgress(status: self.appStatus!, actionName: "Delete \(file.name)")
+				.startWithResult { result in
 				guard let error = result.error else { return } //worked
 				DispatchQueue.main.async {
 					self.appStatus?.presentError(error, session: self.session)
@@ -241,7 +242,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		DispatchQueue.main.async {
 			self.promptForFilename(prompt: prompt, baseName: baseName, type: file.fileType) { (name) in
 				guard let newName = name else { return }
-				self.session.duplicate(file: file, to: newName).startWithResult { result in
+				self.session.duplicate(file: file, to: newName)
+					.updateProgress(status: self.appStatus!, actionName: "Duplicate \(file.name)")
+					.startWithResult { result in
 					// the id of the file that was created
 					guard let fid = result.value else {
 						//TODO: handle error
@@ -274,7 +277,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			if !name.hasSuffix(".\(file.fileType.fileExtension)") {
 				name += ".\(file.fileType.fileExtension)"
 			}
-			self.session.rename(file: file, to: name).startWithResult { result in
+			self.session.rename(file: file, to: name)
+				.updateProgress(status: self.appStatus!, actionName: "Rename \(file.name)")
+				.startWithResult { result in
 				guard let error = result.error else {
 					self.select(fileId: file.fileId)
 					return
@@ -405,24 +410,30 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	private func importFiles(_ files:[FileImporter.FileToImport]) {
-		let importer = try! FileImporter(files, fileCache:self.session.fileCache, connectInfo: session.conInfo)
-		let (psignal, pobserver) = Signal<Double, Rc2Error>.pipe()
-		//TODO: update progress
-		importer.start().on(value: { (progress: FileImporter.ImportProgress) in
-			pobserver.send(value: progress.percentComplete)
-		}, failed: { (error) in
-			//TODO: handle error
-			os_log("got import error %{public}@", log: .app, type:.error, error.localizedDescription)
-			pobserver.send(error: error)
-		}, completed: {
-			pobserver.sendCompleted()
-			NotificationCenter.default.post(name: .FilesImported, object: self.fileImporter!)
-			self.fileImporter = nil //free up importer
-		}).start()
-		//save reference so ARC does not dealloc importer
-		self.fileImporter = importer
+		let converter = { (iprogress: FileImporter.ImportProgress) -> ProgressUpdate? in
+			return ProgressUpdate(.value, message: iprogress.status, value: iprogress.percentComplete)
+		}
+		fileImporter = try! FileImporter(files, fileCache:self.session.fileCache, connectInfo: session.conInfo)
+		//save reference so ARC doesn't dealloc importer
+		fileImporter!.producer()
+			.updateProgress(status: appStatus!, actionName: "Import", determinate: true, converter: converter)
+			.start
+			{ [weak self] event in
+				switch event {
+				case .failed(let error):
+					os_log("got import error %{public}@", log: .app, type:.error, error.localizedDescription)
+					self?.fileImporter = nil //free up importer
+				case .completed:
+					NotificationCenter.default.post(name: .FilesImported, object: self?.fileImporter!)
+					self?.fileImporter = nil //free up importer
+				case .interrupted:
+					os_log("import canceled", log: .app)
+					self?.fileImporter = nil //free up importer
+				default:
+					break
+				}
+			}
 	}
-
 
 	//MARK: - FileHandler implementation
 	func filesRefreshed(_ changes: [CollectionChange<File>]?) {

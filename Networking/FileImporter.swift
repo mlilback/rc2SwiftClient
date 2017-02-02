@@ -67,7 +67,7 @@ public class FileImporter: NSObject {
 		self.uploadSession = URLSession(configuration: conInfo.urlSessionConfig, delegate: self, delegateQueue: nil)
 	}
 	
-	public func start() -> ProgressSignalProducer {
+	public func producer() -> ProgressSignalProducer {
 		precondition(progressObserver == nil)
 		let baseUrl = conInfo.host.url!
 		for (index, aFileToImport) in files.enumerated() {

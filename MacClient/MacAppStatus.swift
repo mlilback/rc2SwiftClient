@@ -84,12 +84,12 @@ class MacAppStatus {
 	/// - Parameters:
 	///   - name: the name of the action being started
 	///   - disposable: the disposable for the action that is starting
-	fileprivate func actionStarting(name: String, disposable: Disposable) {
+	fileprivate func actionStarting(name: String, disposable: Disposable, determinate: Bool) {
 		_statusQueue.sync {
 			assert(nil == _currentDisposable)
 			currentActionName = name
 			_currentDisposable = disposable
-			progressObserver.send(value: ProgressUpdate(.start, message: currentActionName))
+			progressObserver.send(value: ProgressUpdate(.start, message: currentActionName, value: determinate ? 0 : -1))
 			busyObserver.send(value: true)
 		}
 	}
@@ -181,11 +181,11 @@ extension SignalProducer where Error == Rc2Error {
 	///   - actionName: a name for the action taking place, displayed to the user along with " completed" or " canceled"
 	///   - converter: a closure that converts an event stream value to a ProgressUpdate?. Defaults to returning nil which will ignore any value events
 	/// - Returns: self with status attached as an observer
-	func updateProgress(status: MacAppStatus, actionName: String, converter: @escaping ((Value) -> ProgressUpdate?) = { _ in return nil }) -> SignalProducer<Value, Error>
+	func updateProgress(status: MacAppStatus, actionName: String, determinate: Bool = false, converter: @escaping ((Value) -> ProgressUpdate?) = { _ in return nil }) -> SignalProducer<Value, Error>
 	{
 		return SignalProducer<Value, Error> { observer, compositeDisposable in
 			self.startWithSignal { signal, disposable in
-				status.actionStarting(name: actionName, disposable: disposable)
+				status.actionStarting(name: actionName, disposable: disposable, determinate: determinate)
 				compositeDisposable += disposable
 				compositeDisposable += signal
 					.on(event: { (original) in

@@ -53,3 +53,8 @@
 * reevaluate all os_log calls to make sure using correct level
 
 * opening sidebar on full screen adjust only the size of editor, not results.
+
+* is it possible for multiple save requests to be in progress at one time? prohibit or handle
+
+* if no file in editor, and 2 other files. Delete first other file, and second other file is selected and then displayed. Only should select next file if it is an editable file.
+
