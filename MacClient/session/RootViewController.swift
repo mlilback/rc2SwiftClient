@@ -279,14 +279,6 @@ extension RootViewController: FileViewControllerDelegate {
 			}
 		}
 	}
-	
-	func renameFile(_ file:File, to:String) {
-		//TODO:implement renameFile
-	}
-
-	func importFiles(_ files:[URL]) {
-		
-	}
 }
 
 

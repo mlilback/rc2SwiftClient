@@ -64,6 +64,4 @@
 
 * If file list shows foo.Rmd, bar.R, and foo.html and bar.R is selected. If user clicks on foo.html, it is displayed on the right. But bar.R stays in the editor and it is not selected in the file list. Should the editor file always be selected? If an output file is selected, should the selection always revert back to the file loaded in the editor?
 
-* why is there a renameFile func in RootViewController?
-
 * opening sidebar on full screen adjust only the size of editor, not results.

@@ -43,8 +43,6 @@ class FileRowData: Equatable {
 
 protocol FileViewControllerDelegate: class {
 	func fileSelectionChanged(_ file: File?)
-	func renameFile(_ file:File, to: String)
-	func importFiles(_ files: [URL])
 }
 
 let FileDragTypes = [kUTTypeFileURL as String]
