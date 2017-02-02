@@ -21,12 +21,12 @@ extension Selector {
 
 @objc protocol ManageFontMenu {
 	///function that if implemented will cause validatemenuItem to be called with the Font menu item
-	func showFonts(_ sender:AnyObject)
+	func showFonts(_ sender: AnyObject?)
 	///function that if implemented will cause validatemenuItem to be called with the Font size menu item
-	func showFontSizes(_ sender:AnyObject)
+	func showFontSizes(_ sender: AnyObject?)
 	///should be action for each size font menu item
 	/// - parameter sender: the menu item. The size is the tag value, if zero, user should be asked for a custom value
-	func adjustFontSize(_ sender:NSMenuItem)
+	func adjustFontSize(_ sender: NSMenuItem)
 }
 
 func currentFontUser(_ firstResponder:NSResponder?) -> UsesAdjustableFont? {

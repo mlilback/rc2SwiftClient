@@ -15,21 +15,21 @@ extension Selector {
 	static let promptToImport = #selector(RootViewController.promptToImportFiles(_:))
 }
 
-class RootViewController: AbstractSessionViewController, ToolbarItemHandler, ManageFontMenu
+class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 {
 	//MARK: - properties
 	var sessionController: SessionController?
 	
 	var searchButton: NSSegmentedControl?
-	var statusTimer:Timer?
-	var sessionClosedHandler:((Void)->Void)?
+	var statusTimer: Timer?
+	var sessionClosedHandler: (() -> Void)?
 	
 	fileprivate var progressDisposable: Disposable?
-	fileprivate var dimmingView:DimmingView?
+	fileprivate var dimmingView: DimmingView?
 	weak var editor: SessionEditorController?
 	weak var outputHandler: OutputHandler?
 	weak var fileHandler: FileHandler?
-	var formerFirstResponder:NSResponder? //used to restore first responder when dimmingview goes away
+	var formerFirstResponder: NSResponder? //used to restore first responder when dimmingview goes away
 	
 	deinit {
 		sessionController?.close()
@@ -68,7 +68,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 
 	}
 	
-	func windowWillClose(_ note:Notification) {
+	func windowWillClose(_ note: Notification) {
 		if sessionOptional?.connectionOpen ?? false && (note.object as? NSWindow == view.window) {
 			sessionController?.close()
 			sessionController = nil
@@ -164,11 +164,11 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler, Man
 
 //MARK: - actions
 extension RootViewController {
-	@IBAction func clearFileCache(_ sender:AnyObject) {
+	@IBAction func clearFileCache(_ sender: AnyObject?) {
 		sessionController?.clearFileCache()
 	}
 	
-	@IBAction func promptToImportFiles(_ sender:AnyObject?) {
+	@IBAction func promptToImportFiles(_ sender: AnyObject?) {
 		fileHandler?.promptToImportFiles(sender)
 	}
 	
@@ -182,12 +182,12 @@ extension RootViewController {
 }
 
 //MARK: - fonts
-extension RootViewController {
-	@IBAction func showFonts(_ sender: AnyObject) {
+extension RootViewController: ManageFontMenu {
+	@IBAction func showFonts(_ sender: AnyObject?) {
 		//do nothing, just a place holder for menu validation
 	}
 	
-	@IBAction func showFontSizes(_ sender: AnyObject) {
+	@IBAction func showFontSizes(_ sender: AnyObject?) {
 		//do nothing. just placeholder for menu validation
 	}
 	
@@ -201,7 +201,7 @@ extension RootViewController {
 		}
 	}
 	
-	func updateFontFaceMenu(_ menu:NSMenu, fontUser:UsesAdjustableFont) {
+	func updateFontFaceMenu(_ menu: NSMenu, fontUser: UsesAdjustableFont) {
 		menu.removeAllItems()
 		//we want regular weight monospaced fonts
 		let traits = [NSFontSymbolicTrait: NSFontMonoSpaceTrait, NSFontWeightTrait: 0]
@@ -223,9 +223,9 @@ extension RootViewController {
 		}
 	}
 
-	func updateFontSizeMenu(_ menu:NSMenu, fontUser:UsesAdjustableFont) {
+	func updateFontSizeMenu(_ menu: NSMenu, fontUser: UsesAdjustableFont) {
 		var markedCurrent = false
-		var customItem:NSMenuItem?
+		var customItem: NSMenuItem?
 		let curSize = Int(fontUser.currentFontDescriptor.pointSize)
 		for anItem in menu.items {
 			anItem.state = NSOffState
@@ -253,20 +253,20 @@ extension RootViewController: SessionControllerDelegate {
 		fileHandler?.filesRefreshed(nil)
 	}
 
-	func saveState() -> [String:AnyObject] {
+	func saveState() -> [String: AnyObject] {
 		var dict = [String:AnyObject]()
 		dict["editor"] = editor?.saveState() as AnyObject?
 		return dict
 	}
 	
-	func restoreState(_ state:[String:AnyObject]) {
+	func restoreState(_ state: [String: AnyObject]) {
 		editor?.restoreState(state["editor"] as! [String:AnyObject])
 	}
 }
 
 //MARK: - FileViewControllerDelegate
 extension RootViewController: FileViewControllerDelegate {
-	func fileSelectionChanged(_ file:File?) {
+	func fileSelectionChanged(_ file: File?) {
 		if nil == file {
 			self.editor?.fileSelectionChanged(nil)
 			self.outputHandler?.showFile(nil)
@@ -313,7 +313,7 @@ class DimmingView: NSView {
 }
 
 class RootView: NSView {
-	var dimmingView:DimmingView?
+	var dimmingView: DimmingView?
 	//if dimmingView is visible, block all subviews from getting clicks
 	override func hitTest(_ aPoint: NSPoint) -> NSView? {
 		if dimmingView != nil && !dimmingView!.isHidden {
