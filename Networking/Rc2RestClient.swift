@@ -35,15 +35,20 @@ public final class Rc2RestClient {
 		return request
 	}
 	
-	public func createFile(name: String, workspace: Workspace, contentUrl: URL?, originalFileId: Int? = nil) -> SignalProducer<File, Rc2Error>
+	/// creates a file on the server
+	///
+	/// - Parameters:
+	///   - name: name of the file with extension
+	///   - workspace: workspace to contain the file
+	///   - contentUrl: optional URL to use as a template for the file
+	/// - Returns: SignalProducer for the file to add to the workspace, or an error
+	public func createFile(name: String, workspace: Workspace, contentUrl: URL?) -> SignalProducer<File, Rc2Error>
 	{
-		//TODO: remove originalFileId stuff
 		return SignalProducer<File, Rc2Error> { observer, _ in
 			var req = self.request("workspaces/\(workspace.wspaceId)/files/upload", method: "POST")
 			req.addValue("0", forHTTPHeaderField: "Content-Length")
 			req.addValue("application/octet-string", forHTTPHeaderField: "Content-Encoding")
 			req.addValue(name, forHTTPHeaderField: "Rc2-Filename")
-			if let ofileId = originalFileId { req.addValue(String(ofileId), forHTTPHeaderField: "Rc2-OriginalFileId") }
 			req.addValue(self.conInfo.authToken, forHTTPHeaderField: "Rc2-Auth")
 			let handler = { (data: Data?, response: URLResponse?, error: Error?) in
 				self.handleCreateResponse(observer: observer, data: data, response: response, error: error)
