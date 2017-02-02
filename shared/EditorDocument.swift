@@ -42,8 +42,8 @@ public class EditorDocument: NSObject {
 		super.init()
 	}
 
-	public func loadContents() -> SignalProducer<String, NSError> {
-		return SignalProducer<String, NSError>() { observer, _ in
+	public func loadContents() -> SignalProducer<String, Rc2Error> {
+		return SignalProducer<String, Rc2Error>() { observer, _ in
 			guard nil == self.savedContents else {
 				observer.send(value: self.savedContents!)
 				observer.sendCompleted()
@@ -51,9 +51,8 @@ public class EditorDocument: NSObject {
 			}
 			self.fileCache.contents(of: self.file).startWithResult { result in
 				guard let data = result.value else {
-					//TODO: handle error
 					os_log("failed to load contents of %{public}@: %{public}@", log: .app, self.file.name, result.error!.localizedDescription)
-					observer.send(error: result.error! as NSError)
+					observer.send(error: result.error!)
 					return
 				}
 				self.savedContents = String(data: data, encoding: String.Encoding.utf8)
