@@ -60,7 +60,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		super.viewWillAppear()
 		selectedOutputTab = .console
 		consoleController = firstChildViewController(self)
-		consoleController?.viewFileOrImage = displayFileAttachment
+		consoleController?.viewFileOrImage = displayAttachment
 		imageController = firstChildViewController(self)
 		imageController?.imageCache = imageCache
 		webController = firstChildViewController(self)
@@ -148,7 +148,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		selectedOutputTab = .console
 	}
 	
-	func displayFileAttachment(_ fileWrapper: FileWrapper) {
+	func displayAttachment(_ fileWrapper: FileWrapper) {
 		os_log("told to display file %{public}@", log: .app, type:.info, fileWrapper.filename!)
 		guard let attachment = try? MacConsoleAttachment.from(data: fileWrapper.regularFileContents!) else {
 			os_log("asked to display invalid attachment", log: .app)
@@ -159,7 +159,6 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 				if let file = sessionController?.session.workspace.file(withId: attachment.fileId) {
 					webController?.loadLocalFile(sessionController!.session.fileCache.validUrl(for: file))
 					selectedOutputTab = .webKit
-					//TODO: implement option to check by filename if not found by id
 				} else {
 					//TODO: report error
 					os_log("error getting file attachment to display: %d", log: .app, attachment.fileId)
