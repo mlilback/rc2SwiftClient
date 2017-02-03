@@ -90,7 +90,7 @@ public class Rc2DefaultFileManager: Rc2FileManager {
 		return destUrl
 	}
 	
-	///Moves the tmpFile downloaded via NSURLSession (or elsewher) to toUrl, setting the appropriate
+	///Synchronously moves the tmpFile downloaded via NSURLSession (or elsewhere) to toUrl, setting the appropriate
 	/// metadata including xattributes for validating cached File objects
 	public func move(tempFile: URL, to toUrl: URL, file: File?) throws {
 		do {
@@ -100,10 +100,12 @@ public class Rc2DefaultFileManager: Rc2FileManager {
 			try self.moveItem(at:tempFile, to: toUrl)
 			//if a File, set mod/creation date, ignoring any errors
 			if let fileRef = file {
-				//TODO: fix this to use native URL methods
-				_ = try? (toUrl as NSURL).setResourceValue(fileRef.lastModified, forKey: URLResourceKey.contentModificationDateKey)
-				_ = try? (toUrl as NSURL).setResourceValue(fileRef.dateCreated, forKey: URLResourceKey.creationDateKey)
-				fileRef.writeXAttributes(toUrl)
+				var fileUrl = toUrl
+				var resourceValues = URLResourceValues()
+				resourceValues.creationDate = fileRef.dateCreated
+				resourceValues.contentModificationDate = fileRef.lastModified
+				try fileUrl.setResourceValues(resourceValues)
+				fileRef.writeXAttributes(fileUrl)
 			}
 		} catch {
 			os_log("got error downloading file %{public}@: %{public}@", log: .network, tempFile.lastPathComponent, error.localizedDescription)
