@@ -58,3 +58,4 @@
 
 * if no file in editor, and 2 other files. Delete first other file, and second other file is selected and then displayed. Only should select next file if it is an editable file.
 
+* include help for included packages
