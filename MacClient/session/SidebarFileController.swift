@@ -50,8 +50,6 @@ let FileDragTypes = [kUTTypeFileURL as String]
 let addFileSegmentIndex: Int = 0
 let removeFileSegmentIndex: Int = 1
 
-//TODO: make sure when delegate renames file our list gets updated
-
 class SidebarFileController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler, NSOpenSavePanelDelegate, NSMenuDelegate
 {
 	//MARK: properties
@@ -189,8 +187,8 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				self.session.create(fileName: newName, contentUrl: nil) { result in
 					// the id of the file that was created
 					guard let fid = result.value else {
-						//TODO: handle error
 						self.logMessage("error creating empty file: %{public}s", result.error!.localizedDescription)
+						self.appStatus?.presentError(result.error!, session: self.session)
 						return
 					}
 					self.select(fileId: fid)
@@ -207,7 +205,8 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 		let defaults = UserDefaults.standard
 		if defaults[.supressDeleteFileWarnings] {
-			session.remove(file: file)
+			self.actuallyPerformDelete(file: file)
+			return
 		}
 		let alert = NSAlert()
 		alert.showsSuppressionButton = true
@@ -220,16 +219,8 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				defaults[.supressDeleteFileWarnings] = true
 			}
 			if response != NSAlertFirstButtonReturn { return }
-			self.session.remove(file: file)
-				.updateProgress(status: self.appStatus!, actionName: "Delete \(file.name)")
-				.startWithResult { result in
-				guard let error = result.error else { return } //worked
-				DispatchQueue.main.async {
-					self.appStatus?.presentError(error, session: self.session)
-				}
-			}
-			self.delegate?.fileSelectionChanged(nil)
-		}) 
+			self.actuallyPerformDelete(file: file)
+		})
 	}
 	
 	@IBAction func duplicateFile(_ sender: AnyObject?) {
@@ -247,8 +238,8 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 					.startWithResult { result in
 					// the id of the file that was created
 					guard let fid = result.value else {
-						//TODO: handle error
 						self.logMessage("error duplicating file: %{public}s", result.error!.localizedDescription)
+						self.appStatus?.presentError(result.error!, session: self.session)
 						return
 					}
 					self.select(fileId: fid)
@@ -284,8 +275,8 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 					self.select(fileId: file.fileId)
 					return
 				}
-				//TODO: handle error
 				self.logMessage("error duplicating file: %{public}s", error.localizedDescription)
+				self.appStatus?.presentError(error, session: self.session)
 			}
 		}
 	}
@@ -370,6 +361,20 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		tableView.selectRowIndexes(IndexSet(integer: fidx), byExtendingSelection: false)
 	}
 
+	fileprivate func actuallyPerformDelete(file: File) {
+		self.session.remove(file: file)
+			.updateProgress(status: self.appStatus!, actionName: "Delete \(file.name)")
+			.startWithResult { result in
+				DispatchQueue.main.async {
+					if let error = result.error {
+						self.appStatus?.presentError(error, session: self.session)
+					} else {
+						self.delegate?.fileSelectionChanged(nil)
+					}
+				}
+		}
+	}
+	
 	/// prompts for a filename
 	///
 	/// - Parameters:

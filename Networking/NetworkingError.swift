@@ -46,3 +46,12 @@ public enum NetworkingError: LocalizedError, Rc2DomainError {
 		}
 	}
 }
+
+public struct WebSocketError: LocalizedError, Rc2DomainError, CustomDebugStringConvertible {
+	let code: Int
+	let message: String
+	
+	public var errorDescription: String? { return message }
+	
+	public var debugDescription: String { return "ws error: \(message) (\(code))" }
+}

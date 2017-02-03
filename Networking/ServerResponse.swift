@@ -8,6 +8,8 @@ import Foundation
 import Freddy
 import os
 import SwiftyUserDefaults
+import Result
+import ClientCore
 
 // MARK: Keys for UserDefaults
 extension DefaultsKeys {
@@ -29,7 +31,7 @@ public enum ServerResponse : Equatable {
 	case showOutput(queryId: Int, updatedFile: File)
 	case variables(single: Bool, variables: [Variable])
 	case variablesDelta(assigned: [Variable], removed: [String])
-	case fileOperationResponse(transId: String, operation: FileOperation, file: File)
+	case fileOperationResponse(transId: String, operation: FileOperation, result: Result<File, Rc2Error>)
 	
 	
 	public func isEcho() -> Bool {
@@ -84,18 +86,41 @@ public enum ServerResponse : Equatable {
 			case "userid":
 				return nil //TODO: need to implement
 			case "fileOpResponse":
-				guard let transId = try? jsonObj.getString(at: "transId"),
-					let opName = try? jsonObj.getString(at: "operation"),
-					let op = FileOperation(rawValue: opName),
-					let file: File = try? jsonObj.decode(at: "file") else
-				{
-					return nil
-				}
-				return ServerResponse.fileOperationResponse(transId: transId, operation: op, file: file)
+				return parseFileOpResponse(jsonObj: jsonObj)
 			default:
 				os_log("unknown message from server:%{public}@", log: .session, msg)
 				return nil
 		}
+	}
+	
+	static func parseFileOpResponse(jsonObj: JSON) -> ServerResponse? {
+		guard let transId = try? jsonObj.getString(at: "transId"),
+			let opName = try? jsonObj.getString(at: "operation"),
+			let op = FileOperation(rawValue: opName),
+			let success = try? jsonObj.getBool(at: "success") else
+		{
+			return nil
+		}
+		var result: Result<File, Rc2Error>?
+		if success, let file: File = try? jsonObj.decode(at: "file")  {
+			result = Result<File, Rc2Error>(value: file)
+		} else {
+			result = Result<File, Rc2Error>(error: parseRemoteError(jsonObj: try? jsonObj.getDictionary(at: "error")))
+		}
+		return ServerResponse.fileOperationResponse(transId: transId, operation: op, result: result!)
+	}
+	
+	static func parseRemoteError(jsonObj: [String: JSON]?) -> Rc2Error {
+		guard let jdict = jsonObj, let code = try? jdict["errorCode"]?.getInt(),
+			let errorCode = code,
+			let message = try? jdict["errorMessage"]?.getString() ,
+			let errorMessage = message else
+		{
+			os_log("server error didn't include code and/or message", log: .network, type: .default)
+			return Rc2Error(type: .websocket, explanation: "invalid server response")
+		}
+		let nestedError = WebSocketError(code: errorCode, message: errorMessage)
+		return Rc2Error(type: .websocket, nested: nestedError, explanation: errorMessage)
 	}
 	
 	static func parseVariables(jsonObj: JSON) -> ServerResponse? {

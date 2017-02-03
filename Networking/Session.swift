@@ -59,7 +59,7 @@ public class Session {
 	///closure syntax for a transaction complete callback
 	/// - parameter $0: the transaction id (key in the pendingTransaction dictionary)
 	/// - parameter $1: the message received from the server, if available
-	fileprivate typealias TransactionCompletion = (String, JSON?) -> Void
+	fileprivate typealias TransactionCompletion = (String, JSON?, Rc2Error?) -> Void
 
 	///a dictionary of transaction ids mapped to closures called when the server says the transaction is complete
 	fileprivate var pendingTransactions: [String: TransactionCompletion] = [:]
@@ -191,8 +191,6 @@ public class Session {
 		watchingVariables = false
 	}
 	
-	//TODO: pendingTransactions need to pass errors for all functions using it
-
 	/// Creates an empty file on the server
 	///
 	/// - Parameters:
@@ -237,7 +235,11 @@ public class Session {
 		return SignalProducer<Void, Rc2Error>() { observer, _ in
 			let transId = UUID().uuidString
 			self.sendMessage(json: .dictionary(["msg": .string("fileop"), "fileId": .int(file.fileId), "fileVersion": .int(file.version), "operation": .string("rm"), "transId": .string(transId)]))
-			self.pendingTransactions[transId] = { (responseId, json) in
+			self.pendingTransactions[transId] = { (responseId, json, error) in
+				if let err = error {
+					observer.send(error: err)
+					return
+				}
 				observer.sendCompleted()
 			}
 		}
@@ -252,7 +254,11 @@ public class Session {
 		return SignalProducer<Void, Rc2Error>() { observer, _ in
 			let transId = UUID().uuidString
 			self.sendMessage(json: .dictionary(["msg": .string("fileop"), "fileId": .int(file.fileId), "fileVersion": .int(file.version), "operation": .string("rename"), "newName": .string(newName), "transId": .string(transId)]))
-			self.pendingTransactions[transId] = { (responseId, json) in
+			self.pendingTransactions[transId] = { (responseId, json, error) in
+				if let err = error {
+					observer.send(error: err)
+					return
+				}
 				observer.sendCompleted()
 			}
 		}
@@ -268,7 +274,11 @@ public class Session {
 		return SignalProducer<Int, Rc2Error>() { observer, _ in
 			let transId = UUID().uuidString
 			self.sendMessage(json: .dictionary(["msg": .string("fileop"), "fileId": .int(file.fileId), "fileVersion": .int(file.version), "operation": .string("duplicate"), "newName": .string(newName), "transId": .string(transId)]))
-			self.pendingTransactions[transId] = { (responseId, json) in
+			self.pendingTransactions[transId] = { (responseId, json, error) in
+				if let err = error {
+					observer.send(error: err)
+					return
+				}
 				observer.sendCompleted()
 			}
 		}
@@ -298,7 +308,11 @@ public class Session {
 				observer.send(error: Rc2Error(type: .logic, explanation:"failed to encode save file message"))
 				return
 			}
-			self.pendingTransactions[transId] = { (responseId, json) in
+			self.pendingTransactions[transId] = { (responseId, json, error) in
+				guard error == nil else {
+					observer.send(error: error!)
+					return
+				}
 				observer.send(value: true)
 				observer.sendCompleted()
 			}
@@ -362,11 +376,12 @@ private extension Session {
 	}
 	
 	//we've got a dictionary of the save response. keys should be transId, success, file, error
-	func handleSaveResponse(_ rawDict:[String:AnyObject]) {
+	func handleSaveResponse(_ rawDict: [String: AnyObject]) {
 		os_log("handleSaveResponse called", log: .session, type: .info)
 		if let transId = rawDict["transId"] as? String {
+			//TODO: can this return an error? If so, need to handle it
 			os_log("sendSaveFileMessage calling pending transaction", log: .session, type: .info)
-			pendingTransactions[transId]?(transId, nil)
+			pendingTransactions[transId]?(transId, nil, nil)
 			pendingTransactions.removeValue(forKey: transId)
 		}
 		if let errorDict = rawDict["error"] as? Dictionary<String,AnyObject> {
@@ -386,7 +401,11 @@ private extension Session {
 		}
 	}
 	
-	func handleFileResponse(_ transId:String, operation:FileOperation, file:File) {
+	func handleFileResponse(_ transId: String, operation: FileOperation, result: Result<File, Rc2Error>) {
+		guard let file = result.value else {
+			//error should have been handled via pendingTransaction
+			return
+		}
 		switch(operation) {
 		case .Duplicate:
 			//no need to do anything, fileUpdated message should arrive
@@ -423,10 +442,12 @@ private extension Session {
 				return
 			}
 			os_log("got message %{public}@", log: .session, msg)
+			var serverError: Rc2Error?
 			if let response = ServerResponse.parseResponse(jsonMessage) {
 				switch response {
-				case .fileOperationResponse(let transId, let operation, let file):
-					handleFileResponse(transId, operation:operation, file:file)
+				case .fileOperationResponse(let transId, let operation, let result):
+					serverError = result.error
+					handleFileResponse(transId, operation: operation, result: result)
 				case .fileChanged(let changeType, let fileId, let file):
 					handleFileChangedResponse(changeType: FileChangeType(rawValue: changeType)!, fileId: fileId, file: file)
 				case .execComplete(_, _, let images):
@@ -437,7 +458,7 @@ private extension Session {
 				}
 			}
 			if let transId = try? jsonMessage.getString(at: "transId") {
-				pendingTransactions[transId]?(transId, jsonMessage)
+				pendingTransactions[transId]?(transId, jsonMessage, serverError)
 				pendingTransactions.removeValue(forKey: transId)
 			}
 		} else if let _ = message as? Data {
