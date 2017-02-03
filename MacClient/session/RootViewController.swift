@@ -192,13 +192,32 @@ extension RootViewController: ManageFontMenu {
 	}
 	
 	@IBAction func adjustFontSize(_ sender: NSMenuItem) {
-		let fsize = sender.tag
-		if fsize < 9 {
-			//TODO: implement custom font size dialog
-		} else {
+		var fsize = sender.tag
+		if fsize >= 9 {
 			let fontUser = currentFontUser(view.window!.firstResponder)
 			fontUser?.currentFontDescriptor = fontUser!.currentFontDescriptor.withSize(CGFloat(fsize))
+			return
 		}
+		//prompt for size to use
+		let sboard = NSStoryboard(name: "Main", bundle: nil)
+		guard let wc = sboard.instantiateController(withIdentifier: "FontSizeWindowController") as? NSWindowController, let vc = wc.contentViewController as? SingleInputViewController else
+		{
+			fatalError()
+		}
+		vc.saveAction = { inputVC in
+			fsize = inputVC.textField!.integerValue
+			if fsize >= 9 && fsize <= 64 {
+				let fontUser = currentFontUser(self.view.window!.firstResponder)
+				fontUser?.currentFontDescriptor = fontUser!.currentFontDescriptor.withSize(CGFloat(fsize))
+			}
+			print("size = \(inputVC.textField?.intValue ?? -1)")
+		}
+		vc.enableSaveButton = { val in
+			guard let ival = val as? Int else { return false }
+			return ival >= 9 && ival <= 64
+		}
+		vc.textField!.objectValue = currentFontUser(view.window!.firstResponder)?.currentFontDescriptor.pointSize
+		presentViewControllerAsSheet(vc)
 	}
 	
 	func updateFontFaceMenu(_ menu: NSMenu, fontUser: UsesAdjustableFont) {

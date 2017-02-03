@@ -179,6 +179,7 @@
 		0864DA641DA2BDC1003F3F57 /* DockerControl.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0864DA621DA2BDC1003F3F57 /* DockerControl.storyboard */; };
 		0864DA661DA2C70A003F3F57 /* DockerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0864DA651DA2C70A003F3F57 /* DockerViewController.swift */; };
 		0864DA681DA2C8D1003F3F57 /* DockerContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0864DA671DA2C8D1003F3F57 /* DockerContainerController.swift */; };
+		086508771E43F27C0067C8CA /* SingleInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086508761E43F27C0067C8CA /* SingleInputViewController.swift */; };
 		086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */; };
 		0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086659991CA1F3E5007AC555 /* MainWindow.xib */; };
 		08678C971DCA78CE00F9F283 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
@@ -687,6 +688,7 @@
 		0864DA631DA2BDC1003F3F57 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/DockerControl.storyboard; sourceTree = "<group>"; };
 		0864DA651DA2C70A003F3F57 /* DockerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerViewController.swift; sourceTree = "<group>"; };
 		0864DA671DA2C8D1003F3F57 /* DockerContainerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerContainerController.swift; sourceTree = "<group>"; };
+		086508761E43F27C0067C8CA /* SingleInputViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleInputViewController.swift; sourceTree = "<group>"; };
 		086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemExtensionsTests.swift; sourceTree = "<group>"; };
 		0866599A1CA1F3E5007AC555 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/MainWindow.xib; sourceTree = SOURCE_ROOT; };
 		08678C961DCA78CE00F9F283 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/Mac/Freddy.framework; sourceTree = "<group>"; };
@@ -1235,6 +1237,7 @@
 				083382F01C64341C00D40EEB /* AppStatusView.swift */,
 				083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */,
 				08F673CF1D020B2700B87049 /* MiscProtocols.swift */,
+				086508761E43F27C0067C8CA /* SingleInputViewController.swift */,
 				08F448F31C4E244500C64706 /* session */,
 				088935801DFF30D100C94B19 /* bookmarks */,
 				088935811DFF30EA00C94B19 /* docker */,
@@ -2099,6 +2102,7 @@
 				083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */,
 				08A01FC61CC7FCA3001EDFAA /* FMDatabasePool.m in Sources */,
 				083A56711D24722C009D3091 /* ProjectManagerViewController.swift in Sources */,
+				086508771E43F27C0067C8CA /* SingleInputViewController.swift in Sources */,
 				08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */,
 				0827A4E91C7ED9CE001F0AFB /* SyntaxParser.swift in Sources */,
 				08525E781E3143C3008A332E /* InputPrompter.swift in Sources */,
