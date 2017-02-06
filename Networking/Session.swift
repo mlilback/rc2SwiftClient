@@ -316,7 +316,7 @@ public class Session {
 				observer.send(value: true)
 				observer.sendCompleted()
 			}
-			self.wsSource.send(data)
+			self.wsSource.write(data: data)
 		}
 	}
 	
@@ -470,7 +470,7 @@ private extension Session {
 	
 	@discardableResult func sendMessage(json: JSON) -> Bool {
 		do {
-			self.wsSource.send(try json.serializeString())
+			self.wsSource.write(string: try json.serializeString())
 		} catch let err as NSError {
 			os_log("error sending json message on websocket: %{public}@", log: .session, type:.error, err)
 			return false
