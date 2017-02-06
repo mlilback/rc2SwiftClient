@@ -42,6 +42,16 @@ class SessionSpec: NetworkingBaseSpec {
 		var fakeCache: FakeFileCache!
 		var session: Session!
 		let dummyBaseUrl = URL(string: "http://dev.rc2/")!
+		var tmpDirectory: URL!
+		
+		beforeSuite {
+			tmpDirectory = URL(string: UUID().uuidString, relativeTo: FileManager.default.temporaryDirectory)
+			try! FileManager.default.createDirectory(at: tmpDirectory, withIntermediateDirectories: true, attributes: nil)
+		}
+		
+		afterSuite {
+			let _ = try? FileManager.default.removeItem(at: tmpDirectory)
+		}
 		
 		beforeEach {
 			json = self.loadTestJson("loginResults")
@@ -51,7 +61,7 @@ class SessionSpec: NetworkingBaseSpec {
 			}
 			wspace = conInfo.project(withId: 100)!.workspace(withId: 100)!
 			fakeDelegate = FakeSessionDelegate()
-			fakeSocket = TestingWebSocket()
+			fakeSocket = TestingWebSocket(url: URL(string: "ws://foo.com")!, protocols: [])
 			fakeCache = FakeFileCache(workspace: wspace, baseUrl: dummyBaseUrl)
 			session = Session(connectionInfo: conInfo, workspace: wspace, delegate: fakeDelegate, fileCache: fakeCache, webSocket: fakeSocket, queue: .global())
 			//TODO: stub REST urls
@@ -63,7 +73,7 @@ class SessionSpec: NetworkingBaseSpec {
 		describe("query response with file") {
 			it("connection opens") {
 				//open the session
-				let starter = session.open(session.createWebSocketRequest())
+				let starter = session.open()
 				let result = self.makeCompletedRequest(producer: starter)
 				expect(result.error).to(beNil())
 			}
@@ -81,6 +91,7 @@ class SessionSpec: NetworkingBaseSpec {
 					}
 					return jsonData(self.loadFileData("createfile", fileExtension: "json")!, status: 201)(request)
 				})
+				fakeCache.fileInfo[212] = FakeFileInfo(fileId: 212, data: nil, url: tmpDirectory.appendingPathComponent("212.R"), cached: false)
 				let createExpectation = self.expectation(description: "create file")
 				var createdResult: Result<Int, Rc2Error>?
 				session.create(fileName: "created.R") { result in
@@ -90,20 +101,6 @@ class SessionSpec: NetworkingBaseSpec {
 				self.waitForExpectations(timeout: 2.0, handler: nil)
 				expect(createdResult?.error).to(beNil())
 				expect(createdResult?.value).to(equal(212))
-			}
-
-			it("never inserted") {
-				self.stub(uri(uri: "/workspaces/100/files/upload"), builder: jsonData(self.loadFileData("createfile", fileExtension: "json")!, status: 201))
-				let createExpectation = self.expectation(description: "create file")
-				var createdResult: Result<Int, Rc2Error>?
-				session.create(fileName: "created.R", timeout: 0.5) { result in
-					createdResult = result
-					createExpectation.fulfill()
-				}
-				self.waitForExpectations(timeout: 1.0, handler: nil)
-				expect(createdResult?.error).toNot(beNil())
-				expect(createdResult?.error?.type).to(equal(Rc2Error.Rc2ErrorType.network))
-				expect(createdResult?.error?.nestedError).to(matchError(NetworkingError.timeout))
 			}
 
 			it("server error") {
@@ -127,7 +124,7 @@ class SessionSpec: NetworkingBaseSpec {
 	}
 
 	func open(session: Session) {
-		let starter = session.open(session.createWebSocketRequest())
+		let starter = session.open()
 		let result = self.makeCompletedRequest(producer: starter)
 		expect(result.error).to(beNil())
 	}

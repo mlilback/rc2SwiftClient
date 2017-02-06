@@ -7,36 +7,32 @@
 import Foundation
 @testable import Networking
 import ClientCore
-@testable import SwiftWebSocket
+import Starscream
 
-class TestingWebSocket: WebSocketSource {
-	var event: WebSocketEvents = WebSocketEvents()
-	var binaryType: WebSocketBinaryType = .nsData
-
+class TestingWebSocket: WebSocket {
 	var stringsWritten = [String]()
 
-	func open(request: URLRequest, subProtocols : [String]) {
-		event.open()
+	override func connect() {
+		onConnect?()
 	}
-	
-	func close(_ code : Int, reason : String) {
-		event.close(0, "mock", true)
+
+	override func write(string: String, completion: (() -> ())?) {
+		stringsWritten.append(string)
+		completion?()
 	}
-	
-	func send(_ message : Any) {
-		if let str = message as? String {
-			stringsWritten.append(str)
-		} else {
-			NSLog("TestingWebSocket: binary message ignored")
-		}
+
+	override func write(data: Data, completion: (() -> ())?) {
+		completion?()
 	}
 	
 	/// Fakes a message from the other side of the websocket
 	///
 	/// - Parameter message: string or data that was "sent"
-	func serverSent(_ message: Any) {
-		DispatchQueue.global().async {
-			self.event.message(message)
+	func serverSent(_ message: String) {
+		callbackQueue.async { [weak self] in
+			guard let s = self else { return }
+			s.onText?(message)
+			s.delegate?.websocketDidReceiveMessage(socket: s, text: message)
 		}
 	}
 }
