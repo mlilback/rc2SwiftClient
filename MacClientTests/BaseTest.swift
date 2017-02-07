@@ -8,6 +8,7 @@
 import XCTest
 @testable import MacClient
 import Freddy
+import Networking
 
 class BaseTest: XCTestCase {
 

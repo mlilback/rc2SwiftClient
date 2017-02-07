@@ -7,7 +7,6 @@
 import Foundation
 @testable import MacClient
 import os
-import BrightFutures
 
 public class DefaultFileManager: Rc2FileManager {
 	public func Url(for directory: FileManager.SearchPathDirectory, domain: FileManager.SearchPathDomainMask, appropriateFor url: URL?, create shouldCreate: Bool) throws -> URL

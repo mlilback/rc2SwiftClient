@@ -5,10 +5,10 @@
 //
 
 import Foundation
-import BrightFutures
 @testable import MacClient
 import XCTest
 import os
+import Networking
 
 struct MockFileEntry {
 	let file:File

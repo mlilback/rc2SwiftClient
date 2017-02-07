@@ -6,9 +6,9 @@
 //
 
 import XCTest
-@testable import MacClient
+@testable import Networking
 
-class xattrTests: BaseTest {
+class xattrTests: XCTestCase {
 	var fileUrl: URL!
 	let contentString = "foo\nbar\nbaz"
 	let testAttr1Name = "io.rc2.XAttrTest.attr1"
