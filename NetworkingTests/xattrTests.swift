@@ -12,14 +12,18 @@ class xattrTests: XCTestCase {
 	var fileUrl: URL!
 	let contentString = "foo\nbar\nbaz"
 	let testAttr1Name = "io.rc2.XAttrTest.attr1"
+	var tmpUrl: URL!
 	
 	override func setUp() {
 		super.setUp()
-		fileUrl = URL(string: UUID().uuidString, relativeTo: mockFM.tempDirUrl as URL)!.absoluteURL
+		tmpUrl = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+		try? FileManager.default.createDirectory(at: tmpUrl, withIntermediateDirectories: true, attributes: nil)
+		fileUrl = URL(string: UUID().uuidString, relativeTo: tmpUrl)!.absoluteURL
 		try? contentString.data(using: String.Encoding.utf8)?.write(to: fileUrl, options: [])
 	}
 	
 	override func tearDown() {
+		try? FileManager.default.removeItem(at: tmpUrl)
 		super.tearDown()
 	}
 
