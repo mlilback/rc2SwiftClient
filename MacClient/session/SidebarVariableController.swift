@@ -122,11 +122,12 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 		return view
 	}
 
+	//not sure why this was implemented. don't think we want it now
 	func tableView(_ tableView: NSTableView, selectionIndexesForProposedSelection proposedSelectionIndexes: IndexSet) -> IndexSet
 	{
-		guard proposedSelectionIndexes.count > 0 else { return proposedSelectionIndexes }
-		let variable = rootVariables[proposedSelectionIndexes.first!]
-		if variable.count <= 1 && variable.primitiveType != .na { return tableView.selectedRowIndexes }
+//		guard proposedSelectionIndexes.count > 0 else { return proposedSelectionIndexes }
+//		let variable = rootVariables[proposedSelectionIndexes.first!]
+//		if variable.count <= 1 && variable.primitiveType != .na { return tableView.selectedRowIndexes }
 		return proposedSelectionIndexes
 	}
 	
