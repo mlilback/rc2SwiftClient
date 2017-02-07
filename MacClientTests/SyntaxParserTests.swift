@@ -7,10 +7,11 @@
 
 import XCTest
 @testable import MacClient
+import Networking
 
 class SyntaxParserTests: XCTestCase {
-	var storage:NSTextStorage!
-	var parser:SyntaxParser!
+	var storage: NSTextStorage!
+	var parser: SyntaxParser!
 	
 	override func setUp() {
 		super.setUp()
@@ -21,8 +22,8 @@ class SyntaxParserTests: XCTestCase {
 		super.tearDown()
 	}
 
-	func loadStorageWith(_ filename:String, suffix:String) {
-		parser = SyntaxParser.parserWithTextStorage(storage, fileType: FileType.fileTypeWithExtension(suffix)!)
+	func loadStorageWith(_ filename: String, suffix: String) {
+		parser = SyntaxParser.parserWithTextStorage(storage, fileType: FileType.fileType(withExtension: suffix)!)
 		let fileUrl = Bundle(for: type(of: self)).url(forResource: filename, withExtension: suffix, subdirectory: nil)!
 		let contents = try! String(contentsOf: fileUrl, encoding: String.Encoding.utf8)
 		storage.replaceCharacters(in: NSMakeRange(0, storage.string.utf8.count), with: contents)
@@ -40,7 +41,7 @@ class SyntaxParserTests: XCTestCase {
 		chunks[0].parsedRange = NSMakeRange(0, 10)
 		chunks[1].parsedRange = NSMakeRange(10, 20)
 		chunks[2].parsedRange = NSMakeRange(30, 30)
-		parser = SyntaxParser.parserWithTextStorage(storage, fileType: FileType.fileTypeWithExtension("Rmd")!)
+		parser = SyntaxParser.parserWithTextStorage(storage, fileType: FileType.fileType(withExtension: "Rmd")!)
 		parser.chunks = chunks
 		//test empty range which should return first chunk
 		var results = parser.chunksForRange(NSMakeRange(0, 0))

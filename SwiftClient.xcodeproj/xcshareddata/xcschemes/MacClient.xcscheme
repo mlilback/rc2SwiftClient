@@ -74,26 +74,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "088CE6791C4B0AF500153414"
-               BuildableName = "MacClientTests.xctest"
-               BlueprintName = "MacClientTests"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "089793FA1D7B6625003339EE"
-               BuildableName = "LocalServerCoreTests.xctest"
-               BlueprintName = "LocalServerCoreTests"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "089794211D7B68F0003339EE"
                BuildableName = "ClientCoreTests.xctest"
                BlueprintName = "ClientCoreTests"
@@ -114,9 +94,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "08F6ADC91DD9169300AF0722"
-               BuildableName = "DockerSupportTests.xctest"
-               BlueprintName = "DockerSupportTests"
+               BlueprintIdentifier = "088CE6791C4B0AF500153414"
+               BuildableName = "MacClientTests.xctest"
+               BlueprintName = "MacClientTests"
                ReferencedContainer = "container:SwiftClient.xcodeproj">
             </BuildableReference>
          </TestableReference>

@@ -12,30 +12,30 @@ import Networking
 
 class BaseTest: XCTestCase {
 
-	var sessionData:LoginSession!
-	var mockFM:MockFileManager!
-	let serverHost:ServerHost = ServerHost(name: "local", host: "localhost", port: 8088, user: "local")
+//	var sessionData:LoginSession!
+//	var mockFM:MockFileManager!
+	let serverHost: ServerHost = ServerHost(name: "local", host: "localhost", port: 8088, user: "local")
 	
 	override func setUp() {
 		super.setUp()
 		//setup filemanager with directory to trash
-		mockFM = MockFileManager()
+//		mockFM = MockFileManager()
 		
-		let path : String = Bundle(for: BaseTest.self).path(forResource: "loginResults", ofType: "json")!
-		let resultData = try! Data(contentsOf: URL(fileURLWithPath: path))
-		sessionData = LoginSession(json: JSON.init(data: resultData), host: "test")
+//		let path : String = Bundle(for: BaseTest.self).path(forResource: "loginResults", ofType: "json")!
+//		let resultData = try! Data(contentsOf: URL(fileURLWithPath: path))
+//		sessionData = LoginSession(json: JSON.init(data: resultData), host: "test")
 	}
 	
 	override func tearDown() {
-		mockFM = nil
+//		mockFM = nil
 		super.tearDown()
 	}
 	
 	func workspaceForTesting() -> Workspace {
 		let path : String = Bundle(for: type(of: self)).path(forResource: "createWorkspace", ofType: "json")!
 		let json = try! String(contentsOfFile: path)
-		let parsedJson = JSON.parse(json)
-		let project = Project(json: parsedJson["projects"][0])
+		let parsedJson = try! JSON(jsonString: json)
+		let project: Project = try! parsedJson.decode(at: "projects", 0)
 		return project.workspaces.first!
 	}
 	

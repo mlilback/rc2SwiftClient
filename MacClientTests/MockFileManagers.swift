@@ -6,7 +6,9 @@
 
 import Foundation
 @testable import MacClient
+@testable import Networking
 import os
+import ClientCore
 
 public class DefaultFileManager: Rc2FileManager {
 	public func Url(for directory: FileManager.SearchPathDirectory, domain: FileManager.SearchPathDomainMask, appropriateFor url: URL?, create shouldCreate: Bool) throws -> URL
@@ -14,9 +16,8 @@ public class DefaultFileManager: Rc2FileManager {
 		return try FileManager.default.url(for: directory, in: domain, appropriateFor: url, create: shouldCreate)
 	}
 	
-	public func move(tempFile: URL, to toUrl: URL, file: File?, promise: inout Promise<URL?, FileError>)
-	{
-		fatalError("not implemented")
+	public func move(tempFile: URL, to toUrl: URL, file: File?) throws {
+		fatalError()
 	}
 	
 	public func moveItem(at srcURL: URL, to dstURL: URL) throws {

@@ -33,7 +33,10 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 
 	func applicationWillFinishLaunching(_ notification: Notification) {
-		dockerManager = DockerManager()
+		//only init dockerManager if not running unit tests
+		if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+			dockerManager = DockerManager()
+		}
 		DispatchQueue.main.async {
 			self.startSetup()
 		}
@@ -116,6 +119,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	/// should be only called after docker manager has initialized
 	func startSetup() {
 		precondition(setupController == nil)
+		//skip docker stuff for unit tests
+		guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
 		guard let docker = dockerManager else { fatalError("no docker manager") }
 		// load window and setupController
 		let sboard = SwinjectStoryboard.create(name: "Main", bundle: nil)
