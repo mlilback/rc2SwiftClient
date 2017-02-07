@@ -46,7 +46,6 @@
 		08127CD51DAD2434002E0D01 /* ClientCoreIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08127CD41DAD2434002E0D01 /* ClientCoreIntegrationTests.swift */; };
 		08127CD71DAD2434002E0D01 /* ClientCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; };
 		08127CDF1DAD5BA9002E0D01 /* ReactiveSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		081468371C755A1E006DF8FC /* FileImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081468361C755A1E006DF8FC /* FileImporterTests.swift */; };
 		0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */; };
 		081559701DDA763A0047B3CE /* ClientCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		081559731DDB82970047B3CE /* NotifyingCollection.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -566,7 +565,6 @@
 		08127CD21DAD2434002E0D01 /* ClientCoreIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClientCoreIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		08127CD41DAD2434002E0D01 /* ClientCoreIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCoreIntegrationTests.swift; sourceTree = "<group>"; };
 		08127CD61DAD2434002E0D01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		081468361C755A1E006DF8FC /* FileImporterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporterTests.swift; sourceTree = "<group>"; };
 		0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacConsoleAttachment.swift; sourceTree = "<group>"; };
 		0815597C1DDB9F630047B3CE /* ServerResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerResponse.swift; sourceTree = "<group>"; };
 		0815597E1DDBAEB30047B3CE /* ServerResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerResponseHandler.swift; sourceTree = "<group>"; };
@@ -1255,7 +1253,6 @@
 				083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */,
 				0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */,
 				081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */,
-				081468361C755A1E006DF8FC /* FileImporterTests.swift */,
 				08FDB1981C591409006FCD1A /* ImageCacheTests.swift */,
 				088CE6BB1C4C508000153414 /* KeychainTests.swift */,
 				0845CB1D1C616E060090267C /* MockFileManagers.swift */,
@@ -2106,7 +2103,6 @@
 				08F42FA21D33F47000A1EE8D /* MockSessionHelpers.swift in Sources */,
 				08F189BD1D2184EB00866A05 /* BookmarkTest.swift in Sources */,
 				088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */,
-				081468371C755A1E006DF8FC /* FileImporterTests.swift in Sources */,
 				08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */,
 				0845CB1E1C616E060090267C /* MockFileManagers.swift in Sources */,
 				086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */,
