@@ -59,3 +59,17 @@
 * if no file in editor, and 2 other files. Delete first other file, and second other file is selected and then displayed. Only should select next file if it is an editable file.
 
 * include help for included packages
+
+* ability to center splitters (double click is standard, right?)
+
+* delete confirm needs to show name of file
+
+* attachment only links via id. If a generated file (pdf, html) need to match on name since id constantly changes.
+
+* when a file has changed, should user see notice that isn't the same file as when attachment icon was generated? Or should be remove icons? Or store version info and color if different?
+
+* not all variable rows can be selected. Might be a limit of every other, or based on data type.
+
+* variable sidebar should support copy
+
+* implement FileImporterTests
