@@ -176,6 +176,7 @@
 		086508791E452D3A0067C8CA /* Result+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086508781E452D3A0067C8CA /* Result+Rc2.swift */; };
 		0865087D1E49360A0067C8CA /* Starscream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0865087F1E4940E20067C8CA /* xattrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0865087E1E4940E20067C8CA /* xattrTests.swift */; };
+		086508811E4A431C0067C8CA /* FileImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086508801E4A431C0067C8CA /* FileImporterTests.swift */; };
 		086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */; };
 		0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086659991CA1F3E5007AC555 /* MainWindow.xib */; };
 		08678C971DCA78CE00F9F283 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
@@ -678,6 +679,7 @@
 		086508761E43F27C0067C8CA /* SingleInputViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleInputViewController.swift; sourceTree = "<group>"; };
 		086508781E452D3A0067C8CA /* Result+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Result+Rc2.swift"; sourceTree = "<group>"; };
 		0865087E1E4940E20067C8CA /* xattrTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = xattrTests.swift; sourceTree = "<group>"; };
+		086508801E4A431C0067C8CA /* FileImporterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporterTests.swift; sourceTree = "<group>"; };
 		086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemExtensionsTests.swift; sourceTree = "<group>"; };
 		0866599A1CA1F3E5007AC555 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/MainWindow.xib; sourceTree = SOURCE_ROOT; };
 		08678C961DCA78CE00F9F283 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/Mac/Freddy.framework; sourceTree = "<group>"; };
@@ -973,6 +975,7 @@
 				080E82FD1DCCD77D0048F36C /* loginResults.json */,
 				08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */,
 				0881B5071DCD336500679DB3 /* variables.json */,
+				086508801E4A431C0067C8CA /* FileImporterTests.swift */,
 				081559961DDCFEB00047B3CE /* FileCacheSpec.swift */,
 				080E82F91DCCD4E90048F36C /* FileSpec.swift */,
 				080E82EB1DCC001E0048F36C /* FileTypeSpec.swift */,
@@ -1180,11 +1183,11 @@
 				084199331D9179C60089A1AC /* xcconfig */,
 				088CE66B1C4B0AF400153414 /* MacClient */,
 				088CE6941C4B605D00153414 /* shared */,
+				088CE67D1C4B0AF500153414 /* MacClientTests */,
 				0897941B1D7B68F0003339EE /* ClientCore */,
 				089794281D7B68F0003339EE /* ClientCoreTests */,
 				08127CD31DAD2434002E0D01 /* ClientCoreIntegrationTests */,
 				08A01FAF1CC7FA28001EDFAA /* createHelpIndex */,
-				088CE67D1C4B0AF500153414 /* MacClientTests */,
 				080E82C21DCBE31D0048F36C /* Networking */,
 				080E82CF1DCBE31D0048F36C /* NetworkingTests */,
 				08F6ADC31DD9169300AF0722 /* DockerSupport */,
@@ -1997,6 +2000,7 @@
 				0881B5101DCFA99A00679DB3 /* LoginSpec.swift in Sources */,
 				088935841E004FF500C94B19 /* SessionSpec.swift in Sources */,
 				080E82FC1DCCD56F0048F36C /* NetworkingBaseSpec.swift in Sources */,
+				086508811E4A431C0067C8CA /* FileImporterTests.swift in Sources */,
 				0881B5061DCD329300679DB3 /* VariableSpec.swift in Sources */,
 				08F6ADAC1DD6502000AF0722 /* ModelSpec.swift in Sources */,
 				080E82EC1DCC001E0048F36C /* FileTypeSpec.swift in Sources */,

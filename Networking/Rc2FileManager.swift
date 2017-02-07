@@ -30,7 +30,7 @@ public protocol Rc2FileManager {
 	func move(tempFile: URL, to toUrl: URL, file: File?) throws
 }
 
-public class Rc2DefaultFileManager: Rc2FileManager {
+open class Rc2DefaultFileManager: Rc2FileManager {
 	let fm:FileManager
 	
 	public init(fileManager: FileManager = FileManager.default) {

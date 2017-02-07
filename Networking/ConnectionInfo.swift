@@ -20,23 +20,22 @@ public class ConnectionInfo: CustomStringConvertible {
 	
 	private let _projects = CollectionNotifier<Project>()
 	
-	public var urlSessionConfig: URLSessionConfiguration {
-		let conf = URLSessionConfiguration.default
-		conf.httpAdditionalHeaders = ["Rc2-Auth": authToken]
-		return conf
-	}
+	public var urlSessionConfig: URLSessionConfiguration!
 	
 	/// initializer
 	///
 	/// - Parameters:
 	///   - host: the host connected to
 	///   - json: the json returned when connecting
+	///   - config: defaults to the .default configuration
 	/// - Throws: json decoding exceptions
-	public init(host: ServerHost, json: JSON) throws {
+	public init(host: ServerHost, json: JSON, config: URLSessionConfiguration = .default) throws {
 		self.host = host
 		authToken = try json.getString(at: "token")
 		user = try json.decode(at: "user")
 		try _projects.append(contentsOf: try json.decodedArray(at: "projects"))
+		config.httpAdditionalHeaders = ["Rc2-Auth": authToken]
+		self.urlSessionConfig = config
 	}
 	
 	//documentation inherited from protocol
