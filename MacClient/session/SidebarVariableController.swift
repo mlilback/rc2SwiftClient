@@ -29,13 +29,15 @@ fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 
 
 
-class SidebarVariableController : AbstractSessionViewController, VariableHandler, NSTableViewDataSource, NSTableViewDelegate {
+class SidebarVariableController : AbstractSessionViewController {
+	//MARK: properties
 	var rootVariables:[Variable] = []
 	var changedIndexes:Set<Int> = []
 	var variablePopover:NSPopover?
 	var isVisible = false
 	@IBOutlet var varTableView:NSTableView?
 	
+	//MARK: methods
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		if sessionOptional != nil {
@@ -66,6 +68,28 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 		return rootVariables.filter({ $0.name == name }).first
 	}
 	
+	@IBAction func copy(_ sender: AnyObject?) {
+		guard let row = varTableView?.selectedRow, row >= 0 else { return }
+		let pasteboard = NSPasteboard.general()
+		pasteboard.clearContents()
+		pasteboard.setString(rootVariables[row].description, forType: NSPasteboardTypeString)
+	}
+}
+
+extension SidebarVariableController: NSUserInterfaceValidations {
+	func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
+		guard let action = item.action, let tableView = varTableView else { return false }
+		switch action {
+			case #selector(SidebarVariableController.copy(_:)):
+				return tableView.selectedRowIndexes.count > 0
+			default:
+				return false
+		}
+	}
+}
+
+//MARK: - VariableHandler
+extension SidebarVariableController: VariableHandler {
 	func handleVariableMessage(_ single:Bool, variables:[Variable]) {
 		if single {
 			if let curVal = variableNamed(variables[0].name) {
@@ -97,13 +121,23 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 		}
 		varTableView?.reloadData()
 	}
-	
-	//MARK: NSTableViewDataSource
+}
+
+//MARK: - NSTableViewDataSource
+extension SidebarVariableController: NSTableViewDataSource {
 	func numberOfRows(in tableView: NSTableView) -> Int {
 		return rootVariables.count
 	}
 	
-	//MARK: NSTableViewDelegate
+	func tableView(_ tableView: NSTableView, writeRowsWith rowIndexes: IndexSet, to pboard: NSPasteboard) -> Bool
+	{
+		//TODO: implement drag support
+		return false
+	}
+}
+
+//MARK: - NSTableViewDelegate
+extension SidebarVariableController: NSTableViewDelegate {
 	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView?
 	{
 		let isValue = tableColumn!.identifier == "value"
@@ -138,6 +172,5 @@ class SidebarVariableController : AbstractSessionViewController, VariableHandler
 			if variablePopover?.isShown ?? false { variablePopover?.close(); variablePopover = nil }
 			return
 		}
-		
 	}
 }

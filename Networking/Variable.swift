@@ -1,5 +1,5 @@
 //
-//  VariableEnums.swift
+//  Variable.swift
 //
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
@@ -207,6 +207,12 @@ public class Variable: Equatable, CustomStringConvertible {
 	
 	public static func == (lhs: Variable, rhs: Variable) -> Bool {
 		return lhs.jsonData == rhs.jsonData
+	}
+}
+
+extension Variable: JSONEncodable {
+	public func toJSON() -> JSON {
+		return jsonData
 	}
 }
 
