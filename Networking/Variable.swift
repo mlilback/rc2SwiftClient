@@ -231,6 +231,10 @@ public final class BoolPrimitiveVariable: Variable {
 		return values[index]
 	}
 
+	override public func stringValueAtIndex(_ index: Int) -> String? {
+		return String(describing: values[index])
+	}
+	
 	override public var description: String {
 		return "[\((values.map() { String($0) }).joined(separator: ", "))]"
 	}
@@ -245,6 +249,10 @@ public final class IntPrimitiveVariable: Variable {
 	}
 	
 	override public var count:Int { return values.count }
+	
+	override public func stringValueAtIndex(_ index: Int) -> String? {
+		return String(describing: values[index])
+	}
 	
 	override public func intValueAtIndex(_ index: Int) -> Int? {
 		return values[index]
@@ -286,6 +294,10 @@ public final class DoublePrimitiveVariable: Variable {
 	
 	override public func doubleValueAtIndex(_ index: Int) -> Double? {
 		return values[index]
+	}
+	
+	override public func stringValueAtIndex(_ index: Int) -> String? {
+		return String(describing: values[index])
 	}
 	
 	override public var description: String {
@@ -350,6 +362,14 @@ public final class DateVariable: Variable {
 		df.timeZone = TimeZone(secondsFromGMT: 0)
 		return df
 	}()
+
+	public static let dateTimeFormatter: DateFormatter = {
+		let df = DateFormatter()
+		df.locale = Locale(identifier: "en_US_POSIX")
+		df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+		df.timeZone = TimeZone(secondsFromGMT: 0)
+		return df
+	}()
 	
 	fileprivate var value: Date = Date() //has to be var so can set after super constructor
 	
@@ -369,6 +389,19 @@ public final class DateVariable: Variable {
 				throw Rc2Error(type: .invalidJson, severity: .warning, explanation: "error parsing date varaible json")
 		}
 	}
+
+	override public func stringValueAtIndex(_ index: Int) -> String? {
+		switch type {
+		case .date:
+			return DateVariable.dateFormatter.string(from: value)
+		case .dateTime:
+			return DateVariable.dateTimeFormatter.string(from: value)
+		default:
+			assertionFailure("invalid date format")
+			return nil
+		}
+	}
+	
 }
 
 public final class GenericVariable: Variable {
