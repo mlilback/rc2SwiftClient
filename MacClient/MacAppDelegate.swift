@@ -28,6 +28,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	dynamic var dockerManager: DockerManager?
 	var setupController: ServerSetupController?
 	private var dockerWindowController: NSWindowController?
+	private var preferencesWindowController: NSWindowController?
 	private var appStatus: MacAppStatus?
 
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
@@ -85,13 +86,16 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
-		switch(menuItem.action) {
-			case (#selector(MacAppDelegate.showBookmarkWindow(_:)))?:
+		guard let action = menuItem.action else { return false }
+		switch(action) {
+			case #selector(MacAppDelegate.showBookmarkWindow(_:)):
 				return true
 			//for some reason this wasn't working properly as another user
 //				return NSApp.mainWindow != bookmarkWindowController?.window
-		case (#selector(MacAppDelegate.showDockerControl(_:)))?:
+		case #selector(MacAppDelegate.showDockerControl(_:)):
 				return true
+		case #selector(MacAppDelegate.showPreferencesWindow(_:)):
+				return !(preferencesWindowController?.window?.isMainWindow ?? false)
 			default:
 				return false
 		}
@@ -173,6 +177,15 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	
 	func windowForAppStatus(_ session:Session?) -> NSWindow {
 		return windowControllerForSession(session!)!.window!
+	}
+	
+	@IBAction func showPreferencesWindow(_ sender: AnyObject?) {
+		if nil == preferencesWindowController {
+			let sboard = NSStoryboard(name: "Preferences", bundle: nil)
+			preferencesWindowController = sboard.instantiateInitialController() as? NSWindowController
+			preferencesWindowController?.window?.setFrameAutosaveName("PrefsWindow")
+		}
+		preferencesWindowController?.showWindow(self)
 	}
 	
 	@IBAction func showBookmarkWindow(_ sender:AnyObject?) {

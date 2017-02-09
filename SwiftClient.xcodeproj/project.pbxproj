@@ -256,6 +256,7 @@
 		08D6106F1CD2C53100258D8E /* listvars.json in Resources */ = {isa = PBXBuildFile; fileRef = 08D6106E1CD2C53100258D8E /* listvars.json */; };
 		08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */; };
 		08D610761CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */; };
+		08DAF2F31E4D07EF005A251E /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */; };
 		08DB1A981D32EF930079DA6B /* Swinject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A971D32EF930079DA6B /* Swinject.framework */; };
 		08DB1A9D1D32EFC10079DA6B /* SwinjectStoryboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */; };
 		08DB1A9E1D32EFC10079DA6B /* SwinjectStoryboard.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -297,6 +298,7 @@
 		08F448FC1C4E244500C64706 /* SessionOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F71C4E244500C64706 /* SessionOutputController.swift */; };
 		08F448FD1C4E244500C64706 /* MainController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08F448F81C4E244500C64706 /* MainController.storyboard */; };
 		08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448FF1C4EBEF100C64706 /* MacSplitter.swift */; };
+		08F5746D1E4D04A70000956B /* Preferences.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08F5746B1E4D04A70000956B /* Preferences.storyboard */; };
 		08F673D01D020B2700B87049 /* MiscProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F673CF1D020B2700B87049 /* MiscProtocols.swift */; };
 		08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F673D11D0214C700B87049 /* AppKitExtensions.swift */; };
 		08F6ADA51DD63C5800AF0722 /* NotifyingCollection.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */; };
@@ -755,6 +757,7 @@
 		08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItem.m; sourceTree = "<group>"; };
 		08D610731CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAAdaptiveSpaceItemView.h; sourceTree = "<group>"; };
 		08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItemView.m; sourceTree = "<group>"; };
+		08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 		08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwinjectStoryboard.framework; path = Carthage/Build/Mac/SwinjectStoryboard.framework; sourceTree = "<group>"; };
 		08DB1A971D32EF930079DA6B /* Swinject.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Swinject.framework; path = Carthage/Build/Mac/Swinject.framework; sourceTree = "<group>"; };
 		08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = Carthage/Build/Mac/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
@@ -783,6 +786,7 @@
 		08F448F71C4E244500C64706 /* SessionOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionOutputController.swift; sourceTree = "<group>"; };
 		08F448F81C4E244500C64706 /* MainController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainController.storyboard; path = session/MainController.storyboard; sourceTree = "<group>"; };
 		08F448FF1C4EBEF100C64706 /* MacSplitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSplitter.swift; sourceTree = "<group>"; };
+		08F5746C1E4D04A70000956B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Preferences.storyboard; sourceTree = "<group>"; };
 		08F673CF1D020B2700B87049 /* MiscProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MiscProtocols.swift; path = MacClient/MiscProtocols.swift; sourceTree = SOURCE_ROOT; };
 		08F673D11D0214C700B87049 /* AppKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppKitExtensions.swift; path = ../AppKitExtensions.swift; sourceTree = "<group>"; };
 		08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NotifyingCollection.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1227,6 +1231,7 @@
 				083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */,
 				08F673CF1D020B2700B87049 /* MiscProtocols.swift */,
 				086508761E43F27C0067C8CA /* SingleInputViewController.swift */,
+				08DAF2F11E4D0726005A251E /* Preferences */,
 				08F448F31C4E244500C64706 /* session */,
 				088935801DFF30D100C94B19 /* bookmarks */,
 				088935811DFF30EA00C94B19 /* docker */,
@@ -1404,6 +1409,15 @@
 			name = TAAdaptiveSpaceItem;
 			path = vendor/TAAdaptiveSpaceItem;
 			sourceTree = SOURCE_ROOT;
+		};
+		08DAF2F11E4D0726005A251E /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				08F5746B1E4D04A70000956B /* Preferences.storyboard */,
+				08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */,
+			);
+			name = Preferences;
+			sourceTree = "<group>";
 		};
 		08ED575A1C7140C0002B2558 /* Products */ = {
 			isa = PBXGroup;
@@ -1848,6 +1862,7 @@
 				08F189A81D0A0E7200866A05 /* static_html in Resources */,
 				083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */,
 				083A566F1D246D85009D3091 /* ProjectManagement.storyboard in Resources */,
+				08F5746D1E4D04A70000956B /* Preferences.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2066,6 +2081,7 @@
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
 				083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */,
 				08A01FC81CC7FCA3001EDFAA /* FMDatabaseQueue.m in Sources */,
+				08DAF2F31E4D07EF005A251E /* PreferencesViewController.swift in Sources */,
 				0827A4E41C7ED9CE001F0AFB /* RCodeHighlighter.swift in Sources */,
 				0827A4E11C7ED9CE001F0AFB /* DocumentChunk.swift in Sources */,
 				083174141C5828B400071408 /* ResultsView.swift in Sources */,
@@ -2303,6 +2319,14 @@
 				088CE6731C4B0AF400153414 /* Base */,
 			);
 			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		08F5746B1E4D04A70000956B /* Preferences.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				08F5746C1E4D04A70000956B /* Base */,
+			);
+			name = Preferences.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

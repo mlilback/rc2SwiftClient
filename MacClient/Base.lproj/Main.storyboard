@@ -24,7 +24,11 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
-                                        <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW"/>
+                                        <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW">
+                                            <connections>
+                                                <action selector="showPreferencesWindow:" target="Voe-Tx-rLC" id="Ppd-jh-uWn"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Check For Update…" id="YIE-UR-Q7A">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
