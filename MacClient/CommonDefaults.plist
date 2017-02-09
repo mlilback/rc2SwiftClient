@@ -6,18 +6,6 @@
 	<true/>
 	<key>EditorFontColor</key>
 	<string>000000</string>
-	<key>OutputColor_Input</key>
-	<string>e1e1e1</string>
-	<key>OutputColor_Help</key>
-	<string>d4d4d4</string>
-	<key>OutputColor_Status</key>
-	<string>ebe9dd</string>
-	<key>OutputColor_Error</key>
-	<string>d7b5be</string>
-	<key>OutputColor_Note</key>
-	<string>ecd91b</string>
-	<key>OutputColor_Log</key>
-	<string>00ff00</string>
 	<key>OutputColors</key>
 	<dict>
 		<key>Input</key>
