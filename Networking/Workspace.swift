@@ -206,6 +206,9 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 				os_log("file change update failed", log: .session); return
 			}
 		case .Insert:
+			if ourFile == file { //already inserted, likely via import
+				return
+			}
 			guard let _ = try? _files.append(file) else {
 				os_log("file change insert failed", log: .session); return
 			}
