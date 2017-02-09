@@ -44,6 +44,7 @@ public class FileType : JSONDecodable {
 	
 	public let name: String
 	public let fileExtension: String
+	public let uti: String
 	public let details: String?
 	public let iconName: String?
 	private let rawMimeType: String?
@@ -58,6 +59,7 @@ public class FileType : JSONDecodable {
 		self.json = json
 		name = try json.getString(at: "Name")
 		fileExtension = try json.getString(at: "Extension")
+		uti = try json.getString(at: "UTTypeIdentifier")
 		details = json.getOptionalString(at: "Description")
 		iconName = json.getOptionalString(at: "IconName")
 		rawMimeType = json.getOptionalString(at: "MimeType")

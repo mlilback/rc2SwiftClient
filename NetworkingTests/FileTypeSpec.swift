@@ -13,7 +13,7 @@ class FileTypeSpec: QuickSpec {
 	override func spec() {
 		describe("file types are loaded correctly") {
 		it("correct number of types") {
-				expect(FileType.allFileTypes.count).to(equal(11))
+				expect(FileType.allFileTypes.count).to(equal(10))
 			}
 		}
 		
@@ -31,6 +31,7 @@ class FileTypeSpec: QuickSpec {
 			expect(rmd.isSourceFile).to(beTrue())
 			expect(rmd.isSweave).to(beFalse())
 			expect(rmd.mimeType).to(equal("text/plain"))
+			expect(rmd.uti).to(equal("org.r-project.Rmd"))
 		}
 
 		it("png type is valid") {
@@ -47,6 +48,7 @@ class FileTypeSpec: QuickSpec {
 			expect(type.isSourceFile).to(beFalse())
 			expect(type.isSweave).to(beFalse())
 			expect(type.mimeType).to(equal("image/png"))
+			expect(type.uti).to(equal(kUTTypePNG as String))
 		}
 	}
 }

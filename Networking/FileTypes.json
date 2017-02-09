@@ -2,6 +2,7 @@
   "FileTypes": [
     {
       "Extension": "R",
+      "UTTypeIdentifier": "org.r-project.R",
       "Importable": true,
       "Creatable": true,
       "IsSrc": true,
@@ -13,6 +14,7 @@
     },
     {
       "Extension": "Rnw",
+      "UTTypeIdentifier": "org.r-project.Rnw",
       "Importable": true,
       "Creatable": true,
       "IsSrc": true,
@@ -25,6 +27,7 @@
     },
     {
       "Extension": "Rmd",
+      "UTTypeIdentifier": "org.r-project.Rmd",
       "Importable": true,
       "Creatable": true,
       "IsSrc": true,
@@ -37,6 +40,7 @@
     },
     {
       "Extension": "txt",
+      "UTTypeIdentifier": "public.plain-text",
       "Importable": true,
       "Creatable": true,
       "Name": "Text",
@@ -45,6 +49,7 @@
     },
     {
       "Extension": "csv",
+      "UTTypeIdentifier": "public.plain-text",
       "Importable": true,
       "Creatable": true,
       "Name": "CSV file",
@@ -52,12 +57,8 @@
       "Description": "Comma Separated Values (.csv)"
     },
     {
-      "Extension": "log",
-      "Name": "Log file",
-      "IsTextFile": true
-    },
-    {
       "Extension": "html",
+      "UTTypeIdentifier": "public.html",
       "Importable": true,
       "Creatable": true,
       "MimeType": "text/html",
@@ -68,6 +69,7 @@
     },
     {
       "Extension": "pdf",
+      "UTTypeIdentifier": "com.adobe.pdf",
       "Importable": true,
       "MimeType": "application/pdf",
       "Name": "PDF",
@@ -76,6 +78,7 @@
     },
     {
       "Extension": "png",
+      "UTTypeIdentifier": "public.png",
       "Importable": false,
       "IsImage": true,
       "MimeType": "image/png",
@@ -83,6 +86,7 @@
     },
     {
       "Extension": "jpg",
+      "UTTypeIdentifier": "public.jpeg",
       "Importable": false,
       "IsImage": true,
       "MimeType": "image/jpeg",
@@ -90,6 +94,7 @@
     },
     {
       "Extension": "gif",
+      "UTTypeIdentifier": "com.compuserve.gif",
       "Importable": false,
       "IsImage": true,
       "MimeType": "image/gif",
