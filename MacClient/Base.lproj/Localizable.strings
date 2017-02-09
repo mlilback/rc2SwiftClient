@@ -7,4 +7,4 @@
 "Failed to find workspace %@" = "Failed to find workspace %@";
 
 "DeleteFileWarning" = "Confirm Delete File";
-"DeleteFileWarningInfo" = "This action can not be undone.";
+"DeleteFileWarningInfo" = "Delete \"%@\"? This action can not be undone.";

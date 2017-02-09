@@ -211,7 +211,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		let alert = NSAlert()
 		alert.showsSuppressionButton = true
 		alert.messageText = NSLocalizedString(LocalStrings.deleteFileWarning, comment: "")
-		alert.informativeText = NSLocalizedString(LocalStrings.deleteFileWarningInfo, comment: "")
+		alert.informativeText = String(format: NSLocalizedString(LocalStrings.deleteFileWarningInfo, comment: ""), file.name)
 		alert.addButton(withTitle: NSLocalizedString("Delete", comment: ""))
 		alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
 		alert.beginSheetModal(for: self.view.window!, completionHandler: { [weak alert] response in
