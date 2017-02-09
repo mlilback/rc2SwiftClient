@@ -31,7 +31,7 @@ public enum ServerResponse : Equatable {
 	case showOutput(queryId: Int, updatedFile: File)
 	case variables(single: Bool, variables: [Variable])
 	case variablesDelta(assigned: [Variable], removed: [String])
-	case fileOperationResponse(transId: String, operation: FileOperation, result: Result<File, Rc2Error>)
+	case fileOperationResponse(transId: String, operation: FileOperation, result: Result<File?, Rc2Error>)
 	
 	
 	public func isEcho() -> Bool {
@@ -101,11 +101,11 @@ public enum ServerResponse : Equatable {
 		{
 			return nil
 		}
-		var result: Result<File, Rc2Error>?
-		if success, let file: File = try? jsonObj.decode(at: "file")  {
-			result = Result<File, Rc2Error>(value: file)
+		var result: Result<File?, Rc2Error>?
+		if success {
+			result = Result<File?, Rc2Error>(value: try! jsonObj.decode(at: "file", alongPath: [.MissingKeyBecomesNil, .NullBecomesNil], type: File.self))
 		} else {
-			result = Result<File, Rc2Error>(error: parseRemoteError(jsonObj: try? jsonObj.getDictionary(at: "error")))
+			result = Result<File?, Rc2Error>(error: parseRemoteError(jsonObj: try? jsonObj.getDictionary(at: "error")))
 		}
 		return ServerResponse.fileOperationResponse(transId: transId, operation: op, result: result!)
 	}

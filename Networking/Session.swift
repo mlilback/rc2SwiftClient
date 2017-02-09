@@ -401,8 +401,8 @@ private extension Session {
 		}
 	}
 	
-	func handleFileResponse(_ transId: String, operation: FileOperation, result: Result<File, Rc2Error>) {
-		guard let file = result.value else {
+	func handleFileResponse(_ transId: String, operation: FileOperation, result: Result<File?, Rc2Error>) {
+		guard result.error == nil else {
 			//error should have been handled via pendingTransaction
 			return
 		}
@@ -414,12 +414,7 @@ private extension Session {
 			//no need to do anything, fileUpdated message should arrive
 			break
 		case .Remove:
-			do {
-				try workspace.remove(file: file)
-			} catch {
-				os_log("error removing a file", log: .session)
-				self.delegate?.sessionErrorReceived(error as! Rc2Error)
-			}
+			//no need to do anything, fileUpdated message should arrive
 			break
 		}
 	}
