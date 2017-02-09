@@ -22,7 +22,10 @@ public final class Rc2RestClient {
 		self.conInfo = conInfo
 		self.fileManager = fileManager
 		self.sessionConfig = conInfo.urlSessionConfig
-		self.sessionConfig.httpAdditionalHeaders = ["Accept": "application/json"]
+		if nil == sessionConfig.httpAdditionalHeaders {
+			sessionConfig.httpAdditionalHeaders = [:]
+		}
+		self.sessionConfig.httpAdditionalHeaders!["Accept"] = "application/json"
 		urlSession = URLSession(configuration: sessionConfig)
 		networkLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "networking")
 	}
