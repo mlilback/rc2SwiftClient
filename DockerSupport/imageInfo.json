@@ -8,7 +8,7 @@
          "tag" : "rc2server/appserver:0.4.4",
          "size" : 477844216,
          "version" : "0.4.4",
-         "id" : "sha256:62be5e89e14d0724bbd01ef3e6f7826c75c869c2ce8731cf625605b6107b1a9e"
+         "id" : "sha256:ebeb6359e5c0b5f95d5a65d7f6f84d60e36f3b441ec8ee86c3cf0c86ebf34e46"
       },
       "dbserver" : {
          "estSize" : 416309581,
