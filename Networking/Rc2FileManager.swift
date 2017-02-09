@@ -105,6 +105,8 @@ open class Rc2DefaultFileManager: Rc2FileManager {
 				resourceValues.creationDate = fileRef.dateCreated
 				resourceValues.contentModificationDate = fileRef.lastModified
 				try fileUrl.setResourceValues(resourceValues)
+				let attrs: [FileAttributeKey: Any] = [.posixPermissions: fileRef.fileType.isExecutable ? 0o775 : 0o64]
+				try fm.setAttributes(attrs, ofItemAtPath: fileUrl.path)
 				fileRef.writeXAttributes(fileUrl)
 			}
 		} catch {
