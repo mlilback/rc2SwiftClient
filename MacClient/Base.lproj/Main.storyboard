@@ -544,12 +544,12 @@ CA
                 </customObject>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-229" y="65"/>
+            <point key="canvasLocation" x="-338" y="-264"/>
         </scene>
-        <!--Window Controller-->
+        <!--Server Setup Window Controller-->
         <scene sceneID="HW3-Oi-wyR">
             <objects>
-                <windowController storyboardIdentifier="NSWindowController" id="VvP-Om-ZsH" sceneMemberID="viewController">
+                <windowController storyboardIdentifier="NSWindowController" id="VvP-Om-ZsH" userLabel="Server Setup Window Controller" sceneMemberID="viewController">
                     <window key="window" title="Preparing Docker" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="h1V-Fn-Msq">
                         <windowStyleMask key="styleMask" titled="YES"/>
                         <windowPositionMask key="initialPositionMask" topStrut="YES" bottomStrut="YES"/>
@@ -562,7 +562,7 @@ CA
                 </windowController>
                 <customObject id="Nxf-jS-gAP" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-202" y="399"/>
+            <point key="canvasLocation" x="-330" y="33"/>
         </scene>
         <!--Server Setup Controller-->
         <scene sceneID="jev-cS-w7g">
@@ -603,12 +603,12 @@ CA
                 </viewController>
                 <customObject id="M6X-H9-jqA" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-201.5" y="693.5"/>
+            <point key="canvasLocation" x="-329" y="328"/>
         </scene>
-        <!--Window Controller-->
+        <!--Single Input WIndow Controller-->
         <scene sceneID="zog-NS-dXj">
             <objects>
-                <windowController storyboardIdentifier="FontSizeWindowController" id="QNW-vu-ID5" sceneMemberID="viewController">
+                <windowController storyboardIdentifier="FontSizeWindowController" id="QNW-vu-ID5" userLabel="Single Input WIndow Controller" sceneMemberID="viewController">
                     <window key="window" title="Font Size" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="Os0-gL-4uG">
                         <windowStyleMask key="styleMask" titled="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -621,6 +621,7 @@ CA
                 </windowController>
                 <customObject id="Wky-iE-A0f" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="189" y="-117"/>
         </scene>
         <!--Single Input View Controller-->
         <scene sceneID="ZCh-YX-KM8">
@@ -631,7 +632,7 @@ CA
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hgb-l2-jdh">
-                                <rect key="frame" x="55.5" y="61" width="112" height="22"/>
+                                <rect key="frame" x="55" y="61" width="112" height="22"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x2j-Xg-Xye">
                                         <rect key="frame" x="-2" y="4" width="68" height="18"/>
@@ -713,7 +714,7 @@ DQ
                 </viewController>
                 <customObject id="azX-JM-N1b" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="309.5" y="572.5"/>
+            <point key="canvasLocation" x="190" y="256"/>
         </scene>
     </scenes>
 </document>
