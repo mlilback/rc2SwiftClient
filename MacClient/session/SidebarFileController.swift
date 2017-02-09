@@ -92,6 +92,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 		if tableView != nil {
 			tableView.setDraggingSourceOperationMask(.copy, forLocal: true)
+			tableView.setDraggingSourceOperationMask(.copy, forLocal: false)
 			tableView.draggingDestinationFeedbackStyle = .none
 			tableView.register(forDraggedTypes: FileDragTypes)
 		}
@@ -493,6 +494,14 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
 		return rowData[row].file != nil
+	}
+	
+	func tableView(_ tableView: NSTableView, writeRowsWith rowIndexes: IndexSet, to pboard: NSPasteboard) -> Bool {
+		guard let row = rowIndexes.last, let file = rowData[row].file else { return false }
+		let url = session.fileCache.cachedUrl(file: file) as NSURL
+		pboard.declareTypes(url.writableTypes(for: pboard), owner: nil)
+		url.write(to: pboard)
+		return true
 	}
 	
 	func tableView(_ tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation dropOperation: NSTableViewDropOperation) -> NSDragOperation
