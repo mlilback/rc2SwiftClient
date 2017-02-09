@@ -54,8 +54,9 @@ class SidebarVariableController : AbstractSessionViewController {
 		isVisible = false
 	}
 	
-	override func viewDidLoad() {
-		super.viewDidLoad()
+	override func awakeFromNib() {
+		super.awakeFromNib()
+		varTableView?.setDraggingSourceOperationMask(.copy, forLocal: false)
 	}
 	
 	override func sessionChanged() {
@@ -72,6 +73,7 @@ class SidebarVariableController : AbstractSessionViewController {
 		guard let row = varTableView?.selectedRow, row >= 0 else { return }
 		let pasteboard = NSPasteboard.general()
 		pasteboard.clearContents()
+		pasteboard.setString(try! rootVariables[row].toJSON().serializeString(), forType: PasteboardTypes.variable)
 		pasteboard.setString(rootVariables[row].description, forType: NSPasteboardTypeString)
 	}
 }
@@ -131,8 +133,12 @@ extension SidebarVariableController: NSTableViewDataSource {
 	
 	func tableView(_ tableView: NSTableView, writeRowsWith rowIndexes: IndexSet, to pboard: NSPasteboard) -> Bool
 	{
-		//TODO: implement drag support
-		return false
+		guard let row = rowIndexes.first else { return false }
+		pboard.clearContents()
+		pboard.declareTypes([PasteboardTypes.variable, NSPasteboardTypeString], owner: nil)
+		pboard.setString(try! rootVariables[row].toJSON().serializeString(), forType: PasteboardTypes.variable)
+		pboard.setString(rootVariables[row].description, forType: NSPasteboardTypeString)
+		return true
 	}
 }
 

@@ -31,6 +31,11 @@ struct Constants {
 	static let LocalServerPassword = "local"
 }
 
+struct PasteboardTypes {
+	static let file = "io.rc2.model.file"
+	static let variable = "io.rc2.model.variable.json"
+}
+
 let ConsoleAttachmentImageSize = CGSize(width: 48, height: 48)
 
 let HelpUrlBase = "http://www.rc2.io/help/library"
