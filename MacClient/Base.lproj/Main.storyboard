@@ -435,12 +435,12 @@ CA
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="ltc-Li-7l0"/>
-                                        <menuItem title="Run Query" keyEquivalent="k" id="ZKV-7K-4BY">
+                                        <menuItem title="Run" keyEquivalent="k" id="ZKV-7K-4BY">
                                             <connections>
                                                 <action selector="runQuery:" target="Ady-hI-5gd" id="xKp-4R-Hf1"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Source Query" keyEquivalent="K" id="BG2-fO-8aw">
+                                        <menuItem title="Source" keyEquivalent="K" id="BG2-fO-8aw">
                                             <connections>
                                                 <action selector="sourceQuery:" target="Ady-hI-5gd" id="6uG-qK-1Dh"/>
                                             </connections>
