@@ -7,6 +7,7 @@
 import Foundation
 import WebKit
 import os
+import Freddy
 
 open class WebViewController: NSViewController, OutputController, WKNavigationDelegate {
 	var webView:WKWebView?
@@ -35,6 +36,10 @@ open class WebViewController: NSViewController, OutputController, WKNavigationDe
 		titleLabel?.stringValue = ""
 		searchBarHeight = searchBarHeightConstraint?.constant ?? 0
 		searchBarHeightConstraint?.constant = 0
+		searchBar?.delegate = self
+		loadScript(filename: "jquery.min", fileExtension: "js")
+		loadScript(filename: "jquery.mark.min", fileExtension: "js")
+		loadScript(filename: "rc2search", fileExtension: "js")
 	}
 	
 	func setupWebView() {
@@ -54,6 +59,10 @@ open class WebViewController: NSViewController, OutputController, WKNavigationDe
 		let srcStr = try! String(contentsOf: url)
 		let script = WKUserScript(source: srcStr, injectionTime: .atDocumentStart, forMainFrameOnly: true)
 		webConfig?.userContentController.addUserScript(script)
+	}
+	
+	func currentPageSearchable() -> Bool {
+		return false
 	}
 	
 	@IBAction func navigateWebView(_ sender:AnyObject) {
@@ -95,8 +104,42 @@ open class WebViewController: NSViewController, OutputController, WKNavigationDe
 	}
 }
 
+extension WebViewController: SearchBarViewDelegate {
+	public func goForward(searchBar: SearchBarView) {
+		webView?.evaluateJavaScript("cycleMatch(1)")
+	}
+
+	public func goBackward(searchBar: SearchBarView) {
+		webView?.evaluateJavaScript("cycleMatch(-1)")
+	}
+	
+	public func dismiss(searchBar: SearchBarView) {
+		searchBarHeightConstraint?.constant = 0
+	}
+	
+	public func performSearch(searchBar: SearchBarView, string: String) {
+		let json: JSON = .dictionary(["term": .string(string), "options": .dictionary([:])])
+		do {
+			let data = try json.serialize()
+			let encoded = data.base64EncodedString()
+			let script = "doSearch('\(encoded)')"
+			webView?.evaluateJavaScript(script) { (value, error) in
+				guard let matchCount = value as? Int, matchCount >= 0 else {
+					os_log("invalid value returned from javascript search", log: .app)
+					return
+				}
+				searchBar.matchCount = matchCount
+			}
+		} catch {
+			os_log("error encoding java script search: %{public}s", log: .app, error.localizedDescription)
+		}
+	}
+	
+}
+
 extension WebViewController: Searchable {
 	func performFind(action: NSTextFinderAction) {
+		guard currentPageSearchable() else { return }
 		switch action {
 		case .showFindInterface:
 			searchBarHeightConstraint?.constant = searchBarHeight

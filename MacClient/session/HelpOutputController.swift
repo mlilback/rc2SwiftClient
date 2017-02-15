@@ -11,9 +11,10 @@ open class HelpOutputController: WebViewController {
 	
 	override open func viewDidLoad() {
 		super.viewDidLoad()
-		loadScript(filename: "jquery.min", fileExtension: "js")
-		loadScript(filename: "jquery.mark.min", fileExtension: "js")
-		loadScript(filename: "rc2search", fileExtension: "js")
+	}
+	
+	override func currentPageSearchable() -> Bool {
+		return webView?.url != nil
 	}
 	
 	func loadHelpTopic(_ topic: HelpTopic) {
