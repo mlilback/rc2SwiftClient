@@ -43,7 +43,7 @@
                             <constraints>
                                 <constraint firstAttribute="height" constant="16" id="4Mf-cp-z8K"/>
                             </constraints>
-                            <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="roundRect" trackingMode="selectOne" id="Zlo-zd-jJN">
+                            <segmentedCell key="cell" controlSize="small" borderStyle="border" alignment="left" style="roundRect" trackingMode="momentary" id="Zlo-zd-jJN">
                                 <font key="font" metaFont="smallSystem"/>
                                 <segments>
                                     <segment label="&lt;" width="20" enabled="NO"/>
