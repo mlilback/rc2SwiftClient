@@ -1,0 +1,2 @@
+mark { padding: 0; background: orange; }
+mark.current { background: green !important }

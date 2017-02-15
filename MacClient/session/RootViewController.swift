@@ -111,11 +111,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 		if item.itemIdentifier == "search" {
 			searchButton = item.view as! NSSegmentedControl?
 			TargetActionBlock() { [weak self] sender in
-				if self!.responderChainContains(self!.editor!)  {
-					self!.editor?.performTextFinderAction(sender)
-				} else {
-					self!.outputHandler?.prepareForSearch()
-				}
+				self?.toggleSearch(sender)
 			}.installInControl(searchButton!)
 			if let myItem = item as? ValidatingToolbarItem {
 				myItem.validationHandler = { item in
@@ -164,6 +160,23 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 
 //MARK: - actions
 extension RootViewController {
+	@IBAction func toggleSearch(_ sender: Any?) {
+		if responderChainContains(editor!)  {
+			editor?.performTextFinderAction(sender)
+		} else if let outputHandler = outputHandler {
+			outputHandler.searchBarVisible = !outputHandler.searchBarVisible
+		}
+	}
+	
+	@IBAction override func performTextFinderAction(_ sender: Any?) {
+		guard let item = sender as? NSValidatedUserInterfaceItem, let tag = NSTextFinderAction(rawValue: item.tag) else { return }
+		if responderChainContains(editor)  {
+			editor?.performTextFinderAction(sender)
+		} else if responderChainContains(outputHandler as? NSResponder) {
+			outputHandler?.handleSearch(action: tag)
+		}
+	}
+	
 	@IBAction func clearFileCache(_ sender: AnyObject?) {
 		sessionController?.clearFileCache()
 	}

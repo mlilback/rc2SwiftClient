@@ -23,12 +23,21 @@ public protocol VariableHandler {
 	func handleVariableDeltaMessage(_ assigned:[Variable], removed:[String])
 }
 
-protocol OutputHandler: class {
+protocol SearchResponder: class {
+	var searchBarVisible: Bool { get set }
+	func performTextFinderAction(_ sender: Any?)
+}
+
+extension SearchResponder {
+	func performTextFinderAction(_ sender: Any?) {}
+}
+
+protocol OutputHandler: class, SearchResponder {
 	var sessionController: SessionController? { get set }
 	func append(responseString: ResponseString)
 	func saveSessionState() -> AnyObject
 	func restoreSessionState(_ state: [String: AnyObject])
-	func prepareForSearch()
+	func handleSearch(action: NSTextFinderAction)
 	func initialFirstResponder() -> NSResponder
 	//can't use File as parameter class because it isn't available in ObjC. We let the bridge pass the object around using AnyObject and the destination will have to cast it to a File object.
 	func showFile(_ file: AnyObject?)

@@ -7,7 +7,8 @@
 import Cocoa
 
 extension NSViewController {
-	func responderChainContains(_ responder:NSResponder) -> Bool {
+	func responderChainContains(_ responder: NSResponder?) -> Bool {
+		guard let responder = responder else { return false }
 		var curResponder = view.window?.firstResponder
 		while curResponder != nil {
 			if curResponder == responder { return true }

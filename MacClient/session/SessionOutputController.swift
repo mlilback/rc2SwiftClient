@@ -13,7 +13,7 @@ enum SessionStateKey: String {
 }
 
 ///ViewController whose view contains the text view showing the results, and the text field for entering short queries
-class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate, NSTextFieldDelegate
+class SessionOutputController: AbstractSessionViewController, OutputController, NSTextViewDelegate, NSTextFieldDelegate
 {
 	//MARK: properties
 	@IBOutlet var resultsView: ResultsView?
@@ -53,12 +53,6 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 	}
 	
 	//MARK: actions
-	@IBAction override func performTextFinderAction(_ sender: Any?) {
-		let menuItem = NSMenuItem(title: "foo", action: #selector(NSTextView.performFindPanelAction(_:)), keyEquivalent: "")
-		menuItem.tag = Int(NSFindPanelAction.showFindPanel.rawValue)
-		resultsView?.performFindPanelAction(menuItem)
-	}
-
 	@IBAction func executeQuery(_ sender:AnyObject?) {
 		guard consoleInputText.characters.count > 0 else { return }
 		session.executeScript(consoleInputText)
@@ -165,6 +159,14 @@ class SessionOutputController: AbstractSessionViewController, NSTextViewDelegate
 		let attach = cell.attachment
 		guard let fw = attach?.fileWrapper else { return }
 		viewFileOrImage?(fw)
+	}
+}
+
+extension SessionOutputController: Searchable {
+	func performFind(action: NSTextFinderAction) {
+		let menuItem = NSMenuItem(title: "foo", action: #selector(NSTextView.performFindPanelAction(_:)), keyEquivalent: "")
+		menuItem.tag = action.rawValue
+		resultsView?.performFindPanelAction(menuItem)
 	}
 }
 

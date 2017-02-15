@@ -30,12 +30,21 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   }
 }
 
-
 enum OutputTabType: Int {
 	 case console = 0, image, webKit, help
 }
 
+protocol OutputController: Searchable {
+	var searchBarVisible: Bool { get }
+}
+
+extension OutputController {
+	var searchBarVisible: Bool { return false }
+}
+
 class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandler {
+	//MARK: properties
+	var currentOutputController: OutputController!
 	var consoleController: SessionOutputController?
 	var imageController: ImageOutputController?
 	var webController: WebKitOutputController?
@@ -46,11 +55,16 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	var segmentItem: NSToolbarItem?
 	var segmentControl: NSSegmentedControl?
 	weak var displayedFile: File?
-	var selectedOutputTab:OutputTabType {
+	var selectedOutputTab: OutputTabType {
 		get { return OutputTabType(rawValue: selectedTabViewItemIndex)! }
 		set { selectedTabViewItemIndex = newValue.rawValue ; adjustOutputTabSwitcher() }
 	}
+	var searchBarVisible: Bool {
+		get { return currentOutputController.searchBarVisible }
+		set { currentOutputController.performFind(action: newValue ? .showFindInterface : .hideFindInterface) }
+	}
 	
+	//MARK: methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		NotificationCenter.default.addObserver(self, selector: #selector(OutputTabController.handleDisplayHelp(_:)), name: .DisplayHelpTopic, object: nil)
@@ -65,6 +79,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		imageController?.imageCache = imageCache
 		webController = firstChildViewController(self)
 		helpController = firstChildViewController(self)
+		currentOutputController = consoleController
 	}
 	
 	override func viewDidAppear() {
@@ -113,6 +128,16 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	dynamic func tabSwitcherClicked(_ sender:AnyObject?) {
 		let index = (segmentControl?.selectedSegment)!
 		selectedOutputTab = OutputTabType(rawValue: index)!
+		switch selectedOutputTab {
+		case .console:
+			currentOutputController = consoleController
+		case .image:
+			currentOutputController = imageController
+		case .webKit:
+			currentOutputController = webController
+		case .help:
+			currentOutputController = helpController
+		}
 //		NSUserDefaults.standardUserDefaults().setInteger(index, forKey: LastSelectedSessionTabIndex)
 	}
 
@@ -210,8 +235,8 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		}
 	}
 
-	func prepareForSearch() {
-		consoleController?.performTextFinderAction(self)
+	func handleSearch(action: NSTextFinderAction) {
+		currentOutputController.performFind(action: action)
 	}
 	
 	func saveSessionState() -> AnyObject {

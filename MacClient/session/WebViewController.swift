@@ -8,13 +8,17 @@ import Foundation
 import WebKit
 import os
 
-open class WebViewController: NSViewController, WKNavigationDelegate {
+open class WebViewController: NSViewController, OutputController, WKNavigationDelegate {
 	var webView:WKWebView?
 	@IBOutlet var containerView: NSView?
 	@IBOutlet var navButtons: NSSegmentedControl?
 	@IBOutlet var shareButton: NSSegmentedControl?
 	@IBOutlet var titleLabel: NSTextField?
+	@IBOutlet var searchBar: SearchBarView?
+	@IBOutlet var searchBarHeightConstraint: NSLayoutConstraint?
 	var webConfig: WKWebViewConfiguration?
+	fileprivate var searchBarHeight: CGFloat = 0
+	var searchBarVisible: Bool { return (searchBarHeightConstraint?.constant ?? 0 > 0) }
 	
 	override open func viewDidLoad() {
 		super.viewDidLoad()
@@ -29,6 +33,8 @@ open class WebViewController: NSViewController, WKNavigationDelegate {
 		webConfig = config
 		setupWebView()
 		titleLabel?.stringValue = ""
+		searchBarHeight = searchBarHeightConstraint?.constant ?? 0
+		searchBarHeightConstraint?.constant = 0
 	}
 	
 	func setupWebView() {
@@ -41,6 +47,13 @@ open class WebViewController: NSViewController, WKNavigationDelegate {
 		webView!.bottomAnchor.constraint(equalTo: (containerView?.bottomAnchor)!).isActive = true
 		webView!.leadingAnchor.constraint(equalTo: (containerView?.leadingAnchor)!).isActive = true
 		webView!.trailingAnchor.constraint(equalTo: (containerView?.trailingAnchor)!).isActive = true
+	}
+	
+	func loadScript(filename: String, fileExtension: String) {
+		let url = Bundle.main.url(forResource: filename, withExtension: fileExtension, subdirectory: "static_html")!
+		let srcStr = try! String(contentsOf: url)
+		let script = WKUserScript(source: srcStr, injectionTime: .atDocumentStart, forMainFrameOnly: true)
+		webConfig?.userContentController.addUserScript(script)
 	}
 	
 	@IBAction func navigateWebView(_ sender:AnyObject) {
@@ -59,7 +72,7 @@ open class WebViewController: NSViewController, WKNavigationDelegate {
 		sharepicker.show(relativeTo: (shareButton?.frame)!, of: (shareButton?.superview)!, preferredEdge: .maxY)
 	}
 
-	func staticHmtlFolder() -> URL {
+	open func staticHmtlFolder() -> URL {
 		let pkg = Bundle(for: type(of: self))
 		let url = pkg.url(forResource: "help404", withExtension: "html", subdirectory: "static_html")
 		return url!.deletingLastPathComponent()
@@ -79,5 +92,19 @@ open class WebViewController: NSViewController, WKNavigationDelegate {
 	}
 	
 	open func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+	}
+}
+
+extension WebViewController: Searchable {
+	func performFind(action: NSTextFinderAction) {
+		switch action {
+		case .showFindInterface:
+			searchBarHeightConstraint?.constant = searchBarHeight
+			view.window?.makeFirstResponder(searchBar?.searchField)
+		case .hideFindInterface:
+			searchBarHeightConstraint?.constant = 0
+		default:
+			break
+		}
 	}
 }

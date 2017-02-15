@@ -19,6 +19,14 @@ extension Selector {
 	var currentFontDescriptor:NSFontDescriptor { get set }
 }
 
+protocol Searchable {
+	func performFind(action: NSTextFinderAction)
+}
+
+extension Searchable {
+	func performFind(action: NSTextFinderAction) { }
+}
+
 @objc protocol ManageFontMenu {
 	///function that if implemented will cause validatemenuItem to be called with the Font menu item
 	func showFonts(_ sender: AnyObject?)

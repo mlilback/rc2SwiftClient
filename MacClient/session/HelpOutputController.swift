@@ -8,17 +8,22 @@ import Foundation
 import WebKit
 
 open class HelpOutputController: WebViewController {
+	
 	override open func viewDidLoad() {
 		super.viewDidLoad()
+		loadScript(filename: "jquery.min", fileExtension: "js")
+		loadScript(filename: "jquery.mark.min", fileExtension: "js")
+		loadScript(filename: "rc2search", fileExtension: "js")
 	}
 	
-	func loadHelpTopic(_ topic:HelpTopic) {
+	func loadHelpTopic(_ topic: HelpTopic) {
 		let url = HelpController.shared.urlForTopic(topic)
-//		DispatchQueue.main.async { _ = self.webView?.load(URLRequest(url: url)) }
-		DispatchQueue.main.async { _ = self.webView?.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent()) }
+		DispatchQueue.main.async {
+			_ = self.webView?.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
+		}
 	}
 	
-	open func webView(_ webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void)
+	open func webView(_ webView: WKWebView?, handleNavigation navigationResponse: WKNavigationResponse) -> Bool
 	{
 		if let response = navigationResponse.response as? HTTPURLResponse {
 			if response.statusCode == 404 {
@@ -27,10 +32,10 @@ open class HelpOutputController: WebViewController {
 					let purl = furl.appendingPathComponent("help404.html")
 					_ = self.webView?.loadFileURL(purl, allowingReadAccessTo: furl as URL)
 				}
-				decisionHandler(.cancel)
+				return false
 			}
 		}
-		decisionHandler(.allow)
+		return true
 	}
 	
 }

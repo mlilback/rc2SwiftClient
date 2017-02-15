@@ -37,7 +37,7 @@ class DisplayableImage: NSObject {
 	}
 }
 
-class ImageOutputController: NSViewController, NSPageControllerDelegate, NSSharingServicePickerDelegate {
+class ImageOutputController: NSViewController, OutputController, NSPageControllerDelegate, NSSharingServicePickerDelegate {
 	@IBOutlet var containerView: NSView?
 	@IBOutlet var labelField: NSTextField?
 	@IBOutlet var shareButton: NSSegmentedControl?
