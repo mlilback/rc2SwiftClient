@@ -34,24 +34,24 @@ class FileImporterTests: NetworkingBaseSpec, URLSessionDataDelegate {
 	override func spec() {
 		var json: JSON!
 		var conInfo: ConnectionInfo!
-		var wspace: Workspace!
-		var fakeCache: FakeFileCache!
+//		var wspace: Workspace!
+//		var fakeCache: FakeFileCache!
 		let dummyBaseUrl = URL(string: "http://dev.rc2/")!
 		var tmpDirectory: URL!
-		var filesToImport: [FileImporter.FileToImport] = []
-		var expectedFiles: [String] = []
+//		var filesToImport: [FileImporter.FileToImport] = []
+//		var expectedFiles: [String] = []
 
 		beforeSuite {
 			tmpDirectory = URL(string: UUID().uuidString, relativeTo: FileManager.default.temporaryDirectory)
 			try! FileManager.default.createDirectory(at: tmpDirectory, withIntermediateDirectories: true, attributes: nil)
-			filesToImport = self.fileUrlsForTesting().map() { return FileImporter.FileToImport(url: $0, uniqueName: nil) }
-			expectedFiles = filesToImport.enumerated().map() { (index, file) in
-				let jsonString = "{\"id\" : \(index),\"wspaceId\" : 1, " +
-					"\"name\" : \"\(file.fileUrl.lastPathComponent)\", \"version\" : 0," +
-					"\"dateCreated\" : 1439407405827, \"lastModified\" : 1439407405827," +
-					"\"fileSize\" : \(file.fileUrl.fileSize()),\"etag\" : \"f/1/0\" }"
-				return jsonString
-			}
+//			filesToImport = self.fileUrlsForTesting().map() { return FileImporter.FileToImport(url: $0, uniqueName: nil) }
+//			expectedFiles = filesToImport.enumerated().map() { (index, file) in
+//				let jsonString = "{\"id\" : \(index),\"wspaceId\" : 1, " +
+//					"\"name\" : \"\(file.fileUrl.lastPathComponent)\", \"version\" : 0," +
+//					"\"dateCreated\" : 1439407405827, \"lastModified\" : 1439407405827," +
+//					"\"fileSize\" : \(file.fileUrl.fileSize()),\"etag\" : \"f/1/0\" }"
+//				return jsonString
+//			}
 		}
 		
 		afterSuite {
@@ -64,8 +64,8 @@ class FileImporterTests: NetworkingBaseSpec, URLSessionDataDelegate {
 			if !(conInfo.urlSessionConfig.protocolClasses?.contains(where: {$0 == MockingjayProtocol.self}) ?? false) {
 				conInfo.urlSessionConfig.protocolClasses = [MockingjayProtocol.self] as [AnyClass] + conInfo.urlSessionConfig.protocolClasses!
 			}
-			wspace = conInfo.project(withId: 100)!.workspace(withId: 100)!
-			fakeCache = FakeFileCache(workspace: wspace, baseUrl: dummyBaseUrl)
+//			wspace = conInfo.project(withId: 100)!.workspace(withId: 100)!
+//			fakeCache = FakeFileCache(workspace: wspace, baseUrl: dummyBaseUrl)
 			//TODO: stub REST urls
 			self.stub({ (request) -> (Bool) in
 				return request.url?.absoluteString.hasPrefix(dummyBaseUrl.absoluteString) ?? false
