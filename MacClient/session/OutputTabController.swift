@@ -57,7 +57,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	weak var displayedFile: File?
 	var selectedOutputTab: OutputTabType {
 		get { return OutputTabType(rawValue: selectedTabViewItemIndex)! }
-		set { selectedTabViewItemIndex = newValue.rawValue ; adjustOutputTabSwitcher() }
+		set { switchTo(tab: newValue) }
 	}
 	var searchBarVisible: Bool {
 		get { return currentOutputController.searchBarVisible }
@@ -128,16 +128,6 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	dynamic func tabSwitcherClicked(_ sender:AnyObject?) {
 		let index = (segmentControl?.selectedSegment)!
 		selectedOutputTab = OutputTabType(rawValue: index)!
-		switch selectedOutputTab {
-		case .console:
-			currentOutputController = consoleController
-		case .image:
-			currentOutputController = imageController
-		case .webKit:
-			currentOutputController = webController
-		case .help:
-			currentOutputController = helpController
-		}
 //		NSUserDefaults.standardUserDefaults().setInteger(index, forKey: LastSelectedSessionTabIndex)
 	}
 
@@ -254,6 +244,21 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 
 //MARK: - private methods
 private extension OutputTabController {
+	func switchTo(tab: OutputTabType) {
+		selectedTabViewItemIndex = tab.rawValue
+		switch selectedOutputTab {
+		case .console:
+			currentOutputController = consoleController
+		case .image:
+			currentOutputController = imageController
+		case .webKit:
+			currentOutputController = webController
+		case .help:
+			currentOutputController = helpController
+		}
+		adjustOutputTabSwitcher()
+	}
+	
 	func adjustOutputTabSwitcher() {
 		let index = selectedOutputTab.rawValue
 		//		guard index != selectedTabViewItemIndex else { return }
