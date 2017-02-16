@@ -1,10 +1,12 @@
-var styleTag = document.createElement("style")
-styleTag.textContent = "mark { padding: 0; background: orange; }; mark.current { background: yellow !important };"
-document.head.appendChild(styleTag)
-var $results, $content, currentIndex = 0
 $(function() {
-	$content = $("body")
-})
+	  var styleTag = document.createElement("style")
+	  styleTag.textContent = "mark { padding: 0; background: yellow; };"
+	  document.head.appendChild(styleTag)
+	  styleTag = document.createElement("style")
+	  styleTag.textContent = " mark.current { background: orange !important };"
+	  document.head.appendChild(styleTag)
+  })
+var $results, $content, currentIndex = 0
 function jumpTo() {
 	if ($results.length) {
 		var position, $current = $results.eq(currentIndex)
@@ -28,7 +30,16 @@ function cycleMatch(offset) {
 		jumpTo()
 	}
 }
-function doSearch(term, options = {accuracy: "exactly"}, ) {
+function clearSearch() {
+	$("body").unmark()
+}
+
+function doSearch(binaryStr) {
+	var decodedStr = window.atob(binaryStr)
+	var json = JSON.parse(decodedStr)
+	var term = json["term"]
+	var options = json["options"]
+	$content = $("body")
 	options["done"] = function(cnt) { 
 		resultCount = cnt 
 		$results = $content.find("mark")

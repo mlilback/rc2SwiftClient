@@ -97,10 +97,15 @@ open class WebViewController: NSViewController, OutputController, WKNavigationDe
 	}
 	
 	open func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-		os_log("failed to navigate:%{public}@", log: .app, type:.error, error as NSError)
+		os_log("failed to navigate: %{public}@", log: .app, type:.error, error as NSError)
 	}
 	
 	open func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+	}
+	
+	open func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error)
+	{
+		os_log("failed to provisionally navigate: %{public}@", log: .app, type:.error, error as NSError)
 	}
 }
 
@@ -114,7 +119,13 @@ extension WebViewController: SearchBarViewDelegate {
 	}
 	
 	public func dismiss(searchBar: SearchBarView) {
+		hideSearchBar()
+	}
+	
+	//internal choke point for hiding searchbar
+	fileprivate func hideSearchBar() {
 		searchBarHeightConstraint?.constant = 0
+		webView?.evaluateJavaScript("clearSearch()")
 	}
 	
 	public func performSearch(searchBar: SearchBarView, string: String) {
@@ -145,7 +156,7 @@ extension WebViewController: Searchable {
 			searchBarHeightConstraint?.constant = searchBarHeight
 			view.window?.makeFirstResponder(searchBar?.searchField)
 		case .hideFindInterface:
-			searchBarHeightConstraint?.constant = 0
+			hideSearchBar()
 		default:
 			break
 		}
