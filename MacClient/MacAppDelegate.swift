@@ -26,10 +26,11 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	var bookmarkWindowController: NSWindowController?
 	let bookmarkManager = BookmarkManager()
 	dynamic var dockerManager: DockerManager?
-	var setupController: ServerSetupController?
+	var setupController: SetupController?
 	private var dockerWindowController: NSWindowController?
 	private var preferencesWindowController: NSWindowController?
 	private var appStatus: MacAppStatus?
+	@IBOutlet weak var workspaceMenu: NSMenu!
 
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 
@@ -120,8 +121,13 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			.flatMap(.concat) { docker.prepareContainers() }
 	}
 	
+	/// stub for expanding startup process to start docker, then login to local server
+	private func startSetup() {
+		startSetupImpl()
+	}
+	
 	/// should be only called after docker manager has initialized
-	func startSetup() {
+	func startSetupImpl() {
 		precondition(setupController == nil)
 		//skip docker stuff for unit tests
 		guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
@@ -129,7 +135,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		// load window and setupController
 		let sboard = SwinjectStoryboard.create(name: "Main", bundle: nil)
 		let wc = sboard.instantiateWindowController()
-		setupController = wc.contentViewController as? ServerSetupController
+		setupController = wc.contentViewController as? SetupController
 		assert(setupController != nil)
 		wc.window?.makeKeyAndOrderFront(self)
 
@@ -179,6 +185,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		return windowControllerForSession(session!)!.window!
 	}
 	
+	@IBAction func newWorkspace(_ sender: Any) {
+	}
 	@IBAction func showPreferencesWindow(_ sender: AnyObject?) {
 		if nil == preferencesWindowController {
 			let sboard = NSStoryboard(name: "Preferences", bundle: nil)

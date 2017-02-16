@@ -1,5 +1,5 @@
 //
-//  ServerSetupController.swift
+//  SetupController.swift
 //
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
@@ -9,7 +9,7 @@ import os
 import ClientCore
 import DockerSupport
 
-public class ServerSetupController: NSViewController {
+public class SetupController: NSViewController {
 	@IBOutlet fileprivate dynamic var progressBar:NSProgressIndicator?
 	@IBOutlet fileprivate dynamic var statusText:NSTextField?
 	
