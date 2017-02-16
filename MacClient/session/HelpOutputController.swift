@@ -18,9 +18,10 @@ open class HelpOutputController: WebViewController {
 	}
 	
 	func loadHelpTopic(_ topic: HelpTopic) {
-		let url = HelpController.shared.urlForTopic(topic)
+		let hcontroller = HelpController.shared
+		let url = hcontroller.urlForTopic(topic)
 		DispatchQueue.main.async {
-			_ = self.webView?.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
+			_ = self.webView?.loadFileURL(url, allowingReadAccessTo: hcontroller.baseHelpUrl)
 		}
 	}
 	

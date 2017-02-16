@@ -58,7 +58,8 @@ class HelpController {
 	let allTopics:Set<HelpTopic>
 	let allTopicNames:Set<String>
 	fileprivate let topicsByName:Dictionary<String, [HelpTopic]>
-	fileprivate var baseHelpUrl: URL
+	fileprivate var rootHelpUrl: URL
+	fileprivate(set) var baseHelpUrl: URL
 	
 	///loads topics from storage
 	init() {
@@ -68,9 +69,10 @@ class HelpController {
 		do {
 			let supportUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
 				.appendingPathComponent(AppInfo.bundleIdentifier, isDirectory: true)
-			baseHelpUrl = supportUrl.appendingPathComponent("rdocs", isDirectory: true)
-			if !baseHelpUrl.directoryExists() {
-				try fileManager.createDirectory(at: baseHelpUrl, withIntermediateDirectories: true, attributes: nil)
+			rootHelpUrl = supportUrl.appendingPathComponent("rdocs", isDirectory: true)
+			baseHelpUrl = rootHelpUrl.appendingPathComponent("helpdocs/library", isDirectory: true)
+			if !rootHelpUrl.directoryExists() {
+				try fileManager.createDirectory(at: rootHelpUrl, withIntermediateDirectories: true, attributes: nil)
 			}
 			//load help index
 			db = FMDatabase(path: dbpath)
@@ -118,7 +120,7 @@ class HelpController {
 	
 	/// checks to make sure help files exist and if not, extract them from tarball
 	func verifyDocumentationInstallation() {
-		let versionUrl = baseHelpUrl.appendingPathComponent("rc2help.json")
+		let versionUrl = rootHelpUrl.appendingPathComponent("rc2help.json")
 		if versionUrl.fileExists() { return }
 		let tar = Process()
 		tar.currentDirectoryPath = baseHelpUrl.path
@@ -198,7 +200,7 @@ class HelpController {
 	}
 	
 	func urlForTopic(_ topic:HelpTopic) -> URL {
-		let str = "helpdocs/library/\(topic.packageName)\(HelpUrlFuncSeperator)/\(topic.name).html"
+		let str = "\(topic.packageName)\(HelpUrlFuncSeperator)/\(topic.name).html"
 		return baseHelpUrl.appendingPathComponent(str)
 	}
 }
