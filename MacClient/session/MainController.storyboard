@@ -1124,9 +1124,9 @@
                                                         <action selector="navigateWebView:" target="p0J-JE-sdA" id="fXh-Py-6eO"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Bz6-tM-pBq">
+                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="Bz6-tM-pBq">
                                                     <rect key="frame" x="73" y="3" width="367" height="18"/>
-                                                    <textFieldCell key="cell" lineBreakMode="truncatingHead" sendsActionOnEndEditing="YES" alignment="center" title="Loading…" id="Xcp-uc-g2d">
+                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="left" title="Loading…" id="Xcp-uc-g2d">
                                                         <font key="font" metaFont="system" size="14"/>
                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
