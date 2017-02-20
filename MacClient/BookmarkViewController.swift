@@ -143,7 +143,7 @@ open class BookmarkViewController: NSViewController {
 	
 	func openSession(withBookmark bookmark:Bookmark, password:String?) {
 		var host = ServerHost.localHost
-		var pass = Constants.LocalServerPassword
+		var pass = NetworkConstants.localServerPassword
 		if let bmserver = bookmark.server {
 			host = bmserver
 			if nil == password {

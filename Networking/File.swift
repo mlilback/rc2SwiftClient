@@ -8,7 +8,7 @@ import Foundation
 import Freddy
 import NotifyingCollection
 
-public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashable, UpdateInPlace
+public final class File: JSONDecodable, JSONEncodable, Copyable, CustomStringConvertible, Hashable, UpdateInPlace
 {
 	public let fileId : Int
 	public let wspaceId: Int
@@ -18,6 +18,12 @@ public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashab
 	public fileprivate(set) var dateCreated : Date
 	public fileprivate(set) var lastModified : Date
 	public fileprivate(set) var fileType: FileType
+	
+	static var dateFormatter: ISO8601DateFormatter = {
+		var df = ISO8601DateFormatter()
+		df.formatOptions = [.withInternetDateTime]
+		return df
+	}()
 	
 	public init(json:JSON) throws {
 		fileId = try json.getInt(at: "id")
@@ -92,6 +98,10 @@ public final class File: JSONDecodable,Copyable, CustomStringConvertible, Hashab
 
 	public var description : String {
 		return "<File: \(name) (\(fileId) v\(version))>";
+	}
+	
+	public func toJSON() -> JSON {
+		return .dictionary(["id": .int(fileId), "wspaceId": .int(wspaceId), "name": .string(name), "version": .int(version), "fileSize": .int(fileSize), "dateCreated": .string(File.dateFormatter.string(from: dateCreated)), "lastModified": .string(File.dateFormatter.string(from: lastModified))])
 	}
 	
 	public static func ==(a: File, b: File) -> Bool {

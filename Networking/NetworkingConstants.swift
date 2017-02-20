@@ -15,3 +15,11 @@ import ClientCore
 func localizedNetworkString(_ key: String) -> String {
 	return NSLocalizedString(key, tableName: "Networking", bundle: Bundle(for: Rc2DefaultFileManager.self), comment: "")
 }
+
+public struct NetworkConstants {
+	public static let defaultProjectName = "default"
+	public static let defaultWorkspaceName = "default"
+	public static let defaultBookmarkName = "local"
+	public static let localBookmarkGroupName = NSLocalizedString("Local Server", comment: "")
+	public static let localServerPassword = "local"
+}

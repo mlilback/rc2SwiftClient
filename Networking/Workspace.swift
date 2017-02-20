@@ -11,18 +11,34 @@ import Result
 import NotifyingCollection
 import ClientCore
 import os
-#if os(OSX)
-	import AppKit
-#else
-	import UIKit
-#endif
 
+/// struct for tracking a project/workspace combination
+public struct WorkspaceIdentifier: Equatable {
+	public let projectId: Int
+	public let wspaceId: Int
 
-public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStringConvertible, Hashable {
+	public init(projectId: Int, wspaceId: Int) {
+		self.projectId = projectId
+		self.wspaceId = wspaceId
+	}
+	public init?(_ wspace: Workspace?) {
+		guard let wspace = wspace else { return nil }
+		projectId = wspace.projectId
+		wspaceId = wspace.wspaceId
+	}
+
+	public static func == (lhs: WorkspaceIdentifier, rhs: WorkspaceIdentifier) -> Bool {
+		return lhs.projectId == rhs.projectId && lhs.wspaceId == rhs.wspaceId
+	}
+}
+
+public final class Workspace: JSONDecodable, JSONEncodable, Copyable, UpdateInPlace, CustomStringConvertible, Hashable {
 	public typealias UElement = Workspace
 
 	typealias FileChange = CollectionChange<File>
 
+	public var identifier: WorkspaceIdentifier { return WorkspaceIdentifier(self)! }
+	
 	public let wspaceId: Int
 	public let projectId: Int
 	public let uniqueId: String
@@ -57,6 +73,10 @@ public final class Workspace: JSONDecodable, Copyable, UpdateInPlace, CustomStri
 		version = other.version
 		// can force because they must be valid since they come from another workspace
 		try! _files.append(contentsOf: other.files)
+	}
+	
+	public func toJSON() -> JSON {
+		return .dictionary(["id": .int(wspaceId), "projectId": .int(projectId), "uniqueId": .string(uniqueId), "version": .int(version), "name": .string(name), "files": files.toJSON()])
 	}
 	
 	//documentation inherited from protocol

@@ -22,6 +22,8 @@ public class ConnectionInfo: CustomStringConvertible {
 	
 	public var urlSessionConfig: URLSessionConfiguration!
 	
+	public var defaultProject: Project? { return project(withName: NetworkConstants.defaultProjectName) }
+	
 	/// initializer
 	///
 	/// - Parameters:

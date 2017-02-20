@@ -83,7 +83,7 @@ class BookmarkManager {
 	}
 
 	fileprivate func addBookmarkToAppropriateGroup(_ bookmark:Bookmark) {
-		let localKey:String = bookmark.server?.name ?? Constants.LocalBookmarkGroupName
+		let localKey:String = bookmark.server?.name ?? NetworkConstants.localBookmarkGroupName
 		if let _ = bookmarkGroups[localKey] {
 			bookmarkGroups[localKey]!.addBookmark(bookmark)
 		} else {
@@ -116,7 +116,7 @@ class BookmarkManager {
 	
 	///returns an array of default bookmarks
 	fileprivate func createDefaultBookmarks() -> [Bookmark] {
-		let bmark = Bookmark(name:Constants.DefaultBookmarkName, server: nil, project: Constants.DefaultProjectName, workspace: Constants.DefaultWorkspaceName)
+		let bmark = Bookmark(name:NetworkConstants.defaultBookmarkName, server: nil, project: NetworkConstants.defaultProjectName, workspace: NetworkConstants.defaultWorkspaceName)
 		return [bmark]
 	}
 }

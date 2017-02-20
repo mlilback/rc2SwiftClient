@@ -23,14 +23,6 @@ struct LocalStrings {
 	static let deleteFileWarningInfo = "DeleteFileWarningInfo"
 }
 
-struct Constants {
-	static let DefaultProjectName = "default"
-	static let DefaultWorkspaceName = "default"
-	static let DefaultBookmarkName = "local"
-	static let LocalBookmarkGroupName = NSLocalizedString("Local Server", comment: "")
-	static let LocalServerPassword = "local"
-}
-
 struct PasteboardTypes {
 	static let file = "io.rc2.model.file"
 	static let variable = "io.rc2.model.variable.json"
