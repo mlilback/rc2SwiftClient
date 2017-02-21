@@ -129,19 +129,21 @@ final class DockerAPIImplementation: DockerAPI {
 		let producers = containers
 			.map({ self.perform(operation: operation, container: $0) })
 		let producer = SignalProducer< SignalProducer<(), Rc2Error>, Rc2Error >(values: producers)
-		return producer.flatten(.concat)
+		return producer.flatten(.latest)
 	}
 
 	// documentation in DockerAPI protocol
-	public func perform(operation: DockerContainerOperation, container: DockerContainer) -> SignalProducer<Void, Rc2Error>
+	public func perform(operation: DockerContainerOperation, container: DockerContainer) -> SignalProducer<(), Rc2Error>
 	{
 		os_log("performing %{public}s on %{public}@", log: .docker, type: .info, operation.rawValue, container.name)
 		let url = baseUrl.appendingPathComponent("/containers/\(container.name)/\(operation.rawValue)")
 		var request = URLRequest(url: url)
 		request.httpMethod = "POST"
-		return SignalProducer<Void, Rc2Error> { observer, disposable in
+		return SignalProducer<(), Rc2Error> { observer, disposable in
 			self.session.dataTask(with: request) { (data, response, error) in
-				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {}
+				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {
+					observer.send(value: ())
+				}
 			}.resume()
 		}.observe(on: scheduler)
 	}
