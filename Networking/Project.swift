@@ -97,6 +97,14 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 		try wspacesToRemove.forEach { (aWspace) in try _workspaces.remove(aWspace) }
 	}
 	
+	/// adds a workspace to the array of workspaces
+	///
+	/// - Parameter workspace: workspace that was added
+	/// - Throws: Rc2Error
+	internal func added(workspace: Workspace) throws {
+		try _workspaces.append(workspace)
+	}
+	
 	public func addWorkspaceObserver(identifier: String, observer: @escaping (Workspace) -> Disposable?) {
 		_workspaces.observe(identifier: identifier, observer: observer)
 	}

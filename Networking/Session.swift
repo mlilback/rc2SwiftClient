@@ -202,7 +202,7 @@ public class Session {
 	public func create(fileName: String, contentUrl: URL? = nil, timeout: TimeInterval = 2.0, completionHandler: ((Result<Int, Rc2Error>) -> Void)?)
 	{
 		precondition(workspace.file(withName: fileName) == nil)
-		imageCache.restClient.createFile(name: fileName, workspace: workspace, contentUrl: contentUrl)
+		imageCache.restClient.create(fileName: fileName, workspace: workspace, contentUrl: contentUrl)
 			.observe(on: UIScheduler()).startWithResult
 		{ result in
 			guard let file = result.value else {

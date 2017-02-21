@@ -58,7 +58,9 @@ public final class Workspace: JSONDecodable, JSONEncodable, Copyable, UpdateInPl
 			//these two sets are repeated in update()
 			version = try json.getInt(at: "version")
 			name = try json.getString(at: "name")
-			try _files.append(contentsOf: try json.decodedArray(at: "files"))
+			if let files: [File] = try? json.decodedArray(at: "files") {
+				try _files.append(contentsOf: files)
+			}
 		} catch {
 			throw Rc2Error(type: .invalidJson, nested: error)
 		}
