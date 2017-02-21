@@ -8,12 +8,15 @@ import Foundation
 
 typealias Validator = (String) -> Bool
 
+/// prompts user for an input string
 class InputPrompter: NSObject {
 
 	let promptString: String
 	private(set) var stringValue: String = ""
 	var minimumStringLength: Int = 1
+	/// closure called each time the user changes the input, response is used to enable the ok button
 	var validator: Validator?
+	/// optional required suffix such as a file extension
 	let requiredSuffix: String?
 	
 	fileprivate var parentWindow: NSWindow?
@@ -23,6 +26,12 @@ class InputPrompter: NSObject {
 	@IBOutlet var okButton: NSButton!
 	fileprivate var validValue: Bool = false
 	
+	/// creats a controller to prompt the user for input
+	///
+	/// - Parameters:
+	///   - prompt: The message to prompt the user
+	///   - defaultValue: the default value to show for the input
+	///   - suffix: An optional suffix to automatically add to th end of the input
 	init(prompt: String, defaultValue: String, suffix: String? = nil) {
 		self.promptString = prompt
 		self.stringValue = defaultValue
@@ -39,22 +48,43 @@ class InputPrompter: NSObject {
 		textField.formatter = formatter
 	}
 	
-	func prompt(window parent: NSWindow, handler: @escaping (Bool, String?) -> Void) {
+	/// displays the prompt
+	///
+	/// - Parameters:
+	///   - parent: parent window to present the sheet. if nil, prompt is app modal
+	///   - handler: handler called with the input
+	func prompt(window parent: NSWindow?, handler: @escaping (Bool, String?) -> Void) {
 		parentWindow = parent
 		textField?.stringValue = stringValue
-		parent.beginSheet(window) { (response) in
+		if parent == nil {
+			//run modal
+			let response = NSApp.runModal(for: window)
+			handler(response == NSModalResponseOK, self.stringValue)
+			return
+		}
+		//run as sheet
+		parent!.beginSheet(window) { (response) in
 			handler(response == NSModalResponseOK, self.stringValue)
 		}
 	}
 	
 	@IBAction func saveValue(_ sender: AnyObject) {
 		stringValue = textField.stringValue
-		print("saving \(stringValue)")
-		parentWindow?.endSheet(window, returnCode: NSModalResponseOK)
+		guard let parent = parentWindow else {
+			NSApp.stopModal(withCode: NSModalResponseOK)
+			window?.orderOut(nil)
+			return
+		}
+		parent.endSheet(window, returnCode: NSModalResponseOK)
 	}
 	
 	@IBAction func cancel(_ sender: AnyObject) {
-		parentWindow?.endSheet(window, returnCode: NSModalResponseCancel)
+		guard let parent = parentWindow else {
+			NSApp.abortModal()
+			window?.orderOut(nil)
+			return
+		}
+		parent.endSheet(window, returnCode: NSModalResponseCancel)
 	}
 	
 	func observe(change: String) {

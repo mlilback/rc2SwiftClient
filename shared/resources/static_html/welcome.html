@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Welcome to Rc2</title>
+	<style type="text/css">
+		body {
+			background-image: url(cloudy-welcome@2x.png);
+			background-size: 600px 400px;
+			background-repeat: no-repeat;
+			margin: 0;
+			margin-left: 0px;
+			margin-right: 0px;
+		}
+		#root { 
+			display: flex; 
+			flex-direction: row;
+			width: 600px;
+			height: 400px;
+		}
+		#content {
+			width: 400px;
+			padding-left: 8px;
+		}
+		.crow {
+			width: 200px;
+			height: 60px;
+			margin: 0px auto;
+		}
+		.crow div { width: 100%; height: 100%; display:flex; align-items:center; padding-left:8px;}
+		#wspaces {
+			width: 200px;
+			padding-right: 0;
+			margin-right: 0;
+			height: 400;
+			background-color: white;
+			opacity: .6;
+		}
+		.actionItem:hover {
+			cursor: pointer;
+			background: yellow;
+		}
+		#wspaceList { list-style: none; list-style-position: outside; padding: 0; margin-top: 0px;}
+		.wspace { 
+			padding-bottom: 18px; height: 40px; width: 160ps; padding-left: 40px; padding-top: 2px;
+		}
+		.wspace:hover { background: yellow; cursor: pointer; }
+	</style>
+	<script src="jquery.min.js"></script>
+	<script>
+	$().ready(function() {
+		$("#closeButton").click(function() {
+			window.webkit.messageHandlers.buttonClicked.postMessage({action: "close"});
+		});
+		$("#newAction").click(function() {
+			window.webkit.messageHandlers.buttonClicked.postMessage({action: "new"});
+		});
+		$("#wspaces").on("click", ".wspace", function(event) {
+			var item = event.target;
+			window.webkit.messageHandlers.buttonClicked.postMessage({action: "open", 
+				wspaceId: parseInt($(item).attr('wspaceId'))});
+		});
+		//setWorkspaces(btoa(JSON.stringify([{name: "foo"}, {name: "bar"}, {name: "baz"}])))
+	});
+	function setWorkspaces(encodedJson) {
+		$(".wspace").remove();
+		var wspaces = JSON.parse(atob(encodedJson));
+		wspaces.forEach(function(aWspace) {
+			var item = '<li class="wspace" wspaceId="' + aWspace.id + '">' + aWspace.name + '<br><i>' + aWspace.lastModified + '</i></li>'
+			$("#wspaceList").append(item)
+		});
+	}
+	</script>
+</head>
+<body>
+
+<div id="root">
+
+<div id="content">
+<button id="closeButton" class="closeAction">Close</button>
+
+<h1>Welcome to Rc2</h1>
+
+<p>ipsum lorem...</p>
+
+<div class="crow">
+<div id="newAction" class="actionItem">Create New Workspace…</div>
+</div>
+
+</div>
+
+<div id="wspaces">
+
+<ul id="wspaceList">
+</ul>
+</div>
+
+</div>
+</body>
+</html>

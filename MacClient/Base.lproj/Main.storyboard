@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12100" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12106.1" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12100"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12106.1"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="12106.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
@@ -504,7 +505,7 @@ CA
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="pkJ-wB-91u"/>
-                                        <menuItem title="Bookmarks" id="q4H-T9-YCQ">
+                                        <menuItem title="Welcome" id="q4H-T9-YCQ">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="showBookmarkWindow:" target="Voe-Tx-rLC" id="3uS-m6-vDJ"/>
@@ -557,7 +558,7 @@ CA
         <!--Server Setup Window Controller-->
         <scene sceneID="HW3-Oi-wyR">
             <objects>
-                <windowController storyboardIdentifier="NSWindowController" id="VvP-Om-ZsH" userLabel="Server Setup Window Controller" sceneMemberID="viewController">
+                <windowController storyboardIdentifier="StartupWindowController" id="VvP-Om-ZsH" userLabel="Server Setup Window Controller" customClass="StartupWindowController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <window key="window" title="Preparing Docker" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="h1V-Fn-Msq">
                         <windowStyleMask key="styleMask" titled="YES"/>
                         <windowPositionMask key="initialPositionMask" topStrut="YES" bottomStrut="YES"/>
@@ -572,10 +573,10 @@ CA
             </objects>
             <point key="canvasLocation" x="-330" y="33"/>
         </scene>
-        <!--Setup Controller-->
+        <!--Startup Controller-->
         <scene sceneID="jev-cS-w7g">
             <objects>
-                <viewController storyboardIdentifier="SetupController" id="MSO-Wl-nyy" customClass="SetupController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="StartupController" id="MSO-Wl-nyy" customClass="StartupController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="ZsW-b4-mL9">
                         <rect key="frame" x="0.0" y="0.0" width="425" height="83"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -723,6 +724,59 @@ DQ
                 <customObject id="azX-JM-N1b" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="190" y="256"/>
+        </scene>
+        <!--Onboarding Window-->
+        <scene sceneID="Zd5-Cc-SWO">
+            <objects>
+                <windowController storyboardIdentifier="OnboardingWindowController" id="bIa-8F-PJA" userLabel="Onboarding Window" customClass="OnboardingWindowController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <window key="window" title="Welcome" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" tabbingMode="disallowed" id="l85-zX-MO0">
+                        <windowStyleMask key="styleMask" closable="YES"/>
+                        <windowPositionMask key="initialPositionMask" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="320" y="343" width="600" height="400"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2048" height="1129"/>
+                        <value key="minSize" type="size" width="600" height="400"/>
+                    </window>
+                    <connections>
+                        <segue destination="6AV-dT-uCL" kind="relationship" relationship="window.shadowedContentViewController" id="yqh-Mz-XXQ"/>
+                    </connections>
+                </windowController>
+                <customObject id="1Dk-Vd-GAr" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1018" y="-96"/>
+        </scene>
+        <!--Onboarding View Controller-->
+        <scene sceneID="GHU-Ig-LEF">
+            <objects>
+                <viewController id="6AV-dT-uCL" userLabel="Onboarding View Controller" customClass="OnboardingViewController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" appearanceType="aqua" id="TcS-c8-Tj5">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="400"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <wkWebView wantsLayer="YES" horizontalHuggingPriority="249" verticalHuggingPriority="249" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" allowsLinkPreview="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a4R-8O-nol">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="400"/>
+                                <wkWebViewConfiguration key="configuration">
+                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                    <wkPreferences key="preferences"/>
+                                </wkWebViewConfiguration>
+                                <connections>
+                                    <outlet property="navigationDelegate" destination="6AV-dT-uCL" id="JD2-ix-2Le"/>
+                                </connections>
+                            </wkWebView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="a4R-8O-nol" secondAttribute="bottom" id="30O-aR-Kx5"/>
+                            <constraint firstItem="a4R-8O-nol" firstAttribute="leading" secondItem="TcS-c8-Tj5" secondAttribute="leading" id="Jp6-Eu-W9p"/>
+                            <constraint firstAttribute="trailing" secondItem="a4R-8O-nol" secondAttribute="trailing" id="uet-Md-K2y"/>
+                            <constraint firstItem="a4R-8O-nol" firstAttribute="top" secondItem="TcS-c8-Tj5" secondAttribute="top" id="zHK-Cv-tNP"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="webView" destination="a4R-8O-nol" id="len-v3-7ot"/>
+                    </connections>
+                </viewController>
+                <customObject id="x1u-yY-eNN" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1018" y="455"/>
         </scene>
     </scenes>
 </document>

@@ -133,6 +133,7 @@
 		0833A8231D2D7EAD0033654B /* HockeySDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8211D2D7E770033654B /* HockeySDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; };
 		0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0835A07E1E57823500123820 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0835A07D1E57823500123820 /* OnboardingViewController.swift */; };
 		08367BD31E3FCEA800FAFC8A /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; };
 		08367BD41E3FCEA800FAFC8A /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; };
 		083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
@@ -154,7 +155,7 @@
 		083D11961DEF535C00549268 /* complexImages.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D11951DEF535C00549268 /* complexImages.json */; };
 		083D11981DF0B8AF00549268 /* imageInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D11971DF0B8AF00549268 /* imageInfo.json */; };
 		083D119A1DF201BB00549268 /* BaseDockerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11991DF201BB00549268 /* BaseDockerSpec.swift */; };
-		084199261D903F7A0089A1AC /* SetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* SetupController.swift */; };
+		084199261D903F7A0089A1AC /* StartupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* StartupController.swift */; };
 		0841993A1D91B0760089A1AC /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		0841993B1D91B2770089A1AC /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; };
 		0841993C1D91B2830089A1AC /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; };
@@ -249,6 +250,7 @@
 		08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08C2C3C91DF74DE200397DD3 /* Networking.strings in Resources */ = {isa = PBXBuildFile; fileRef = 08C2C3C81DF74DE200397DD3 /* Networking.strings */; };
 		08C484F81C9B159000FE824B /* server.cer in Resources */ = {isa = PBXBuildFile; fileRef = 08C484F71C9B159000FE824B /* server.cer */; };
+		08C6055E1E574355007F83C4 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C6055D1E574355007F83C4 /* ConnectionManager.swift */; };
 		08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */; };
 		08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */; };
 		08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB554F1C5AC727002CB7EE /* SessionEditor.swift */; };
@@ -644,6 +646,7 @@
 		083382F91C68F2A900D40EEB /* BaseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BaseTest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0833A8211D2D7E770033654B /* HockeySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HockeySDK.framework; path = "HockeySDK-Mac/HockeySDK.framework"; sourceTree = "<group>"; };
 		0833A8251D2D87120033654B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = vendor/Sparkle.framework; sourceTree = "<group>"; };
+		0835A07D1E57823500123820 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		08367BD21E3FCEA800FAFC8A /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/Mac/Starscream.framework; sourceTree = "<group>"; };
 		083A566E1D246D85009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/ProjectManagement.storyboard; sourceTree = "<group>"; };
 		083A56701D24722C009D3091 /* ProjectManagerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectManagerViewController.swift; sourceTree = "<group>"; };
@@ -663,7 +666,7 @@
 		083D11951DEF535C00549268 /* complexImages.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = complexImages.json; sourceTree = "<group>"; };
 		083D11971DF0B8AF00549268 /* imageInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = imageInfo.json; sourceTree = "<group>"; };
 		083D11991DF201BB00549268 /* BaseDockerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseDockerSpec.swift; sourceTree = "<group>"; };
-		084199251D903F7A0089A1AC /* SetupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetupController.swift; sourceTree = "<group>"; };
+		084199251D903F7A0089A1AC /* StartupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartupController.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* MockFileManagers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManagers.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		084FEA7F1D3044E700060A7D /* ObjcConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcConstants.h; sourceTree = "<group>"; };
@@ -752,6 +755,7 @@
 		08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessagePackSwift.framework; path = Carthage/Build/Mac/MessagePackSwift.framework; sourceTree = "<group>"; };
 		08C2C3C81DF74DE200397DD3 /* Networking.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Networking.strings; sourceTree = "<group>"; };
 		08C484F71C9B159000FE824B /* server.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = server.cer; path = resources/server.cer; sourceTree = "<group>"; };
+		08C6055D1E574355007F83C4 /* ConnectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManager.swift; sourceTree = "<group>"; };
 		08CB553F1C5A6E71002CB7EE /* MonoFontManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManagerTests.swift; sourceTree = "<group>"; };
 		08CB554F1C5AC727002CB7EE /* SessionEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditor.swift; sourceTree = "<group>"; };
@@ -1162,6 +1166,7 @@
 				081559861DDBB4310047B3CE /* Session.swift */,
 				081559841DDBB3760047B3CE /* SessionDelegate.swift */,
 				081559901DDC84850047B3CE /* SessionImage.swift */,
+				08C6055D1E574355007F83C4 /* ConnectionManager.swift */,
 			);
 			name = network;
 			sourceTree = "<group>";
@@ -1233,9 +1238,10 @@
 				088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */,
 				0890650A1D26F59300C7CA5D /* MacAppStatus.swift */,
 				088CE6701C4B0AF400153414 /* Assets.xcassets */,
-				084199251D903F7A0089A1AC /* SetupController.swift */,
+				084199251D903F7A0089A1AC /* StartupController.swift */,
 				083305D81C501B7300E27F66 /* MainWindowController.swift */,
 				088CE6721C4B0AF400153414 /* Main.storyboard */,
+				0835A07D1E57823500123820 /* OnboardingViewController.swift */,
 				086659991CA1F3E5007AC555 /* MainWindow.xib */,
 				08F448F81C4E244500C64706 /* MainController.storyboard */,
 				083382F01C64341C00D40EEB /* AppStatusView.swift */,
@@ -1995,6 +2001,7 @@
 				081559851DDBB3760047B3CE /* SessionDelegate.swift in Sources */,
 				081559811DDBAF030047B3CE /* ConsoleAttachment.swift in Sources */,
 				080E82E11DCBEE590048F36C /* User.swift in Sources */,
+				08C6055E1E574355007F83C4 /* ConnectionManager.swift in Sources */,
 				0881B50B1DCF856B00679DB3 /* ConnectionInfo.swift in Sources */,
 				080E83001DCD07930048F36C /* NetworkingError.swift in Sources */,
 				08F6ADB21DD90E3600AF0722 /* Rc2FileManager.swift in Sources */,
@@ -2056,6 +2063,7 @@
 				083A56731D247B52009D3091 /* AddBookmarkViewController.swift in Sources */,
 				083174041C5571D300071408 /* RootViewController.swift in Sources */,
 				0816FD1D1E5226010006FF26 /* SearchBarView.swift in Sources */,
+				0835A07E1E57823500123820 /* OnboardingViewController.swift in Sources */,
 				0816F8A01C6D3A4500A6120B /* SessionHandlerProtocols.swift in Sources */,
 				0812631F1C862F4B003E37A5 /* EditorDocument.swift in Sources */,
 				0864DA681DA2C8D1003F3F57 /* DockerContainerController.swift in Sources */,
@@ -2072,7 +2080,7 @@
 				08F448FC1C4E244500C64706 /* SessionOutputController.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
 				08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */,
-				084199261D903F7A0089A1AC /* SetupController.swift in Sources */,
+				084199261D903F7A0089A1AC /* StartupController.swift in Sources */,
 				08CB55521C5C06B2002CB7EE /* OutputTabController.swift in Sources */,
 				0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */,
 				0827A4E31C7ED9CE001F0AFB /* LatexCodeHighlighter.swift in Sources */,

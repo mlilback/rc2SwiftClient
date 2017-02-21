@@ -20,31 +20,55 @@ extension DefaultsKeys {
 	static let openSessions = DefaultsKey<JSON?>("OpenSessions")
 }
 
+fileprivate struct Actions {
+	static let showPreferences = #selector(MacAppDelegate.showPreferencesWindow(_:))
+	static let showBookmarks = #selector(MacAppDelegate.showBookmarkWindow(_:))
+	static let showDockerControls = #selector(MacAppDelegate.showDockerControl(_:))
+	static let newWorkspace = #selector(MacAppDelegate.newWorkspace(_:))
+	static let showWorkspace = #selector(MacAppDelegate.showWorkspace(_:))
+}
+
 @NSApplicationMain
 class MacAppDelegate: NSObject, NSApplicationDelegate {
+	//MARK: - properties
+	var mainStoryboard: SwinjectStoryboard!
 	var sessionWindowControllers = Set<MainWindowController>()
 	var bookmarkWindowController: NSWindowController?
 	let bookmarkManager = BookmarkManager()
 	dynamic var dockerManager: DockerManager?
-	var setupController: SetupController?
-	private var dockerWindowController: NSWindowController?
-	private var preferencesWindowController: NSWindowController?
-	private var appStatus: MacAppStatus?
+	var startupWindowController: StartupWindowController?
+	var startupController: StartupController?
+	fileprivate var onboardingController: OnboardingWindowController?
+	fileprivate var dockerWindowController: NSWindowController?
+	fileprivate var preferencesWindowController: NSWindowController?
+	fileprivate var appStatus: MacAppStatus?
 	@IBOutlet weak var workspaceMenu: NSMenu!
+	fileprivate let connectionManager = ConnectionManager()
+	fileprivate var dockMenu: NSMenu?
 
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 
+	//MARK: - NSApplicationDelegate
 	func applicationWillFinishLaunching(_ notification: Notification) {
+		mainStoryboard = SwinjectStoryboard.create(name: "Main", bundle: nil)
+		precondition(mainStoryboard != nil)
 		//only init dockerManager if not running unit tests
 		if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
 			dockerManager = DockerManager()
 		}
-		DispatchQueue.main.async {
-			self.startSetup()
+		
+		DispatchQueue.global().async {
+			HelpController.shared.verifyDocumentationInstallation()
 		}
+		
 		let cdUrl = Bundle(for: type(of: self)).url(forResource: "CommonDefaults", withExtension: "plist")
 		UserDefaults.standard.register(defaults: NSDictionary(contentsOf: cdUrl!)! as! [String : AnyObject])
-		NotificationCenter.default.addObserver(self, selector: #selector(MacAppDelegate.windowWillClose), name: NSNotification.Name.NSWindowWillClose, object: nil)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(MacAppDelegate.windowWillClose), name: .NSWindowWillClose, object: nil)
+		
+		DispatchQueue.main.async {
+			self.beginStartup()
+		}
 	}
 
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -58,8 +82,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			BITHockeyManager.shared().start()
 		}
 	#endif
-		HelpController.shared.verifyDocumentationInstallation()
-		restoreSessions()
 	}
 
 	func applicationWillTerminate(_ aNotification: Notification) {
@@ -82,144 +104,74 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func applicationOpenUntitledFile(_ sender: NSApplication) -> Bool {
-		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
+		//bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
+		onboardingController?.window?.makeKeyAndOrderFront(self)
 		return true
 	}
 	
+	func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
+		if nil == dockMenu, let projects = connectionManager.localConnection?.projects, projects.count > 0 {
+			dockMenu = NSMenu(title: "Dock")
+			if projects.count == 1 {
+				let wspaceMI = workspaceMenu(for: projects.first!)
+				wspaceMI.title = "Workspaces"
+				wspaceMI.submenu?.title = "Workspaces"
+				dockMenu?.addItem(wspaceMI)
+			} else {
+				let projectMenu = NSMenu(title: "Projects")
+				for aProject in projects {
+					projectMenu.addItem(workspaceMenu(for: aProject))
+				}
+				let projMI = NSMenuItem(title: "Projects", action: nil, keyEquivalent: "")
+				projMI.submenu = projectMenu
+				dockMenu?.addItem(projMI)
+			}
+		}
+		return dockMenu
+	}
+}
+
+//MARK: - basic functionality
+extension MacAppDelegate {
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch(action) {
-			case #selector(MacAppDelegate.showBookmarkWindow(_:)):
+			case Actions.showBookmarks:
 				return true
 			//for some reason this wasn't working properly as another user
 //				return NSApp.mainWindow != bookmarkWindowController?.window
-		case #selector(MacAppDelegate.showDockerControl(_:)):
+		case Actions.showDockerControls:
 				return true
-		case #selector(MacAppDelegate.showPreferencesWindow(_:)):
+		case Actions.showPreferences:
 				return !(preferencesWindowController?.window?.isMainWindow ?? false)
-			default:
-				return false
+		case Actions.showWorkspace:
+			guard let wspaceIdent = menuItem.representedObject as? WorkspaceIdentifier else { return false }
+			return windowController(for: wspaceIdent)?.window?.isMainWindow ?? true
+		default:
+			return false
 		}
 	}
 	
-	func performPullAndPrepareContainers(_ needPull: Bool) -> SignalProducer<(), Rc2Error> {
-		os_log("performPullAndPrepareContainers: %d", log: .app, type: .debug, needPull ? 1 : 0)
-		guard let docker = dockerManager else { fatalError() }
-		guard needPull else {
-			os_log("pull not needed, preparing containers", log: .app, type: .debug)
-			return docker.prepareContainers()
-		}
-		return docker.pullImages()
-			.on( //inject side-effect to update the progress bar
-				starting: {
-					self.setupController?.statusMesssage = "Pulling Images…"
-				}, value: { (pprogress) in
-					self.setupController?.pullProgress = pprogress
-			})
-			.collect() // colalesce individual PullProgress values into a single array sent when pullImages is complete
-			.map( { _ in } ) //map [PullProgress] to () as that is the input parameter to prepareContainers
-			.flatMap(.concat) { docker.prepareContainers() }
+	/// returns the session associated with window if it is a session window
+	func session(for window: NSWindow?) -> Session? {
+		guard let wc = NSApp.mainWindow?.windowController as? MainWindowController else { return nil }
+		return wc.session
 	}
-	
-	/// stub for expanding startup process to start docker, then login to local server
-	private func startSetup() {
-		startSetupImpl()
-	}
-	
-	/// should be only called after docker manager has initialized
-	func startSetupImpl() {
-		precondition(setupController == nil)
-		//skip docker stuff for unit tests
-		guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
-		guard let docker = dockerManager else { fatalError("no docker manager") }
-		// load window and setupController
-		let sboard = SwinjectStoryboard.create(name: "Main", bundle: nil)
-		let wc = sboard.instantiateWindowController()
-		setupController = wc.contentViewController as? SetupController
-		assert(setupController != nil)
-		wc.window?.makeKeyAndOrderFront(self)
 
-		setupController!.statusMesssage = "Initializing Docker…"
-		_ = docker.initialize()
-			.flatMap(.concat, transform: performPullAndPrepareContainers)
-			.flatMap(.concat, transform: {
-				return docker.perform(operation: .start)}
-			)
-			.on(
-				failed: { error in
-					os_log("failed to start a container: %{public}s", log: .app, type: .error, error.debugDescription)
-					self.appStatus?.presentError(error, session: nil)
-				}, completed: {
-					DispatchQueue.main.async {
-						wc.window?.orderOut(nil)
-						wc.close()
-						self.showBookmarkWindow(nil)
-					}
-				}, interrupted: {
-					fatalError() //should never happen
-				}
-			).observe(on: UIScheduler()).start()
+	/// returns the window controller for the identified workspace
+	func windowController(for workspaceIdent: WorkspaceIdentifier) -> MainWindowController? {
+		return sessionWindowControllers.first(where: { $0.session?.workspace.wspaceId == workspaceIdent.wspaceId })
 	}
 	
-	func restoreSessions() {
-		let defaults = UserDefaults.standard
-		//load them, or create default ones
-		var bookmarks: [Bookmark] = []
-		if let json: JSON = defaults[.openSessions] {
-			bookmarks = (try? json.decodedArray()) ?? []
-		}
-		let dinfo = "bwc = \(String(describing: bookmarkWindowController)), bmc = \(String(describing: bookmarkWindowController?.contentViewController))"
-		os_log("bm info: %{public}s", log: .app, type: .debug, dinfo)
-		guard let bmarkController = bookmarkWindowController?.contentViewController as? BookmarkViewController else
-		{
-			os_log("failed to get bookmarkViewController to restore sessions", log: .app, type: .default)
-			return
-		}
-		//TODO: show progress dialog
-		for bmark in bookmarks {
-			bmarkController.openSession(withBookmark: bmark, password: nil)
-		}
-	}
-	
-	func windowForAppStatus(_ session:Session?) -> NSWindow {
+	/// returns the window for the specified session
+	func window(for session:Session?) -> NSWindow {
+		//TODO: make return value optional and remove force casts
 		return windowControllerForSession(session!)!.window!
 	}
 	
-	@IBAction func newWorkspace(_ sender: Any) {
-	}
-	@IBAction func showPreferencesWindow(_ sender: AnyObject?) {
-		if nil == preferencesWindowController {
-			let sboard = NSStoryboard(name: "Preferences", bundle: nil)
-			preferencesWindowController = sboard.instantiateInitialController() as? NSWindowController
-			preferencesWindowController?.window?.setFrameAutosaveName("PrefsWindow")
-		}
-		preferencesWindowController?.showWindow(self)
-	}
-	
-	@IBAction func showBookmarkWindow(_ sender:AnyObject?) {
-		if nil == bookmarkWindowController {
-			let container = Container()
-			container.registerForStoryboard(BookmarkViewController.self) { r, c in
-				c.bookmarkManager = self.bookmarkManager
-			}
-			container.registerForStoryboard(AddBookmarkViewController.self) { r, c in
-				c.bookmarkManager = self.bookmarkManager
-			}
-			container.registerForStoryboard(SelectServerViewController.self) { r, c in
-				c.bookmarkManager = self.bookmarkManager
-			}
-
-			let sboard = SwinjectStoryboard.create(name: "BookmarkManager", bundle: nil, container: container)
-			bookmarkWindowController = sboard.instantiateController(withIdentifier: "bookmarkWindow") as? NSWindowController
-			let bvc = bookmarkWindowController!.contentViewController as! BookmarkViewController
-			bvc.openSessionCallback = openSession
-		}
-		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
-	}
-	
-	func openSession(_ session: Session) {
+	func openSessionWindow(_ session: Session) {
 		if nil == appStatus {
-			appStatus = MacAppStatus(windowAccessor: windowForAppStatus)
+			appStatus = MacAppStatus(windowAccessor: window)
 		}
 		let wc = MainWindowController.createFromNib()
 		sessionWindowControllers.insert(wc)
@@ -237,7 +189,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		container.registerForStoryboard(SessionEditorController.self) { r, c in
 			c.appStatus = self.appStatus
 		}
-
+		
 		let sboard = SwinjectStoryboard.create(name: "MainController", bundle: nil, container: container)
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window
 		let root = sboard.instantiateController(withIdentifier: "rootController") as? RootViewController
@@ -247,6 +199,114 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		wc.appStatus = appStatus
 		wc.session = session
 		wc.setupChildren()
+		if onboardingController?.window?.isVisible ?? false {
+			onboardingController?.window?.orderOut(self)
+		}
+	}
+	
+	func openLocalSession(for wspaceIdentifier: WorkspaceIdentifier?) {
+		guard let ident = wspaceIdentifier else {
+			newWorkspace(self)
+			return
+		}
+		guard let conInfo = connectionManager.localConnection, let wspace = conInfo.project(withId: ident.projectId)?.workspace(withId: ident.wspaceId) else
+		{
+			os_log("failed to find workspace %d that we're suppoesd to open", log: .app)
+			return
+		}
+		let session = Session(connectionInfo: conInfo, workspace: wspace)
+		session.open().observe(on: UIScheduler()).on(starting: {
+		}, terminated: {
+		}).start { event in
+			switch event {
+			case .completed:
+				self.openSessionWindow(session)
+				self.onboardingController?.window?.orderOut(self)
+			case .failed(let err):
+				os_log("failed to open websocket: %{public}s", log: .session, err.localizedDescription)
+				fatalError()
+			case .value: //(let _):
+				// do nothing as using indeterminate progress
+				break
+			case .interrupted:
+				break //should never happen
+			}
+		}
+	}
+	
+	fileprivate func workspaceMenu(for project: Project) -> NSMenuItem {
+		let menu = NSMenu(title: project.name)
+		for aWorkspace in project.workspaces.sorted(by: { $0.name < $1.name }) {
+			let wspaceItem = NSMenuItem(title: aWorkspace.name, action: Actions.showWorkspace, keyEquivalent: "")
+			wspaceItem.representedObject = WorkspaceIdentifier(aWorkspace)
+			wspaceItem.tag = aWorkspace.wspaceId
+			menu.addItem(wspaceItem)
+		}
+		let menuItem = NSMenuItem(title: project.name, action: nil, keyEquivalent: "")
+		menuItem.submenu = menu
+		return menuItem
+	}
+}
+
+//MARK: - actions
+extension MacAppDelegate {
+	@IBAction func newWorkspace(_ sender: Any) {
+		guard let conInfo = connectionManager.localConnection, let project = conInfo.defaultProject else { fatalError() }
+		DispatchQueue.main.async {
+			let existingNames = project.workspaces.map { $0.name.lowercased() }
+			let prompter = InputPrompter(prompt: "Workspace name:", defaultValue: "new workspace")
+			prompter.validator = { proposedName in
+				return !existingNames.contains(proposedName.lowercased())
+			}
+			prompter.prompt(window: nil) { success, value in
+				guard success else { return }
+				let client = Rc2RestClient(conInfo)
+				client.create(workspace: prompter.stringValue, project: conInfo.defaultProject!)
+					.observe(on: UIScheduler())
+					.startWithFailed { error in
+						//this should never happen unless serious server error
+						//TODO: this does not actually present an error
+						self.appStatus?.presentError(error, session: nil)
+					}
+			}
+		}
+	}
+	
+	@IBAction func showWorkspace(_ sender: Any?) {
+		guard let menuItem = sender as? NSMenuItem, let ident = menuItem.representedObject as? WorkspaceIdentifier else { return }
+		if let wc = windowController(for: ident) { wc.window?.makeKeyAndOrderFront(self); return }
+		openLocalSession(for: ident)
+	}
+	
+	@IBAction func showPreferencesWindow(_ sender: AnyObject?) {
+		if nil == preferencesWindowController {
+			let sboard = NSStoryboard(name: "Preferences", bundle: nil)
+			preferencesWindowController = sboard.instantiateInitialController() as? NSWindowController
+			preferencesWindowController?.window?.setFrameAutosaveName("PrefsWindow")
+		}
+		preferencesWindowController?.showWindow(self)
+	}
+	
+	@IBAction func showBookmarkWindow(_ sender:AnyObject?) {
+		onboardingController?.window?.makeKeyAndOrderFront(self)
+//		if nil == bookmarkWindowController {
+//			let container = Container()
+//			container.registerForStoryboard(BookmarkViewController.self) { r, c in
+//				c.bookmarkManager = self.bookmarkManager
+//			}
+//			container.registerForStoryboard(AddBookmarkViewController.self) { r, c in
+//				c.bookmarkManager = self.bookmarkManager
+//			}
+//			container.registerForStoryboard(SelectServerViewController.self) { r, c in
+//				c.bookmarkManager = self.bookmarkManager
+//			}
+//
+//			let sboard = SwinjectStoryboard.create(name: "BookmarkManager", bundle: nil, container: container)
+//			bookmarkWindowController = sboard.instantiateController(withIdentifier: "bookmarkWindow") as? NSWindowController
+//			let bvc = bookmarkWindowController!.contentViewController as! BookmarkViewController
+//			bvc.openSessionCallback = openSessionWindow
+//		}
+//		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
 	}
 	
 	@IBAction func showDockerControl(_ sender:Any?) {
@@ -266,7 +326,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		if let sessionWC = (note.object as! NSWindow).windowController as? MainWindowController {
 			sessionWindowControllers.remove(sessionWC)
 			if sessionWindowControllers.count < 1 {
-				perform(#selector(MacAppDelegate.showBookmarkWindow), with: nil, afterDelay: 0.2)
+				perform(Actions.showBookmarks, with: nil, afterDelay: 0.2)
 			}
 		}
 	}
@@ -277,4 +337,151 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		}
 		return nil
 	}
+}
+
+//MARK: - startup
+extension MacAppDelegate {
+	/// load the setup window and start setup process
+	fileprivate func beginStartup() {
+		precondition(startupController == nil)
+		precondition(dockerManager != nil)
+		
+		// load window and setupController. 
+		startupWindowController = mainStoryboard.instantiateController(withIdentifier: "StartupWindowController") as? StartupWindowController
+		guard let wc = startupWindowController else { fatalError("failed to load startup window controller") }
+		startupController = startupWindowController!.contentViewController as? StartupController
+		assert(startupController != nil)
+		wc.window?.makeKeyAndOrderFront(self)
+		assert(wc.window!.isVisible)
+		assert(wc.contentViewController?.view.window == wc.window)
+		
+		//skip docker stage if performing unit tests
+		if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+			startupController!.stage = .docker
+		}
+		//move to the next stage
+		advanceStartupStage()
+	}
+	
+	//advances to the next startup stage
+	private  func advanceStartupStage() {
+		guard let setupWC = startupController?.view.window?.windowController else { fatalError("advanceStartupStage() called without a setup controller") }
+		switch startupController!.stage {
+		case .initial:
+			startupDocker()
+			startupController!.stage = .docker
+		case .docker:
+			startupController!.stage = .localLogin
+			startupLocalLogin()
+		case .localLogin:
+			startupController!.stage = .restoreSessions
+			restoreSessions()
+		case .restoreSessions:
+			startupController!.stage = .complete
+			setupWC.window?.orderOut(nil)
+			setupWC.close()
+			startupController = nil
+			startupWindowController = nil
+			dockMenu = nil
+			showOnboarding()
+		case .complete:
+			fatalError("should never reach this point")
+		}
+	}
+	
+	private func handleStartupError(_ error: Error) {
+		let alert = NSAlert()
+		alert.messageText = "Error starting application"
+		alert .informativeText = error.localizedDescription
+		alert.addButton(withTitle: "Quit")
+		alert.runModal()
+		NSApp.terminate(self)
+	}
+	
+	private func startupLocalLogin() {
+		let loginFactory = LoginFactory()
+		let host = ServerHost.localHost
+		let pass = NetworkConstants.localServerPassword
+		loginFactory.login(to: host, as: host.user, password: pass).observe(on: UIScheduler()).startWithResult { (result) in
+			guard let conInfo = result.value else {
+				self.handleStartupError(result.error!)
+				return
+			}
+			self.connectionManager.localConnection = conInfo
+			self.advanceStartupStage()
+		}
+	}
+	
+	fileprivate func showOnboarding() {
+		if nil == onboardingController {
+			onboardingController = (mainStoryboard.instantiateController(withIdentifier: "OnboardingWindowController") as! OnboardingWindowController)
+			onboardingController?.viewController.conInfo = connectionManager.localConnection
+			onboardingController?.viewController.openLocalWorkspace = openLocalSession
+		}
+		onboardingController!.window?.makeKeyAndOrderFront(self)
+	}
+	
+	/// should be only called after docker manager has initialized
+	private  func startupDocker() {
+		guard let docker = dockerManager else { fatalError() }
+		
+		_ = docker.initialize()
+			.flatMap(.concat, transform: performPullAndPrepareContainers)
+			.flatMap(.concat, transform: {
+				return docker.perform(operation: .start)}
+			)
+			.observe(on: UIScheduler())
+			.startWithResult { [weak self] result in
+				guard result.error == nil else {
+					os_log("failed to start docker: %{public}s", log: .app, type: .error, result.error!.debugDescription)
+					self!.appStatus?.presentError(result.error!, session: nil)
+					self!.handleStartupError(result.error!) //should never return
+					return
+				}
+				self!.advanceStartupStage()
+		}
+	}
+	
+	private func restoreSessions() {
+		//TODO: use startupController for progress, perform async
+		let defaults = UserDefaults.standard
+		//load them, or create default ones
+		var bookmarks: [Bookmark] = []
+		if let json: JSON = defaults[.openSessions] {
+			bookmarks = (try? json.decodedArray()) ?? []
+		}
+		let dinfo = "bwc = \(String(describing: bookmarkWindowController)), bmc = \(String(describing: bookmarkWindowController?.contentViewController))"
+		os_log("bm info: %{public}s", log: .app, type: .debug, dinfo)
+		guard let bmarkController = bookmarkWindowController?.contentViewController as? BookmarkViewController else
+		{
+			os_log("failed to get bookmarkViewController to restore sessions", log: .app, type: .default)
+			advanceStartupStage()
+			return
+		}
+		//TODO: show progress dialog
+		for bmark in bookmarks {
+			bmarkController.openSession(withBookmark: bmark, password: nil)
+		}
+		advanceStartupStage()
+	}
+
+	private func performPullAndPrepareContainers(_ needPull: Bool) -> SignalProducer<(), Rc2Error> {
+		os_log("performPullAndPrepareContainers: %d", log: .app, type: .debug, needPull ? 1 : 0)
+		guard let docker = dockerManager else { fatalError() }
+		guard needPull else {
+			os_log("pull not needed, preparing containers", log: .app, type: .debug)
+			return docker.prepareContainers()
+		}
+		return docker.pullImages()
+			.on( //inject side-effect to update the progress bar
+				starting: {
+					self.startupController?.statusMesssage = "Pulling Images…"
+			}, value: { (pprogress) in
+				self.startupController?.pullProgress = pprogress
+			})
+			.collect() // colalesce individual PullProgress values into a single array sent when pullImages is complete
+			.map( { _ in } ) //map [PullProgress] to () as that is the input parameter to prepareContainers
+			.flatMap(.concat) { docker.prepareContainers() }
+	}
+	
 }
