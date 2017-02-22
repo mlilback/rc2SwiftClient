@@ -41,7 +41,7 @@ class BookmarkManager {
 	func addBookmark(_ bookmark:Bookmark) {
 		bookmarks.append(bookmark)
 		addBookmarkToAppropriateGroup(bookmark)
-		bookmarks.sort() { $0.name < $1.name }
+		bookmarks.sort()
 	}
 	
 	///replaces an existing bookmark (when edited)
@@ -70,7 +70,7 @@ class BookmarkManager {
 		if bookmarks.count < 1 {
 			bookmarks = createDefaultBookmarks()
 		}
-		bookmarks.sort() { $0.name < $1.name }
+		bookmarks.sort()
 		groupBookmarks()
 		loadHosts()
 	}
@@ -116,8 +116,7 @@ class BookmarkManager {
 	
 	///returns an array of default bookmarks
 	fileprivate func createDefaultBookmarks() -> [Bookmark] {
-		let bmark = Bookmark(name:NetworkConstants.defaultBookmarkName, server: nil, project: NetworkConstants.defaultProjectName, workspace: NetworkConstants.defaultWorkspaceName)
-		return [bmark]
+		return [Bookmark.defaultBookmark]
 	}
 }
 

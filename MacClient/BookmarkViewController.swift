@@ -99,27 +99,27 @@ open class BookmarkViewController: NSViewController {
 	}
 	
 	@IBAction func addBookmark(_ sender:AnyObject?) {
-		addController = storyboard?.instantiateController(withIdentifier: "addBookmark") as? AddBookmarkViewController
-		addController?.bookmarkAddedClosure = { (host, pw) in
-			let bookmark = Bookmark(name: "untitled", server: host, project: pw.project, workspace: pw.workspace)
-			self.bookmarkManager?.addBookmark(bookmark)
-			self.bookmarkManager?.save()
-			self.loadBookmarkEntries()
-			self.tableView?.reloadData()
-			let idx = self.entryIndexForBookmark(bookmark)!
-			self.tableView?.selectRowIndexes(IndexSet(integer:idx), byExtendingSelection: false)
-			self.dismissViewController(self.addController!)
-			DispatchQueue.main.async {
-				//start editing of name
-				if let cellView = self.tableView?.view(atColumn: 0, row: idx, makeIfNecessary: true) as? NSTableCellView
-				{
-					cellView.window!.makeFirstResponder(cellView.textField)
-				}
-			}
-		}
-		DispatchQueue.main.async {
-			self.presentViewControllerAsSheet(self.addController!)
-		}
+//		addController = storyboard?.instantiateController(withIdentifier: "addBookmark") as? AddBookmarkViewController
+//		addController?.bookmarkAddedClosure = { (host, pw) in
+//			let bookmark = Bookmark(name: "untitled", server: host, project: pw.project, workspace: pw.workspace)
+//			self.bookmarkManager?.addBookmark(bookmark)
+//			self.bookmarkManager?.save()
+//			self.loadBookmarkEntries()
+//			self.tableView?.reloadData()
+//			let idx = self.entryIndexForBookmark(bookmark)!
+//			self.tableView?.selectRowIndexes(IndexSet(integer:idx), byExtendingSelection: false)
+//			self.dismissViewController(self.addController!)
+//			DispatchQueue.main.async {
+//				//start editing of name
+//				if let cellView = self.tableView?.view(atColumn: 0, row: idx, makeIfNecessary: true) as? NSTableCellView
+//				{
+//					cellView.window!.makeFirstResponder(cellView.textField)
+//				}
+//			}
+//		}
+//		DispatchQueue.main.async {
+//			self.presentViewControllerAsSheet(self.addController!)
+//		}
 	}
 	
 	@IBAction func bookmarkNameEditedAction(_ textField:NSTextField)
@@ -165,39 +165,39 @@ open class BookmarkViewController: NSViewController {
 	///   - bookmark: the bookmark to connect to
 	///   - result: the result from a LoginFactory
 	open func handleLogin(bookmark: Bookmark, result: Result<ConnectionInfo, Rc2Error>) {
-		guard let conInfo = result.value else {
-			self.appStatus?.presentError(result.error!, session: nil)
-			return
-		}
-		guard let wspace = conInfo.project(withName: bookmark.projectName)?.workspace(withName: bookmark.workspaceName!) else
-		{
-			let desc = String.localizedStringWithFormat(NSLocalizedString("Failed to find workspace %@", comment: ""), bookmark.workspaceName!)
-			self.appStatus?.presentError(Rc2Error(type: .noSuchElement, explanation: desc), session:nil)
-			return
-		}
-		let session = Session(connectionInfo: conInfo, workspace: wspace)
-		session.open().observe(on: UIScheduler()).on(starting: { 
-			self.progressContainer?.isHidden = false
-			self.progressSpinner?.startAnimation(self)
-			self.progressLabel?.stringValue = "Connecting to \(conInfo.host.name)…"
-		}, terminated: {
-			self.progressSpinner?.stopAnimation(self)
-			self.progressContainer?.isHidden = true
-			self.openInProgress = false
-		}).start { event in
-			switch event {
-			case .completed:
-				self.openSessionCallback?(session)
-			case .failed(let err):
-				os_log("failed to open websocket: %{public}s", log: .session, err.localizedDescription)
-				fatalError()
-			case .value: //(let _):
-				// do nothing as using indeterminate progress
-				break
-			case .interrupted:
-				break //should never happen
-			}
-		}
+//		guard let conInfo = result.value else {
+//			self.appStatus?.presentError(result.error!, session: nil)
+//			return
+//		}
+//		guard let wspace = conInfo.project(withName: bookmark.projectName)?.workspace(withName: bookmark.workspaceName!) else
+//		{
+//			let desc = String.localizedStringWithFormat(NSLocalizedString("Failed to find workspace %@", comment: ""), bookmark.workspaceName!)
+//			self.appStatus?.presentError(Rc2Error(type: .noSuchElement, explanation: desc), session:nil)
+//			return
+//		}
+//		let session = Session(connectionInfo: conInfo, workspace: wspace)
+//		session.open().observe(on: UIScheduler()).on(starting: { 
+//			self.progressContainer?.isHidden = false
+//			self.progressSpinner?.startAnimation(self)
+//			self.progressLabel?.stringValue = "Connecting to \(conInfo.host.name)…"
+//		}, terminated: {
+//			self.progressSpinner?.stopAnimation(self)
+//			self.progressContainer?.isHidden = true
+//			self.openInProgress = false
+//		}).start { event in
+//			switch event {
+//			case .completed:
+//				self.openSessionCallback?(session)
+//			case .failed(let err):
+//				os_log("failed to open websocket: %{public}s", log: .session, err.localizedDescription)
+//				fatalError()
+//			case .value: //(let _):
+//				// do nothing as using indeterminate progress
+//				break
+//			case .interrupted:
+//				break //should never happen
+//			}
+//		}
 	}
 	
 	func entryIndexForBookmark(_ bmark:Bookmark) -> Int? {
@@ -218,30 +218,30 @@ extension BookmarkViewController: NSTableViewDataSource {
 
 extension BookmarkViewController: NSTableViewDelegate {
 	public func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-		var str = ""
-		switch(entries[row]) {
-			case .group(let name):
-				str = name
-			case .mark(let mark):
-				switch(tableColumn!.identifier) {
-					case "name":
-						str = mark.name
-					case "lastUsed":
-						if mark.lastUsed < 1 {
-							str = ""
-						} else {
-							str = dateFormatter.string(from: Date(timeIntervalSinceReferenceDate: mark.lastUsed))
-						}
-					case "project":
-						str = mark.projectName
-					case "workspace":
-						str = mark.workspaceName ?? ""
-					case "projwspace":
-						str = "\(mark.projectName)\(mark.workspaceName?.characters.count > 0 ? "/\(mark.workspaceName!)" : "")"
-					default:
-						str = ""
-				}
-		}
+		let str = ""
+//		switch(entries[row]) {
+//			case .group(let name):
+//				str = name
+//			case .mark(let mark):
+//				switch(tableColumn!.identifier) {
+//					case "name":
+//						str = mark.name
+//					case "lastUsed":
+//						if mark.lastUsed < 1 {
+//							str = ""
+//						} else {
+//							str = dateFormatter.string(from: Date(timeIntervalSinceReferenceDate: mark.lastUsed))
+//						}
+//					case "project":
+//						str = mark.projectName
+//					case "workspace":
+//						str = mark.workspaceName ?? ""
+//					case "projwspace":
+//						str = "\(mark.projectName)\(mark.workspaceName?.characters.count > 0 ? "/\(mark.workspaceName!)" : "")"
+//					default:
+//						str = ""
+//				}
+//		}
 		let cellView = tableView.make(withIdentifier: "name", owner: nil) as! NSTableCellView
 		cellView.textField?.stringValue = str
 		return cellView

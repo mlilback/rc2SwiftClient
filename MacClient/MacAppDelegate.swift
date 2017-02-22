@@ -45,6 +45,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	@IBOutlet weak var workspaceMenu: NSMenu!
 	fileprivate let connectionManager = ConnectionManager()
 	fileprivate var dockMenu: NSMenu?
+	fileprivate var workspacesBeingRestored: Set<WorkspaceIdentifier>?
 
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 
@@ -91,7 +92,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		var reopen = [Bookmark]()
 		for controller in sessionWindowControllers {
 			if let session = controller.session {
-				let bmark = Bookmark(name: "irrelevant", server: session.conInfo.host, project: session.project.name, workspace: session.workspace.name)
+				let bmark = Bookmark(connectionInfo: session.conInfo, workspace: session.workspace, lastUsed: NSDate.timeIntervalSinceReferenceDate)
+				print("tab ident = \(controller.window!.tabbingIdentifier)")
 				reopen.append(bmark)
 			}
 		}
@@ -199,6 +201,7 @@ extension MacAppDelegate {
 		wc.appStatus = appStatus
 		wc.session = session
 		wc.setupChildren()
+		sessionWindowOpened(session.workspace.identifier)
 		if onboardingController?.window?.isVisible ?? false {
 			onboardingController?.window?.orderOut(self)
 		}
@@ -221,7 +224,6 @@ extension MacAppDelegate {
 			switch event {
 			case .completed:
 				self.openSessionWindow(session)
-				self.onboardingController?.window?.orderOut(self)
 			case .failed(let err):
 				os_log("failed to open websocket: %{public}s", log: .session, err.localizedDescription)
 				fatalError()
@@ -363,6 +365,19 @@ extension MacAppDelegate {
 		advanceStartupStage()
 	}
 	
+	fileprivate func sessionWindowOpened(_ identifier: WorkspaceIdentifier) {
+		guard workspacesBeingRestored?.contains(identifier) ?? false else { return }
+		DispatchQueue.main.async {
+			//to be save, perform check again now that we're on main thread
+			guard self.workspacesBeingRestored?.contains(identifier) ?? false else { return }
+			self.workspacesBeingRestored?.remove(identifier)
+			guard self.workspacesBeingRestored?.count ?? -1 > 0 else { return }
+			print("all sessions restored")
+			self.workspacesBeingRestored = nil
+			self.advanceStartupStage()
+		}
+	}
+	
 	//advances to the next startup stage
 	private  func advanceStartupStage() {
 		guard let setupWC = startupController?.view.window?.windowController else { fatalError("advanceStartupStage() called without a setup controller") }
@@ -383,7 +398,9 @@ extension MacAppDelegate {
 			startupController = nil
 			startupWindowController = nil
 			dockMenu = nil
-			showOnboarding()
+			if sessionWindowControllers.count < 1 {
+				showOnboarding()
+			}
 		case .complete:
 			fatalError("should never reach this point")
 		}
@@ -450,19 +467,23 @@ extension MacAppDelegate {
 		if let json: JSON = defaults[.openSessions] {
 			bookmarks = (try? json.decodedArray()) ?? []
 		}
-		let dinfo = "bwc = \(String(describing: bookmarkWindowController)), bmc = \(String(describing: bookmarkWindowController?.contentViewController))"
-		os_log("bm info: %{public}s", log: .app, type: .debug, dinfo)
-		guard let bmarkController = bookmarkWindowController?.contentViewController as? BookmarkViewController else
-		{
-			os_log("failed to get bookmarkViewController to restore sessions", log: .app, type: .default)
-			advanceStartupStage()
-			return
+		workspacesBeingRestored = Set<WorkspaceIdentifier>(bookmarks.map { $0.workspaceIdent })
+		for anIdent in workspacesBeingRestored! {
+			print("opening \(anIdent.description)")
+			openLocalSession(for: anIdent)
 		}
-		//TODO: show progress dialog
-		for bmark in bookmarks {
-			bmarkController.openSession(withBookmark: bmark, password: nil)
-		}
-		advanceStartupStage()
+//		let dinfo = "bwc = \(String(describing: bookmarkWindowController)), bmc = \(String(describing: bookmarkWindowController?.contentViewController))"
+//		os_log("bm info: %{public}s", log: .app, type: .debug, dinfo)
+//		guard let bmarkController = bookmarkWindowController?.contentViewController as? BookmarkViewController else
+//		{
+//			os_log("failed to get bookmarkViewController to restore sessions", log: .app, type: .default)
+//			advanceStartupStage()
+//			return
+//		}
+//		//TODO: show progress dialog
+//		for bmark in bookmarks {
+//			bmarkController.openSession(withBookmark: bmark, password: nil)
+//		}
 	}
 
 	private func performPullAndPrepareContainers(_ needPull: Bool) -> SignalProducer<(), Rc2Error> {
