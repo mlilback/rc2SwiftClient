@@ -45,7 +45,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	@IBOutlet weak var workspaceMenu: NSMenu!
 	fileprivate let connectionManager = ConnectionManager()
 	fileprivate var dockMenu: NSMenu?
-	fileprivate var workspacesBeingRestored: Set<WorkspaceIdentifier>?
+	fileprivate var sessionsBeingRestored: [WorkspaceIdentifier: (NSWindow?, Error?) -> Void] = [:]
 
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 
@@ -87,17 +87,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 
 	func applicationWillTerminate(_ aNotification: Notification) {
 		NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSWindowWillClose, object: nil)
-		let defaults = UserDefaults.standard
-		//save info to restore open sessions
-		var reopen = [Bookmark]()
-		for controller in sessionWindowControllers {
-			if let session = controller.session {
-				let bmark = Bookmark(connectionInfo: session.conInfo, workspace: session.workspace, lastUsed: NSDate.timeIntervalSinceReferenceDate)
-				print("tab ident = \(controller.window!.tabbingIdentifier)")
-				reopen.append(bmark)
-			}
-		}
-		defaults[.openSessions] = reopen.toJSON()
 		dockerManager = nil
 	}
 
@@ -196,12 +185,19 @@ extension MacAppDelegate {
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window
 		let root = sboard.instantiateController(withIdentifier: "rootController") as? RootViewController
 		wc.contentViewController = root
+		wc.window?.identifier = "session"
+		wc.window?.restorationClass = type(of: self)
 		//we had to set the content before making visible, and have to set variables after visible
 		wc.window?.makeKeyAndOrderFront(self)
 		wc.appStatus = appStatus
 		wc.session = session
 		wc.setupChildren()
-		sessionWindowOpened(session.workspace.identifier)
+		if let callback = sessionsBeingRestored.removeValue(forKey: session.workspace.identifier) {
+			callback(wc.window, nil)
+			if sessionsBeingRestored.count < 1 {
+				advanceStartupStage()
+			}
+		}
 		if onboardingController?.window?.isVisible ?? false {
 			onboardingController?.window?.orderOut(self)
 		}
@@ -341,6 +337,24 @@ extension MacAppDelegate {
 	}
 }
 
+//MARK: - restoration
+extension MacAppDelegate: NSWindowRestoration {
+	class func restoreWindow(withIdentifier identifier: String, state: NSCoder, completionHandler: @escaping (NSWindow?, Error?) -> Void)
+	{
+		print("asked to restore a session")
+		guard identifier == "session",
+			let me = NSApp.delegate as? MacAppDelegate,
+			let bmarkData = state.decodeObject(forKey: "bookmark") as? Data,
+			let bmark = try? Bookmark(json: JSON(data: bmarkData)) else
+		{
+			completionHandler(nil, Rc2Error(type: .unknown, nested: nil, explanation: "Unsupported window identifier"))
+			return
+		}
+		me.sessionsBeingRestored[bmark.workspaceIdent] = completionHandler
+//		me.openLocalSession(for: bmark.workspaceIdent)
+	}
+}
+
 //MARK: - startup
 extension MacAppDelegate {
 	/// load the setup window and start setup process
@@ -365,21 +379,8 @@ extension MacAppDelegate {
 		advanceStartupStage()
 	}
 	
-	fileprivate func sessionWindowOpened(_ identifier: WorkspaceIdentifier) {
-		guard workspacesBeingRestored?.contains(identifier) ?? false else { return }
-		DispatchQueue.main.async {
-			//to be save, perform check again now that we're on main thread
-			guard self.workspacesBeingRestored?.contains(identifier) ?? false else { return }
-			self.workspacesBeingRestored?.remove(identifier)
-			guard self.workspacesBeingRestored?.count ?? -1 > 0 else { return }
-			print("all sessions restored")
-			self.workspacesBeingRestored = nil
-			self.advanceStartupStage()
-		}
-	}
-	
 	//advances to the next startup stage
-	private  func advanceStartupStage() {
+	fileprivate func advanceStartupStage() {
 		guard let setupWC = startupController?.view.window?.windowController else { fatalError("advanceStartupStage() called without a setup controller") }
 		switch startupController!.stage {
 		case .initial:
@@ -400,6 +401,8 @@ extension MacAppDelegate {
 			dockMenu = nil
 			if sessionWindowControllers.count < 1 {
 				showOnboarding()
+			} else {
+				NSApp.mainWindow?.makeKeyAndOrderFront(self)
 			}
 		case .complete:
 			fatalError("should never reach this point")
@@ -460,30 +463,11 @@ extension MacAppDelegate {
 	}
 	
 	private func restoreSessions() {
+		guard sessionsBeingRestored.count > 0 else { advanceStartupStage(); return }
+		for ident in self.sessionsBeingRestored.keys {
+			openLocalSession(for: ident)
+		}
 		//TODO: use startupController for progress, perform async
-		let defaults = UserDefaults.standard
-		//load them, or create default ones
-		var bookmarks: [Bookmark] = []
-		if let json: JSON = defaults[.openSessions] {
-			bookmarks = (try? json.decodedArray()) ?? []
-		}
-		workspacesBeingRestored = Set<WorkspaceIdentifier>(bookmarks.map { $0.workspaceIdent })
-		for anIdent in workspacesBeingRestored! {
-			print("opening \(anIdent.description)")
-			openLocalSession(for: anIdent)
-		}
-//		let dinfo = "bwc = \(String(describing: bookmarkWindowController)), bmc = \(String(describing: bookmarkWindowController?.contentViewController))"
-//		os_log("bm info: %{public}s", log: .app, type: .debug, dinfo)
-//		guard let bmarkController = bookmarkWindowController?.contentViewController as? BookmarkViewController else
-//		{
-//			os_log("failed to get bookmarkViewController to restore sessions", log: .app, type: .default)
-//			advanceStartupStage()
-//			return
-//		}
-//		//TODO: show progress dialog
-//		for bmark in bookmarks {
-//			bmarkController.openSession(withBookmark: bmark, password: nil)
-//		}
 	}
 
 	private func performPullAndPrepareContainers(_ needPull: Bool) -> SignalProducer<(), Rc2Error> {

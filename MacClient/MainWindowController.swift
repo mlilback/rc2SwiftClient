@@ -8,7 +8,7 @@ import Cocoa
 import  ClientCore
 import Networking
 
-class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolbarDelegate {
+class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegatingOwner, NSToolbarDelegate {
 	///Object that lets us monitor the status of the application. Nededed to pass on to the statusView once setup is finished
 	weak var appStatus: MacAppStatus?
 	
@@ -45,6 +45,12 @@ class MainWindowController: NSWindowController, ToolbarDelegatingOwner, NSToolba
 		}
 	}
 
+	func window(_ window: NSWindow, willEncodeRestorableState state: NSCoder) {
+		guard let session = session else { return }
+		let bmark = Bookmark(connectionInfo: session.conInfo, workspace: session.workspace, lastUsed: NSDate.timeIntervalSinceReferenceDate)
+		state.encode(try! bmark.toJSON().serialize(), forKey: "bookmark")
+	}
+	
 	//When the first toolbar item is loaded, queue a closure to call assignHandlers from the ToolbarDelegatingOwner protocol(default implementation) that assigns each toolbar item to the appropriate ToolbarItemHandler (normally a view controller)
 	func toolbarWillAddItem(_ notification: Notification) {
 		//schedule assigning handlers after toolbar items are loaded
