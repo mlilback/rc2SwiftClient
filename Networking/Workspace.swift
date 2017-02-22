@@ -13,20 +13,34 @@ import ClientCore
 import os
 
 /// struct for tracking a project/workspace combination
-public struct WorkspaceIdentifier: Equatable {
+public struct WorkspaceIdentifier: JSONEncodable, JSONDecodable, Hashable, CustomStringConvertible {
 	public let projectId: Int
 	public let wspaceId: Int
 
+	public var description: String { return "wspace \(projectId)/\(wspaceId)" }
+	// read on the Interwebs that multiplying by a weird constant will prevent equal values from hashing the same
+	public var hashValue: Int { return projectId.hashValue ^ (wspaceId.hashValue &* 9874431) }
+	
 	public init(projectId: Int, wspaceId: Int) {
 		self.projectId = projectId
 		self.wspaceId = wspaceId
 	}
+	
 	public init?(_ wspace: Workspace?) {
 		guard let wspace = wspace else { return nil }
 		projectId = wspace.projectId
 		wspaceId = wspace.wspaceId
 	}
+	
+	public init(json: JSON) throws {
+		projectId = try json.getInt(at: "projectId")
+		wspaceId = try json.getInt(at: "wspaceId")
+	}
 
+	public func toJSON() -> JSON {
+		return .dictionary(["projectId": .int(projectId), "wspaceId": .int(wspaceId)])
+	}
+	
 	public static func == (lhs: WorkspaceIdentifier, rhs: WorkspaceIdentifier) -> Bool {
 		return lhs.projectId == rhs.projectId && lhs.wspaceId == rhs.wspaceId
 	}
