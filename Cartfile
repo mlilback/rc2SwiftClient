@@ -10,4 +10,5 @@ github "sebskuse/URITemplate.swift" "395dc704b4a3479e1b517b92132ac8a2b81db9d8"
 github "radex/SwiftyUserDefaults"
 github "ReactiveCocoa/ReactiveSwift"
 github "bignerdranch/Freddy" ~> 3.0
+github "ZipArchive/ZipArchive"
 

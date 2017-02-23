@@ -9,6 +9,9 @@ import Freddy
 import ReactiveSwift
 import ClientCore
 import os
+import ZipArchive
+
+fileprivate let wspaceDirName = "defaultWorkspaceFiles"
 
 public final class Rc2RestClient {
 	let conInfo: ConnectionInfo
@@ -48,13 +51,21 @@ public final class Rc2RestClient {
 	{
 		let requestJson: JSON = .dictionary(["projectId": .int(project.projectId), "name": .string(workspace)])
 		return SignalProducer<Workspace, Rc2Error> { observer, _ in
-			guard let requestData = try? requestJson.serialize() else {
+			guard var requestData = try? requestJson.serialize() else {
 				os_log("failed to encode createworkspace json", log: .session)
 				observer.send(error: Rc2Error(type: .network, nested: nil, explanation: "failed to encode json"))
 				return
 			}
 			var req = self.request("workspaces", method: "POST")
-			req.addValue("application/json", forHTTPHeaderField: "Content-Type")
+			let zippedUrl = self.defaultWorkspaceFiles()
+			if zippedUrl != nil, let zippedData = try? Data(contentsOf: zippedUrl!) {
+				req.addValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
+				req.addValue("\(project.projectId)", forHTTPHeaderField: "Rc2-ProjectId")
+				req.addValue(workspace, forHTTPHeaderField: "Rc2-WorkspaceName")
+				requestData = zippedData
+			} else {
+				req.addValue("application/json", forHTTPHeaderField: "Content-Type")
+			}
 			req.addValue("application/json", forHTTPHeaderField: "Accept")
 			req.httpBody = requestData
 			req.addValue(self.conInfo.authToken, forHTTPHeaderField: "Rc2-Auth")
@@ -122,6 +133,33 @@ public final class Rc2RestClient {
 		}
 	}
 
+	/// returns array of default files to add to any new workspace
+	/// - returns: URL to a zip file with the default files to add
+	private func defaultWorkspaceFiles() -> URL? {
+		let fm = FileManager()
+		do {
+			let defaultDirectoryUrl = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: wspaceDirName)
+			if try fm.contentsOfDirectory(atPath: defaultDirectoryUrl.path).count <= 0 {
+				//copy all template files to user-editable directory
+				let templateDir = (Bundle(for: type(of: self)).resourceURL?.appendingPathComponent(wspaceDirName, isDirectory: true))!
+				for aUrl in try fm.contentsOfDirectory(at: templateDir, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
+				{
+					try fm.copyItem(at: aUrl, to: defaultDirectoryUrl.appendingPathComponent(aUrl.lastPathComponent))
+				}
+			}
+			let destUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("\(UUID().uuidString).zip")
+			guard SSZipArchive.createZipFile(atPath: destUrl.path, withContentsOfDirectory: defaultDirectoryUrl.path, keepParentDirectory: false) else
+			{
+				os_log("failed to create zip file to upload", log: .network)
+				return nil
+			}
+			return destUrl
+		} catch {
+			os_log("error loading default workspace files: %{public}@", log: .network, error as NSError)
+		}
+		return nil
+	}
+	
 	private func handleCreateResponse<T: JSONDecodable>(observer: Signal<T, Rc2Error>.Observer, data: Data?, response: URLResponse?, error: Error?, onSuccess: ((T) -> Void)? = nil)
 	{
 		guard nil == error else { observer.send(error: Rc2Error(type: .cocoa, nested: error)); return }

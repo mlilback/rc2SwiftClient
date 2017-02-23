@@ -247,6 +247,10 @@
 		08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 08AA5F071E5350AA00389089 /* SearchBarField.m */; };
 		08B184D21E5F36E800F4A6D6 /* defaultWorkspaceFiles in Resources */ = {isa = PBXBuildFile; fileRef = 08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */; };
 		08B184D41E5F384800F4A6D6 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B184D31E5F384800F4A6D6 /* AppInfo.swift */; };
+		08B184D61E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
+		08B184D71E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
+		08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
+		08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
 		08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; };
 		08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -500,6 +504,7 @@
 				08E836681D94240100E26EFE /* SwiftyUserDefaults.framework in Embed Frameworks */,
 				08F6ADA61DD63C6600AF0722 /* NotifyingCollection.framework in Embed Frameworks */,
 				08F6ADD81DD9169400AF0722 /* DockerSupport.framework in Embed Frameworks */,
+				08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */,
 				080E82D71DCBE31D0048F36C /* Networking.framework in Embed Frameworks */,
 				082FF1CE1C7F321B00CCC27F /* Result.framework in Embed Frameworks */,
 				08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */,
@@ -756,6 +761,7 @@
 		08AA5F071E5350AA00389089 /* SearchBarField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchBarField.m; sourceTree = "<group>"; };
 		08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; name = defaultWorkspaceFiles; path = shared/resources/defaultWorkspaceFiles; sourceTree = SOURCE_ROOT; };
 		08B184D31E5F384800F4A6D6 /* AppInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
+		08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZipArchive.framework; path = Carthage/Build/Mac/ZipArchive.framework; sourceTree = "<group>"; };
 		08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessagePackSwift.framework; path = Carthage/Build/Mac/MessagePackSwift.framework; sourceTree = "<group>"; };
 		08C2C3C81DF74DE200397DD3 /* Networking.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Networking.strings; sourceTree = "<group>"; };
 		08C484F71C9B159000FE824B /* server.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = server.cer; path = resources/server.cer; sourceTree = "<group>"; };
@@ -842,6 +848,7 @@
 				08F6ADBC1DD914F800AF0722 /* ClientCore.framework in Frameworks */,
 				08367BD41E3FCEA800FAFC8A /* Starscream.framework in Frameworks */,
 				080E82DE1DCBE3590048F36C /* Freddy.framework in Frameworks */,
+				08B184D71E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */,
 				08F6ADA71DD63C7100AF0722 /* NotifyingCollection.framework in Frameworks */,
 				08F6ADB51DD90F2D00AF0722 /* CryptoSwift.framework in Frameworks */,
 			);
@@ -877,9 +884,11 @@
 				08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */,
 				08DB1A9D1D32EFC10079DA6B /* SwinjectStoryboard.framework in Frameworks */,
+				08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */,
 				08678C971DCA78CE00F9F283 /* Freddy.framework in Frameworks */,
 				080E82B51DCBB3DD0048F36C /* PEGKit.framework in Frameworks */,
 				08DB1A981D32EF930079DA6B /* Swinject.framework in Frameworks */,
+				08B184D61E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */,
 				082FF1EE1C7F339400CCC27F /* URITemplate.framework in Frameworks */,
 				0833A8221D2D7E770033654B /* HockeySDK.framework in Frameworks */,
 				080E82D61DCBE31D0048F36C /* Networking.framework in Frameworks */,
@@ -1297,6 +1306,7 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */,
 				08367BD21E3FCEA800FAFC8A /* Starscream.framework */,
 				08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */,
 				0826108D1DB02FC300C03422 /* Nimble.framework */,
