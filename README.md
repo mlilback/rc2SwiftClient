@@ -36,6 +36,8 @@ The macOS client requires 10.12 Sierra. Development is being done with Xcode 8.
 
 * [SwinjectStoryboard](https://github.com/Swinject/SwinjectStoryboard) for dependency injection into objects loaded from a storyboard (since container segues don't call prepareForSegue)
 
+* [ZipArchive](https://github.com/ZipArchive/ZipArchive) for compressing files
+
 # Preparing to build
 
 1. `carthage bootstrap --no-use-binaries --platform Mac`

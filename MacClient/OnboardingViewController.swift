@@ -70,7 +70,6 @@ extension OnboardingViewController: WKScriptMessageHandler {
 		guard let args = message.body as? Dictionary<String, Any>, let action = args["action"] as? String else {
 			return
 		}
-		print("got message \(action) with \(args)")
 		switch action {
 		case "close":
 			view.window?.orderOut(self)

@@ -122,8 +122,6 @@ extension MacAppDelegate {
 		switch(action) {
 			case Actions.showBookmarks:
 				return true
-			//for some reason this wasn't working properly as another user
-//				return NSApp.mainWindow != bookmarkWindowController?.window
 		case Actions.newWorkspace:
 			return true
 		case Actions.showDockerControls:
