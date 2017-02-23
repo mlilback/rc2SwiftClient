@@ -7,15 +7,6 @@
 import Foundation
 import os
 
-/// a static reference to the app's bundle
-public struct AppInfo {
-	/// the info dictionary of the application
-	private static let bundleInfo = Bundle.main.infoDictionary
-	/// the bundle identifier of the application
-	public static var bundleIdentifier: String { return bundleInfo?["CFBundleIdentifier"] as? String ?? "io.rc2.MacClient" }
-	public static var buildNumber: String { return bundleInfo?["CFBundleVersion"] as? String ?? "??" }
-}
-
 ///constants for log categories used by this project
 public extension OSLog {
 	static let docker: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "docker")

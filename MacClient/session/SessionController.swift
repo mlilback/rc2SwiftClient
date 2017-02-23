@@ -132,10 +132,7 @@ extension SessionController: ServerResponseHandlerDelegate {
 //MARK: - save/restore
 extension SessionController {
 	func stateFileUrl() throws -> URL {
-		let fileManager = Foundation.FileManager()
-		let appSupportUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-		let dataDirUrl = appSupportUrl.appendingPathComponent(AppInfo.bundleIdentifier).appendingPathComponent("sessions", isDirectory: true)
-		try fileManager.createDirectory(at: dataDirUrl, withIntermediateDirectories: true, attributes: nil)
+		let dataDirUrl = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "sessions")
 		let fname = "\(session.conInfo.host.name)--\(session.project.userId)--\(session.workspace.wspaceId).plist"
 		let furl = dataDirUrl.appendingPathComponent(fname)
 		return furl

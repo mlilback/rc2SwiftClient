@@ -467,13 +467,9 @@ extension DockerManager {
 	///creates AppSupport/io.rc2.xxx/v1/dbdata
 	func setupDataDirectory() {
 		do {
+			let dockerDir = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "docker")
 			let fm = FileManager()
-			let appdir = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-			dataDirectory = appdir.appendingPathComponent(AppInfo.bundleIdentifier, isDirectory: true).appendingPathComponent("v1", isDirectory: true)
-			if !fm.directoryExists(at: dataDirectory!) {
-				try fm.createDirectory(at: dataDirectory!, withIntermediateDirectories: true, attributes: nil)
-			}
-			let pgdir = dataDirectory!.appendingPathComponent("dbdata", isDirectory: true)
+			let pgdir = dockerDir.appendingPathComponent("dbdata", isDirectory: true)
 			if !fm.directoryExists(at: pgdir) {
 				try fm.createDirectory(at: pgdir, withIntermediateDirectories: true, attributes: nil)
 			}

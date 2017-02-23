@@ -142,17 +142,10 @@ public final class DefaultFileCache: NSObject, FileCache {
 	fileprivate var lastModTimes: [Int: TimeInterval] = [:]
 	
 	lazy var fileCacheUrl: URL = { () -> URL in
-		var fileDir: URL? = nil
 		do {
-			let cacheDir = try self.fileManager.Url(for:.cachesDirectory, domain: .userDomainMask, appropriateFor: nil, create: true)
-			let ourDir = cacheDir.appendingPathComponent(AppInfo.bundleIdentifier, isDirectory:true)
-			fileDir = ourDir.appendingPathComponent(self.workspace.uniqueId, isDirectory: true)
-			if !fileDir!.fileExists() {
-				try self.fileManager.createDirectoryHierarchy(at: fileDir!)
-			}
-			return fileDir!
-		} catch let err as NSError {
-			os_log("failed to create file cache (%{public}@) dir: %{public}@", log: .cache, type: .error, fileDir!.path, err)
+			return try AppInfo.subdirectory(type: .cachesDirectory, named: self.workspace.uniqueId)
+		} catch {
+			os_log("failed to create file cache: %{public}@", log: .cache, type: .error, error as NSError)
 		}
 		fatalError("failed to create file cache")
 	}()

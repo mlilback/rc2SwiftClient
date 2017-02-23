@@ -67,9 +67,7 @@ class HelpController {
 		let fileManager = FileManager()
 		let dbpath = Bundle(for: type(of: self)).path(forResource: "helpindex", ofType: "db")
 		do {
-			let supportUrl = try fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-				.appendingPathComponent(AppInfo.bundleIdentifier, isDirectory: true)
-			rootHelpUrl = supportUrl.appendingPathComponent("rdocs", isDirectory: true)
+			rootHelpUrl = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "rdocs")
 			baseHelpUrl = rootHelpUrl.appendingPathComponent("helpdocs/library", isDirectory: true)
 			if !rootHelpUrl.directoryExists() {
 				try fileManager.createDirectory(at: rootHelpUrl, withIntermediateDirectories: true, attributes: nil)
