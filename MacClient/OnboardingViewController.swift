@@ -78,11 +78,11 @@ extension OnboardingViewController: WKScriptMessageHandler {
 			openLocalWorkspace?(nil)
 			break
 		case "open":
-			guard let projId = project?.projectId, let wspaceId = args["wspaceId"] as? Int else {
+			guard let projId = project?.projectId, let wspaceId = args["wspaceId"] as? Double else {
 				os_log("invalid params to open a session", log: .app, type: .error)
 				return
 			}
-			openLocalWorkspace?(WorkspaceIdentifier(projectId: projId, wspaceId: wspaceId))
+			openLocalWorkspace?(WorkspaceIdentifier(projectId: projId, wspaceId: Int(wspaceId)))
 		default:
 			os_log("unhandled action: %{public}s", log: .app, action)
 		}

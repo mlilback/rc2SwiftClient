@@ -56,7 +56,7 @@
 			window.webkit.messageHandlers.buttonClicked.postMessage({action: "new"});
 		});
 		$("#wspaces").on("click", ".wspace", function(event) {
-			var item = event.target;
+			var item = event.currentTarget;
 			window.webkit.messageHandlers.buttonClicked.postMessage({action: "open", 
 				wspaceId: parseInt($(item).attr('wspaceId'))});
 		});

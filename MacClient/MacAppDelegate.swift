@@ -46,6 +46,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	fileprivate let connectionManager = ConnectionManager()
 	fileprivate var dockMenu: NSMenu?
 	fileprivate var sessionsBeingRestored: [WorkspaceIdentifier: (NSWindow?, Error?) -> Void] = [:]
+	fileprivate var workspacesBeingOpened = Set<WorkspaceIdentifier>()
 
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 
@@ -161,6 +162,9 @@ extension MacAppDelegate {
 	}
 	
 	func openSessionWindow(_ session: Session) {
+		defer {
+			workspacesBeingOpened.remove(session.workspace.identifier)
+		}
 		if nil == appStatus {
 			appStatus = MacAppStatus(windowAccessor: window)
 		}
@@ -208,11 +212,16 @@ extension MacAppDelegate {
 			newWorkspace(self)
 			return
 		}
+		guard !workspacesBeingOpened.contains(ident) else {
+			os_log("already opening %{public}s", log: .app, ident.description)
+			return
+		}
 		guard let conInfo = connectionManager.localConnection, let wspace = conInfo.project(withId: ident.projectId)?.workspace(withId: ident.wspaceId) else
 		{
 			os_log("failed to find workspace %d that we're suppoesd to open", log: .app)
 			return
 		}
+		workspacesBeingOpened.insert(ident)
 		let session = Session(connectionInfo: conInfo, workspace: wspace)
 		session.open().observe(on: UIScheduler()).on(starting: {
 		}, terminated: {
@@ -286,7 +295,8 @@ extension MacAppDelegate {
 	}
 	
 	@IBAction func showBookmarkWindow(_ sender:AnyObject?) {
-		onboardingController?.window?.makeKeyAndOrderFront(self)
+		showOnboarding()
+//		onboardingController?.window?.makeKeyAndOrderFront(self)
 //		if nil == bookmarkWindowController {
 //			let container = Container()
 //			container.registerForStoryboard(BookmarkViewController.self) { r, c in
@@ -341,7 +351,6 @@ extension MacAppDelegate {
 extension MacAppDelegate: NSWindowRestoration {
 	class func restoreWindow(withIdentifier identifier: String, state: NSCoder, completionHandler: @escaping (NSWindow?, Error?) -> Void)
 	{
-		print("asked to restore a session")
 		guard identifier == "session",
 			let me = NSApp.delegate as? MacAppDelegate,
 			let bmarkData = state.decodeObject(forKey: "bookmark") as? Data,
@@ -351,7 +360,6 @@ extension MacAppDelegate: NSWindowRestoration {
 			return
 		}
 		me.sessionsBeingRestored[bmark.workspaceIdent] = completionHandler
-//		me.openLocalSession(for: bmark.workspaceIdent)
 	}
 }
 
