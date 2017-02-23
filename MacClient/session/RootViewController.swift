@@ -128,7 +128,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 		guard let importer = note.object as? FileImporter else { return }
 		guard let file = importer.importedFiles.first, file.fileType.isSourceFile else { return }
 		os_log("selecting imported file", log: .app, type: .info)
-		fileHandler?.select(file: importer.importedFiles.first!)
+		fileHandler?.selectedFile = importer.importedFiles.first
 	}
 	
 	private func adjustDimmingView(hide: Bool) {
@@ -288,11 +288,15 @@ extension RootViewController: SessionControllerDelegate {
 	func saveState() -> [String: AnyObject] {
 		var dict = [String:AnyObject]()
 		dict["editor"] = editor?.saveState() as AnyObject?
+		dict["selFile"] = (fileHandler?.selectedFile?.fileId ?? -1) as AnyObject?
 		return dict
 	}
 	
 	func restoreState(_ state: [String: AnyObject]) {
 		editor?.restoreState(state["editor"] as! [String:AnyObject])
+		if let fileId = state["selFile"] as? Int, fileId > 0, let file = session.workspace.file(withId: fileId) {
+			fileHandler?.selectedFile = file
+		}
 	}
 }
 
@@ -307,7 +311,7 @@ extension RootViewController: FileViewControllerDelegate {
 		} else {
 			outputHandler?.showFile(file)
 			if let editingFile = editor?.currentDocument?.file {
-				fileHandler?.select(file: editingFile)
+				fileHandler?.selectedFile = editingFile
 			}
 		}
 	}

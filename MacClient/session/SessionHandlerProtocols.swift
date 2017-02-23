@@ -46,10 +46,7 @@ protocol OutputHandler: class, SearchResponder {
 
 /// Implemented by objects that need to response to changes related to files
 protocol FileHandler: class {
-	/// Select the specified file
-	///
-	/// - Parameter file: the file to select
-	func select(file: File)
+	var selectedFile: File? { get set }
 
 	/// Updates data for file changes
 	///

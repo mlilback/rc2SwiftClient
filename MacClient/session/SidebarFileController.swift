@@ -64,10 +64,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	private var fileChangeDisposable: Disposable?
 	private var busyDisposable: Disposable?
 	
-	var selectedFile:File? {
-		guard tableView.selectedRow >= 0 else { return nil }
-		return rowData[tableView.selectedRow].file
-	}
+	var selectedFile: File? { didSet { fileSelectionChanged() } }
 
 	deinit {
 		NotificationCenter.default.removeObserver(self)
@@ -104,6 +101,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		fileChangeDisposable = session.workspace.fileChangeSignal.observeValues(filesRefreshed)
 		loadData()
 		tableView.reloadData()
+		if selectedFile != nil {
+			fileSelectionChanged()
+		}
 	}
 	
 	override func appStatusChanged() {
@@ -454,7 +454,13 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 	
-	func select(file: File) {
+	func fileSelectionChanged() {
+		guard let file = selectedFile else {
+			DispatchQueue.main.async {
+				 self.tableView.selectRowIndexes(IndexSet(), byExtendingSelection: false)
+			}
+			return
+		}
 		guard let idx = fileDataIndex(fileId: file.fileId) else {
 			os_log("failed to find file to select", log: .app, type: .info)
 			return
@@ -488,6 +494,11 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	func tableViewSelectionDidChange(_ notification: Notification) {
+		if tableView.selectedRow >= 0 {
+			selectedFile = rowData[tableView.selectedRow].file
+		} else {
+			selectedFile = nil
+		}
 		adjustForFileSelectionChange()
 		delegate?.fileSelectionChanged(selectedFile)
 	}
