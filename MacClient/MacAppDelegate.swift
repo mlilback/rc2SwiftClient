@@ -29,7 +29,7 @@ fileprivate struct Actions {
 }
 
 @NSApplicationMain
-class MacAppDelegate: NSObject, NSApplicationDelegate {
+class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 	//MARK: - properties
 	var mainStoryboard: SwinjectStoryboard!
 	var sessionWindowControllers = Set<MainWindowController>()
@@ -45,6 +45,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	@IBOutlet weak var workspaceMenu: NSMenu!
 	fileprivate let connectionManager = ConnectionManager()
 	fileprivate var dockMenu: NSMenu?
+	fileprivate var dockOpenMenu: NSMenu?
 	fileprivate var sessionsBeingRestored: [WorkspaceIdentifier: (NSWindow?, Error?) -> Void] = [:]
 	fileprivate var workspacesBeingOpened = Set<WorkspaceIdentifier>()
 
@@ -102,22 +103,13 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	}
 	
 	func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
-		if nil == dockMenu, let projects = connectionManager.localConnection?.projects, projects.count > 0 {
+		if nil == dockMenu {
 			dockMenu = NSMenu(title: "Dock")
-			if projects.count == 1 {
-				let wspaceMI = workspaceMenu(for: projects.first!)
-				wspaceMI.title = "Workspaces"
-				wspaceMI.submenu?.title = "Workspaces"
-				dockMenu?.addItem(wspaceMI)
-			} else {
-				let projectMenu = NSMenu(title: "Projects")
-				for aProject in projects {
-					projectMenu.addItem(workspaceMenu(for: aProject))
-				}
-				let projMI = NSMenuItem(title: "Projects", action: nil, keyEquivalent: "")
-				projMI.submenu = projectMenu
-				dockMenu?.addItem(projMI)
-			}
+			dockOpenMenu = NSMenu(title: "Open")
+			let openMI = NSMenuItem(title: "Open", action: nil, keyEquivalent: "")
+			openMI.submenu = dockOpenMenu
+			dockMenu?.addItem(openMI)
+			updateOpen(menu: dockOpenMenu!)
 		}
 		return dockMenu
 	}
@@ -132,16 +124,23 @@ extension MacAppDelegate {
 				return true
 			//for some reason this wasn't working properly as another user
 //				return NSApp.mainWindow != bookmarkWindowController?.window
+		case Actions.newWorkspace:
+			return true
 		case Actions.showDockerControls:
-				return true
+			return true
 		case Actions.showPreferences:
-				return !(preferencesWindowController?.window?.isMainWindow ?? false)
+			return !(preferencesWindowController?.window?.isMainWindow ?? false)
 		case Actions.showWorkspace:
 			guard let wspaceIdent = menuItem.representedObject as? WorkspaceIdentifier else { return false }
 			return windowController(for: wspaceIdent)?.window?.isMainWindow ?? true
 		default:
 			return false
 		}
+	}
+	
+	func menuWillOpen(_ menu: NSMenu) {
+		guard menu == workspaceMenu else { return }
+		updateOpen(menu: menu)
 	}
 	
 	/// returns the session associated with window if it is a session window
@@ -241,17 +240,40 @@ extension MacAppDelegate {
 		}
 	}
 	
-	fileprivate func workspaceMenu(for project: Project) -> NSMenuItem {
-		let menu = NSMenu(title: project.name)
+	/// Sets menu's items to either be all workspaces in project (if only 1), or submenu items for each project containing its workspaces
+	///
+	/// - Parameter menu: menu to update
+	fileprivate func updateOpen(menu: NSMenu) {
+		menu.removeAllItems()
+		guard let projects = connectionManager.localConnection?.projects, projects.count > 0 else {
+			return
+		}
+		guard projects.count > 1 else {
+			update(menu: menu, for: projects.first!)
+			return
+		}
+		for aProject in projects {
+			let pmenu = NSMenu(title: aProject.name)
+			update(menu: pmenu, for: aProject)
+			let pmi = NSMenuItem(title: aProject.name, action: nil, keyEquivalent: "")
+			menu.addItem(pmi)
+		}
+	}
+	
+	/// Adds menu items for workspaces in project
+	///
+	/// - Parameters:
+	///   - menu: menu to add workspaces to
+	///   - project: project whose workspaces will be added to menu
+	fileprivate func update(menu: NSMenu, for project: Project) {
+		menu.title = project.name
+		menu.removeAllItems()
 		for aWorkspace in project.workspaces.sorted(by: { $0.name < $1.name }) {
 			let wspaceItem = NSMenuItem(title: aWorkspace.name, action: Actions.showWorkspace, keyEquivalent: "")
 			wspaceItem.representedObject = WorkspaceIdentifier(aWorkspace)
 			wspaceItem.tag = aWorkspace.wspaceId
 			menu.addItem(wspaceItem)
 		}
-		let menuItem = NSMenuItem(title: project.name, action: nil, keyEquivalent: "")
-		menuItem.submenu = menu
-		return menuItem
 	}
 }
 

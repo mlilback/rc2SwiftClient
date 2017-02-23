@@ -77,17 +77,12 @@
                                                 <action selector="newWorkspace:" target="Voe-Tx-rLC" id="ipV-1H-fHB"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Open Workspace" id="tXI-mr-wws">
+                                        <menuItem title="Open" id="AZ7-vZ-SVT" userLabel="Open">
                                             <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="Open Workspace" systemMenu="recentDocuments" id="oas-Oc-fiZ">
-                                                <items>
-                                                    <menuItem title="Clear Menu" id="vNY-rz-j42">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                        <connections>
-                                                            <action selector="clearRecentDocuments:" target="Ady-hI-5gd" id="Daa-9d-B3U"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                </items>
+                                            <menu key="submenu" title="Open" id="nUd-e1-yMd" userLabel="Open">
+                                                <connections>
+                                                    <outlet property="delegate" destination="Voe-Tx-rLC" id="Qus-5O-dqs"/>
+                                                </connections>
                                             </menu>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
@@ -543,7 +538,7 @@ CA
                 </application>
                 <customObject id="Voe-Tx-rLC" customClass="MacAppDelegate" customModule="MacClient" customModuleProvider="target">
                     <connections>
-                        <outlet property="workspaceMenu" destination="oas-Oc-fiZ" id="Gud-aF-SZO"/>
+                        <outlet property="workspaceMenu" destination="nUd-e1-yMd" id="X7B-5H-zZj"/>
                     </connections>
                 </customObject>
                 <customObject id="UA1-B5-F1Z" customClass="SUUpdater">
