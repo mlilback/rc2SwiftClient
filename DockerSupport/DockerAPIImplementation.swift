@@ -129,13 +129,17 @@ final class DockerAPIImplementation: DockerAPI {
 		let producers = containers
 			.map({ self.perform(operation: operation, container: $0) })
 		let producer = SignalProducer< SignalProducer<(), Rc2Error>, Rc2Error >(values: producers)
-		return producer.flatten(.latest)
+		return producer.flatten(.latest).take(last: 1)
 	}
 
 	// documentation in DockerAPI protocol
 	public func perform(operation: DockerContainerOperation, container: DockerContainer) -> SignalProducer<(), Rc2Error>
 	{
 		os_log("performing %{public}s on %{public}@", log: .docker, type: .info, operation.rawValue, container.name)
+		if operation == .start && container.state.value == .running {
+			//already running, no need to start
+			return SignalProducer<(), Rc2Error>(result: Result<(), Rc2Error>(value: ()))
+		}
 		let url = baseUrl.appendingPathComponent("/containers/\(container.name)/\(operation.rawValue)")
 		var request = URLRequest(url: url)
 		request.httpMethod = "POST"

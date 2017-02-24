@@ -292,6 +292,32 @@ public final class DockerManager: NSObject {
 		}
 		return api.perform(operation: operation, containers: selectedContainers)
 	}
+	
+	/// Returns a signal producer that is completed when all containers are running, can timeout with an error
+	///
+	/// - Returns: signal producer completed when all containers are running 
+	public func waitUntilRunning() -> SignalProducer<(), Rc2Error> {
+		os_log("dm.waitUntilRunning called", log: .docker, type: .debug)
+		let notRunningContainers = self.containers.filter({ $0.state.value != .running })
+		guard notRunningContainers.count > 0 else {
+			//short circuit if they all are running
+			return SignalProducer<(), Rc2Error>(value: ())
+		}
+		//need to listen to all container signals that aren't running
+		let timeoutError = Rc2Error(type: .docker, explanation: "timed out waiting for containers to start")
+		//map container(s) to a producer that completes when the container's state changes to .running
+		let producers = notRunningContainers.map { aContainer in
+			aContainer.state.producer.filter({ $0 == .running })
+				.take(first: 1)
+				.timeout(after: 3.0, raising: timeoutError, on: QueueScheduler.main)
+		}
+		let combined = SignalProducer.merge(producers)
+		//return a producer that will listen until all containers are running and then send a completed, timing out if doesn't happen
+		return combined
+			.map({ _ in () }) // map array of empty values to a single empty value
+			.observe(on: UIScheduler())
+//			.timeout(after: 3.0, raising: timeoutError, on: QueueScheduler.main)
+	}
 }
 
 // MARK: - Event Monitor Delegate
@@ -315,7 +341,6 @@ extension DockerManager: DockerEventMonitorDelegate {
 				}
 				container.update(state: .exited)
 			case .start:
-				os_log("container %{public}@ started", log:.docker, from)
 				container.update(state: .running)
 			case .pause:
 				container.update(state: .paused)
@@ -392,6 +417,7 @@ extension DockerManager {
 	/// - returns: the containers unchanged
 	fileprivate func createUnavailable(containers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error>
 	{
+		os_log("dm.createUnavailable called", log: .docker, type: .debug)
 		for aType in ContainerType.all {
 			try! containers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
 		}
@@ -404,6 +430,7 @@ extension DockerManager {
 	/// Parameter containers: the containers to examine
 	/// - Returns: a merged array of signal producers that returns the input containers with their state updated
 	func removeOutdatedContainers(containers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error> {
+		os_log("dm.removeOutdatedContainers called", log: .docker, type: .debug)
 		var containersToRemove = [DockerContainer]()
 		for aContainer in containers {
 			let image = imageInfo![aContainer.type]

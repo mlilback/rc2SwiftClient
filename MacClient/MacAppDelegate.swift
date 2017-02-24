@@ -476,8 +476,11 @@ extension MacAppDelegate {
 		_ = docker.initialize()
 			.flatMap(.concat, transform: performPullAndPrepareContainers)
 			.flatMap(.concat, transform: {
-				return docker.perform(operation: .start)}
-			)
+				return docker.perform(operation: .start)
+			})
+			//really want to act when complete, but have to map, so we collect all values and pass on a single value
+			.collect().map({ _ in return ()})
+			.flatMap(.concat, transform: { return docker.waitUntilRunning() })
 			.observe(on: UIScheduler())
 			.startWithResult { [weak self] result in
 				guard result.error == nil else {
@@ -487,7 +490,7 @@ extension MacAppDelegate {
 					return
 				}
 				self!.advanceStartupStage()
-		}
+			}
 	}
 	
 	private func restoreSessions() {

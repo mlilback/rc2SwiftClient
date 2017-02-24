@@ -10,18 +10,23 @@ import ReactiveSwift
 import os
 import ClientCore
 
+fileprivate let maxRetries = 2
+
 /// Factory class used to login and return a ConnectionInfo for that connection
 // must subclass NSObject to be a delegate to URLSession api
 public final class LoginFactory: NSObject {
 	// MARK: - properties
 	let sessionConfig: URLSessionConfiguration
 	fileprivate var urlSession: URLSession?
+	fileprivate var requestUrl: URL!
+	fileprivate var requestData: Data!
 	fileprivate var loginResponse: URLResponse?
 	fileprivate var responseData: Data
 	fileprivate var signalObserver: Observer<ConnectionInfo, Rc2Error>?
 	fileprivate var signalDisposable: Disposable?
 	fileprivate var host: ServerHost?
 	fileprivate var task: URLSessionDataTask?
+	fileprivate var retryCount: Int = 0
 	
 	// MARK: - methods
 	
@@ -46,22 +51,17 @@ public final class LoginFactory: NSObject {
 	{
 		assert(urlSession != nil, "login can only be called once")
 		host = destHost
-		guard let requestData = try? JSONSerialization.data(withJSONObject: ["login": login, "password": password], options: []) else
+		guard let reqdata = try? JSONSerialization.data(withJSONObject: ["login": login, "password": password], options: []) else
 		{
 			os_log("json serialization of login info failed", log: .network, type: .error)
 			fatalError()
 		}
+		requestData = reqdata
+		requestUrl = URL(string: "login", relativeTo: destHost.url!)!
 		return SignalProducer<ConnectionInfo, Rc2Error>() { observer, disposable in
 			self.signalObserver = observer
 			self.signalDisposable = disposable
-			let url = URL(string: "login", relativeTo: destHost.url!)!
-			var request = URLRequest(url: url)
-			request.httpMethod = "POST"
-			request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-			request.addValue("application/json", forHTTPHeaderField: "Accept")
-			request.httpBody = requestData
-			self.task = self.urlSession?.dataTask(with: request)
-			self.task?.resume()
+			self.attemptLogin()
 		}
 	}
 	
@@ -72,6 +72,16 @@ public final class LoginFactory: NSObject {
 		task = nil
 		signalObserver?.sendInterrupted()
 		signalDisposable?.dispose()
+	}
+	
+	func attemptLogin() {
+		var request = URLRequest(url: self.requestUrl!)
+		request.httpMethod = "POST"
+		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+		request.addValue("application/json", forHTTPHeaderField: "Accept")
+		request.httpBody = self.requestData
+		self.task = self.urlSession?.dataTask(with: request)
+		self.task?.resume()
 	}
 	
 	func loginSuccessful(data: Data) {
@@ -113,6 +123,17 @@ extension LoginFactory: URLSessionDataDelegate {
 	
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
 	{
+		//if "network connection was lost", retry in a second
+		if let nserr = error as NSError?, nserr.domain == NSURLErrorDomain && nserr.code == NSURLErrorNetworkConnectionLost && retryCount < maxRetries
+		{
+			os_log("login connection lost, retrying", log: .network)
+			retryCount += 1
+			DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+				self.attemptLogin()
+			}
+			return
+		}
+
 		defer { self.task = nil; self.urlSession = nil }
 		guard error == nil else {
 			os_log("login error: %{public}@", log: .network, type: .default, error!.localizedDescription)
