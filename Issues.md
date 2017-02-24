@@ -88,4 +88,14 @@ write nstexfield that scales font size so text fits (for help page title)
 
 implement searchbar interface to use for console output/editor
 
-disable bookmark interface. add onboarding with list of workspaces
+* refactor session creation into new class
+
+* delete variables not implemented
+
+* in the future, examine all fataError calls to see if there is a better way to handle the problem
+
+* restore sessions: what happens if there is an error opening a session? Probably hangs
+
+what is UI to delete a workspace?
+
+* execute current line, chunk

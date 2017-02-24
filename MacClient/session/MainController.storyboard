@@ -553,6 +553,7 @@
                                             <connections>
                                                 <outlet property="dataSource" destination="1Ce-Bb-cCN" id="EzR-nG-zb8"/>
                                                 <outlet property="delegate" destination="1Ce-Bb-cCN" id="xAh-2v-R4d"/>
+                                                <outlet property="menu" destination="oqI-10-8qL" id="R4m-hD-hpq"/>
                                             </connections>
                                         </tableView>
                                     </subviews>
@@ -580,6 +581,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="clearWorkspace:" target="1Ce-Bb-cCN" id="EW4-PX-9Rp"/>
+                                </connections>
                             </button>
                         </subviews>
                         <constraints>
@@ -592,10 +596,26 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="clearButton" destination="NEv-qY-dh3" id="5NC-vd-hfj"/>
+                        <outlet property="contextMenu" destination="oqI-10-8qL" id="xTx-fg-zzo"/>
                         <outlet property="varTableView" destination="6xa-i9-qGY" id="mbx-Jc-4pa"/>
                     </connections>
                 </viewController>
                 <customObject id="d2m-5n-KXT" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <menu title="OtherViews" id="oqI-10-8qL" userLabel="table context menu">
+                    <items>
+                        <menuItem title="Copy" id="jHX-gm-m7V" userLabel="Copy">
+                            <connections>
+                                <action selector="copy:" target="1Ce-Bb-cCN" id="MoE-Xl-fWL"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Delete…" id="bWC-Bf-ZFH">
+                            <connections>
+                                <action selector="delete:" target="1Ce-Bb-cCN" id="MSp-Ts-Th8"/>
+                            </connections>
+                        </menuItem>
+                    </items>
+                </menu>
             </objects>
             <point key="canvasLocation" x="-479.5" y="850.5"/>
         </scene>

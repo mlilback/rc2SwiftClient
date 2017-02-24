@@ -31,11 +31,13 @@ fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 
 class SidebarVariableController : AbstractSessionViewController {
 	//MARK: properties
-	var rootVariables:[Variable] = []
-	var changedIndexes:Set<Int> = []
-	var variablePopover:NSPopover?
+	var rootVariables: [Variable] = []
+	var changedIndexes: Set<Int> = []
+	var variablePopover: NSPopover?
 	var isVisible = false
-	@IBOutlet var varTableView:NSTableView?
+	@IBOutlet var varTableView: NSTableView?
+	@IBOutlet var clearButton: NSButton!
+	@IBOutlet var contextMenu: NSMenu!
 	
 	//MARK: methods
 	override func viewWillAppear() {
@@ -65,8 +67,12 @@ class SidebarVariableController : AbstractSessionViewController {
 		}
 	}
 	
-	func variableNamed(_ name:String?) -> Variable? {
+	func variableNamed(_ name: String?) -> Variable? {
 		return rootVariables.filter({ $0.name == name }).first
+	}
+	
+	@IBAction func delete(_ sender: Any?) {
+		
 	}
 	
 	@IBAction func copy(_ sender: AnyObject?) {
@@ -76,14 +82,28 @@ class SidebarVariableController : AbstractSessionViewController {
 		pasteboard.setString(try! rootVariables[row].toJSON().serializeString(), forType: PasteboardTypes.variable)
 		pasteboard.setString(rootVariables[row].description, forType: NSPasteboardTypeString)
 	}
+	
+	@IBAction func clearWorkspace(_ sender: Any?) {
+		print("clear all variables")
+	}
+	
+	func variablesChanged() {
+		varTableView?.reloadData()
+		clearButton.isEnabled = rootVariables.count > 0
+	}
 }
 
 extension SidebarVariableController: NSUserInterfaceValidations {
+
 	func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
 		guard let action = item.action, let tableView = varTableView else { return false }
 		switch action {
 			case #selector(SidebarVariableController.copy(_:)):
 				return tableView.selectedRowIndexes.count > 0
+			case #selector(SidebarVariableController.clearWorkspace(_:)):
+				return rootVariables.count > 0
+			case #selector(SidebarVariableController.delete(_:)):
+				return tableView.selectedRowIndexes.count > 0;
 			default:
 				return false
 		}
@@ -92,7 +112,7 @@ extension SidebarVariableController: NSUserInterfaceValidations {
 
 //MARK: - VariableHandler
 extension SidebarVariableController: VariableHandler {
-	func handleVariableMessage(_ single:Bool, variables:[Variable]) {
+	func handleVariableMessage(_ single: Bool, variables: [Variable]) {
 		if single {
 			if let curVal = variableNamed(variables[0].name) {
 				rootVariables[rootVariables.index(of: curVal)!] = curVal
@@ -105,7 +125,7 @@ extension SidebarVariableController: VariableHandler {
 		rootVariables.sort { (lhs, rhs) -> Bool in
 			return lhs.name < rhs.name
 		}
-		varTableView?.reloadData()
+		variablesChanged()
 	}
 	
 	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String]) {
@@ -121,7 +141,7 @@ extension SidebarVariableController: VariableHandler {
 				rootVariables.remove(at: rootVariables.index(of: curVal)!)
 			}
 		}
-		varTableView?.reloadData()
+		variablesChanged()
 	}
 }
 
