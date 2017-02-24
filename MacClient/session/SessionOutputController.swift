@@ -18,7 +18,7 @@ class SessionOutputController: AbstractSessionViewController, OutputController, 
 	//MARK: properties
 	@IBOutlet var resultsView: ResultsView?
 	@IBOutlet var consoleTextField: ConsoleTextField?
-	@IBOutlet var historyButton: NSButton?
+	@IBOutlet var historyButton: NSSegmentedControl?
 	var outputFont: NSFont = NSFont(name: "Menlo", size: 14)!
 	let cmdHistory: CommandHistory
 	dynamic var consoleInputText = "" { didSet { canExecute = consoleInputText.characters.count > 0 } }
@@ -184,5 +184,4 @@ extension SessionOutputController: UsesAdjustableFont {
 		resultsView?.font = NSFont(descriptor: newDesc, size: newDesc.pointSize)
 	}
 }
-
 

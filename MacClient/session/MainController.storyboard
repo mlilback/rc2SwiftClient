@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12100" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12106.1" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12100"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12106.1"/>
         <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
@@ -744,25 +744,23 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yCP-oo-1VS">
-                                            <rect key="frame" x="10" y="8" width="405" height="24"/>
+                                            <rect key="frame" x="10" y="8" width="405" height="22"/>
                                             <subviews>
-                                                <button horizontalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MNp-sz-EOS" userLabel="history button">
-                                                    <rect key="frame" x="0.0" y="0.0" width="24" height="24"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="24" id="0X1-UD-KoC"/>
-                                                        <constraint firstAttribute="width" constant="24" id="TtD-RG-pOy"/>
-                                                    </constraints>
-                                                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="history" imagePosition="only" alignment="center" borderStyle="border" imageScaling="axesIndependently" inset="2" id="jBJ-1J-CbT">
-                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                        <font key="font" metaFont="system"/>
-                                                    </buttonCell>
-                                                    <accessibility description="History Menu"/>
+                                                <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FY8-og-Aex" userLabel="history">
+                                                    <rect key="frame" x="0.0" y="0.0" width="34" height="23"/>
+                                                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="momentary" id="5tK-aL-lQg">
+                                                        <font key="font" metaFont="system" size="14"/>
+                                                        <segments>
+                                                            <segment toolTip="Share" image="history" width="32"/>
+                                                        </segments>
+                                                    </segmentedCell>
+                                                    <accessibility description="Share"/>
                                                     <connections>
-                                                        <action selector="historyClicked:" target="cmA-J2-3x3" id="Dsh-zi-is1"/>
+                                                        <action selector="historyClicked:" target="cmA-J2-3x3" id="Edv-ZI-emm"/>
                                                     </connections>
-                                                </button>
+                                                </segmentedControl>
                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="Y6X-8g-t8y" customClass="ConsoleTextField" customModule="MacClient" customModuleProvider="target">
-                                                    <rect key="frame" x="32" y="0.0" width="288" height="22"/>
+                                                    <rect key="frame" x="42" y="0.0" width="278" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="563" constant="50" id="Xik-b7-zR2"/>
                                                     </constraints>
@@ -863,7 +861,7 @@
                     </view>
                     <connections>
                         <outlet property="consoleTextField" destination="Y6X-8g-t8y" id="vSi-tw-9r1"/>
-                        <outlet property="historyButton" destination="MNp-sz-EOS" id="mi2-Q6-SPZ"/>
+                        <outlet property="historyButton" destination="FY8-og-Aex" id="Mab-pX-Pcr"/>
                         <outlet property="resultsView" destination="R7r-5U-fzT" id="DCd-VP-D9L"/>
                     </connections>
                 </viewController>
