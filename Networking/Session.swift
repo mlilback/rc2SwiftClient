@@ -279,7 +279,12 @@ public class Session {
 					observer.send(error: err)
 					return
 				}
-				observer.sendCompleted()
+				do {
+					observer.send(value: try json!.getInt(at: "file", "id"))
+					observer.sendCompleted()
+				} catch {
+					observer.send(error: Rc2Error(type: .invalidJson, nested: error))
+				}
 			}
 		}
 	}

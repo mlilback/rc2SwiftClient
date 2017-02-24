@@ -20,10 +20,10 @@
 		},
 		"appserver" : {
 			"version" : "0.4.5",
-			"id" : "sha256:848adf55cf54c1234e85dbe05544d8c5f0bf8aede8f059aff26d228dd62ba58d",
 			"name" : "appserver",
-			"estSize" : 374887052,
-			"size" : 501948622,
+			"id" : "sha256:e160e630b2cbb53e5e4ce7ef09f35da6528d7749791eaf8e6325d76f04014b16",
+			"size" : 501949298,
+			"estSize" : 374887728,
 			"tag" : "rc2server/appserver:0.4.5"
 		}
 	}
