@@ -310,9 +310,9 @@ extension RootViewController: FileViewControllerDelegate {
 			self.editor?.fileSelectionChanged(file)
 		} else {
 			outputHandler?.showFile(file)
-			if let editingFile = editor?.currentDocument?.file {
-				fileHandler?.selectedFile = editingFile
-			}
+//			if let editingFile = editor?.currentDocument?.file {
+//				fileHandler?.selectedFile = editingFile
+//			}
 		}
 	}
 }
