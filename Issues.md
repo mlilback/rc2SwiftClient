@@ -76,8 +76,6 @@
 
 how are dates formatted for copy? date vs datetime. 
 
-* add execute selected lines
-
 * chunk navigation is broken
 
 * add padding around icon images in results
@@ -98,4 +96,7 @@ implement searchbar interface to use for console output/editor
 
 what is UI to delete a workspace?
 
-* execute current line, chunk
+* execute current chunk if R code
+* execute all chunks up to and including current chunk if R code
+
+* are we properly escaping strings to prevent input buffer errors?
