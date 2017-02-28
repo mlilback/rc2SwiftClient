@@ -19,15 +19,17 @@ extension Selector {
 	static let findPanelAction = #selector(NSTextView.performFindPanelAction(_:))
 	static let previousChunkAction = #selector(SessionEditorController.previousChunkAction(_:))
 	static let nextChunkAction = #selector(SessionEditorController.nextChunkAction(_:))
+	static let executeLine = #selector(SessionEditorController.executeCurrentLine(_:))
 }
 
-class SessionEditorController: AbstractSessionViewController
+class SessionEditorController: AbstractSessionViewController, TextViewMenuDelegate
 {
 	//MARK: properties
 	@IBOutlet var editor: SessionEditor?
 	@IBOutlet var runButton: NSButton?
 	@IBOutlet var sourceButton: NSButton?
 	@IBOutlet var fileNameField: NSTextField?
+	@IBOutlet var contextualMenuAdditions: NSMenu?
 	
 	let defaultUndoManager = UndoManager()
 	var parser: SyntaxParser?
@@ -82,6 +84,7 @@ class SessionEditorController: AbstractSessionViewController
 		{
 			currentFontDescriptor = fdesc
 		}
+		editor?.menuDelegate = self
 		editor?.textContainer?.containerSize = NSMakeSize(CGFloat.greatestFiniteMagnitude, CGFloat.greatestFiniteMagnitude)
 		editor?.textContainer?.widthTracksTextView = true
 		editor?.isHorizontallyResizable = true
@@ -102,11 +105,46 @@ class SessionEditorController: AbstractSessionViewController
 		switch(action) {
 		case Selector.runQuery, Selector.sourceQuery:
 			return currentDocument?.currentContents.characters.count ?? 0 > 0
+		case Selector.executeLine:
+			if editor?.selectedRange().length ?? 0 > 0 {
+				menuItem.title = NSLocalizedString("Execute Selection", comment: "")
+			} else {
+				menuItem.title = NSLocalizedString("Execute Line", comment: "")
+			}
+			return editor?.string?.characters.count ?? 0 > 0
 		default:
 			return false
 		}
 	}
 
+	func validateUserInterfaceItem(_ anItem: NSValidatedUserInterfaceItem) -> Bool {
+		switch anItem.action! as Selector {
+		case Selector.nextChunkAction:
+			return currentChunkIndex + 1 < (parser?.chunks.count ?? 0)
+		case Selector.previousChunkAction:
+			return currentChunkIndex > 0
+		case #selector(ManageFontMenu.adjustFontSize(_:)):
+			return true
+		case #selector(UsesAdjustableFont.fontChanged(_:)):
+			return true
+		default:
+			return false
+		}
+	}
+
+	//returns relevant items from our contextual menu
+	func additionalContextMenuItems() -> [NSMenuItem]? {
+		var items = [NSMenuItem]()
+		for anItem in contextualMenuAdditions?.items ?? [] {
+			if let dupItem = anItem.copy() as? NSMenuItem,
+				validateMenuItem(dupItem) || validateUserInterfaceItem(dupItem)
+			{
+				items.append(dupItem)
+			}
+		}
+		return items
+	}
+	
 	func saveState() -> [String:AnyObject] {
 		var dict = [String:AnyObject]()
 		dict["font"] = NSKeyedArchiver.archivedData(withRootObject: currentFontDescriptor) as AnyObject?
@@ -197,6 +235,23 @@ extension SessionEditorController {
 	@IBAction func sourceQuery(_ sender:AnyObject?) {
 		executeQuery(type:.Source)
 	}
+	
+	@IBAction func executeCurrentLine(_ sender: AnyObject?) {
+		guard let editor = self.editor,	let sourceString = editor.string else { fatalError() }
+		let selRange = editor.selectedRange()
+		var command: String = ""
+		if selRange.length > 0 {
+			command = sourceString.substring(from: selRange)!
+		} else {
+			let lineRange = sourceString.lineRange(for: selRange.toStringRange(sourceString)!)
+			command = sourceString.substring(with: lineRange)
+		}
+		session.executeScript(command)
+		if selRange.length < 1 {
+			//if execute line, move to next line
+			editor.moveCursorToNextNonBlankLine()
+		}
+	}
 }
 
 //MARK: UsesAdjustableFont
@@ -211,24 +266,6 @@ extension SessionEditorController: UsesAdjustableFont {
 		let newDesc = newNameDesc.withSize(currentFontDescriptor.pointSize)
 		currentFontDescriptor = newDesc
 		editor?.font = NSFont(descriptor: newDesc, size: newDesc.pointSize)
-	}
-}
-
-//Mark: NSUserInterfaceValidations
-extension SessionEditorController: NSUserInterfaceValidations {
-	func validateUserInterfaceItem(_ anItem: NSValidatedUserInterfaceItem) -> Bool {
-		switch anItem.action! as Selector {
-			case Selector.nextChunkAction:
-				return currentChunkIndex + 1 < (parser?.chunks.count ?? 0)
-			case Selector.previousChunkAction:
-				return currentChunkIndex > 0
-			case #selector(ManageFontMenu.adjustFontSize(_:)):
-				return true
-			case #selector(UsesAdjustableFont.fontChanged(_:)):
-				return true
-			default:
-				return false
-		}
 	}
 }
 

@@ -431,14 +431,30 @@ CA
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="ltc-Li-7l0"/>
-                                        <menuItem title="Run" keyEquivalent="k" id="ZKV-7K-4BY">
+                                        <menuItem title="Run" id="ZKV-7K-4BY">
+                                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
                                             <connections>
                                                 <action selector="runQuery:" target="Ady-hI-5gd" id="xKp-4R-Hf1"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Source" keyEquivalent="K" id="BG2-fO-8aw">
+                                        <menuItem title="Source" id="BG2-fO-8aw">
+                                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                            <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
                                             <connections>
                                                 <action selector="sourceQuery:" target="Ady-hI-5gd" id="6uG-qK-1Dh"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Execute Current Line" id="RYm-PG-XOl">
+                                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="executeCurrentLine:" target="Ady-hI-5gd" id="QcW-Ry-jhZ"/>
                                             </connections>
                                         </menuItem>
                                     </items>

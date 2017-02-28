@@ -29,6 +29,24 @@ class SessionEditor: TextViewWithContextualMenu {
 		return NSMakeRange(0, textStorage!.length)
 	}
 	
+	func moveCursorToNextNonBlankLine() {
+		guard let contents = string else { return }
+		var lastLocation: String.Index = contents.endIndex
+		while true {
+			moveToEndOfParagraph(nil)
+			moveRight(nil)
+			guard let selRange = selectedRange().toStringRange(contents),
+				let nextLineRange = string?.lineRange(for: selRange) else { break }
+			guard nextLineRange.lowerBound > lastLocation else { break } //end of line
+			lastLocation = nextLineRange.lowerBound
+			let nextStr = string!.substring(with: nextLineRange).trimmingCharacters(in: .whitespacesAndNewlines)
+			if nextStr.characters.count > 0 {
+				//end of string
+				break
+			}
+		}
+	}
+	
 	//with this version, if the close paren was at the end of the line, the blank space at the end of the line was colored, too. this did not happen in the old version of the client with similar code in objective-c. so we don't flash the close paren they just typed
 	override func insertText(_ aString: Any, replacementRange: NSRange) {
 		super.insertText(aString, replacementRange: replacementRange)

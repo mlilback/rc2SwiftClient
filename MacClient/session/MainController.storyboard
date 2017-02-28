@@ -200,6 +200,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="contextualMenuAdditions" destination="59K-5b-mxI" id="O57-Dt-JcU"/>
                         <outlet property="editor" destination="avy-g3-Ese" id="vv5-Ia-mp9"/>
                         <outlet property="fileNameField" destination="ucc-Ba-B6V" id="hv4-cC-8Ap"/>
                         <outlet property="runButton" destination="7nG-Py-cN7" id="46B-3F-uTd"/>
@@ -208,6 +209,28 @@
                     </connections>
                 </viewController>
                 <customObject id="V7c-BG-bfH" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <menu title="Contextual Menu" id="59K-5b-mxI" userLabel="Contextual Menu">
+                    <items>
+                        <menuItem title="Run Query" id="K5l-yp-Vf8">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="runQuery:" target="thj-QN-rY1" id="jJ0-7H-bdp"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Source Query" id="idc-EL-jXf">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="sourceQuery:" target="thj-QN-rY1" id="Fat-Kv-ZtA"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Execute Current Line" id="Z7p-9C-omQ">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="executeCurrentLine:" target="thj-QN-rY1" id="Oam-gz-FWw"/>
+                            </connections>
+                        </menuItem>
+                    </items>
+                </menu>
             </objects>
             <point key="canvasLocation" x="840" y="345.5"/>
         </scene>
@@ -1081,21 +1104,30 @@
                                 <color key="fillColor" name="windowBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </box>
                             <customView identifier="web container" translatesAutoresizingMaskIntoConstraints="NO" id="mgA-sQ-2dm">
-                                <rect key="frame" x="0.0" y="38" width="510" height="475"/>
+                                <rect key="frame" x="0.0" y="38" width="510" height="444"/>
                             </customView>
                             <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="Uv4-HC-CEy">
                                 <rect key="frame" x="0.0" y="36" width="510" height="5"/>
                             </box>
+                            <customView verticalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="KGu-GE-pN2" userLabel="FindBar View" customClass="SearchBarView" customModule="MacClient" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="482" width="510" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="31" id="7OD-cE-6Es"/>
+                                </constraints>
+                            </customView>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="KGu-GE-pN2" firstAttribute="leading" secondItem="eBF-S2-z6R" secondAttribute="leading" id="0OM-NB-66N"/>
                             <constraint firstAttribute="trailing" secondItem="gdT-XT-Nff" secondAttribute="trailing" id="3zt-NA-4Mz"/>
                             <constraint firstAttribute="trailing" secondItem="mgA-sQ-2dm" secondAttribute="trailing" id="ApP-Nn-vY7"/>
                             <constraint firstItem="mgA-sQ-2dm" firstAttribute="leading" secondItem="eBF-S2-z6R" secondAttribute="leading" id="EJS-BE-2Qd"/>
                             <constraint firstAttribute="bottom" secondItem="gdT-XT-Nff" secondAttribute="bottom" id="Iif-C8-i5N"/>
                             <constraint firstItem="gdT-XT-Nff" firstAttribute="leading" secondItem="eBF-S2-z6R" secondAttribute="leading" id="JrP-CV-wqR"/>
+                            <constraint firstItem="mgA-sQ-2dm" firstAttribute="top" secondItem="KGu-GE-pN2" secondAttribute="bottom" id="N19-O1-dtu"/>
+                            <constraint firstItem="KGu-GE-pN2" firstAttribute="top" secondItem="eBF-S2-z6R" secondAttribute="top" id="QX7-jm-1x1"/>
+                            <constraint firstAttribute="trailing" secondItem="KGu-GE-pN2" secondAttribute="trailing" id="QdU-eL-umx"/>
                             <constraint firstAttribute="bottom" secondItem="mgA-sQ-2dm" secondAttribute="bottom" constant="38" id="Rd3-BD-p4h"/>
                             <constraint firstAttribute="trailing" secondItem="Uv4-HC-CEy" secondAttribute="trailing" id="hcr-pD-Xsi"/>
-                            <constraint firstItem="mgA-sQ-2dm" firstAttribute="top" secondItem="eBF-S2-z6R" secondAttribute="top" id="leC-PS-iZY"/>
                             <constraint firstItem="Uv4-HC-CEy" firstAttribute="leading" secondItem="eBF-S2-z6R" secondAttribute="leading" id="sD6-gW-m0j"/>
                             <constraint firstAttribute="bottom" secondItem="Uv4-HC-CEy" secondAttribute="bottom" constant="38" id="y8j-SB-14l"/>
                         </constraints>
@@ -1103,6 +1135,8 @@
                     <connections>
                         <outlet property="containerView" destination="mgA-sQ-2dm" id="GQZ-fk-34a"/>
                         <outlet property="navButtons" destination="4qM-Gs-S7V" id="eQ3-gg-l54"/>
+                        <outlet property="searchBar" destination="KGu-GE-pN2" id="9f6-3t-OwU"/>
+                        <outlet property="searchBarHeightConstraint" destination="7OD-cE-6Es" id="ai5-k6-WTg"/>
                         <outlet property="shareButton" destination="ZvK-QY-nPW" id="LTR-oY-1ci"/>
                         <outlet property="titleLabel" destination="Wi0-ZF-Par" id="2Dn-eg-oDE"/>
                     </connections>

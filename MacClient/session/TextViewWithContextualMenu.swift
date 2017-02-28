@@ -7,13 +7,19 @@
 import AppKit
 import os
 
+@objc protocol TextViewMenuDelegate: NSObjectProtocol {
+	func additionalContextMenuItems() -> [NSMenuItem]?
+}
+
+///common base class for NSTextView that supports a customized contextual menu. Used for editor and console.
 class TextViewWithContextualMenu: NSTextView {
+	@IBOutlet weak var menuDelegate: TextViewMenuDelegate?
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		usesFindBar = true
 	}
-	
+
 	override func menu(for event: NSEvent) -> NSMenu? {
 		let defaultMenu = super.menu(for: event)
 		let menu = NSMenu(title: "")
@@ -22,6 +28,11 @@ class TextViewWithContextualMenu: NSTextView {
 		//	let targetd = (anItem.target as? NSObject)?.description ?? ""
 		//	os_log("context item %{public}@ = %{public}@.%{public}@ (%{public}@)", log: .app, type:.info, anItem.title, targetd, anItem.action?.description ?? "<noaction>", anItem.tag)
 		//}
+		//add items for subclass
+		if let otherItems = menuDelegate?.additionalContextMenuItems(), otherItems.count > 0 {
+			otherItems.forEach { menu.addItem($0) }
+			menu.addItem(NSMenuItem.separator())
+		}
 		//copy look up xxx and search with Google menu items
 		if let lookupItem = defaultMenu?.items.filter({ $0.title.hasPrefix("Look Up") }).first {
 			menu.addItem(lookupItem.copy() as! NSMenuItem)
