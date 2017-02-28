@@ -13,10 +13,6 @@ open class HelpOutputController: WebViewController {
 		super.viewDidLoad()
 	}
 	
-	override func currentPageSearchable() -> Bool {
-		return webView?.url != nil
-	}
-	
 	func loadHelpTopic(_ topic: HelpTopic) {
 		let hcontroller = HelpController.shared
 		let url = hcontroller.urlForTopic(topic)

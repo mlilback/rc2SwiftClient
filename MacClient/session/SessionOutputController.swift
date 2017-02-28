@@ -137,6 +137,8 @@ class SessionOutputController: AbstractSessionViewController, OutputController, 
 		let mi = sender as! NSMenuItem
 		consoleInputText = mi.representedObject as! String
 		canExecute = consoleInputText.characters.count > 0
+		//the following shouldn't be necessary because they are bound. But sometimes the textfield value does not update
+		consoleTextField?.stringValue = consoleInputText
 		view.window?.makeFirstResponder(consoleTextField)
 	}
 	

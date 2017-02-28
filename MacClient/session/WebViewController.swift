@@ -62,7 +62,7 @@ open class WebViewController: NSViewController, OutputController, WKNavigationDe
 	}
 	
 	func currentPageSearchable() -> Bool {
-		return false
+		return webView?.url != nil
 	}
 	
 	@IBAction func navigateWebView(_ sender:AnyObject) {

@@ -222,10 +222,10 @@ extension MacAppDelegate {
 		let session = Session(connectionInfo: conInfo, workspace: wspace)
 		session.open().observe(on: UIScheduler()).on(starting: {
 		}, terminated: {
-		}).start { event in
+		}).start { [weak self] event in
 			switch event {
 			case .completed:
-				self.openSessionWindow(session)
+				self?.openSessionWindow(session)
 			case .failed(let err):
 				os_log("failed to open websocket: %{public}s", log: .session, err.localizedDescription)
 				fatalError()

@@ -44,7 +44,7 @@ class WebKitOutputController: WebViewController {
 		}
 		//it is utterly rediculous that we have to load a new webview every time, but it wasn't loading the second request
 		DispatchQueue.main.async {
-			self.setupWebView()
+//			self.setupWebView()
 			DispatchQueue.main.async {
 				_ = self.webView?.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
 			}
