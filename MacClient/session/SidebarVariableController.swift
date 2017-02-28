@@ -6,6 +6,7 @@
 
 import Cocoa
 import Networking
+import os
 
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
@@ -72,7 +73,16 @@ class SidebarVariableController : AbstractSessionViewController {
 	}
 	
 	@IBAction func delete(_ sender: Any?) {
-		
+		guard let selRow = varTableView?.selectedRow,
+			selRow >= 0,
+			selRow < rootVariables.count,
+			let varName = rootVariables[selRow].name else
+		{
+			os_log("attempt to delete incorrect variable", log: .app, type: .error)
+			return
+		}
+		let cmd = "rm(\(varName)"
+		session.executeScript(cmd)
 	}
 	
 	@IBAction func copy(_ sender: AnyObject?) {
