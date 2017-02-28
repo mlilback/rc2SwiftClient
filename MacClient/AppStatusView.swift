@@ -45,6 +45,7 @@ class AppStatusView: NSView {
 	
 	fileprivate func clearStatus() {
 		DispatchQueue.main.async {
+			self.progressDisposable = nil
 			self.clearTimer = nil
 			self.cancelButton?.isEnabled = false
 			self.cancelButton?.isHidden = true

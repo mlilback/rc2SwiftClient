@@ -63,6 +63,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	var fileImporter: FileImporter?
 	private var fileChangeDisposable: Disposable?
 	private var busyDisposable: Disposable?
+	fileprivate var selectionChangeInProgress = false
 	
 	var selectedFile: File? { didSet { fileSelectionChanged() } }
 
@@ -455,6 +456,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	func fileSelectionChanged() {
+		guard !selectionChangeInProgress else { return }
+		selectionChangeInProgress = true
+		defer { selectionChangeInProgress = false }
 		guard let file = selectedFile else {
 			DispatchQueue.main.async {
 				 self.tableView.selectRowIndexes(IndexSet(), byExtendingSelection: false)
