@@ -134,6 +134,7 @@ public class Session {
 	public func close() {
 		keepAliveTimer.cancel()
 		wsSource.disconnect()
+		fileCache.close()
 	}
 	
 	//MARK: public request methods

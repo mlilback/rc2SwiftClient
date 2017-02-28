@@ -58,10 +58,10 @@ public final class LoginFactory: NSObject {
 		}
 		requestData = reqdata
 		requestUrl = URL(string: "login", relativeTo: destHost.url!)!
-		return SignalProducer<ConnectionInfo, Rc2Error>() { observer, disposable in
-			self.signalObserver = observer
-			self.signalDisposable = disposable
-			self.attemptLogin()
+		return SignalProducer<ConnectionInfo, Rc2Error>() { [weak self] observer, disposable in
+			self?.signalObserver = observer
+			self?.signalDisposable = disposable
+			self?.attemptLogin()
 		}
 	}
 	
@@ -134,7 +134,7 @@ extension LoginFactory: URLSessionDataDelegate {
 			return
 		}
 
-		defer { self.task = nil; self.urlSession = nil }
+		defer { self.task = nil; session.invalidateAndCancel(); self.urlSession = nil }
 		guard error == nil else {
 			os_log("login error: %{public}@", log: .network, type: .default, error!.localizedDescription)
 			signalObserver?.send(error: Rc2Error(type: .network, nested: error, severity: .warning, explanation: "Unknown login error"))

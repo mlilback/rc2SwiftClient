@@ -24,6 +24,7 @@ public protocol FileCache {
 	var fileManager: Rc2FileManager { get }
 	var workspace: Workspace { get }
 
+	func close()
 	func isFileCached(_ file:File) -> Bool
 //	func flushCache(workspace:Workspace)
 	//removes the cached file
@@ -172,8 +173,9 @@ public final class DefaultFileCache: NSObject, FileCache {
 		urlSession = URLSession(configuration: myConfig, delegate: self, delegateQueue: nil)
 	}
 	
-	deinit {
+	public func close() {
 		urlSession?.invalidateAndCancel()
+		urlSession = nil
 	}
 	
 	public func isFileCached(_ file: File) -> Bool {
@@ -533,7 +535,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 			guard let cacheTask = tasks[downloadTask.taskIdentifier] else {
 				fatalError("no DownloadTask for Session Task")
 			}
-			
+
 			let cacheUrl = cachedUrl(file:cacheTask.file)
 			//TODO: does this make sense? make a unit test
 			if let status = (downloadTask.response?.httpResponse)?.statusCode, status == 304 {
