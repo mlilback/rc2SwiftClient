@@ -90,17 +90,16 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			segmentControl = item.view as! NSSegmentedControl?
 			segmentControl?.target = self
 			segmentControl?.action = #selector(OutputTabController.tabSwitcherClicked(_:))
-			let lastSelection = 0 //NSUserDefaults.standardUserDefaults().integerForKey(LastSelectedSessionTabIndex)
+			let lastSelection = 0 //default back to console
 			selectedOutputTab = OutputTabType(rawValue: lastSelection)!
 			return true
 		}
 		return false
 	}
 	
-	dynamic func tabSwitcherClicked(_ sender:AnyObject?) {
+	func tabSwitcherClicked(_ sender:AnyObject?) {
 		let index = (segmentControl?.selectedSegment)!
 		selectedOutputTab = OutputTabType(rawValue: index)!
-//		NSUserDefaults.standardUserDefaults().setInteger(index, forKey: LastSelectedSessionTabIndex)
 	}
 
 	func showHelp(_ topics: [HelpTopic]) {
@@ -129,10 +128,6 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	func clearConsole(_ sender:AnyObject?) {
 		consoleController?.clearConsole(sender)
 		imageCache?.clearCache()
-	}
-	
-	func consoleButtonClicked(_ sender:AnyObject?) {
-		selectedOutputTab = .console
 	}
 	
 	func displayAttachment(_ fileWrapper: FileWrapper) {
