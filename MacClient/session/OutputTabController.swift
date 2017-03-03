@@ -45,7 +45,7 @@ extension OutputController {
 class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandler {
 	//MARK: properties
 	var currentOutputController: OutputController!
-	var consoleController: SessionOutputController?
+	var consoleController: ConsoleOutputController?
 	var imageController: ImageOutputController?
 	var webController: WebKitOutputController?
 	var helpController: HelpOutputController?

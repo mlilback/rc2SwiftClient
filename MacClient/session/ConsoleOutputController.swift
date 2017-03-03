@@ -1,5 +1,5 @@
 //
-//  SessionOutputController.swift
+//  ConsoleOutputController.swift
 //
 //  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
@@ -13,7 +13,7 @@ enum SessionStateKey: String {
 }
 
 ///ViewController whose view contains the text view showing the results, and the text field for entering short queries
-class SessionOutputController: AbstractSessionViewController, OutputController, NSTextViewDelegate, NSTextFieldDelegate
+class ConsoleOutputController: AbstractSessionViewController, OutputController, NSTextViewDelegate, NSTextFieldDelegate
 {
 	//MARK: properties
 	@IBOutlet var resultsView: ResultsView?
@@ -32,7 +32,7 @@ class SessionOutputController: AbstractSessionViewController, OutputController, 
 	}
 	
 	required init?(coder: NSCoder) {
-		cmdHistory = CommandHistory(target:nil, selector:#selector(SessionOutputController.displayHistoryItem(_:)))
+		cmdHistory = CommandHistory(target:nil, selector:#selector(ConsoleOutputController.displayHistoryItem(_:)))
 		super.init(coder: coder)
 	}
 	
@@ -164,7 +164,7 @@ class SessionOutputController: AbstractSessionViewController, OutputController, 
 	}
 }
 
-extension SessionOutputController: Searchable {
+extension ConsoleOutputController: Searchable {
 	func performFind(action: NSTextFinderAction) {
 		let menuItem = NSMenuItem(title: "foo", action: #selector(NSTextView.performFindPanelAction(_:)), keyEquivalent: "")
 		menuItem.tag = action.rawValue
@@ -173,7 +173,7 @@ extension SessionOutputController: Searchable {
 }
 
 //MARK: UsesAdjustableFont
-extension SessionOutputController: UsesAdjustableFont {
+extension ConsoleOutputController: UsesAdjustableFont {
 	
 	func fontsEnabled() -> Bool {
 		return true
