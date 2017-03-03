@@ -76,15 +76,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	}
 	
 	func handlesToolbarItem(_ item: NSToolbarItem) -> Bool {
-		if item.itemIdentifier == "console" {
-			consoleToolbarControl = item.view as! NSSegmentedControl?
-			consoleToolbarControl?.target = self
-			consoleToolbarControl?.action = #selector(OutputTabController.consoleButtonClicked(_:))
-			if let myItem = item as? OutputConsoleToolbarItem {
-				myItem.tabController = self
-			}
-			return true
-		} else if item.itemIdentifier == "clear" {
+		if item.itemIdentifier == "clear" {
 			item.target = self
 			item.action = #selector(OutputTabController.clearConsole(_:))
 			if let myItem = item as? ClearConsoleToolbarItem {
