@@ -216,6 +216,20 @@ extension Variable: JSONEncodable {
 	}
 }
 
+extension Variable {
+	static public func compareByName (lhs: Variable, rhs: Variable) -> Bool {
+		//compare based on name
+		switch (lhs.name, rhs.name) {
+		case let (l?, r?):
+			return l < r
+		case (nil, _?):
+			return true
+		default:
+			return false
+		}
+	}
+}
+
 public protocol PrimitiveValue {}
 extension Bool: PrimitiveValue {}
 extension Int: PrimitiveValue {}

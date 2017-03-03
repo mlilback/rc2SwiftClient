@@ -11,17 +11,6 @@ import os
 import ReactiveSwift
 import Networking
 
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
 class DisplayableImage: NSObject {
 	let imageId:Int
 	let name:String
@@ -43,7 +32,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	@IBOutlet var shareButton: NSSegmentedControl?
 	@IBOutlet var navigateButton: NSSegmentedControl?
 
-	var pageController: NSPageController?
+	var pageController: NSPageController!
 	var batchImages: [DisplayableImage] = []
 	var firstIndex: Int = 0
 	var imageCache: ImageCache?
@@ -52,9 +41,9 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		pageController = NSPageController()
-		pageController?.delegate = self
-		pageController?.transitionStyle = .stackBook
-		pageController?.view = containerView!
+		pageController.delegate = self
+		pageController.transitionStyle = .stackBook
+		pageController.view = containerView!
 		view.wantsLayer = true
 		shareButton?.sendAction(on: NSEventMask(rawValue: UInt64(Int(NSEventMask.leftMouseDown.rawValue))))
 		view.layer?.backgroundColor = PlatformColor.white.cgColor
@@ -69,7 +58,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	
 	override func viewDidAppear() {
 		super.viewDidAppear()
-		if batchImages.count > 0 && pageController?.arrangedObjects.count < 1 {
+		if batchImages.count > 0 && pageController.arrangedObjects.count < 1 {
 			pageController?.arrangedObjects = batchImages
 			pageController?.selectedIndex = firstIndex
 			labelField?.stringValue = batchImages[firstIndex].name

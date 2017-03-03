@@ -11,27 +11,6 @@ import Foundation
 import ClientCore
 import Networking
 
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
-
 open class RmdSyntaxParser: SyntaxParser {
 	let latexHighlighter:LatexCodeHighlighter = LatexCodeHighlighter()
 	let rChunkRegex:NSRegularExpression
@@ -61,13 +40,14 @@ open class RmdSyntaxParser: SyntaxParser {
 		//add R code chunks
 		rChunkRegex.enumerateMatches(in: str, options: [], range: range)
 		{ (result, flags, _) -> Void in
+			guard let result = result else { return }
 			var cname:String?
-			if result?.rangeAt(1).length > 0 {
-				cname = str.substring(with: result!.rangeAt(1).toStringRange(str)!)
+			if result.rangeAt(1).length > 0 {
+				cname = str.substring(with: result.rangeAt(1).toStringRange(str)!)
 			}
 			let codeChunk = DocumentChunk(chunkType: .rCode, chunkNumber: nextChunkIndex, name: cname)
 			nextChunkIndex += 1
-			let mrng = result!.range //rangeAtIndex(0)
+			let mrng = result.range //rangeAtIndex(0)
 			//skip the initial newline
 			codeChunk.parsedRange = NSMakeRange(mrng.location + 1, mrng.length - 1)
 			newChunks.append(codeChunk)

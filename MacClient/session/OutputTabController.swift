@@ -10,26 +10,6 @@ import os
 import Networking
 import ReactiveSwift
 
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
 enum OutputTabType: Int {
 	 case console = 0, image, webKit, help
 }
@@ -289,13 +269,15 @@ class ClearConsoleToolbarItem: NSToolbarItem {
 	var textView: NSTextView?
 	weak var tabController: NSTabViewController?
 	override func validate() {
-		isEnabled = textView?.textStorage?.length > 0 && tabController?.selectedTabViewItemIndex == 0
+		guard let textLength = textView?.textStorage?.length else { isEnabled = false; return }
+		isEnabled = textLength > 0 && tabController?.selectedTabViewItemIndex == 0
 	}
 }
 
 class OutputConsoleToolbarItem : NSToolbarItem {
 	weak var tabController: NSTabViewController?
 	override func validate() {
-		isEnabled = tabController?.selectedTabViewItemIndex > 0
+		guard let tabController = tabController else { return }
+		isEnabled = tabController.selectedTabViewItemIndex > 0
 	}
 }

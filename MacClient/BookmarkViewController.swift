@@ -12,27 +12,6 @@ import ReactiveSwift
 import Result
 import ClientCore
 
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
-
 enum BookmarkEntry {
 	case group(String)
 	case mark(Bookmark)
@@ -80,7 +59,7 @@ open class BookmarkViewController: NSViewController {
 		entries.removeAll()
 		for aGroup in bookmarkManager!.bookmarkGroups.values.sorted(by: { (g1, g2) in g1.key < g2.key }) {
 			entries.append(BookmarkEntry.group(aGroup.key))
-			for aMark in aGroup.bookmarks.sorted(by: { (b1, b2) in b1.name < b2.name }) {
+			for aMark in aGroup.bookmarks.sorted(by: { (b1, b2) in b1.name  ?? "" < b2.name ?? "" }) {
 				entries.append(BookmarkEntry.mark(aMark))
 			}
 		}
@@ -273,6 +252,7 @@ extension BookmarkViewController: NSTableViewDelegate {
 
 extension BookmarkViewController: NSTextFieldDelegate {
 	public func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
-		return fieldEditor.string?.characters.count > 0
+		guard let editorString = fieldEditor.string else { return false }
+		return editorString.characters.count > 0
 	}
 }

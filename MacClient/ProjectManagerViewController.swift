@@ -8,34 +8,13 @@ import Cocoa
 import Networking
 import ClientCore
 
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l >= r
-  default:
-    return !(lhs < rhs)
-  }
-}
-
-
 struct ProjectAndWorkspace {
 	let project:String
 	let workspace:String
 }
 
 class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
-	@IBOutlet var projectOutline: NSOutlineView?
+	@IBOutlet var projectOutline: NSOutlineView!
 	@IBOutlet var addRemoveButtons: NSSegmentedControl?
 	
 	dynamic var canContinue: Bool = false
@@ -45,8 +24,8 @@ class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
 
 	override open func viewDidAppear() {
 		super.viewDidAppear()
-		projectOutline?.reloadData()
-		projectOutline?.expandItem(nil, expandChildren: true)
+		projectOutline.reloadData()
+		projectOutline.expandItem(nil, expandChildren: true)
 	}
 	
 	func continueAction(_ callback: @escaping (_ value: Any?, _ error: Rc2Error?) -> Void) {
@@ -107,6 +86,6 @@ extension ProjectManagerViewController: NSOutlineViewDelegate {
 	}
 	
 	public func outlineViewSelectionDidChange(_ notification: Notification) {
-		canContinue = projectOutline?.selectedRow >= 0
+		canContinue = projectOutline.selectedRow >= 0
 	}
 }

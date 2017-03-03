@@ -5,26 +5,6 @@
 //
 
 import Cocoa
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
 
 class TopicWrapper: NSObject {
 	var topic:HelpTopic
@@ -67,8 +47,8 @@ class SidebarHelpController : AbstractSessionViewController, NSOutlineViewDataSo
 			let exp = helpPackages.flatMap() { outline!.isItemExpanded($0) ? $0 : nil }
 			expandedBeforeSearch = exp
 		}
-		guard searchField?.stringValue.characters.count > 0 else { resetHelpTopics(); return }
-		let results = help.searchTopics(searchField!.stringValue)
+		guard let searchString = searchField?.stringValue, searchString.characters.count > 0 else { resetHelpTopics(); return }
+		let results = help.searchTopics(searchString)
 		helpPackages = results.map() { TopicWrapper(topic: $0) }
 		outline?.reloadData()
 		outline!.expandItem(nil, expandChildren: true)

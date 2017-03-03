@@ -8,35 +8,13 @@ import Cocoa
 import Networking
 import os
 
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l >= r
-  default:
-    return !(lhs < rhs)
-  }
-}
-
-
-
 class SidebarVariableController : AbstractSessionViewController {
 	//MARK: properties
 	var rootVariables: [Variable] = []
 	var changedIndexes: Set<Int> = []
 	var variablePopover: NSPopover?
 	var isVisible = false
-	@IBOutlet var varTableView: NSTableView?
+	@IBOutlet var varTableView: NSTableView!
 	@IBOutlet var clearButton: NSButton!
 	@IBOutlet var contextMenu: NSMenu!
 	
@@ -132,9 +110,7 @@ extension SidebarVariableController: VariableHandler {
 		} else {
 			rootVariables = variables
 		}
-		rootVariables.sort { (lhs, rhs) -> Bool in
-			return lhs.name < rhs.name
-		}
+		rootVariables.sort(by: Variable.compareByName)
 		variablesChanged()
 	}
 	
@@ -204,7 +180,7 @@ extension SidebarVariableController: NSTableViewDelegate {
 	func tableViewSelectionDidChange(_ notification: Notification)
 	{
 		//if no selection, dismiss popover if visible
-		guard varTableView?.selectedRow >= 0 else {
+		guard varTableView.selectedRow >= 0 else {
 			if variablePopover?.isShown ?? false { variablePopover?.close(); variablePopover = nil }
 			return
 		}

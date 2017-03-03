@@ -11,26 +11,6 @@ import SwiftyUserDefaults
 import ClientCore
 import Networking
 
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
 // MARK: Keys for UserDefaults
 extension DefaultsKeys {
 	static let lastImportDirectory = DefaultsKey<Data?>("rc2.LastImportDirectory")
@@ -102,10 +82,9 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 	*/
 	func validateTableViewDrop(_ info:NSDraggingInfo) -> NSDragOperation {
 		guard info.draggingSource() == nil else  { return NSDragOperation() } //don't allow local drags
-		let urls = info.draggingPasteboard().readObjects(forClasses: [URL.self as! AnyObject.Type], options: pboardReadOptions)
-		guard urls?.count > 0 else { return NSDragOperation() } //must have a url
+		guard let urls = info.draggingPasteboard().readObjects(forClasses: [URL.self as! AnyObject.Type], options: pboardReadOptions), urls.count > 0 else { return NSDragOperation() } //must have a url
 		let acceptableTypes = FileType.importableFileTypes.map() { $0.fileExtension }
-		for aUrl in urls! {
+		for aUrl in urls {
 			if !acceptableTypes.contains((aUrl as! URL).pathExtension) {
 				return NSDragOperation()
 			}
@@ -122,10 +101,9 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 	func acceptTableViewDrop(_ info:NSDraggingInfo, workspace:Workspace, window:NSWindow, handler:@escaping ([FileImporter.FileToImport]) -> Void)
 	{
 		assert(validateTableViewDrop(info) != NSDragOperation(), "validate wasn't called on drag info")
-		let urls = info.draggingPasteboard().readObjects(forClasses: [NSURL.self], options: pboardReadOptions) as? [URL]
-		guard urls?.count > 0 else { return }
+		guard let urls = info.draggingPasteboard().readObjects(forClasses: [NSURL.self], options: pboardReadOptions) as? [URL], urls.count > 0 else { return }
 		let existingNames: [String] = workspace.files.map() { $0.name }
-		if urls?.filter({ aUrl in existingNames.contains(aUrl.lastPathComponent) }).first != nil {
+		if urls.filter({ aUrl in existingNames.contains(aUrl.lastPathComponent) }).first != nil {
 			let alert = NSAlert()
 			alert.messageText = NSLocalizedString("Replace existing file(s)?", comment: "")
 			alert.informativeText = NSLocalizedString("One or more files already exist with the same name as a dropped file", comment:"")
@@ -137,14 +115,14 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 			uniqButton.keyEquivalentModifierMask = NSEventModifierFlags(rawValue: UInt(Int(NSEventModifierFlags.command.rawValue)))
 			alert.beginSheetModal(for: window, completionHandler: { response in
 				guard response != NSAlertSecondButtonReturn else { return }
-				let files = urls!.map() { url -> FileImporter.FileToImport in
+				let files = urls.map() { url -> FileImporter.FileToImport in
 					let uname = response == NSAlertFirstButtonReturn ? nil : self.uniqueFileName(url.lastPathComponent, inWorkspace: workspace)
 					return FileImporter.FileToImport(url: url, uniqueName: uname)
 				}
 				handler(files)
 			}) 
 		} else {
-			handler(urls!.map() { url in FileImporter.FileToImport(url: url, uniqueName: nil) } )
+			handler(urls.map() { url in FileImporter.FileToImport(url: url, uniqueName: nil) } )
 		}
 	}
 	
