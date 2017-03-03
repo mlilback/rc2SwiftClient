@@ -36,17 +36,20 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 		return false
 	}
 
-	dynamic func tabSwitcherClicked(_ sender:AnyObject?) {
+	func tabSwitcherClicked(_ sender:AnyObject?) {
 		let sidebar = sidebarTabController()
 		let splitItem = splitViewItems[0]
 		let index = (segmentControl?.selectedSegment)!
 		if index == sidebar.selectedTabViewItemIndex {
 			//same as currently selected. toggle visibility
 			segmentControl?.animator().setSelected(splitItem.isCollapsed, forSegment: index)
-			toggleSidebar(nil)
+			
+//			toggleSidebar(nil)
+			splitItem.isCollapsed = !splitItem.isCollapsed
 		} else {
 			if splitItem.isCollapsed {
-				toggleSidebar(self)
+				splitItem.isCollapsed = false
+//				toggleSidebar(self)
 			}
 			segmentControl?.animator().setSelected(true, forSegment: index)
 			sidebar.selectedTabViewItemIndex = index
@@ -56,5 +59,9 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 
 	func sidebarTabController() -> NSTabViewController {
 		return self.childViewControllers[0] as! NSTabViewController
+	}
+	
+	override func splitView(_ splitView: NSSplitView, shouldHideDividerAt dividerIndex: Int) -> Bool {
+		return false
 	}
 }
