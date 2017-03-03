@@ -252,6 +252,7 @@
 		08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
 		08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
+		08BCD3FB1E69C94A00B86BB4 /* SessionSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174051C56BE7B00071408 /* SessionSplitController.swift */; };
 		08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; };
 		08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08C2C3C91DF74DE200397DD3 /* Networking.strings in Resources */ = {isa = PBXBuildFile; fileRef = 08C2C3C81DF74DE200397DD3 /* Networking.strings */; };
@@ -2261,6 +2262,7 @@
 				081559B11DDFB2D80047B3CE /* DockerImageTest.swift in Sources */,
 				081559B51DDFB2D80047B3CE /* DockerUrlProtocolTests.swift in Sources */,
 				081559C01DDFB4300047B3CE /* DefaultDockerAPISpec.swift in Sources */,
+				08BCD3FB1E69C94A00B86BB4 /* SessionSplitController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

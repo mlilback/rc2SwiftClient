@@ -10,7 +10,7 @@ import os
 import Networking
 import ReactiveSwift
 
-enum OutputTabType: Int {
+enum OutputTab: Int {
 	 case console = 0, image, webKit, help
 }
 
@@ -31,28 +31,24 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	var helpController: HelpOutputController?
 	var imageCache: ImageCache? { return sessionController?.session.imageCache }
 	weak var sessionController: SessionController? { didSet { imageController?.imageCache = imageCache } }
-	var consoleToolbarControl: NSSegmentedControl?
-	var segmentItem: NSToolbarItem?
-	var segmentControl: NSSegmentedControl?
 	weak var displayedFile: File?
-	var selectedOutputTab: OutputTabType {
-		get { return OutputTabType(rawValue: selectedTabViewItemIndex)! }
-		set { switchTo(tab: newValue) }
-	}
 	var searchBarVisible: Bool {
 		get { return currentOutputController.searchBarVisible }
 		set { currentOutputController.performFind(action: newValue ? .showFindInterface : .hideFindInterface) }
 	}
+	let selectedOutputTab = MutableProperty<OutputTab>(.console)
 	
 	//MARK: methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		NotificationCenter.default.addObserver(self, selector: #selector(OutputTabController.handleDisplayHelp(_:)), name: .DisplayHelpTopic, object: nil)
+		selectedOutputTab.signal.observeValues { [weak self] tab in
+			self?.switchTo(tab: tab)
+		}
 	}
 	
 	override func viewWillAppear() {
 		super.viewWillAppear()
-		selectedOutputTab = .console
 		consoleController = firstChildViewController(self)
 		consoleController?.viewFileOrImage = displayAttachment
 		imageController = firstChildViewController(self)
@@ -85,23 +81,10 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 				
 			}
 			return true
-		} else if item.itemIdentifier == "rightView" {
-			segmentItem = item
-			segmentControl = item.view as! NSSegmentedControl?
-			segmentControl?.target = self
-			segmentControl?.action = #selector(OutputTabController.tabSwitcherClicked(_:))
-			let lastSelection = 0 //default back to console
-			selectedOutputTab = OutputTabType(rawValue: lastSelection)!
-			return true
 		}
 		return false
 	}
 	
-	func tabSwitcherClicked(_ sender:AnyObject?) {
-		let index = (segmentControl?.selectedSegment)!
-		selectedOutputTab = OutputTabType(rawValue: index)!
-	}
-
 	func showHelp(_ topics: [HelpTopic]) {
 		guard topics.count > 0 else {
 			consoleController?.append(responseString: sessionController!.format(errorString: "No help found"))
@@ -121,7 +104,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		} else if let topicName:String = note.object as? String {
 			showHelp(HelpController.shared.topicsWithName(topicName))
 		} else { //told to show without a topic. switch back to console.
-			selectedOutputTab = .console
+			selectedOutputTab.value = .console
 		}
 	}
 
@@ -140,7 +123,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			case .file:
 				if let file = sessionController?.session.workspace.file(withId: attachment.fileId) {
 					webController?.loadLocalFile(sessionController!.session.fileCache.validUrl(for: file))
-					selectedOutputTab = .webKit
+					selectedOutputTab.value = .webKit
 				} else {
 					//TODO: report error
 					os_log("error getting file attachment to display: %d", log: .app, attachment.fileId)
@@ -151,7 +134,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 				let index = images.index(where: {$0.id == image.id})
 			{
 				imageController?.displayImage(atIndex: index, images:images)
-				selectedOutputTab = .image
+				selectedOutputTab.value = .image
 				tabView.window?.toolbar?.validateVisibleItems()
 			}
 		}
@@ -161,7 +144,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		//strip optional
 		guard let file = fileObject as? File else {
 			webController?.clearContents()
-			selectedOutputTab = .console
+			selectedOutputTab.value = .console
 			displayedFile = nil
 			return
 		}
@@ -175,7 +158,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		}
 		displayedFile = file
 		//TODO: need to specially handle images
-		self.selectedOutputTab = .webKit
+		self.selectedOutputTab.value = .webKit
 		self.webController?.loadLocalFile(url)
 	}
 
@@ -184,8 +167,8 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		//switch back to console view if appropriate type
 		switch responseString.type {
 		case .input, .output, .error:
-			if selectedOutputTab != .console {
-				selectedOutputTab = .console
+			if selectedOutputTab.value != .console {
+				selectedOutputTab.value = .console
 			}
 		default:
 			break
@@ -202,7 +185,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		return dict as AnyObject
 	}
 	
-	func restoreSessionState(_ state:[String:AnyObject]) {
+	func restoreSessionState(_ state: [String:AnyObject]) {
 		if let consoleState = state["console"] as? [String:AnyObject] {
 			consoleController?.restoreSessionState(consoleState)
 		}
@@ -211,9 +194,9 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 
 //MARK: - private methods
 private extension OutputTabController {
-	func switchTo(tab: OutputTabType) {
+	func switchTo(tab: OutputTab) {
 		selectedTabViewItemIndex = tab.rawValue
-		switch selectedOutputTab {
+		switch selectedOutputTab.value {
 		case .console:
 			currentOutputController = consoleController
 		case .image:
@@ -223,21 +206,14 @@ private extension OutputTabController {
 		case .help:
 			currentOutputController = helpController
 		}
-		adjustOutputTabSwitcher()
-	}
-	
-	func adjustOutputTabSwitcher() {
-		let index = selectedOutputTab.rawValue
-		//		guard index != selectedTabViewItemIndex else { return }
-		segmentControl?.animator().setSelected(true, forSegment: index)
-		for idx in 0..<tabView.numberOfTabViewItems {
-			segmentControl?.setEnabled(idx == index ? false : true, forSegment: idx)
+		if view.window?.firstResponder == nil {
+			view.window?.makeFirstResponder(currentOutputController as? NSResponder)
 		}
 	}
 	
 	///actually shows the help page for the specified topic
 	func showHelpTopic(_ topic:HelpTopic) {
-		selectedOutputTab = .help
+		selectedOutputTab.value = .help
 		helpController!.loadHelpTopic(topic)
 	}
 }

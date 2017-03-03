@@ -65,7 +65,7 @@
         <!--output controller-->
         <scene sceneID="GKh-8C-jU5">
             <objects>
-                <tabViewController storyboardIdentifier="output" tabStyle="unspecified" id="qFx-32-GX3" userLabel="output controller" customClass="OutputTabController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <tabViewController identifier="outputTabController" storyboardIdentifier="output" tabStyle="unspecified" id="qFx-32-GX3" userLabel="output controller" customClass="OutputTabController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <tabViewItems>
                         <tabViewItem id="efd-Px-WGZ"/>
                         <tabViewItem id="j2a-HV-n5N"/>
@@ -132,7 +132,7 @@
                                     <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0YT-Nj-o29">
                                         <rect key="frame" x="8" y="9" width="384" height="21"/>
                                         <subviews>
-                                            <textField horizontalHuggingPriority="200" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ucc-Ba-B6V">
+                                            <textField horizontalHuggingPriority="200" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ucc-Ba-B6V">
                                                 <rect key="frame" x="-2" y="2" width="231" height="17"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="118" id="inG-58-OdY"/>
@@ -237,7 +237,7 @@
         <!--left tab controller-->
         <scene sceneID="Zy7-r2-fPT">
             <objects>
-                <tabViewController selectedTabViewItemIndex="0" tabStyle="unspecified" id="IeT-2r-pnl" userLabel="left tab controller" customClass="SidebarTabController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <tabViewController identifier="sidebarTabController" selectedTabViewItemIndex="0" tabStyle="unspecified" id="IeT-2r-pnl" userLabel="left tab controller" customClass="SidebarTabController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <tabViewItems>
                         <tabViewItem identifier="fileTab" id="CTV-YU-27t"/>
                         <tabViewItem identifier="variableTab" id="Wcq-lB-PA7"/>
@@ -297,7 +297,7 @@
                                                             <rect key="frame" x="1" y="3" width="144" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="cdI-61-Trg">
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cdI-61-Trg">
                                                                     <rect key="frame" x="1" y="0.0" width="142" height="17"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="7oD-7f-5Sh">
                                                                         <font key="font" metaFont="system"/>
@@ -319,7 +319,7 @@
                                                             <rect key="frame" x="1" y="26" width="144" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KQT-lU-PCw" userLabel="Filename">
+                                                                <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KQT-lU-PCw" userLabel="Filename">
                                                                     <rect key="frame" x="4" y="0.0" width="139" height="17"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Filename" id="JWm-rr-kKp">
                                                                         <font key="font" metaFont="system"/>
@@ -516,7 +516,7 @@
                                                             <rect key="frame" x="1" y="1" width="80" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="gq8-Gn-4ZY">
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gq8-Gn-4ZY">
                                                                     <rect key="frame" x="1" y="2" width="84" height="14"/>
                                                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="exF-ly-sa5">
                                                                         <font key="font" metaFont="smallSystem"/>
@@ -552,7 +552,7 @@
                                                             <rect key="frame" x="84" y="1" width="121" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Aa4-kM-Kx6">
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsExpansionToolTips="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Aa4-kM-Kx6">
                                                                     <rect key="frame" x="1" y="2" width="119" height="14"/>
                                                                     <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="Otl-aZ-ib4">
                                                                         <font key="font" metaFont="smallSystem"/>
@@ -680,7 +680,7 @@
                                                             <rect key="frame" x="1" y="1" width="204" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GGa-s2-C1x">
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GGa-s2-C1x">
                                                                     <rect key="frame" x="0.0" y="0.0" width="203" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="fa9-eb-Ioc">
@@ -713,7 +713,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
-                            <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1Bm-VS-iyJ">
+                            <searchField wantsLayer="YES" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1Bm-VS-iyJ">
                                 <rect key="frame" x="8" y="8" width="193" height="22"/>
                                 <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" alignment="left" placeholderString="Filter" usesSingleLineMode="YES" bezelStyle="round" sendsSearchStringImmediately="YES" maximumRecents="20" id="AtI-Qu-FIa">
                                     <font key="font" metaFont="system"/>
@@ -802,7 +802,7 @@
                                                         <action selector="historyClicked:" target="cmA-J2-3x3" id="Edv-ZI-emm"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="Y6X-8g-t8y" customClass="ConsoleTextField" customModule="MacClient" customModuleProvider="target">
+                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="500" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y6X-8g-t8y" customClass="ConsoleTextField" customModule="MacClient" customModuleProvider="target">
                                                     <rect key="frame" x="42" y="0.0" width="278" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="563" constant="50" id="Xik-b7-zR2"/>
@@ -943,7 +943,7 @@
                                                         <action selector="navigateClicked:" target="cag-VX-0j2" id="FGf-Nh-mNo"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yDu-X6-HrR">
+                                                <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yDu-X6-HrR">
                                                     <rect key="frame" x="73" y="3" width="370" height="18"/>
                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="eer-R1-ODD">
                                                         <font key="font" metaFont="system" size="14"/>
@@ -1054,7 +1054,7 @@
                                                         <action selector="navigateWebView:" target="q5U-HH-oqN" id="QhM-kj-7WZ"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Wi0-ZF-Par">
+                                                <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wi0-ZF-Par">
                                                     <rect key="frame" x="73" y="3" width="367" height="18"/>
                                                     <textFieldCell key="cell" lineBreakMode="truncatingHead" sendsActionOnEndEditing="YES" alignment="center" title="Loading…" id="G82-68-MnS">
                                                         <font key="font" metaFont="system" size="14"/>
@@ -1176,7 +1176,7 @@
                                                         <action selector="navigateWebView:" target="p0J-JE-sdA" id="fXh-Py-6eO"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="Bz6-tM-pBq">
+                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bz6-tM-pBq">
                                                     <rect key="frame" x="73" y="3" width="367" height="18"/>
                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="left" title="Loading…" id="Xcp-uc-g2d">
                                                         <font key="font" metaFont="system" size="14"/>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12106.1" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12113" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12106.1"/>
-        <plugIn identifier="com.apple.WebKit2IBPlugin" version="12106.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12113"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="12113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
@@ -405,6 +405,82 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="View" id="tdu-23-22w" userLabel="View">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="View" id="yHy-Ka-caD">
+                                    <items>
+                                        <menuItem title="Show Toolbar" keyEquivalent="t" id="snW-S8-Cw5">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="toggleToolbarShown:" target="Ady-hI-5gd" id="BXY-wc-z0C"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Customize Toolbar…" id="1UK-8n-QPP">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="runToolbarCustomizationPalette:" target="Ady-hI-5gd" id="pQI-g3-MTW"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="yWS-FU-uh5"/>
+                                        <menuItem title="Sidebar" id="2bC-hs-bIP">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Sidebar" id="JJ4-W3-Vtu" userLabel="Sidebar">
+                                                <items>
+                                                    <menuItem title="Files" keyEquivalent="1" id="XHj-nh-vwC">
+                                                        <connections>
+                                                            <action selector="switchSidebarTab:" target="Ady-hI-5gd" id="M9L-AG-K6l"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Variables" tag="1" keyEquivalent="2" id="9aR-4a-bGP">
+                                                        <connections>
+                                                            <action selector="switchSidebarTab:" target="Ady-hI-5gd" id="hs4-fc-FWe"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Help Topics" tag="2" keyEquivalent="3" id="GKt-pq-qn5">
+                                                        <connections>
+                                                            <action selector="switchSidebarTab:" target="Ady-hI-5gd" id="Lbe-wD-HG1"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                        <menuItem title="Output" id="3dx-7S-GJ1">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Output" id="j9M-uM-1j8" userLabel="Output">
+                                                <items>
+                                                    <menuItem title="Console" keyEquivalent="4" id="Os4-CM-emn">
+                                                        <connections>
+                                                            <action selector="switchOutputTab:" target="Ady-hI-5gd" id="FWH-vc-mgh"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Images" tag="1" keyEquivalent="5" id="kIf-uR-tv1">
+                                                        <connections>
+                                                            <action selector="switchOutputTab:" target="Ady-hI-5gd" id="unZ-wz-cOu"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="File Contents" tag="2" keyEquivalent="6" id="bw9-kS-adU">
+                                                        <connections>
+                                                            <action selector="switchOutputTab:" target="Ady-hI-5gd" id="P6X-LS-4dv"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Help" tag="3" keyEquivalent="7" id="7PT-kv-lsI">
+                                                        <connections>
+                                                            <action selector="switchOutputTab:" target="Ady-hI-5gd" id="hqd-Mc-Tbi"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="obw-cj-yOq"/>
+                                        <menuItem title="Enter Full Screen" keyEquivalent="f" id="2Nf-aW-Ap6">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="toggleFullScreen:" target="Ady-hI-5gd" id="fbc-Bq-AQF"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem title="Session" id="H8h-7b-M4v">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Session" id="HyV-fh-RgO">
@@ -491,19 +567,6 @@ DQ
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Window" systemMenu="window" id="Td7-aD-5lo">
                                     <items>
-                                        <menuItem title="Show Toolbar" keyEquivalent="t" id="snW-S8-Cw5">
-                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                                            <connections>
-                                                <action selector="toggleToolbarShown:" target="Ady-hI-5gd" id="BXY-wc-z0C"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Customize Toolbar…" id="1UK-8n-QPP">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="runToolbarCustomizationPalette:" target="Ady-hI-5gd" id="pQI-g3-MTW"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="yWS-FU-uh5"/>
                                         <menuItem title="Minimize" keyEquivalent="m" id="OY7-WF-poV">
                                             <connections>
                                                 <action selector="performMiniaturize:" target="Ady-hI-5gd" id="VwT-WD-YPe"/>
@@ -564,7 +627,7 @@ DQ
                 </customObject>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-338" y="-264"/>
+            <point key="canvasLocation" x="-438" y="-453"/>
         </scene>
         <!--Server Setup Window Controller-->
         <scene sceneID="HW3-Oi-wyR">
@@ -592,7 +655,7 @@ DQ
                         <rect key="frame" x="0.0" y="0.0" width="425" height="83"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6TE-w1-CEJ">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6TE-w1-CEJ">
                                 <rect key="frame" x="31" y="46" width="364" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Installing Local Server" id="xZG-re-BwD">
                                     <font key="font" metaFont="system"/>

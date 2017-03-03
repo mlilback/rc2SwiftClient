@@ -13,6 +13,8 @@ import Networking
 
 extension Selector {
 	static let promptToImport = #selector(RootViewController.promptToImportFiles(_:))
+	static let switchSidebarTab = #selector(RootViewController.switchSidebarTab(_:))
+	static let switchOutputTab = #selector(RootViewController.switchOutputTab(_:))
 }
 
 class RootViewController: AbstractSessionViewController, ToolbarItemHandler
@@ -27,6 +29,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	fileprivate var progressDisposable: Disposable?
 	fileprivate var dimmingView: DimmingView?
 	weak var editor: SessionEditorController?
+	weak var splitController: SessionSplitController?
 	weak var outputHandler: OutputHandler?
 	weak var fileHandler: FileHandler?
 	var formerFirstResponder: NSResponder? //used to restore first responder when dimmingview goes away
@@ -46,6 +49,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 		super.viewWillAppear()
 		guard editor == nil else { return } //only run once
 		editor = firstChildViewController(self)
+		splitController = firstChildViewController(self)
 		outputHandler = firstChildViewController(self)
 		fileHandler = firstChildViewController(self)
 		let concreteFH = fileHandler as? SidebarFileController
@@ -98,6 +102,8 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 			return true
 		case Selector.runQuery, Selector.sourceQuery:
 			return editor?.validateMenuItem(menuItem) ?? false
+		case Selector.switchOutputTab, Selector.switchSidebarTab:
+			return splitController?.validateMenuItem(menuItem) ?? false
 		default:
 			return false
 		}
@@ -191,6 +197,14 @@ extension RootViewController {
 	
 	@IBAction func sourceQuery(_ sender: AnyObject?) {
 		editor?.sourceQuery(sender)
+	}
+	
+	@IBAction func switchSidebarTab(_ sender: NSMenuItem?) {
+		splitController?.switchSidebarTab(sender)
+	}
+
+	@IBAction func switchOutputTab(_ sender: NSMenuItem?) {
+		splitController?.switchOutputTab(sender)
 	}
 }
 
