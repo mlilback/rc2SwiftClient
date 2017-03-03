@@ -8,3 +8,6 @@
 
 "DeleteFileWarning" = "Confirm Delete File";
 "DeleteFileWarningInfo" = "Delete \"%@\"? This action can not be undone.";
+
+"ClearWorkspaceWarning" = "Confirm Clear Workspace";
+"ClearWorkspaceInfo" = "This will remove all variables in your workspace and can not be undone.";

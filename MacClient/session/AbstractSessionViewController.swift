@@ -7,6 +7,7 @@
 import Cocoa
 import ClientCore
 import Networking
+import SwiftyUserDefaults
 
 class AbstractSessionViewController: NSViewController {
 	weak var sessionOptional: Session? { didSet { sessionChanged() } }
@@ -30,6 +31,36 @@ class AbstractSessionViewController: NSViewController {
 	}
 	
 	func appStatusChanged() {
+	}
+	
+	/// Displays an alert sheet to confirm an action
+	///
+	/// - Parameters:
+	///   - message: The message to display
+	///   - infoText: The informative text to display
+	///   - buttonTitle: The title for the rightmost/action button
+	///   - defaultToCancel: true if the cancel button should be the default button. defaults to false
+	///   - suppressionKey: Optional UserDefaults key to set to true if user selects to suppress future alerts. If nil, suppression checkbox is not displayed. Defaults to nil
+	///   - handler: called after the user has selected an action
+	///   - confirmed: true if the user selected the action button
+	func confirmAction(message: String, infoText: String, buttonTitle: String, defaultToCancel: Bool = false, suppressionKey: DefaultsKey<Bool>? = nil, handler: @escaping (_ confirmed: Bool) -> Void)
+	{
+		let alert = NSAlert()
+		alert.showsSuppressionButton = suppressionKey != nil
+		alert.messageText = message
+		alert.informativeText = infoText
+		alert.addButton(withTitle: buttonTitle)
+		alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+		if defaultToCancel {
+			alert.buttons[0].keyEquivalent = ""
+			alert.buttons[1].keyEquivalent = "\r"
+		}
+		alert.beginSheetModal(for: self.view.window!, completionHandler: { [weak alert] response in
+			if let key = suppressionKey, alert?.suppressionButton?.state ?? NSOffState == NSOnState {
+				UserDefaults.standard[key] = true
+			}
+			handler(response == NSAlertFirstButtonReturn)
+		})
 	}
 }
 

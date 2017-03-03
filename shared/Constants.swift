@@ -21,6 +21,9 @@ struct LocalStrings {
 	static let addFileDefaultName = "Untitled"
 	static let deleteFileWarning = "DeleteFileWarning"
 	static let deleteFileWarningInfo = "DeleteFileWarningInfo"
+	static let clearWorkspaceWarning = "ClearWorkspaceWarning"
+	static let clearWorkspaceWarningInfo = "ClearWorkspaceInfo"
+	
 }
 
 struct PasteboardTypes {

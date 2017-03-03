@@ -170,7 +170,8 @@ public class Session {
 	
 	/// clears all variables in the global environment
 	public func clearVariables() {
-		executeScript("rc2.clearEnvironment()");
+		//TODO: enable once working on the server
+//		sendMessage(json: .dictionary(["msg": .string("execute"), "type": .string("run"), "code": .string("rm(list=ls())"), "noEcho": .bool(true)]))
 	}
 	
 	/// asks the server for a refresh of all environment variables

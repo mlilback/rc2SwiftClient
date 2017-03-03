@@ -16,7 +16,7 @@ import Networking
 // MARK: Keys for UserDefaults
 extension DefaultsKeys {
 	static let lastExportDirectory = DefaultsKey<Data?>("rc2.LastExportDirectory")
-	static let supressDeleteFileWarnings = DefaultsKey<Bool>("SupressDeleteFileWarning")
+	static let suppressDeleteFileWarnings = DefaultsKey<Bool>("SuppressDeleteFileWarning")
 }
 
 ///selectors used in this file, aliased with shorter, descriptive names
@@ -206,23 +206,19 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			return
 		}
 		let defaults = UserDefaults.standard
-		if defaults[.supressDeleteFileWarnings] {
+		if defaults[.suppressDeleteFileWarnings] {
 			self.actuallyPerformDelete(file: file)
 			return
 		}
-		let alert = NSAlert()
-		alert.showsSuppressionButton = true
-		alert.messageText = NSLocalizedString(LocalStrings.deleteFileWarning, comment: "")
-		alert.informativeText = String(format: NSLocalizedString(LocalStrings.deleteFileWarningInfo, comment: ""), file.name)
-		alert.addButton(withTitle: NSLocalizedString("Delete", comment: ""))
-		alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
-		alert.beginSheetModal(for: self.view.window!, completionHandler: { [weak alert] response in
-			if let state = alert?.suppressionButton?.state , state == NSOnState {
-				defaults[.supressDeleteFileWarnings] = true
-			}
-			if response != NSAlertFirstButtonReturn { return }
+		confirmAction(message: NSLocalizedString(LocalStrings.deleteFileWarning, comment: ""),
+		              infoText: String(format: NSLocalizedString(LocalStrings.deleteFileWarningInfo, comment: ""), file.name),
+		              buttonTitle: NSLocalizedString("Delete", comment: ""),
+		              defaultToCancel: true,
+		              suppressionKey: .suppressDeleteFileWarnings)
+		{ (confirmed) in
+			guard confirmed else { return }
 			self.actuallyPerformDelete(file: file)
-		})
+		}
 	}
 	
 	@IBAction func duplicateFile(_ sender: AnyObject?) {

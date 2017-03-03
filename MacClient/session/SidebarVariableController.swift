@@ -7,6 +7,11 @@
 import Cocoa
 import Networking
 import os
+import SwiftyUserDefaults
+
+extension DefaultsKeys {
+	static let suppressClearWorkspace = DefaultsKey<Bool>("SuppressClearWorkspaceWarning")
+}
 
 class SidebarVariableController : AbstractSessionViewController {
 	//MARK: properties
@@ -72,7 +77,14 @@ class SidebarVariableController : AbstractSessionViewController {
 	}
 	
 	@IBAction func clearWorkspace(_ sender: Any?) {
-		print("clear all variables")
+		confirmAction(message: NSLocalizedString(LocalStrings.clearWorkspaceWarning, comment: ""),
+		              infoText: NSLocalizedString(LocalStrings.clearWorkspaceWarningInfo, comment: ""),
+		              buttonTitle: NSLocalizedString("Clear", comment: ""),
+		              suppressionKey: .suppressClearWorkspace)
+		{ (confirmed) in
+			guard confirmed else { return }
+			self.session.clearVariables()
+		}
 	}
 	
 	func variablesChanged() {
