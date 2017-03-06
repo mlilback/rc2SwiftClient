@@ -174,6 +174,11 @@ public class Session {
 //		sendMessage(json: .dictionary(["msg": .string("execute"), "type": .string("run"), "code": .string("rm(list=ls())"), "noEcho": .bool(true)]))
 	}
 	
+	/// asks the server to delete the named variable
+	public func deleteVariable(name: String) {
+		sendMessage(json: .dictionary(["msg": .string("execute"), "type": .string("run"), "code": .string("rm(\(name))"), "noEcho": .bool(true)]))
+	}
+	
 	/// asks the server for a refresh of all environment variables
 	public func forceVariableRefresh() {
 		sendMessage(json: .dictionary(["msg": .string("watchVariables"), "watch": .bool(true)]))

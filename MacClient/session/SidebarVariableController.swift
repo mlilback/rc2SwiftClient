@@ -64,8 +64,7 @@ class SidebarVariableController : AbstractSessionViewController {
 			os_log("attempt to delete incorrect variable", log: .app, type: .error)
 			return
 		}
-		let cmd = "rm(\(varName))"
-		session.executeScript(cmd)
+		session.deleteVariable(name: varName)
 	}
 	
 	@IBAction func copy(_ sender: AnyObject?) {
