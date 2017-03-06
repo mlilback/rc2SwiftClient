@@ -170,8 +170,7 @@ public class Session {
 	
 	/// clears all variables in the global environment
 	public func clearVariables() {
-		//TODO: enable once working on the server
-//		sendMessage(json: .dictionary(["msg": .string("execute"), "type": .string("run"), "code": .string("rm(list=ls())"), "noEcho": .bool(true)]))
+		sendMessage(json: .dictionary(["msg": .string("execute"), "type": .string("run"), "code": .string("rm(list=ls())"), "noEcho": .bool(true)]))
 	}
 	
 	/// asks the server to delete the named variable
