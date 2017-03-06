@@ -19,12 +19,12 @@
 			"name" : "compute"
 		},
 		"appserver" : {
-			"version" : "0.4.5",
+			"version" : "0.4.6",
 			"name" : "appserver",
-			"id" : "sha256:e160e630b2cbb53e5e4ce7ef09f35da6528d7749791eaf8e6325d76f04014b16",
-			"size" : 501949298,
-			"estSize" : 374887728,
-			"tag" : "rc2server/appserver:0.4.5"
+			"id" : "sha256:cd79f69a572ed3f4610bec93a8cb55faf2ba1d9ad59e49b38b6c2af10add7cd9",
+			"size" : 501949729,
+			"estSize" : 374888159,
+			"tag" : "rc2server/appserver:0.4.6"
 		}
 	}
 }
