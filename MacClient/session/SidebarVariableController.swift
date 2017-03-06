@@ -9,10 +9,6 @@ import Networking
 import os
 import SwiftyUserDefaults
 
-extension DefaultsKeys {
-	static let suppressClearWorkspace = DefaultsKey<Bool>("SuppressClearWorkspaceWarning")
-}
-
 class SidebarVariableController : AbstractSessionViewController {
 	//MARK: properties
 	var rootVariables: [Variable] = []

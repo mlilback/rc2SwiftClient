@@ -11,12 +11,6 @@ import SwiftyUserDefaults
 import ClientCore
 import Networking
 
-// MARK: Keys for UserDefaults
-extension DefaultsKeys {
-	static let lastImportDirectory = DefaultsKey<Data?>("rc2.LastImportDirectory")
-	static let replaceFiles = DefaultsKey<Bool>("rc2.ImportReplacesExistingFiles")
-}
-
 /** Handles importing via a save panel or drag and drop. */
 class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 	

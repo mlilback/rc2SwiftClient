@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12100" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="fQV-eD-eaQ">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12113" systemVersion="16D32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="fQV-eD-eaQ">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12100"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -14,7 +14,6 @@
                         <tabViewItem label="General" identifier="General" image="prefsGeneral" id="hWp-GB-5HC"/>
                         <tabViewItem label="Editor" identifier="Editor" image="prefsEditor" id="hcP-VA-z8r"/>
                     </tabViewItems>
-                    <viewControllerTransitionOptions key="transitionOptions" slideDown="YES" slideRight="YES" allowUserInteraction="YES"/>
                     <tabView key="tabView" type="noTabsNoBorder" id="Fpf-ZH-iw5">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -55,10 +54,26 @@
         <!--General Prefs Controller-->
         <scene sceneID="34k-uu-v9u">
             <objects>
-                <viewController id="Ymx-X4-p5W" userLabel="General Prefs Controller" sceneMemberID="viewController">
+                <viewController id="Ymx-X4-p5W" userLabel="General Prefs Controller" customClass="GeneralPrefsController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="ggO-BD-xoA">
                         <rect key="frame" x="0.0" y="0.0" width="344" height="205"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <button toolTip="Rest all warnings for destructive actions" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YMq-ZG-rf1">
+                                <rect key="frame" x="105" y="13" width="135" height="32"/>
+                                <buttonCell key="cell" type="push" title="Reset Warnings" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="jWg-ar-S7O">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="resetWarnings:" target="Ymx-X4-p5W" id="IW9-27-ciz"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="YMq-ZG-rf1" firstAttribute="centerX" secondItem="ggO-BD-xoA" secondAttribute="centerX" id="782-5a-Jnu"/>
+                            <constraint firstAttribute="bottom" secondItem="YMq-ZG-rf1" secondAttribute="bottom" constant="20" symbolic="YES" id="ciC-xH-16o"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <customObject id="NwH-hB-G4H" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -72,9 +87,24 @@
                     <view key="view" id="i5g-C6-Q1H">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lHI-ty-OAA">
+                                <rect key="frame" x="18" y="264" width="152" height="18"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="check" title="Word Wrap" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="acf-jC-b1h">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <binding destination="FrG-VX-lzT" name="value" keyPath="values.WordWrapEnabled" id="1zV-h4-Tcd"/>
+                                </connections>
+                            </button>
+                        </subviews>
                     </view>
                 </viewController>
                 <customObject id="qba-jJ-cjG" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <userDefaultsController id="RzT-lN-GYV"/>
+                <userDefaultsController representsSharedInstance="YES" id="FrG-VX-lzT"/>
             </objects>
             <point key="canvasLocation" x="330" y="959"/>
         </scene>

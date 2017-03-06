@@ -15,11 +15,6 @@ import SwiftyUserDefaults
 import DockerSupport
 import Networking
 
-// MARK: Keys for UserDefaults
-extension DefaultsKeys {
-	static let openSessions = DefaultsKey<JSON?>("OpenSessions")
-}
-
 fileprivate struct Actions {
 	static let showPreferences = #selector(MacAppDelegate.showPreferencesWindow(_:))
 	static let showBookmarks = #selector(MacAppDelegate.showBookmarkWindow(_:))

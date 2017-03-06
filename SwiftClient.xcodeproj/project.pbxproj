@@ -179,6 +179,8 @@
 		0865087D1E49360A0067C8CA /* Starscream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0865087F1E4940E20067C8CA /* xattrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0865087E1E4940E20067C8CA /* xattrTests.swift */; };
 		086508811E4A431C0067C8CA /* FileImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086508801E4A431C0067C8CA /* FileImporterTests.swift */; };
+		086526291E6E1B0100D75B25 /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086526281E6E1B0100D75B25 /* PreferenceKeys.swift */; };
+		0865262B1E6E1BE900D75B25 /* GeneralPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */; };
 		086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */; };
 		0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086659991CA1F3E5007AC555 /* MainWindow.xib */; };
 		08678C971DCA78CE00F9F283 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
@@ -695,6 +697,8 @@
 		086508781E452D3A0067C8CA /* Result+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Result+Rc2.swift"; sourceTree = "<group>"; };
 		0865087E1E4940E20067C8CA /* xattrTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = xattrTests.swift; sourceTree = "<group>"; };
 		086508801E4A431C0067C8CA /* FileImporterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporterTests.swift; sourceTree = "<group>"; };
+		086526281E6E1B0100D75B25 /* PreferenceKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PreferenceKeys.swift; path = prefs/PreferenceKeys.swift; sourceTree = "<group>"; };
+		0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GeneralPrefsController.swift; path = prefs/GeneralPrefsController.swift; sourceTree = "<group>"; };
 		086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemExtensionsTests.swift; sourceTree = "<group>"; };
 		0866599A1CA1F3E5007AC555 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/MainWindow.xib; sourceTree = SOURCE_ROOT; };
 		08678C961DCA78CE00F9F283 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/Mac/Freddy.framework; sourceTree = "<group>"; };
@@ -779,7 +783,7 @@
 		08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItem.m; sourceTree = "<group>"; };
 		08D610731CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAAdaptiveSpaceItemView.h; sourceTree = "<group>"; };
 		08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItemView.m; sourceTree = "<group>"; };
-		08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
+		08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PreferencesViewController.swift; path = prefs/PreferencesViewController.swift; sourceTree = "<group>"; };
 		08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwinjectStoryboard.framework; path = Carthage/Build/Mac/SwinjectStoryboard.framework; sourceTree = "<group>"; };
 		08DB1A971D32EF930079DA6B /* Swinject.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Swinject.framework; path = Carthage/Build/Mac/Swinject.framework; sourceTree = "<group>"; };
 		08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = Carthage/Build/Mac/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
@@ -1461,7 +1465,9 @@
 		08DAF2F11E4D0726005A251E /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
+				086526281E6E1B0100D75B25 /* PreferenceKeys.swift */,
 				08F5746B1E4D04A70000956B /* Preferences.storyboard */,
+				0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */,
 				08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */,
 			);
 			name = Preferences;
@@ -2103,6 +2109,7 @@
 				081996701E36A78A0000AA0E /* EditableTableCellView.swift in Sources */,
 				08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */,
 				08F6ADA91DD643C900AF0722 /* Copyable.swift in Sources */,
+				086526291E6E1B0100D75B25 /* PreferenceKeys.swift in Sources */,
 				08F448FC1C4E244500C64706 /* ConsoleOutputController.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
 				08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */,
@@ -2116,6 +2123,7 @@
 				083305D71C4FE79700E27F66 /* ToolbarItemHandler.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
 				08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */,
+				0865262B1E6E1BE900D75B25 /* GeneralPrefsController.swift in Sources */,
 				0864DA661DA2C70A003F3F57 /* DockerViewController.swift in Sources */,
 				083305E61C517FE300E27F66 /* SidebarHelpController.swift in Sources */,
 				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,

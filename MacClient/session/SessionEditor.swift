@@ -8,11 +8,6 @@ import Cocoa
 import ClientCore
 import SwiftyUserDefaults
 
-// MARK: Keys for UserDefaults
-extension DefaultsKeys {
-	static let wordWrapEnabled = DefaultsKey<Bool>("WordWrapEnabled")
-}
-
 class SessionEditor: TextViewWithContextualMenu {
 	var wordWrapEnabled:Bool { return textContainer!.widthTracksTextView }
 	

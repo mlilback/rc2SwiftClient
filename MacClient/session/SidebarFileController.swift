@@ -13,12 +13,6 @@ import NotifyingCollection
 import ClientCore
 import Networking
 
-// MARK: Keys for UserDefaults
-extension DefaultsKeys {
-	static let lastExportDirectory = DefaultsKey<Data?>("rc2.LastExportDirectory")
-	static let suppressDeleteFileWarnings = DefaultsKey<Bool>("SuppressDeleteFileWarning")
-}
-
 ///selectors used in this file, aliased with shorter, descriptive names
 private extension Selector {
 	static let addDocument = #selector(SidebarFileController.addDocumentOfType(_:))

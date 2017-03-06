@@ -7,11 +7,6 @@
 import Cocoa
 import SwiftyUserDefaults
 
-// MARK: Keys for UserDefaults
-extension DefaultsKeys {
-	static let maxCommandHistory = DefaultsKey<Int>("MaxCommandHistorySize")
-}
-
 let MinHistoryLength = 1
 let DefaultHistoryLength = 10
 let MaxHistoryLength = 99
