@@ -632,7 +632,7 @@
                                 <action selector="copy:" target="1Ce-Bb-cCN" id="MoE-Xl-fWL"/>
                             </connections>
                         </menuItem>
-                        <menuItem title="Delete…" id="bWC-Bf-ZFH">
+                        <menuItem title="Delete" id="bWC-Bf-ZFH">
                             <connections>
                                 <action selector="delete:" target="1Ce-Bb-cCN" id="MSp-Ts-Th8"/>
                             </connections>
