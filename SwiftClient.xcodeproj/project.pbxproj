@@ -808,7 +808,7 @@
 		08F448F51C4E244500C64706 /* SessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditorController.swift; sourceTree = "<group>"; };
 		08F448F61C4E244500C64706 /* SidebarTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarTabController.swift; sourceTree = "<group>"; };
 		08F448F71C4E244500C64706 /* ConsoleOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleOutputController.swift; sourceTree = "<group>"; };
-		08F448F81C4E244500C64706 /* MainController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainController.storyboard; path = session/MainController.storyboard; sourceTree = "<group>"; };
+		08F448F81C4E244500C64706 /* MainController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainController.storyboard; sourceTree = "<group>"; };
 		08F448FF1C4EBEF100C64706 /* MacSplitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSplitter.swift; sourceTree = "<group>"; };
 		08F5746C1E4D04A70000956B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Preferences.storyboard; sourceTree = "<group>"; };
 		08F673CF1D020B2700B87049 /* FontManagement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FontManagement.swift; path = MacClient/FontManagement.swift; sourceTree = SOURCE_ROOT; };
@@ -1190,6 +1190,7 @@
 		088935801DFF30D100C94B19 /* bookmarks */ = {
 			isa = PBXGroup;
 			children = (
+				083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */,
 				083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */,
 				083A56701D24722C009D3091 /* ProjectManagerViewController.swift */,
 				083A566D1D246D85009D3091 /* ProjectManagement.storyboard */,
@@ -1251,26 +1252,21 @@
 			isa = PBXGroup;
 			children = (
 				088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */,
+				088CE6721C4B0AF400153414 /* Main.storyboard */,
 				0890650A1D26F59300C7CA5D /* MacAppStatus.swift */,
 				084199251D903F7A0089A1AC /* StartupController.swift */,
 				083305D81C501B7300E27F66 /* MainWindowController.swift */,
-				088CE6721C4B0AF400153414 /* Main.storyboard */,
-				0835A07D1E57823500123820 /* OnboardingViewController.swift */,
 				086659991CA1F3E5007AC555 /* MainWindow.xib */,
-				08F448F81C4E244500C64706 /* MainController.storyboard */,
-				083382F01C64341C00D40EEB /* AppStatusView.swift */,
-				083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */,
-				08F673CF1D020B2700B87049 /* FontManagement.swift */,
-				08C2D5E81E71B1FC0007A02D /* Searchable.swift */,
+				0835A07D1E57823500123820 /* OnboardingViewController.swift */,
 				086508761E43F27C0067C8CA /* SingleInputViewController.swift */,
-				08DAF2F11E4D0726005A251E /* Preferences */,
+				083382F01C64341C00D40EEB /* AppStatusView.swift */,
 				08F448F31C4E244500C64706 /* session */,
-				088935801DFF30D100C94B19 /* bookmarks */,
+				08DAF2F11E4D0726005A251E /* preferences */,
 				088935811DFF30EA00C94B19 /* docker */,
+				088935801DFF30D100C94B19 /* bookmarks */,
 				081263141C85D2E0003E37A5 /* generic views */,
 				083305D11C4FC76C00E27F66 /* extensions */,
-				083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */,
-				08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */,
+				08C2D5EA1E71B3210007A02D /* utility */,
 				08C2D5E71E71B1B60007A02D /* resources */,
 			);
 			path = MacClient;
@@ -1456,6 +1452,17 @@
 			name = resources;
 			sourceTree = "<group>";
 		};
+		08C2D5EA1E71B3210007A02D /* utility */ = {
+			isa = PBXGroup;
+			children = (
+				08F673CF1D020B2700B87049 /* FontManagement.swift */,
+				08C2D5E81E71B1FC0007A02D /* Searchable.swift */,
+				08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */,
+				083305D61C4FE79700E27F66 /* ToolbarItemHandler.swift */,
+			);
+			name = utility;
+			sourceTree = "<group>";
+		};
 		08D610701CE3CA3C00258D8E /* TAAdaptiveSpaceItem */ = {
 			isa = PBXGroup;
 			children = (
@@ -1468,7 +1475,7 @@
 			path = vendor/TAAdaptiveSpaceItem;
 			sourceTree = SOURCE_ROOT;
 		};
-		08DAF2F11E4D0726005A251E /* Preferences */ = {
+		08DAF2F11E4D0726005A251E /* preferences */ = {
 			isa = PBXGroup;
 			children = (
 				086526281E6E1B0100D75B25 /* PreferenceKeys.swift */,
@@ -1476,7 +1483,7 @@
 				0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */,
 				08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */,
 			);
-			name = Preferences;
+			name = preferences;
 			sourceTree = "<group>";
 		};
 		08ED575A1C7140C0002B2558 /* Products */ = {
@@ -1489,6 +1496,7 @@
 		08F448F31C4E244500C64706 /* session */ = {
 			isa = PBXGroup;
 			children = (
+				08F448F81C4E244500C64706 /* MainController.storyboard */,
 				08F189A11D09AA0300866A05 /* SessionController.swift */,
 				0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */,
 				083305E71C51812300E27F66 /* AbstractSessionViewController.swift */,
