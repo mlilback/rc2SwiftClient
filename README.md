@@ -26,15 +26,13 @@ The macOS client requires 10.12 Sierra. Development is being done with Xcode 8.
 
 * [Result] used by ReactiveSwift
 
+* [SBInjector](https://github.com/mlilback/SBInjector.git) for dependency injection
+
 * [Sparkle](https://sparkle-project.org/) enables update notification
 
 * [Starscream](https://github.com/daltoniam/Starscream) for websocket support
 
-* [Swinject](https://github.com/Swinject/Swinject) for dependency injection
-
 * [URITemplate] used by Mockingjay
-
-* [SwinjectStoryboard](https://github.com/Swinject/SwinjectStoryboard) for dependency injection into objects loaded from a storyboard (since container segues don't call prepareForSegue)
 
 * [ZipArchive](https://github.com/ZipArchive/ZipArchive) for compressing files
 

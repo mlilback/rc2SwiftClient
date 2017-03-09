@@ -6,14 +6,13 @@
 
 import Cocoa
 import os
-import SwinjectStoryboard
-import Swinject
 import Freddy
 import ClientCore
 import ReactiveSwift
 import SwiftyUserDefaults
 import DockerSupport
 import Networking
+import SBInjector
 
 fileprivate struct Actions {
 	static let showPreferences = #selector(MacAppDelegate.showPreferencesWindow(_:))
@@ -26,7 +25,7 @@ fileprivate struct Actions {
 @NSApplicationMain
 class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 	//MARK: - properties
-	var mainStoryboard: SwinjectStoryboard!
+	var mainStoryboard: NSStoryboard!
 	var sessionWindowControllers = Set<MainWindowController>()
 	var bookmarkWindowController: NSWindowController?
 	let bookmarkManager = BookmarkManager()
@@ -48,7 +47,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
 	//MARK: - NSApplicationDelegate
 	func applicationWillFinishLaunching(_ notification: Notification) {
-		mainStoryboard = SwinjectStoryboard.create(name: "Main", bundle: nil)
+		mainStoryboard = NSStoryboard(name: "Main", bundle: nil)
 		precondition(mainStoryboard != nil)
 		//only init dockerManager if not running unit tests
 		if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
@@ -163,21 +162,13 @@ extension MacAppDelegate {
 		let wc = MainWindowController.createFromNib()
 		sessionWindowControllers.insert(wc)
 		
-		let container = Container()
-		container.registerForStoryboard(RootViewController.self) { r, c in
-			c.appStatus = self.appStatus
-		}
-		container.registerForStoryboard(SidebarFileController.self) { r, c in
-			c.appStatus = self.appStatus
-		}
-		container.registerForStoryboard(AbstractSessionViewController.self) { r, c in
-			c.appStatus = self.appStatus
-		}
-		container.registerForStoryboard(SessionEditorController.self) { r, c in
-			c.appStatus = self.appStatus
+		let icontext = InjectorContext()
+		icontext.register(AbstractSessionViewController.self) { controller in
+			controller.appStatus = self.appStatus
 		}
 		
-		let sboard = SwinjectStoryboard.create(name: "MainController", bundle: nil, container: container)
+		let sboard = NSStoryboard(name: "MainController", bundle: nil)
+		sboard.injectionContext = icontext
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window
 		let root = sboard.instantiateController(withIdentifier: "rootController") as? RootViewController
 		wc.contentViewController = root
@@ -334,11 +325,12 @@ extension MacAppDelegate {
 	
 	@IBAction func showDockerControl(_ sender:Any?) {
 		if nil == dockerWindowController {
-			let container = Container()
-			container.registerForStoryboard(DockerViewController.self) { (r, c) in
-				c.manager = self.dockerManager
+			let icontext = InjectorContext()
+			icontext.register(DockerViewController.self) { controller in
+				controller.manager = self.dockerManager
 			}
-			let sboard = SwinjectStoryboard.create(name: "DockerControl", bundle: nil, container: container)
+			let sboard = NSStoryboard(name: "DockerControl", bundle: nil)
+			sboard.injectionContext = icontext
 			dockerWindowController = sboard.instantiateWindowController()
 		}
 		dockerWindowController?.window?.makeKeyAndOrderFront(self)

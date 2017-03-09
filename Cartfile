@@ -3,8 +3,6 @@ github "mlilback/pegkit"
 github "mlilback/MessagePackSwift"  "swift3.0"
 github "krzyzanowskim/CryptoSwift" ~> 0.6.0
 github "postmates/PMKVObserver" ~> 2.0
-github "Swinject/Swinject" "2.0.0-beta.2"
-github "Swinject/SwinjectStoryboard" "1.0.0-beta.2"
 github "sebskuse/Mockingjay" "d47440a3518297a53914dc179c95bb6799c444a6"
 github "sebskuse/URITemplate.swift" "395dc704b4a3479e1b517b92132ac8a2b81db9d8"
 github "radex/SwiftyUserDefaults"
