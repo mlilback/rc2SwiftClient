@@ -64,15 +64,9 @@ how are dates formatted for copy? date vs datetime.
 
 * add padding around icon images in results
 
-* figure out why have to reload all webviews when displaying html output
-
 write nstexfield that scales font size so text fits (for help page title)
 
 implement searchbar interface to use for console output/editor
-
-* refactor session creation into new class
-
-* clear variables commented out because not compute engine not sending variable messages when variable is deleted
 
 * in the future, examine all fataError calls to see if there is a better way to handle the problem
 
@@ -91,3 +85,4 @@ what is UI to delete a workspace?
 	* opening sidebar on full screen adjust only the size of editor, not results.
 	* ability to center splitters (double click is standard, right?)
 
+* startup dialog not shown when restoring a session. why?

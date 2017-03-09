@@ -311,9 +311,10 @@ public final class DockerManager: NSObject {
 				.take(first: 1)
 				.timeout(after: 3.0, raising: timeoutError, on: QueueScheduler.main)
 		}
-		let combined = SignalProducer.merge(producers)
+		let combined: SignalProducer< SignalProducer<ContainerState, Rc2Error>, Rc2Error> = SignalProducer(values: producers)
 		//return a producer that will listen until all containers are running and then send a completed, timing out if doesn't happen
 		return combined
+			.flatten(.latest)
 			.map({ _ in () }) // map array of empty values to a single empty value
 			.observe(on: UIScheduler())
 //			.timeout(after: 3.0, raising: timeoutError, on: QueueScheduler.main)

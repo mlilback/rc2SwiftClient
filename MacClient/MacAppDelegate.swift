@@ -396,7 +396,7 @@ extension MacAppDelegate {
 	
 	//advances to the next startup stage
 	fileprivate func advanceStartupStage() {
-		guard let setupWC = startupController?.view.window?.windowController else { fatalError("advanceStartupStage() called without a setup controller") }
+		guard let setupWC = startupWindowController else { fatalError("advanceStartupStage() called without a setup controller") }
 		switch startupController!.stage {
 		case .initial:
 			startupDocker()

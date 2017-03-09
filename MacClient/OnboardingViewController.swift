@@ -24,7 +24,9 @@ class OnboardingViewController: NSViewController {
 		}
 	} }
 	fileprivate var workspaceToken: Disposable?
-	fileprivate var project: Project?
+	fileprivate var project: Project? { didSet {
+		print("setting project")
+	} }
 	fileprivate var didFirstInit: Bool = false
 	var openLocalWorkspace: ((WorkspaceIdentifier?) -> Void)?
 	
@@ -44,7 +46,8 @@ class OnboardingViewController: NSViewController {
 	}
 	
 	func updateWorkspaces() {
-		let jsonStr = try! project!.workspaces.sorted(by: { $0.name < $1.name } ).toJSON().serialize().base64EncodedString()
+		guard let project = project else { os_log("onboarding loaded w/o project"); return }
+		let jsonStr = try! project.workspaces.sorted(by: { $0.name < $1.name } ).toJSON().serialize().base64EncodedString()
 		webView.evaluateJavaScript("setWorkspaces('\(jsonStr)')")
 	}
 }
