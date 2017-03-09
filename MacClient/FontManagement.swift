@@ -1,5 +1,5 @@
 //
-//  MiscProtocols.swift
+//  FontManagement.swift
 //
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
@@ -17,14 +17,6 @@ extension Selector {
 	///The menu item will have a font descriptor as the representedObject
 	func fontChanged(_ menuItem:NSMenuItem)
 	var currentFontDescriptor:NSFontDescriptor { get set }
-}
-
-protocol Searchable {
-	func performFind(action: NSTextFinderAction)
-}
-
-extension Searchable {
-	func performFind(action: NSTextFinderAction) { }
 }
 
 @objc protocol ManageFontMenu {
