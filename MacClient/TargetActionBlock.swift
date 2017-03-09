@@ -6,29 +6,40 @@
 
 import Cocoa
 
+///wrapper around a block for use as a target/action combo.
 class TargetActionBlock: NSObject {
-	typealias ActionBlock = ((AnyObject) -> Void)
-	let actionBlock:ActionBlock
+	typealias ActionBlock = ((Any) -> Void)
+	let actionBlock: ActionBlock
 	fileprivate struct Keys {
 		static var SelfName = "rc2_SelfName"
 	}
 	
-	init(action:@escaping ActionBlock) {
+	/// Create an instance for a specified block
+	///
+	/// - Parameter action: the block to execute when this target/action is called
+	init(action: @escaping ActionBlock) {
 		self.actionBlock = action
 		super.init()
 	}
 	
-	func performAction(_ sender:AnyObject?) {
+	/// called to execute the block as an action
+	func performAction(_ sender: Any?) {
 		actionBlock(sender == nil ? self : sender!)
 	}
 	
-	func installInToolbarItem(_ item:NSToolbarItem) {
+	/// Install this target/action into a toolbar item. The item will keep a strong reference to this object.
+	///
+	/// - Parameter item: toolbar item whose target/action should be set to call this object
+	func installInToolbarItem(_ item: NSToolbarItem) {
 		item.target = self
 		item.action = #selector(TargetActionBlock.performAction(_:))
 		objc_setAssociatedObject(item, &Keys.SelfName, self, .OBJC_ASSOCIATION_RETAIN)
 	}
 	
-	func installInControl(_ item:NSControl) {
+	/// Install this target/action into a control. The control will keep a strong reference to this object.
+	///
+	/// - Parameter item: control whose target/action should be set to call this object
+	func installInControl(_ item: NSControl) {
 		item.target = self
 		item.action = #selector(TargetActionBlock.performAction(_:))
 		objc_setAssociatedObject(item, &Keys.SelfName, self, .OBJC_ASSOCIATION_RETAIN)
