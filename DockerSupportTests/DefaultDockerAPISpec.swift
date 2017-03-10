@@ -12,6 +12,7 @@ import Mockingjay
 import Result
 import ReactiveSwift
 import ClientCore
+import Freddy
 
 // TODO: create container
 // TODO: load images
@@ -24,8 +25,11 @@ class DefaultDockerAPISpec: BaseDockerSpec {
 		let commonPrep = {
 			globalQueue = DispatchQueue.global()
 			sessionConfig = URLSessionConfiguration.default
+			if !(sessionConfig.protocolClasses?.contains(where: {$0 == DockerUrlProtocol.self}) ?? false) {
+				sessionConfig.protocolClasses = [DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
+			}
 			if !(sessionConfig.protocolClasses?.contains(where: {$0 == MockingjayProtocol.self}) ?? false) {
-				sessionConfig.protocolClasses = [MockingjayProtocol.self, DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
+				sessionConfig.protocolClasses = [MockingjayProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
 			}
 			api = DockerAPIImplementation(baseUrl: URL(string:"http://10.0.1.9:2375")!, sessionConfig: sessionConfig)
 		}
@@ -51,7 +55,7 @@ class DefaultDockerAPISpec: BaseDockerSpec {
 				let json = result.value!
 				expect(json["ApiVersion"]).to(equal("1.24"))
 			}
-
+			
 			it("should refresh containers") {
 				commonPrep()
 				self.stubGetRequest(uriPath: "/containers/json", fileName: "containers")
@@ -79,6 +83,22 @@ class DefaultDockerAPISpec: BaseDockerSpec {
 						fatalError("failed to load containers for testing")
 					}
 					dbcontainer = db
+				}
+
+				it("should exec command") {
+					commonPrep()
+					let cmd = ["ls", "-l"]
+					let outStr = "foo\nbar\ndfs"
+					let jobId = UUID().uuidString
+					let responseData = try! JSON(["Id": .string(jobId)]).serialize()
+					self.stub( { request in
+						return request.url!.path.hasPrefix("/containers/rc2_dbserver/exec")
+					}, builder: jsonData(responseData))
+					let resultData = outStr.data(using: .utf8)!
+					self.stub(self.postMatcher(uriPath: "/exec/\(jobId)/start"), builder:http(200, headers: nil, download: .content(resultData)))
+					let result = self.makeValueRequest(producer: api.execCommand(command: cmd, container: dbcontainer), queue: globalQueue)
+					expect(result.error).to(beNil())
+					expect(String(data: result.value!, encoding: .utf8)).to(equal(outStr))
 				}
 
 				it("should correctly perform operations") {

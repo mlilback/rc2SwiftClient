@@ -40,6 +40,14 @@ public protocol DockerAPI {
 	/// - returns: the fetched json data
 	func fetchJson(url: URL) -> SignalProducer<JSON, Rc2Error>
 
+	/// Executes a command on the docker server and returns stdout
+	///
+	/// - Parameters:
+	///   - command: the command and arguments to send
+	///   - container: the container to execute in
+	/// - Returns: the returned data
+	func execCommand(command: [String], container: DockerContainer) -> SignalProducer<Data, Rc2Error>
+	
 	/// Loads images from docker daemon
 	///
 	/// - returns: signal producer that will send array of images

@@ -59,6 +59,41 @@ final class DockerAPIImplementation: DockerAPI {
 			.flatMap(.concat, transform: self.dataToJson)
 	}
 
+	// documentation in DockerAPI protocol
+	public func execCommand(command: [String], container: DockerContainer) -> SignalProducer<Data, Rc2Error> {
+		//create an exec job
+		var req = URLRequest(url: baseUrl.appendingPathComponent("containers/\(container.name)/exec"))
+		req.httpMethod = "POST"
+		req.setValue("application-json", forHTTPHeaderField: "Content-Type")
+		req.setValue("application-json", forHTTPHeaderField: "Accept")
+		do {
+			let json: JSON = .dictionary(["AttachStdout": .bool(true), "Tty": .bool(false), "Cmd": command.toJSON()])
+			let data = try json.serialize()
+			req.httpBody = data
+		} catch {
+			return SignalProducer<Data, Rc2Error>(error: Rc2Error(type: .invalidJson, nested: error))
+		}
+		return self.makeRequest(request: req)
+			.flatMap(.concat, transform: self.dataToJson)
+			.flatMap(.concat) { (json) -> SignalProducer<Data, Rc2Error> in
+				//start the exec job
+				guard let execId: String = try? json.getString(at: "Id") else {
+					return SignalProducer<Data, Rc2Error>(error: Rc2Error(type: .invalidJson))
+				}
+				var req2 = URLRequest(url: self.baseUrl.appendingPathComponent("exec/\(execId)/start"))
+				req2.httpMethod = "POST"
+				req2.setValue("application-json", forHTTPHeaderField: "Content-Type")
+				req2.setValue("application/vnd.docker.raw-stream", forHTTPHeaderField: "Accept")
+				do {
+					let json: JSON = .dictionary(["Detach": .bool(false), "Tty": .bool(false)])
+					req2.httpBody = try json.serialize()
+				} catch {
+					return SignalProducer<Data, Rc2Error>(error: Rc2Error(type: .invalidJson, nested: error))
+				}
+				return self.makeRequest(request: req2)
+			}
+	}
+	
 	// MARK: - image operations
 
 	// documentation in DockerAPI protocol
