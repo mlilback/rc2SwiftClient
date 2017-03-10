@@ -33,6 +33,9 @@ public protocol DockerAPI {
 	/// - returns: a signal producer with a single value
 	func loadVersion() -> SignalProducer<DockerVersion, Rc2Error>
 
+	/// initializer
+	init(baseUrl: URL, sessionConfig: URLSessionConfiguration)
+	
 	/// Convience mehtod to fetch json
 	///
 	/// - parameter url: the url that contains json data

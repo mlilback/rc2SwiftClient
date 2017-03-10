@@ -99,7 +99,8 @@ public final class DockerManager: NSObject {
 	/// - parameter baseInfoUrl: the base url where imageInfo.json can be found. Defaults to www.rc2.io. Can be overridden by 'ImageInfoBaseUrl' environment variable
 	/// - parameter userDefaults: defaults to standard user defaults. Allows for dependency injection.
 	/// - parameter sessionConfiguration: url configuration to use, defaults to the standard default configuration
-	public init(hostUrl host: String? = nil, baseInfoUrl infoUrl: String? = nil, userDefaults: UserDefaults = .standard, sessionConfiguration: URLSessionConfiguration = .default)
+	/// - parameter apiImplementation: the type to use for connections to docker. Allows DI of mock version
+	public init(hostUrl host: String? = nil, baseInfoUrl infoUrl: String? = nil, userDefaults: UserDefaults = .standard, sessionConfiguration: URLSessionConfiguration = .default, apiImplementation: DockerAPI.Type = DockerAPIImplementation.self)
 	{
 		if let hostUrl = host {
 			//break down into components
@@ -116,7 +117,7 @@ public final class DockerManager: NSObject {
 		}
 		sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
 		session = URLSession(configuration: sessionConfig)
-		api = DockerAPIImplementation(baseUrl: baseUrl, sessionConfig: sessionConfig)
+		api = apiImplementation.init(baseUrl: baseUrl, sessionConfig: sessionConfig)
 		//read image info from defaults
 		imageInfo = RequiredImageInfo(from: defaults[.cachedImageInfo])
 		super.init()
@@ -333,6 +334,24 @@ public final class DockerManager: NSObject {
 			.map({ _ in () }) // map array of empty values to a single empty value
 			.observe(on: UIScheduler())
 //			.timeout(after: 3.0, raising: timeoutError, on: QueueScheduler.main)
+	}
+	
+	/// backs up the dbserver database to the specified file location
+	///
+	/// - Parameter url: path to save the file to
+	/// - Returns: a signal producer with an empty value, or an error
+	public func backupDatabase(to url: URL) -> SignalProducer<(), Rc2Error> {
+		let command = ["/usr/bin/pg_dump", "rc2"]
+		return api.execCommand(command: command, container: containers[.dbserver]!)
+			.flatMap(.concat) { data -> SignalProducer<(), Rc2Error> in
+				do {
+					try data.write(to: url)
+				} catch {
+					let rc2err = Rc2Error(type: .file, nested: error, explanation: "failed to write backup file")
+					return SignalProducer<(), Rc2Error>(error: rc2err)
+				}
+				return SignalProducer<(), Rc2Error>(value: ())
+			}
 	}
 }
 
