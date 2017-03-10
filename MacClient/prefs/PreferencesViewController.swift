@@ -9,6 +9,17 @@ import Cocoa
 class PreferencesViewController: NSTabViewController {
 	lazy var tabSizes = [String: NSSize]()
 	
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		var image = NSImage(named: NSImageNamePreferencesGeneral)
+		if let appPath = NSWorkspace.shared().absolutePathForApplication(withBundleIdentifier: "com.docker.docker")
+		{
+			image = NSWorkspace.shared().icon(forFile: appPath)
+		}
+		let dockerItem = tabViewItems.filter({ $0.identifier as? String == "Docker" }).first
+		dockerItem?.image = image
+	}
+	
 	override func tabView(_ tabView: NSTabView, willSelect tabViewItem: NSTabViewItem?)
 	{
 		_ = tabView.selectedTabViewItem

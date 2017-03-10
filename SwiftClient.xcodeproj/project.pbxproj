@@ -249,18 +249,17 @@
 		08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 08AA5F071E5350AA00389089 /* SearchBarField.m */; };
 		08B184D21E5F36E800F4A6D6 /* defaultWorkspaceFiles in Resources */ = {isa = PBXBuildFile; fileRef = 08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */; };
 		08B184D41E5F384800F4A6D6 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B184D31E5F384800F4A6D6 /* AppInfo.swift */; };
-		08B184D61E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
 		08B184D71E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
 		08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
 		08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
-		08BCD3FB1E69C94A00B86BB4 /* SessionSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174051C56BE7B00071408 /* SessionSplitController.swift */; };
 		08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; };
 		08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08C2C3C91DF74DE200397DD3 /* Networking.strings in Resources */ = {isa = PBXBuildFile; fileRef = 08C2C3C81DF74DE200397DD3 /* Networking.strings */; };
 		08C2D5E51E719DE20007A02D /* SBInjector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08C2D5E41E719DE20007A02D /* SBInjector.framework */; };
 		08C2D5E61E719DE20007A02D /* SBInjector.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08C2D5E41E719DE20007A02D /* SBInjector.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08C2D5E91E71B1FC0007A02D /* Searchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C2D5E81E71B1FC0007A02D /* Searchable.swift */; };
+		08C2D5EC1E71BB290007A02D /* DockerPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C2D5EB1E71BB290007A02D /* DockerPrefsController.swift */; };
 		08C484F81C9B159000FE824B /* server.cer in Resources */ = {isa = PBXBuildFile; fileRef = 08C484F71C9B159000FE824B /* server.cer */; };
 		08C6055E1E574355007F83C4 /* ConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C6055D1E574355007F83C4 /* ConnectionManager.swift */; };
 		08CB553E1C5A0FB8002CB7EE /* MonoFontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */; };
@@ -768,6 +767,7 @@
 		08C2C3C81DF74DE200397DD3 /* Networking.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Networking.strings; sourceTree = "<group>"; };
 		08C2D5E41E719DE20007A02D /* SBInjector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SBInjector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08C2D5E81E71B1FC0007A02D /* Searchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Searchable.swift; sourceTree = "<group>"; };
+		08C2D5EB1E71BB290007A02D /* DockerPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DockerPrefsController.swift; path = prefs/DockerPrefsController.swift; sourceTree = "<group>"; };
 		08C484F71C9B159000FE824B /* server.cer */ = {isa = PBXFileReference; lastKnownFileType = file; name = server.cer; path = resources/server.cer; sourceTree = "<group>"; };
 		08C6055D1E574355007F83C4 /* ConnectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionManager.swift; sourceTree = "<group>"; };
 		08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonoFontManager.swift; sourceTree = "<group>"; };
@@ -889,7 +889,6 @@
 				08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */,
 				08678C971DCA78CE00F9F283 /* Freddy.framework in Frameworks */,
 				080E82B51DCBB3DD0048F36C /* PEGKit.framework in Frameworks */,
-				08B184D61E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */,
 				08C2D5E51E719DE20007A02D /* SBInjector.framework in Frameworks */,
 				082FF1EE1C7F339400CCC27F /* URITemplate.framework in Frameworks */,
 				0833A8221D2D7E770033654B /* HockeySDK.framework in Frameworks */,
@@ -1479,9 +1478,10 @@
 			isa = PBXGroup;
 			children = (
 				086526281E6E1B0100D75B25 /* PreferenceKeys.swift */,
+				08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */,
 				08F5746B1E4D04A70000956B /* Preferences.storyboard */,
 				0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */,
-				08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */,
+				08C2D5EB1E71BB290007A02D /* DockerPrefsController.swift */,
 			);
 			name = preferences;
 			sourceTree = "<group>";
@@ -1787,7 +1787,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0810;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = Rc2;
 				TargetAttributes = {
 					080E82C01DCBE31D0048F36C = {
@@ -2096,6 +2096,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08C2D5EC1E71BB290007A02D /* DockerPrefsController.swift in Sources */,
 				08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */,
 				08F189AA1D109A4F00866A05 /* TextViewWithContextualMenu.swift in Sources */,
 				08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */,
@@ -2284,7 +2285,6 @@
 				081559B11DDFB2D80047B3CE /* DockerImageTest.swift in Sources */,
 				081559B51DDFB2D80047B3CE /* DockerUrlProtocolTests.swift in Sources */,
 				081559C01DDFB4300047B3CE /* DefaultDockerAPISpec.swift in Sources */,
-				08BCD3FB1E69C94A00B86BB4 /* SessionSplitController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -4,6 +4,7 @@
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <scenes>
         <!--Prefs Tab Controller-->
@@ -13,6 +14,7 @@
                     <tabViewItems>
                         <tabViewItem label="General" identifier="General" image="prefsGeneral" id="hWp-GB-5HC"/>
                         <tabViewItem label="Editor" identifier="Editor" image="prefsEditor" id="hcP-VA-z8r"/>
+                        <tabViewItem label="Docker" identifier="Docker" id="Fv2-QX-RTV" userLabel="Docker"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="Fpf-ZH-iw5">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -26,6 +28,7 @@
                     <connections>
                         <segue destination="Ymx-X4-p5W" kind="relationship" relationship="tabItems" id="YrD-lW-ao7"/>
                         <segue destination="YMp-OY-dxl" kind="relationship" relationship="tabItems" id="kVo-cI-hzS"/>
+                        <segue destination="hy7-Q9-t9m" kind="relationship" relationship="tabItems" id="0bj-0G-UT4"/>
                     </connections>
                 </tabViewController>
                 <customObject id="kfN-mM-9Wp" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -56,11 +59,11 @@
             <objects>
                 <viewController id="Ymx-X4-p5W" userLabel="General Prefs Controller" customClass="GeneralPrefsController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="ggO-BD-xoA">
-                        <rect key="frame" x="0.0" y="0.0" width="344" height="205"/>
+                        <rect key="frame" x="0.0" y="0.0" width="350" height="200"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button toolTip="Rest all warnings for destructive actions" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YMq-ZG-rf1">
-                                <rect key="frame" x="105" y="13" width="135" height="32"/>
+                                <rect key="frame" x="108" y="13" width="135" height="32"/>
                                 <buttonCell key="cell" type="push" title="Reset Warnings" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="jWg-ar-S7O">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -107,6 +110,92 @@
                 <userDefaultsController representsSharedInstance="YES" id="FrG-VX-lzT"/>
             </objects>
             <point key="canvasLocation" x="330" y="959"/>
+        </scene>
+        <!--Docker Prefs Controller-->
+        <scene sceneID="2Vs-Y9-cUM">
+            <objects>
+                <viewController id="hy7-Q9-t9m" customClass="DockerPrefsController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="S3X-Gv-GCS">
+                        <rect key="frame" x="0.0" y="0.0" width="350" height="200"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <button toolTip="Remove old docker images when a new image is downloaded" translatesAutoresizingMaskIntoConstraints="NO" id="3hm-1C-QEd">
+                                <rect key="frame" x="18" y="164" width="140" height="18"/>
+                                <buttonCell key="cell" type="check" title="Remove old images" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Ggf-1y-gG9">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <binding destination="CLR-BM-YXk" name="value" keyPath="values.dockerRemoveOldImages" id="ACQ-vW-Azr">
+                                        <dictionary key="options">
+                                            <integer key="NSNullPlaceholder" value="0"/>
+                                        </dictionary>
+                                    </binding>
+                                </connections>
+                            </button>
+                            <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3aQ-M2-X5E">
+                                <rect key="frame" x="20" y="137" width="194" height="21"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jrh-9r-3Cy">
+                                        <rect key="frame" x="-2" y="3" width="124" height="18"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Backup data every" id="pBZ-W1-Bc2">
+                                            <font key="font" metaFont="system" size="14"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Z7J-RR-5VW">
+                                        <rect key="frame" x="126" y="-3" width="71" height="26"/>
+                                        <popUpButtonCell key="cell" type="push" title="Hour" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="EQx-Ne-KDk" id="GiU-gk-2Wg">
+                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="menu"/>
+                                            <menu key="menu" id="RuQ-JV-4PI">
+                                                <items>
+                                                    <menuItem title="Hour" state="on" tag="1" id="EQx-Ne-KDk"/>
+                                                    <menuItem title="Day" id="SZu-Lj-HZx"/>
+                                                    <menuItem title="Week" tag="2" id="iop-FR-ItC"/>
+                                                </items>
+                                            </menu>
+                                        </popUpButtonCell>
+                                        <connections>
+                                            <binding destination="CLR-BM-YXk" name="selectedTag" keyPath="values.dockerBackupFrequency" id="ivw-LV-9Ta"/>
+                                        </connections>
+                                    </popUpButton>
+                                </subviews>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                            <button toolTip="Will reset all docker data and start with a fresh system" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="SFz-Oh-OMb">
+                                <rect key="frame" x="14" y="89" width="107" height="32"/>
+                                <buttonCell key="cell" type="push" title="Reset Data" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="haN-gX-aPV">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="resetDataVolume:" target="hy7-Q9-t9m" id="MHm-wv-BSc"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="3aQ-M2-X5E" firstAttribute="leading" secondItem="S3X-Gv-GCS" secondAttribute="leading" constant="20" symbolic="YES" id="6YO-O1-nd9"/>
+                            <constraint firstItem="3hm-1C-QEd" firstAttribute="top" secondItem="S3X-Gv-GCS" secondAttribute="top" constant="20" symbolic="YES" id="9t4-jm-lqA"/>
+                            <constraint firstItem="3aQ-M2-X5E" firstAttribute="top" secondItem="3hm-1C-QEd" secondAttribute="bottom" constant="8" symbolic="YES" id="OUY-vG-Pnc"/>
+                            <constraint firstItem="SFz-Oh-OMb" firstAttribute="leading" secondItem="S3X-Gv-GCS" secondAttribute="leading" constant="20" symbolic="YES" id="ZH4-KZ-YZd"/>
+                            <constraint firstItem="SFz-Oh-OMb" firstAttribute="top" secondItem="3aQ-M2-X5E" secondAttribute="bottom" constant="20" symbolic="YES" id="kbS-dP-4cz"/>
+                            <constraint firstItem="3hm-1C-QEd" firstAttribute="leading" secondItem="S3X-Gv-GCS" secondAttribute="leading" constant="20" symbolic="YES" id="pf2-Fa-rue"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <customObject id="jq3-x7-a72" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <userDefaultsController id="CLR-BM-YXk"/>
+            </objects>
+            <point key="canvasLocation" x="323" y="1319"/>
         </scene>
     </scenes>
     <resources>

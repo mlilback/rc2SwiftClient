@@ -15,10 +15,25 @@ import os
 import SwiftyUserDefaults
 import ClientCore
 
-// MARK: Keys for UserDefaults
-extension DefaultsKeys {
-	static let lastImageInfoCheck = DefaultsKey<Double>("lastImageInfoCheck")
-	static let cachedImageInfo = DefaultsKey<JSON?>("cachedImageInfo")
+public enum DockerBackupOption: Int {
+	case hourly = 1
+	case daily = 0
+	case weekly = 2
+}
+
+// MARK: UserDefaults support
+public extension UserDefaults {
+	subscript(key: DefaultsKey<DockerBackupOption>) -> DockerBackupOption {
+		get { return unarchive(key) ?? .daily }
+		set { archive(key, newValue) }
+	}
+}
+
+public extension DefaultsKeys {
+	public static let lastImageInfoCheck = DefaultsKey<Double>("lastImageInfoCheck")
+	public static let cachedImageInfo = DefaultsKey<JSON?>("cachedImageInfo")
+	public static let removeOldImages = DefaultsKey<Bool>("dockerRemoveOldImages")
+	public static let dockerBackupFrequency = DefaultsKey<DockerBackupOption>("dockerBackupFrequency")
 }
 
 enum ManagerState: Int, Comparable {
