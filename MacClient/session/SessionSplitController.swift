@@ -46,6 +46,13 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 		return false
 	}
 
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		outputTabController().selectedOutputTab.signal.observeValues { value in
+			self.outputSegmentControl?.selectSegment(withTag: value.rawValue)
+		}
+	}
+	
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return super.validateMenuItem(menuItem) }
 		switch action {
