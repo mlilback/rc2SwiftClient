@@ -5,8 +5,8 @@ use Switch;
 use Data::Dumper;
 use strict;
 use Storable 'dclone';
+use Cpanel::JSON::XS qw(decode_json encode_json);
 
-print "opening $ARGV[0]\n";
 my $src;
 open($src, '<:raw', $ARGV[0]);
 my $bytes_read = read $src, my $bytes, 4;
@@ -38,18 +38,21 @@ for (my $i=0; $i < $blockCount; $i++) {
 	}
 }
 my $groupCount = keys %groups;
-print "got $groupCount groups\n";
+print STDERR "got $groupCount groups\n";
 #print Dumper(\%groups);
 
-for my $aName (keys %groups) {
-	my $hashRef = dclone $groups{$aName};	
-	print "group $aName\n";
-#	print Dumper($groups{$aName});
-	for my $colorName (keys %$hashRef) {
-		my %chash = $$hashRef{$colorName};
-		print "     $colorName = $$hashRef{$colorName}\n";
-	}
-}
+# for my $aName (keys %groups) {
+# 	my $hashRef = dclone $groups{$aName};	
+# 	print "group $aName\n";
+# #	print Dumper($groups{$aName});
+# 	for my $colorName (keys %$hashRef) {
+# 		my %chash = $$hashRef{$colorName};
+# 		print "     $colorName = $$hashRef{$colorName}\n";
+# 	}
+# }
+
+my $coder = Cpanel::JSON::XS->new->ascii->pretty;
+print $coder->encode(\%groups) . "\n";
 
 sub startGroup() {
 	my ($fh) = @_;
