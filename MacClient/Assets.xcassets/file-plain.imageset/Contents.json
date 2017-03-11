@@ -1,8 +1,18 @@
 {
   "images" : [
     {
-      "idiom" : "universal",
+      "idiom" : "mac",
       "filename" : "file-plain.pdf"
+    },
+    {
+      "idiom" : "mac",
+      "filename" : "file-plain@1x.png",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "mac",
+      "filename" : "file-plain@2x.png",
+      "scale" : "2x"
     }
   ],
   "info" : {

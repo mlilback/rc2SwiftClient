@@ -3,6 +3,16 @@
     {
       "idiom" : "mac",
       "filename" : "file-pdf.pdf"
+    },
+    {
+      "idiom" : "mac",
+      "filename" : "file-pdf@1x.png",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "mac",
+      "filename" : "file-pdf@2x.png",
+      "scale" : "2x"
     }
   ],
   "info" : {
