@@ -211,6 +211,7 @@
 		088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6BB1C4C508000153414 /* KeychainTests.swift */; };
 		088D1F931DF36B7F00BC891E /* updatedImageInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 088D1F921DF36B7F00BC891E /* updatedImageInfo.json */; };
 		088D1F951DF36E4D00BC891E /* updatedContainers.json in Resources */ = {isa = PBXBuildFile; fileRef = 088D1F941DF36E4D00BC891E /* updatedContainers.json */; };
+		088F591A1E732EC40009A0B1 /* MockDockerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F59191E732EC40009A0B1 /* MockDockerAPI.swift */; };
 		088F591C1E74BCEA0009A0B1 /* ThemePrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */; };
 		088F59201E74BE940009A0B1 /* OutputTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F591F1E74BE940009A0B1 /* OutputTheme.swift */; };
 		088F59221E74C4D10009A0B1 /* PlatformColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F59211E74C4D10009A0B1 /* PlatformColor.swift */; };
@@ -726,6 +727,7 @@
 		088CE6BB1C4C508000153414 /* KeychainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
 		088D1F921DF36B7F00BC891E /* updatedImageInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedImageInfo.json; sourceTree = "<group>"; };
 		088D1F941DF36E4D00BC891E /* updatedContainers.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedContainers.json; sourceTree = "<group>"; };
+		088F59191E732EC40009A0B1 /* MockDockerAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockDockerAPI.swift; sourceTree = "<group>"; };
 		088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemePrefsController.swift; sourceTree = "<group>"; };
 		088F591F1E74BE940009A0B1 /* OutputTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputTheme.swift; sourceTree = "<group>"; };
 		088F59211E74C4D10009A0B1 /* PlatformColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlatformColor.swift; path = ClientCore/PlatformColor.swift; sourceTree = SOURCE_ROOT; };
@@ -1550,6 +1552,7 @@
 		08F6ADD01DD9169400AF0722 /* DockerSupportTests */ = {
 			isa = PBXGroup;
 			children = (
+				088F59191E732EC40009A0B1 /* MockDockerAPI.swift */,
 				083D11991DF201BB00549268 /* BaseDockerSpec.swift */,
 				081559A11DDFB2D80047B3CE /* DockerContainerSpec.swift */,
 				081559BD1DDFB4300047B3CE /* DefaultDockerAPISpec.swift */,
@@ -2297,6 +2300,7 @@
 				083D119A1DF201BB00549268 /* BaseDockerSpec.swift in Sources */,
 				081559AF1DDFB2D80047B3CE /* DockerImageInfoTests.swift in Sources */,
 				081559B41DDFB2D80047B3CE /* DockerTagTests.swift in Sources */,
+				088F591A1E732EC40009A0B1 /* MockDockerAPI.swift in Sources */,
 				083D118C1DEDEAED00549268 /* LinedJsonHandlerSpec.swift in Sources */,
 				081559B11DDFB2D80047B3CE /* DockerImageTest.swift in Sources */,
 				081559B51DDFB2D80047B3CE /* DockerUrlProtocolTests.swift in Sources */,

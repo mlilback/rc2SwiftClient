@@ -30,7 +30,7 @@ public extension PlatformColor {
 		if hcode.hasPrefix("#") {
 			hcode = hcode.substring(from: hcode.characters.index(hcode.characters.startIndex, offsetBy: 1))
 		}
-		guard hcode.characters.count == 6, hcode.trimmingCharacters(in: CharacterSet.hexadecimal) != "" else { return nil }
+		guard hcode.characters.count == 6, hcode.trimmingCharacters(in: CharacterSet.hexadecimal) == "" else { return nil }
 		
 		let redHex = hexString.substring(to: hexString.characters.index(hexString.startIndex, offsetBy: 2))
 		let greenHex = hexString.substring(with: hexString.characters.index(hexString.startIndex, offsetBy: 2) ..< hexString.characters.index(hexString.startIndex, offsetBy: 4))
