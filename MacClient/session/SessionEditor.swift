@@ -53,9 +53,10 @@ class SessionEditor: TextViewWithContextualMenu {
 		//flash the inserted character and matching opening character
 //		let closeRange = NSMakeRange(curLoc.location, 1)
 		let openRange = NSMakeRange(openLoc, 1)
-		let color = try! PlatformColor(hex: "888888")
+		let color = PlatformColor(hexString: "888888")!
 //		layoutManager?.addTemporaryAttribute(NSBackgroundColorAttributeName, value: color, forCharacterRange: closeRange)
 		layoutManager?.addTemporaryAttribute(NSBackgroundColorAttributeName, value: color, forCharacterRange: openRange)
+		//FIXME: code smell
 		delay(0.1) {
 //			self.layoutManager?.removeTemporaryAttribute(NSBackgroundColorAttributeName, forCharacterRange: closeRange)
 			self.layoutManager?.removeTemporaryAttribute(NSBackgroundColorAttributeName, forCharacterRange: openRange)

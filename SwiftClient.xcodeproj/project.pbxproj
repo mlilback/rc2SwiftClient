@@ -211,6 +211,7 @@
 		088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6BB1C4C508000153414 /* KeychainTests.swift */; };
 		088D1F931DF36B7F00BC891E /* updatedImageInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 088D1F921DF36B7F00BC891E /* updatedImageInfo.json */; };
 		088D1F951DF36E4D00BC891E /* updatedContainers.json in Resources */ = {isa = PBXBuildFile; fileRef = 088D1F941DF36E4D00BC891E /* updatedContainers.json */; };
+		088F59221E74C4D10009A0B1 /* PlatformColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F59211E74C4D10009A0B1 /* PlatformColor.swift */; };
 		089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BE1D21938F00866A05 /* BookmarkViewController.swift */; };
 		0890650B1D26F59300C7CA5D /* MacAppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0890650A1D26F59300C7CA5D /* MacAppStatus.swift */; };
 		089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -722,6 +723,7 @@
 		088CE6BB1C4C508000153414 /* KeychainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
 		088D1F921DF36B7F00BC891E /* updatedImageInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedImageInfo.json; sourceTree = "<group>"; };
 		088D1F941DF36E4D00BC891E /* updatedContainers.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedContainers.json; sourceTree = "<group>"; };
+		088F59211E74C4D10009A0B1 /* PlatformColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlatformColor.swift; path = ClientCore/PlatformColor.swift; sourceTree = SOURCE_ROOT; };
 		0890650A1D26F59300C7CA5D /* MacAppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacAppStatus.swift; sourceTree = "<group>"; };
 		089346021C7F661400100CF6 /* PEGKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PEGKit.framework; path = Carthage/Build/Mac/PEGKit.framework; sourceTree = "<group>"; };
 		089346051C7FB14B00100CF6 /* SyntaxColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxColor.swift; sourceTree = "<group>"; };
@@ -1354,6 +1356,7 @@
 				088CE6B71C4C44A800153414 /* Keychain.swift */,
 				0816F8991C6D0F7D00A6120B /* HTMLString.swift */,
 				08604A4D1D9C0C0500DE2A79 /* Named.swift */,
+				088F59211E74C4D10009A0B1 /* PlatformColor.swift */,
 				089794411D7B6A0F003339EE /* SharedConstants.swift */,
 				081559991DDE83250047B3CE /* Rc2Error.swift */,
 				08525E721E256A8B008A332E /* Reachability.swift */,
@@ -2219,6 +2222,7 @@
 				0826109C1DB8E0F000C03422 /* Data+Rc2.swift in Sources */,
 				08E8366B1D94436D00E26EFE /* UserDefaults+JSON.swift in Sources */,
 				08525E731E256A8B008A332E /* Reachability.swift in Sources */,
+				088F59221E74C4D10009A0B1 /* PlatformColor.swift in Sources */,
 				08B184D41E5F384800F4A6D6 /* AppInfo.swift in Sources */,
 				086508791E452D3A0067C8CA /* Result+Rc2.swift in Sources */,
 				08F03E451DE4BF0A00D02153 /* URLResponse+Rc2.swift in Sources */,

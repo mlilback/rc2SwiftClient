@@ -23,7 +23,7 @@ public enum OutputColors: String {
 		}
 		let outputColors = oldDict.reduce([OutputColors:PlatformColor]()) { (dict, pair) in
 			var aDict = dict
-			aDict[OutputColors(rawValue: pair.0)!] = PlatformColor.colorWithHexString(pair.1)
+			aDict[OutputColors(rawValue: pair.0)!] = PlatformColor(hexString: pair.1)
 			return aDict
 		}
 		return outputColors

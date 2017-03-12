@@ -78,11 +78,11 @@ open class HTMLString {
 			let attrValue = srcString.substring(with: (result?.rangeAt(2))!)
 			switch attrName {
 				case "hex":
-					do {
-						dict[NSForegroundColorAttributeName] = try PlatformColor(hex: attrValue)
-					} catch {
+					guard let color = PlatformColor(hexString: attrValue) else {
 						os_log("Invalid color attribute: %{public}@", log: .core, srcString.substring(with: (result?.range)!))
+						return
 					}
+					dict[NSForegroundColorAttributeName] = color
 				default:
 					os_log("unsupport color attribute '%{public}@'", log: .core, attrName)
 			}

@@ -19,7 +19,7 @@ import ClientCore
 		var rect = bounds
 		rect.size.width = 1
 		rect.origin.x += 3
-		let color = try! PlatformColor(hex: "b3b3b3")
+		let color = PlatformColor(hexString: "b3b3b3")!
 		color.set()
 		NSRectFill(rect)
 	}

@@ -21,7 +21,7 @@ public struct SyntaxColorMap {
 		let srcMap = UserDefaults.standard.object(forKey: RCodeHighlighterColors) as! [String:String]
 		var dict: [SyntaxColor:PlatformColor] = [:]
 		for (key,value) in srcMap {
-			try! dict[SyntaxColor(rawValue:key)!] = PlatformColor(hex:value)
+			dict[SyntaxColor(rawValue: key)!] = PlatformColor(hexString: value)
 		}
 		return SyntaxColorMap(colorDict: dict)
 	}()

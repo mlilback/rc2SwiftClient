@@ -46,7 +46,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		if customServerSelected {
 			view.window?.makeFirstResponder(serverNameField)
 		}
-		loadServerHost((serverMenu?.selectedItem?.representedObject as? Box<ServerHost>)?.unbox)
+		loadServerHost(serverMenu?.selectedItem?.representedObject as? ServerHost)
 	} }
 	
 	var customServerSelected: Bool { return selectedServerIndex == (serverMenu?.menu?.items.count ?? 0) - 1 }
@@ -61,7 +61,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 			menu.addItem(NSMenuItem(title: "Local Server", action: nil, keyEquivalent: ""))
 			for aHost in bookmarkManager!.hosts {
 				let mi = NSMenuItem(title: aHost.name, action: nil, keyEquivalent: "")
-				mi.representedObject = Box<ServerHost>(aHost)
+				mi.representedObject = aHost
 				menu.addItem(mi)
 			}
 			menu.addItem(NSMenuItem(title: "New Server…", action: nil, keyEquivalent: ""))
