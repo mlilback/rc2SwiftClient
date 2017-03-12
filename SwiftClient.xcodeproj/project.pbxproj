@@ -274,6 +274,7 @@
 		08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CB55531C5C096E002CB7EE /* ImageOutputController.swift */; };
 		08CE0E8E1E32669600DC567A /* createfile.json in Resources */ = {isa = PBXBuildFile; fileRef = 08CE0E8D1E32669600DC567A /* createfile.json */; };
 		08CE0E901E326A4C00DC567A /* createdUpdate.json in Resources */ = {isa = PBXBuildFile; fileRef = 08CE0E8F1E326A4C00DC567A /* createdUpdate.json */; };
+		08CFE8CF1E75BA42002A35C1 /* DirectoryWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CFE8CE1E75BA42002A35C1 /* DirectoryWatcher.swift */; };
 		08D6106F1CD2C53100258D8E /* listvars.json in Resources */ = {isa = PBXBuildFile; fileRef = 08D6106E1CD2C53100258D8E /* listvars.json */; };
 		08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */; };
 		08D610761CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */; };
@@ -787,6 +788,7 @@
 		08CB55531C5C096E002CB7EE /* ImageOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageOutputController.swift; sourceTree = "<group>"; };
 		08CE0E8D1E32669600DC567A /* createfile.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = createfile.json; sourceTree = "<group>"; };
 		08CE0E8F1E326A4C00DC567A /* createdUpdate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = createdUpdate.json; sourceTree = "<group>"; };
+		08CFE8CE1E75BA42002A35C1 /* DirectoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectoryWatcher.swift; sourceTree = "<group>"; };
 		08D6106E1CD2C53100258D8E /* listvars.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = listvars.json; sourceTree = "<group>"; };
 		08D610711CE3CA3C00258D8E /* TAAdaptiveSpaceItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAAdaptiveSpaceItem.h; sourceTree = "<group>"; };
 		08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItem.m; sourceTree = "<group>"; };
@@ -1377,6 +1379,7 @@
 				089794431D7B6A8F003339EE /* extensions */,
 				089794371D7B6925003339EE /* ClientCore-Bridging-Header.h */,
 				0897941D1D7B68F0003339EE /* Info.plist */,
+				08CFE8CE1E75BA42002A35C1 /* DirectoryWatcher.swift */,
 			);
 			path = ClientCore;
 			sourceTree = "<group>";
@@ -2229,6 +2232,7 @@
 				0897944F1D7B6A8F003339EE /* NSURL+Rc2.swift in Sources */,
 				08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */,
 				08E8366E1D94715D00E26EFE /* FileManager+Rc2.swift in Sources */,
+				08CFE8CF1E75BA42002A35C1 /* DirectoryWatcher.swift in Sources */,
 				08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */,
 				081559891DDBD7DA0047B3CE /* Freddy+Rc2.swift in Sources */,
 				08037C351D7C5E2200006E9E /* RecursiveFlatMap.swift in Sources */,
