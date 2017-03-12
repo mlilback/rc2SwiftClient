@@ -1,0 +1,25 @@
+[
+   {
+      "input" : "e1e1e1",
+      "log" : "00ff00",
+      "ThemeName" : "Default",
+      "help" : "d4d4d4",
+      "background" : "ffffff",
+      "text" : "000000",
+      "error" : "d7b5be",
+      "note" : "ecd91b",
+      "status" : "ebe9dd"
+   },
+   {
+      "text" : "000000",
+      "status" : "50fa3f",
+      "note" : "a9a6fa",
+      "error" : "f66283",
+      "input" : "7cf7f8",
+      "ThemeName" : "Bright",
+      "help" : "e98ce1",
+      "log" : "ffc540",
+      "background" : "ebfbbd"
+   }
+]
+

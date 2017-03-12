@@ -17,7 +17,7 @@ my $defaultColor = &readColor($src);
 seek($src, -1, 1);
 
 my $blockCount = &readShort($src);
-my ($curGroupName, %groups, %curGroup);
+my ($curGroupName, @groups, %curGroup);
 for (my $i=0; $i < $blockCount; $i++) {
 	my $blockType = &readShort($src);
 	switch ($blockType) {
@@ -31,15 +31,16 @@ for (my $i=0; $i < $blockCount; $i++) {
 		}
 		case 3 { 
 			my $working = dclone \%curGroup;
-			$groups{$curGroupName} = $working;
+			$$working{ThemeName} = $curGroupName;
+			push(@groups, $working);
 			undef %curGroup;
 		}
 		else { die "bad block type" }
 	}
 }
-my $groupCount = keys %groups;
+my $groupCount = scalar @groups;
 print STDERR "got $groupCount groups\n";
-#print Dumper(\%groups);
+#print Dumper(\@groups);
 
 # for my $aName (keys %groups) {
 # 	my $hashRef = dclone $groups{$aName};	
@@ -52,7 +53,7 @@ print STDERR "got $groupCount groups\n";
 # }
 
 my $coder = Cpanel::JSON::XS->new->ascii->pretty;
-print $coder->encode(\%groups) . "\n";
+print $coder->encode(\@groups) . "\n";
 
 sub startGroup() {
 	my ($fh) = @_;

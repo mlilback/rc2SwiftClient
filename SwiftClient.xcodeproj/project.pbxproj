@@ -211,7 +211,10 @@
 		088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6BB1C4C508000153414 /* KeychainTests.swift */; };
 		088D1F931DF36B7F00BC891E /* updatedImageInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 088D1F921DF36B7F00BC891E /* updatedImageInfo.json */; };
 		088D1F951DF36E4D00BC891E /* updatedContainers.json in Resources */ = {isa = PBXBuildFile; fileRef = 088D1F941DF36E4D00BC891E /* updatedContainers.json */; };
+		088F591C1E74BCEA0009A0B1 /* ThemePrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */; };
+		088F59201E74BE940009A0B1 /* OutputTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F591F1E74BE940009A0B1 /* OutputTheme.swift */; };
 		088F59221E74C4D10009A0B1 /* PlatformColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F59211E74C4D10009A0B1 /* PlatformColor.swift */; };
+		088F59241E7578B80009A0B1 /* outputThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 088F59231E7578B80009A0B1 /* outputThemes.json */; };
 		089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BE1D21938F00866A05 /* BookmarkViewController.swift */; };
 		0890650B1D26F59300C7CA5D /* MacAppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0890650A1D26F59300C7CA5D /* MacAppStatus.swift */; };
 		089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -723,7 +726,10 @@
 		088CE6BB1C4C508000153414 /* KeychainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
 		088D1F921DF36B7F00BC891E /* updatedImageInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedImageInfo.json; sourceTree = "<group>"; };
 		088D1F941DF36E4D00BC891E /* updatedContainers.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedContainers.json; sourceTree = "<group>"; };
+		088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemePrefsController.swift; sourceTree = "<group>"; };
+		088F591F1E74BE940009A0B1 /* OutputTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputTheme.swift; sourceTree = "<group>"; };
 		088F59211E74C4D10009A0B1 /* PlatformColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlatformColor.swift; path = ClientCore/PlatformColor.swift; sourceTree = SOURCE_ROOT; };
+		088F59231E7578B80009A0B1 /* outputThemes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = outputThemes.json; path = resources/outputThemes.json; sourceTree = "<group>"; };
 		0890650A1D26F59300C7CA5D /* MacAppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacAppStatus.swift; sourceTree = "<group>"; };
 		089346021C7F661400100CF6 /* PEGKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PEGKit.framework; path = Carthage/Build/Mac/PEGKit.framework; sourceTree = "<group>"; };
 		089346051C7FB14B00100CF6 /* SyntaxColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxColor.swift; sourceTree = "<group>"; };
@@ -1333,6 +1339,7 @@
 				084FEA801D3045D800060A7D /* ObjcConstants.m */,
 				08F6ADA81DD643C900AF0722 /* Copyable.swift */,
 				08C484F71C9B159000FE824B /* server.cer */,
+				088F59231E7578B80009A0B1 /* outputThemes.json */,
 				08A01FD11CC81479001EDFAA /* helpindex.db */,
 				08F189A71D0A0E7200866A05 /* static_html */,
 				08A01FB51CC7FCA3001EDFAA /* fmdb */,
@@ -1343,6 +1350,7 @@
 				08A01FD51CC95C58001EDFAA /* HelpController.swift */,
 				08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */,
 				08525E751E300185008A332E /* rdocs.tgz */,
+				088F591F1E74BE940009A0B1 /* OutputTheme.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -1483,8 +1491,9 @@
 				086526281E6E1B0100D75B25 /* PreferenceKeys.swift */,
 				08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */,
 				08F5746B1E4D04A70000956B /* Preferences.storyboard */,
-				0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */,
 				08C2D5EB1E71BB290007A02D /* DockerPrefsController.swift */,
+				0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */,
+				088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */,
 			);
 			name = preferences;
 			sourceTree = "<group>";
@@ -1925,6 +1934,7 @@
 				0827A4E51C7ED9CE001F0AFB /* RKeywords.txt in Resources */,
 				08A01FD21CC81479001EDFAA /* helpindex.db in Resources */,
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
+				088F59241E7578B80009A0B1 /* outputThemes.json in Resources */,
 				0816FD1F1E5226760006FF26 /* SearchBarView.xib in Resources */,
 				08F189A81D0A0E7200866A05 /* static_html in Resources */,
 				083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */,
@@ -2125,6 +2135,7 @@
 				0827A4E71C7ED9CE001F0AFB /* RnwSyntaxParser.swift in Sources */,
 				08D610761CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m in Sources */,
 				081996701E36A78A0000AA0E /* EditableTableCellView.swift in Sources */,
+				088F59201E74BE940009A0B1 /* OutputTheme.swift in Sources */,
 				08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */,
 				08F6ADA91DD643C900AF0722 /* Copyable.swift in Sources */,
 				086526291E6E1B0100D75B25 /* PreferenceKeys.swift in Sources */,
@@ -2171,6 +2182,7 @@
 				08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */,
 				08C2D5E91E71B1FC0007A02D /* Searchable.swift in Sources */,
 				0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */,
+				088F591C1E74BCEA0009A0B1 /* ThemePrefsController.swift in Sources */,
 				080314231D2412ED006D668F /* SelectServerViewController.swift in Sources */,
 				088CE6B81C4C44A800153414 /* Keychain.swift in Sources */,
 				083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */,
@@ -2672,7 +2684,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
-					"$(PROJECT_DIR)/HockeySDK-Mac",
+					"$(PROJECT_DIR)/vendor/HockeySDK-Mac",
 					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MacClient/Info.plist;
@@ -2696,7 +2708,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
-					"$(PROJECT_DIR)/HockeySDK-Mac",
+					"$(PROJECT_DIR)/vendor/HockeySDK-Mac",
 					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MacClient/Info.plist;
