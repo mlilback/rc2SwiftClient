@@ -1780,6 +1780,7 @@
 				08F6ADBE1DD9169300AF0722 /* Frameworks */,
 				08F6ADBF1DD9169300AF0722 /* Headers */,
 				08F6ADC01DD9169300AF0722 /* Resources */,
+				0815C9861E774C360031D69A /* swiftlint */,
 			);
 			buildRules = (
 			);
@@ -2032,6 +2033,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n(cd Networking; swiftlint)\nelse\necho \"Warning: swiftlint not installed\"\nfi\n";
+		};
+		0815C9861E774C360031D69A /* swiftlint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = swiftlint;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n(cd DockerSupport; swiftlint)\nelse\necho \"Warning: swiftlint not installed\"\nfi\n";
 		};
 		082610961DB1632200C03422 /* swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;

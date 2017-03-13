@@ -193,6 +193,8 @@ public final class DockerContainer: JSONDecodable {
 	/// - Throws: errors from JSONSerialization calls
 	func injectIntoCreate(imageTag: String) throws {
 		assert(createInfo != nil)
+		//have to do this via JSONSerialization as Freddy doesn't allow mutating parsed data
+		// swiftlint:disable:next force_cast
 		var info = try JSONSerialization.jsonObject(with: createInfo!, options: []) as! Dictionary<String, Any>
 		info["Image"] = imageTag
 		createInfo = try JSONSerialization.data(withJSONObject: info, options: [])

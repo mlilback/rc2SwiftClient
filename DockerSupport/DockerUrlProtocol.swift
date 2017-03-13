@@ -104,6 +104,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		case .json:
 			var jdata = Data()
 			json.forEach { aLine in
+				// swiftlint:disable:next force_try
 				jdata.append(try! aLine.serialize())
 				jdata.append(crlnData)
 			}
@@ -180,7 +181,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 			let response = generateResponse(headerData: headData)
 			else
 		{
-			reportBadResponse();
+			reportBadResponse()
 			return nil
 		}
 		return (response, contentData)

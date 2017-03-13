@@ -15,6 +15,8 @@ import os
 import SwiftyUserDefaults
 import ClientCore
 
+// swiftlint:disable file_length
+
 public enum DockerBackupOption: Int {
 	case hourly = 1
 	case daily = 0
@@ -125,7 +127,9 @@ public final class DockerManager: NSObject {
 		let myBundle = Bundle(for: type(of: self))
 		//if we have no imageInfo, load from bundled file
 		if nil == imageInfo {
+			// swiftlint:disable:next force_try (file is in bundle, should never fail)
 			let infoData = try! Data(contentsOf: myBundle.url(forResource: "imageInfo", withExtension: "json")!)
+			// swiftlint:disable:next force_try
 			imageInfo = RequiredImageInfo(from: try! JSON(data: infoData))
 			assert(imageInfo != nil)
 		}
@@ -217,6 +221,7 @@ public final class DockerManager: NSObject {
 				//need to set the version used to create our containers from the image info we just processed
 				for aType in ContainerType.all {
 					newContainers[aType]?.createInfo = self.containers[aType]!.createInfo
+					// swiftlint:disable:next force_try
 					try! newContainers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
 				}
 			})
@@ -311,7 +316,7 @@ public final class DockerManager: NSObject {
 	
 	/// Returns a signal producer that is completed when all containers are running, can timeout with an error
 	///
-	/// - Returns: signal producer completed when all containers are running 
+	/// - Returns: signal producer completed when all containers are running
 	public func waitUntilRunning() -> SignalProducer<(), Rc2Error> {
 		os_log("dm.waitUntilRunning called", log: .docker, type: .debug)
 		let notRunningContainers = self.containers.filter({ $0.state.value != .running })
@@ -454,6 +459,7 @@ extension DockerManager {
 	{
 		os_log("dm.createUnavailable called", log: .docker, type: .debug)
 		for aType in ContainerType.all {
+			// swiftlint:disable:next force_try
 			try! containers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
 		}
 		let producers = containers.map { self.api.create(container: $0) }
