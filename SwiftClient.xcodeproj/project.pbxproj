@@ -213,7 +213,6 @@
 		088D1F951DF36E4D00BC891E /* updatedContainers.json in Resources */ = {isa = PBXBuildFile; fileRef = 088D1F941DF36E4D00BC891E /* updatedContainers.json */; };
 		088F591A1E732EC40009A0B1 /* MockDockerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F59191E732EC40009A0B1 /* MockDockerAPI.swift */; };
 		088F591C1E74BCEA0009A0B1 /* ThemePrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */; };
-		088F59201E74BE940009A0B1 /* OutputTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F591F1E74BE940009A0B1 /* OutputTheme.swift */; };
 		088F59221E74C4D10009A0B1 /* PlatformColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F59211E74C4D10009A0B1 /* PlatformColor.swift */; };
 		088F59241E7578B80009A0B1 /* outputThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 088F59231E7578B80009A0B1 /* outputThemes.json */; };
 		089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BE1D21938F00866A05 /* BookmarkViewController.swift */; };
@@ -278,6 +277,7 @@
 		08CFE8D11E760066002A35C1 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
 		08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
 		08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08CFE8D51E76D72A002A35C1 /* OutputTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CFE8D41E76D72A002A35C1 /* OutputTheme.swift */; };
 		08CFE8D61E76D7A6002A35C1 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
 		08D6106F1CD2C53100258D8E /* listvars.json in Resources */ = {isa = PBXBuildFile; fileRef = 08D6106E1CD2C53100258D8E /* listvars.json */; };
 		08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */; };
@@ -735,7 +735,6 @@
 		088D1F941DF36E4D00BC891E /* updatedContainers.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedContainers.json; sourceTree = "<group>"; };
 		088F59191E732EC40009A0B1 /* MockDockerAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockDockerAPI.swift; sourceTree = "<group>"; };
 		088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemePrefsController.swift; sourceTree = "<group>"; };
-		088F591F1E74BE940009A0B1 /* OutputTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputTheme.swift; sourceTree = "<group>"; };
 		088F59211E74C4D10009A0B1 /* PlatformColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlatformColor.swift; path = ClientCore/PlatformColor.swift; sourceTree = SOURCE_ROOT; };
 		088F59231E7578B80009A0B1 /* outputThemes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = outputThemes.json; path = resources/outputThemes.json; sourceTree = "<group>"; };
 		0890650A1D26F59300C7CA5D /* MacAppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacAppStatus.swift; sourceTree = "<group>"; };
@@ -795,6 +794,7 @@
 		08CE0E8F1E326A4C00DC567A /* createdUpdate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = createdUpdate.json; sourceTree = "<group>"; };
 		08CFE8CE1E75BA42002A35C1 /* DirectoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectoryWatcher.swift; sourceTree = "<group>"; };
 		08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/Mac/ReactiveCocoa.framework; sourceTree = "<group>"; };
+		08CFE8D41E76D72A002A35C1 /* OutputTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputTheme.swift; sourceTree = "<group>"; };
 		08D6106E1CD2C53100258D8E /* listvars.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = listvars.json; sourceTree = "<group>"; };
 		08D610711CE3CA3C00258D8E /* TAAdaptiveSpaceItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAAdaptiveSpaceItem.h; sourceTree = "<group>"; };
 		08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItem.m; sourceTree = "<group>"; };
@@ -1005,6 +1005,7 @@
 				081559921DDC889D0047B3CE /* ImageCache.swift */,
 				080E82FF1DCD07930048F36C /* NetworkingError.swift */,
 				08C2C3C81DF74DE200397DD3 /* Networking.strings */,
+				08CFE8D41E76D72A002A35C1 /* OutputTheme.swift */,
 				08F6ADB11DD90E3600AF0722 /* Rc2FileManager.swift */,
 				080E82E41DCBF4520048F36C /* xattr.swift */,
 				0881B5091DCF84DB00679DB3 /* network */,
@@ -1364,7 +1365,6 @@
 				08A01FD51CC95C58001EDFAA /* HelpController.swift */,
 				08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */,
 				08525E751E300185008A332E /* rdocs.tgz */,
-				088F591F1E74BE940009A0B1 /* OutputTheme.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -2072,6 +2072,7 @@
 				08F6ADB01DD8F60200AF0722 /* Rc2RestClient.swift in Sources */,
 				080E82F81DCCD4620048F36C /* File.swift in Sources */,
 				0881B50E1DCF896500679DB3 /* LoginFactory.swift in Sources */,
+				08CFE8D51E76D72A002A35C1 /* OutputTheme.swift in Sources */,
 				08F6ADAA1DD643C900AF0722 /* Copyable.swift in Sources */,
 				081559851DDBB3760047B3CE /* SessionDelegate.swift in Sources */,
 				081559811DDBAF030047B3CE /* ConsoleAttachment.swift in Sources */,
@@ -2151,7 +2152,6 @@
 				0827A4E71C7ED9CE001F0AFB /* RnwSyntaxParser.swift in Sources */,
 				08D610761CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m in Sources */,
 				081996701E36A78A0000AA0E /* EditableTableCellView.swift in Sources */,
-				088F59201E74BE940009A0B1 /* OutputTheme.swift in Sources */,
 				08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */,
 				08F6ADA91DD643C900AF0722 /* Copyable.swift in Sources */,
 				086526291E6E1B0100D75B25 /* PreferenceKeys.swift in Sources */,

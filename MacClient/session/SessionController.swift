@@ -8,7 +8,10 @@ import Cocoa
 import os
 import Networking
 import Freddy
+import SwiftyUserDefaults
 import ReactiveSwift
+import ReactiveCocoa
+import Result
 import ClientCore
 import NotifyingCollection
 
@@ -20,7 +23,7 @@ import NotifyingCollection
 }
 
 /// manages a Session object
-@objc class SessionController: NSObject {
+@objc class SessionController: NSObject, ServerResponseHandlerDelegate {
 	fileprivate weak var delegate: SessionControllerDelegate?
 
 	var responseHandler: ServerResponseHandler?
@@ -31,7 +34,7 @@ import NotifyingCollection
 	var savedStateHash: Data?
 	fileprivate var properlyClosed: Bool = false
 	fileprivate var fileLoadDisposable: Disposable?
-
+	
 	init(session: Session, delegate: SessionControllerDelegate, outputHandler output: OutputHandler, variableHandler: VariableHandler)
 	{
 		self.delegate = delegate
@@ -46,7 +49,7 @@ import NotifyingCollection
 		nc.addObserver(self, selector:  #selector(SessionController.saveSessionState), name: NSNotification.Name.NSWorkspaceWillSleep, object:nil)
 		restoreSessionState()
 	}
-	
+
 	deinit {
 		if !properlyClosed {
 			os_log("not properly closed", log: .app, type:.error)
@@ -72,10 +75,9 @@ import NotifyingCollection
 	func format(errorString: String) -> ResponseString {
 		return responseHandler!.formatError(errorString)
 	}
-}
 
-//MARK: - ServerResponseHandlerDelegate
-extension SessionController: ServerResponseHandlerDelegate {
+	//MARK: - ServerResponseHandlerDelegate
+	
 	func handleFileUpdate(fileId: Int, file: File?, change: FileChangeType) {
 //		os_log("got file update %d v%d", log: .app, type:.info, file.fileId, file.version)
 //		handleFileUpdate(file, change: change)
@@ -83,6 +85,13 @@ extension SessionController: ServerResponseHandlerDelegate {
 	
 	func handleVariableMessage(_ single: Bool, variables: [Variable]) {
 		varHandler.handleVariableMessage(single, variables: variables)
+		let json = UserDefaults.standard[.activeOutputTheme]
+		do {
+			let theme = try json?.decode(type: OutputTheme.self)
+			print("theme is \(theme?.name ?? "failure")")
+		} catch {
+			print("got \(error)")
+		}
 	}
 	
 	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String]) {

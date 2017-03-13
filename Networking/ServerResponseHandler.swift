@@ -11,6 +11,8 @@
 #endif
 import Freddy
 import ClientCore
+import ReactiveSwift
+import Result
 
 public enum FileChangeType : String {
 	case Update, Insert, Delete
@@ -43,10 +45,13 @@ public struct ResponseString {
 
 public class ServerResponseHandler {
 	fileprivate weak var delegate: ServerResponseHandlerDelegate?
-	fileprivate let outputColors = OutputColors.colorMap()
+//	fileprivate let outputColors = OutputColors.colorMap()
+	fileprivate var outputTheme: OutputTheme
 
 	required public init(delegate:ServerResponseHandlerDelegate) {
 		self.delegate = delegate
+		outputTheme = OutputTheme.defaultTheme
+		NotificationCenter.default.addObserver(self, selector: #selector(outputThemeChanged(_:)), name: .outputThemeChanged, object: nil)
 	}
 
 	public func handleResponse(_ response:ServerResponse) -> ResponseString? {
@@ -83,10 +88,10 @@ public class ServerResponseHandler {
 		if fileId > 0 {
 			let mstr = NSMutableAttributedString(attributedString: delegate!.attributedStringForInputFile(fileId))
 			mstr.append(NSAttributedString(string: "\n"))
-			mstr.addAttribute(NSBackgroundColorAttributeName, value: outputColors[.Input]!, range: NSMakeRange(0, mstr.length))
+			mstr.addAttributes(outputTheme.stringAttributes(for: .input), range: NSMakeRange(0, mstr.length))
 			return ResponseString(string: mstr, type: .input)
 		}
-		let fstr = NSAttributedString(string: "\(query)\n", attributes: [NSBackgroundColorAttributeName:outputColors[.Input]!])
+		let fstr = NSAttributedString(string: "\(query)\n", attributes: outputTheme.stringAttributes(for: .input))
 		return ResponseString(string: fstr, type: .input)
 	}
 	
@@ -118,9 +123,14 @@ public class ServerResponseHandler {
 	}
 
 	public func formatError(_ error:String) -> ResponseString {
-		let str = NSAttributedString(string: "\(error)\n", attributes: [NSBackgroundColorAttributeName:outputColors[.Error]!])
+		let str = NSAttributedString(string: "\(error)\n", attributes: outputTheme.stringAttributes(for: .error))
 		return ResponseString(string: str, type: .error)
 	}
+	
+	@objc fileprivate func outputThemeChanged(_ notification: Notification) {
+		outputTheme = notification.object as! OutputTheme
+	}
+	
 }
 
 

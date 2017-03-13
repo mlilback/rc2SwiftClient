@@ -6,6 +6,8 @@
 
 import Cocoa
 import Networking
+import Freddy
+import ClientCore
 
 enum SessionStateKey: String {
 	case History = "history"
@@ -50,6 +52,38 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		{
 			currentFontDescriptor = fdesc
 		}
+		NotificationCenter.default.addObserver(self, selector: #selector(themeChanged(_:)), name: .outputThemeChanged, object: nil)
+	}
+	
+	//MARK: internal
+	@objc func themeChanged(_ note: Notification?) {
+		let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)!
+		resultsView?.textStorage?.addAttribute(NSFontAttributeName, value: font, range: resultsView!.textStorage!.string.fullNSRange)
+		let theme = UserDefaults.standard.activeOutputTheme
+		theme.update(attributedString: resultsView!.textStorage!)
+	}
+	
+	//stores all custom attributes in the results view for later restoration
+	func serializeCustomAttributes() -> Data {
+		var attributes: [JSON] = []
+		let astr = resultsView!.textStorage!
+		astr.enumerateAttributes(in: astr.string.fullNSRange, options: []) { (attrs, range, stop) in
+			if let aThemeAttr = attrs[OutputTheme.AttributeName] as? OutputThemeProperty {
+				attributes.append(SavedOutputThemeAttribute(aThemeAttr, range: range).toJSON())
+			}
+		}
+		return try! JSON.array(attributes).serialize()
+	}
+	
+	//deserializes custom attributes and applies to results view
+	func applyCustomAttributes(data: Data) {
+		let ts = resultsView!.textStorage!
+		guard let json = try? JSON(data: data),
+			let attrs: [SavedOutputThemeAttribute] = try? json.decodedArray()
+			else { return }
+		for anAttribute in attrs {
+			ts.addAttribute(OutputTheme.AttributeName, value: anAttribute.property, range: anAttribute.range)
+		}
 	}
 	
 	//MARK: actions
@@ -72,7 +106,9 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		var dict = [String:AnyObject]()
 		dict[SessionStateKey.History.rawValue] = cmdHistory.commands as AnyObject?
 		let rtfd = resultsView?.textStorage?.rtfd(from: NSMakeRange(0, (resultsView?.textStorage?.length)!), documentAttributes: [NSDocumentTypeDocumentAttribute:NSRTFDTextDocumentType])
+		_ = try? rtfd?.write(to: URL(fileURLWithPath: "/tmp/lastSession.rtfd"))
 		dict[SessionStateKey.Results.rawValue] = rtfd as AnyObject?
+		dict["attrs"] = serializeCustomAttributes() as AnyObject
 		dict["font"] = NSKeyedArchiver.archivedData(withRootObject: currentFontDescriptor) as AnyObject?
 		return dict as AnyObject
 	}
@@ -87,6 +123,10 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 			//for some reason, NSLayoutManager is initially making the line with an attachment 32 tall, even though image is 48. On window resize, it corrects itself. so we are going to keep an array of attachment indexes so we can fix this later
 			var fileIndexes:[Int] = []
 			resultsView!.replaceCharacters(in: NSMakeRange(0, ts.length), withRTFD:data)
+			if let attrData = state["attrs"] as? Data {
+				applyCustomAttributes(data: attrData)
+				themeChanged(nil)
+			}
 			resultsView!.textStorage?.enumerateAttribute(NSAttachmentAttributeName, in: NSMakeRange(0, ts.length), options: [], using:
 			{ (value, range, stop) -> Void in
 				guard let attach = value as? NSTextAttachment else { return }
@@ -108,6 +148,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 				ts.insert(NSAttributedString(string: " "), at: $0)
 				ts.deleteCharacters(in: NSMakeRange($0, 1))
 			}
+			UserDefaults.standard.activeOutputTheme.update(attributedString: ts)
 			if let fontData = state["font"] as? Data, let fontDesc = NSKeyedUnarchiver.unarchiveObject(with: fontData) {
 				currentFontDescriptor = fontDesc as! NSFontDescriptor
 			}
@@ -187,3 +228,24 @@ extension ConsoleOutputController: UsesAdjustableFont {
 	}
 }
 
+struct SavedOutputThemeAttribute: JSONDecodable, JSONEncodable {
+	let property: OutputThemeProperty
+	let range: NSRange
+	
+	init(_ property: OutputThemeProperty, range: NSRange) {
+		self.property = property
+		self.range = range
+	}
+	
+	init(json: JSON) throws {
+		guard let prop = OutputThemeProperty(rawValue: try json.getString(at: "prop")) else {
+			throw Rc2Error(type: .invalidJson, explanation: "bad data for SavedOutputThemeAttribute")
+		}
+		self.property = prop
+		self.range = NSRangeFromString(try json.getString(at: "range"))
+	}
+	
+	func toJSON() -> JSON {
+		return .dictionary(["range": .string(NSStringFromRange(self.range)), "prop": .string(property.rawValue)])
+	}
+}

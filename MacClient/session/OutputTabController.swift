@@ -7,8 +7,12 @@
 import Cocoa
 import ClientCore
 import os
+import Freddy
 import Networking
 import ReactiveSwift
+import ReactiveCocoa
+import Result
+import SwiftyUserDefaults
 
 enum OutputTab: Int {
 	 case console = 0, image, webKit, help
@@ -30,14 +34,14 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	var webController: WebKitOutputController?
 	var helpController: HelpOutputController?
 	var imageCache: ImageCache? { return sessionController?.session.imageCache }
-	weak var sessionController: SessionController? { didSet { imageController?.imageCache = imageCache } }
+	weak var sessionController: SessionController? { didSet { sessionControllerUpdated() } }
 	weak var displayedFile: File?
 	var searchBarVisible: Bool {
 		get { return currentOutputController.searchBarVisible }
 		set { currentOutputController.performFind(action: newValue ? .showFindInterface : .hideFindInterface) }
 	}
 	let selectedOutputTab = MutableProperty<OutputTab>(.console)
-	
+
 	//MARK: methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -56,6 +60,10 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		webController = firstChildViewController(self)
 		helpController = firstChildViewController(self)
 		currentOutputController = consoleController
+	}
+	
+	private func sessionControllerUpdated() {
+		imageController?.imageCache = imageCache
 	}
 	
 	override func viewDidAppear() {

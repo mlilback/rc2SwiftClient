@@ -6,6 +6,23 @@
 
 import Cocoa
 import Freddy
+import ClientCore
+import os
+import SwiftyUserDefaults
+import Networking
+
+// wrapper used for table rows in the themeList
+struct ThemeEntry {
+	let title: String
+	let theme: OutputTheme?
+	var isSectionLabel: Bool { return theme == nil }
+
+	init(title: String? = nil, theme: OutputTheme? = nil) {
+		precondition(title != nil || theme != nil)
+		self.theme = theme
+		self.title = title == nil ? theme!.name: title!
+	}
+}
 
 class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
 	@IBOutlet var themeListView: NSTableView!
@@ -13,13 +30,19 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 	@IBOutlet var listFooterView: NSView?
 	@IBOutlet var addMenu: NSMenu?
 	
-	var outputThemes = [OutputTheme]()
-	dynamic var selectedTheme: OutputTheme?
+	private var userThemeDirectoryUrl: URL?
+	private var defaultThemes = [OutputTheme]()
+	private var userThemes = [OutputTheme]()
+	var entries = [ThemeEntry]()
+	dynamic var selectedTheme: OutputTheme? { didSet { saveActiveTheme() } }
+	private var userDirectoryWatcher: DirectoryWatcher?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		loadThemes()
-		selectedTheme = outputThemes.first
+		loadSystemThemes()
+		loadUserThemes()
+		updateThemesArray()
+		selectedTheme = entries.first(where: { !$0.isSectionLabel })?.theme
 		themeListView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
 		let scrollview = themeListView.enclosingScrollView!
 		scrollview.addFloatingSubview(listFooterView!, for: .vertical)
@@ -30,9 +53,10 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 		guard let menu = addMenu?.copy() as? NSMenu, let footer = listFooterView else { fatalError() }
 		let bframe = footer.superview!.convert(footer.frame, to: nil)
 		let rect = view.window?.convertToScreen(bframe)
-		outputThemes.forEach { theme in
+		entries.forEach { entry in
+			guard let theme = entry.theme else { return }
 			let menuItem = NSMenuItem(title: theme.name, action: #selector(duplicateThemeFromTemplate(_:)), keyEquivalent: "")
-			menuItem.tag = outputThemes.index(of: theme)!
+			menuItem.representedObject = theme
 			menuItem.target = self
 			menu.addItem(menuItem)
 		}
@@ -49,22 +73,20 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 	
 	@IBAction func duplicateThemeFromTemplate(_ sender: Any?) {
 		guard let menuItem = sender as? NSMenuItem,
-			let idx = Optional.some(menuItem.tag),
-			idx >= 0 && idx < outputThemes.count,
-			let theme = Optional.some(outputThemes[idx])
+			let template = menuItem.representedObject as? OutputTheme
 			else { return }
-		print("copying \(theme.name)")
+		print("copying \(template.name)")
 	}
 	
 	func numberOfRows(in tableView: NSTableView) -> Int {
-		if tableView == themeListView { return outputThemes.count }
-		return selectedTheme?.colors.count ?? 0
+		if tableView == themeListView { return entries.count }
+		return selectedTheme?.propertyCount ?? 0
 	}
 	
 	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 		if tableView == themeListView {
 			let view = tableView.make(withIdentifier: "themeNameView", owner: nil) as! NSTableCellView
-			view.objectValue = outputThemes[row]
+			view.textField?.stringValue = entries[row].title
 			return view
 		}
 		let view = tableView.make(withIdentifier: "themeItem", owner: nil) as! NameAndColorCellView
@@ -82,13 +104,32 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 	
 	func tableViewSelectionDidChange(_ notification: Notification) {
 		if notification.object as? NSTableView == themeListView {
-			selectedTheme = outputThemes[themeListView.selectedRow]
+			selectedTheme = entries[themeListView.selectedRow].theme
+			saveActiveTheme()
 			themeTableView.reloadData()
 		}
 	}
 	
-	private func loadThemes() {
-		// AppInfo.subdirectory(type: .applicationSupportDirectory, named: "OutputThemes")
+	private func saveActiveTheme() {
+		UserDefaults.standard[.activeOutputTheme] = selectedTheme?.toJSON()
+		NotificationCenter.default.post(name: .outputThemeChanged, object: selectedTheme)
+	}
+	
+	private func updateThemesArray() {
+		entries.removeAll()
+		if userThemes.count > 0 {
+			entries.append(ThemeEntry(title: "User Themes"))
+			entries.append(contentsOf: userThemes.map { ThemeEntry(theme: $0) })
+			entries.append(ThemeEntry(title: "Default Themes"))
+		}
+		entries.append(contentsOf: defaultThemes.map { ThemeEntry(theme: $0) })
+		if entries.count < 1 {
+			os_log("no themes!", log: .app, type: .error)
+		}
+	}
+	
+	private func loadSystemThemes() {
+		//load system themes
 		guard let builtinUrl = Bundle.main.url(forResource: "outputThemes", withExtension: "json"),
 			let data = try? Data(contentsOf: builtinUrl),
 			let json = try? JSON(data: data)
@@ -97,10 +138,37 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 			fatalError("missing outputThemes.json")
 		}
 		do {
-			outputThemes = try json.decodedArray().sorted(by: { $0.name < $1.name })
-			outputThemes.forEach { $0.isBuiltin = true }
+			defaultThemes = try json.decodedArray().sorted(by: { $0.name < $1.name })
+			defaultThemes.forEach { $0.isBuiltin = true }
 		} catch {
 			fatalError("failed to load themes: \(error)")
+		}
+	}
+	
+	private func loadUserThemes() {
+		do {
+			//create watcher if necessary
+			if nil == userDirectoryWatcher {
+				userThemeDirectoryUrl = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "OutputThemes")
+				userDirectoryWatcher = DirectoryWatcher(url: userThemeDirectoryUrl!) {_ in
+					DispatchQueue.main.async {
+						self.loadUserThemes()
+					}
+				}
+			}
+			//scan for themes
+			userThemes.removeAll()
+			let urls = try FileManager.default.contentsOfDirectory(at: userThemeDirectoryUrl!, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
+			urls.forEach { aFile in
+				guard aFile.pathExtension == "json",
+					let data = try? Data(contentsOf: aFile),
+					let json = try? JSON(data: data),
+					let theme: OutputTheme = try? json.decode()
+					else { return }
+				userThemes.append(theme)
+			}
+		} catch {
+			os_log("error loading user themes: %{public}s", log: .app, error.localizedDescription)
 		}
 	}
 }
