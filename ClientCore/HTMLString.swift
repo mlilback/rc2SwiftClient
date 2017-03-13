@@ -39,7 +39,7 @@ open class HTMLString {
 		var nextStart = 0
 		let outString: NSMutableAttributedString = NSMutableAttributedString()
 		HTMLString.basicRegex.enumerateMatches(in: regularText, options: [.reportCompletion], range: regularText.fullNSRange)
-		{ (result, flags, stop) -> Void in
+		{ (result, _, _) -> Void in
 			guard result != nil else {
 				//copy to end of string
 				outString.append(NSAttributedString(string: srcString.substring(from: nextStart)))
@@ -70,10 +70,10 @@ open class HTMLString {
 		attrText = NSAttributedString(attributedString: outString)
 	}
 
-	fileprivate func parseColorAttrs(_ srcString: NSString, attrString: NSString) -> [String:AnyObject] {
-		var dict = [String:AnyObject]()
+	fileprivate func parseColorAttrs(_ srcString: NSString, attrString: NSString) -> [String: AnyObject] {
+		var dict = [String: AnyObject]()
 		HTMLString.argumentRegex.enumerateMatches(in: attrString as String, options: [], range: NSRange(location: 0, length: attrString.length))
-		{ (result, flags, stop) -> Void in
+		{ (result, _, _) -> Void in
 			let attrName = srcString.substring(with: (result?.rangeAt(1))!)
 			let attrValue = srcString.substring(with: (result?.rangeAt(2))!)
 			switch attrName {

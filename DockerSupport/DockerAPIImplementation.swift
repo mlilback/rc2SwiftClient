@@ -131,7 +131,7 @@ final class DockerAPIImplementation: DockerAPI {
 	/// documentation in DockerAPI protocol
 	func create(volume: String) -> SignalProducer<(), Rc2Error>
 	{
-		var props = [String:Any]()
+		var props = [String: Any]()
 		props["Name"] = volume
 		props["Labels"] = ["rc2.live": ""]
 		// swiftlint:disable:next force_try
@@ -178,7 +178,7 @@ final class DockerAPIImplementation: DockerAPI {
 		let url = baseUrl.appendingPathComponent("/containers/\(container.name)/\(operation.rawValue)")
 		var request = URLRequest(url: url)
 		request.httpMethod = "POST"
-		return SignalProducer<(), Rc2Error> { observer, disposable in
+		return SignalProducer<(), Rc2Error> { observer, _ in
 			self.session.dataTask(with: request) { (data, response, error) in
 				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {
 					observer.send(value: ())
@@ -233,7 +233,7 @@ final class DockerAPIImplementation: DockerAPI {
 	/// documentation in DockerAPI protocol
 	func create(network: String) -> SignalProducer<(), Rc2Error>
 	{
-		var props = [String:Any]()
+		var props = [String: Any]()
 		props["Internal"] = false
 		props["Driver"] = "bridge"
 		props["Name"] = network
@@ -397,7 +397,7 @@ extension DockerAPIImplementation {
 
 	@discardableResult
 	fileprivate func makeRequest(request: URLRequest) -> SignalProducer<Data, Rc2Error> {
-		return SignalProducer<Data, Rc2Error> { observer, disposable in
+		return SignalProducer<Data, Rc2Error> { observer, _ in
 			self.session.dataTask(with: request, completionHandler: { (data, response, error) in
 				guard let rawData = data, error == nil else {
 					observer.send(error: Rc2Error(type: .network, nested: error))

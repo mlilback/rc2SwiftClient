@@ -48,7 +48,7 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	fileprivate(set) var pullProgress: PullProgress
 	fileprivate var _lastUpdate: Double = 0
 	let estimatedSize: Int
-	var layers = [String:LayerProgress]()
+	var layers = [String: LayerProgress]()
 	var totalDownloaded: Int = 0
 	var statuses = Set<String>()
 	fileprivate var pullObserver: Signal<PullProgress, Rc2Error>.Observer?
@@ -73,7 +73,7 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	}
 
 	public func pull() -> SignalProducer<PullProgress, Rc2Error> {
-		return SignalProducer<PullProgress, Rc2Error>() { observer, _ in
+		return SignalProducer<PullProgress, Rc2Error> { observer, _ in
 			os_log("starting pull: %{public}@", type:.info, self.url.absoluteString)
 			self.pullObserver = observer
 			self.urlSession = Foundation.URLSession(configuration: self.urlConfig, delegate: self, delegateQueue:OperationQueue.main)

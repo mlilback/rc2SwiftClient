@@ -79,7 +79,7 @@ protocol DockerEventMonitor {
 }
 
 final class DockerEventMonitorImpl: NSObject, DockerEventMonitor, URLSessionDataDelegate {
-	var delegate: DockerEventMonitorDelegate
+	weak var delegate: DockerEventMonitorDelegate?
 	var session: URLSession!
 
 	required init(baseUrl: URL, delegate: DockerEventMonitorDelegate, sessionConfig: URLSessionConfiguration)
@@ -111,13 +111,13 @@ final class DockerEventMonitorImpl: NSObject, DockerEventMonitor, URLSessionData
 			}
 			if let event = DockerEvent(json) {
 				os_log("got event: %{public}@", log:.dockerEvt, type:.info, event.description)
-				delegate.handleEvent(event)
+				delegate?.handleEvent(event)
 			}
 		}
 	}
 
 	open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
 		os_log("why did our session end?: %{public}@", log: .docker, error as NSError? ?? "unknown")
-		delegate.eventMonitorClosed(error: error)
+		delegate?.eventMonitorClosed(error: error)
 	}
 }

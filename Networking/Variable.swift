@@ -257,7 +257,7 @@ public final class BoolPrimitiveVariable: Variable {
 	}
 	
 	override public var description: String {
-		return "[\((values.map() { String($0) }).joined(separator: ", "))]"
+		return "[\((values.map { String($0) }).joined(separator: ", "))]"
 	}
 }
 
@@ -284,7 +284,7 @@ public final class IntPrimitiveVariable: Variable {
 	}
 
 	override public var description: String {
-		return "[\((values.map() { String($0) }).joined(separator: ", "))]"
+		return "[\((values.map { String($0) }).joined(separator: ", "))]"
 	}
 }
 
@@ -293,7 +293,7 @@ public final class DoublePrimitiveVariable: Variable {
 	
 	override init(json: JSON) throws {
 		let vals = try json.getArray(at: "value")
-		values = try vals.map() { (val) in
+		values = try vals.map { (val) in
 			switch val {
 			case .string(let str):
 				if str == "Inf" { return Double.infinity }
@@ -322,7 +322,7 @@ public final class DoublePrimitiveVariable: Variable {
 	}
 	
 	override public var description: String {
-		return "[\((values.map() { String($0) }).joined(separator: ", "))]"
+		return "[\((values.map { String($0) }).joined(separator: ", "))]"
 	}
 }
 
@@ -342,9 +342,9 @@ public final class StringPrimitiveVariable: Variable {
 
 	override public var description: String {
 		if primitiveType == .complex {
-			return "[\((values.map() { String($0) }).joined(separator: ", "))]"
+			return "[\((values.map { String($0) }).joined(separator: ", "))]"
 		}
-		return "[\((values.map() { "\"\($0)\"" }).joined(separator: ", "))]"
+		return "[\((values.map { "\"\($0)\"" }).joined(separator: ", "))]"
 	}
 }
 
@@ -371,7 +371,7 @@ public final class FactorVariable: Variable {
 	}
 	
 	override public var description: String {
-		return "[\((values.map() { levelNames[$0] }).joined(separator: ", "))]"
+		return "[\((values.map { levelNames[$0] }).joined(separator: ", "))]"
 	}
 }
 

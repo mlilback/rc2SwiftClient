@@ -127,7 +127,7 @@ public class ImageCache: JSONEncodable {
 	public func image(withId imageId: Int) -> SignalProducer<PlatformImage, ImageCacheError> {
 		assert(workspace != nil, "imageCache.workspace must be set before using")
 		let fileUrl = URL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeTo: self.cacheUrl)
-		return SignalProducer<PlatformImage, ImageCacheError>() { observer, _ in
+		return SignalProducer<PlatformImage, ImageCacheError> { observer, _ in
 			// swiftlint:disable:next force_try
 			if try! fileUrl.checkResourceIsReachable() {
 				observer.send(value: PlatformImage(contentsOf: fileUrl)!)

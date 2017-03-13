@@ -46,8 +46,8 @@ enum ManagerState: Int, Comparable {
 	}
 }
 
-//MARK: -
-///manages communicating with the local docker engine
+// MARK: -
+/// manages communicating with the local docker engine
 public final class DockerManager: NSObject {
 	// MARK: - Properties
 	/// the containers managed.
@@ -156,7 +156,7 @@ public final class DockerManager: NSObject {
 		session.invalidateAndCancel()
 	}
 
-	//MARK: - standard operating procedure
+	// MARK: - standard operating procedure
 
 	/// loads version info from docker daemon and then checks for updates to image info from baseInfoUrl
 	///
@@ -404,7 +404,7 @@ extension DockerManager: DockerEventMonitorDelegate {
 	}
 }
 
-//MARK: - Private Methods
+// MARK: - Private Methods
 extension DockerManager {
 	/// Validates the version parameter meets requirements.
 	///
@@ -412,7 +412,7 @@ extension DockerManager {
 	///
 	/// - returns: a signal producer whose value is the valid version info
 	func verifyValidVersion(version: DockerVersion) -> SignalProducer<DockerVersion, Rc2Error> {
-		return SignalProducer<DockerVersion, Rc2Error>() { observer, _ in
+		return SignalProducer<DockerVersion, Rc2Error> { observer, _ in
 			//force cast because only should be called if versionInfo was set
 			os_log("dm.verifyValidVersion: %{public}s", log: .docker, type: .debug, version.description)
 			if version.apiVersion >= self.requiredApiVersion {

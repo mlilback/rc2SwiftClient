@@ -23,7 +23,7 @@ public enum ContainerError: Error {
 	case invalidContainerType
 }
 
-//MARK: -
+// MARK: -
 /// An enumeration of the container names used to provide services via Docker
 public enum ContainerType: String {
 	case dbserver, appserver, compute
@@ -195,7 +195,7 @@ public final class DockerContainer: JSONDecodable {
 		assert(createInfo != nil)
 		//have to do this via JSONSerialization as Freddy doesn't allow mutating parsed data
 		// swiftlint:disable:next force_cast
-		var info = try JSONSerialization.jsonObject(with: createInfo!, options: []) as! Dictionary<String, Any>
+		var info = try JSONSerialization.jsonObject(with: createInfo!, options: []) as! [String: Any]
 		info["Image"] = imageTag
 		createInfo = try JSONSerialization.data(withJSONObject: info, options: [])
 	}

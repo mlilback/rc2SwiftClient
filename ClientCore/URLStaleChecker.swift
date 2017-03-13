@@ -34,7 +34,7 @@ public class URLStateChecker: NSObject {
 	public func check(url: URL, lastModified: Date? = nil, etag: String? = nil, handler: @escaping (Bool) -> Void)
 	{
 		let req = request(url: url, lastModified: lastModified, etag: etag)
-		session.dataTask(with: req) { (data, response, error) in
+		session.dataTask(with: req) { (_, response, error) in
 			if let err = error {
 				os_log("error checking http request: %{public}s", log: .network, type: .default, err as NSError)
 				handler(false)
@@ -59,7 +59,7 @@ public class URLStateChecker: NSObject {
 	{
 		return SignalProducer<Bool, Rc2Error> { observer, _ in
 			let req = self.request(url: url, lastModified: lastModified, etag: etag)
-			self.session.dataTask(with: req) { (data, response, error) in
+			self.session.dataTask(with: req) { (_, response, error) in
 				if let err = error {
 					let rc2err = Rc2Error(type: .network, nested: err)
 					observer.send(error: rc2err)

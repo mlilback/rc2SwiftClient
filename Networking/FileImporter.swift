@@ -86,7 +86,7 @@ public class FileImporter: NSObject {
 			let task = uploadSession.uploadTask(with: request as URLRequest, fromFile: srcUrl)
 			tasks[index] = ImportData(task: task, srcFile: srcUrl)
 		}
-		return ProgressSignalProducer() { observer, disposable in
+		return ProgressSignalProducer { observer, disposable in
 			self.progressObserver = observer
 			self.progressDisposable = disposable
 			self.queue.async {

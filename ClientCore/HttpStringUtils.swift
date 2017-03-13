@@ -27,6 +27,7 @@ public class HttpStringUtils {
 	///extracts headers into a dictionary
 	/// - parameter headerString: the raw headers from an HTTP response
 	/// - returns: tuple of the HTTP status code, HTTP version, and a dictionary of headers
+	// swiftlint:disable:next large_tuple
 	public class func extractHeaders(_ responseString: String) throws -> (status: Int, version: String, headers: [String:String])
 	{
 		// swiftlint:disable:next force_try
@@ -37,7 +38,7 @@ public class HttpStringUtils {
 			let versionString = responseString.substring(from: matchResult.rangeAt(1)),
 			let headersString = responseString.substring(from: matchResult.rangeAt(4))
 			else { throw UtilError.invalidInput }
-		var headers = [String:String]()
+		var headers = [String: String]()
 		// swiftlint:disable:next force_try
 		let headerRegex = try! NSRegularExpression(pattern: "(.+): (.*)", options: [])
 		headerRegex.enumerateMatches(in: headersString, options: [], range: headersString.fullNSRange)

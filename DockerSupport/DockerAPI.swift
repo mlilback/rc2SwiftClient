@@ -9,7 +9,7 @@ import ReactiveSwift
 import Freddy
 import ClientCore
 
-//MARK: -
+// MARK: -
 /// simple operations that can be performed on a container
 public enum DockerContainerOperation: String {
 	case start, stop, restart, pause, resume = "unpause"

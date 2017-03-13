@@ -262,7 +262,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 		guard nil == downloadAll else {
 			return producer(signal: self.downloadAll!.signal)
 		}
-		return SignalProducer<Double, Rc2Error>() { observer, disposable in
+		return SignalProducer<Double, Rc2Error> { observer, _ in
 			self.taskLockQueue.sync {
 				//if no files, completed
 				if self.workspace.files.count < 1 {
@@ -377,14 +377,14 @@ public final class DefaultFileCache: NSObject, FileCache {
 	}
 }
 
-//MARK: - FileHandling
+// MARK: - FileHandling
 extension DefaultFileCache {
 	/// get the contents of a file
 	///
 	/// - Parameter file: the file whose contents should be returned
 	/// - Returns: a signal producer that returns the file data or an error
 	public func contents(of file: File) -> SignalProducer<Data, Rc2Error> {
-		return SignalProducer<Data, Rc2Error>() { observer, _ in
+		return SignalProducer<Data, Rc2Error> { observer, _ in
 			self.taskLockQueue.sync {
 				if let dinfo = self.downloadAll {
 					//download is in progress. wait until completed
@@ -441,7 +441,7 @@ extension DefaultFileCache {
 	/// - Returns: signal producer that signals completed or error
 	public func update(file: File, withData data: Data?) -> SignalProducer<Void, Rc2Error>
 	{
-		let updateSP = SignalProducer<Void, Rc2Error>() { observer, _ in
+		let updateSP = SignalProducer<Void, Rc2Error> { observer, _ in
 			do {
 				try self.workspace.update(fileId: file.fileId, to: file)
 				observer.sendCompleted()
@@ -481,7 +481,7 @@ extension DefaultFileCache {
 	}
 }
 
-//MARK: - URLSessionDownloadDelegate
+// MARK: - URLSessionDownloadDelegate
 extension DefaultFileCache: URLSessionDownloadDelegate {
 	public func urlSession(_ session: URLSession, downloadTask urlTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
 	{

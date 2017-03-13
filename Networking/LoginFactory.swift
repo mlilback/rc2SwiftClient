@@ -58,7 +58,7 @@ public final class LoginFactory: NSObject {
 		}
 		requestData = reqdata
 		requestUrl = URL(string: "login", relativeTo: destHost.url!)!
-		return SignalProducer<ConnectionInfo, Rc2Error>() { [weak self] observer, disposable in
+		return SignalProducer<ConnectionInfo, Rc2Error> { [weak self] observer, disposable in
 			self?.signalObserver = observer
 			self?.signalDisposable = disposable
 			self?.attemptLogin()

@@ -28,7 +28,7 @@ public final class OutputTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
 	public let attributeName = OutputTheme.AttributeName
 	
 	public var name: String
-	var colors = Dictionary<OutputThemeProperty, PlatformColor>()
+	var colors = [OutputThemeProperty: PlatformColor]()
 	public dynamic var isBuiltin: Bool = false
 	
 	public var propertyCount: Int { return colors.count }
@@ -78,7 +78,7 @@ public final class OutputTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
 	/// - Parameter attributedString: The string whose attributes will be updated
 	public func update(attributedString: NSMutableAttributedString) {
 		attributedString.enumerateAttribute(attributeName, in: attributedString.string.fullNSRange)
-		{ (rawProperty, range, stop) in
+		{ (rawProperty, range, _) in
 			guard let rawProperty = rawProperty,
 				let property = rawProperty as? OutputThemeProperty
 				else { return } //should never fail

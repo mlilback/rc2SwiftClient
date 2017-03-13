@@ -61,7 +61,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		chunkHandler = nil
 	}
 
-	//MARK: - private methods
+	// MARK: - private methods
 
 	/// Builds a string with the proper http request string
 	///
@@ -162,7 +162,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		}
 		guard code >= 0 else {
 			os_log("bad response %d, %d", type:.error, code, errno)
-			let error = NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey:request.url!])
+			let error = NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey: request.url!])
 			reportBadResponse(error: error)
 			throw error
 		}
@@ -204,7 +204,7 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	fileprivate func reportBadResponse(error: NSError? = nil) {
 		var terror = error
 		if terror == nil {
-			terror = NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey:request.url!])
+			terror = NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey: request.url!])
 		}
 		client?.urlProtocol(self, didFailWithError: terror!)
 	}

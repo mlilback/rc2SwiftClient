@@ -112,7 +112,7 @@ public final class Rc2RestClient {
 
 	public func downloadImage(imageId: Int, from wspace: Workspace, destination: URL) -> SignalProducer<URL, Rc2Error>
 	{
-		return SignalProducer<URL, Rc2Error>() { observer, _ in
+		return SignalProducer<URL, Rc2Error> { observer, _ in
 			var req = self.request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET")
 			req.addValue("image/png", forHTTPHeaderField: "Accept")
 			let task = self.urlSession!.downloadTask(with: req) { (dloadUrl, response, error) -> Void in

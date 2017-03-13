@@ -65,7 +65,7 @@ public struct DockerTag: JSONDecodable, CustomStringConvertible, Hashable {
 
 extension DockerTag: JSONEncodable {
 	public func toJSON() -> JSON {
-		var dict = Dictionary<String, String>()
+		var dict = [String: String]()
 		if let aRep = repo { dict["repo"] = aRep }
 		dict["name"] = name
 		if let aVer = version { dict["version"] = aVer }

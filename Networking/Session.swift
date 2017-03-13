@@ -123,7 +123,7 @@ public class Session {
 	///opens the websocket with the specified request
 	/// - returns: future for the open session (with file loading started) or an error
 	public func open() -> SignalProducer<Double, Rc2Error> {
-		return SignalProducer<Double, Rc2Error>() { observer, disposable in
+		return SignalProducer<Double, Rc2Error> { observer, _ in
 			guard nil == self.openObserver else {
 				observer.send(error: Rc2Error(type: .network, nested: SessionError.openAlreadyInProgress))
 				return
@@ -241,7 +241,7 @@ public class Session {
 	/// - returns: a signal producer that will be complete once the server affirms the file was removed
 	@discardableResult
 	public func remove(file: File) -> SignalProducer<Void, Rc2Error> {
-		return SignalProducer<Void, Rc2Error>() { observer, _ in
+		return SignalProducer<Void, Rc2Error> { observer, _ in
 			let transId = UUID().uuidString
 			self.sendMessage(json: .dictionary(["msg": .string("fileop"), "fileId": .int(file.fileId), "fileVersion": .int(file.version), "operation": .string("rm"), "transId": .string(transId)]))
 			self.pendingTransactions[transId] = { (responseId, json, error) in
@@ -260,7 +260,7 @@ public class Session {
 	/// - returns: a signal producer that will be complete once the server affirms the file was renamed
 	@discardableResult
 	public func rename(file: File, to newName: String) -> SignalProducer<Void, Rc2Error> {
-		return SignalProducer<Void, Rc2Error>() { observer, _ in
+		return SignalProducer<Void, Rc2Error> { observer, _ in
 			let transId = UUID().uuidString
 			self.sendMessage(json: .dictionary(["msg": .string("fileop"), "fileId": .int(file.fileId), "fileVersion": .int(file.version), "operation": .string("rename"), "newName": .string(newName), "transId": .string(transId)]))
 			self.pendingTransactions[transId] = { (responseId, json, error) in
@@ -280,7 +280,7 @@ public class Session {
 	///   - newName: the name for the duplicate
 	/// - Returns: signal handler with the new file's id or an error
 	public func duplicate(file: File, to newName: String) -> SignalProducer<Int, Rc2Error> {
-		return SignalProducer<Int, Rc2Error>() { observer, _ in
+		return SignalProducer<Int, Rc2Error> { observer, _ in
 			let transId = UUID().uuidString
 			self.sendMessage(json: .dictionary(["msg": .string("fileop"), "fileId": .int(file.fileId), "fileVersion": .int(file.version), "operation": .string("duplicate"), "newName": .string(newName), "transId": .string(transId)]))
 			self.pendingTransactions[transId] = { (responseId, json, error) in
@@ -308,10 +308,10 @@ public class Session {
 	public func sendSaveFileMessage(file: File, contents: String, executeType: ExecuteType = .None) -> SignalProducer<Bool, Rc2Error>
 	{
 		os_log("sendSaveFileMessage called on file %d", log: .session, type: .info, file.fileId)
-		return SignalProducer<Bool, Rc2Error> { observer, disposable in
+		return SignalProducer<Bool, Rc2Error> { observer, _ in
 			let transId = UUID().uuidString
 			let encoder = MessagePackEncoder()
-			var attrs = ["msg":MessageValue.forValue("save"), "apiVersion":MessageValue.forValue(Int(1))]
+			var attrs = ["msg": MessageValue.forValue("save"), "apiVersion": MessageValue.forValue(Int(1))]
 			attrs["transId"] = MessageValue.forValue(transId)
 			attrs["fileId"] = MessageValue.forValue(file.fileId)
 			attrs["fileVersion"] = MessageValue.forValue(file.version)
@@ -406,7 +406,7 @@ private extension Session {
 			pendingTransactions[transId]?(transId, nil, nil)
 			pendingTransactions.removeValue(forKey: transId)
 		}
-		if let errorDict = rawDict["error"] as? Dictionary<String, AnyObject> {
+		if let errorDict = rawDict["error"] as? [String: AnyObject] {
 			//TODO: inform user
 			os_log("got save response error: %{public}@", log: .session, type:.error, (errorDict["message"] as? String)!)
 			return

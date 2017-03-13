@@ -57,7 +57,7 @@ open class Keychain {
 	}
 
 	fileprivate func setupQuery(_ key: String) -> [String:AnyObject] {
-		var query: [String:AnyObject] = [SecClass:kSecClassGenericPassword as String as String as AnyObject]
+		var query: [String: AnyObject] = [SecClass: kSecClassGenericPassword as String as String as AnyObject]
 		query[kSecAttrService as String] = service as AnyObject?
 		query[kSecAttrAccount as String] = key as AnyObject?
 		query[kSecReturnData as String] = kCFBooleanTrue
