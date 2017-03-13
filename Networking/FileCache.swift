@@ -64,7 +64,7 @@ public protocol FileCache {
 	func save(file: File, contents: String) -> SignalProducer<Void, Rc2Error>
 }
 
-//MARK: FileCache implementation
+// MARK: FileCache implementation
 
 fileprivate class DownloadTask {
 	let file: File
@@ -130,13 +130,13 @@ fileprivate struct DownloadAll {
 }
 
 public final class DefaultFileCache: NSObject, FileCache {
-	//MARK: properties
+	// MARK: properties
 	public let mainQueue: DispatchQueue
-	public var fileManager:Rc2FileManager
+	public var fileManager: Rc2FileManager
 	public let workspace: Workspace
 	fileprivate var baseUrl: URL
 	fileprivate var urlSession: URLSession?
-	fileprivate var tasks:[Int: DownloadTask] = [:] //key is task identifier
+	fileprivate var tasks: [Int: DownloadTask] = [:] //key is task identifier
 	fileprivate let saveQueue: DispatchQueue
 	fileprivate let taskLockQueue: DispatchQueue
 	fileprivate var downloadAll: DownloadAll?
@@ -151,8 +151,8 @@ public final class DefaultFileCache: NSObject, FileCache {
 		fatalError("failed to create file cache")
 	}()
 	
-	//MARK: methods
-	public init(workspace: Workspace, baseUrl: URL, config: URLSessionConfiguration, fileManager:Rc2FileManager? = nil, queue: DispatchQueue = DispatchQueue.main)
+	// MARK: methods
+	public init(workspace: Workspace, baseUrl: URL, config: URLSessionConfiguration, fileManager: Rc2FileManager? = nil, queue: DispatchQueue = DispatchQueue.main)
 	{
 		if fileManager != nil {
 			self.fileManager = fileManager!
@@ -184,7 +184,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 	}
 
 //	@discardableResult public func flushCache(workspace:Workspace) {
-//		
+//
 //	}
 	
 	public func flushCache(file: File) {
@@ -243,7 +243,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 				guard percentDone.isFinite else { return Double(1) }
 				let fdownloaded = Int(Double(file.fileSize) * percentDone)
 				return Double(downloadedSize + fdownloaded) / Double(totalSize)
-			}).on(completed: { 
+			}).on(completed: {
 				downloadedSize += file.fileSize
 			})
 			producers.append(producer)
@@ -311,12 +311,12 @@ public final class DefaultFileCache: NSObject, FileCache {
 	}
 	
 	///returns the file system url where the file is/will be stored
-	public func cachedUrl(file:File) -> URL {
+	public func cachedUrl(file: File) -> URL {
 		let fileUrl = URL(fileURLWithPath: "\(file.fileId).\(file.fileType.fileExtension)", relativeTo: fileCacheUrl).absoluteURL
 		return fileUrl
 	}
 	
-	fileprivate func downloadTaskWithFileId(_ fileId:Int) -> DownloadTask? {
+	fileprivate func downloadTaskWithFileId(_ fileId: Int) -> DownloadTask? {
 		for aTask in tasks {
 			if aTask.1.file.fileId == fileId { return aTask.1 }
 		}

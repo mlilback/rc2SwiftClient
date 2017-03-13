@@ -12,26 +12,26 @@ import Freddy
 	import UIKit
 #endif
 
-
-public class FileType : JSONDecodable {
+public class FileType: JSONDecodable {
 	
-	public static var allFileTypes:[FileType] = {
+	public static var allFileTypes: [FileType] = {
 		guard let furl = Bundle(for: FileType.self).url(forResource: "FileTypes", withExtension: "json"),
 			let data = try? Data(contentsOf: furl),
 			let json = try? JSON(data: data)
 			else {
 				fatalError()
 		}
+		// swiftlint:disable:next force_try
 		return try! json.decodedArray(at: "FileTypes", type: FileType.self)
 	}()
 	
-	public static var imageFileTypes:[FileType] = { allFileTypes.filter { return $0.isImage } }()
-	public static var textFileTypes:[FileType] = { allFileTypes.filter { return $0.isTextFile } }()
-	public static var importableFileTypes:[FileType] = { allFileTypes.filter { return $0.isImportable } }()
-	public static var creatableFileTypes:[FileType] = { allFileTypes.filter { return $0.isCreatable } }()
+	public static var imageFileTypes: [FileType] = { allFileTypes.filter { return $0.isImage } }()
+	public static var textFileTypes: [FileType] = { allFileTypes.filter { return $0.isTextFile } }()
+	public static var importableFileTypes: [FileType] = { allFileTypes.filter { return $0.isImportable } }()
+	public static var creatableFileTypes: [FileType] = { allFileTypes.filter { return $0.isCreatable } }()
 	
 	public static func fileType(withExtension ext: String) -> FileType? {
-		let filtered:[FileType] = FileType.allFileTypes.filter {return $0.fileExtension == ext }
+		let filtered: [FileType] = FileType.allFileTypes.filter {return $0.fileExtension == ext }
 		return filtered.first
 	}
 
@@ -66,19 +66,19 @@ public class FileType : JSONDecodable {
 	}
 	
 	/// Is the user allowed to upload files of this type
-	public var isImportable:Bool { return boolPropertyValue("Importable") }
+	public var isImportable: Bool { return boolPropertyValue("Importable") }
 	// can the user create a new file of this type in the editor
-	public var isCreatable:Bool { return boolPropertyValue("Creatable") }
+	public var isCreatable: Bool { return boolPropertyValue("Creatable") }
 	/// is this a file we can tell the server to execute
-	public var isExecutable:Bool { return boolPropertyValue("Executable") }
+	public var isExecutable: Bool { return boolPropertyValue("Executable") }
 	/// is this a source file that can be edited
-	public var isSourceFile:Bool { return boolPropertyValue("IsSrc") }
-	public var isTextFile:Bool { return boolPropertyValue("IsTextFile") }
-	public var isImage:Bool { return boolPropertyValue("IsImage") }
-	public var isSweave:Bool { return boolPropertyValue("IsSweave") }
-	public var isRMarkdown:Bool { return boolPropertyValue("IsRMarkdown") }
+	public var isSourceFile: Bool { return boolPropertyValue("IsSrc") }
+	public var isTextFile: Bool { return boolPropertyValue("IsTextFile") }
+	public var isImage: Bool { return boolPropertyValue("IsImage") }
+	public var isSweave: Bool { return boolPropertyValue("IsSweave") }
+	public var isRMarkdown: Bool { return boolPropertyValue("IsRMarkdown") }
 	
-	fileprivate func boolPropertyValue(_ key:String) -> Bool {
+	fileprivate func boolPropertyValue(_ key: String) -> Bool {
 		guard let prop = try? json.getBool(at: key) else { return false }
 		return prop
 	}
@@ -97,13 +97,13 @@ extension FileType {
 	}
 	func fileImage() -> NSImage? {
 		if let iname = self.iconName {
-			var img:NSImage?
+			var img: NSImage?
 			img = NSImage(named: iname)
-			if (img == nil) {
+			if img == nil {
 				img = NSWorkspace.shared().icon(forFileType: self.fileExtension)
 			}
-			img?.size = NSMakeSize(48, 48)
-			if (img != nil) {
+			img?.size = NSSize(width: 48, height: 48)
+			if img != nil {
 				return img
 			}
 		}
@@ -123,7 +123,7 @@ extension FileType {
 }
 
 extension FileType: Equatable {
-	static public func ==(a: FileType, b: FileType) -> Bool {
+	static public func == (a: FileType, b: FileType) -> Bool {
 		return a.fileExtension == b.fileExtension
 	}
 }
