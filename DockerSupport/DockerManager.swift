@@ -201,7 +201,7 @@ public final class DockerManager: NSObject {
 			return self.pullSingleImage(pull: DockerPullOperation(baseUrl: self.baseUrl, imageName: img.fullName, estimatedSize: img.size, config: sessionConfig))
 		}
 		//use concat instead of merge because progress depends on order of download (layer sizes)
-		let producer = SignalProducer< SignalProducer<PullProgress, Rc2Error>, Rc2Error >(values: producers)
+		let producer = SignalProducer< SignalProducer<PullProgress, Rc2Error>, Rc2Error >(producers)
 		return producer.flatten(.concat)
 	}
 
@@ -327,7 +327,7 @@ public final class DockerManager: NSObject {
 				.take(first: 1)
 				.timeout(after: 3.0, raising: timeoutError, on: QueueScheduler.main)
 		}
-		let combined: SignalProducer< SignalProducer<ContainerState, Rc2Error>, Rc2Error> = SignalProducer(values: producers)
+		let combined: SignalProducer< SignalProducer<ContainerState, Rc2Error>, Rc2Error> = SignalProducer(producers)
 		//return a producer that will listen until all containers are running and then send a completed, timing out if doesn't happen
 		return combined
 			.flatten(.latest)
@@ -486,7 +486,7 @@ extension DockerManager {
 				aContainer.update(state: .notAvailable)
 			}))
 		}
-		let combinedProducer = SignalProducer< SignalProducer<(), Rc2Error>, Rc2Error >(values: producers)
+		let combinedProducer = SignalProducer< SignalProducer<(), Rc2Error>, Rc2Error >(producers)
 		//combinedProducers will produce no values. Need to folow with a second producer that returns the containers as a value
 		return combinedProducer.flatten(.concat).then(SignalProducer<[DockerContainer], Rc2Error>(value: containers))
 	}

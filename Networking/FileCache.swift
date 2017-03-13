@@ -249,7 +249,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 			producers.append(producer)
 		}
 		//combine all the producers into a single producer of producers, and flatten the results into a single producer
-		let combinedProducer = SignalProducer< SignalProducer<Double, Rc2Error>, Rc2Error >(values: producers)
+		let combinedProducer = SignalProducer< SignalProducer<Double, Rc2Error>, Rc2Error >(producers)
 		return combinedProducer.flatten(.concat)
 	}
 	

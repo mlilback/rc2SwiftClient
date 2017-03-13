@@ -163,7 +163,7 @@ final class DockerAPIImplementation: DockerAPI {
 	{
 		let producers = containers
 			.map({ self.perform(operation: operation, container: $0) })
-		let producer = SignalProducer< SignalProducer<(), Rc2Error>, Rc2Error >(values: producers)
+		let producer = SignalProducer< SignalProducer<(), Rc2Error>, Rc2Error >(producers)
 		return producer.flatten(.latest).take(last: 1)
 	}
 

@@ -501,14 +501,14 @@ private extension Session {
 	
 	/// starts file caching and forwards responses to observer from open() call
 	private func websocketOpened() {
-		fileCache.cacheAllFiles().on(value: { (progPercent) in
-			self.openObserver?.send(value: progPercent)
-		}, failed: { (cacheError) in
+		fileCache.cacheAllFiles().on(failed: { (cacheError) in
 			self.openObserver?.send(error: cacheError)
 		}, completed: {
 			self.connectionOpen = true
 			self.openObserver?.sendCompleted()
 			self.openObserver = nil
+		}, value: { (progPercent) in
+			self.openObserver?.send(value: progPercent)
 		}).start()
 	}
 	
