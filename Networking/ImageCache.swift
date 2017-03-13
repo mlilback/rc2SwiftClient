@@ -41,9 +41,9 @@ public class ImageCache: JSONEncodable {
 			return result!
 		}()
 	
-	public static var supportsSecureCoding : Bool { return true }
+	public static var supportsSecureCoding: Bool { return true }
 	
-	init(restClient: Rc2RestClient, fileManager fm:Foundation.FileManager=Foundation.FileManager(), hostIdentifier hostIdent:String)
+	init(restClient: Rc2RestClient, fileManager fm: Foundation.FileManager=Foundation.FileManager(), hostIdentifier hostIdent: String)
 	{
 		self.restClient = restClient
 		fileManager = fm
@@ -70,10 +70,10 @@ public class ImageCache: JSONEncodable {
 	}
 	
 	func image(withId imageId: Int) -> PlatformImage? {
-		if let pitem = cache.object(forKey: imageId as AnyObject) {
+		if let pitem = cache.object(forKey: imageId as AnyObject) as? NSPurgeableData {
 			defer { pitem.endContentAccess() }
 			if pitem.beginContentAccess() {
-				return PlatformImage(data: NSData(data: (pitem as! NSPurgeableData) as Data) as Data)
+				return PlatformImage(data: NSData(data: pitem as Data) as Data)
 			}
 		}
 		//read from disk
@@ -97,15 +97,15 @@ public class ImageCache: JSONEncodable {
 		metaCache[img.id] = SessionImage(img)
 	}
 	
-	func cacheImagesFromServer(_ images:[SessionImage]) {
+	func cacheImagesFromServer(_ images: [SessionImage]) {
 		for anImage in images {
 			cacheImageFromServer(anImage)
 		}
 	}
 	
-	public func sessionImages(forBatch batchId:Int) -> [SessionImage] {
+	public func sessionImages(forBatch batchId: Int) -> [SessionImage] {
 		os_log("look for batch %d", log: .cache, type: .debug, batchId)
-		var matches:[SessionImage] = []
+		var matches: [SessionImage] = []
 		for anImage in metaCache.values {
 			if anImage.batchId == batchId {
 				matches.append(anImage)
@@ -128,6 +128,7 @@ public class ImageCache: JSONEncodable {
 		assert(workspace != nil, "imageCache.workspace must be set before using")
 		let fileUrl = URL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeTo: self.cacheUrl)
 		return SignalProducer<PlatformImage, ImageCacheError>() { observer, _ in
+			// swiftlint:disable:next force_try
 			if try! fileUrl.checkResourceIsReachable() {
 				observer.send(value: PlatformImage(contentsOf: fileUrl)!)
 				observer.sendCompleted()

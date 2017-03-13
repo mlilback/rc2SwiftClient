@@ -38,6 +38,7 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 		name = other.name
 		version = other.version
 		//can force because they are from another copy so must be valid
+		// swiftlint:disable:next force_try
 		try! _workspaces.append(contentsOf: other.workspaces)
 	}
 	

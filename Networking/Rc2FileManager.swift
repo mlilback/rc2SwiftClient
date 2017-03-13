@@ -31,7 +31,7 @@ public protocol Rc2FileManager {
 }
 
 open class Rc2DefaultFileManager: Rc2FileManager {
-	let fm:FileManager
+	let fm: FileManager
 	
 	public init(fileManager: FileManager = FileManager.default) {
 		fm = fileManager
@@ -80,7 +80,7 @@ open class Rc2DefaultFileManager: Rc2FileManager {
 	
 	///copies url to a new location in a temporary directory that can be passed to the user or another application
 	/// (i.e. it is not in our sandbox/app support/cache directories)
-	public func copyURLToTemporaryLocation(_ url:URL) throws -> URL {
+	public func copyURLToTemporaryLocation(_ url: URL) throws -> URL {
 		//all errors are already wrapped since we only call internal methods
 		let tmpDir = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Rc2", isDirectory: true)
 		_ = try createDirectoryHierarchy(at: tmpDir)
@@ -118,7 +118,7 @@ open class Rc2DefaultFileManager: Rc2FileManager {
 
 extension File {
 	///checks to see if file at url is the file we represent
-	public func urlXAttributesMatch(_ url:URL) -> Bool {
+	public func urlXAttributesMatch(_ url: URL) -> Bool {
 		if let versionData = dataForXAttributeNamed(FileAttrVersion, atURL: url).data,
 			let readString = String(data:versionData, encoding:String.Encoding.utf8),
 			let readVersion = Int(readString),
@@ -131,7 +131,7 @@ extension File {
 	}
 	
 	///writes data to xattributes to later validate if a url points to a file reprsented this object
-	public func writeXAttributes(_ toUrl:URL) {
+	public func writeXAttributes(_ toUrl: URL) {
 		let versionData = String(version).data(using: String.Encoding.utf8)
 		setXAttributeWithName(FileAttrVersion, data: versionData!, atURL: toUrl)
 		if let fileData = try? Data(contentsOf: toUrl)

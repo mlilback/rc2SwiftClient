@@ -11,6 +11,9 @@ import ReactiveSwift
 import Result
 import NotifyingCollection
 
+// this file is long because it has lots of helpers that need to be fileprivate
+// swiftlint:disable file_length
+
 public enum FileCacheError: Error, Rc2DomainError {
 	case failedToCreateURL(file: File)
 	case downloadAlreadyInProgress
@@ -25,7 +28,7 @@ public protocol FileCache {
 	var workspace: Workspace { get }
 
 	func close()
-	func isFileCached(_ file:File) -> Bool
+	func isFileCached(_ file: File) -> Bool
 //	func flushCache(workspace:Workspace)
 	//removes the cached file
 	func flushCache(file: File)

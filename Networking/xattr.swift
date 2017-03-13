@@ -12,7 +12,6 @@ func errnoDescription() -> String {
 	return String(validatingUTF8: strerror(errno))!
 }
 
-
 /** Convience wrapper using URL instead of path */
 @discardableResult public func setXAttributeWithName(_ name: String, data: Data, atURL url: URL) -> String? {
 	guard url.isFileURL else { return "invalid file URL" }
@@ -30,7 +29,6 @@ public func dataForXAttributeNamed(_ name: String, atURL url: URL) -> (error: St
 	guard url.isFileURL else { return "invalid file URL" }
 	return removeXAttributeNamed(name, atPath: url.path)
 }
-
 
 /**
 Set extended attribute at path

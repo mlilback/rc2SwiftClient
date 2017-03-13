@@ -1623,6 +1623,7 @@
 				080E82BD1DCBE31D0048F36C /* Frameworks */,
 				080E82BE1DCBE31D0048F36C /* Headers */,
 				080E82BF1DCBE31D0048F36C /* Resources */,
+				0815C9851E77450F0031D69A /* swiftlint */,
 			);
 			buildRules = (
 			);
@@ -1724,7 +1725,7 @@
 				089794161D7B68F0003339EE /* Frameworks */,
 				089794171D7B68F0003339EE /* Headers */,
 				089794181D7B68F0003339EE /* Resources */,
-				082610961DB1632200C03422 /* ShellScript */,
+				082610961DB1632200C03422 /* swiftlint */,
 			);
 			buildRules = (
 			);
@@ -2018,13 +2019,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		082610961DB1632200C03422 /* ShellScript */ = {
+		0815C9851E77450F0031D69A /* swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = swiftlint;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n(cd Networking; swiftlint)\nelse\necho \"Warning: swiftlint not installed\"\nfi\n";
+		};
+		082610961DB1632200C03422 /* swiftlint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = swiftlint;
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;

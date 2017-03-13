@@ -33,7 +33,7 @@ public final class Rc2RestClient {
 		networkLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "networking")
 	}
 	
-	fileprivate func request(_ path:String, method:String) -> URLRequest
+	fileprivate func request(_ path: String, method: String) -> URLRequest
 	{
 		let url = URL(string: path, relativeTo: conInfo.host.url!)
 		var request = URLRequest(url: url!)
@@ -110,7 +110,7 @@ public final class Rc2RestClient {
 		}
 	}
 
-	public func downloadImage(imageId: Int, from wspace: Workspace, destination:URL) -> SignalProducer<URL, Rc2Error>
+	public func downloadImage(imageId: Int, from wspace: Workspace, destination: URL) -> SignalProducer<URL, Rc2Error>
 	{
 		return SignalProducer<URL, Rc2Error>() { observer, _ in
 			var req = self.request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET")
@@ -177,6 +177,7 @@ public final class Rc2RestClient {
 		case 422:
 			observer.send(error: Rc2Error(type: .invalidArgument, nested: NetworkingError.errorFor(response: response!.httpResponse!, data: data!), explanation: "Workspace already exists with that name"))
 		default:
+			// swiftlint:disable:next force_cast
 			observer.send(error: Rc2Error(type: .network, nested: NetworkingError.invalidHttpStatusCode(response as! HTTPURLResponse)))
 		}
 	}

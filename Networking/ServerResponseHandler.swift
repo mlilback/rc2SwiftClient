@@ -9,17 +9,18 @@
 #else
 	import UIKit
 #endif
+import os
 import Freddy
 import ClientCore
 import ReactiveSwift
 import Result
 
-public enum FileChangeType : String {
+public enum FileChangeType: String {
 	case Update, Insert, Delete
 }
 
 public protocol ServerResponseHandlerDelegate: class {
-	func handleFileUpdate(fileId: Int, file:File?, change: FileChangeType)
+	func handleFileUpdate(fileId: Int, file: File?, change: FileChangeType)
 	func handleVariableMessage(_ single: Bool, variables: [Variable])
 	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String])
 	func consoleAttachment(forImage image: SessionImage) -> ConsoleAttachment
@@ -48,14 +49,14 @@ public class ServerResponseHandler {
 //	fileprivate let outputColors = OutputColors.colorMap()
 	fileprivate var outputTheme: OutputTheme
 
-	required public init(delegate:ServerResponseHandlerDelegate) {
+	required public init(delegate: ServerResponseHandlerDelegate) {
 		self.delegate = delegate
 		outputTheme = OutputTheme.defaultTheme
 		NotificationCenter.default.addObserver(self, selector: #selector(outputThemeChanged(_:)), name: .outputThemeChanged, object: nil)
 	}
 
-	public func handleResponse(_ response:ServerResponse) -> ResponseString? {
-		switch(response) {
+	public func handleResponse(_ response: ServerResponse) -> ResponseString? {
+		switch response {
 			case .echoQuery(let queryId, let fileId, let query):
 				return formatQueryEcho(query, queryId:queryId, fileId:fileId)
 			case .results(let queryId, let text):
@@ -84,18 +85,18 @@ public class ServerResponseHandler {
 		return nil
 	}
 
-	fileprivate func formatQueryEcho(_ query:String, queryId:Int, fileId:Int) -> ResponseString? {
+	fileprivate func formatQueryEcho(_ query: String, queryId: Int, fileId: Int) -> ResponseString? {
 		if fileId > 0 {
 			let mstr = NSMutableAttributedString(attributedString: delegate!.attributedStringForInputFile(fileId))
 			mstr.append(NSAttributedString(string: "\n"))
-			mstr.addAttributes(outputTheme.stringAttributes(for: .input), range: NSMakeRange(0, mstr.length))
+			mstr.addAttributes(outputTheme.stringAttributes(for: .input), range: NSRange(location: 0, length: mstr.length))
 			return ResponseString(string: mstr, type: .input)
 		}
 		let fstr = NSAttributedString(string: "\(query)\n", attributes: outputTheme.stringAttributes(for: .input))
 		return ResponseString(string: fstr, type: .input)
 	}
 	
-	fileprivate func formatResults(_ text:String, queryId:Int) -> ResponseString? {
+	fileprivate func formatResults(_ text: String, queryId: Int) -> ResponseString? {
 		let mstr = NSMutableAttributedString()
 		if text.characters.count > 0 {
 			let formString = "\(text)\n"
@@ -104,14 +105,15 @@ public class ServerResponseHandler {
 		return ResponseString(string: mstr, type: .output)
 	}
 
-	fileprivate func formatShowOutput(_ queryId:Int, file:File) -> ResponseString? {
+	fileprivate func formatShowOutput(_ queryId: Int, file: File) -> ResponseString? {
 		let str = delegate!.consoleAttachment(forFile:file).asAttributedString()
+		// swiftlint:disable:next force_cast (should never fail)
 		let mstr = str.mutableCopy() as! NSMutableAttributedString
 		mstr.append(NSAttributedString(string: "\n"))
 		return ResponseString(string: mstr, type: .attachment)
 	}
 	
-	fileprivate func formatExecComplete(_ queryId:Int, batchId:Int, images:[SessionImage]) -> ResponseString? {
+	fileprivate func formatExecComplete(_ queryId: Int, batchId: Int, images: [SessionImage]) -> ResponseString? {
 		guard images.count > 0 else { return nil }
 		let mstr = NSMutableAttributedString()
 		for image in images {
@@ -122,15 +124,17 @@ public class ServerResponseHandler {
 		return ResponseString(string: mstr, type: .attachment)
 	}
 
-	public func formatError(_ error:String) -> ResponseString {
+	public func formatError(_ error: String) -> ResponseString {
 		let str = NSAttributedString(string: "\(error)\n", attributes: outputTheme.stringAttributes(for: .error))
 		return ResponseString(string: str, type: .error)
 	}
 	
 	@objc fileprivate func outputThemeChanged(_ notification: Notification) {
-		outputTheme = notification.object as! OutputTheme
+		guard let theme = notification.object as? OutputTheme else {
+			os_log("outputThemeChanged notification w/o a theme", log: .network)
+			return
+		}
+		outputTheme = theme
 	}
 	
 }
-
-

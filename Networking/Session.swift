@@ -17,6 +17,8 @@ import os
 import NotifyingCollection
 import ClientCore
 
+// swiftlint:disable file_length
+
 public extension Rc2Error {
 	public var isSessionError: Bool { return nestedError is SessionError }
 }
@@ -30,30 +32,31 @@ public enum ExecuteType: String {
 }
 
 public class Session {
-	//MARK: properties
+	// MARK: properties
 
 	///connection information
 	public let conInfo: ConnectionInfo
 	//the workspace this session represents
-	public let workspace : Workspace
+	public let workspace: Workspace
 	///the WebSocket for communicating with the server
 	// goddamn swift won't let us set a constant that requires invoking a method
-	var wsSource : WebSocket!
+	var wsSource: WebSocket!
 	///abstraction of file handling
 	public let fileCache: FileCache
 	public let imageCache: ImageCache
 	///
-	public weak var delegate : SessionDelegate?
+	public weak var delegate: SessionDelegate?
 
 	public var project: Project { return conInfo.project(withId: workspace.projectId)! }
 	
 	///regex used to catch user entered calls to help so we can hijack and display through our mechanism
-	var helpRegex : NSRegularExpression = {
+	var helpRegex: NSRegularExpression = {
+		// swiftlint:disable:next force_try (hard coded, should never fail)
 		return try! NSRegularExpression(pattern: "(help\\(\\\"?([\\w\\d]+)\\\"?\\))\\s*;?\\s?", options: [.dotMatchesLineSeparators])
 	}()
 	
 	fileprivate var openObserver: Signal<Double, Rc2Error>.Observer?
-	public fileprivate(set) var connectionOpen:Bool = false
+	public fileprivate(set) var connectionOpen: Bool = false
 	fileprivate lazy var keepAliveTimer: DispatchSourceTimer = { DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: self.queue) }()
 	
 	///closure syntax for a transaction complete callback
@@ -64,11 +67,11 @@ public class Session {
 	///a dictionary of transaction ids mapped to closures called when the server says the transaction is complete
 	fileprivate var pendingTransactions: [String: TransactionCompletion] = [:]
 	///if we are getting variable updates from the server
-	fileprivate var watchingVariables:Bool = false
+	fileprivate var watchingVariables: Bool = false
 	///queue used for async operations
 	fileprivate let queue: DispatchQueue
 	
-	//MARK: init/open/close
+	// MARK: init/open/close
 	
 	/// without a super class, can't use self in designated initializer. So use a private init, and a convenience init for outside use
 	private init(connectionInfo: ConnectionInfo, workspace: Workspace, fileCache: FileCache, imageCache: ImageCache, webSocket: WebSocket?, queue: DispatchQueue = .main)
@@ -94,7 +97,7 @@ public class Session {
 	///   - fileCache: the file cache to use. Default is to create one
 	///   - webSocket: the websocket to use. Defaults to a sensible implementation
 	///   - queue: the queue to perform operations on. Defaults to main queue
-	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, delegate:SessionDelegate?=nil, fileCache: FileCache? = nil, webSocket: WebSocket? = nil, queue: DispatchQueue? = nil)
+	public convenience init(connectionInfo: ConnectionInfo, workspace: Workspace, delegate: SessionDelegate?=nil, fileCache: FileCache? = nil, webSocket: WebSocket? = nil, queue: DispatchQueue? = nil)
 	{
 		//create a file cache if one wasn't provided
 		var fc = fileCache
@@ -137,18 +140,18 @@ public class Session {
 		fileCache.close()
 	}
 	
-	//MARK: public request methods
+	// MARK: public request methods
 	
 	///Sends an execute request to the server
 	/// - parameter srcScript: the script code to send to the server
 	/// - parameter type: whether to run or source the script
-	public func executeScript(_ srcScript: String, type:ExecuteType = .Run) {
+	public func executeScript(_ srcScript: String, type: ExecuteType = .Run) {
 		//don't send empty scripts
 		guard srcScript.characters.count > 0 else {
 			return
 		}
 		var script = srcScript
-		let helpCheck = helpRegex.firstMatch(in: script, options: [], range: NSMakeRange(0, script.utf16.count))
+		let helpCheck = helpRegex.firstMatch(in: script, options: [], range: NSRange(location: 0, length: script.utf16.count))
 		if helpCheck?.numberOfRanges == 3 {
 			let topic = script.substring(with: (helpCheck?.rangeAt(2).toStringRange(script))!)
 			let adjScript = script.replacingCharacters(in: (helpCheck?.range.toStringRange(script))!, with: "")
@@ -164,7 +167,7 @@ public class Session {
 	/// sends a request to execute a script file
 	/// - parameter fileId: the id of the file to execute
 	/// - parameter type: whether to run or source the file
-	public func executeScriptFile(_ fileId:Int, type:ExecuteType = .Run) {
+	public func executeScriptFile(_ fileId: Int, type: ExecuteType = .Run) {
 		sendMessage(json: .dictionary(["msg": .string("execute"), "type": .string(type.rawValue), "fileId": .int(fileId)]))
 	}
 	
@@ -185,14 +188,14 @@ public class Session {
 	
 	/// ask the server to send a message with current variable values and delta messages as they change
 	public func startWatchingVariables() {
-		if (watchingVariables) { return; }
+		if watchingVariables { return; }
 		sendMessage(json: .dictionary(["msg": .string("watchVariables"), "watch": .bool(true)]))
 		watchingVariables = true
 	}
 
 	/// ask the server to stop sending environment delta messages
 	public func stopWatchingVariables() {
-		if (!watchingVariables) { return }
+		if !watchingVariables { return }
 		sendMessage(json: .dictionary(["msg": .string("watchVariables"), "watch": .bool(false)]))
 		watchingVariables = false
 	}
@@ -353,13 +356,14 @@ public class Session {
 	}
 }
 
-//MARK: private methods
+// MARK: private methods
 private extension Session {
 
 	///processes a binary response from the WebSocket
 	/// - parameter data: The MessagePack data
-	func processBinaryResponse(_ data:Data) {
-		var parsedValues:[MessageValue]? = nil
+	// TODO: fix force casts
+	func processBinaryResponse(_ data: Data) {
+		var parsedValues: [MessageValue]? = nil
 		let decoder = MessagePackDecoder(data: data)
 		do {
 			parsedValues = try decoder.parse()
@@ -372,16 +376,23 @@ private extension Session {
 			return
 		}
 		let dict = msgDict.nativeValue()
-		switch dict["msg"] as! String {
+		guard let message = dict["msg"] as? String else {
+			os_log("invalid binary response: message not a string", log: .session, type: .error)
+			return
+		}
+		// swiftlint:disable:next force_cast
+		switch message {
 		case "saveResponse":
 			handleSaveResponse(dict as [String : AnyObject])
 		case "showOutput":
+			// swiftlint:disable:next force_cast
 			let file = File(dict: dict["file"] as! [String:AnyObject])
+			// swiftlint:disable:next force_cast
 			let response = ServerResponse.showOutput(queryId: dict["queryId"] as! Int, updatedFile: file)
 			delegate?.sessionMessageReceived(response)
 			fileCache.update(file: file, withData: data).start()
 		default:
-			os_log("received unknown binary message: %{public}@", log: .session, dict["msg"] as! String)
+			os_log("received unknown binary message: %{public}@", log: .session, message)
 			return
 		}
 	}
@@ -395,7 +406,7 @@ private extension Session {
 			pendingTransactions[transId]?(transId, nil, nil)
 			pendingTransactions.removeValue(forKey: transId)
 		}
-		if let errorDict = rawDict["error"] as? Dictionary<String,AnyObject> {
+		if let errorDict = rawDict["error"] as? Dictionary<String, AnyObject> {
 			//TODO: inform user
 			os_log("got save response error: %{public}@", log: .session, type:.error, (errorDict["message"] as? String)!)
 			return
@@ -417,7 +428,7 @@ private extension Session {
 			//error should have been handled via pendingTransaction
 			return
 		}
-		switch(operation) {
+		switch operation {
 		case .Duplicate:
 			//no need to do anything, fileUpdated message should arrive
 			break
@@ -467,8 +478,8 @@ private extension Session {
 				pendingTransactions[transId]?(transId, jsonMessage, serverError)
 				pendingTransactions.removeValue(forKey: transId)
 			}
-		} else if let _ = message as? Data {
-			processBinaryResponse(message as! Data)
+		} else if let msgData = message as? Data {
+			processBinaryResponse(msgData)
 		} else {
 			os_log("invalid binary data format received: %{public}@", log: .session, type:.error)
 		}

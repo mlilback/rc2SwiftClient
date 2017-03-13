@@ -15,7 +15,7 @@ public struct SessionImage: JSONDecodable, JSONEncodable, Equatable {
 	public let imageData: Data?
 	public let dateCreated: Date!
 	
-	fileprivate static var dateFormatter:DateFormatter = {
+	fileprivate static var dateFormatter: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.locale = Locale(identifier: "en_US_POSIX")
 		formatter.dateFormat = "YYYY-MM-dd"
@@ -72,4 +72,3 @@ public struct SessionImage: JSONDecodable, JSONEncodable, Equatable {
 		return lhs.id == rhs.id && lhs.batchId == rhs.batchId && lhs.name == rhs.name && lhs.dateCreated == rhs.dateCreated
 	}
 }
-

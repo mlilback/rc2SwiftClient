@@ -88,6 +88,7 @@ public final class Workspace: JSONDecodable, JSONEncodable, Copyable, UpdateInPl
 		name = other.name
 		version = other.version
 		// can force because they must be valid since they come from another workspace
+		// swiftlint:disable:next force_try
 		try! _files.append(contentsOf: other.files)
 	}
 	
@@ -232,7 +233,7 @@ public final class Workspace: JSONDecodable, JSONEncodable, Copyable, UpdateInPl
 	internal func update(file: File, change: FileChangeType) {
 		os_log("update change to %d", log: .model, type: .debug, file.fileId)
 		let ourFile = self.file(withId: file.fileId)
-		switch(change) {
+		switch change {
 		case .Update:
 			guard let ofile = ourFile else {
 				os_log("got file change update w/o a known file", log: .session)

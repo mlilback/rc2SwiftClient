@@ -10,13 +10,13 @@ import NotifyingCollection
 
 public final class File: JSONDecodable, JSONEncodable, Copyable, CustomStringConvertible, Hashable, UpdateInPlace
 {
-	public let fileId : Int
+	public let fileId: Int
 	public let wspaceId: Int
-	public fileprivate(set) var name : String
-	public fileprivate(set) var version : Int
-	public fileprivate(set) var fileSize : Int
-	public fileprivate(set) var dateCreated : Date
-	public fileprivate(set) var lastModified : Date
+	public fileprivate(set) var name: String
+	public fileprivate(set) var version: Int
+	public fileprivate(set) var fileSize: Int
+	public fileprivate(set) var dateCreated: Date
+	public fileprivate(set) var lastModified: Date
 	public fileprivate(set) var fileType: FileType
 	
 	static var dateFormatter: ISO8601DateFormatter = {
@@ -25,7 +25,7 @@ public final class File: JSONDecodable, JSONEncodable, Copyable, CustomStringCon
 		return df
 	}()
 	
-	public init(json:JSON) throws {
+	public init(json: JSON) throws {
 		fileId = try json.getInt(at: "id")
 		wspaceId = try json.getInt(at: "wspaceId")
 		let fileName = try json.getString(at: "name")
@@ -66,6 +66,7 @@ public final class File: JSONDecodable, JSONEncodable, Copyable, CustomStringCon
 	///initialize with native dictionary from a MessagePackDictionary
 	//TODO: get rid of force unwraps
 	init(dict: [String: AnyObject]) {
+		// swiftlint:disable force_cast
 		fileId = dict["id"] as! Int
 		wspaceId = dict["wspaceId"] as! Int
 		name = dict["name"] as! String
@@ -73,6 +74,7 @@ public final class File: JSONDecodable, JSONEncodable, Copyable, CustomStringCon
 		fileSize = dict["fileSize"] as! Int!
 		dateCreated = Date(timeIntervalSince1970: (dict["dateCreated"] as! Double)/1000.0)
 		lastModified = Date(timeIntervalSince1970: (dict["lastModified"] as! Double)/1000.0)
+		// swiftlint:enable force_cast
 		if let ft = FileType.fileType(forFileName: name) {
 			self.fileType = ft
 		} else {
@@ -96,15 +98,15 @@ public final class File: JSONDecodable, JSONEncodable, Copyable, CustomStringCon
 		fileType = other.fileType
 	}
 
-	public var description : String {
-		return "<File: \(name) (\(fileId) v\(version))>";
+	public var description: String {
+		return "<File: \(name) (\(fileId) v\(version))>"
 	}
 	
 	public func toJSON() -> JSON {
 		return .dictionary(["id": .int(fileId), "wspaceId": .int(wspaceId), "name": .string(name), "version": .int(version), "fileSize": .int(fileSize), "dateCreated": .string(File.dateFormatter.string(from: dateCreated)), "lastModified": .string(File.dateFormatter.string(from: lastModified))])
 	}
 	
-	public static func ==(a: File, b: File) -> Bool {
-		return a.fileId == b.fileId && a.version == b.version;
+	public static func == (a: File, b: File) -> Bool {
+		return a.fileId == b.fileId && a.version == b.version
 	}
 }

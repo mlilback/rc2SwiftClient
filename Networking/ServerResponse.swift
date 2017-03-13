@@ -21,7 +21,7 @@ public enum FileOperation: String {
 	case Remove = "rm", Rename = "rename", Duplicate = "duplicate"
 }
 
-public enum ServerResponse : Equatable {
+public enum ServerResponse: Equatable {
 	case error(queryId: Int, error: String)
 	case echoQuery(queryId: Int, fileId: Int, query: String)
 	case execComplete(queryId: Int, batchId: Int, images: [SessionImage])
@@ -33,13 +33,14 @@ public enum ServerResponse : Equatable {
 	case variablesDelta(assigned: [Variable], removed: [String])
 	case fileOperationResponse(transId: String, operation: FileOperation, result: Result<File?, Rc2Error>)
 	
-	
 	public func isEcho() -> Bool {
 		if case .echoQuery(_, _, _) = self { return true }
 		return false
 	}
 	
-	static func parseResponse(_ jsonObj:JSON) -> ServerResponse? {
+	// swiftlint:disable cyclomatic_complexity
+	// swiftlint:disable:next function_body_length
+	static func parseResponse(_ jsonObj: JSON) -> ServerResponse? {
 		guard let msg = try? jsonObj.getString(at: "msg") else {
 			os_log("failed to parse 'msg' from server response", log: .session)
 			return nil
@@ -103,6 +104,7 @@ public enum ServerResponse : Equatable {
 		}
 		var result: Result<File?, Rc2Error>?
 		if success {
+			// swiftlint:disable:next force_try (should be impossible since nil is acceptable)
 			result = Result<File?, Rc2Error>(value: try! jsonObj.decode(at: "file", alongPath: [.MissingKeyBecomesNil, .NullBecomesNil], type: File.self))
 		} else {
 			result = Result<File?, Rc2Error>(error: parseRemoteError(jsonObj: try? jsonObj.getDictionary(at: "error")))

@@ -17,7 +17,6 @@ extension OSLog {
 	static let importer: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "import")
 }
 
-
 public class FileImporter: NSObject {
 	public typealias ProgressSignalProducer = SignalProducer<ImportProgress, Rc2Error>
 	
@@ -45,7 +44,7 @@ public class FileImporter: NSObject {
 	///   - queue: the queue to send progress notifications on. defaults to main queue
 	///   - fileManager: the file manager to use for caching files. defaults to FileManager()
 	/// - Throws: .file with a nested error from fileManager
-	public init(_ files:[FileToImport], fileCache: FileCache, connectInfo: ConnectionInfo, queue: DispatchQueue = .main, fileManager: FileManager = FileManager()) throws
+	public init(_ files: [FileToImport], fileCache: FileCache, connectInfo: ConnectionInfo, queue: DispatchQueue = .main, fileManager: FileManager = FileManager()) throws
 	{
 		self.files = files
 		self.fileCache = fileCache
@@ -114,7 +113,7 @@ public class FileImporter: NSObject {
 				uniqueFileName = fileUrl.lastPathComponent
 			}
 		}
-		var actualFileName:String { return (uniqueFileName == nil ? fileUrl.lastPathComponent : uniqueFileName)! }
+		var actualFileName: String { return (uniqueFileName == nil ? fileUrl.lastPathComponent : uniqueFileName)! }
 	}
 
 	struct ImportData {
@@ -160,6 +159,7 @@ extension FileImporter: URLSessionDataDelegate {
 			fatalError("failed to find task info for import file")
 		}
 		defer { tasks.removeValue(forKey: index) }
+		// swiftlint:disable:next force_cast
 		let httpResponse = task.response as! HTTPURLResponse
 		os_log("upload status=%d", log: .importer, type:.info, httpResponse.statusCode)
 		guard httpResponse.statusCode == 201 else {
@@ -204,7 +204,7 @@ extension FileImporter: URLSessionDataDelegate {
 	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
 	{
 		os_log("session said received data %d", log: .importer, type:.info, data.count)
-		let index:Int = tasks.filter {  $1.task == dataTask }.map { $0.0 }.first!
+		let index: Int = tasks.filter {  $1.task == dataTask }.map { $0.0 }.first!
 		guard tasks[index] != nil else {
 			fatalError("failed to find progress for task of \(index)")
 		}

@@ -24,7 +24,7 @@ public enum PrimitiveType: String {
 	///
 	/// - Parameter typeCode: the code to parse
 	/// - Returns: the matching PrimitiveType value, or .na if not a primitive type
-	static func forString(_ typeCode:Swift.String?) -> PrimitiveType {
+	static func forString(_ typeCode: Swift.String?) -> PrimitiveType {
 		guard let code = typeCode else { return .na }
 		if let val = PrimitiveType(rawValue: code) { return val }
 		return .na
@@ -54,7 +54,7 @@ public enum VariableType: Int {
 	s4Object
 	
 	func isContainer() -> Bool {
-		switch (self) {
+		switch self {
 		case .array, .dataFrame, .matrix, .list, .environment:
 			return true
 		default:
@@ -62,9 +62,10 @@ public enum VariableType: Int {
 		}
 	}
 	
-	static func forClass(_ name:String?) -> VariableType {
+	// swiftlint:disable:next cyclomatic_complexity
+	static func forClass(_ name: String?) -> VariableType {
 		guard let cname = name else { return .unknown }
-		switch (cname) {
+		switch cname {
 			case "data.frame":
 				return .dataFrame
 			case "matrix":
@@ -96,9 +97,9 @@ public enum VariableType: Int {
 }
 
 public class Variable: Equatable, CustomStringConvertible {
-	fileprivate let jsonData:JSON
+	fileprivate let jsonData: JSON
 
-	public static func variableForJson(_ json:JSON) throws -> Variable {
+	public static func variableForJson(_ json: JSON) throws -> Variable {
 		if json.getOptionalBool(at: "primitive")  {
 			switch PrimitiveType.forString(json.getOptionalString(at: "type")) {
 			case .boolean:
@@ -127,11 +128,11 @@ public class Variable: Equatable, CustomStringConvertible {
 		return try Variable(json:json)
 	}
 	
-	public var name:String? { return jsonData.getOptionalString(at: "name") }
+	public var name: String? { return jsonData.getOptionalString(at: "name") }
 	/// for nested values, the fully qualified name (e.g. foo[0][1][2])
-	public var fullyQualifiedName:String? { return name }
+	public var fullyQualifiedName: String? { return name }
 	///from R
-	public var classNameR:String {
+	public var classNameR: String {
 		if let klass = jsonData.getOptionalString(at: "class") {
 			return klass
 		}
@@ -140,7 +141,7 @@ public class Variable: Equatable, CustomStringConvertible {
 	/// a string representation of the value for display. e.g. for a factor, the name and number of possible values
 	public var description: String { return "\(classNameR)[\(length)]" }
 	///a more descriptive description: e.g. for a factor, list all the values
-	public var summary:String {
+	public var summary: String {
 		if let summ = jsonData.getOptionalString(at: "summary"), summ.utf8.count > 0 {
 			return summ
 		}
@@ -153,11 +154,11 @@ public class Variable: Equatable, CustomStringConvertible {
 	public let primitiveType: PrimitiveType
 	
 	//the number of values in this variable locally (since all R variables are vectors)
-	public var count:Int { return 0 }
+	public var count: Int { return 0 }
 	//the number of values in this variable on the server (since all R variables are vectors)
 	public var length: Int { return jsonData.getOptionalInt(at: "length") ?? 0 }
 	
-	fileprivate init(json:JSON) throws {
+	fileprivate init(json: JSON) throws {
 		jsonData = json
 		primitiveType = PrimitiveType.forString(jsonData.getOptionalString(at: "type"))
 		if case .na = primitiveType {
@@ -167,22 +168,22 @@ public class Variable: Equatable, CustomStringConvertible {
 		}
 	}
 
-	public var isPrimitive:Bool { return type == .primitive }
-	public var isFactor:Bool { return type == .factor }
-	public var isDate:Bool { return type == .date }
-	public var isDateTime:Bool { return type == .dateTime }
+	public var isPrimitive: Bool { return type == .primitive }
+	public var isFactor: Bool { return type == .factor }
+	public var isDate: Bool { return type == .date }
+	public var isDateTime: Bool { return type == .dateTime }
 
 	///if a string primitive type, returns the requested string value
-	public func stringValueAtIndex(_ index:Int) -> String? { return nil }
+	public func stringValueAtIndex(_ index: Int) -> String? { return nil }
 	///if an Int primitive type, returns the requested Int value
-	public func intValueAtIndex(_ index:Int) -> Int? { return nil }
+	public func intValueAtIndex(_ index: Int) -> Int? { return nil }
 	///if a Bool primitive type, returns the requested Bool value
-	public func boolValueAtIndex(_ index:Int) -> Bool? { return nil }
+	public func boolValueAtIndex(_ index: Int) -> Bool? { return nil }
 	///if the primitive type is a Double, returns the requested string value
-	public func doubleValueAtIndex(_ index:Int) -> Double? { return nil }
+	public func doubleValueAtIndex(_ index: Int) -> Double? { return nil }
 	///returns the value as a primitive type that can be downcast
-	public func primitiveValueAtIndex(_ index:Int) -> PrimitiveValue? {
-		switch(primitiveType) {
+	public func primitiveValueAtIndex(_ index: Int) -> PrimitiveValue? {
+		switch primitiveType {
 		case .boolean:
 			return boolValueAtIndex(index)
 		case .integer:
@@ -198,12 +199,12 @@ public class Variable: Equatable, CustomStringConvertible {
 		}
 	}
 	///if contains variables (list, array, S3, S4) returns nested variable
-	public func variableAtIndex(_ index:Int) -> Variable? { return nil }
+	public func variableAtIndex(_ index: Int) -> Variable? { return nil }
 	
 	///if a function type, returns the source code for the function
-	public var functionBody:String? { return nil }
+	public var functionBody: String? { return nil }
 	///if a factor, returns the levels
-	public var levels:[String]? { return nil }
+	public var levels: [String]? { return nil }
 	
 	public static func == (lhs: Variable, rhs: Variable) -> Bool {
 		return lhs.jsonData == rhs.jsonData
@@ -238,14 +239,14 @@ extension String: PrimitiveValue {}
 extension NSNull: PrimitiveValue {}
 
 public final class BoolPrimitiveVariable: Variable {
-	fileprivate let values:[Bool]
+	fileprivate let values: [Bool]
 	
 	override init(json: JSON) throws {
 		values = try json.decodedArray(at: "value")
 		try super.init(json: json)
 	}
 	
-	override public var count:Int { return values.count }
+	override public var count: Int { return values.count }
 
 	override public func boolValueAtIndex(_ index: Int) -> Bool? {
 		return values[index]
@@ -261,14 +262,14 @@ public final class BoolPrimitiveVariable: Variable {
 }
 
 public final class IntPrimitiveVariable: Variable {
-	fileprivate let values:[Int]
+	fileprivate let values: [Int]
 	
 	override init(json: JSON) throws {
 		values = try json.decodedArray(at: "value")
 		try super.init(json: json)
 	}
 	
-	override public var count:Int { return values.count }
+	override public var count: Int { return values.count }
 	
 	override public func stringValueAtIndex(_ index: Int) -> String? {
 		return String(describing: values[index])
@@ -288,7 +289,7 @@ public final class IntPrimitiveVariable: Variable {
 }
 
 public final class DoublePrimitiveVariable: Variable {
-	fileprivate let values:[Double]
+	fileprivate let values: [Double]
 	
 	override init(json: JSON) throws {
 		let vals = try json.getArray(at: "value")
@@ -310,7 +311,7 @@ public final class DoublePrimitiveVariable: Variable {
 		try super.init(json: json)
 	}
 	
-	override public var count:Int { return values.count }
+	override public var count: Int { return values.count }
 	
 	override public func doubleValueAtIndex(_ index: Int) -> Double? {
 		return values[index]
@@ -326,14 +327,14 @@ public final class DoublePrimitiveVariable: Variable {
 }
 
 public final class StringPrimitiveVariable: Variable {
-	fileprivate let values:[String]
+	fileprivate let values: [String]
 	
 	override init(json: JSON) throws {
 		values = try json.decodedArray(at: "value")
 		try super.init(json: json)
 	}
 	
-	override public var count:Int { return values.count }
+	override public var count: Int { return values.count }
 	
 	override public func stringValueAtIndex(_ index: Int) -> String? {
 		return values[index]
@@ -348,8 +349,8 @@ public final class StringPrimitiveVariable: Variable {
 }
 
 public final class FactorVariable: Variable {
-	fileprivate let values:[Int]
-	fileprivate let levelNames:[String]
+	fileprivate let values: [Int]
+	fileprivate let levelNames: [String]
 	
 	override init(json: JSON) throws {
 		values = try json.decodedArray(at: "value").map { $0 - 1 }
@@ -357,9 +358,9 @@ public final class FactorVariable: Variable {
 		try super.init(json: json)
 	}
 	
-	override public var count:Int { return values.count }
+	override public var count: Int { return values.count }
 	
-	override public var levels:[String]? { return levelNames }
+	override public var levels: [String]? { return levelNames }
 
 	override public func intValueAtIndex(_ index: Int) -> Int? {
 		return values[index]
@@ -425,18 +426,18 @@ public final class DateVariable: Variable {
 }
 
 public final class GenericVariable: Variable {
-	fileprivate let values:[Variable]
+	fileprivate let values: [Variable]
 	
 	override init(json: JSON) throws {
 		values = try json.getArray(at: "value").map { try Variable.variableForJson($0) }
 		try super.init(json: json)
 	}
 	
-	override public var count:Int { return values.count }
+	override public var count: Int { return values.count }
 	
 	override public func stringValueAtIndex(_ index: Int) -> String? {
 		return values[index].description
 	}
 	
-	override public func variableAtIndex(_ index:Int) -> Variable? { return values[index] }
+	override public func variableAtIndex(_ index: Int) -> Variable? { return values[index] }
 }
