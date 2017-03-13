@@ -4,11 +4,11 @@
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
+import ClientCore
 import Foundation
 import Freddy
-import ReactiveSwift
-import ClientCore
 import os
+import ReactiveSwift
 import ZipArchive
 
 fileprivate let wspaceDirName = "defaultWorkspaceFiles"
@@ -139,7 +139,7 @@ public final class Rc2RestClient {
 		let fm = FileManager()
 		do {
 			let defaultDirectoryUrl = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: wspaceDirName)
-			if try fm.contentsOfDirectory(atPath: defaultDirectoryUrl.path).count <= 0 {
+			if try fm.contentsOfDirectory(atPath: defaultDirectoryUrl.path).isEmpty {
 				//copy all template files to user-editable directory
 				let templateDir = (Bundle(for: type(of: self)).resourceURL?.appendingPathComponent(wspaceDirName, isDirectory: true))!
 				for aUrl in try fm.contentsOfDirectory(at: templateDir, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)

@@ -4,11 +4,11 @@
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
+import ClientCore
+import CryptoSwift
 import Foundation
 import os
-import CryptoSwift
 import ReactiveSwift
-import ClientCore
 
 let FileAttrVersion = "io.rc2.FileAttr.Version"
 let FileAttrChecksum = "io.rc2.FileAttr.SHA256"

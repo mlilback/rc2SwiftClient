@@ -4,13 +4,14 @@
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
-import Foundation
-import Freddy
+// swiftlint:disable sorted_imports
 #if os(OSX)
 	import AppKit
 #else
 	import UIKit
 #endif
+import Foundation
+import Freddy
 
 public class FileType: JSONDecodable {
 	
@@ -31,7 +32,7 @@ public class FileType: JSONDecodable {
 	public static var creatableFileTypes: [FileType] = { allFileTypes.filter { return $0.isCreatable } }()
 	
 	public static func fileType(withExtension ext: String) -> FileType? {
-		let filtered: [FileType] = FileType.allFileTypes.filter {return $0.fileExtension == ext }
+		let filtered: [FileType] = FileType.allFileTypes.filter { return $0.fileExtension == ext }
 		return filtered.first
 	}
 

@@ -22,7 +22,7 @@ public struct ServerHost: JSONDecodable, JSONEncodable, CustomStringConvertible,
 	/// the string used to store the password for this host in the keychain
 	public var keychainKey: String { return "\(self.user)@\(self.host)" }
 	
-	public init(name: String, host: String, port: Int=8088, user: String="local", secure: Bool=false) {
+	public init(name: String, host: String, port: Int = 8088, user: String="local", secure: Bool = false) {
 		self.name = name
 		self.host = host
 		self.user = user

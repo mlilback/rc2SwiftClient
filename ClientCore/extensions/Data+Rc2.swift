@@ -11,7 +11,7 @@ public extension Data {
 	///
 	/// - parameter inputStream: The stream to read data from
 	/// - parameter bufferSize: the size of the buffer to use while reading from inputStream. Defaults to 1 MB
-	public init(_ inputStream: InputStream, bufferSize: Int = 10240) {
+	public init(_ inputStream: InputStream, bufferSize: Int = 10_240) {
 		self.init()
 		var buffer = [UInt8](repeating: 0, count: bufferSize)
 		inputStream.open()
@@ -34,7 +34,7 @@ public extension Data {
 			guard let divRange = range(of: divider, options: [], in: remainingRange) else
 			{
 				//no more dividers, just handle remaing range
-				if remainingRange.count > 0 {
+				if !remainingRange.isEmpty {
 					handler(subdata(in: remainingRange))
 				}
 				return

@@ -4,11 +4,11 @@
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
-import Foundation
 import ClientCore
+import Foundation
 import Freddy
-import ReactiveSwift
 import os
+import ReactiveSwift
 
 /// FINISH: not properly handlind multiple task progress, compeltion when all tasks are finished
 /// need unit tests with multiple uploads
@@ -153,7 +153,7 @@ extension FileImporter: URLSessionDataDelegate {
 			progressObserver?.send(error: Rc2Error(type: .network, nested: NetworkingError.uploadFailed(error!)))
 			return
 		}
-		guard let index: Int = tasks.filter({  $1.task == task }).map({ $0.0 }).first,
+		guard let index: Int = tasks.filter({ $1.task == task }).map({ $0.0 }).first,
 			let importData = tasks[index] else
 		{
 			fatalError("failed to find task info for import file")
@@ -193,7 +193,7 @@ extension FileImporter: URLSessionDataDelegate {
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64)
 	{
 		os_log("session said sent data %d", log: .importer, type:.info, bytesSent)
-		let index: Int = tasks.filter {  $1.task == task }.map { $0.0 }.first!
+		let index: Int = tasks.filter { $1.task == task }.map { $0.0 }.first!
 		guard tasks[index] != nil else {
 			fatalError("failed to find progress for task of \(index)")
 		}
@@ -204,7 +204,7 @@ extension FileImporter: URLSessionDataDelegate {
 	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
 	{
 		os_log("session said received data %d", log: .importer, type:.info, data.count)
-		let index: Int = tasks.filter {  $1.task == dataTask }.map { $0.0 }.first!
+		let index: Int = tasks.filter { $1.task == dataTask }.map { $0.0 }.first!
 		guard tasks[index] != nil else {
 			fatalError("failed to find progress for task of \(index)")
 		}

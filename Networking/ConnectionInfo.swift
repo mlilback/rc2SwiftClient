@@ -50,7 +50,7 @@ public class ConnectionInfo: CustomStringConvertible {
 	/// - Parameter projectId: the id to search for
 	/// - Returns: the matching project or nil if not found
 	public func project(withId projectId: Int) -> Project? {
-		return projects.filter({ $0.projectId == projectId }).first
+		return projects.first(where: { $0.projectId == projectId })
 	}
 	
 	/// find a project by name
@@ -58,6 +58,6 @@ public class ConnectionInfo: CustomStringConvertible {
 	/// - Parameter withName: the name to search for
 	/// - Returns: the matching project or nil if not found
 	public func project(withName name: String) -> Project? {
-		return projects.filter({ $0.name == name }).first
+		return projects.first(where: { $0.name == name })
 	}
 }

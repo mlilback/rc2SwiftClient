@@ -60,7 +60,7 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	public init(baseUrl: URL, imageName: String, estimatedSize size: Int, config: URLSessionConfiguration) {
 		let uconfig = config
 		uconfig.timeoutIntervalForRequest = 300
-		uconfig.timeoutIntervalForResource = 86400
+		uconfig.timeoutIntervalForResource = 86_400
 		urlConfig = uconfig
 		var urlparts = URLComponents(url: baseUrl, resolvingAgainstBaseURL: true)
 		urlparts?.path = "/images/create"

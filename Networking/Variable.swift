@@ -142,7 +142,7 @@ public class Variable: Equatable, CustomStringConvertible {
 	public var description: String { return "\(classNameR)[\(length)]" }
 	///a more descriptive description: e.g. for a factor, list all the values
 	public var summary: String {
-		if let summ = jsonData.getOptionalString(at: "summary"), summ.utf8.count > 0 {
+		if let summ = jsonData.getOptionalString(at: "summary"), !summ.utf8.isEmpty {
 			return summ
 		}
 		return description

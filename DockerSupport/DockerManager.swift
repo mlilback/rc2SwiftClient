@@ -85,7 +85,7 @@ public final class DockerManager: NSObject {
 	#if DEBUG
 	private let updateDelay = 60.0 //1 minute
 	#else
-	private let updateDelay = 86400.0 //1 day
+	private let updateDelay = 86_400.0 //1 day
 	#endif
 	///has enough time elapsed that we should check to see if there is an update to the docker images
 	/// will always return true if the 'SkipUpdateCache' environment variable is set

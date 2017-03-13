@@ -104,7 +104,7 @@ final class DockerEventMonitorImpl: NSObject, DockerEventMonitor, URLSessionData
 		let str = String(data: data, encoding:String.Encoding.utf8)!
 		let messages = str.components(separatedBy: "\n")
 		for aMessage in messages {
-			guard aMessage.characters.count > 0 else { continue }
+			guard !aMessage.characters.isEmpty else { continue }
 			guard let jsonData = aMessage.data(using: .utf8), let json = try? JSON(data: jsonData) else {
 				os_log("failed to parse json: %{public}@", log: .docker, aMessage)
 				continue

@@ -4,14 +4,15 @@
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
+// swiftlint:disable sorted_imports
 #if os(OSX)
-	import Cocoa
+	import AppKit
 #else
 	import UIKit
 #endif
-import os
-import Freddy
 import ClientCore
+import Freddy
+import os
 import ReactiveSwift
 import Result
 
@@ -66,7 +67,7 @@ public class ServerResponseHandler {
 			case .execComplete(let queryId, let batchId, let images):
 				return formatExecComplete(queryId, batchId: batchId, images: images)
 			case .fileChanged(let changeType, let fileId, let file):
-				delegate?.handleFileUpdate(fileId: fileId, file: file, change: FileChangeType.init(rawValue: changeType)!)
+				delegate?.handleFileUpdate(fileId: fileId, file: file, change: FileChangeType(rawValue: changeType)!)
 			case .variables(let single, let variables):
 				delegate?.handleVariableMessage(single, variables: variables)
 			case .variablesDelta(let assigned, let removed):
@@ -98,7 +99,7 @@ public class ServerResponseHandler {
 	
 	fileprivate func formatResults(_ text: String, queryId: Int) -> ResponseString? {
 		let mstr = NSMutableAttributedString()
-		if text.characters.count > 0 {
+		if !text.characters.isEmpty {
 			let formString = "\(text)\n"
 			mstr.append(NSAttributedString(string: formString))
 		}
@@ -114,7 +115,7 @@ public class ServerResponseHandler {
 	}
 	
 	fileprivate func formatExecComplete(_ queryId: Int, batchId: Int, images: [SessionImage]) -> ResponseString? {
-		guard images.count > 0 else { return nil }
+		guard !images.isEmpty else { return nil }
 		let mstr = NSMutableAttributedString()
 		for image in images {
 			let aStr = delegate!.consoleAttachment(forImage: image).asAttributedString()

@@ -134,7 +134,7 @@ public final class DockerContainer: JSONDecodable {
 		//figure out the name and container type
 		var inName: String?
 		let names = try json.decodedArray(at: "Names", type: String.self)
-		if names.count > 0 {
+		if !names.isEmpty {
 			let nname = names.first!
 			inName = nname.substring(from: nname.index(after: nname.startIndex)) //strip off the leading '/'
 		}
@@ -220,6 +220,6 @@ extension Array where Element:DockerContainer {
 	///
 	/// - returns: the first container of specified type
 	subscript(index: ContainerType) -> DockerContainer? {
-		return self.filter({ $0.type == index }).first
+		return self.first(where: { $0.type == index })
 	}
 }

@@ -6,8 +6,8 @@
 
 import ClientCore
 import Dispatch
-import os
 import Freddy
+import os
 import ReactiveSwift
 
 public enum ImageCacheError: Error, Rc2DomainError {
@@ -43,7 +43,7 @@ public class ImageCache: JSONEncodable {
 	
 	public static var supportsSecureCoding: Bool { return true }
 	
-	init(restClient: Rc2RestClient, fileManager fm: Foundation.FileManager=Foundation.FileManager(), hostIdentifier hostIdent: String)
+	init(restClient: Rc2RestClient, fileManager fm: Foundation.FileManager = Foundation.FileManager(), hostIdentifier hostIdent: String)
 	{
 		self.restClient = restClient
 		fileManager = fm

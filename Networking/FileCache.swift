@@ -4,12 +4,12 @@
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
-import Foundation
-import os
 import ClientCore
+import Foundation
+import NotifyingCollection
+import os
 import ReactiveSwift
 import Result
-import NotifyingCollection
 
 // this file is long because it has lots of helpers that need to be fileprivate
 // swiftlint:disable file_length

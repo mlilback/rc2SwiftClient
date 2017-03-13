@@ -6,9 +6,9 @@
 
 import Foundation
 import Freddy
+import NotifyingCollection
 import ReactiveSwift
 import Result
-import NotifyingCollection
 
 public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomStringConvertible, Hashable
 {
@@ -54,7 +54,7 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 	/// - Parameter withId: the id to look for
 	/// - returns: a matching workspace or nil if not found
 	public func workspace(withId: Int) -> Workspace? {
-		guard let idx =  _workspaces.index(where: { $0.wspaceId == withId }) else {
+		guard let idx = _workspaces.index(where: { $0.wspaceId == withId }) else {
 			return nil
 		}
 		return _workspaces[idx]
@@ -64,7 +64,7 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 	/// - Parameter withName: the name to look for
 	/// - returns: a matching workspace or nil if not found
 	public func workspace(withName: String) -> Workspace? {
-		guard let idx =  _workspaces.index(where: { $0.name == withName }) else {
+		guard let idx = _workspaces.index(where: { $0.name == withName }) else {
 			return nil
 		}
 		return _workspaces[idx]

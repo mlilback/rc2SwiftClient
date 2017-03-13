@@ -19,7 +19,7 @@ public struct WorkspaceIdentifier: JSONEncodable, JSONDecodable, Hashable, Custo
 
 	public var description: String { return "wspace \(projectId)/\(wspaceId)" }
 	// read on the Interwebs that multiplying by a weird constant will prevent equal values from hashing the same
-	public var hashValue: Int { return projectId.hashValue ^ (wspaceId.hashValue &* 9874431) }
+	public var hashValue: Int { return projectId.hashValue ^ (wspaceId.hashValue &* 9_874_431) }
 	
 	public init(projectId: Int, wspaceId: Int) {
 		self.projectId = projectId
@@ -104,7 +104,7 @@ public final class Workspace: JSONDecodable, JSONEncodable, Copyable, UpdateInPl
 	/// - Parameter withId: the id of the file to find
 	/// - Returns: the file with the specified id, or nil
 	public func file(withId: Int) -> File? {
-		guard let idx =  _files.index(where: { $0.fileId == withId }) else {
+		guard let idx = _files.index(where: { $0.fileId == withId }) else {
 			return nil
 		}
 		return _files[idx]
@@ -115,7 +115,7 @@ public final class Workspace: JSONDecodable, JSONEncodable, Copyable, UpdateInPl
 	/// - Parameter withName: the name of the file to find
 	/// - Returns: the matching file or nil
 	public func file(withName: String) -> File? {
-		guard let idx =  _files.index(where: { $0.name.caseInsensitiveCompare(withName) == .orderedSame }) else {
+		guard let idx = _files.index(where: { $0.name.caseInsensitiveCompare(withName) == .orderedSame }) else {
 			return nil
 		}
 		return _files[idx]

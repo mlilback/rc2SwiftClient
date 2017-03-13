@@ -4,10 +4,10 @@
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
+import ClientCore
+import Freddy
 import Foundation
 import ReactiveSwift
-import Freddy
-import ClientCore
 
 // MARK: -
 /// simple operations that can be performed on a container

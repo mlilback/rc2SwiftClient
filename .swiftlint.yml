@@ -4,7 +4,15 @@ disabled_rules:
   - todo
   - variable_name #doesn't allow underscores
 opt_in_rules:
-
+  - closure_spacing
+  - explicit_init
+  - first_where
+  - number_separator
+  - operator_usage_whitespace
+  - overridden_super_call
+  - prohibited_super_call
+  - redundant_nil_coalescing
+    
 excluded:
   - Carthage
   - vendor
@@ -18,3 +26,5 @@ trailing_whitespace:
 large_tuple:
   warning: 4
   error: 4
+number_separator:
+  minimum_length: 5

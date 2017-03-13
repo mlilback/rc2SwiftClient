@@ -4,18 +4,18 @@
 //  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
-import Foundation
 #if os(OSX)
 	import AppKit
 #endif
+import ClientCore
+import Foundation
 import Freddy
 import MessagePackSwift
+import NotifyingCollection
+import os
 import ReactiveSwift
 import Result
 import Starscream
-import os
-import NotifyingCollection
-import ClientCore
 
 // swiftlint:disable file_length
 
@@ -147,16 +147,14 @@ public class Session {
 	/// - parameter type: whether to run or source the script
 	public func executeScript(_ srcScript: String, type: ExecuteType = .Run) {
 		//don't send empty scripts
-		guard srcScript.characters.count > 0 else {
-			return
-		}
+		guard !srcScript.characters.isEmpty else { return }
 		var script = srcScript
 		let helpCheck = helpRegex.firstMatch(in: script, options: [], range: NSRange(location: 0, length: script.utf16.count))
 		if helpCheck?.numberOfRanges == 3 {
 			let topic = script.substring(with: (helpCheck?.rangeAt(2).toStringRange(script))!)
 			let adjScript = script.replacingCharacters(in: (helpCheck?.range.toStringRange(script))!, with: "")
 			delegate?.respondToHelp(topic)
-			guard adjScript.utf16.count > 0 else {
+			guard !adjScript.utf16.isEmpty else {
 				return
 			}
 			script = adjScript

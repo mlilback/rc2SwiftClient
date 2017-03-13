@@ -4,11 +4,11 @@
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
+import ClientCore
 import Foundation
 import Freddy
-import ReactiveSwift
 import os
-import ClientCore
+import ReactiveSwift
 
 fileprivate let maxRetries = 2
 

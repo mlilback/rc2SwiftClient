@@ -72,8 +72,8 @@ public final class File: JSONDecodable, JSONEncodable, Copyable, CustomStringCon
 		name = dict["name"] as! String
 		version = dict["version"] as! Int
 		fileSize = dict["fileSize"] as! Int!
-		dateCreated = Date(timeIntervalSince1970: (dict["dateCreated"] as! Double)/1000.0)
-		lastModified = Date(timeIntervalSince1970: (dict["lastModified"] as! Double)/1000.0)
+		dateCreated = Date(timeIntervalSince1970: (dict["dateCreated"] as! Double) / 1000.0)
+		lastModified = Date(timeIntervalSince1970: (dict["lastModified"] as! Double) / 1000.0)
 		// swiftlint:enable force_cast
 		if let ft = FileType.fileType(forFileName: name) {
 			self.fileType = ft
