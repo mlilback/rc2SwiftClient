@@ -11,20 +11,20 @@ import Foundation
 import ClientCore
 
 open class CodeHighlighter: NSObject {
-	let colorMap:SyntaxColorMap = { return SyntaxColorMap.standardMap }()
+	let colorMap: SyntaxColorMap = { return SyntaxColorMap.standardMap }()
 	
 	///subclass should override this to return the color to use and if the previous character should be colorized, too (for latex)
-	func colorForToken(_ token:PKToken, lastToken:PKToken?, includePreviousCharacter usePrevious:inout Bool) -> PlatformColor?
+	func colorForToken(_ token: PKToken, lastToken: PKToken?, includePreviousCharacter usePrevious:inout Bool) -> PlatformColor?
 	{
 		preconditionFailure("subclass must override highlightText")
 	}
 	
 	///should not manipulate the string, only attributes
-	func addAttributes(_ string:NSMutableAttributedString, range:NSRange) {
+	func addAttributes(_ string: NSMutableAttributedString, range: NSRange) {
 		
 	}
 	
-	func highlightText(_ content:NSMutableAttributedString, range:NSRange) {
+	func highlightText(_ content: NSMutableAttributedString, range: NSRange) {
 		guard range.length > 0 else { return }
 		content.removeAttribute(NSForegroundColorAttributeName, range: range)
 		addAttributes(content, range:range)
@@ -41,10 +41,10 @@ open class CodeHighlighter: NSObject {
 		tokenizer.symbolState.remove(":-")
 		tokenizer.setTokenizerState(tokenizer.commentState, from: hash, to: hash)
 		let eof = PKToken.eof().tokenType
-		var lastToken:PKToken?
-		while let token = tokenizer.nextToken() , token.tokenType != eof {
-			var tokenRange = NSMakeRange(range.location + Int(token.offset), token.stringValue.characters.count)
-			var includePrevious:Bool = false
+		var lastToken: PKToken?
+		while let token = tokenizer.nextToken(), token.tokenType != eof {
+			var tokenRange = NSRange(location: range.location + Int(token.offset), length: token.stringValue.characters.count)
+			var includePrevious: Bool = false
 			if let color = colorForToken(token, lastToken: lastToken, includePreviousCharacter: &includePrevious)
 			{
 				if includePrevious {

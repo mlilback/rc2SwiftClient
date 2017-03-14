@@ -27,7 +27,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	
 	func handlesToolbarItem(_ item: NSToolbarItem) -> Bool {
 		if item.itemIdentifier == "leftView" {
-			sidebarSegmentControl = item.view as! NSSegmentedControl?
+			sidebarSegmentControl = item.view as! NSSegmentedControl? // swiftlint:disable:this force_cast
 			sidebarSegmentControl?.target = self
 			sidebarSegmentControl?.action = #selector(SessionSplitController.sidebarSwitcherClicked(_:))
 			let sidebar = sidebarTabController()
@@ -36,7 +36,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 			sidebar.selectedTabViewItemIndex = lastSelection
 			return true
 		} else if item.itemIdentifier == "rightView" {
-			outputSegmentControl = item.view as! NSSegmentedControl?
+			outputSegmentControl = item.view as! NSSegmentedControl? // swiftlint:disable:this force_cast
 			outputSegmentControl?.target = self
 			outputSegmentControl?.action = #selector(SessionSplitController.outputSwitcherClicked(_:))
 			outputSegmentControl?.selectedSegment = 0
@@ -121,10 +121,12 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	}
 	
 	func sidebarTabController() -> NSTabViewController {
+		// swiftlint:disable:next force_cast
 		return self.childViewControllers.first(where: { $0.identifier == "sidebarTabController" }) as! NSTabViewController
 	}
 	
 	func outputTabController() -> OutputTabController {
+		// swiftlint:disable:next force_cast
 		return self.childViewControllers.first(where: { $0.identifier == "outputTabController" }) as! OutputTabController
 	}
 	

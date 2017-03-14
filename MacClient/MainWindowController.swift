@@ -33,8 +33,8 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 	
 	func setupChildren() {
 		statusView?.appStatus = appStatus
-		let rootVC = contentViewController as! RootViewController
-		rootVC.sessionClosedHandler = { [weak self] in 
+		let rootVC = contentViewController as! RootViewController // swiftlint:disable:this force_cast
+		rootVC.sessionClosedHandler = { [weak self] in
 			DispatchQueue.main.async {
 				self?.window?.close()
 			}
@@ -48,6 +48,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 	func window(_ window: NSWindow, willEncodeRestorableState state: NSCoder) {
 		guard let session = session else { return }
 		let bmark = Bookmark(connectionInfo: session.conInfo, workspace: session.workspace, lastUsed: NSDate.timeIntervalSinceReferenceDate)
+		// swiftlint:disable:next force_try
 		state.encode(try! bmark.toJSON().serialize(), forKey: "bookmark")
 	}
 	
@@ -60,7 +61,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 			}
 			toolbarSetupScheduled = true
 		}
-		let item:NSToolbarItem = ((notification as NSNotification).userInfo!["item"] as? NSToolbarItem)!
+		let item: NSToolbarItem = ((notification as NSNotification).userInfo!["item"] as? NSToolbarItem)!
 		if item.itemIdentifier == "status",
 			let sview = item.view as? AppStatusView
 		{

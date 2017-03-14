@@ -9,7 +9,7 @@ import ClientCore
 import SwiftyUserDefaults
 
 class SessionEditor: TextViewWithContextualMenu {
-	var wordWrapEnabled:Bool { return textContainer!.widthTracksTextView }
+	var wordWrapEnabled: Bool { return textContainer!.widthTracksTextView }
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
@@ -20,8 +20,8 @@ class SessionEditor: TextViewWithContextualMenu {
 		
 	}
 	
-	var rangeOfAllText:NSRange {
-		return NSMakeRange(0, textStorage!.length)
+	var rangeOfAllText: NSRange {
+		return NSRange(location: 0, length: textStorage!.length)
 	}
 	
 	func moveCursorToNextNonBlankLine() {
@@ -52,7 +52,7 @@ class SessionEditor: TextViewWithContextualMenu {
 //		let curLoc = selectedRange()
 		//flash the inserted character and matching opening character
 //		let closeRange = NSMakeRange(curLoc.location, 1)
-		let openRange = NSMakeRange(openLoc, 1)
+		let openRange = NSRange(location: openLoc, length: 1)
 		let color = PlatformColor(hexString: "888888")!
 //		layoutManager?.addTemporaryAttribute(NSBackgroundColorAttributeName, value: color, forCharacterRange: closeRange)
 		layoutManager?.addTemporaryAttribute(NSBackgroundColorAttributeName, value: color, forCharacterRange: openRange)
@@ -64,7 +64,7 @@ class SessionEditor: TextViewWithContextualMenu {
 	}
 	
 	//can't figure out an easy was to compare with a character constant '(', so use ascii code for comparison
-	func findMatchingParenthesis(_ closeLocation:Int, str:NSString) -> Int {
+	func findMatchingParenthesis(_ closeLocation: Int, str: NSString) -> Int {
 		var stackCount = 0
 		var curLocation = closeLocation
 		let contentStr = textStorage!.string as NSString
@@ -82,7 +82,7 @@ class SessionEditor: TextViewWithContextualMenu {
 		return NSNotFound
 	}
 
-	func findMatchingParenthesisNative(_ closeLocation:Int, str:String) -> Int {
+	func findMatchingParenthesisNative(_ closeLocation: Int, str: String) -> Int {
 		var stackCount = 0
 		var curLocation = str.characters.index(str.startIndex, offsetBy: closeLocation)
 		while str.characters.distance(from: str.startIndex, to: curLocation) > 0 {
@@ -98,14 +98,14 @@ class SessionEditor: TextViewWithContextualMenu {
 		return NSNotFound
 	}
 	
-	@IBAction func toggleWordWrap(_ sender:AnyObject?) {
+	@IBAction func toggleWordWrap(_ sender: AnyObject?) {
 		let wordWrap = !wordWrapEnabled
 		let defaults = UserDefaults.standard
 		defaults[.wordWrapEnabled] = wordWrap
 		adjustWordWrap(wordWrap)
 	}
 	
-	func adjustWordWrap(_ wrap:Bool) {
+	func adjustWordWrap(_ wrap: Bool) {
 		let container = textContainer!
 		if wrap {
 			container.widthTracksTextView = false

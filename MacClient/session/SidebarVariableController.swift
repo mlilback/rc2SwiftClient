@@ -9,8 +9,8 @@ import Networking
 import os
 import SwiftyUserDefaults
 
-class SidebarVariableController : AbstractSessionViewController {
-	//MARK: properties
+class SidebarVariableController: AbstractSessionViewController {
+	// MARK: properties
 	var rootVariables: [Variable] = []
 	var changedIndexes: Set<Int> = []
 	var variablePopover: NSPopover?
@@ -19,7 +19,7 @@ class SidebarVariableController : AbstractSessionViewController {
 	@IBOutlet var clearButton: NSButton!
 	@IBOutlet var contextMenu: NSMenu!
 	
-	//MARK: methods
+	// MARK: methods
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		if sessionOptional != nil {
@@ -48,7 +48,7 @@ class SidebarVariableController : AbstractSessionViewController {
 	}
 	
 	func variableNamed(_ name: String?) -> Variable? {
-		return rootVariables.filter({ $0.name == name }).first
+		return rootVariables.first(where: { $0.name == name })
 	}
 	
 	@IBAction func delete(_ sender: Any?) {
@@ -67,6 +67,7 @@ class SidebarVariableController : AbstractSessionViewController {
 		guard let row = varTableView?.selectedRow, row >= 0 else { return }
 		let pasteboard = NSPasteboard.general()
 		pasteboard.clearContents()
+		// swiftlint:disable:next force_try
 		pasteboard.setString(try! rootVariables[row].toJSON().serializeString(), forType: PasteboardTypes.variable)
 		pasteboard.setString(rootVariables[row].description, forType: NSPasteboardTypeString)
 	}
@@ -98,14 +99,14 @@ extension SidebarVariableController: NSUserInterfaceValidations {
 			case #selector(SidebarVariableController.clearWorkspace(_:)):
 				return rootVariables.count > 0
 			case #selector(SidebarVariableController.delete(_:)):
-				return tableView.selectedRowIndexes.count > 0;
+				return tableView.selectedRowIndexes.count > 0
 			default:
 				return false
 		}
 	}
 }
 
-//MARK: - VariableHandler
+// MARK: - VariableHandler
 extension SidebarVariableController: VariableHandler {
 	func handleVariableMessage(_ single: Bool, variables: [Variable]) {
 		if single {
@@ -129,7 +130,7 @@ extension SidebarVariableController: VariableHandler {
 				rootVariables.append(variable)
 			}
 		}
-		removed.forEach() { str in
+		removed.forEach { str in
 			if let curVal = variableNamed(str) {
 				rootVariables.remove(at: rootVariables.index(of: curVal)!)
 			}
@@ -138,7 +139,7 @@ extension SidebarVariableController: VariableHandler {
 	}
 }
 
-//MARK: - NSTableViewDataSource
+// MARK: - NSTableViewDataSource
 extension SidebarVariableController: NSTableViewDataSource {
 	func numberOfRows(in tableView: NSTableView) -> Int {
 		return rootVariables.count
@@ -149,19 +150,21 @@ extension SidebarVariableController: NSTableViewDataSource {
 		guard let row = rowIndexes.first else { return false }
 		pboard.clearContents()
 		pboard.declareTypes([PasteboardTypes.variable, NSPasteboardTypeString], owner: nil)
+		// swiftlint:disable:next force_try
 		pboard.setString(try! rootVariables[row].toJSON().serializeString(), forType: PasteboardTypes.variable)
 		pboard.setString(rootVariables[row].description, forType: NSPasteboardTypeString)
 		return true
 	}
 }
 
-//MARK: - NSTableViewDelegate
+// MARK: - NSTableViewDelegate
 extension SidebarVariableController: NSTableViewDelegate {
 	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView?
 	{
 		let isValue = tableColumn!.identifier == "value"
 		let cellIdent = isValue ? "varValueView" : "varNameView"
-		let view:NSTableCellView = tableView.make(withIdentifier: cellIdent, owner: self) as! NSTableCellView
+		// swiftlint:disable:next force_cast
+		let view: NSTableCellView = tableView.make(withIdentifier: cellIdent, owner: self) as! NSTableCellView
 		let variable = rootVariables[row]
 		view.textField?.stringValue = isValue ? variable.description : variable.name ?? ""
 		if changedIndexes.contains(row) {

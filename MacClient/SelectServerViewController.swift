@@ -52,7 +52,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	var customServerSelected: Bool { return selectedServerIndex == (serverMenu?.menu?.items.count ?? 0) - 1 }
 	var localServerSelected: Bool { return selectedServerIndex == 0 }
 	
-	//MARK: Methods
+	// MARK: Methods
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		serverDetailsView?.isHidden = true

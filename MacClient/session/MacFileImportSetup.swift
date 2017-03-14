@@ -14,17 +14,17 @@ import Networking
 /** Handles importing via a save panel or drag and drop. */
 class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 	
-	var pboardReadOptions:Dictionary<String,Any> {
-		return [NSPasteboardURLReadingFileURLsOnlyKey:true as AnyObject,
-			NSPasteboardURLReadingContentsConformToTypesKey:[kUTTypePlainText, kUTTypePDF]];
+	var pboardReadOptions: [String: Any] {
+		return [NSPasteboardURLReadingFileURLsOnlyKey: true as AnyObject,
+			NSPasteboardURLReadingContentsConformToTypesKey: [kUTTypePlainText, kUTTypePDF]]
 	}
 
-	/** Prompts the user to select files to upload. 
+	/** Prompts the user to select files to upload.
 		parameter window: the parent window to display the sheet on
 		parameter workspace: the workspace the files will be imported into
 		parameter completionHandler: a closure called with an array of files to import, or nil if the user canceled the import
 	*/
-	func performFileImport(_ window:NSWindow, workspace:Workspace, completionHandler:@escaping ([FileImporter.FileToImport]?) -> Void) {
+	func performFileImport(_ window: NSWindow, workspace: Workspace, completionHandler:@escaping ([FileImporter.FileToImport]?) -> Void) {
 		
 		let defaults = UserDefaults.standard
 		let panel = NSOpenPanel()
@@ -43,7 +43,7 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 		panel.delegate = self
 		panel.treatsFilePackagesAsDirectories = true
 		panel.allowedFileTypes = FileType.importableFileTypes.map { $0.fileExtension }
-		let accessoryView = NSButton(frame: NSZeroRect)
+		let accessoryView = NSButton(frame: NSRect.zero)
 		accessoryView.setButtonType(.switch)
 		accessoryView.title = NSLocalizedString("Replace existing files", comment: "")
 		let replace = defaults[.replaceFiles]
@@ -59,7 +59,7 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 			panel.close()
 			if result == NSFileHandlingPanelOKButton && panel.urls.count > 0 {
 				let replaceFiles = accessoryView.state == NSOnState
-				let files = panel.urls.map() { url -> FileImporter.FileToImport in
+				let files = panel.urls.map { url -> FileImporter.FileToImport in
 					let uname = replaceFiles ? self.uniqueFileName(url.lastPathComponent, inWorkspace: workspace) : nil
 					return FileImporter.FileToImport(url: url, uniqueName: uname)
 				}
@@ -74,12 +74,15 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 		parameter info: the drag info
 		returns: the drag operation to perform
 	*/
-	func validateTableViewDrop(_ info:NSDraggingInfo) -> NSDragOperation {
+	func validateTableViewDrop(_ info: NSDraggingInfo) -> NSDragOperation {
 		guard info.draggingSource() == nil else  { return NSDragOperation() } //don't allow local drags
-		guard let urls = info.draggingPasteboard().readObjects(forClasses: [URL.self as! AnyObject.Type], options: pboardReadOptions), urls.count > 0 else { return NSDragOperation() } //must have a url
-		let acceptableTypes = FileType.importableFileTypes.map() { $0.fileExtension }
+		// swiftlint:disable:next force_cast
+		guard let urls = info.draggingPasteboard().readObjects(forClasses: [NSURL.self], options: pboardReadOptions) as? [URL],
+			urls.count > 0
+			else { return NSDragOperation() } //must have a url
+		let acceptableTypes = FileType.importableFileTypes.map { $0.fileExtension }
 		for aUrl in urls {
-			if !acceptableTypes.contains((aUrl as! URL).pathExtension) {
+			if !acceptableTypes.contains(aUrl.pathExtension) {
 				return NSDragOperation()
 			}
 		}
@@ -92,12 +95,12 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 		parameter workspace: the workspace the file(s) will be imported into
 		parameter handler: called with the array of files to import
 	*/
-	func acceptTableViewDrop(_ info:NSDraggingInfo, workspace:Workspace, window:NSWindow, handler:@escaping ([FileImporter.FileToImport]) -> Void)
+	func acceptTableViewDrop(_ info: NSDraggingInfo, workspace: Workspace, window: NSWindow, handler:@escaping ([FileImporter.FileToImport]) -> Void)
 	{
 		assert(validateTableViewDrop(info) != NSDragOperation(), "validate wasn't called on drag info")
 		guard let urls = info.draggingPasteboard().readObjects(forClasses: [NSURL.self], options: pboardReadOptions) as? [URL], urls.count > 0 else { return }
-		let existingNames: [String] = workspace.files.map() { $0.name }
-		if urls.filter({ aUrl in existingNames.contains(aUrl.lastPathComponent) }).first != nil {
+		let existingNames: [String] = workspace.files.map { $0.name }
+		if urls.first(where: { aUrl in existingNames.contains(aUrl.lastPathComponent) }) != nil {
 			let alert = NSAlert()
 			alert.messageText = NSLocalizedString("Replace existing file(s)?", comment: "")
 			alert.informativeText = NSLocalizedString("One or more files already exist with the same name as a dropped file", comment:"")
@@ -109,34 +112,34 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 			uniqButton.keyEquivalentModifierMask = NSEventModifierFlags(rawValue: UInt(Int(NSEventModifierFlags.command.rawValue)))
 			alert.beginSheetModal(for: window, completionHandler: { response in
 				guard response != NSAlertSecondButtonReturn else { return }
-				let files = urls.map() { url -> FileImporter.FileToImport in
+				let files = urls.map { url -> FileImporter.FileToImport in
 					let uname = response == NSAlertFirstButtonReturn ? nil : self.uniqueFileName(url.lastPathComponent, inWorkspace: workspace)
 					return FileImporter.FileToImport(url: url, uniqueName: uname)
 				}
 				handler(files)
-			}) 
+			})
 		} else {
-			handler(urls.map() { url in FileImporter.FileToImport(url: url, uniqueName: nil) } )
+			handler(urls.map { url in FileImporter.FileToImport(url: url, uniqueName: nil) })
 		}
 	}
 	
 	/** generates a unique file name (by adding a number to the end) for a file in a workspace */
-	func uniqueFileName(_ desiredName:String, inWorkspace workspace:Workspace) -> String {
+	func uniqueFileName(_ desiredName: String, inWorkspace workspace: Workspace) -> String {
 		var i = 1
 		let nsname = NSString(string:desiredName)
 		let baseName = nsname.deletingPathExtension
 		let pathExtension = nsname.pathExtension
 		var useableName = desiredName
-		let existingNames: [String] = workspace.files.map() { return $0.name }
+		let existingNames: [String] = workspace.files.map { return $0.name }
 		//check if desiredName is ok
 		if !existingNames.contains(desiredName) {
 			return desiredName
 		}
-		while(true) {
+		while true {
 			let newName = baseName + " \(i)." + pathExtension
 			if !existingNames.contains(newName) {
 				useableName = newName
-				break;
+				break
 			}
 			i += 1
 		}

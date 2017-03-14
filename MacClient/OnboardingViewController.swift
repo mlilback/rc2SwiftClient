@@ -46,8 +46,9 @@ class OnboardingViewController: NSViewController {
 	}
 	
 	func updateWorkspaces() {
-		guard let project = project else { os_log("onboarding loaded w/o project"); return }
-		let jsonStr = try! project.workspaces.sorted(by: { $0.name < $1.name } ).toJSON().serialize().base64EncodedString()
+		guard let project = project,
+			let jsonStr = try? project.workspaces.sorted(by: { $0.name < $1.name }).toJSON().serialize().base64EncodedString()
+		 else { os_log("onboarding loaded w/o project"); return }
 		webView.evaluateJavaScript("setWorkspaces('\(jsonStr)')")
 	}
 }
@@ -70,7 +71,7 @@ extension OnboardingViewController: WKNavigationDelegate {
 extension OnboardingViewController: WKScriptMessageHandler {
 	func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage)
 	{
-		guard let args = message.body as? Dictionary<String, Any>, let action = args["action"] as? String else {
+		guard let args = message.body as? [String: Any], let action = args["action"] as? String else {
 			return
 		}
 		switch action {
@@ -92,5 +93,6 @@ extension OnboardingViewController: WKScriptMessageHandler {
 }
 
 class OnboardingWindowController: NSWindowController {
+	// swiftlint:disable:next force_cast
 	var viewController: OnboardingViewController { return contentViewController as! OnboardingViewController }
 }

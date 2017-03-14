@@ -16,7 +16,7 @@ class PreferencesViewController: NSTabViewController {
 		{
 			image = NSWorkspace.shared().icon(forFile: appPath)
 		}
-		let dockerItem = tabViewItems.filter({ $0.identifier as? String == "Docker" }).first
+		let dockerItem = tabViewItems.first(where: { $0.identifier as? String == "Docker" })
 		dockerItem?.image = image
 	}
 	
@@ -36,9 +36,9 @@ class PreferencesViewController: NSTabViewController {
 		guard let window = self.view.window else { return }
 		window.title = tabViewItem!.label
 		let size = tabSizes[tabViewItem!.label]!
-		let contentFrame = window.frameRect(forContentRect: NSMakeRect(0, 0, size.width, size.height))
+		let contentFrame = window.frameRect(forContentRect: NSRect(x: 0, y: 0, width: size.width, height: size.height))
 		var frame = window.frame
-		frame.origin.y = frame.origin.y + (frame.size.height - contentFrame.size.height)
+		frame.origin.y += frame.size.height - contentFrame.size.height
 		frame.size.height = contentFrame.size.height
 		frame.size.width = contentFrame.size.width
 		window.setFrame(frame, display: true, animate: true)

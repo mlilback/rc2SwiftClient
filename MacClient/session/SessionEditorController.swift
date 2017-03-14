@@ -24,7 +24,7 @@ extension Selector {
 
 class SessionEditorController: AbstractSessionViewController, TextViewMenuDelegate
 {
-	//MARK: properties
+	// MARK: properties
 	@IBOutlet var editor: SessionEditor?
 	@IBOutlet var runButton: NSButton?
 	@IBOutlet var sourceButton: NSButton?
@@ -50,7 +50,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	}
 	
 	///allow dependency injection
-	var notificationCenter:NotificationCenter? {
+	var notificationCenter: NotificationCenter? {
 		willSet {
 			if newValue != notificationCenter {
 				notificationCenter?.removeObserver(self)
@@ -68,24 +68,24 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		}
 	}
 	
-	//MARK: init/deinit
+	// MARK: init/deinit
 	deinit {
 		NSWorkspace.shared().notificationCenter.removeObserver(self)
 		NotificationCenter.default.removeObserver(self)
 	}
 	
-	//MARK: methods
+	// MARK: methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		guard editor != nil else { return }
 		//try switching to Menlo instead of default monospaced font
 		let fdesc = NSFontDescriptor(name: "Menlo-Regular", size: 14.0)
-		if let _ =  NSFont(descriptor: fdesc, size: fdesc.pointSize)
+		if let _ = NSFont(descriptor: fdesc, size: fdesc.pointSize)
 		{
 			currentFontDescriptor = fdesc
 		}
 		editor?.menuDelegate = self
-		editor?.textContainer?.containerSize = NSMakeSize(CGFloat.greatestFiniteMagnitude, CGFloat.greatestFiniteMagnitude)
+		editor?.textContainer?.containerSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
 		editor?.textContainer?.widthTracksTextView = true
 		editor?.isHorizontallyResizable = true
 		editor?.isAutomaticSpellingCorrectionEnabled = false
@@ -102,7 +102,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
-		switch(action) {
+		switch action  {
 		case Selector.runQuery, Selector.sourceQuery:
 			return currentDocument?.currentContents.characters.count ?? 0 > 0
 		case Selector.executeLine:
@@ -146,14 +146,16 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	}
 	
 	func saveState() -> [String:AnyObject] {
-		var dict = [String:AnyObject]()
+		var dict = [String: AnyObject]()
 		dict["font"] = NSKeyedArchiver.archivedData(withRootObject: currentFontDescriptor) as AnyObject?
 		return dict
 	}
 	
-	func restoreState(_ state:[String:AnyObject]) {
-		if let fontData = state["font"] as? Data, let fontDesc = NSKeyedUnarchiver.unarchiveObject(with: fontData) {
-			currentFontDescriptor = fontDesc as! NSFontDescriptor
+	func restoreState(_ state: [String:AnyObject]) {
+		if let fontData = state["font"] as? Data,
+			let fontDesc = NSKeyedUnarchiver.unarchiveObject(with: fontData) as? NSFontDescriptor
+		{
+			currentFontDescriptor = fontDesc
 		}
 	}
 	
@@ -164,7 +166,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	}
 
 	//called when file has changed in UI
-	func fileSelectionChanged(_ file:File?) {
+	func fileSelectionChanged(_ file: File?) {
 		if let theFile = file {
 			if currentDocument?.file.fileId == theFile.fileId && currentDocument?.file.version == theFile.version { return } //same file
 			self.adjustCurrentDocumentForFile(file)
@@ -177,7 +179,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	//called when a file in the workspace file array has changed
 	func process(changes: [CollectionChange<File>]) {
 		//if it was a file change (content or metadata)
-		guard let change = changes.first(where: { $0.object?.fileId == currentDocument?.file.fileId }) , let file = change.object else { return }
+		guard let change = changes.first(where: { $0.object?.fileId == currentDocument?.file.fileId }), let file = change.object else { return }
 		if change.changeType == .update {
 			guard currentDocument?.file.fileId == file.fileId else { return }
 			self.currentDocument?.updateFile(file)
@@ -200,11 +202,11 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	}
 }
 
-//MARK: Actions
+// MARK: Actions
 extension SessionEditorController {
-	@IBAction func previousChunkAction(_ sender:AnyObject) {
+	@IBAction func previousChunkAction(_ sender: AnyObject) {
 		guard currentChunkIndex > 0 else {
-			os_log("called with invalid currentChunkIndex", log: .app, type:.error);
+			os_log("called with invalid currentChunkIndex", log: .app, type:.error)
 			assertionFailure() //called for debug builds only
 			return
 		}
@@ -212,9 +214,9 @@ extension SessionEditorController {
 		adjustUIForCurrentChunk()
 	}
 
-	@IBAction func nextChunkAction(_ sender:AnyObject) {
+	@IBAction func nextChunkAction(_ sender: AnyObject) {
 		guard currentChunkIndex + 1 < parser!.chunks.count else {
-			os_log("called with invalid currentChunkIndex", log: .app, type:.error);
+			os_log("called with invalid currentChunkIndex", log: .app, type:.error)
 			assertionFailure() //called for debug builds only
 			return
 		}
@@ -228,11 +230,11 @@ extension SessionEditorController {
 		editor?.performFindPanelAction(menuItem)
 	}
 	
-	@IBAction func runQuery(_ sender:AnyObject?) {
+	@IBAction func runQuery(_ sender: AnyObject?) {
 		executeQuery(type:.Run)
 	}
 	
-	@IBAction func sourceQuery(_ sender:AnyObject?) {
+	@IBAction func sourceQuery(_ sender: AnyObject?) {
 		executeQuery(type:.Source)
 	}
 	
@@ -254,13 +256,13 @@ extension SessionEditorController {
 	}
 }
 
-//MARK: UsesAdjustableFont
+// MARK: UsesAdjustableFont
 extension SessionEditorController: UsesAdjustableFont {
 	func fontsEnabled() -> Bool {
 		return true
 	}
 	
-	func fontChanged(_ menuItem:NSMenuItem) {
+	func fontChanged(_ menuItem: NSMenuItem) {
 		os_log("font changed: %{public}@", log: .app, type:.info, (menuItem.representedObject as? NSObject)!)
 		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
 		let newDesc = newNameDesc.withSize(currentFontDescriptor.pointSize)
@@ -269,7 +271,7 @@ extension SessionEditorController: UsesAdjustableFont {
 	}
 }
 
-//MARK: NSTextStorageDelegate
+// MARK: NSTextStorageDelegate
 extension SessionEditorController: NSTextStorageDelegate {
 	//called when text editing has ended
 	func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
@@ -292,7 +294,7 @@ extension SessionEditorController: NSTextStorageDelegate {
 	}
 }
 
-//MARK: NSTextViewDelegate methods
+// MARK: NSTextViewDelegate methods
 extension SessionEditorController: NSTextViewDelegate {
 	func undoManager(for view: NSTextView) -> UndoManager? {
 		if currentDocument != nil { return currentDocument!.undoManager }
@@ -300,7 +302,7 @@ extension SessionEditorController: NSTextViewDelegate {
 	}
 	
 	func textView(_ textView: NSTextView, clickedOnLink link: Any, at charIndex: Int) -> Bool {
-		if let pieces = (link as? String)?.components(separatedBy: ":") , pieces.count == 2 {
+		if let pieces = (link as? String)?.components(separatedBy: ":"), pieces.count == 2 {
 			NotificationCenter.default.post(name: .DisplayHelpTopic, object:pieces[1], userInfo:nil)
 			return true
 		}
@@ -308,13 +310,13 @@ extension SessionEditorController: NSTextViewDelegate {
 	}
 }
 
-//MARK: private methods
+// MARK: private methods
 fileprivate extension SessionEditorController {
 	///adjusts the UI to mark the current chunk
 	func adjustUIForCurrentChunk() {
 		//for now we will move the cursor and scroll so it is visible
 		let chunkRange = parser!.chunks[currentChunkIndex].parsedRange
-		var desiredRange = NSMakeRange(chunkRange.location, 0)
+		var desiredRange = NSRange(location: chunkRange.location, length: 0)
 		//adjust desired range so it advances past any newlines at start of chunk
 		let str = editor!.string!
 		let curIdx = str.characters.index(str.startIndex, offsetBy: desiredRange.location)
@@ -326,7 +328,7 @@ fileprivate extension SessionEditorController {
 	}
 	
 	///actually implements running a query, saving first if document is dirty
-	func executeQuery(type:ExecuteType) {
+	func executeQuery(type: ExecuteType) {
 		guard let currentDocument = currentDocument else {
 			fatalError("runQuery called with no file selected")
 		}
@@ -358,7 +360,7 @@ fileprivate extension SessionEditorController {
 			.observe(on: UIScheduler())
 	}
 	
-	func adjustCurrentDocumentForFile(_ file:File?) {
+	func adjustCurrentDocumentForFile(_ file: File?) {
 		let editor = self.editor!
 		//save old document
 		if let oldDocument = currentDocument, oldDocument.file.fileId != file?.fileId {
@@ -387,7 +389,7 @@ fileprivate extension SessionEditorController {
 		}
 	}
 	
-	func documentContentsLoaded(_ doc:EditorDocument, content:String) {
+	func documentContentsLoaded(_ doc: EditorDocument, content: String) {
 		let editor = self.editor!
 		let lm = editor.layoutManager!
 		doc.willBecomeActive()
@@ -400,7 +402,7 @@ fileprivate extension SessionEditorController {
 		if doc.topVisibleIndex > 0 {
 			//restore the scroll point to the saved character index
 			let idx = lm.glyphIndexForCharacter(at: doc.topVisibleIndex)
-			let point = lm.boundingRect(forGlyphRange: NSMakeRange(idx, 1), in: editor.textContainer!)
+			let point = lm.boundingRect(forGlyphRange: NSRange(location: idx, length: 1), in: editor.textContainer!)
 			//postpone to next event loop cycle
 			DispatchQueue.main.async {
 				editor.enclosingScrollView?.contentView.scroll(to: point.origin)
@@ -414,7 +416,7 @@ fileprivate extension SessionEditorController {
 		let lm = editor.layoutManager!
 		//save the index of the character at the top left of the text container
 		let bnds = editor.enclosingScrollView!.contentView.bounds
-		var partial:CGFloat = 1.0
+		var partial: CGFloat = 1.0
 		let idx = lm.characterIndex(for: bnds.origin, in: editor.textContainer!, fractionOfDistanceBetweenInsertionPoints: &partial)
 		doc.topVisibleIndex = idx
 		doc.willBecomeInactive(contents)
@@ -439,4 +441,3 @@ fileprivate extension SessionEditorController {
 	}
 	
 }
-

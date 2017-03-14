@@ -1,13 +1,14 @@
- //
+//
 //  ConsoleAttachment.swift
 //
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
+import ClientCore
 import Foundation
 import Freddy
-import ClientCore
 import Networking
+import os
 
 public final class MacConsoleAttachment: ConsoleAttachment {
 	let type: ConsoleAttachmentType
@@ -68,25 +69,28 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 		return .dictionary(props)
 	}
 	
-	fileprivate func fileAttachmentData() -> (FileWrapper, NSImage?) {
-		let data = try! toJSON().serialize()
+	fileprivate func attachmentData(name: String, image: NSImage?) -> (FileWrapper, NSImage?)? {
+		guard let data = try? toJSON().serialize() else {
+			os_log("invalid json data in file attachment", log: .app)
+			return nil
+		}
 		let file = FileWrapper(regularFileWithContents: data)
-		file.filename = fileName
-		file.preferredFilename = fileName
-		return (file, FileType.fileType(withExtension: fileExtension!)?.image())
+		file.filename = name
+		file.preferredFilename = name
+		return (file, image)
 	}
 	
-	fileprivate func imageAttachmentData() -> (FileWrapper, NSImage?) {
-		let data = try! toJSON().serialize()
-		let file = FileWrapper(regularFileWithContents: data)
-		file.filename = image?.name
-		file.preferredFilename = image?.name
-		return (file, NSImage(named:"graph")!)
+	fileprivate func fileAttachmentData() -> (FileWrapper, NSImage?)? {
+		return attachmentData(name: fileName ?? "untitled", image: FileType.fileType(withExtension: fileExtension!)?.image())
+	}
+	
+	fileprivate func imageAttachmentData() -> (FileWrapper, NSImage?)? {
+		return attachmentData(name: image?.name ?? "unnamed", image: #imageLiteral(resourceName: "graph"))
 	}
 	
 	public func asAttributedString() -> NSAttributedString {
-		var results:(FileWrapper, NSImage?)?
-		switch(type) {
+		var results: (FileWrapper, NSImage?)?
+		switch type {
 			case .file:
 				results = fileAttachmentData()
 			case .image:
@@ -95,11 +99,10 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 		assert(results?.0 != nil)
 		let attachment = NSTextAttachment(fileWrapper: results!.0)
 		let cell = NSTextAttachmentCell(imageCell: results!.1)
-		cell.image?.size = NSMakeSize(48, 48)
+		cell.image?.size = NSSize(width: 48, height: 48)
 		attachment.attachmentCell = cell
 		let str = NSMutableAttributedString(attributedString: NSAttributedString(attachment: attachment))
-		str.addAttribute(NSToolTipAttributeName, value: (attachment.fileWrapper?.filename)!, range: NSMakeRange(0,1))
+		str.addAttribute(NSToolTipAttributeName, value: (attachment.fileWrapper?.filename)!, range: NSRange(location: 0, length: 1))
 		return str
 	}
 }
-

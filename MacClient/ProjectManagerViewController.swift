@@ -9,8 +9,8 @@ import Networking
 import ClientCore
 
 struct ProjectAndWorkspace {
-	let project:String
-	let workspace:String
+	let project: String
+	let workspace: String
 }
 
 class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
@@ -70,7 +70,7 @@ extension ProjectManagerViewController: NSOutlineViewDataSource {
 extension ProjectManagerViewController: NSOutlineViewDelegate {
 	public func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView?
 	{
-		var val = "";
+		var val = ""
 		if let proj = item as? Project {
 			val = proj.name
 		} else if let wspace = item as? Workspace {

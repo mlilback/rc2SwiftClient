@@ -18,7 +18,7 @@ enum BookmarkEntry {
 }
 
 open class BookmarkViewController: NSViewController {
-	@IBOutlet var tableView:NSTableView?
+	@IBOutlet var tableView: NSTableView?
 	@IBOutlet var addRemoveButtons: NSSegmentedControl?
 	@IBOutlet var progressContainer: NSView?
 	@IBOutlet var progressSpinner: NSProgressIndicator?
@@ -26,7 +26,7 @@ open class BookmarkViewController: NSViewController {
 	fileprivate let dateFormatter: DateFormatter = DateFormatter()
 	var addController: AddBookmarkViewController?
 	var bookmarkManager: BookmarkManager?
-	var openSessionCallback:((Session) -> Void)?
+	var openSessionCallback: ((Session) -> Void)?
 	fileprivate var appStatus: MacAppStatus?
 	fileprivate var openInProgress: Bool = false
 
@@ -65,7 +65,7 @@ open class BookmarkViewController: NSViewController {
 		}
 	}
 	
-	@IBAction func addRemoveBookmark(_ sender:AnyObject?) {
+	@IBAction func addRemoveBookmark(_ sender: AnyObject?) {
 		if addRemoveButtons?.selectedSegment == 0 {
 			addBookmark(sender)
 		} else {
@@ -73,11 +73,11 @@ open class BookmarkViewController: NSViewController {
 		}
 	}
 
-	@IBAction func removeBookmark(_ sender:AnyObject?) {
+	@IBAction func removeBookmark(_ sender: AnyObject?) {
 		
 	}
 	
-	@IBAction func addBookmark(_ sender:AnyObject?) {
+	@IBAction func addBookmark(_ sender: AnyObject?) {
 //		addController = storyboard?.instantiateController(withIdentifier: "addBookmark") as? AddBookmarkViewController
 //		addController?.bookmarkAddedClosure = { (host, pw) in
 //			let bookmark = Bookmark(name: "untitled", server: host, project: pw.project, workspace: pw.workspace)
@@ -101,7 +101,7 @@ open class BookmarkViewController: NSViewController {
 //		}
 	}
 	
-	@IBAction func bookmarkNameEditedAction(_ textField:NSTextField)
+	@IBAction func bookmarkNameEditedAction(_ textField: NSTextField)
 	{
 		assert(tableView!.selectedRow >= 0)
 		if case .mark(let aMark) = entries[tableView!.selectedRow] {
@@ -111,7 +111,7 @@ open class BookmarkViewController: NSViewController {
 		}
 	}
 	
-	@IBAction func openBookmark(_ sender:AnyObject?) {
+	@IBAction func openBookmark(_ sender: AnyObject?) {
 		//if double click where there is no row, selectedRow is -1
 		guard tableView!.selectedRow >= 0 else { return }
 		guard !openInProgress else { return }
@@ -120,7 +120,7 @@ open class BookmarkViewController: NSViewController {
 		}
 	}
 	
-	func openSession(withBookmark bookmark:Bookmark, password:String?) {
+	func openSession(withBookmark bookmark: Bookmark, password: String?) {
 		var host = ServerHost.localHost
 		var pass = NetworkConstants.localServerPassword
 		if let bmserver = bookmark.server {
@@ -155,7 +155,7 @@ open class BookmarkViewController: NSViewController {
 //			return
 //		}
 //		let session = Session(connectionInfo: conInfo, workspace: wspace)
-//		session.open().observe(on: UIScheduler()).on(starting: { 
+//		session.open().observe(on: UIScheduler()).on(starting: {
 //			self.progressContainer?.isHidden = false
 //			self.progressSpinner?.startAnimation(self)
 //			self.progressLabel?.stringValue = "Connecting to \(conInfo.host.name)…"
@@ -179,9 +179,9 @@ open class BookmarkViewController: NSViewController {
 //		}
 	}
 	
-	func entryIndexForBookmark(_ bmark:Bookmark) -> Int? {
+	func entryIndexForBookmark(_ bmark: Bookmark) -> Int? {
 		for idx in 0..<entries.count {
-			if case .mark(let aMark) = entries[idx] , aMark == bmark {
+			if case .mark(let aMark) = entries[idx], aMark == bmark {
 				return idx
 			}
 		}
@@ -221,13 +221,14 @@ extension BookmarkViewController: NSTableViewDelegate {
 //						str = ""
 //				}
 //		}
+		// swiftlint:disable:next force_cast
 		let cellView = tableView.make(withIdentifier: "name", owner: nil) as! NSTableCellView
 		cellView.textField?.stringValue = str
 		return cellView
 	}
 	
 	public func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
-		switch(entries[row]) {
+		switch entries[row]  {
 			case .group(_):
 				return false
 			case .mark(_):
@@ -236,7 +237,7 @@ extension BookmarkViewController: NSTableViewDelegate {
 	}
 	
 	public func tableView(_ tableView: NSTableView, isGroupRow row: Int) -> Bool {
-		switch(entries[row]) {
+		switch entries[row] {
 			case .group(_):
 				return true
 			case .mark(_):

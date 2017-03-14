@@ -18,7 +18,6 @@ public struct Bookmark: JSONDecodable, JSONEncodable, CustomStringConvertible, C
 	public static var defaultBookmark: Bookmark {
 		return Bookmark(name: NetworkConstants.defaultBookmarkName, server: nil, workspaceIdent: WorkspaceIdentifier(projectId: 0, wspaceId: 0), project: NetworkConstants.defaultProjectName, workspace: NetworkConstants.defaultWorkspaceName)
 	}
-
 	
 	let name: String?
 	let server: ServerHost?
@@ -100,4 +99,3 @@ public struct Bookmark: JSONDecodable, JSONEncodable, CustomStringConvertible, C
 		return lname < rname
 	}
 }
-

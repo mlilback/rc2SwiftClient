@@ -17,25 +17,26 @@ public enum SyntaxColor: String {
 ///A struct for mapping a SyntaxColor to a PlatformColor (NSColor, UIColor)
 public struct SyntaxColorMap {
 	///A singleton map loaded from user defaults Assumes a default map was installed (likely by the register domain).
-	static var standardMap:SyntaxColorMap = {
+	static var standardMap: SyntaxColorMap = {
+		// swiftlint:disable:next force_cast
 		let srcMap = UserDefaults.standard.object(forKey: RCodeHighlighterColors) as! [String:String]
 		var dict: [SyntaxColor:PlatformColor] = [:]
-		for (key,value) in srcMap {
+		for (key, value) in srcMap {
 			dict[SyntaxColor(rawValue: key)!] = PlatformColor(hexString: value)
 		}
 		return SyntaxColorMap(colorDict: dict)
 	}()
 	
-	fileprivate var colorMap:[SyntaxColor:PlatformColor] = [:]
+	fileprivate var colorMap: [SyntaxColor:PlatformColor] = [:]
 	
 	///initializes a SyntaxColorMap
 	/// - parameter colorDict: A dictionary of syntax colors mapped to platform colors
-	init(colorDict:[SyntaxColor:PlatformColor]) {
-		self.colorMap = colorDict;
+	init(colorDict: [SyntaxColor:PlatformColor]) {
+		self.colorMap = colorDict
 	}
 	
 	/// maps a SyntaxColor to a PlatformColor
-	subscript(key:SyntaxColor) -> PlatformColor? {
+	subscript(key: SyntaxColor) -> PlatformColor? {
 		get { return colorMap[key] }
 		set { colorMap[key] = newValue }
 	}

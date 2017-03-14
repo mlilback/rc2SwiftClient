@@ -66,11 +66,9 @@ class MacAppStatus {
 	private let busyObserver: Signal<Bool, NoError>.Observer
 	
 	dynamic var busy: Bool {
-		get {
-			var result = false
-			_statusQueue.sync { result = _currentDisposable != nil }
-			return result
-		}
+		var result = false
+		_statusQueue.sync { result = _currentDisposable != nil }
+		return result
 	}
 	
 	init(windowAccessor: @escaping (Session?) -> NSWindow) {

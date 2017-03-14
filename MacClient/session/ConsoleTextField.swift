@@ -8,7 +8,7 @@ import Cocoa
 
 class ConsoleTextField: NSTextField {
 	//will be called when the contextual menu is about to be displayed so it can be adjusted/
-	var adjustContextualMenu: ((_ fieldEditor:NSText, _ menu:NSMenu) -> NSMenu)?
+	var adjustContextualMenu: ((_ fieldEditor: NSText, _ menu: NSMenu) -> NSMenu)?
 	
 	override init(frame frameRect: NSRect) {
 		super.init(frame: frameRect)
@@ -44,8 +44,7 @@ class ConsoleTextField: NSTextField {
 	/// the selection is maintained by the FieldEditor. The TextField is assigned as the
 	/// FieldEditor's delegate. Implementing this method (NSTextField does not appear to implement it)
 	/// is the only way to do anything when the text selection changes
-	func textViewDidChangeSelection(_ note:Notification) {
+	func textViewDidChangeSelection(_ note: Notification) {
 		updateContextMenu()
 	}
 }
-

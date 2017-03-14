@@ -19,10 +19,10 @@ extension OSLog {
 /** parses the contents of an NSTextStorage into an array of chunks that can be syntax colored */
 open class SyntaxParser: NSObject {
 	///returns the approprate syntax parser to use for fileType
-	class func parserWithTextStorage(_ storage:NSTextStorage, fileType:FileType) -> SyntaxParser?
+	class func parserWithTextStorage(_ storage: NSTextStorage, fileType: FileType) -> SyntaxParser?
 	{
-		var parser:SyntaxParser?
-		var highlighter:CodeHighlighter?
+		var parser: SyntaxParser?
+		var highlighter: CodeHighlighter?
 		let cmap = SyntaxColorMap.standardMap
 		if fileType.isSweave {
 			parser = RnwSyntaxParser(storage: storage, fileType: fileType, colorMap: cmap)
@@ -37,19 +37,19 @@ open class SyntaxParser: NSObject {
 	}
 	
 	let textStorage: NSTextStorage
-	let fileType:  FileType
-	let colorMap:SyntaxColorMap
-	internal(set) var chunks:[DocumentChunk] = []
-	fileprivate var lastSource:String = ""
+	let fileType: FileType
+	let colorMap: SyntaxColorMap
+	internal(set) var chunks: [DocumentChunk] = []
+	fileprivate var lastSource: String = ""
 	var colorBackgrounds = false
 
-	internal var docHighlighter:CodeHighlighter?
-	internal var codeHighlighter:CodeHighlighter?
+	internal var docHighlighter: CodeHighlighter?
+	internal var codeHighlighter: CodeHighlighter?
 
 	/// - parameter storage: A text storage whose changes are tracked to keep chunks up to date
 	/// - parameter fileType: used to determine the proper highlighter(s) to use
 	/// - parameter colorMap: The map of token types to colors. Defaults to the singleton standardMap.
-	init(storage:NSTextStorage, fileType:FileType, colorMap:SyntaxColorMap = SyntaxColorMap.standardMap)
+	init(storage: NSTextStorage, fileType: FileType, colorMap: SyntaxColorMap = SyntaxColorMap.standardMap)
 	{
 		self.textStorage = storage
 		self.fileType = fileType
@@ -63,12 +63,12 @@ open class SyntaxParser: NSObject {
 		return chunks.index(of: chunksForRange(inRange).first!)!
 	}
 	
-	func chunkForRange(_ inRange:NSRange) -> DocumentChunk? {
+	func chunkForRange(_ inRange: NSRange) -> DocumentChunk? {
 		var range = inRange
 		if range.location == NSNotFound { return nil }
 		if range.location == 0 && range.length == 0 {
 			if textStorage.length < 1 { return nil; }
-			range = NSMakeRange(0, 1)
+			range = NSRange(location: 0, length: 1)
 		}
 		if range.location == textStorage.length && range.length == 0 {
 			range.location -= 1
@@ -81,22 +81,22 @@ open class SyntaxParser: NSObject {
 		return nil
 	}
 	
-	func chunksForRange(_ range:NSRange) -> [DocumentChunk] {
+	func chunksForRange(_ range: NSRange) -> [DocumentChunk] {
 		//if full range of textstorage, just return all chunks
-		if NSEqualRanges(range, NSMakeRange(0, textStorage.length)) {
+		if NSEqualRanges(range, NSRange(location: 0, length: textStorage.length)) {
 			return chunks
 		}
 		guard chunks.count > 0 else { return [] }
 		if range.length == 0 {
 			guard range.length > 0 else { return [chunks[0]] }
 			for aChunk in chunks {
-				if NSLocationInRange(range.location-1, aChunk.parsedRange) {
+				if NSLocationInRange(range.location - 1, aChunk.parsedRange) {
 					return [aChunk]
 				}
 			}
 		}
 		os_log("looking for %{public}@", log: .syntax, type:.debug, NSStringFromRange(range))
-		var outArray:[DocumentChunk] = []
+		var outArray: [DocumentChunk] = []
 		for aChunk in chunks {
 			if NSIntersectionRange(aChunk.parsedRange, range).length > 0
 //				|| NSLocationInRange(range.location-1, aChunk.parsedRange)
@@ -111,7 +111,7 @@ open class SyntaxParser: NSObject {
 	@discardableResult func parse() -> Bool {
 		if textStorage.length == 0 || textStorage.string != lastSource {
 			let oldChunks = chunks
-			parseRange(NSMakeRange(0, textStorage.length))
+			parseRange(NSRange(location: 0, length: textStorage.length))
 			lastSource = textStorage.string
 			if oldChunks == chunks {
 				return false
@@ -120,20 +120,20 @@ open class SyntaxParser: NSObject {
 		return true
 	}
 	
-	internal func parseRange(_ range:NSRange) {
+	internal func parseRange(_ range: NSRange) {
 		preconditionFailure("subclass must implement")
 	}
 	
-	func syntaxHighlightChunksInRange(_ range:NSRange) {
+	func syntaxHighlightChunksInRange(_ range: NSRange) {
 		colorChunks(chunksForRange(range))
 	}
 
 	///should be called when the textstorage contents have changed, ideally by the NSTextStorageDelegate call textStorage:didProcessEditing:range:changeInLength:
-	func adjustParseRanges(_ fullRangeLength:Int) {
+	func adjustParseRanges(_ fullRangeLength: Int) {
 		guard chunks.count > 0 else { return }
-		for (index,chunk) in chunks.enumerated() {
-			guard index+1 < chunks.count - 1 else { break }
-			let nextChunk = chunks[index+1]
+		for (index, chunk) in chunks.enumerated() {
+			guard index + 1 < chunks.count - 1 else { break }
+			let nextChunk = chunks[index + 1]
 			var rng = chunk.parsedRange
 			rng.length = nextChunk.parsedRange.location - chunk.parsedRange.location
 			chunk.parsedRange = rng
@@ -144,7 +144,7 @@ open class SyntaxParser: NSObject {
 		chunks.last!.parsedRange = finalRange
 	}
 	
-	func colorChunks(_ chunksToColor:[DocumentChunk]) {
+	func colorChunks(_ chunksToColor: [DocumentChunk]) {
 		for chunk in chunksToColor {
 			if chunk.type == .rCode {
 				if colorBackgrounds, let bgcolor = colorMap[.CodeBackground] {
@@ -162,11 +162,11 @@ open class SyntaxParser: NSObject {
 	}
 }
 
-open class RSyntaxParser:SyntaxParser {
+open class RSyntaxParser: SyntaxParser {
 	internal override func parseRange(_ range: NSRange) {
 		chunks.removeAll()
 		let chunk = DocumentChunk(chunkType: .rCode, chunkNumber: 1)
-		chunk.parsedRange = NSMakeRange(0, textStorage.string.characters.count)
+		chunk.parsedRange = NSRange(location: 0, length: textStorage.string.characters.count)
 		chunks.append(chunk)
 	}
 }

@@ -13,4 +13,3 @@ protocol Searchable {
 extension Searchable {
 	func performFind(action: NSTextFinderAction) { }
 }
-

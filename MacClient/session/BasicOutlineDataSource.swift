@@ -9,11 +9,11 @@ import Cocoa
 class BasicOutlineDataSource<T: AnyObject>: NSObject, NSOutlineViewDataSource {
 	typealias OutlineViewFactory = (T) -> NSView
 	
-	var data:[T]
+	var data: [T]
 	var viewFactory: OutlineViewFactory
 	var childAccessor: (T) -> [T]?
 	
-	init(data:[T], childAccessor:@escaping (T) -> [T]?, viewFactory:@escaping OutlineViewFactory) {
+	init(data: [T], childAccessor:@escaping (T) -> [T]?, viewFactory:@escaping OutlineViewFactory) {
 		self.data = data
 		self.viewFactory = viewFactory
 		self.childAccessor = childAccessor
@@ -29,7 +29,7 @@ class BasicOutlineDataSource<T: AnyObject>: NSObject, NSOutlineViewDataSource {
 	
 	func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
 		if nil == item { return data[index] }
-		return childAccessor(item as! T)![index]
+		return childAccessor(item as! T)![index] // swiftlint:disable:this force_cast
 	}
 	
 	func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
@@ -40,7 +40,7 @@ class BasicOutlineDataSource<T: AnyObject>: NSObject, NSOutlineViewDataSource {
 	}
 	
 	public func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
-		return viewFactory(item as! T)
+		return viewFactory(item as! T) // swiftlint:disable:this force_cast
 	}
 
 }

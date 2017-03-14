@@ -15,8 +15,8 @@ extension Selector {
 @objc protocol UsesAdjustableFont {
 	func fontsEnabled() -> Bool
 	///The menu item will have a font descriptor as the representedObject
-	func fontChanged(_ menuItem:NSMenuItem)
-	var currentFontDescriptor:NSFontDescriptor { get set }
+	func fontChanged(_ menuItem: NSMenuItem)
+	var currentFontDescriptor: NSFontDescriptor { get set }
 }
 
 @objc protocol ManageFontMenu {
@@ -29,9 +29,9 @@ extension Selector {
 	func adjustFontSize(_ sender: NSMenuItem)
 }
 
-func currentFontUser(_ firstResponder:NSResponder?) -> UsesAdjustableFont? {
+func currentFontUser(_ firstResponder: NSResponder?) -> UsesAdjustableFont? {
 	var curResponder = firstResponder
-	while (curResponder != nil) {
+	while curResponder != nil {
 		if let fontHandler = curResponder as? UsesAdjustableFont {
 			return fontHandler
 		}

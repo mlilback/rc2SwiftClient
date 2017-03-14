@@ -1677,6 +1677,7 @@
 			buildConfigurationList = 088CE6831C4B0AF500153414 /* Build configuration list for PBXNativeTarget "MacClient" */;
 			buildPhases = (
 				08A01FCF1CC80928001EDFAA /* create help index */,
+				0815C9871E788DF80031D69A /* swiftlint */,
 				088CE6651C4B0AF400153414 /* Sources */,
 				088CE6661C4B0AF400153414 /* Frameworks */,
 				088CE6671C4B0AF400153414 /* Resources */,
@@ -2047,6 +2048,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n(cd DockerSupport; swiftlint)\nelse\necho \"Warning: swiftlint not installed\"\nfi\n";
+		};
+		0815C9871E788DF80031D69A /* swiftlint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = swiftlint;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\nswiftlint lint --path shared\nswiftlint lint --path MacClient\nelse\necho \"Warning: swiftlint not installed\"\nfi\n";
 		};
 		082610961DB1632200C03422 /* swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;

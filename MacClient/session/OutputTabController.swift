@@ -27,7 +27,7 @@ extension OutputController {
 }
 
 class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandler {
-	//MARK: properties
+	// MARK: properties
 	var currentOutputController: OutputController!
 	var consoleController: ConsoleOutputController?
 	var imageController: ImageOutputController?
@@ -42,7 +42,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	}
 	let selectedOutputTab = MutableProperty<OutputTab>(.console)
 
-	//MARK: methods
+	// MARK: methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		NotificationCenter.default.addObserver(self, selector: #selector(OutputTabController.handleDisplayHelp(_:)), name: .DisplayHelpTopic, object: nil)
@@ -106,17 +106,17 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		showHelpTopic(topics[0])
 	}
 	
-	func handleDisplayHelp(_ note:Notification) {
-		if let topic:HelpTopic = note.object as? HelpTopic {
+	func handleDisplayHelp(_ note: Notification) {
+		if let topic: HelpTopic = note.object as? HelpTopic {
 			showHelpTopic(topic)
-		} else if let topicName:String = note.object as? String {
+		} else if let topicName: String = note.object as? String {
 			showHelp(HelpController.shared.topicsWithName(topicName))
 		} else { //told to show without a topic. switch back to console.
 			selectedOutputTab.value = .console
 		}
 	}
 
-	func clearConsole(_ sender:AnyObject?) {
+	func clearConsole(_ sender: AnyObject?) {
 		consoleController?.clearConsole(sender)
 		imageCache?.clearCache()
 	}
@@ -127,19 +127,19 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			os_log("asked to display invalid attachment", log: .app)
 			return
 		}
-		switch (attachment.type) {
-			case .file:
-				if let file = sessionController?.session.workspace.file(withId: attachment.fileId) {
-					webController?.loadLocalFile(sessionController!.session.fileCache.validUrl(for: file))
-					selectedOutputTab.value = .webKit
-				} else {
-					//TODO: report error
-					os_log("error getting file attachment to display: %d", log: .app, attachment.fileId)
-				}
-			case .image:
-				if let image = attachment.image,
-				let images = imageCache?.sessionImages(forBatch: image.batchId),
-				let index = images.index(where: {$0.id == image.id})
+		switch attachment.type {
+		case .file:
+			if let file = sessionController?.session.workspace.file(withId: attachment.fileId) {
+				webController?.loadLocalFile(sessionController!.session.fileCache.validUrl(for: file))
+				selectedOutputTab.value = .webKit
+			} else {
+				//TODO: report error
+				os_log("error getting file attachment to display: %d", log: .app, attachment.fileId)
+			}
+		case .image:
+			if let image = attachment.image,
+			let images = imageCache?.sessionImages(forBatch: image.batchId),
+			let index = images.index(where: { $0.id == image.id })
 			{
 				imageController?.displayImage(atIndex: index, images:images)
 				selectedOutputTab.value = .image
@@ -188,7 +188,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	}
 	
 	func saveSessionState() -> AnyObject {
-		var dict = [String:AnyObject]()
+		var dict = [String: AnyObject]()
 		dict["console"] = consoleController?.saveSessionState()
 		return dict as AnyObject
 	}
@@ -200,7 +200,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	}
 }
 
-//MARK: - private methods
+// MARK: - private methods
 private extension OutputTabController {
 	func switchTo(tab: OutputTab) {
 		selectedTabViewItemIndex = tab.rawValue
@@ -220,14 +220,14 @@ private extension OutputTabController {
 	}
 	
 	///actually shows the help page for the specified topic
-	func showHelpTopic(_ topic:HelpTopic) {
+	func showHelpTopic(_ topic: HelpTopic) {
 		selectedOutputTab.value = .help
 		helpController!.loadHelpTopic(topic)
 	}
 }
 
-//MARK: - helper classes
-class OutputTopView : NSTabView {
+// MARK: - helper classes
+class OutputTopView: NSTabView {
 	var windowSetCall: (() -> Void)?
 	override func viewDidMoveToWindow() {
 		if self.window != nil {
@@ -245,7 +245,7 @@ class ClearConsoleToolbarItem: NSToolbarItem {
 	}
 }
 
-class OutputConsoleToolbarItem : NSToolbarItem {
+class OutputConsoleToolbarItem: NSToolbarItem {
 	weak var tabController: NSTabViewController?
 	override func validate() {
 		guard let tabController = tabController else { return }

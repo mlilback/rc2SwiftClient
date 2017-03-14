@@ -12,10 +12,11 @@ import Networking
 #endif
 
 open class RnwSyntaxParser: SyntaxParser {
-	fileprivate let startExpression:NSRegularExpression
+	fileprivate let startExpression: NSRegularExpression
 	
 	override init(storage: NSTextStorage, fileType: FileType, colorMap: SyntaxColorMap)
 	{
+		// swiftlint:disable:next force_try
 		startExpression = try! NSRegularExpression(pattern: "(?:@( \\s*|\\n))|(?:<<([^>]*)>>= ?.*?)", options: [.anchorsMatchLines])
 		super.init(storage: storage, fileType: fileType, colorMap: colorMap)
 		codeHighlighter = RCodeHighlighter()
@@ -30,20 +31,20 @@ open class RnwSyntaxParser: SyntaxParser {
 		var curChunkNum = 1
 		chunks = []
 		startExpression.enumerateMatches(in: str, options: [], range: fullRange)
-		{ (result, flags, _) -> Void in
+		{ (result, _, _) -> Void in
 			guard let result = result else { return }
-			var newChunk:DocumentChunk?
+			var newChunk: DocumentChunk?
 			if curChunkNum == 1 && result.range.location > 0 { //first chunk
 				newChunk = DocumentChunk(chunkType: .documentation, chunkNumber: curChunkNum)
-				newChunk?.parsedRange = NSMakeRange(0, result.range.location)
+				newChunk?.parsedRange = NSRange(location: 0, length: result.range.location)
 				self.chunks.append(newChunk!)
 				curChunkNum += 1
 			}
-			let matchStr:String = str.substring(with: result.range.toStringRange(str)!)
+			let matchStr: String = str.substring(with: result.range.toStringRange(str)!)
 			if matchStr[matchStr.startIndex] == "@" {
 				newChunk = DocumentChunk(chunkType: .documentation, chunkNumber: curChunkNum)
 			} else  {
-				var cname:String?
+				var cname: String?
 				if result.rangeAt(2).length > 0 {
 					cname = str.substring(with: (result.rangeAt(2).toStringRange(str))!)
 				}

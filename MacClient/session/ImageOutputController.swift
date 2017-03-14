@@ -12,11 +12,11 @@ import ReactiveSwift
 import Networking
 
 class DisplayableImage: NSObject {
-	let imageId:Int
-	let name:String
-	var image:NSImage?
+	let imageId: Int
+	let name: String
+	var image: NSImage?
 	
-	init(imageId:Int, name:String) {
+	init(imageId: Int, name: String) {
 		self.imageId = imageId
 		self.name = name
 	}
@@ -65,7 +65,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		}
 	}
 	
-	func displayImage(atIndex index:Int, images:[SessionImage]) {
+	func displayImage(atIndex index: Int, images: [SessionImage]) {
 		batchImages = images.map { (simg) -> DisplayableImage in
 			return DisplayableImage(imageId: simg.id, name: simg.name)
 		}
@@ -76,8 +76,8 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		navigateButton?.setEnabled(index + 1 < images.count, forSegment: 1)
 	}
 	
-	@IBAction func navigateClicked(_ sender:AnyObject?) {
-		switch ((navigateButton?.selectedSegment)!) {
+	@IBAction func navigateClicked(_ sender: AnyObject?) {
+		switch (navigateButton?.selectedSegment)! {
 		case 0:
 			pageController?.navigateBack(self)
 		case 1:
@@ -87,7 +87,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		}
 	}
 	
-	@IBAction func shareImage(_ sender:AnyObject?) {
+	@IBAction func shareImage(_ sender: AnyObject?) {
 		let dimg = batchImages[(pageController?.selectedIndex)!]
 		let imgUrl = imageCache?.urlForCachedImage(dimg.imageId)
 		myShareServices.removeAll()
@@ -121,12 +121,13 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 			labelField?.stringValue = dimage.name
 			let index = batchImages.index(of: dimage)!
 			navigateButton?.setEnabled(index > 0, forSegment: 0)
-			navigateButton?.setEnabled(index < batchImages.count-1, forSegment: 1)
+			navigateButton?.setEnabled(index < batchImages.count - 1, forSegment: 1)
 		}
 	}
 	
 	func pageController(_ pageController: NSPageController, identifierFor object: Any) -> String {
-		return "\(batchImages.index(of: object as! DisplayableImage)!)"
+		guard let image = object as? DisplayableImage else { fatalError("invalid object from page controller") }
+		return "\(batchImages.index(of: image)!)"
 	}
 	
 	func pageController(_ pageController: NSPageController, viewControllerForIdentifier identifier: String) -> NSViewController

@@ -19,7 +19,7 @@ import NotifyingCollection
 	func filesRefreshed()
 	func sessionClosed()
 	func saveState() -> [String: AnyObject]
-	func restoreState(_ state:[String: AnyObject])
+	func restoreState(_ state: [String: AnyObject])
 }
 
 /// manages a Session object
@@ -76,7 +76,7 @@ import NotifyingCollection
 		return responseHandler!.formatError(errorString)
 	}
 
-	//MARK: - ServerResponseHandlerDelegate
+	// MARK: - ServerResponseHandlerDelegate
 	
 	func handleFileUpdate(fileId: Int, file: File?, change: FileChangeType) {
 //		os_log("got file update %d v%d", log: .app, type:.info, file.fileId, file.version)
@@ -138,7 +138,7 @@ import NotifyingCollection
 	}
 }
 
-//MARK: - save/restore
+// MARK: - save/restore
 extension SessionController {
 	func stateFileUrl() throws -> URL {
 		let dataDirUrl = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "sessions")
@@ -149,7 +149,7 @@ extension SessionController {
 	
 	func saveSessionState() {
 		//save data related to this session
-		var dict = [String:Any]()
+		var dict = [String: Any]()
 		dict["outputController"] = outputHandler.saveSessionState()
 		do {
 			dict["imageCache"] = try session.imageCache.toJSON().serialize()
@@ -196,7 +196,7 @@ extension SessionController {
 	}
 }
 
-//MARK: - SessionDelegate
+// MARK: - SessionDelegate
 extension SessionController: SessionDelegate {
 	func sessionOpened() {
 		
@@ -247,7 +247,7 @@ extension SessionController: SessionDelegate {
 	}
 }
 
-//MARK: - private methods
+// MARK: - private methods
 extension SessionController {
 	/// listen for the specified file to be inserted, and then call the handler
 	fileprivate func listenForInsert(fileId: Int, handler: @escaping (Int) -> Void) {

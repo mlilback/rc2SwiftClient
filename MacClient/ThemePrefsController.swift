@@ -85,10 +85,12 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 	
 	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 		if tableView == themeListView {
+			// swiftlint:disable:next force_cast
 			let view = tableView.make(withIdentifier: "themeNameView", owner: nil) as! NSTableCellView
 			view.textField?.stringValue = entries[row].title
 			return view
 		}
+		// swiftlint:disable:next force_cast
 		let view = tableView.make(withIdentifier: "themeItem", owner: nil) as! NameAndColorCellView
 		let prop = OutputThemeProperty.allValues[row]
 		view.textField?.stringValue = prop.rawValue

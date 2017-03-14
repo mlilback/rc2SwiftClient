@@ -13,6 +13,8 @@ import NotifyingCollection
 import ClientCore
 import Networking
 
+// swiftlint:disable file_length type_body_length
+
 ///selectors used in this file, aliased with shorter, descriptive names
 private extension Selector {
 	static let addDocument = #selector(SidebarFileController.addDocumentOfType(_:))
@@ -46,13 +48,13 @@ let removeFileSegmentIndex: Int = 1
 
 class SidebarFileController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler, NSOpenSavePanelDelegate, NSMenuDelegate
 {
-	//MARK: properties
+	// MARK: properties
 	let sectionNames: [String] = ["Source Files", "Images", "Other"]
 
 	@IBOutlet var tableView: NSTableView!
 	@IBOutlet var addRemoveButtons: NSSegmentedControl?
 	var rowData: [FileRowData] = [FileRowData]()
-	var delegate: FileViewControllerDelegate?
+	weak var delegate: FileViewControllerDelegate?
 	lazy var importPrompter: MacFileImportSetup? = { MacFileImportSetup() }()
 	var fileImporter: FileImporter?
 	private var fileChangeDisposable: Disposable?
@@ -65,7 +67,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		NotificationCenter.default.removeObserver(self)
 	}
 	
-	//MARK: - lifecycle
+	// MARK: - lifecycle
 	override func awakeFromNib() {
 		super.awakeFromNib()
 
@@ -131,7 +133,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		for i in 0..<sectionNames.count {
 			if sectionedFiles[i].count > 0 {
 				rowData.append(FileRowData(name: sectionNames[i], file: nil))
-				rowData.append(contentsOf: sectionedFiles[i].map({ return FileRowData(name:nil, file:$0)}))
+				rowData.append(contentsOf: sectionedFiles[i].map({ return FileRowData(name:nil, file:$0) }))
 			}
 		}
 	}
@@ -144,7 +146,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		guard let action = menuItem.action else {
 			return super.validateMenuItem(menuItem)
 		}
-		switch(action) {
+		switch action {
 			case Selector.promptToImport:
 				return true
 			case Selector.exportSelectedFile:
@@ -159,7 +161,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	//as the delegate for the action menu, need to enable/disable items
 	func menuNeedsUpdate(_ menu: NSMenu) {
 		menu.items.forEach { $0.isEnabled = selectedFile != nil }
-		menu.items.first(where: { $0.action == .promptToImport} )?.isEnabled = true
+		menu.items.first(where: { $0.action == .promptToImport })?.isEnabled = true
 	}
 	
 	func fileDataIndex(fileId: Int) -> Int? {
@@ -170,9 +172,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	// NSMenu calls this method before an item's action is called. we listen to it from the add button's menu
-	func addFileMenuAction(_ note:Notification) {
-		let menuItem = (note as NSNotification).userInfo!["MenuItem"] as! NSMenuItem
-		let index = menuItem.representedObject as! Int
+	func addFileMenuAction(_ note: Notification) {
+		guard let menuItem = note.userInfo?["MenuItem"] as? NSMenuItem,
+			let index = menuItem.representedObject as? Int
+			else { return }
 		let fileType = FileType.creatableFileTypes[index]
 		let prompt = NSLocalizedString("Filename:", comment: "")
 		let baseName = NSLocalizedString("Untitled", comment: "default file name")
@@ -193,7 +196,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 	
-	//MARK: - actions
+	// MARK: - actions
 	@IBAction func deleteFile(_ sender: AnyObject?) {
 		guard let file = selectedFile else {
 			logMessage("deleteFile should never be called without selected file")
@@ -299,7 +302,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 
-	@IBAction func exportSelectedFile(_ sender:AnyObject?) {
+	@IBAction func exportSelectedFile(_ sender: AnyObject?) {
 		let defaults = UserDefaults.standard
 		let savePanel = NSSavePanel()
 		savePanel.isExtensionHidden = false
@@ -325,19 +328,19 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				} catch let error as NSError {
 					os_log("failed to copy file for export: %{public}@", log: .app, type:.error, error)
 					let alert = NSAlert(error:error)
-					alert.beginSheetModal(for: self.view.window!, completionHandler: { (response) -> Void in
+					alert.beginSheetModal(for: self.view.window!, completionHandler: { (_) -> Void in
 						//do nothing
-					}) 
+					})
 				}
 			}
 		}
 	}
 	
-	@IBAction func exportAllFiles(_ sender:AnyObject?) {
+	@IBAction func exportAllFiles(_ sender: AnyObject?) {
 		//TODO: implement
 	}
 	
-	//MARK: - private methods
+	// MARK: - private methods
 
 	/// wrapper around os_log
 	fileprivate func logMessage(_ message: StaticString, type: OSLogType = .default, _ args: CVarArg...) {
@@ -381,12 +384,12 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		prompter.minimumStringLength = type.fileExtension.characters.count + 1
 		let fileNames = session.workspace.files.map { return $0.name }
 		prompter.validator = { (proposedName) in
-			return fileNames.filter({$0.caseInsensitiveCompare(proposedName) == .orderedSame}).count == 0
+			return fileNames.filter({ $0.caseInsensitiveCompare(proposedName) == .orderedSame }).count == 0
 		}
 		prompter.prompt(window: self.view.window!) { (gotValue, value) in
 			guard gotValue, var value = value else { handler(nil); return }
 			if !value.hasSuffix(fileExtension) {
-				value = value + fileExtension
+				value += fileExtension
 			}
 			handler(value)
 		}
@@ -402,15 +405,21 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		guard name.caseInsensitiveCompare(file.name) != .orderedSame else { return true }
 		//no duplicate names
 		let fileNames = session.workspace.files.map { return $0.name }
-		guard fileNames.filter({$0.caseInsensitiveCompare(name) == .orderedSame}).count == 0 else { return false }
+		guard fileNames.filter({ $0.caseInsensitiveCompare(name) == .orderedSame }).count == 0 else { return false }
 		return true
 	}
 	
-	private func importFiles(_ files:[FileImporter.FileToImport]) {
+	private func importFiles(_ files: [FileImporter.FileToImport]) {
 		let converter = { (iprogress: FileImporter.ImportProgress) -> ProgressUpdate? in
 			return ProgressUpdate(.value, message: iprogress.status, value: iprogress.percentComplete)
 		}
-		fileImporter = try! FileImporter(files, fileCache:self.session.fileCache, connectInfo: session.conInfo)
+		do {
+			fileImporter = try FileImporter(files, fileCache:self.session.fileCache, connectInfo: session.conInfo)
+		} catch {
+			let myError = Rc2Error(type: .file, nested: error)
+			appStatus?.presentError(myError, session: session)
+			return
+		}
 		//save reference so ARC doesn't dealloc importer
 		fileImporter!.producer()
 			.updateProgress(status: appStatus!, actionName: "Import", determinate: true, converter: converter)
@@ -432,7 +441,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			}
 	}
 
-	//MARK: - FileHandler implementation
+	// MARK: - FileHandler implementation
 	func filesRefreshed(_ changes: [CollectionChange<File>]?) {
 		//TODO: ideally should figure out what file was changed and animate the tableview update instead of refreshing all rows
 		//TODO: updated file always shows last, which is wrong
@@ -464,7 +473,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 	
-	//MARK: - TableView datasource/delegate implementation
+	// MARK: - TableView datasource/delegate implementation
 	func numberOfRows(in tableView: NSTableView) -> Int {
 		return rowData.count
 	}
@@ -472,10 +481,12 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 		let data = rowData[row]
 		if data.sectionName != nil {
+			// swiftlint:disable:next force_cast
 			let tview = tableView.make(withIdentifier: "string", owner: nil) as! NSTableCellView
 			tview.textField!.stringValue = data.sectionName!
 			return tview
 		} else {
+			// swiftlint:disable:next force_cast
 			let fview = tableView.make(withIdentifier: "file", owner: nil) as! EditableTableCellView
 			fview.objectValue = data.file
 			fview.textField?.stringValue = data.file!.name
@@ -524,7 +535,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 }
 
 //least hackish way to get segment's menu to show immediately if set, otherwise perform control's action
-class AddRemoveSegmentedCell : NSSegmentedCell {
+class AddRemoveSegmentedCell: NSSegmentedCell {
 	override var action: Selector? {
 		get {
 			if self.menu(forSegment: self.selectedSegment) != nil { return nil }
@@ -543,5 +554,3 @@ class FileTableView: NSTableView {
 		return super.menu(for: event)
 	}
 }
-
-

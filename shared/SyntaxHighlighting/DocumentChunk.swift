@@ -14,34 +14,34 @@ public enum EquationType: String {
 	case NotAnEquation = "invalid", Inline = "inline", Display = "display", MathML = "MathML"
 }
 
-///Represents a "chunk" of data. An R document has 1 chunk. 
+///Represents a "chunk" of data. An R document has 1 chunk.
 /// Rmd and Rnw documents can have multiple chunks of different types.
 open class DocumentChunk: NSObject {
 	///A unique, serial number for each chunk.
-	let chunkNumber:Int
-	let name:String?
+	let chunkNumber: Int
+	let name: String?
 	///One of Documentation, RCode, or Equation
-	let type:ChunkType
+	let type: ChunkType
 	
-	var equationType:EquationType = .NotAnEquation
-	var contentOffset:Int = 0
+	var equationType: EquationType = .NotAnEquation
+	var contentOffset: Int = 0
 	//should only be used by the parser/highlighter
-	internal(set) var parsedRange:NSRange = NSRange(location: 0,length: 0)
+	internal(set) var parsedRange: NSRange = NSRange(location: 0, length: 0)
 	
-	init(chunkType:ChunkType, chunkNumber:Int, name:String?=nil) {
+	init(chunkType: ChunkType, chunkNumber: Int, name: String?=nil) {
 		self.chunkNumber = chunkNumber
 		self.type = chunkType
 		self.name = name
 		super.init()
 	}
 	
-	convenience init(equationType:EquationType, chunkNumber:Int) {
+	convenience init(equationType: EquationType, chunkNumber: Int) {
 		self.init(chunkType: .equation, chunkNumber:chunkNumber)
 		self.equationType = equationType
 	}
 	
 	//duplicates a chunk that differs only in chunkNumber
-	func duplicateWithChunkNumber(_ newNum:Int) -> DocumentChunk {
+	func duplicateWithChunkNumber(_ newNum: Int) -> DocumentChunk {
 		let dup = DocumentChunk(chunkType: type, chunkNumber: newNum, name: name)
 		dup.parsedRange = parsedRange
 		dup.contentOffset = contentOffset
@@ -56,13 +56,13 @@ open class DocumentChunk: NSObject {
 		return false
 	}
 	
-	open override var hash:Int {
+	open override var hash: Int {
 		return chunkNumber.hashValue + type.hashValue + (name == nil ? 0 : name!.hashValue)
 	}
 	
 	open override var description: String {
 		let range = NSStringFromRange(parsedRange)
-		switch(self.type) {
+		switch self.type {
 			case .rCode:
 				return "R chunk \(chunkNumber) \"\((name == nil ? "" : name!))\" (\(range))"
 			case .documentation:

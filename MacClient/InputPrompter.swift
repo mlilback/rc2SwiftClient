@@ -42,7 +42,7 @@ class InputPrompter: NSObject {
 		assert(window != nil)
 		assert(textField != nil)
 		let formatter = PrompterFormatter()
-		formatter.validator = {  self.validate(change: $0) }
+		formatter.validator = { self.validate(change: $0) }
 		formatter.observer = observe
 		formatter.requiredSuffix = requiredSuffix
 		textField.formatter = formatter
@@ -155,4 +155,3 @@ class PrompterFormatter: Formatter {
 		return true
 	}
 }
-

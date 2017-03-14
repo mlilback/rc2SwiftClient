@@ -10,28 +10,29 @@ import Foundation
 #endif
 import ClientCore
 
-open class LatexCodeHighlighter : CodeHighlighter {
-	let commentRegex:NSRegularExpression
+open class LatexCodeHighlighter: CodeHighlighter {
+	let commentRegex: NSRegularExpression
 	
 	override init()  {
+		// swiftlint:disable:next force_try
 		self.commentRegex = try! NSRegularExpression(pattern: "(?<!\\\\)(%.*\n)", options: [])
 		super.init()
 	}
 	
-	override func addAttributes(_ content:NSMutableAttributedString, range:NSRange) {
+	override func addAttributes(_ content: NSMutableAttributedString, range: NSRange) {
 		if let color = colorMap[.Comment] {
 			let sourceStr = content.string.substring(with: range.toStringRange(content.string)!)
-			commentRegex.enumerateMatches(in: sourceStr, options: [], range: NSMakeRange(0, sourceStr.characters.count))
+			commentRegex.enumerateMatches(in: sourceStr, options: [], range: NSRange(location: 0, length: sourceStr.characters.count))
 			{ (results, _, _) -> Void in
 				content.addAttribute(NSForegroundColorAttributeName, value: color, range: (results?.rangeAt(1))!)
 			}
 		}
 	}
 	
-	override func colorForToken(_ token:PKToken, lastToken:PKToken?, includePreviousCharacter usePrevious:inout Bool) -> PlatformColor?
+	override func colorForToken(_ token: PKToken, lastToken: PKToken?, includePreviousCharacter usePrevious:inout Bool) -> PlatformColor?
 	{
-		var color:PlatformColor?
-		switch(token.tokenType) {
+		var color: PlatformColor?
+		switch token.tokenType  {
 		case .comment:
 			color = colorMap[.Comment]
 		case .quotedString:

@@ -10,7 +10,7 @@ import os
 import Freddy
 
 open class WebViewController: NSViewController, OutputController, WKNavigationDelegate {
-	var webView:WKWebView?
+	var webView: WKWebView?
 	@IBOutlet var containerView: NSView?
 	@IBOutlet var navButtons: NSSegmentedControl?
 	@IBOutlet var shareButton: NSSegmentedControl?
@@ -24,7 +24,7 @@ open class WebViewController: NSViewController, OutputController, WKNavigationDe
 	override open func viewDidLoad() {
 		super.viewDidLoad()
 		let prefs = WKPreferences()
-		prefs.minimumFontSize = 9.0;
+		prefs.minimumFontSize = 9.0
 		prefs.javaEnabled = false
 		prefs.javaScriptCanOpenWindowsAutomatically = false
 		let config = WKWebViewConfiguration()
@@ -56,7 +56,7 @@ open class WebViewController: NSViewController, OutputController, WKNavigationDe
 	
 	func loadScript(filename: String, fileExtension: String) {
 		let url = Bundle.main.url(forResource: filename, withExtension: fileExtension, subdirectory: "static_html")!
-		let srcStr = try! String(contentsOf: url)
+		guard let srcStr = try? String(contentsOf: url) else { return }
 		let script = WKUserScript(source: srcStr, injectionTime: .atDocumentStart, forMainFrameOnly: true)
 		webConfig?.userContentController.addUserScript(script)
 	}
@@ -65,8 +65,8 @@ open class WebViewController: NSViewController, OutputController, WKNavigationDe
 		return webView?.url != nil
 	}
 	
-	@IBAction func navigateWebView(_ sender:AnyObject) {
-		switch ((navButtons?.selectedSegment)!) {
+	@IBAction func navigateWebView(_ sender: AnyObject) {
+		switch (navButtons?.selectedSegment)! {
 		case 0:
 			webView?.goBack(sender)
 		case 1:
@@ -76,7 +76,7 @@ open class WebViewController: NSViewController, OutputController, WKNavigationDe
 		}
 	}
 	
-	@IBAction func showShareSheet(_ sender:AnyObject) {
+	@IBAction func showShareSheet(_ sender: AnyObject) {
 		let sharepicker = NSSharingServicePicker(items: [webView!.url!])
 		sharepicker.show(relativeTo: (shareButton?.frame)!, of: (shareButton?.superview)!, preferredEdge: .maxY)
 	}
@@ -134,7 +134,7 @@ extension WebViewController: SearchBarViewDelegate {
 			let data = try json.serialize()
 			let encoded = data.base64EncodedString()
 			let script = "doSearch('\(encoded)')"
-			webView?.evaluateJavaScript(script) { (value, error) in
+			webView?.evaluateJavaScript(script) { (value, _) in
 				guard let matchCount = value as? Int, matchCount >= 0 else {
 					os_log("invalid value returned from javascript search", log: .app)
 					return

@@ -38,7 +38,7 @@ class BookmarkManager {
 	
 	///adds a new bookmark to bookmarks array
 	/// - parameter bookmark: the bookmark to add
-	func addBookmark(_ bookmark:Bookmark) {
+	func addBookmark(_ bookmark: Bookmark) {
 		bookmarks.append(bookmark)
 		addBookmarkToAppropriateGroup(bookmark)
 		bookmarks.sort()
@@ -48,7 +48,7 @@ class BookmarkManager {
 	/// - parameter old: the bookmark to replace
 	/// - parameter with: the replacement bookmark
 	/// - returns: true if old was found and replaced
-	@discardableResult func replaceBookmark(_ old:Bookmark, with new:Bookmark) -> Bool {
+	@discardableResult func replaceBookmark(_ old: Bookmark, with new: Bookmark) -> Bool {
 		if let idx = bookmarks.index(of: old) {
 			bookmarks[idx] = new
 			groupBookmarks()
@@ -82,8 +82,8 @@ class BookmarkManager {
 		}
 	}
 
-	fileprivate func addBookmarkToAppropriateGroup(_ bookmark:Bookmark) {
-		let localKey:String = bookmark.server?.name ?? NetworkConstants.localBookmarkGroupName
+	fileprivate func addBookmarkToAppropriateGroup(_ bookmark: Bookmark) {
+		let localKey: String = bookmark.server?.name ?? NetworkConstants.localBookmarkGroupName
 		if let _ = bookmarkGroups[localKey] {
 			bookmarkGroups[localKey]!.addBookmark(bookmark)
 		} else {
@@ -93,9 +93,9 @@ class BookmarkManager {
 	
 	///add a server host
 	/// - parameter host: the host to add
-	func addHost(_ host:ServerHost) {
+	func addHost(_ host: ServerHost) {
 		hosts.append(host)
-		hosts.sort() { $0.name < $1.name }
+		hosts.sort { $0.name < $1.name }
 	}
 	
 	///loads hosts from NSUserDefaults
@@ -111,7 +111,7 @@ class BookmarkManager {
 			if aMark.server != nil { hostSet.insert(aMark.server!) }
 		}
 		hosts.append(contentsOf: hostSet)
-		hosts.sort() { $0.name < $1.name }
+		hosts.sort { $0.name < $1.name }
 	}
 	
 	///returns an array of default bookmarks
@@ -122,21 +122,20 @@ class BookmarkManager {
 
 ///represents a collection of Bookmarks grouped by a key
 struct BookmarkGroup {
-	let key:String
-	var bookmarks:[Bookmark] = []
+	let key: String
+	var bookmarks: [Bookmark] = []
 	
-	init(key:String, firstBookmark:Bookmark? = nil) {
+	init(key: String, firstBookmark: Bookmark? = nil) {
 		self.key = key
 		if firstBookmark != nil { bookmarks.append(firstBookmark!) }
 	}
 	
-	init(original:BookmarkGroup) {
+	init(original: BookmarkGroup) {
 		self.key = original.key
 		self.bookmarks = original.bookmarks
 	}
 	
-	mutating func addBookmark(_ bmark:Bookmark) {
+	mutating func addBookmark(_ bmark: Bookmark) {
 		bookmarks.append(bmark)
 	}
 }
-

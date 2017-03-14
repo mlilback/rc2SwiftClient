@@ -17,15 +17,15 @@ class CommandHistory {
 	var target: NSObject?
 	let action: Selector
 
-	init(target:NSObject?, selector:Selector) {
+	init(target: NSObject?, selector: Selector) {
 		self.target = target
 		self.action = selector
 	}
 	
-	func addToCommandHistory(_ origQuery:String) {
+	func addToCommandHistory(_ origQuery: String) {
 		var maxLen = UserDefaults.standard[.maxCommandHistory]
-		if (maxLen < MinHistoryLength) { maxLen = DefaultHistoryLength; }
-		if (maxLen > MaxHistoryLength) { maxLen = MaxHistoryLength; }
+		if maxLen < MinHistoryLength { maxLen = DefaultHistoryLength }
+		if maxLen > MaxHistoryLength { maxLen = MaxHistoryLength }
 		let query = origQuery.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
 		let idx = commands.index(of: query)
 		if idx == nil {

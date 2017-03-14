@@ -12,25 +12,27 @@ import ClientCore
 import Networking
 
 open class RmdSyntaxParser: SyntaxParser {
-	let latexHighlighter:LatexCodeHighlighter = LatexCodeHighlighter()
-	let rChunkRegex:NSRegularExpression
+	let latexHighlighter: LatexCodeHighlighter = LatexCodeHighlighter()
+	let rChunkRegex: NSRegularExpression
 	let blockEqRegex: NSRegularExpression
-	let inlineRegex:NSRegularExpression
-	let mathRegex:NSRegularExpression
+	let inlineRegex: NSRegularExpression
+	let mathRegex: NSRegularExpression
 	
 	override init(storage: NSTextStorage, fileType: FileType, colorMap: SyntaxColorMap)
 	{
+		// swiftlint:disable force_try
 		try! rChunkRegex = NSRegularExpression(pattern: "\n```\\{r\\s*([^\\}]*)\\}\\s*\n+(.*?)\n```\n", options: .dotMatchesLineSeparators)
 		//matches: $$
 		try! blockEqRegex = NSRegularExpression(pattern: "(\\$\\$\\p{blank}*\\n+(.*?)\\$\\$\\p{blank}*\n)", options:.dotMatchesLineSeparators)
 		try! inlineRegex = NSRegularExpression(pattern: "`r\\s+([^`]*)`", options: .dotMatchesLineSeparators)
 		try! mathRegex = NSRegularExpression(pattern: "(<math(\\s+[^>]*)(display\\s*=\\s*\"(block|inline)\")([^>]*)>)(.*?)</math>\\s*?\\n?", options: .dotMatchesLineSeparators)
-		
+		// swiftlint:enable force_try
 		super.init(storage: storage, fileType: fileType, colorMap: colorMap)
 		codeHighlighter = RCodeHighlighter()
 		colorBackgrounds = true
 	}
 	
+	// swiftlint:disable:next function_body_length
 	override func parseRange(_ range: NSRange) {
 		let str = textStorage.string
 		chunks.removeAll()
@@ -39,9 +41,9 @@ open class RmdSyntaxParser: SyntaxParser {
 		var inlineMathML = [NSRange]()
 		//add R code chunks
 		rChunkRegex.enumerateMatches(in: str, options: [], range: range)
-		{ (result, flags, _) -> Void in
+		{ (result, _, _) -> Void in
 			guard let result = result else { return }
-			var cname:String?
+			var cname: String?
 			if result.rangeAt(1).length > 0 {
 				cname = str.substring(with: result.rangeAt(1).toStringRange(str)!)
 			}
@@ -49,7 +51,7 @@ open class RmdSyntaxParser: SyntaxParser {
 			nextChunkIndex += 1
 			let mrng = result.range //rangeAtIndex(0)
 			//skip the initial newline
-			codeChunk.parsedRange = NSMakeRange(mrng.location + 1, mrng.length - 1)
+			codeChunk.parsedRange = NSRange(location: mrng.location + 1, length: mrng.length - 1)
 			newChunks.append(codeChunk)
 		}
 		//add chunks for block equations
@@ -74,20 +76,20 @@ open class RmdSyntaxParser: SyntaxParser {
 			}
 		}
 		//sort them by range
-		newChunks = newChunks.sorted() { (chunk1, chunk2) in
+		newChunks = newChunks.sorted { (chunk1, chunk2) in
 			return chunk1.parsedRange.location < chunk2.parsedRange.location
 		}
 		//now loop through and add documentation chunks as needed
-		var docChunks:[DocumentChunk] = []
+		var docChunks: [DocumentChunk] = []
 		for (index, aChunk) in newChunks.enumerated() {
 			let docChunk = DocumentChunk(chunkType: .documentation, chunkNumber: 1)
 			if index == 0 { //first chunk
 				if aChunk.parsedRange.location > 0 {
-					docChunk.parsedRange = NSMakeRange(0, aChunk.parsedRange.location)
+					docChunk.parsedRange = NSRange(location: 0, length: aChunk.parsedRange.location)
 				}
 			} else { //any other chunk
-				let startIdx = MaxNSRangeIndex(newChunks[index-1].parsedRange)+1
-				docChunk.parsedRange = NSMakeRange(startIdx, aChunk.parsedRange.location - startIdx)
+				let startIdx = MaxNSRangeIndex(newChunks[index - 1].parsedRange) + 1
+				docChunk.parsedRange = NSRange(location: startIdx, length: aChunk.parsedRange.location - startIdx)
 			}
 			docChunks.append(docChunk)
 			docChunks.append(aChunk)
@@ -96,15 +98,15 @@ open class RmdSyntaxParser: SyntaxParser {
 		if docChunks.count > 0 && MaxNSRangeIndex(docChunks.last!.parsedRange) < MaxNSRangeIndex(range) {
 			let finalChunk = DocumentChunk(chunkType: .documentation, chunkNumber: 1)
 			let loc = MaxNSRangeIndex(docChunks.last!.parsedRange) + 1
-			finalChunk.parsedRange = NSMakeRange(loc, MaxNSRangeIndex(range) - loc)
+			finalChunk.parsedRange = NSRange(location: loc, length: MaxNSRangeIndex(range) - loc)
 			docChunks.append(finalChunk)
 		}
 		//renumber and sort by number
 		var nextIdx = 0
-		chunks = docChunks.enumerated().map() { (index, element) in
+		chunks = docChunks.enumerated().map { (_, element) in
 			nextIdx += 1
 			return element.duplicateWithChunkNumber(nextIdx)
-		}.sorted() { (chunk1, chunk2) -> Bool in
+		}.sorted { (chunk1, chunk2) -> Bool in
 			return chunk1.chunkNumber < chunk2.chunkNumber
 		}
 		

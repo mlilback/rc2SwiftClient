@@ -19,7 +19,7 @@ class WebKitOutputController: WebViewController {
 	func clearContents() {
 		loadDisposable?.dispose()
 		loadDisposable = nil
-		_ = webView?.load(URLRequest(url: URL(string: "about:blank")!));
+		_ = webView?.load(URLRequest(url: URL(string: "about:blank")!))
 	}
 	
 	/// loads the URL returned via the producer. Will dispose of any load currently in process when called
@@ -38,7 +38,7 @@ class WebKitOutputController: WebViewController {
 	/// - Parameter url: the file to load. Must be on the local file system.
 	func loadLocalFile(_ url: URL) {
 		assert(url.isFileURL)
-		guard webView !=  nil else {
+		guard webView != nil else {
 			DispatchQueue.main.async { self.loadLocalFile(url) }
 			return
 		}

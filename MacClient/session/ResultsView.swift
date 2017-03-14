@@ -6,7 +6,7 @@
 
 import Cocoa
 
-class ResultsView : TextViewWithContextualMenu {
+class ResultsView: TextViewWithContextualMenu {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		usesFindBar = true

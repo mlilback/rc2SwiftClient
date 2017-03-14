@@ -19,7 +19,7 @@ extension Selector {
 
 class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 {
-	//MARK: - properties
+	// MARK: - properties
 	var sessionController: SessionController?
 	
 	var searchButton: NSSegmentedControl?
@@ -39,12 +39,12 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	}
 	
 	override func sessionChanged() {
-		let variableHandler:VariableHandler = firstChildViewController(self)!
+		let variableHandler: VariableHandler = firstChildViewController(self)!
 		sessionController = SessionController(session: session, delegate: self, outputHandler: outputHandler!, variableHandler:variableHandler)
 		outputHandler?.sessionController = sessionController
 	}
 	
-	//MARK: - Lifecycle
+	// MARK: - Lifecycle
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		guard editor == nil else { return } //only run once
@@ -66,7 +66,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 		//create dimming view
 		dimmingView = DimmingView(frame: view.bounds)
 		view.addSubview(dimmingView!)
-		(view as! RootView).dimmingView = dimmingView //required to block clicks to subviews
+		(view as? RootView)?.dimmingView = dimmingView //required to block clicks to subviews
 		//we have to wait until next time through event loop to set first responder
 		self.performSelector(onMainThread: #selector(RootViewController.setupResponder), with: nil, waitUntilDone: false)
 
@@ -79,9 +79,10 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 		}
 	}
 	
+	// swiftlint:disable:next cyclomatic_complexity
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
-		switch(action) {
+		switch action {
 		case Selector.promptToImport:
 			return fileHandler!.validateMenuItem(menuItem)
 		case Selector.showFonts:
@@ -115,8 +116,8 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	
 	func handlesToolbarItem(_ item: NSToolbarItem) -> Bool {
 		if item.itemIdentifier == "search" {
-			searchButton = item.view as! NSSegmentedControl?
-			TargetActionBlock() { [weak self] sender in
+			searchButton = item.view as? NSSegmentedControl
+			TargetActionBlock { [weak self] sender in
 				self?.toggleSearch(sender)
 			}.installInControl(searchButton!)
 			if let myItem = item as? ValidatingToolbarItem {
@@ -164,7 +165,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	}
 }
 
-//MARK: - actions
+// MARK: - actions
 extension RootViewController {
 	@IBAction func toggleSearch(_ sender: Any?) {
 		if responderChainContains(editor!)  {
@@ -208,7 +209,7 @@ extension RootViewController {
 	}
 }
 
-//MARK: - fonts
+// MARK: - fonts
 extension RootViewController: ManageFontMenu {
 	@IBAction func showFonts(_ sender: AnyObject?) {
 		//do nothing, just a place holder for menu validation
@@ -255,6 +256,7 @@ extension RootViewController: ManageFontMenu {
 		let filterDesc = NSFontDescriptor(fontAttributes: attrs)
 		//get matching fonts and sort them by name
 		let fonts = filterDesc.matchingFontDescriptors(withMandatoryKeys: nil).sorted {
+			// swiftlint:disable:next force_cast
 			($0.object(forKey: NSFontNameAttribute) as! String).lowercased() < ($1.object(forKey: NSFontNameAttribute) as! String).lowercased()
 		}
 		//now add menu items for them
@@ -289,7 +291,7 @@ extension RootViewController: ManageFontMenu {
 	}
 }
 
-//MARK: - SessionControllerDelegate
+// MARK: - SessionControllerDelegate
 extension RootViewController: SessionControllerDelegate {
 	func sessionClosed() {
 		self.sessionClosedHandler?()
@@ -300,21 +302,23 @@ extension RootViewController: SessionControllerDelegate {
 	}
 
 	func saveState() -> [String: AnyObject] {
-		var dict = [String:AnyObject]()
+		var dict = [String: AnyObject]()
 		dict["editor"] = editor?.saveState() as AnyObject?
 		dict["selFile"] = (fileHandler?.selectedFile?.fileId ?? -1) as AnyObject?
 		return dict
 	}
 	
 	func restoreState(_ state: [String: AnyObject]) {
-		editor?.restoreState(state["editor"] as! [String:AnyObject])
+		if let editorState = state["editor"] as? [String: AnyObject] {
+			editor?.restoreState(editorState)
+		}
 		if let fileId = state["selFile"] as? Int, fileId > 0, let file = session.workspace.file(withId: fileId) {
 			fileHandler?.selectedFile = file
 		}
 	}
 }
 
-//MARK: - FileViewControllerDelegate
+// MARK: - FileViewControllerDelegate
 extension RootViewController: FileViewControllerDelegate {
 	func fileSelectionChanged(_ file: File?) {
 		if nil == file {
@@ -331,8 +335,7 @@ extension RootViewController: FileViewControllerDelegate {
 	}
 }
 
-
-//MARK: -
+// MARK: -
 class DimmingView: NSView {
 	override required init(frame frameRect: NSRect) {
 		super.init(frame: frameRect)

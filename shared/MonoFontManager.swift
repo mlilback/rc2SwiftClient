@@ -9,7 +9,7 @@ import CoreText
 
 //supplies list of installed monspaced fonts
 open class MonoFontManager {
-	var mappings = [String:String]()
+	var mappings = [String: String]()
 	
 	init() {
 		loadFontInfo()
@@ -17,14 +17,15 @@ open class MonoFontManager {
 	
 	func fontDisplayNames() -> [String] { return mappings.values.sorted() }
 	func fontNames() -> [String] { return mappings.keys.sorted() }
-	func displayNameForFont(_ fontName:String) -> String? {
+	func displayNameForFont(_ fontName: String) -> String? {
 		return mappings[fontName]
 	}
 	
 	func loadFontInfo() {
 		mappings.removeAll()
-		let traits:[String:AnyObject] = [kCTFontSymbolicTrait as String:Int(CTFontSymbolicTraits.monoSpaceTrait.rawValue) as AnyObject]
-		let attrs:[String:AnyObject] = [kCTFontTraitsAttribute as String: traits as AnyObject, kCTFontStyleNameAttribute as String:"Regular" as AnyObject]
+		let traits: [String:AnyObject] = [kCTFontSymbolicTrait as String: Int(CTFontSymbolicTraits.monoSpaceTrait.rawValue) as AnyObject]
+		let attrs: [String:AnyObject] = [kCTFontTraitsAttribute as String: traits as AnyObject, kCTFontStyleNameAttribute as String: "Regular" as AnyObject]
+		// swiftlint:disable force_cast
 		let fdesc = CTFontDescriptorCreateWithAttributes(attrs as CFDictionary)
 		let descs = CTFontDescriptorCreateMatchingFontDescriptors(fdesc, nil)! as [AnyObject]
 		for anObj in descs {
@@ -41,5 +42,6 @@ open class MonoFontManager {
 				}
 			}
 		}
+		// swiftlint:enable force_cast
 	}
 }

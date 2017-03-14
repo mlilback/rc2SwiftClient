@@ -14,6 +14,8 @@ import DockerSupport
 import Networking
 import SBInjector
 
+// swiftlint:disable file_length
+
 fileprivate struct Actions {
 	static let showPreferences = #selector(MacAppDelegate.showPreferencesWindow(_:))
 	static let showBookmarks = #selector(MacAppDelegate.showBookmarkWindow(_:))
@@ -24,7 +26,7 @@ fileprivate struct Actions {
 
 @NSApplicationMain
 class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
-	//MARK: - properties
+	// MARK: - properties
 	var mainStoryboard: NSStoryboard!
 	var sessionWindowControllers = Set<MainWindowController>()
 	var bookmarkWindowController: NSWindowController?
@@ -45,7 +47,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 
-	//MARK: - NSApplicationDelegate
+	// MARK: - NSApplicationDelegate
 	func applicationWillFinishLaunching(_ notification: Notification) {
 		mainStoryboard = NSStoryboard(name: "Main", bundle: nil)
 		precondition(mainStoryboard != nil)
@@ -59,6 +61,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 		}
 		
 		let cdUrl = Bundle(for: type(of: self)).url(forResource: "CommonDefaults", withExtension: "plist")
+		// swiftlint:disable:next force_cast (swift value types don't support dictionaries from files)
 		UserDefaults.standard.register(defaults: NSDictionary(contentsOf: cdUrl!)! as! [String : AnyObject])
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(MacAppDelegate.windowWillClose), name: .NSWindowWillClose, object: nil)
@@ -109,11 +112,11 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 	}
 }
 
-//MARK: - basic functionality
+// MARK: - basic functionality
 extension MacAppDelegate {
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
-		switch(action) {
+		switch action  {
 			case Actions.showBookmarks:
 				return true
 		case Actions.newWorkspace:
@@ -147,7 +150,7 @@ extension MacAppDelegate {
 	}
 	
 	/// returns the window for the specified session
-	func window(for session:Session?) -> NSWindow {
+	func window(for session: Session?) -> NSWindow {
 		//TODO: make return value optional and remove force casts
 		return windowControllerForSession(session!)!.window!
 	}
@@ -261,7 +264,7 @@ extension MacAppDelegate {
 	}
 }
 
-//MARK: - actions
+// MARK: - actions
 extension MacAppDelegate {
 	@IBAction func newWorkspace(_ sender: Any) {
 		guard let conInfo = connectionManager.localConnection, let project = conInfo.defaultProject else { fatalError() }
@@ -271,7 +274,7 @@ extension MacAppDelegate {
 			prompter.validator = { proposedName in
 				return !existingNames.contains(proposedName.lowercased())
 			}
-			prompter.prompt(window: nil) { success, value in
+			prompter.prompt(window: nil) { success, _ in
 				guard success else { return }
 				let client = Rc2RestClient(conInfo)
 				client.create(workspace: prompter.stringValue, project: conInfo.defaultProject!)
@@ -300,7 +303,7 @@ extension MacAppDelegate {
 		preferencesWindowController?.showWindow(self)
 	}
 	
-	@IBAction func showBookmarkWindow(_ sender:AnyObject?) {
+	@IBAction func showBookmarkWindow(_ sender: AnyObject?) {
 		showOnboarding()
 //		onboardingController?.window?.makeKeyAndOrderFront(self)
 //		if nil == bookmarkWindowController {
@@ -336,9 +339,11 @@ extension MacAppDelegate {
 		dockerWindowController?.window?.makeKeyAndOrderFront(self)
 	}
 	
-	func windowWillClose(_ note:Notification) {
+	func windowWillClose(_ note: Notification) {
 		//if no windows will be visible, acitvate/show bookmark window
-		if let sessionWC = (note.object as! NSWindow).windowController as? MainWindowController {
+		if let window = note.object as? NSWindow,
+			let sessionWC = window.windowController as? MainWindowController
+		{
 			sessionWindowControllers.remove(sessionWC)
 			if sessionWindowControllers.count < 1 {
 				perform(Actions.showBookmarks, with: nil, afterDelay: 0.2)
@@ -346,7 +351,7 @@ extension MacAppDelegate {
 		}
 	}
 	
-	func windowControllerForSession(_ session:Session) -> MainWindowController? {
+	func windowControllerForSession(_ session: Session) -> MainWindowController? {
 		for wc in sessionWindowControllers {
 			if wc.session === session { return wc }
 		}
@@ -354,7 +359,7 @@ extension MacAppDelegate {
 	}
 }
 
-//MARK: - restoration
+// MARK: - restoration
 extension MacAppDelegate: NSWindowRestoration {
 	class func restoreWindow(withIdentifier identifier: String, state: NSCoder, completionHandler: @escaping (NSWindow?, Error?) -> Void)
 	{
@@ -370,14 +375,14 @@ extension MacAppDelegate: NSWindowRestoration {
 	}
 }
 
-//MARK: - startup
+// MARK: - startup
 extension MacAppDelegate {
 	/// load the setup window and start setup process
 	fileprivate func beginStartup() {
 		precondition(startupController == nil)
 		precondition(dockerManager != nil)
 		
-		// load window and setupController. 
+		// load window and setupController.
 		startupWindowController = mainStoryboard.instantiateController(withIdentifier: "StartupWindowController") as? StartupWindowController
 		guard let wc = startupWindowController else { fatalError("failed to load startup window controller") }
 		startupController = startupWindowController!.contentViewController as? StartupController
@@ -449,6 +454,7 @@ extension MacAppDelegate {
 	
 	fileprivate func showOnboarding() {
 		if nil == onboardingController {
+			// swiftlint:disable:next force_cast
 			onboardingController = (mainStoryboard.instantiateController(withIdentifier: "OnboardingWindowController") as! OnboardingWindowController)
 			onboardingController?.viewController.conInfo = connectionManager.localConnection
 			onboardingController?.viewController.openLocalWorkspace = openLocalSession
@@ -466,7 +472,7 @@ extension MacAppDelegate {
 				return docker.perform(operation: .start)
 			})
 			//really want to act when complete, but have to map, so we collect all values and pass on a single value
-			.collect().map({ _ in return ()})
+			.collect().map({ _ in return () })
 			.flatMap(.concat, transform: { return docker.waitUntilRunning() })
 			.observe(on: UIScheduler())
 			.startWithResult { [weak self] result in
@@ -503,8 +509,7 @@ extension MacAppDelegate {
 				self.startupController?.pullProgress = pprogress
 			})
 			.collect() // colalesce individual PullProgress values into a single array sent when pullImages is complete
-			.map( { _ in } ) //map [PullProgress] to () as that is the input parameter to prepareContainers
+			.map( { _ in }) //map [PullProgress] to () as that is the input parameter to prepareContainers
 			.flatMap(.concat) { docker.prepareContainers() }
 	}
-	
 }

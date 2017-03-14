@@ -34,40 +34,45 @@ class TextViewWithContextualMenu: NSTextView {
 			menu.addItem(NSMenuItem.separator())
 		}
 		//copy look up xxx and search with Google menu items
-		if let lookupItem = defaultMenu?.items.filter({ $0.title.hasPrefix("Look Up") }).first {
-			menu.addItem(lookupItem.copy() as! NSMenuItem)
-			if let searchItem = defaultMenu?.items.filter({ $0.title.hasPrefix("Search with") }).first {
-				menu.addItem(searchItem.copy() as! NSMenuItem)
+		if let lookupItem = defaultMenu?.items.first(where: { $0.title.hasPrefix("Look Up") }) {
+			menu.addItem(copyMenuItem(lookupItem))
+			if let searchItem = defaultMenu?.items.first(where: { $0.title.hasPrefix("Search with") }) {
+				menu.addItem(copyMenuItem(searchItem))
 			}
 			menu.addItem(NSMenuItem.separator())
 		}
 		let preEditCount = menu.items.count
 		//add the cut/copy/paste menu items
 		if self.isEditable, let item = defaultMenu?.itemWithAction(#selector(NSText.cut(_:)), recursive: false) {
-			menu.addItem(item.copy() as! NSMenuItem)
+			menu.addItem(copyMenuItem(item))
 		}
 		if let item = defaultMenu?.itemWithAction(#selector(NSText.copy(_:)), recursive: false) {
-			menu.addItem(item.copy() as! NSMenuItem)
+			menu.addItem(copyMenuItem(item))
 		}
 		if let item = defaultMenu?.itemWithAction(#selector(NSText.paste(_:)), recursive: false) {
-			menu.addItem(item.copy() as! NSMenuItem)
+			menu.addItem(copyMenuItem(item))
 		}
 		if menu.items.count > preEditCount {
 			menu.addItem(NSMenuItem.separator())
 		}
 		//add our font and size menus
 		if let fontItem = NSApp.mainMenu?.itemWithAction(#selector(ManageFontMenu.showFonts(_:)), recursive: true) {
-			menu.addItem(fontItem.copy() as! NSMenuItem)
+			menu.addItem(copyMenuItem(fontItem))
 		}
 		if let sizeItem = NSApp.mainMenu?.itemWithAction(#selector(ManageFontMenu.showFontSizes(_:)), recursive: true) {
 			sizeItem.title = NSLocalizedString("Font Size", comment: "")
-			menu.addItem(sizeItem.copy() as! NSMenuItem)
+			menu.addItem(copyMenuItem(sizeItem))
 		}
 		//add speak menu if there
 		if let speak = defaultMenu?.itemWithAction(#selector(NSTextView.startSpeaking(_:)), recursive: true) {
 			menu.addItem(NSMenuItem.separator())
-			menu.addItem(speak.parent!.copy() as! NSMenuItem)
+			menu.addItem(copyMenuItem(speak.parent!))
 		}
 		return menu
+	}
+	
+	// only need to force_cast it once
+	private func copyMenuItem(_ item: NSMenuItem) -> NSMenuItem {
+		return item.copy() as! NSMenuItem // swiftlint:disable:this force_cast
 	}
 }

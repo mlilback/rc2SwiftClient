@@ -22,7 +22,7 @@ extension NSStoryboard {
 		case MainWindow
 	}
 	
-	convenience init(storyboard: Storyboard, bundle:Bundle? = nil) {
+	convenience init(storyboard: Storyboard, bundle: Bundle? = nil) {
 		self.init(name:storyboard.rawValue, bundle:bundle)
 	}
 

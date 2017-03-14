@@ -10,23 +10,23 @@ import ReactiveSwift
 import Networking
 import ClientCore
 
-let MinTimeBetweenAutoSaves:TimeInterval = 2
+let MinTimeBetweenAutoSaves: TimeInterval = 2
 
 public class EditorDocument: NSObject {
 
 	fileprivate(set) var file: File
 	public let fileUrl: URL
-	public let fileCache:  FileCache
+	public let fileCache: FileCache
 	let undoManager: UndoManager
 	fileprivate(set) var savedContents: String?
 	public var editedContents: String?
-	fileprivate(set) var lastSaveTime:TimeInterval = 0
+	fileprivate(set) var lastSaveTime: TimeInterval = 0
 	var topVisibleIndex: Int = 0
 	fileprivate(set) var isLoaded: Bool = false
 	private let saveInProgress = Atomic<Bool>(false)
 
 	public var currentContents: String {
-		assert(isLoaded);
+		assert(isLoaded)
 		return editedContents != nil ? editedContents! : savedContents!
 	}
 	public var dirty: Bool {
@@ -43,7 +43,7 @@ public class EditorDocument: NSObject {
 	}
 
 	public func loadContents() -> SignalProducer<String, Rc2Error> {
-		return SignalProducer<String, Rc2Error>() { observer, _ in
+		return SignalProducer<String, Rc2Error> { observer, _ in
 			guard nil == self.savedContents else {
 				observer.send(value: self.savedContents!)
 				observer.sendCompleted()

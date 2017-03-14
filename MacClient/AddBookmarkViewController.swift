@@ -9,19 +9,19 @@ import os
 import Networking
 
 class AddBookmarkViewController: NSViewController {
-	@IBOutlet var continueButton:NSButton?
+	@IBOutlet var continueButton: NSButton?
 	@IBOutlet var containerView: NSView?
-	var tabViewController:NSTabViewController?
+	var tabViewController: NSTabViewController?
 	var selectServerController: SelectServerViewController?
 	var projectManagerController: ProjectManagerViewController?
-	var bookmarkManager:BookmarkManager?
+	var bookmarkManager: BookmarkManager?
 	fileprivate var selectedServer: ServerHost?
-	var bookmarkAddedClosure:((ServerHost, ProjectAndWorkspace) -> Void)?
+	var bookmarkAddedClosure: ((ServerHost, ProjectAndWorkspace) -> Void)?
 //	fileprivate var selectServerKVO:PMKVObserver?
 //	fileprivate var projectKVO:PMKVObserver?
 	
-	dynamic var isBusy:Bool = false
-	dynamic var canContinue:Bool = false
+	dynamic var isBusy: Bool = false
+	dynamic var canContinue: Bool = false
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -61,7 +61,7 @@ class AddBookmarkViewController: NSViewController {
 //		projectKVO?.cancel()
 	}
 
-	func displayError(_ error:NSError) {
+	func displayError(_ error: NSError) {
 		os_log("error: %{public}@", log: .app, type:.error, error)
 	}
 	
@@ -71,7 +71,7 @@ class AddBookmarkViewController: NSViewController {
 //		projectManagerController!.connectInfo = serverInfo.loginSession
 //		canContinue = projectManagerController!.canContinue
 //	}
-//	
+//
 //	@IBAction func continueAction(_ sender:AnyObject?) {
 //		if selectServerController == tabViewController?.currentTabItemViewController {
 //			selectServerController!.continueAction() { (value, error) in
@@ -86,13 +86,13 @@ class AddBookmarkViewController: NSViewController {
 //		} else if projectManagerController == tabViewController?.currentTabItemViewController {
 //			projectManagerController!.continueAction() { (value, error) in
 //				guard error == nil else { self.displayError(error!); return }
-//				
+//
 //				self.bookmarkAddedClosure?(self.selectedServer!, value as! ProjectAndWorkspace)
 //			}
 //		}
 //	}
 	
-	@IBAction func cancelAction(_ sender:AnyObject?) {
+	@IBAction func cancelAction(_ sender: AnyObject?) {
 		self.presenting?.dismissViewController(self)
 	}
 }

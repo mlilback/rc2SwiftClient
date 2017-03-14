@@ -36,7 +36,7 @@ class AppStatusView: NSView {
 		progressDisposable = appStatus?.progressSignal.observe(on: UIScheduler()).observeValues(observe)
 	} }
 	
-	override var intrinsicContentSize:NSSize { return NSSize(width:220, height:22) }
+	override var intrinsicContentSize: NSSize { return NSSize(width:220, height:22) }
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()

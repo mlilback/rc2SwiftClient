@@ -15,12 +15,12 @@ public protocol VariableHandler {
 	///parameter variables: key is a string, value is an ObjcBox of a JSON value
 	/// - parameter single: if this is an update for a single variable, or a delta
 	/// - paramter variables: the variable objects from the server
-	func handleVariableMessage(_ single:Bool, variables:[Variable])
+	func handleVariableMessage(_ single: Bool, variables: [Variable])
 	
 	/// handle a delta change message
 	/// - parameter assigned: variabless that were assigned (insert or update)
 	/// - parameter: removed: variables that werer deleted
-	func handleVariableDeltaMessage(_ assigned:[Variable], removed:[String])
+	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String])
 }
 
 protocol SearchResponder: class {

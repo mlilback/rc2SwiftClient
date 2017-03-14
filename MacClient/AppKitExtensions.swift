@@ -34,9 +34,8 @@ extension NSFont {
 	}
 }
 
-
 extension NSMenu {
-	func itemWithAction(_ action:Selector, recursive:Bool = true) -> NSMenuItem? {
+	func itemWithAction(_ action: Selector, recursive: Bool = true) -> NSMenuItem? {
 		for anItem in items {
 			if anItem.action == action {
 				return anItem

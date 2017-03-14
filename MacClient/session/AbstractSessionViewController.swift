@@ -12,7 +12,7 @@ import SwiftyUserDefaults
 class AbstractSessionViewController: NSViewController {
 	weak var sessionOptional: Session? { didSet { sessionChanged() } }
 	///convience accessor so don't have to constantly unwrap optional
-	var session: Session { get { return sessionOptional! } }
+	var session: Session { return sessionOptional! }
 	//injected on load
 	weak var appStatus: MacAppStatus? { didSet {
 		appStatusChanged()
@@ -64,7 +64,7 @@ class AbstractSessionViewController: NSViewController {
 	}
 }
 
-func firstChildViewController<T>(_ rootController:NSViewController) -> T? {
+func firstChildViewController<T>(_ rootController: NSViewController) -> T? {
 	return firstRecursiveDescendent(rootController,
 		children: { return $0.childViewControllers },
 		filter: { return $0 is T }) as? T

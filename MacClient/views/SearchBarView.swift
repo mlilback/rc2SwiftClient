@@ -13,7 +13,7 @@ public protocol SearchBarViewDelegate: class {
 	func performSearch(searchBar: SearchBarView, string: String)
 }
 
-enum SearchOptionTags : Int {
+enum SearchOptionTags: Int {
 	case invalid = -1
 	case wholeWords = 50
 	case caseSensitive
@@ -51,7 +51,7 @@ public class SearchBarView: NSView {
 		var topObjects = NSArray()
 		self.translatesAutoresizingMaskIntoConstraints = false
 		guard Bundle(for: type(of: self)).loadNibNamed("SearchBarView", owner: self, topLevelObjects: &topObjects) else { fatalError("failed to load search xib") }
-		self.topLevelView = topObjects.first(where: { $0 is NSView}) as? NSView
+		self.topLevelView = topObjects.first(where: { $0 is NSView }) as? NSView
 		topLevelView?.translatesAutoresizingMaskIntoConstraints = false
 		self.addSubview(self.topLevelView!)
 		self.addConstraint(leadingAnchor.constraint(equalTo: topLevelView!.leadingAnchor))

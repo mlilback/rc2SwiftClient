@@ -14,16 +14,17 @@ let RCodeHighlighterColors = "RCodeHighlighterColors"
 
 open class RCodeHighlighter: CodeHighlighter {
 	
-	let keywords:Set<String> = {
+	let keywords: Set<String> = {
 		let url = Bundle.main.url(forResource: "RKeywords", withExtension: "txt")!
+		// swiftlint:disable:next force_try
 		let keyArray = try! NSString(contentsOf: url, encoding: String.Encoding.utf8.rawValue).components(separatedBy: "\n")
 		return Set<String>(keyArray)
 	}()
 	
-	override func colorForToken(_ token:PKToken, lastToken:PKToken?, includePreviousCharacter usePrevious:inout Bool) -> PlatformColor?
+	override func colorForToken(_ token: PKToken, lastToken: PKToken?, includePreviousCharacter usePrevious:inout Bool) -> PlatformColor?
 	{
-		var color:PlatformColor?
-		switch(token.tokenType) {
+		var color: PlatformColor?
+		switch token.tokenType {
 			case .comment:
 				color = colorMap[.Comment]
 			case .quotedString:
