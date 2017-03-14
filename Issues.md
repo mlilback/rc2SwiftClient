@@ -7,6 +7,7 @@
 * reevaluate all os_log calls to make sure using correct level
 * examine all fataError calls to see if there is a better way to handle the problem
 * are we properly escaping strings to prevent input buffer errors?
+* enable swiftlint for entire project
 
 ## unit tests
 * write unit tests for InputPrompter validation
@@ -32,9 +33,9 @@
 * compute engine barfs on markdown files with a space in their name
 
 ## console
-* image icons have a white background, not transparent. the pdfs have transparency in pixelmator and illustrator
 * attachment only links via id. If a generated file (pdf, html) need to match on name since id constantly changes.
-* add padding around icon images in results
+* hover over image icons to see preview
+* add twiddle to see output from rmd, rnw build commands (currently suppressed at compute level)
 
 ## main splitter
 * opening sidebar on full screen adjust only the size of editor, not results.
@@ -46,11 +47,21 @@
 * show error if import fails
 * restore sessions: what happens if there is an error opening a session? Probably hangs
 
-#editor
+## sidebar
+
+### files
+* txt/csv should have menu option to view as result, default as source
+
+### help
+* match name only not checked when selected, make default
+* enable live searching
+
+##editor
 * execute current chunk if R code
 * execute all chunks up to and including current chunk if R code
 * chunk navigation is broken
 * implement searchbar interface to use for console
+* txt and csv files should be editable
 
 ## startup
 * need to work without a network connection if docker images already loaded
@@ -60,7 +71,6 @@
 ## output
 * html output content search
 * implement searchbar interface to use for console
-
 
 ## other
 
@@ -72,4 +82,10 @@
 * how are dates formatted for copy? date vs datetime. 
 * write nstexfield that scales font size so text fits (for help page title)
 
+
+### help search
+
+error when looking at help "man/arrangeWindows"
+
+2017-03-14 15:54:39.778398 Rc²[60505:3753402] [app] failed to provisionally navigate: Error Domain=NSURLErrorDomain Code=-1100 "The requested URL was not found on this server." UserInfo={_WKRecoveryAttempterErrorKey=<WKReloadFrameErrorRecoveryAttempter: 0x600000033240>, NSErrorFailingURLStringKey=file:///Users/mlilback/Library/Application%20Support/io.rc2.MacClient/rdocs/helpdocs/library/man/html/arrangeWindows.html, NSErrorFailingURLKey=file:///Users/mlilback/Library/Application%20Support/io.rc2.MacClient/rdocs/helpdocs/library/man/html/arrangeWindows.html, NSUnderlyingError=0x600000251d00 {Error Domain=kCFErrorDomainCFNetwork Code=-1100 "(null)"}, NSLocalizedDescription=The requested URL was not found on this server.}
 
