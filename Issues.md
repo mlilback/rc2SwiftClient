@@ -53,8 +53,7 @@
 * txt/csv should have menu option to view as result, default as source
 
 ### help
-* match name only not checked when selected, make default
-* enable live searching
+* partial match searching not working properly
 
 ##editor
 * execute current chunk if R code
@@ -81,11 +80,4 @@
 * variable sidebar should support copy: for specific types
 * how are dates formatted for copy? date vs datetime. 
 * write nstexfield that scales font size so text fits (for help page title)
-
-
-### help search
-
-error when looking at help "man/arrangeWindows"
-
-2017-03-14 15:54:39.778398 Rc²[60505:3753402] [app] failed to provisionally navigate: Error Domain=NSURLErrorDomain Code=-1100 "The requested URL was not found on this server." UserInfo={_WKRecoveryAttempterErrorKey=<WKReloadFrameErrorRecoveryAttempter: 0x600000033240>, NSErrorFailingURLStringKey=file:///Users/mlilback/Library/Application%20Support/io.rc2.MacClient/rdocs/helpdocs/library/man/html/arrangeWindows.html, NSErrorFailingURLKey=file:///Users/mlilback/Library/Application%20Support/io.rc2.MacClient/rdocs/helpdocs/library/man/html/arrangeWindows.html, NSUnderlyingError=0x600000251d00 {Error Domain=kCFErrorDomainCFNetwork Code=-1100 "(null)"}, NSLocalizedDescription=The requested URL was not found on this server.}
 

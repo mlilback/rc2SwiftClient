@@ -4,9 +4,9 @@
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
+import ClientCore
 import Foundation
 import os
-import ClientCore
 
 class HelpTopic: NSObject {
 	let name: String
@@ -134,6 +134,7 @@ class HelpController {
 		tar.launch()
 	}
 	
+	/// returns true if there is a help topic with the specified name
 	func hasTopic(_ name: String) -> Bool {
 		return allTopicNames.contains(name)
 	}
@@ -152,6 +153,12 @@ class HelpController {
 		return matches.sorted(by: { return $0.compare($1) })
 	}
 	
+	/// returns a list of HelpTopics that contain the searchString in their title
+	func searchTitles(_ searchString: String) -> [HelpTopic] {
+		return allTopics.filter { $0.name.localizedCaseInsensitiveContains(searchString) }
+	}
+	
+	/// returns a list of HelpTpics that contain the searchString in their title or summary
 	func searchTopics(_ searchString: String) -> [HelpTopic] {
 		guard searchString.characters.count > 0 else { return packages }
 		var results: [HelpTopic] = []
@@ -188,17 +195,13 @@ class HelpController {
 		packs = packs.sorted(by: { return $0.compare($1) })
 		return packs
 	}
-	
-	func topicsStartingWith(_ namePrefix: String) -> [HelpTopic] {
-		var tops: [HelpTopic] = []
-		topicsByName.forEach { (tname, tarray) in
-			if tname.hasPrefix(namePrefix) { tops += tarray }
-		}
-		return tops
-	}
-	
+
 	func urlForTopic(_ topic: HelpTopic) -> URL {
 		let str = "\(topic.packageName)\(HelpUrlFuncSeperator)/\(topic.name).html"
-		return baseHelpUrl.appendingPathComponent(str)
+		let helpUrl = baseHelpUrl.appendingPathComponent(str)
+		if !helpUrl.fileExists() {
+			os_log("missing help file: %{public}s", log: .app, str)
+		}
+		return helpUrl
 	}
 }

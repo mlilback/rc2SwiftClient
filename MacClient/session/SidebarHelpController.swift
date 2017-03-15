@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import SwiftyUserDefaults
 
 class TopicWrapper: NSObject {
 	var topic: HelpTopic
@@ -16,22 +17,40 @@ class TopicWrapper: NSObject {
 	}
 }
 
-class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSource, NSOutlineViewDelegate, NSMenuDelegate {
+class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSource, NSOutlineViewDelegate, NSMenuDelegate, NSSearchFieldDelegate
+{
 	
 	@IBOutlet var outline: NSOutlineView?
 	@IBOutlet var searchField: NSSearchField?
 	@IBOutlet var searchMenu: NSMenu?
 	let help: HelpController = HelpController.shared
-	fileprivate var searchNameOnly: Bool = false
+	fileprivate var fullContentSearch: Bool = false
 	fileprivate var helpPackages: [TopicWrapper] = []
 	fileprivate var expandedBeforeSearch: [TopicWrapper]?
 	
 	// MARK: lifecycle
 	override func  viewDidLoad() {
 		super.viewDidLoad()
+		searchField?.delegate = self
 		resetHelpTopics()
+		searchField?.sendsWholeSearchString = false
+		searchField?.sendsSearchStringImmediately = false
+		fullContentSearch = UserDefaults.standard[.helpTopicSearchSummaries]
 	}
 
+	override func validateMenuItem(_ item: NSMenuItem) -> Bool {
+		guard item.action == #selector(adjustSearchOption(_:)) else { return super.validateMenuItem(item) }
+		switch item.tag {
+		case 1:
+			item.state = fullContentSearch ? NSOffState : NSOnState
+		case 2:
+			item.state = fullContentSearch ? NSOnState : NSOffState
+		default:
+			break
+		}
+		return true
+	}
+	
 	func resetHelpTopics() {
 		helpPackages = help.packages.map { TopicWrapper(topic: $0) }
 		outline?.reloadData()
@@ -43,32 +62,31 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 	
 	// MARK: actions
 	@IBAction func search(_ sender: AnyObject) {
-		if nil == expandedBeforeSearch {
-			let exp = helpPackages.flatMap { outline!.isItemExpanded($0) ? $0 : nil }
-			expandedBeforeSearch = exp
-		}
 		guard let searchString = searchField?.stringValue, searchString.characters.count > 0 else { resetHelpTopics(); return }
-		let results = help.searchTopics(searchString)
+		let results = fullContentSearch ? help.searchTopics(searchString) : help.searchTitles(searchString)
 		helpPackages = results.map { TopicWrapper(topic: $0) }
 		outline?.reloadData()
 		outline!.expandItem(nil, expandChildren: true)
 	}
 	
 	@IBAction func adjustSearchOption(_ menuItem: NSMenuItem) {
-		if menuItem.tag == 1 { //name only
-			searchNameOnly = !searchNameOnly
-			menuItem.state = searchNameOnly ? NSOnState : NSOffState
+		fullContentSearch = menuItem.tag == 2
+		UserDefaults.standard[.helpTopicSearchSummaries] = fullContentSearch
+		if !searchField!.stringValue.characters.isEmpty {
+			search(menuItem)
 		}
 	}
 	
-	// MARK: menu delegate
-	
-	func menuNeedsUpdate(_ menu: NSMenu) {
-		if menu == searchMenu {
-			if let menuItem = menu.item(withTag: 1) {
-				menuItem.state = searchNameOnly ? NSOnState : NSOffState
-			}
+	// MARK: search field delegate
+	func searchFieldDidStartSearching(_ sender: NSSearchField) {
+		if nil == expandedBeforeSearch {
+			let exp = helpPackages.flatMap { outline!.isItemExpanded($0) ? $0 : nil }
+			expandedBeforeSearch = exp
 		}
+	}
+	
+	func searchFieldDidEndSearching(_ sender: NSSearchField) {
+		resetHelpTopics()
 	}
 	
 	// MARK: OutlineView Support

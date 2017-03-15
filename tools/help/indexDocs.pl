@@ -19,11 +19,13 @@ sub check_if_interested {
 		push(@docPaths, $File::Find::name);
 	}
 }
-find(\&check_if_interested, "/Users/mlilback/working/rcompute2/R-3.2.0/src/library");
+find(\&check_if_interested, "/Users/mlilback/working/rc2/doc-generation/R-3.3.1/src/library");
 
 my @json = qw();
 my $R = Statistics::R->new();
 foreach $path (@docPaths) {
+	#exclude platform-specific help files in the utils directory
+	if ($path =~ m#/library/utils/man/(windows|unix)/#) { next; }
 	$R->run(q`library(tools)`);
 	$R->run(qq`rdata <- parse_Rd("$path")`);
 	$R->run(q`tags <- tools:::RdTags(rdata)`);

@@ -748,10 +748,16 @@
                 <customObject id="kyd-oB-FbD" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <menu title="Search Menu" id="7En-Ga-jia">
                     <items>
-                        <menuItem title="Match Name Only" tag="1" id="BRp-bv-0Oa" userLabel="Match Name">
+                        <menuItem title="Search Titles" tag="1" id="BRp-bv-0Oa" userLabel="Match Name">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
                                 <action selector="adjustSearchOption:" target="lJM-BU-ZVt" id="25G-gI-Vm0"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Search Titles &amp; Summaries" tag="2" id="LTb-pv-LDr" userLabel="Match Name">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="adjustSearchOption:" target="lJM-BU-ZVt" id="85a-fg-Lp9"/>
                             </connections>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" tag="1000" id="7Aa-Bu-90J"/>

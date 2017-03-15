@@ -21,10 +21,11 @@ extension DefaultsKeys {
 	static let activeOutputTheme = DefaultsKey<JSON?>("rc2.activeOutputTheme")
 	
 	static let lastExportDirectory = DefaultsKey<Data?>("rc2.LastExportDirectory")
+
+	static let helpTopicSearchSummaries = DefaultsKey<Bool>("rc2.helpSidebar.searchSummaries")
+	
 	static let suppressDeleteFileWarnings = DefaultsKey<Bool>("SuppressDeleteFileWarning")
-
 	static let suppressClearWorkspace = DefaultsKey<Bool>("SuppressClearWorkspaceWarning")
-
 	static let suppressKeys = [suppressDeleteFileWarnings, suppressClearWorkspace]
 }
 
