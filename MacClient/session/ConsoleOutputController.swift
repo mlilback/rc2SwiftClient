@@ -138,7 +138,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 			let fw = attach.fileWrapper
 			let fname = (fw?.filename!)!
 			if fname.hasPrefix("img") {
-				let cell = NSTextAttachmentCell(imageCell: NSImage(named: "graph"))
+				let cell = NSTextAttachmentCell(imageCell: #imageLiteral(resourceName: "graph"))
 				cell.image?.size = ConsoleAttachmentImageSize
 				ts.removeAttribute(NSAttachmentAttributeName, range: range)
 				attach.attachmentCell = cell
