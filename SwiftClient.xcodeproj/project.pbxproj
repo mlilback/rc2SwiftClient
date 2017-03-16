@@ -187,6 +187,9 @@
 		08678CCE1DCBA90400F9F283 /* Freddy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08698FEB1E41051900890092 /* Starscream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		086A40D11E7AEC5000AE476B /* OutputTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D01E7AEC5000AE476B /* OutputTheme.swift */; };
+		086A40D31E7B048B00AE476B /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D21E7B048B00AE476B /* Theme.swift */; };
+		086A40D51E7B04F400AE476B /* ThemeEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D41E7B04F400AE476B /* ThemeEditorController.swift */; };
+		086A40D71E7B1E8600AE476B /* ThemeEditorController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086A40D61E7B1E8600AE476B /* ThemeEditorController.xib */; };
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
 		0881B5041DCD23FD00679DB3 /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B5031DCD23FD00679DB3 /* Variable.swift */; };
 		0881B5061DCD329300679DB3 /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B5051DCD329300679DB3 /* VariableSpec.swift */; };
@@ -706,6 +709,9 @@
 		0866599A1CA1F3E5007AC555 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/MainWindow.xib; sourceTree = SOURCE_ROOT; };
 		08678C961DCA78CE00F9F283 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/Mac/Freddy.framework; sourceTree = "<group>"; };
 		086A40D01E7AEC5000AE476B /* OutputTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputTheme.swift; sourceTree = "<group>"; };
+		086A40D21E7B048B00AE476B /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		086A40D41E7B04F400AE476B /* ThemeEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThemeEditorController.swift; path = prefs/ThemeEditorController.swift; sourceTree = "<group>"; };
+		086A40D61E7B1E8600AE476B /* ThemeEditorController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ThemeEditorController.xib; path = prefs/ThemeEditorController.xib; sourceTree = "<group>"; };
 		08765C811DC58AB300F75D8E /* DispatchReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchReader.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		0881B5031DCD23FD00679DB3 /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
@@ -731,7 +737,7 @@
 		088D1F921DF36B7F00BC891E /* updatedImageInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedImageInfo.json; sourceTree = "<group>"; };
 		088D1F941DF36E4D00BC891E /* updatedContainers.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedContainers.json; sourceTree = "<group>"; };
 		088F59191E732EC40009A0B1 /* MockDockerAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockDockerAPI.swift; sourceTree = "<group>"; };
-		088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemePrefsController.swift; sourceTree = "<group>"; };
+		088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThemePrefsController.swift; path = prefs/ThemePrefsController.swift; sourceTree = "<group>"; };
 		088F59211E74C4D10009A0B1 /* PlatformColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlatformColor.swift; path = ClientCore/PlatformColor.swift; sourceTree = SOURCE_ROOT; };
 		088F59231E7578B80009A0B1 /* outputThemes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = outputThemes.json; path = resources/outputThemes.json; sourceTree = "<group>"; };
 		0890650A1D26F59300C7CA5D /* MacAppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacAppStatus.swift; sourceTree = "<group>"; };
@@ -1174,6 +1180,7 @@
 			isa = PBXGroup;
 			children = (
 				086A40D01E7AEC5000AE476B /* OutputTheme.swift */,
+				086A40D21E7B048B00AE476B /* Theme.swift */,
 			);
 			path = themes;
 			sourceTree = "<group>";
@@ -1511,6 +1518,8 @@
 				08C2D5EB1E71BB290007A02D /* DockerPrefsController.swift */,
 				0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */,
 				088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */,
+				086A40D41E7B04F400AE476B /* ThemeEditorController.swift */,
+				086A40D61E7B1E8600AE476B /* ThemeEditorController.xib */,
 			);
 			name = preferences;
 			sourceTree = "<group>";
@@ -1958,6 +1967,7 @@
 				088F59241E7578B80009A0B1 /* outputThemes.json in Resources */,
 				0816FD1F1E5226760006FF26 /* SearchBarView.xib in Resources */,
 				08F189A81D0A0E7200866A05 /* static_html in Resources */,
+				086A40D71E7B1E8600AE476B /* ThemeEditorController.xib in Resources */,
 				083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */,
 				083A566F1D246D85009D3091 /* ProjectManagement.storyboard in Resources */,
 				08F5746D1E4D04A70000956B /* Preferences.storyboard in Resources */,
@@ -2238,6 +2248,7 @@
 				08A01FC41CC7FCA3001EDFAA /* FMDatabaseAdditions.m in Sources */,
 				089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,
+				086A40D51E7B04F400AE476B /* ThemeEditorController.swift in Sources */,
 				08A01FD61CC95C58001EDFAA /* HelpController.swift in Sources */,
 				083174101C57B2E200071408 /* CommandHistory.swift in Sources */,
 				089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */,
@@ -2295,6 +2306,7 @@
 				08037C351D7C5E2200006E9E /* RecursiveFlatMap.swift in Sources */,
 				089794501D7B6A8F003339EE /* String+Rc2Extensions.swift in Sources */,
 				08525E501E204672008A332E /* URLStaleChecker.swift in Sources */,
+				086A40D31E7B048B00AE476B /* Theme.swift in Sources */,
 				0826109C1DB8E0F000C03422 /* Data+Rc2.swift in Sources */,
 				08E8366B1D94436D00E26EFE /* UserDefaults+JSON.swift in Sources */,
 				08525E731E256A8B008A332E /* Reachability.swift in Sources */,

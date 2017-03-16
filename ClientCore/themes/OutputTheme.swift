@@ -7,14 +7,11 @@
 import Cocoa
 import Freddy
 
-public protocol Theme {
-	var name: String { get }
-}
-
-public enum OutputThemeProperty: String {
+public enum OutputThemeProperty: String, ThemeProperty {
 
 	case background, text, note, help, error, log, input, status
 
+	public var stringValue: String { return rawValue }
 	public static var allValues: [OutputThemeProperty] { return [.background, .text, .note, .help, .error, .log, .input, .status] }
 }
 
@@ -24,11 +21,10 @@ extension Notification.Name {
 
 public final class OutputTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
 	public static let AttributeName = "rc2.OutputTheme"
-	public let attributeName = OutputTheme.AttributeName
 	
 	public var name: String
-	var colors = [OutputThemeProperty: PlatformColor]()
-	public dynamic var isBuiltin: Bool = false
+	public var colors = [OutputThemeProperty: PlatformColor]()
+	public var isBuiltin: Bool = false
 	
 	public var propertyCount: Int { return colors.count }
 	
@@ -63,6 +59,10 @@ public final class OutputTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
 			props[key.rawValue] = .string(value.hexString)
 		}
 		return .dictionary(props)
+	}
+	
+	public func setIsSystemTheme() {
+		isBuiltin = true
 	}
 	
 	/// attributes to add to a NSAttributedString to represent the theme property

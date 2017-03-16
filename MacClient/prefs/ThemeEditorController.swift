@@ -1,41 +1,52 @@
 //
-//  ThemePrefsController.swift
+//  ThemeEditorController.swift
 //
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
+import ClientCore
 import Cocoa
 import Freddy
-import ClientCore
 import os
 import SwiftyUserDefaults
-import Networking
 
 // wrapper used for table rows in the themeList
-struct ThemeEntry {
+struct ThemeEntry<T: Theme> {
 	let title: String
-	let theme: OutputTheme?
+	let theme: T?
 	var isSectionLabel: Bool { return theme == nil }
-
-	init(title: String? = nil, theme: OutputTheme? = nil) {
+	
+	init(title: String? = nil, theme: T? = nil) {
 		precondition(title != nil || theme != nil)
 		self.theme = theme
 		self.title = title == nil ? theme!.name: title!
 	}
 }
 
-class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
-	@IBOutlet var themeListView: NSTableView!
-	@IBOutlet var themeTableView: NSTableView!
-	@IBOutlet var listFooterView: NSView?
-	@IBOutlet var addMenu: NSMenu?
-	
+class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
+	@IBOutlet var themeTable: NSTableView!
+	@IBOutlet var propertyTable: NSTableView!
+	@IBOutlet var themeFooterView: NSView!
+	@IBOutlet var addMenuTemplate: NSMenu!
+	@IBOutlet var removeButton: NSButton!
+
+	private let themeType: T.Type = T.self
 	private var userThemeDirectoryUrl: URL?
-	private var defaultThemes = [OutputTheme]()
-	private var userThemes = [OutputTheme]()
-	var entries = [ThemeEntry]()
-	dynamic var selectedTheme: OutputTheme? { didSet { saveActiveTheme() } }
+	private var defaultThemes = [T]()
+	private var userThemes = [T]()
+	var entries = [ThemeEntry<T>]()
+	var selectedTheme: T? { didSet { themeDidChange() } }
 	private var userDirectoryWatcher: DirectoryWatcher?
+	private var userThemeUrl: URL!
+	private var builtinThemeUrl: URL!
+
+	/// factory function since swift won't let us override init() and call another init method
+	static func createInstance<TType: Theme>(userUrl: URL, builtinUrl: URL) -> ThemeEditorController<TType>? {
+		let controller = ThemeEditorController<TType>(nibName: "ThemeEditorController", bundle: nil)!
+		controller.userThemeUrl = userUrl
+		controller.builtinThemeUrl = builtinUrl
+		return controller
+	}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -43,14 +54,19 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 		loadUserThemes()
 		updateThemesArray()
 		selectedTheme = entries.first(where: { !$0.isSectionLabel })?.theme
-		themeListView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
-		let scrollview = themeListView.enclosingScrollView!
-		scrollview.addFloatingSubview(listFooterView!, for: .vertical)
-		listFooterView?.setFrameOrigin(NSPoint(x: 0, y: scrollview.bounds.size.height - listFooterView!.bounds.size.height))
+		themeTable.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
+		let scrollview = themeTable.enclosingScrollView!
+		scrollview.addFloatingSubview(themeTable!, for: .vertical)
+		themeFooterView?.setFrameOrigin(NSPoint(x: 0, y: scrollview.bounds.size.height - themeFooterView!.bounds.size.height))
+	}
+	
+	override func viewWillAppear() {
+		super.viewWillAppear()
+		themeTable.reloadData()
 	}
 	
 	@IBAction func addTheme(_ sender: Any?) {
-		guard let menu = addMenu?.copy() as? NSMenu, let footer = listFooterView else { fatalError() }
+		guard let menu = addMenuTemplate?.copy() as? NSMenu, let footer = themeFooterView else { fatalError() }
 		let bframe = footer.superview!.convert(footer.frame, to: nil)
 		let rect = view.window?.convertToScreen(bframe)
 		entries.forEach { entry in
@@ -62,7 +78,7 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 		}
 		menu.popUp(positioning: nil, at: rect!.origin, in: nil)
 	}
-
+	
 	@IBAction func removeTheme(_ sender: Any?) {
 		print("remove theme")
 	}
@@ -73,18 +89,18 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 	
 	@IBAction func duplicateThemeFromTemplate(_ sender: Any?) {
 		guard let menuItem = sender as? NSMenuItem,
-			let template = menuItem.representedObject as? OutputTheme
+			let template = menuItem.representedObject as? T
 			else { return }
 		print("copying \(template.name)")
 	}
 	
 	func numberOfRows(in tableView: NSTableView) -> Int {
-		if tableView == themeListView { return entries.count }
+		if tableView == themeTable { return entries.count }
 		return selectedTheme?.propertyCount ?? 0
 	}
 	
 	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-		if tableView == themeListView {
+		if tableView == themeTable {
 			// swiftlint:disable:next force_cast
 			let view = tableView.make(withIdentifier: "themeNameView", owner: nil) as! NSTableCellView
 			view.textField?.stringValue = entries[row].title
@@ -92,29 +108,28 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 		}
 		// swiftlint:disable:next force_cast
 		let view = tableView.make(withIdentifier: "themeItem", owner: nil) as! NameAndColorCellView
-		let prop = OutputThemeProperty.allValues[row]
-		view.textField?.stringValue = prop.rawValue
+		let prop = T.Property.allValues[row]
+		view.textField?.stringValue = prop.stringValue
 		view.colorWell?.color = (selectedTheme?.color(for: prop))!
 		view.colorWell?.isEnabled = !(selectedTheme?.isBuiltin ?? false)
 		return view
 	}
 	
 	func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
-		if tableView == themeTableView { return false }
+		if tableView == propertyTable { return false }
 		return true
 	}
 	
 	func tableViewSelectionDidChange(_ notification: Notification) {
-		if notification.object as? NSTableView == themeListView {
-			selectedTheme = entries[themeListView.selectedRow].theme
-			saveActiveTheme()
-			themeTableView.reloadData()
+		if notification.object as? NSTableView == themeTable {
+			selectedTheme = entries[themeTable.selectedRow].theme
 		}
 	}
 	
-	private func saveActiveTheme() {
+	private func themeDidChange() {
 		UserDefaults.standard[.activeOutputTheme] = selectedTheme?.toJSON()
 		NotificationCenter.default.post(name: .outputThemeChanged, object: selectedTheme)
+		propertyTable.reloadData()
 	}
 	
 	private func updateThemesArray() {
@@ -131,47 +146,19 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 	}
 	
 	private func loadSystemThemes() {
-		//load system themes
-		guard let builtinUrl = Bundle.main.url(forResource: "outputThemes", withExtension: "json"),
-			let data = try? Data(contentsOf: builtinUrl),
-			let json = try? JSON(data: data)
-			else
-		{
-			fatalError("missing outputThemes.json")
-		}
-		do {
-			defaultThemes = try json.decodedArray().sorted(by: { $0.name < $1.name })
-			defaultThemes.forEach { $0.isBuiltin = true }
-		} catch {
-			fatalError("failed to load themes: \(error)")
-		}
+		defaultThemes = T.loadThemes(from: builtinThemeUrl, builtin: true)
 	}
 	
 	private func loadUserThemes() {
-		do {
-			//create watcher if necessary
-			if nil == userDirectoryWatcher {
-				userThemeDirectoryUrl = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "OutputThemes")
-				userDirectoryWatcher = DirectoryWatcher(url: userThemeDirectoryUrl!) {_ in
-					DispatchQueue.main.async {
-						self.loadUserThemes()
-					}
+		//create watcher if necessary
+		if nil == userDirectoryWatcher {
+			userDirectoryWatcher = DirectoryWatcher(url: userThemeUrl) {_ in
+				DispatchQueue.main.async {
+					self.loadUserThemes()
 				}
 			}
-			//scan for themes
-			userThemes.removeAll()
-			let urls = try FileManager.default.contentsOfDirectory(at: userThemeDirectoryUrl!, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
-			urls.forEach { aFile in
-				guard aFile.pathExtension == "json",
-					let data = try? Data(contentsOf: aFile),
-					let json = try? JSON(data: data),
-					let theme: OutputTheme = try? json.decode()
-					else { return }
-				userThemes.append(theme)
-			}
-		} catch {
-			os_log("error loading user themes: %{public}s", log: .app, error.localizedDescription)
 		}
+		userThemes = T.loadThemes(from: userThemeUrl, builtin: false)
 	}
 }
 
