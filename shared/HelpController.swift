@@ -155,7 +155,16 @@ class HelpController {
 	
 	/// returns a list of HelpTopics that contain the searchString in their title
 	func searchTitles(_ searchString: String) -> [HelpTopic] {
-		return allTopics.filter { $0.name.localizedCaseInsensitiveContains(searchString) }
+		let results = allTopics.filter { $0.name.localizedCaseInsensitiveContains(searchString) }
+		var topicsByPack = [String: [HelpTopic]]()
+		for aMatch in results {
+			if topicsByPack[aMatch.packageName] == nil {
+				topicsByPack[aMatch.packageName] = []
+			}
+			topicsByPack[aMatch.packageName]!.append(aMatch)
+		}
+		let matches: [HelpTopic] = topicsByPack.map { HelpTopic(name: $0, subtopics: $1) }
+		return matches.sorted(by: { return $0.compare($1) })
 	}
 	
 	/// returns a list of HelpTpics that contain the searchString in their title or summary
