@@ -108,7 +108,7 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 		}
 		// swiftlint:disable:next force_cast
 		let view = tableView.make(withIdentifier: "themeItem", owner: nil) as! NameAndColorCellView
-		let prop = T.Property.allValues[row]
+		let prop = T.Property.allProperties[row]
 		view.textField?.stringValue = prop.stringValue
 		view.colorWell?.color = (selectedTheme?.color(for: prop))!
 		view.colorWell?.isEnabled = !(selectedTheme?.isBuiltin ?? false)

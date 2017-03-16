@@ -12,7 +12,9 @@ public enum OutputThemeProperty: String, ThemeProperty {
 	case background, text, note, help, error, log, input, status
 
 	public var stringValue: String { return rawValue }
-	public static var allValues: [OutputThemeProperty] { return [.background, .text, .note, .help, .error, .log, .input, .status] }
+	public static var allProperties: [OutputThemeProperty] { return [.background, .text, .note, .help, .error, .log, .input, .status] }
+	public static var backgroundProperties: [OutputThemeProperty] { return [.background] }
+	public static var foregroundProperties: [OutputThemeProperty] { return [.text, .note, .help, .error, .log, .input, .status] }
 }
 
 extension Notification.Name {
@@ -38,18 +40,13 @@ public final class OutputTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
 	public init(json: JSON) throws {
 		name = try json.getString(at: "ThemeName")
 		super.init()
-		try OutputThemeProperty.allValues.forEach { property in
+		try OutputThemeProperty.allProperties.forEach { property in
 			colors[property] = PlatformColor(hexString: try json.getString(at: property.rawValue))
 		}
 	}
 	
 	public func color(for property: OutputThemeProperty) -> PlatformColor {
-		return colors[property] ?? PlatformColor.white
-	}
-	
-	public func value(for property: OutputThemeProperty) -> String {
-		if let color = colors[property] { return color.hexString }
-		return "ffffff" //default to white
+		return colors[property] ?? PlatformColor.black
 	}
 	
 	public func toJSON() -> JSON {
@@ -61,33 +58,10 @@ public final class OutputTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
 		return .dictionary(props)
 	}
 	
-	public func setIsSystemTheme() {
-		isBuiltin = true
-	}
-	
-	/// attributes to add to a NSAttributedString to represent the theme property
-	public func stringAttributes(for property: OutputThemeProperty) -> [String: Any] {
-		return [attributeName: property,
-		        NSBackgroundColorAttributeName: color(for: property)]
-			as [String: Any]
-	}
-	
-	/// Updates the attributed string so its attributes use this theme
-	///
-	/// - Parameter attributedString: The string whose attributes will be updated
-	public func update(attributedString: NSMutableAttributedString) {
-		attributedString.enumerateAttribute(attributeName, in: attributedString.string.fullNSRange)
-		{ (rawProperty, range, _) in
-			guard let rawProperty = rawProperty,
-				let property = rawProperty as? OutputThemeProperty
-				else { return } //should never fail
-			attributedString.setAttributes(stringAttributes(for: property), range: range)
-		}
-	}
-	
 	public static let defaultTheme: OutputTheme = {
 		var theme = OutputTheme(name: "builtin")
 		theme.colors[.text] = PlatformColor.black
+		theme.colors[.background] = PlatformColor.white
 		return theme
 	}()
 }

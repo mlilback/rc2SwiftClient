@@ -190,6 +190,7 @@
 		086A40D31E7B048B00AE476B /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D21E7B048B00AE476B /* Theme.swift */; };
 		086A40D51E7B04F400AE476B /* ThemeEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D41E7B04F400AE476B /* ThemeEditorController.swift */; };
 		086A40D71E7B1E8600AE476B /* ThemeEditorController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086A40D61E7B1E8600AE476B /* ThemeEditorController.xib */; };
+		086A40D91E7B3F0C00AE476B /* SyntaxTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D81E7B3F0C00AE476B /* SyntaxTheme.swift */; };
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
 		0881B5041DCD23FD00679DB3 /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B5031DCD23FD00679DB3 /* Variable.swift */; };
 		0881B5061DCD329300679DB3 /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B5051DCD329300679DB3 /* VariableSpec.swift */; };
@@ -712,6 +713,7 @@
 		086A40D21E7B048B00AE476B /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		086A40D41E7B04F400AE476B /* ThemeEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThemeEditorController.swift; path = prefs/ThemeEditorController.swift; sourceTree = "<group>"; };
 		086A40D61E7B1E8600AE476B /* ThemeEditorController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ThemeEditorController.xib; path = prefs/ThemeEditorController.xib; sourceTree = "<group>"; };
+		086A40D81E7B3F0C00AE476B /* SyntaxTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxTheme.swift; sourceTree = "<group>"; };
 		08765C811DC58AB300F75D8E /* DispatchReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchReader.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		0881B5031DCD23FD00679DB3 /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
@@ -1180,6 +1182,7 @@
 			isa = PBXGroup;
 			children = (
 				086A40D01E7AEC5000AE476B /* OutputTheme.swift */,
+				086A40D81E7B3F0C00AE476B /* SyntaxTheme.swift */,
 				086A40D21E7B048B00AE476B /* Theme.swift */,
 			);
 			path = themes;
@@ -2308,6 +2311,7 @@
 				08525E501E204672008A332E /* URLStaleChecker.swift in Sources */,
 				086A40D31E7B048B00AE476B /* Theme.swift in Sources */,
 				0826109C1DB8E0F000C03422 /* Data+Rc2.swift in Sources */,
+				086A40D91E7B3F0C00AE476B /* SyntaxTheme.swift in Sources */,
 				08E8366B1D94436D00E26EFE /* UserDefaults+JSON.swift in Sources */,
 				08525E731E256A8B008A332E /* Reachability.swift in Sources */,
 				088F59221E74C4D10009A0B1 /* PlatformColor.swift in Sources */,
