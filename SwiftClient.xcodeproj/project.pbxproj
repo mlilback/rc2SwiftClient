@@ -53,7 +53,6 @@
 		0815597D1DDB9F630047B3CE /* ServerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815597C1DDB9F630047B3CE /* ServerResponse.swift */; };
 		0815597F1DDBAEB30047B3CE /* ServerResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815597E1DDBAEB30047B3CE /* ServerResponseHandler.swift */; };
 		081559811DDBAF030047B3CE /* ConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559801DDBAF030047B3CE /* ConsoleAttachment.swift */; };
-		081559831DDBB1000047B3CE /* ColorEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559821DDBB1000047B3CE /* ColorEnums.swift */; };
 		081559851DDBB3760047B3CE /* SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559841DDBB3760047B3CE /* SessionDelegate.swift */; };
 		081559871DDBB4310047B3CE /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559861DDBB4310047B3CE /* Session.swift */; };
 		081559891DDBD7DA0047B3CE /* Freddy+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */; };
@@ -122,7 +121,6 @@
 		083305E41C517FC000E27F66 /* SidebarVariableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E31C517FC000E27F66 /* SidebarVariableController.swift */; };
 		083305E61C517FE300E27F66 /* SidebarHelpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E51C517FE300E27F66 /* SidebarHelpController.swift */; };
 		083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305E71C51812300E27F66 /* AbstractSessionViewController.swift */; };
-		083305F01C519B4B00E27F66 /* ColorEnumTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */; };
 		083305F11C519B4B00E27F66 /* resultsWithImages.json in Resources */ = {isa = PBXBuildFile; fileRef = 083305EE1C519B4B00E27F66 /* resultsWithImages.json */; };
 		083305F91C519B8500E27F66 /* createWorkspace.json in Resources */ = {isa = PBXBuildFile; fileRef = 083305F31C519B8500E27F66 /* createWorkspace.json */; };
 		083305FA1C519B8500E27F66 /* loginResults.json in Resources */ = {isa = PBXBuildFile; fileRef = 083305F41C519B8500E27F66 /* loginResults.json */; };
@@ -188,6 +186,7 @@
 		08678CC71DCB9B9100F9F283 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
 		08678CCE1DCBA90400F9F283 /* Freddy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08698FEB1E41051900890092 /* Starscream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		086A40D11E7AEC5000AE476B /* OutputTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D01E7AEC5000AE476B /* OutputTheme.swift */; };
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
 		0881B5041DCD23FD00679DB3 /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B5031DCD23FD00679DB3 /* Variable.swift */; };
 		0881B5061DCD329300679DB3 /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B5051DCD329300679DB3 /* VariableSpec.swift */; };
@@ -277,7 +276,6 @@
 		08CFE8D11E760066002A35C1 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
 		08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
 		08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		08CFE8D51E76D72A002A35C1 /* OutputTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CFE8D41E76D72A002A35C1 /* OutputTheme.swift */; };
 		08CFE8D61E76D7A6002A35C1 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
 		08D6106F1CD2C53100258D8E /* listvars.json in Resources */ = {isa = PBXBuildFile; fileRef = 08D6106E1CD2C53100258D8E /* listvars.json */; };
 		08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */; };
@@ -592,7 +590,6 @@
 		0815597C1DDB9F630047B3CE /* ServerResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerResponse.swift; sourceTree = "<group>"; };
 		0815597E1DDBAEB30047B3CE /* ServerResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerResponseHandler.swift; sourceTree = "<group>"; };
 		081559801DDBAF030047B3CE /* ConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleAttachment.swift; sourceTree = "<group>"; };
-		081559821DDBB1000047B3CE /* ColorEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorEnums.swift; sourceTree = "<group>"; };
 		081559841DDBB3760047B3CE /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
 		081559861DDBB4310047B3CE /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Freddy+Rc2.swift"; path = "ClientCore/Freddy+Rc2.swift"; sourceTree = SOURCE_ROOT; };
@@ -651,7 +648,6 @@
 		083305E31C517FC000E27F66 /* SidebarVariableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarVariableController.swift; sourceTree = "<group>"; };
 		083305E51C517FE300E27F66 /* SidebarHelpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarHelpController.swift; sourceTree = "<group>"; };
 		083305E71C51812300E27F66 /* AbstractSessionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractSessionViewController.swift; sourceTree = "<group>"; };
-		083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorEnumTests.swift; sourceTree = "<group>"; };
 		083305EE1C519B4B00E27F66 /* resultsWithImages.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = resultsWithImages.json; sourceTree = "<group>"; };
 		083305F31C519B8500E27F66 /* createWorkspace.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = createWorkspace.json; sourceTree = "<group>"; };
 		083305F41C519B8500E27F66 /* loginResults.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loginResults.json; sourceTree = "<group>"; };
@@ -709,6 +705,7 @@
 		086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemExtensionsTests.swift; sourceTree = "<group>"; };
 		0866599A1CA1F3E5007AC555 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/MainWindow.xib; sourceTree = SOURCE_ROOT; };
 		08678C961DCA78CE00F9F283 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/Mac/Freddy.framework; sourceTree = "<group>"; };
+		086A40D01E7AEC5000AE476B /* OutputTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputTheme.swift; sourceTree = "<group>"; };
 		08765C811DC58AB300F75D8E /* DispatchReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchReader.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		0881B5031DCD23FD00679DB3 /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
@@ -794,7 +791,6 @@
 		08CE0E8F1E326A4C00DC567A /* createdUpdate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = createdUpdate.json; sourceTree = "<group>"; };
 		08CFE8CE1E75BA42002A35C1 /* DirectoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectoryWatcher.swift; sourceTree = "<group>"; };
 		08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/Mac/ReactiveCocoa.framework; sourceTree = "<group>"; };
-		08CFE8D41E76D72A002A35C1 /* OutputTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputTheme.swift; sourceTree = "<group>"; };
 		08D6106E1CD2C53100258D8E /* listvars.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = listvars.json; sourceTree = "<group>"; };
 		08D610711CE3CA3C00258D8E /* TAAdaptiveSpaceItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAAdaptiveSpaceItem.h; sourceTree = "<group>"; };
 		08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItem.m; sourceTree = "<group>"; };
@@ -1005,7 +1001,6 @@
 				081559921DDC889D0047B3CE /* ImageCache.swift */,
 				080E82FF1DCD07930048F36C /* NetworkingError.swift */,
 				08C2C3C81DF74DE200397DD3 /* Networking.strings */,
-				08CFE8D41E76D72A002A35C1 /* OutputTheme.swift */,
 				08F6ADB11DD90E3600AF0722 /* Rc2FileManager.swift */,
 				080E82E41DCBF4520048F36C /* xattr.swift */,
 				0881B5091DCF84DB00679DB3 /* network */,
@@ -1175,6 +1170,14 @@
 			name = xcconfig;
 			sourceTree = "<group>";
 		};
+		086A40CF1E7AEC5000AE476B /* themes */ = {
+			isa = PBXGroup;
+			children = (
+				086A40D01E7AEC5000AE476B /* OutputTheme.swift */,
+			);
+			path = themes;
+			sourceTree = "<group>";
+		};
 		0881B5021DCD17B400679DB3 /* model */ = {
 			isa = PBXGroup;
 			children = (
@@ -1299,7 +1302,6 @@
 				083382F41C68E43400D40EEB /* test resources */,
 				083382F91C68F2A900D40EEB /* BaseTest.swift */,
 				08F189BC1D2184EB00866A05 /* BookmarkTest.swift */,
-				083305ED1C519B4B00E27F66 /* ColorEnumTests.swift */,
 				0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */,
 				081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */,
 				08FDB1981C591409006FCD1A /* ImageCacheTests.swift */,
@@ -1374,7 +1376,6 @@
 			children = (
 				089794531D7B6C91003339EE /* ClientCore.h */,
 				08B184D31E5F384800F4A6D6 /* AppInfo.swift */,
-				081559821DDBB1000047B3CE /* ColorEnums.swift */,
 				088CE6B71C4C44A800153414 /* Keychain.swift */,
 				0816F8991C6D0F7D00A6120B /* HTMLString.swift */,
 				08604A4D1D9C0C0500DE2A79 /* Named.swift */,
@@ -1386,6 +1387,7 @@
 				08765C811DC58AB300F75D8E /* DispatchReader.swift */,
 				083D11891DED032000549268 /* HttpStringUtils.swift */,
 				08525E4F1E204672008A332E /* URLStaleChecker.swift */,
+				086A40CF1E7AEC5000AE476B /* themes */,
 				089794431D7B6A8F003339EE /* extensions */,
 				089794371D7B6925003339EE /* ClientCore-Bridging-Header.h */,
 				0897941D1D7B68F0003339EE /* Info.plist */,
@@ -2118,7 +2120,6 @@
 				08F6ADB01DD8F60200AF0722 /* Rc2RestClient.swift in Sources */,
 				080E82F81DCCD4620048F36C /* File.swift in Sources */,
 				0881B50E1DCF896500679DB3 /* LoginFactory.swift in Sources */,
-				08CFE8D51E76D72A002A35C1 /* OutputTheme.swift in Sources */,
 				08F6ADAA1DD643C900AF0722 /* Copyable.swift in Sources */,
 				081559851DDBB3760047B3CE /* SessionDelegate.swift in Sources */,
 				081559811DDBAF030047B3CE /* ConsoleAttachment.swift in Sources */,
@@ -2270,7 +2271,6 @@
 				086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */,
 				080834561C84C13300F5A190 /* SyntaxParserTests.swift in Sources */,
 				083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */,
-				083305F01C519B4B00E27F66 /* ColorEnumTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2283,6 +2283,7 @@
 				089794511D7B6A8F003339EE /* SystemExtensions.swift in Sources */,
 				083D11861DECC37900549268 /* Process+Rc2.swift in Sources */,
 				081559951DDCCD960047B3CE /* RACSignals+Rc2.swift in Sources */,
+				086A40D11E7AEC5000AE476B /* OutputTheme.swift in Sources */,
 				0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */,
 				0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */,
 				0897944F1D7B6A8F003339EE /* NSURL+Rc2.swift in Sources */,
@@ -2302,7 +2303,6 @@
 				086508791E452D3A0067C8CA /* Result+Rc2.swift in Sources */,
 				08F03E451DE4BF0A00D02153 /* URLResponse+Rc2.swift in Sources */,
 				08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */,
-				081559831DDBB1000047B3CE /* ColorEnums.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

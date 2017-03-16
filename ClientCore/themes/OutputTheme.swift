@@ -6,7 +6,6 @@
 
 import Cocoa
 import Freddy
-import ClientCore
 
 public protocol Theme {
 	var name: String { get }
