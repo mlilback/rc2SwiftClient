@@ -26,16 +26,16 @@ open class RCodeHighlighter: CodeHighlighter {
 		var color: PlatformColor?
 		switch token.tokenType {
 			case .comment:
-				color = colorMap[.Comment]
+				color = theme.value.color(for: .comment)
 			case .quotedString:
-				color = colorMap[.Quote]
+				color = theme.value.color(for: .quote)
 			case .number:
 				color = PlatformColor.black
 			case .symbol:
-				color = colorMap[.Symbol]
+				color = theme.value.color(for: .symbol)
 			case .word:
 				if keywords.contains(token.stringValue) {
-					color = colorMap[.Keyword]
+					color = theme.value.color(for: .keyword)
 				}
 			default:
 				color = nil

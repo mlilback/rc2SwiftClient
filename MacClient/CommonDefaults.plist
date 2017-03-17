@@ -10,24 +10,5 @@
 	<string>FFFFFF</string>
 	<key>MaxCommandHistorySize</key>
 	<integer>10</integer>
-	<key>RCodeHighlighterColors</key>
-	<dict>
-		<key>Comment</key>
-		<string>1735FF</string>
-		<key>Keyword</key>
-		<string>C71267</string>
-		<key>Function</key>
-		<string>C78312</string>
-		<key>Quote</key>
-		<string>31aa2a</string>
-		<key>Symbol</key>
-		<string>c7c431</string>
-		<key>CodeBackground</key>
-		<string>eeeeee</string>
-		<key>InlineBackground</key>
-		<string>eef4cd</string>
-		<key>EquationBackground</key>
-		<string>f3e4bc</string>
-	</dict>
 </dict>
 </plist>

@@ -18,7 +18,7 @@ open class RmdSyntaxParser: SyntaxParser {
 	let inlineRegex: NSRegularExpression
 	let mathRegex: NSRegularExpression
 	
-	override init(storage: NSTextStorage, fileType: FileType, colorMap: SyntaxColorMap)
+	override init(storage: NSTextStorage, fileType: FileType)
 	{
 		// swiftlint:disable force_try
 		try! rChunkRegex = NSRegularExpression(pattern: "\n```\\{r\\s*([^\\}]*)\\}\\s*\n+(.*?)\n```\n", options: .dotMatchesLineSeparators)
@@ -27,7 +27,7 @@ open class RmdSyntaxParser: SyntaxParser {
 		try! inlineRegex = NSRegularExpression(pattern: "`r\\s+([^`]*)`", options: .dotMatchesLineSeparators)
 		try! mathRegex = NSRegularExpression(pattern: "(<math(\\s+[^>]*)(display\\s*=\\s*\"(block|inline)\")([^>]*)>)(.*?)</math>\\s*?\\n?", options: .dotMatchesLineSeparators)
 		// swiftlint:enable force_try
-		super.init(storage: storage, fileType: fileType, colorMap: colorMap)
+		super.init(storage: storage, fileType: fileType)
 		codeHighlighter = RCodeHighlighter()
 		colorBackgrounds = true
 	}
@@ -112,7 +112,7 @@ open class RmdSyntaxParser: SyntaxParser {
 		
 		colorChunks(chunks)
 		//set background of inline equations
-		let color = colorMap[.InlineBackground]!
+		let color = theme.value.color(for: .inlineBackground)
 		inlineRegex.enumerateMatches(in: str, options: [], range: range)
 		{ (results, _, _) -> Void in
 			self.textStorage.addAttribute(NSBackgroundColorAttributeName, value: color, range: results!.range)

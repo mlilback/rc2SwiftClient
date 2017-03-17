@@ -9,9 +9,14 @@ import Foundation
 	import AppKit
 #endif
 import ClientCore
+import ReactiveSwift
 
 open class CodeHighlighter: NSObject {
-	let colorMap: SyntaxColorMap = { return SyntaxColorMap.standardMap }()
+	let theme = Property<SyntaxTheme>(ThemeManager.shared.activeSyntaxTheme)
+	
+	override public init() {
+		super.init()
+	}
 	
 	///subclass should override this to return the color to use and if the previous character should be colorized, too (for latex)
 	func colorForToken(_ token: PKToken, lastToken: PKToken?, includePreviousCharacter usePrevious:inout Bool) -> PlatformColor?

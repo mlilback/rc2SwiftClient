@@ -60,9 +60,12 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	
 	// MARK: internal
 	func themeChanged() {
+		let theme = ThemeManager.shared.activeOutputTheme.value
 		let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)!
-		resultsView?.textStorage?.addAttribute(NSFontAttributeName, value: font, range: resultsView!.textStorage!.string.fullNSRange)
-		ThemeManager.shared.activeOutputTheme.value.update(attributedString: resultsView!.textStorage!)
+		let fullRange = resultsView!.textStorage!.string.fullNSRange
+		let fontAttrs = [NSFontAttributeName: font, NSForegroundColorAttributeName: theme.color(for: .text)] as [String: Any]
+		resultsView?.textStorage?.addAttributes(fontAttrs, range: fullRange)
+		theme.update(attributedString: resultsView!.textStorage!)
 	}
 	
 	//stores all custom attributes in the results view for later restoration

@@ -11,6 +11,7 @@ import Foundation
 import os
 import ClientCore
 import Networking
+import ReactiveSwift
 
 extension OSLog {
 	static let syntax = OSLog(subsystem: AppInfo.bundleIdentifier, category: "parser")
@@ -23,13 +24,12 @@ open class SyntaxParser: NSObject {
 	{
 		var parser: SyntaxParser?
 		var highlighter: CodeHighlighter?
-		let cmap = SyntaxColorMap.standardMap
 		if fileType.isSweave {
-			parser = RnwSyntaxParser(storage: storage, fileType: fileType, colorMap: cmap)
+			parser = RnwSyntaxParser(storage: storage, fileType: fileType)
 		} else if fileType.fileExtension == "Rmd" {
-			parser = RmdSyntaxParser(storage: storage, fileType: fileType, colorMap: cmap)
+			parser = RmdSyntaxParser(storage: storage, fileType: fileType)
 		} else if fileType.fileExtension == "R" {
-			parser = RSyntaxParser(storage: storage, fileType: fileType, colorMap: cmap)
+			parser = RSyntaxParser(storage: storage, fileType: fileType)
 			highlighter = RCodeHighlighter()
 		}
 		parser?.codeHighlighter = highlighter
@@ -38,7 +38,7 @@ open class SyntaxParser: NSObject {
 	
 	let textStorage: NSTextStorage
 	let fileType: FileType
-	let colorMap: SyntaxColorMap
+	let theme = Property(ThemeManager.shared.activeSyntaxTheme)
 	internal(set) var chunks: [DocumentChunk] = []
 	fileprivate var lastSource: String = ""
 	var colorBackgrounds = false
@@ -48,12 +48,10 @@ open class SyntaxParser: NSObject {
 
 	/// - parameter storage: A text storage whose changes are tracked to keep chunks up to date
 	/// - parameter fileType: used to determine the proper highlighter(s) to use
-	/// - parameter colorMap: The map of token types to colors. Defaults to the singleton standardMap.
-	init(storage: NSTextStorage, fileType: FileType, colorMap: SyntaxColorMap = SyntaxColorMap.standardMap)
+	init(storage: NSTextStorage, fileType: FileType)
 	{
 		self.textStorage = storage
 		self.fileType = fileType
-		self.colorMap = colorMap
 		super.init()
 	}
 	
@@ -147,16 +145,16 @@ open class SyntaxParser: NSObject {
 	func colorChunks(_ chunksToColor: [DocumentChunk]) {
 		for chunk in chunksToColor {
 			if chunk.type == .rCode {
-				if colorBackgrounds, let bgcolor = colorMap[.CodeBackground] {
+				if colorBackgrounds {
+					let bgcolor = theme.value.color(for: .codeBackground)
 					textStorage.addAttribute(NSBackgroundColorAttributeName, value: bgcolor, range: chunk.parsedRange)
 				}
 				codeHighlighter?.highlightText(textStorage, range: chunk.parsedRange)
 			} else if chunk.type == .documentation {
 				docHighlighter?.highlightText(textStorage, range: chunk.parsedRange)
-			} else if chunk.type == .equation, let bgcolor = colorMap[.EquationBackground] {
-				if colorBackgrounds {
-					textStorage.addAttribute(NSBackgroundColorAttributeName, value: bgcolor, range: chunk.parsedRange)
-				}
+			} else if chunk.type == .equation && colorBackgrounds {
+				let bgcolor = theme.value.color(for: .equationBackground)
+				textStorage.addAttribute(NSBackgroundColorAttributeName, value: bgcolor, range: chunk.parsedRange)
 			}
 		}
 	}

@@ -20,12 +20,11 @@ open class LatexCodeHighlighter: CodeHighlighter {
 	}
 	
 	override func addAttributes(_ content: NSMutableAttributedString, range: NSRange) {
-		if let color = colorMap[.Comment] {
-			let sourceStr = content.string.substring(with: range.toStringRange(content.string)!)
-			commentRegex.enumerateMatches(in: sourceStr, options: [], range: NSRange(location: 0, length: sourceStr.characters.count))
-			{ (results, _, _) -> Void in
-				content.addAttribute(NSForegroundColorAttributeName, value: color, range: (results?.rangeAt(1))!)
-			}
+		let color = theme.value.color(for: .comment)
+		let sourceStr = content.string.substring(with: range.toStringRange(content.string)!)
+		commentRegex.enumerateMatches(in: sourceStr, options: [], range: NSRange(location: 0, length: sourceStr.characters.count))
+		{ (results, _, _) -> Void in
+			content.addAttribute(NSForegroundColorAttributeName, value: color, range: (results?.rangeAt(1))!)
 		}
 	}
 	
@@ -34,16 +33,16 @@ open class LatexCodeHighlighter: CodeHighlighter {
 		var color: PlatformColor?
 		switch token.tokenType  {
 		case .comment:
-			color = colorMap[.Comment]
+			color = theme.value.color(for: .comment)
 		case .quotedString:
-			color = colorMap[.Quote]
+			color = theme.value.color(for: .quote)
 		case .symbol:
-			color = colorMap[.Symbol]
+			color = theme.value.color(for: .symbol)
 		case .word:
 			if lastToken?.tokenType == .symbol && lastToken?.stringValue.characters.first == "\\"
 			{
 				usePrevious = true
-				color = colorMap[.Keyword]
+				color = theme.value.color(for: .keyword)
 			}
 		default:
 			color = nil
