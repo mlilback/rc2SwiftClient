@@ -61,23 +61,13 @@ public extension Theme {
 	public var attributeName: String { return type(of: self).AttributeName }
 	
 	static func loadThemes(from url: URL, builtin: Bool = false) -> [Self] {
-		if builtin {
-			do {
-				let data = try Data(contentsOf: url)
-				let json = try JSON(data: data)
-				let themes = try json.decodedArray(type: Self.self).sorted(by: { $0.name < $1.name })
-				themes.forEach { $0.isBuiltin = true }
-				return themes
-			} catch {
-				fatalError("failed to decode builtin themes \(error)")
-			}
-		}
+		guard !builtin else { return loadBuiltinThemes(from: url) }
 		var themes = [Self]()
 		var urls = [URL]()
 		do {
 			urls = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
 		} catch {
-			os_log("exception getting user themes")
+			os_log("error getting user themes")
 			return themes
 		}
 		urls.forEach { aFile in
@@ -89,12 +79,24 @@ public extension Theme {
 				theme.isBuiltin = builtin
 				themes.append(theme)
 			} catch {
-				os_log("error reading a theme")
+				os_log("error reading theme from %{public}s: %{public}s", log: .app, aFile.lastPathComponent, error.localizedDescription)
 			}
 		}
 		return themes
 	}
 
+	static func loadBuiltinThemes(from url: URL) -> [Self] {
+		do {
+			let data = try Data(contentsOf: url)
+			let json = try JSON(data: data)
+			let themes = try json.decodedArray(type: Self.self).sorted(by: { $0.name < $1.name })
+			themes.forEach { $0.isBuiltin = true }
+			return themes
+		} catch {
+			fatalError("failed to decode builtin themes \(error)")
+		}
+	}
+	
 	/// attributes to add to a NSAttributedString to represent the theme property
 	public func stringAttributes(for property: Property) -> [String: Any] {
 		return [attributeName: property,
