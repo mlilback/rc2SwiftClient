@@ -53,15 +53,16 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		{
 			currentFontDescriptor = fdesc
 		}
-		NotificationCenter.default.addObserver(self, selector: #selector(themeChanged(_:)), name: .outputThemeChanged, object: nil)
+		ThemeManager.shared.activeOutputTheme.signal.observeValues { [weak self] _ in
+			self?.themeChanged()
+		}
 	}
 	
 	// MARK: internal
-	@objc func themeChanged(_ note: Notification?) {
+	func themeChanged() {
 		let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)!
 		resultsView?.textStorage?.addAttribute(NSFontAttributeName, value: font, range: resultsView!.textStorage!.string.fullNSRange)
-		let theme = UserDefaults.standard.activeOutputTheme
-		theme.update(attributedString: resultsView!.textStorage!)
+		ThemeManager.shared.activeOutputTheme.value.update(attributedString: resultsView!.textStorage!)
 	}
 	
 	//stores all custom attributes in the results view for later restoration
@@ -130,7 +131,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		resultsView!.replaceCharacters(in: NSRange(location: 0, length: ts.length), withRTFD:data)
 		if let attrData = state["attrs"] as? Data {
 			applyCustomAttributes(data: attrData)
-			themeChanged(nil)
+			themeChanged()
 		}
 		resultsView!.textStorage?.enumerateAttribute(NSAttachmentAttributeName, in: ts.string.fullNSRange, options: [], using:
 		{ (value, range, _) -> Void in
@@ -153,7 +154,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 			ts.insert(NSAttributedString(string: " "), at: $0)
 			ts.deleteCharacters(in: NSRange(location: $0, length: 1))
 		}
-		UserDefaults.standard.activeOutputTheme.update(attributedString: ts)
+		ThemeManager.shared.activeOutputTheme.value.update(attributedString: ts)
 		if let fontData = state["font"] as? Data,
 			let fontDesc = NSKeyedUnarchiver.unarchiveObject(with: fontData) as? NSFontDescriptor
 		{

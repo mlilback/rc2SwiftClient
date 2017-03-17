@@ -8,6 +8,7 @@ import ClientCore
 import Cocoa
 import Freddy
 import os
+import ReactiveSwift
 import SwiftyUserDefaults
 
 // wrapper used for table rows in the themeList
@@ -30,12 +31,11 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 	@IBOutlet var addMenuTemplate: NSMenu!
 	@IBOutlet var removeButton: NSButton!
 
+	private var wrapper: ThemeWrapper<T>!
 	private let themeType: T.Type = T.self
 	private var userThemeDirectoryUrl: URL?
-	private var defaultThemes = [T]()
-	private var userThemes = [T]()
 	var entries = [ThemeEntry<T>]()
-	var selectedTheme: T? { didSet { themeDidChange() } }
+	var selectedTheme: T!
 	private var userDirectoryWatcher: DirectoryWatcher?
 	private var userThemeUrl: URL!
 	private var builtinThemeUrl: URL!
@@ -43,18 +43,26 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 	/// factory function since swift won't let us override init() and call another init method
 	static func createInstance<TType: Theme>(userUrl: URL, builtinUrl: URL) -> ThemeEditorController<TType>? {
 		let controller = ThemeEditorController<TType>(nibName: "ThemeEditorController", bundle: nil)!
+		controller.wrapper = ThemeWrapper<TType>()
 		controller.userThemeUrl = userUrl
 		controller.builtinThemeUrl = builtinUrl
 		return controller
 	}
 	
+	private var indexOfSelectedTheme: Int {
+		return entries.index(where: { anEntry in
+			guard let aTheme = anEntry.theme else { return false }
+			return aTheme.hash == selectedTheme.hash
+		}) ?? 0
+	}
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		loadSystemThemes()
-		loadUserThemes()
+		selectedTheme = wrapper.selectedTheme
+		setupWatcher()
 		updateThemesArray()
-		selectedTheme = entries.first(where: { !$0.isSectionLabel })?.theme
-		themeTable.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
+		
+		themeTable.selectRowIndexes(IndexSet(integer: indexOfSelectedTheme), byExtendingSelection: false)
 		let scrollview = themeTable.enclosingScrollView!
 		scrollview.addFloatingSubview(themeTable!, for: .vertical)
 		themeFooterView?.setFrameOrigin(NSPoint(x: 0, y: scrollview.bounds.size.height - themeFooterView!.bounds.size.height))
@@ -123,42 +131,38 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 	func tableViewSelectionDidChange(_ notification: Notification) {
 		if notification.object as? NSTableView == themeTable {
 			selectedTheme = entries[themeTable.selectedRow].theme
+			propertyTable.reloadData()
+			ThemeManager.shared.setActive(theme: selectedTheme)
 		}
 	}
 	
 	private func themeDidChange() {
-		UserDefaults.standard[.activeOutputTheme] = selectedTheme?.toJSON()
-		NotificationCenter.default.post(name: .outputThemeChanged, object: selectedTheme)
+		ThemeManager.shared.setActive(theme: selectedTheme)
 		propertyTable.reloadData()
 	}
 	
 	private func updateThemesArray() {
 		entries.removeAll()
-		if userThemes.count > 0 {
+		let userThemes = wrapper.userThemes
+		if !userThemes.isEmpty {
 			entries.append(ThemeEntry(title: "User Themes"))
 			entries.append(contentsOf: userThemes.map { ThemeEntry(theme: $0) })
 			entries.append(ThemeEntry(title: "Default Themes"))
 		}
-		entries.append(contentsOf: defaultThemes.map { ThemeEntry(theme: $0) })
+		entries.append(contentsOf: wrapper.builtinThemes.map { ThemeEntry(theme: $0) })
 		if entries.count < 1 {
 			os_log("no themes!", log: .app, type: .error)
 		}
 	}
 	
-	private func loadSystemThemes() {
-		defaultThemes = T.loadThemes(from: builtinThemeUrl, builtin: true)
-	}
-	
-	private func loadUserThemes() {
-		//create watcher if necessary
-		if nil == userDirectoryWatcher {
-			userDirectoryWatcher = DirectoryWatcher(url: userThemeUrl) {_ in
-				DispatchQueue.main.async {
-					self.loadUserThemes()
-				}
+	private func setupWatcher() {
+		guard nil == userDirectoryWatcher else { return }
+		userDirectoryWatcher = DirectoryWatcher(url: userThemeUrl) { [weak self] _ in
+			DispatchQueue.main.async {
+				self?.updateThemesArray()
+				self?.themeTable.reloadData()
 			}
 		}
-		userThemes = T.loadThemes(from: userThemeUrl, builtin: false)
 	}
 }
 

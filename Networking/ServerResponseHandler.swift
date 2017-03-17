@@ -47,13 +47,12 @@ public struct ResponseString {
 
 public class ServerResponseHandler {
 	fileprivate weak var delegate: ServerResponseHandlerDelegate?
-//	fileprivate let outputColors = OutputColors.colorMap()
-	fileprivate var outputTheme: OutputTheme
+	fileprivate let outputTheme: MutableProperty<OutputTheme>
 
 	required public init(delegate: ServerResponseHandlerDelegate) {
 		self.delegate = delegate
-		outputTheme = OutputTheme.defaultTheme
-		NotificationCenter.default.addObserver(self, selector: #selector(outputThemeChanged(_:)), name: .outputThemeChanged, object: nil)
+		outputTheme = MutableProperty(ThemeManager.shared.activeOutputTheme.value)
+		outputTheme <~ ThemeManager.shared.activeOutputTheme
 	}
 
 	public func handleResponse(_ response: ServerResponse) -> ResponseString? {
@@ -90,10 +89,10 @@ public class ServerResponseHandler {
 		if fileId > 0 {
 			let mstr = NSMutableAttributedString(attributedString: delegate!.attributedStringForInputFile(fileId))
 			mstr.append(NSAttributedString(string: "\n"))
-			mstr.addAttributes(outputTheme.stringAttributes(for: .input), range: NSRange(location: 0, length: mstr.length))
+			mstr.addAttributes(outputTheme.value.stringAttributes(for: .input), range: NSRange(location: 0, length: mstr.length))
 			return ResponseString(string: mstr, type: .input)
 		}
-		let fstr = NSAttributedString(string: "\(query)\n", attributes: outputTheme.stringAttributes(for: .input))
+		let fstr = NSAttributedString(string: "\(query)\n", attributes: outputTheme.value.stringAttributes(for: .input))
 		return ResponseString(string: fstr, type: .input)
 	}
 	
@@ -126,16 +125,7 @@ public class ServerResponseHandler {
 	}
 
 	public func formatError(_ error: String) -> ResponseString {
-		let str = NSAttributedString(string: "\(error)\n", attributes: outputTheme.stringAttributes(for: .error))
+		let str = NSAttributedString(string: "\(error)\n", attributes: outputTheme.value.stringAttributes(for: .error))
 		return ResponseString(string: str, type: .error)
 	}
-	
-	@objc fileprivate func outputThemeChanged(_ notification: Notification) {
-		guard let theme = notification.object as? OutputTheme else {
-			os_log("outputThemeChanged notification w/o a theme", log: .network)
-			return
-		}
-		outputTheme = theme
-	}
-	
 }

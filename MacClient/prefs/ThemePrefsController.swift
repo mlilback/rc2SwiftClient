@@ -12,7 +12,22 @@ import SwiftyUserDefaults
 import Networking
 
 class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
+	@IBOutlet private var tabView: NSTabView!
+	@IBOutlet private var syntaxButton: NSButton!
+	@IBOutlet private var outputButton: NSButton!
+	
 	private var outputEditor: ThemeEditorController<OutputTheme>?
+	private var syntaxEditor: ThemeEditorController<SyntaxTheme>?
+	
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		let blueAttrs = [NSForegroundColorAttributeName: NSColor.blue, NSFontAttributeName: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize())]
+		let blackAttrs = [NSForegroundColorAttributeName: NSColor.black, NSFontAttributeName: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize())]
+		syntaxButton.attributedTitle = NSAttributedString(string: syntaxButton.title, attributes: blueAttrs)
+		syntaxButton.attributedAlternateTitle = NSAttributedString(string: syntaxButton.title, attributes: blackAttrs)
+		outputButton.attributedTitle = NSAttributedString(string: outputButton.title, attributes: blueAttrs)
+		outputButton.attributedAlternateTitle = NSAttributedString(string: outputButton.title, attributes: blackAttrs)
+	}
 	
 	override func viewWillAppear() {
 		super.viewWillAppear()
@@ -22,7 +37,25 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 			// swiftlint:disable:next force_try
 			let user = try! AppInfo.subdirectory(type: .applicationSupportDirectory, named: "OutputThemes")
 			outputEditor = ThemeEditorController<OutputTheme>.createInstance(userUrl: user, builtinUrl: builtin)
-			view.addSubview(outputEditor!.view)
+			tabView.tabViewItem(at: 0).view = outputEditor!.view
 		}
+		if syntaxEditor == nil {
+			let builtin = Bundle.main.url(forResource: "syntaxThemes", withExtension: "json")!
+			// swiftlint:disable:next force_try
+			let user = try! AppInfo.subdirectory(type: .applicationSupportDirectory, named: "SyntaxThemes")
+			syntaxEditor = ThemeEditorController<SyntaxTheme>.createInstance(userUrl: user, builtinUrl: builtin)
+			tabView.tabViewItem(at: 1).view = syntaxEditor!.view
+			switchEditor(syntaxButton)
+		}
+	}
+	
+	@IBAction func switchEditor(_ sender: Any?) {
+		guard let button = sender as? NSButton else { return }
+		let syntaxClicked = button == syntaxButton
+		syntaxButton.state = syntaxClicked ? NSOffState : NSOnState
+		outputButton.state = syntaxClicked ? NSOnState : NSOffState
+		syntaxButton.isEnabled = !syntaxClicked
+		outputButton.isEnabled = syntaxClicked
+		tabView.selectTabViewItem(at: syntaxClicked ? 1 : 0)
 	}
 }

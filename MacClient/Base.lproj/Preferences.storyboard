@@ -120,7 +120,73 @@
                     <view key="view" id="6jW-zJ-7uG">
                         <rect key="frame" x="0.0" y="0.0" width="470" height="452"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <tabView type="noTabsNoBorder" translatesAutoresizingMaskIntoConstraints="NO" id="Plv-x8-Q78">
+                                <rect key="frame" x="20" y="20" width="430" height="402"/>
+                                <font key="font" metaFont="system"/>
+                                <tabViewItems>
+                                    <tabViewItem label="Syntax" identifier="1" id="mA0-oI-Xtd" userLabel="Syntax">
+                                        <view key="view" id="Eka-A6-eYo">
+                                            <rect key="frame" x="0.0" y="0.0" width="470" height="418"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        </view>
+                                    </tabViewItem>
+                                    <tabViewItem label="Output" identifier="2" id="mCO-q4-5c8" userLabel="Output">
+                                        <view key="view" id="kkz-rK-2Dd">
+                                            <rect key="frame" x="0.0" y="0.0" width="430" height="402"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        </view>
+                                    </tabViewItem>
+                                </tabViewItems>
+                            </tabView>
+                            <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="32" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IiV-1s-8mL">
+                                <rect key="frame" x="178.5" y="430" width="113" height="14"/>
+                                <subviews>
+                                    <button translatesAutoresizingMaskIntoConstraints="NO" id="0GI-2c-cR2">
+                                        <rect key="frame" x="0.0" y="0.0" width="40" height="14"/>
+                                        <buttonCell key="cell" type="smallSquare" title="Syntax" alternateTitle="Syntax" bezelStyle="smallSquare" imagePosition="left" alignment="center" controlSize="small" state="on" inset="2" id="g5y-WK-OB3">
+                                            <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="smallSystem"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="switchEditor:" target="YAO-nR-fND" id="Kgr-DT-CaF"/>
+                                        </connections>
+                                    </button>
+                                    <button tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="NC9-b3-ngt">
+                                        <rect key="frame" x="72" y="0.0" width="41" height="14"/>
+                                        <buttonCell key="cell" type="smallSquare" title="Output" alternateTitle="Output" bezelStyle="smallSquare" imagePosition="left" alignment="center" controlSize="small" inset="2" id="UuZ-wE-FUL">
+                                            <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="smallSystem"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="switchEditor:" target="YAO-nR-fND" id="nFf-CH-0Qp"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="Plv-x8-Q78" firstAttribute="leading" secondItem="6jW-zJ-7uG" secondAttribute="leading" constant="20" symbolic="YES" id="97t-TC-VKW"/>
+                            <constraint firstItem="IiV-1s-8mL" firstAttribute="top" secondItem="6jW-zJ-7uG" secondAttribute="top" constant="8" id="Ftq-P0-wmX"/>
+                            <constraint firstAttribute="bottom" secondItem="Plv-x8-Q78" secondAttribute="bottom" constant="20" symbolic="YES" id="G6e-EG-pH5"/>
+                            <constraint firstAttribute="trailing" secondItem="Plv-x8-Q78" secondAttribute="trailing" constant="20" symbolic="YES" id="ZQQ-S8-HWg"/>
+                            <constraint firstItem="Plv-x8-Q78" firstAttribute="top" secondItem="IiV-1s-8mL" secondAttribute="bottom" constant="8" id="aho-3j-HWp"/>
+                            <constraint firstItem="IiV-1s-8mL" firstAttribute="centerX" secondItem="6jW-zJ-7uG" secondAttribute="centerX" id="zHK-Bd-zVi"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="outputButton" destination="NC9-b3-ngt" id="QNE-NP-LuF"/>
+                        <outlet property="syntaxButton" destination="0GI-2c-cR2" id="7u7-mL-HOc"/>
+                        <outlet property="tabView" destination="Plv-x8-Q78" id="oto-US-Wgh"/>
+                    </connections>
                 </viewController>
                 <customObject id="Qsw-qU-5Ft" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>

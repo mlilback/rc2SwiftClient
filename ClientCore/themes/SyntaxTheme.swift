@@ -17,10 +17,6 @@ public enum SyntaxThemeProperty: String, ThemeProperty {
 	public static var foregroundProperties: [SyntaxThemeProperty] { return [.text, .comment, .quote, .keyword, .function, .symbol] }
 }
 
-extension Notification.Name {
-	public static let syntaxThemeChanged = Notification.Name("rc2.activeSyntaxThemeChanged")
-}
-
 public final class SyntaxTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
 	public static let AttributeName = "rc2.SyntaxTheme"
 	

@@ -7,7 +7,6 @@
 * reevaluate all os_log calls to make sure using correct level
 * examine all fataError calls to see if there is a better way to handle the problem
 * are we properly escaping strings to prevent input buffer errors?
-* enable swiftlint for entire project
 
 ## unit tests
 * write unit tests for InputPrompter validation
@@ -70,6 +69,7 @@
 ## output
 * html output content search
 * implement searchbar interface to use for console
+* viewers should offer quick jump menu to recently viewed items
 
 ## other
 
@@ -80,4 +80,6 @@
 * variable sidebar should support copy: for specific types
 * how are dates formatted for copy? date vs datetime. 
 * write nstexfield that scales font size so text fits (for help page title)
+* move filetype images to asset catalog
+
 

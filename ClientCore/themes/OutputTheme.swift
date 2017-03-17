@@ -17,10 +17,6 @@ public enum OutputThemeProperty: String, ThemeProperty {
 	public static var foregroundProperties: [OutputThemeProperty] { return [.text, .note, .help, .error, .log, .input, .status] }
 }
 
-extension Notification.Name {
-	public static let outputThemeChanged = Notification.Name("rc2.activeOutputThemeChanged")
-}
-
 public final class OutputTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
 	public static let AttributeName = "rc2.OutputTheme"
 	

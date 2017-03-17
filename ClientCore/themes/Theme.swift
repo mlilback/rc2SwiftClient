@@ -25,7 +25,7 @@ public protocol ThemeProperty: RawRepresentable, Hashable {
 	var stringValue: String { get }
 }
 
-public protocol Theme: JSONEncodable, JSONDecodable, CustomStringConvertible {
+public protocol Theme: NSObjectProtocol, JSONEncodable, JSONDecodable, CustomStringConvertible {
 	associatedtype Property: ThemeProperty
 	/// the name for this type's property in an NSAttributedString
 	static var AttributeName: String { get }
@@ -65,7 +65,9 @@ public extension Theme {
 			do {
 				let data = try Data(contentsOf: url)
 				let json = try JSON(data: data)
-				return try json.decodedArray().sorted(by: { $0.name < $1.name })
+				let themes = try json.decodedArray(type: Self.self).sorted(by: { $0.name < $1.name })
+				themes.forEach { $0.isBuiltin = true }
+				return themes
 			} catch {
 				fatalError("failed to decode builtin themes \(error)")
 			}
@@ -83,7 +85,7 @@ public extension Theme {
 			do {
 				let data = try Data(contentsOf: aFile)
 				let json = try JSON(data: data)
-				var theme: Self = try json.decode()
+				let theme: Self = try json.decode()
 				theme.isBuiltin = builtin
 				themes.append(theme)
 			} catch {

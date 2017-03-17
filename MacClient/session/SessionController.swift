@@ -85,13 +85,6 @@ import NotifyingCollection
 	
 	func handleVariableMessage(_ single: Bool, variables: [Variable]) {
 		varHandler.handleVariableMessage(single, variables: variables)
-		let json = UserDefaults.standard[.activeOutputTheme]
-		do {
-			let theme = try json?.decode(type: OutputTheme.self)
-			print("theme is \(theme?.name ?? "failure")")
-		} catch {
-			print("got \(error)")
-		}
 	}
 	
 	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String]) {

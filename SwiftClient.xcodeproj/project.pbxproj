@@ -191,6 +191,8 @@
 		086A40D51E7B04F400AE476B /* ThemeEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D41E7B04F400AE476B /* ThemeEditorController.swift */; };
 		086A40D71E7B1E8600AE476B /* ThemeEditorController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086A40D61E7B1E8600AE476B /* ThemeEditorController.xib */; };
 		086A40D91E7B3F0C00AE476B /* SyntaxTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D81E7B3F0C00AE476B /* SyntaxTheme.swift */; };
+		086A40DB1E7B4B2300AE476B /* syntaxThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 086A40DA1E7B4B2300AE476B /* syntaxThemes.json */; };
+		086A40DD1E7B578400AE476B /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40DC1E7B578400AE476B /* ThemeManager.swift */; };
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
 		0881B5041DCD23FD00679DB3 /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B5031DCD23FD00679DB3 /* Variable.swift */; };
 		0881B5061DCD329300679DB3 /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B5051DCD329300679DB3 /* VariableSpec.swift */; };
@@ -714,6 +716,8 @@
 		086A40D41E7B04F400AE476B /* ThemeEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThemeEditorController.swift; path = prefs/ThemeEditorController.swift; sourceTree = "<group>"; };
 		086A40D61E7B1E8600AE476B /* ThemeEditorController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ThemeEditorController.xib; path = prefs/ThemeEditorController.xib; sourceTree = "<group>"; };
 		086A40D81E7B3F0C00AE476B /* SyntaxTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxTheme.swift; sourceTree = "<group>"; };
+		086A40DA1E7B4B2300AE476B /* syntaxThemes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = syntaxThemes.json; path = resources/syntaxThemes.json; sourceTree = "<group>"; };
+		086A40DC1E7B578400AE476B /* ThemeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		08765C811DC58AB300F75D8E /* DispatchReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchReader.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		0881B5031DCD23FD00679DB3 /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
@@ -1184,6 +1188,7 @@
 				086A40D01E7AEC5000AE476B /* OutputTheme.swift */,
 				086A40D81E7B3F0C00AE476B /* SyntaxTheme.swift */,
 				086A40D21E7B048B00AE476B /* Theme.swift */,
+				086A40DC1E7B578400AE476B /* ThemeManager.swift */,
 			);
 			path = themes;
 			sourceTree = "<group>";
@@ -1367,6 +1372,7 @@
 				08F6ADA81DD643C900AF0722 /* Copyable.swift */,
 				08C484F71C9B159000FE824B /* server.cer */,
 				088F59231E7578B80009A0B1 /* outputThemes.json */,
+				086A40DA1E7B4B2300AE476B /* syntaxThemes.json */,
 				08A01FD11CC81479001EDFAA /* helpindex.db */,
 				08F189A71D0A0E7200866A05 /* static_html */,
 				08A01FB51CC7FCA3001EDFAA /* fmdb */,
@@ -1515,9 +1521,9 @@
 		08DAF2F11E4D0726005A251E /* preferences */ = {
 			isa = PBXGroup;
 			children = (
+				08F5746B1E4D04A70000956B /* Preferences.storyboard */,
 				086526281E6E1B0100D75B25 /* PreferenceKeys.swift */,
 				08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */,
-				08F5746B1E4D04A70000956B /* Preferences.storyboard */,
 				08C2D5EB1E71BB290007A02D /* DockerPrefsController.swift */,
 				0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */,
 				088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */,
@@ -1973,6 +1979,7 @@
 				086A40D71E7B1E8600AE476B /* ThemeEditorController.xib in Resources */,
 				083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */,
 				083A566F1D246D85009D3091 /* ProjectManagement.storyboard in Resources */,
+				086A40DB1E7B4B2300AE476B /* syntaxThemes.json in Resources */,
 				08F5746D1E4D04A70000956B /* Preferences.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2319,6 +2326,7 @@
 				086508791E452D3A0067C8CA /* Result+Rc2.swift in Sources */,
 				08F03E451DE4BF0A00D02153 /* URLResponse+Rc2.swift in Sources */,
 				08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */,
+				086A40DD1E7B578400AE476B /* ThemeManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
