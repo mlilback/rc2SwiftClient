@@ -11,3 +11,7 @@
 
 "ClearWorkspaceWarning" = "Confirm Clear Workspace";
 "ClearWorkspaceInfo" = "This will remove all variables in your workspace and can not be undone.";
+
+"SyntaxThemeProperty.codeBackground" = "code background";
+"SyntaxThemeProperty.inlineBackground" = "inline equation background";
+"SyntaxThemeProperty.equationBackground" = "equation background";

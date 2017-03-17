@@ -12,7 +12,7 @@ public enum SyntaxThemeProperty: String, ThemeProperty {
 	case background, text, codeBackground, inlineBackground, equationBackground, comment, quote, keyword, function, symbol
 	
 	public var stringValue: String { return rawValue }
-	public static var allProperties: [SyntaxThemeProperty] { return [.background, .text, .codeBackground, .inlineBackground, .equationBackground, .comment, .quote, .keyword, .function, .symbol] }
+	public static var allProperties: [SyntaxThemeProperty] { return [.background, codeBackground, .inlineBackground, .equationBackground, .text, .comment, .quote, .keyword, .function, .symbol] }
 	public static var backgroundProperties: [SyntaxThemeProperty] { return [.background, .codeBackground, .inlineBackground, .equationBackground] }
 	public static var foregroundProperties: [SyntaxThemeProperty] { return [.text, .comment, .quote, .keyword, .function, .symbol] }
 }

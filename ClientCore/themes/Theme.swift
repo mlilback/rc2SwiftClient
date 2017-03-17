@@ -23,6 +23,15 @@ public protocol ThemeProperty: RawRepresentable, Hashable {
 	static var foregroundProperties: [Self] { get }
 	/// returns the label to use for the property in a json file
 	var stringValue: String { get }
+	/// returns a localized version of this property's name. Looked up as TypeName.stringValue by protocol extension
+	var localizedDescription: String { get }
+}
+
+extension ThemeProperty {
+	public var localizedDescription: String {
+		let key = "\(String(describing: type(of:self))).\(stringValue)"
+		return NSLocalizedString(key, value: stringValue, comment: "")
+	}
 }
 
 public protocol Theme: NSObjectProtocol, JSONEncodable, JSONDecodable, CustomStringConvertible {
