@@ -23,6 +23,7 @@ public final class SyntaxTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
 	public var name: String
 	public var colors = [SyntaxThemeProperty: PlatformColor]()
 	public var isBuiltin: Bool = false
+	public var fileUrl: URL?
 	
 	public var propertyCount: Int { return colors.count }
 	
@@ -43,6 +44,17 @@ public final class SyntaxTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
 	
 	public func color(for property: SyntaxThemeProperty) -> PlatformColor {
 		return colors[property] ?? PlatformColor.black
+	}
+	/// support for accessing colors via subscripting
+	public subscript(key: SyntaxThemeProperty) -> PlatformColor? {
+		get {
+			return colors[key]
+		}
+		set (newValue) {
+			guard !isBuiltin else { fatalError("builtin themes are not editable") }
+			guard let newValue = newValue else { fatalError("theme colors cannot be nil") }
+			colors[key] = newValue
+		}
 	}
 	
 	public func toJSON() -> JSON {

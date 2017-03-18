@@ -114,7 +114,7 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 		let view = tableView.make(withIdentifier: "themeItem", owner: nil) as! NameAndColorCellView
 		let prop = T.Property.allProperties[row]
 		view.textField?.stringValue = prop.localizedDescription
-		view.colorWell?.color = (selectedTheme?.color(for: prop))!
+		view.colorWell?.color = (selectedTheme?.color[prop])!
 		view.colorWell?.isEnabled = !(selectedTheme?.isBuiltin ?? false)
 		return view
 	}

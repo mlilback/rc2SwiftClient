@@ -40,6 +40,8 @@ public protocol Theme: NSObjectProtocol, JSONEncodable, JSONDecodable, CustomStr
 	static var AttributeName: String { get }
 	/// implemented in protocol extension to allow using AttributeName w/o the type name
 	var attributeName: String { get }
+	/// for user-editable themes, the file location of this theme
+	var fileUrl: URL? { get set }
 	
 	/// returns the default theme to use
 	static var defaultTheme: Self { get }
@@ -52,7 +54,8 @@ public protocol Theme: NSObjectProtocol, JSONEncodable, JSONDecodable, CustomStr
 	var isBuiltin: Bool { get set }
 
 	func color(for property: Property) -> PlatformColor
-	
+	subscript(key: Property) -> PlatformColor? { get set }
+
 	/// returns an array of themes loaded from the specified URL.
 	static func loadThemes(from: URL, builtin: Bool) -> [Self]
 	
@@ -86,6 +89,7 @@ public extension Theme {
 				let json = try JSON(data: data)
 				let theme: Self = try json.decode()
 				theme.isBuiltin = builtin
+				theme.fileUrl = aFile
 				themes.append(theme)
 			} catch {
 				os_log("error reading theme from %{public}s: %{public}s", log: .app, aFile.lastPathComponent, error.localizedDescription)

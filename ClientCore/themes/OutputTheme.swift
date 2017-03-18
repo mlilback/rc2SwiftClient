@@ -23,9 +23,9 @@ public final class OutputTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
 	public var name: String
 	public var colors = [OutputThemeProperty: PlatformColor]()
 	public var isBuiltin: Bool = false
+	public var fileUrl: URL?
 	
 	public var propertyCount: Int { return colors.count }
-	
 	override public var description: String { return "OutputTheme \(name)" }
 	
 	init(name: String) {
@@ -43,6 +43,18 @@ public final class OutputTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
 	
 	public func color(for property: OutputThemeProperty) -> PlatformColor {
 		return colors[property] ?? PlatformColor.black
+	}
+	
+	/// support for accessing colors via subscripting
+	public subscript(key: OutputThemeProperty) -> PlatformColor? {
+		get {
+			return colors[key]
+		}
+		set (newValue) {
+			guard !isBuiltin else { fatalError("builtin themes are not editable") }
+			guard let newValue = newValue else { fatalError("theme colors cannot be nil") }
+			colors[key] = newValue
+		}
 	}
 	
 	public func toJSON() -> JSON {
