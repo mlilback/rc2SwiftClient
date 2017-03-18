@@ -62,15 +62,11 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 		setupWatcher()
 		updateThemesArray()
 		
+		themeTable.reloadData()
 		themeTable.selectRowIndexes(IndexSet(integer: indexOfSelectedTheme), byExtendingSelection: false)
 		let scrollview = themeTable.enclosingScrollView!
 		scrollview.addFloatingSubview(themeTable!, for: .vertical)
 		themeFooterView?.setFrameOrigin(NSPoint(x: 0, y: scrollview.bounds.size.height - themeFooterView!.bounds.size.height))
-	}
-	
-	override func viewWillAppear() {
-		super.viewWillAppear()
-		themeTable.reloadData()
 	}
 	
 	@IBAction func addTheme(_ sender: Any?) {
