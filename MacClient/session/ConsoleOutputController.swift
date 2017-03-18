@@ -27,15 +27,19 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	dynamic var consoleInputText = "" { didSet { canExecute = consoleInputText.characters.count > 0 } }
 	dynamic var canExecute = false
 	var viewFileOrImage: ((_ fileWrapper: FileWrapper) -> Void)?
-	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFont(ofSize: 14.0)!.fontDescriptor {
+	var currentFontDescriptor: NSFontDescriptor {
 		didSet {
-			let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
-			resultsView?.font = font
+			if let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize) {
+				outputFont = font
+				resultsView?.font = font
+			}
 		}
 	}
 	
 	required init?(coder: NSCoder) {
 		cmdHistory = CommandHistory(target:nil, selector:#selector(ConsoleOutputController.displayHistoryItem(_:)))
+		// set a default font since required at init. will be changed in viewDidLoad() and restoreSessionState()
+		currentFontDescriptor = NSFont.userFixedPitchFont(ofSize: 14.0)!.fontDescriptor
 		super.init(coder: coder)
 	}
 	
@@ -47,25 +51,36 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 			return theMenu
 		}
 		resultsView?.textContainerInset = NSSize(width: 4, height: 4)
+		restoreFont()
 		//try switching to Menlo instead of default monospaced font
-		let fdesc = NSFontDescriptor(name: "Menlo-Regular", size: 14.0)
-		if let _ = NSFont(descriptor: fdesc, size: fdesc.pointSize)
-		{
-			currentFontDescriptor = fdesc
-		}
 		ThemeManager.shared.activeOutputTheme.signal.observeValues { [weak self] _ in
 			self?.themeChanged()
 		}
 	}
 	
 	// MARK: internal
+	private func restoreFont() {
+		var fdesc: FontDescriptor? = UserDefaults.standard[.consoleOutputFont]
+		//pick a default font
+		if fdesc == nil {
+			fdesc = NSFontDescriptor(name: "Menlo-Regular", size: 14.0)
+			UserDefaults.standard[.consoleOutputFont] = fdesc
+		}
+		var font = NSFont(descriptor: fdesc!, size: fdesc!.pointSize)
+		if font == nil {
+			font = NSFont.userFixedPitchFont(ofSize: 14.0)!
+			fdesc = font!.fontDescriptor
+		}
+		currentFontDescriptor = fdesc!
+	}
+
 	func themeChanged() {
 		let theme = ThemeManager.shared.activeOutputTheme.value
-		let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)!
 		let fullRange = resultsView!.textStorage!.string.fullNSRange
-		let fontAttrs = [NSFontAttributeName: font, NSForegroundColorAttributeName: theme.color(for: .text)] as [String: Any]
+		let fontAttrs = [NSFontAttributeName: outputFont, NSForegroundColorAttributeName: theme.color(for: .text)] as [String: Any]
 		resultsView?.textStorage?.addAttributes(fontAttrs, range: fullRange)
 		theme.update(attributedString: resultsView!.textStorage!)
+		resultsView?.backgroundColor = theme.color(for: .background)
 	}
 	
 	//stores all custom attributes in the results view for later restoration
@@ -117,7 +132,6 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		_ = try? rtfd?.write(to: URL(fileURLWithPath: "/tmp/lastSession.rtfd"))
 		dict[SessionStateKey.Results.rawValue] = rtfd as AnyObject?
 		dict["attrs"] = serializeCustomAttributes() as AnyObject
-		dict["font"] = NSKeyedArchiver.archivedData(withRootObject: currentFontDescriptor) as AnyObject?
 		return dict as AnyObject
 	}
 
@@ -158,11 +172,6 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 			ts.deleteCharacters(in: NSRange(location: $0, length: 1))
 		}
 		ThemeManager.shared.activeOutputTheme.value.update(attributedString: ts)
-		if let fontData = state["font"] as? Data,
-			let fontDesc = NSKeyedUnarchiver.unarchiveObject(with: fontData) as? NSFontDescriptor
-		{
-			currentFontDescriptor = fontDesc
-		}
 		//scroll to bottom
 		resultsView?.moveToEndOfDocument(self)
 	}

@@ -193,6 +193,7 @@
 		086A40D91E7B3F0C00AE476B /* SyntaxTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D81E7B3F0C00AE476B /* SyntaxTheme.swift */; };
 		086A40DB1E7B4B2300AE476B /* syntaxThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 086A40DA1E7B4B2300AE476B /* syntaxThemes.json */; };
 		086A40DD1E7B578400AE476B /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40DC1E7B578400AE476B /* ThemeManager.swift */; };
+		086A40DF1E7D956400AE476B /* PlatformTypeAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40DE1E7D956400AE476B /* PlatformTypeAliases.swift */; };
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
 		0881B5041DCD23FD00679DB3 /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B5031DCD23FD00679DB3 /* Variable.swift */; };
 		0881B5061DCD329300679DB3 /* VariableSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B5051DCD329300679DB3 /* VariableSpec.swift */; };
@@ -717,6 +718,7 @@
 		086A40D81E7B3F0C00AE476B /* SyntaxTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxTheme.swift; sourceTree = "<group>"; };
 		086A40DA1E7B4B2300AE476B /* syntaxThemes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = syntaxThemes.json; path = resources/syntaxThemes.json; sourceTree = "<group>"; };
 		086A40DC1E7B578400AE476B /* ThemeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
+		086A40DE1E7D956400AE476B /* PlatformTypeAliases.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlatformTypeAliases.swift; sourceTree = "<group>"; };
 		08765C811DC58AB300F75D8E /* DispatchReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchReader.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		0881B5031DCD23FD00679DB3 /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
@@ -1393,6 +1395,7 @@
 				0816F8991C6D0F7D00A6120B /* HTMLString.swift */,
 				08604A4D1D9C0C0500DE2A79 /* Named.swift */,
 				088F59211E74C4D10009A0B1 /* PlatformColor.swift */,
+				086A40DE1E7D956400AE476B /* PlatformTypeAliases.swift */,
 				089794411D7B6A0F003339EE /* SharedConstants.swift */,
 				081559991DDE83250047B3CE /* Rc2Error.swift */,
 				08525E721E256A8B008A332E /* Reachability.swift */,
@@ -2306,6 +2309,7 @@
 				0897944F1D7B6A8F003339EE /* NSURL+Rc2.swift in Sources */,
 				08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */,
 				08E8366E1D94715D00E26EFE /* FileManager+Rc2.swift in Sources */,
+				086A40DF1E7D956400AE476B /* PlatformTypeAliases.swift in Sources */,
 				08CFE8CF1E75BA42002A35C1 /* DirectoryWatcher.swift in Sources */,
 				08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */,
 				081559891DDBD7DA0047B3CE /* Freddy+Rc2.swift in Sources */,

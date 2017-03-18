@@ -26,4 +26,21 @@ public extension UserDefaults {
 			}
 		}
 	}
+	
+	//allow storing font descriptors
+	public subscript(key: DefaultsKey<FontDescriptor?>) -> FontDescriptor? {
+		get {
+			guard let data = data(forKey: key._key), let fdesc = NSUnarchiver.unarchiveObject(with: data) as? FontDescriptor else {
+				return nil
+			}
+			return fdesc
+		}
+		set {
+			guard let fdesc = newValue else {
+				remove(key._key)
+				return
+			}
+			set(NSArchiver.archivedData(withRootObject: fdesc), forKey: key._key)
+		}
+	}
 }
