@@ -485,6 +485,13 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Session" id="HyV-fh-RgO">
                                     <items>
+                                        <menuItem title="Edit File" id="lfa-rf-yOq">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="editFile:" target="Ady-hI-5gd" id="1Ch-Qe-KyJ"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="6L5-Oe-oJi"/>
                                         <menuItem title="Previous Chunk" keyEquivalent="" id="KTQ-tn-y0Z">
                                             <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                             <connections>

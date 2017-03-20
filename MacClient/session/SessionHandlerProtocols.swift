@@ -58,6 +58,11 @@ protocol FileHandler: class {
 	/// - Parameter sender: the sender of the import. unused
 	func promptToImportFiles(_ sender: Any?)
 
+	/// action to edit the selected file (necessary for dual use files)
+	///
+	/// - Parameter sender: the sender of the action. unused
+	func editFile(_ sender: Any)
+	
 	/// called to validate any menu items the FileHandler uses
 	///
 	/// - Parameter menuItem: the menu item to validate

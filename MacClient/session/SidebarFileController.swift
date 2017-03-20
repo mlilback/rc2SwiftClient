@@ -17,6 +17,7 @@ import Networking
 
 ///selectors used in this file, aliased with shorter, descriptive names
 private extension Selector {
+	static let editFile = #selector(SidebarFileController.editFile(_:))
 	static let addDocument = #selector(SidebarFileController.addDocumentOfType(_:))
 	static let addFileMenu =  #selector(SidebarFileController.addFileMenuAction(_:))
 	static let exportSelectedFile = #selector(SidebarFileController.exportSelectedFile(_:))
@@ -38,7 +39,7 @@ class FileRowData: Equatable {
 }
 
 protocol FileViewControllerDelegate: class {
-	func fileSelectionChanged(_ file: File?)
+	func fileSelectionChanged(_ file: File?, forEditing: Bool)
 }
 
 let FileDragTypes = [kUTTypeFileURL as String]
@@ -147,6 +148,11 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			return super.validateMenuItem(menuItem)
 		}
 		switch action {
+			case Selector.editFile:
+				let fileName = selectedFile?.name ?? ""
+				menuItem.title = String.localizedStringWithFormat(NSLocalizedString("Edit File", comment: ""), fileName)
+				guard let file = selectedFile, file.fileSize <= MaxEditableFileSize else { return false }
+				return file.fileType.isEditable
 			case Selector.promptToImport:
 				return true
 			case Selector.exportSelectedFile:
@@ -160,8 +166,17 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	//as the delegate for the action menu, need to enable/disable items
 	func menuNeedsUpdate(_ menu: NSMenu) {
-		menu.items.forEach { $0.isEnabled = selectedFile != nil }
-		menu.items.first(where: { $0.action == .promptToImport })?.isEnabled = true
+		menu.items.forEach { item in
+			guard let action = item.action else { return }
+			switch action {
+			case Selector.promptToImport:
+				item.isEnabled = true
+			case Selector.editFile:
+				item.isEnabled = selectedFile != nil && selectedFile!.fileSize <= MaxEditableFileSize
+			default:
+				item.isEnabled = selectedFile != nil
+			}
+		}
 	}
 	
 	func fileDataIndex(fileId: Int) -> Int? {
@@ -276,6 +291,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 	
+	@IBAction func editFile(_ sender: Any) {
+		delegate?.fileSelectionChanged(selectedFile, forEditing: true)
+	}
+	
 	// never gets called, but file type menu items must have an action or addFileMenuAction never gets called
 	@IBAction func addDocumentOfType(_ menuItem: NSMenuItem) {
 	}
@@ -364,7 +383,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 					if let error = result.error {
 						self.appStatus?.presentError(error, session: self.session)
 					} else {
-						self.delegate?.fileSelectionChanged(nil)
+						self.delegate?.fileSelectionChanged(nil, forEditing: false)
 					}
 				}
 		}
@@ -505,7 +524,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			selectedFile = nil
 		}
 		adjustForFileSelectionChange()
-		delegate?.fileSelectionChanged(selectedFile)
+		delegate?.fileSelectionChanged(selectedFile, forEditing: false)
 	}
 	
 	func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {

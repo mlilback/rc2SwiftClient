@@ -17,6 +17,8 @@ extension Selector {
 	static let switchOutputTab = #selector(RootViewController.switchOutputTab(_:))
 }
 
+let MaxEditableFileSize: Int = 1024 * 1024 // 1 MB
+
 class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 {
 	// MARK: - properties
@@ -83,7 +85,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action {
-		case Selector.promptToImport:
+		case Selector.promptToImport, #selector(editFile(_:)):
 			return fileHandler!.validateMenuItem(menuItem)
 		case Selector.showFonts:
 			if let fontHandler = currentFontUser(view.window?.firstResponder) {
@@ -190,6 +192,10 @@ extension RootViewController {
 	
 	@IBAction func promptToImportFiles(_ sender: AnyObject?) {
 		fileHandler?.promptToImportFiles(sender)
+	}
+	
+	@IBAction func editFile(_ sender: Any) {
+		fileHandler?.editFile(sender)
 	}
 	
 	@IBAction func runQuery(_ sender: AnyObject?) {
@@ -320,11 +326,11 @@ extension RootViewController: SessionControllerDelegate {
 
 // MARK: - FileViewControllerDelegate
 extension RootViewController: FileViewControllerDelegate {
-	func fileSelectionChanged(_ file: File?) {
+	func fileSelectionChanged(_ file: File?, forEditing: Bool) {
 		if nil == file {
 			self.editor?.fileSelectionChanged(nil)
 			self.outputHandler?.showFile(nil)
-		} else if file!.fileType.isSourceFile {
+		} else if file!.fileType.isSourceFile || (forEditing && file!.fileSize <= MaxEditableFileSize) {
 			self.editor?.fileSelectionChanged(file)
 		} else {
 			outputHandler?.showFile(file)

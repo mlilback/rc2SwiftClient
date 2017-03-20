@@ -74,6 +74,10 @@ public class FileType: JSONDecodable {
 	public var isExecutable: Bool { return boolPropertyValue("Executable") }
 	/// is this a source file that can be edited
 	public var isSourceFile: Bool { return boolPropertyValue("IsSrc") }
+	/// is this a file displayed by default, but also editable
+	public var isDualUse: Bool { return boolPropertyValue("DualUse") }
+	/// can the file be edited by the user
+	public var isEditable: Bool { return isSourceFile || isDualUse }
 	public var isTextFile: Bool { return boolPropertyValue("IsTextFile") }
 	public var isImage: Bool { return boolPropertyValue("IsImage") }
 	public var isSweave: Bool { return boolPropertyValue("IsSweave") }

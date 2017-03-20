@@ -45,6 +45,7 @@
       "Creatable": true,
       "Name": "Text",
       "IsTextFile": true,
+      "DualUse": true,
       "Description": "Text file (.txt)"
     },
     {
@@ -54,6 +55,7 @@
       "Creatable": true,
       "Name": "CSV file",
       "IsTextFile": true,
+      "DualUse": true,
       "Description": "Comma Separated Values (.csv)"
     },
     {

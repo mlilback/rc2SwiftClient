@@ -15,3 +15,5 @@
 "SyntaxThemeProperty.codeBackground" = "code background";
 "SyntaxThemeProperty.inlineBackground" = "inline equation background";
 "SyntaxThemeProperty.equationBackground" = "equation background";
+
+"Edit File" = "Edit %@";

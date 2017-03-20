@@ -448,14 +448,19 @@
                 <menu title="OtherViews" autoenablesItems="NO" id="TzK-hM-3Ib" userLabel="table context menu">
                     <items>
                         <menuItem state="on" image="NSActionTemplate" hidden="YES" id="Ao1-mE-2uq"/>
+                        <menuItem title="Edit" id="2mf-vJ-Hk1">
+                            <connections>
+                                <action selector="editFile:" target="XJm-U6-51C" id="aDx-33-i9n"/>
+                            </connections>
+                        </menuItem>
                         <menuItem title="Rename…" id="WWz-mM-fc7">
                             <connections>
                                 <action selector="renameFile:" target="XJm-U6-51C" id="MMU-7l-tik"/>
                             </connections>
                         </menuItem>
-                        <menuItem title="Export…" id="2mf-vJ-Hk1">
+                        <menuItem title="Export…" id="DGi-Gg-Ffa">
                             <connections>
-                                <action selector="exportSelectedFile:" target="XJm-U6-51C" id="e6g-lb-2mI"/>
+                                <action selector="exportSelectedFile:" target="XJm-U6-51C" id="2PY-7d-qkS"/>
                             </connections>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="sTm-NY-SVW"/>
