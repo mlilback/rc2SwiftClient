@@ -10,7 +10,7 @@ import Freddy
 import os
 import ReactiveSwift
 
-fileprivate let maxRetries = 2
+fileprivate let maxRetries = 4
 
 /// Factory class used to login and return a ConnectionInfo for that connection
 // must subclass NSObject to be a delegate to URLSession api
@@ -128,7 +128,7 @@ extension LoginFactory: URLSessionDataDelegate {
 		{
 			os_log("login connection lost, retrying", log: .network)
 			retryCount += 1
-			DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+			DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
 				self.attemptLogin()
 			}
 			return
