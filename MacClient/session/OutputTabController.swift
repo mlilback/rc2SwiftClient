@@ -137,11 +137,8 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 				os_log("error getting file attachment to display: %d", log: .app, attachment.fileId)
 			}
 		case .image:
-			if let image = attachment.image,
-			let images = imageCache?.sessionImages(forBatch: image.batchId),
-			let index = images.index(where: { $0.id == image.id })
-			{
-				imageController?.displayImage(atIndex: index, images:images)
+			if let image = attachment.image {
+				imageController?.display(image: image)
 				selectedOutputTab.value = .image
 				tabView.window?.toolbar?.validateVisibleItems()
 			}

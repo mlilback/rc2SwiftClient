@@ -11,20 +11,20 @@ import os
 import ReactiveSwift
 import Networking
 
-class DisplayableImage: NSObject {
-	let imageId: Int
-	let name: String
-	var image: NSImage?
-	
-	init(imageId: Int, name: String) {
-		self.imageId = imageId
-		self.name = name
-	}
-	
-	convenience init(_ simage: SessionImage) {
-		self.init(imageId: simage.id, name: simage.displayName)
-	}
-}
+//class DisplayableImage: NSObject {
+//	let imageId: Int
+//	let name: String
+//	var image: NSImage?
+//
+//	init(imageId: Int, name: String) {
+//		self.imageId = imageId
+//		self.name = name
+//	}
+//
+//	convenience init(_ simage: SessionImage) {
+//		self.init(imageId: simage.id, name: simage.displayName)
+//	}
+//}
 
 class ImageOutputController: NSViewController, OutputController, NSPageControllerDelegate, NSSharingServicePickerDelegate {
 	@IBOutlet var containerView: NSView?
@@ -33,11 +33,10 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	@IBOutlet var navigateButton: NSSegmentedControl?
 
 	var pageController: NSPageController!
-	var batchImages: [DisplayableImage] = []
-	var firstIndex: Int = 0
-	var imageCache: ImageCache?
+	var allImages: MutableProperty< [SessionImage] >?
+	var imageCache: ImageCache? { didSet { imageCacheChanged() } }
 	var myShareServices: [NSSharingService] = []
-	fileprivate var selectedImageTag = 0
+	fileprivate var selectedImage: SessionImage?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -45,43 +44,66 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		pageController.delegate = self
 		pageController.transitionStyle = .stackBook
 		pageController.view = containerView!
+		// for some reason, the selected controller's view's frame is not correct. This fixes it, even though there is probably a more efficent way to fix this
+		pageController.view.postsFrameChangedNotifications = true
+		NotificationCenter.default.addObserver(forName: .NSViewFrameDidChange, object: nil, queue: nil) { [weak self] _ in
+			guard let pc = self?.pageController, pc.view.frame.size != pc.selectedViewController?.view.frame.size else { return }
+			let newFrame = NSRect(origin: .zero, size: pc.view.frame.size)
+			pc.selectedViewController?.view.frame = newFrame
+		}
+
 		view.wantsLayer = true
 		shareButton?.sendAction(on: NSEventMask(rawValue: UInt64(Int(NSEventMask.leftMouseDown.rawValue))))
 		view.layer?.backgroundColor = PlatformColor.white.cgColor
 		navigateButton?.setEnabled(false, forSegment: 0)
 		navigateButton?.setEnabled(false, forSegment: 1)
+		guard let allImages = allImages else { fatalError("images not loaded properly") }
+		pageController.arrangedObjects = allImages.value
+		guard allImages.value.count > 0 else {
+			//no images, don't select anything
+			return
+		}
+		if nil == selectedImage { selectedImage = allImages.value.first }
+		loadSelectedImage()
+		pageController.selectedIndex = allImages.value.index(of: selectedImage!) ?? 0
 		imageCache?.images.producer.startWithValues { self.adjustImagePopup(images: $0) }
-	}
-	
-	override func viewWillAppear() {
-		super.viewWillAppear()
+		imagePopup?.selectItem(withTag: selectedImage?.id ?? 0)
 	}
 	
 	override func viewDidAppear() {
 		super.viewDidAppear()
-		if batchImages.count > 0 && pageController.arrangedObjects.count < 1 {
-			pageController?.arrangedObjects = batchImages
-			pageController?.selectedIndex = firstIndex
-			imagePopup?.selectItem(withTag: batchImages[firstIndex].imageId)
+//		pageController.selectedViewController?.view.frame = containerView!.frame
+		pageController.view.needsLayout = true
+		pageController.view.needsDisplay = true
+		pageController.selectedViewController?.view.needsLayout = true
+		pageController.selectedViewController?.view.needsDisplay = true
+	}
+
+	func imageCacheChanged() {
+		guard let icache = imageCache else { return }
+		if allImages == nil {
+			allImages = MutableProperty([])
+			allImages! <~ icache.images
 		}
-		imagePopup?.selectItem(withTag: selectedImageTag)
 	}
 	
 	func display(image: SessionImage) {
-		
+		selectedImage = image
+		guard isViewLoaded else { return }
+		loadSelectedImage()
 	}
 	
-	func displayImage(atIndex index: Int, images: [SessionImage]) {
-		batchImages = images.map { (simg) -> DisplayableImage in
-			return DisplayableImage(imageId: simg.id, name: simg.displayName)
+	fileprivate func loadSelectedImage() {
+		guard let allImages = allImages else { fatalError("invalid call to loadSelectedImages") }
+		guard let image = selectedImage, let index = allImages.value.index(of: image) else {
+			os_log("asked to display image when none are in cache")
+			return
 		}
-		firstIndex = index
-		pageController?.arrangedObjects = batchImages
+		pageController?.arrangedObjects = allImages.value
 		pageController?.selectedIndex = index
 		navigateButton?.setEnabled(index > 0, forSegment: 0)
-		navigateButton?.setEnabled(index + 1 < images.count, forSegment: 1)
-		selectedImageTag = batchImages[index].imageId
-		imagePopup?.selectItem(withTag: batchImages[index].imageId)
+		navigateButton?.setEnabled(index + 1 < allImages.value.count, forSegment: 1)
+		imagePopup?.selectItem(withTag: image.id)
 	}
 	
 	@IBAction func navigateClicked(_ sender: AnyObject?) {
@@ -96,8 +118,8 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	}
 	
 	@IBAction func shareImage(_ sender: AnyObject?) {
-		let dimg = batchImages[(pageController?.selectedIndex)!]
-		let imgUrl = imageCache?.urlForCachedImage(dimg.imageId)
+		guard let img = selectedImage else { fatalError("shouldn't be able to share w/o an image") }
+		let imgUrl = imageCache?.urlForCachedImage(img.id)
 		myShareServices.removeAll()
 		let wspace = NSWorkspace()
 		if let appUrl = wspace.urlForApplication(toOpen: imgUrl!) {
@@ -114,9 +136,11 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 					wspace.openFile(urlToUse.path, withApplication: appUrl.path)
 				}))
 		}
-		let picker = NSSharingServicePicker(items: [dimg.image!])
-		picker.delegate = self
-		picker.show(relativeTo: (shareButton?.bounds)!, of: shareButton!, preferredEdge: .maxY)
+		imageCache?.image(withId: img.id).observe(on: UIScheduler()).startWithResult { result in
+			let picker = NSSharingServicePicker(items: [result.value!])
+			picker.delegate = self
+			picker.show(relativeTo: (self.shareButton?.bounds)!, of: self.shareButton!, preferredEdge: .maxY)
+		}
 	}
 
 	// load the images into the popup
@@ -131,6 +155,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 			}
 			let item = NSMenuItem(title: anImage.displayName, action: #selector(selectImage(_:)), keyEquivalent: "")
 			item.tag = anImage.id
+			item.target = self
 			item.representedObject = anImage
 			imagePopup?.menu?.addItem(item)
 		}
@@ -147,18 +172,20 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	}
 	
 	func pageController(_ pageController: NSPageController, didTransitionTo object: Any) {
-		if let dimage = object as? DisplayableImage {
-			selectedImageTag = dimage.imageId
-			imagePopup?.selectItem(withTag: dimage.imageId)
-			let index = batchImages.index(of: dimage)!
-			navigateButton?.setEnabled(index > 0, forSegment: 0)
-			navigateButton?.setEnabled(index < batchImages.count - 1, forSegment: 1)
+		guard let img = object as? SessionImage, let allImages = allImages else {
+			os_log("page controller switched to non-existant image")
+			return
 		}
+		selectedImage = img
+		imagePopup?.selectItem(withTag: img.id)
+		let index = allImages.value.index(of: img)!
+		navigateButton?.setEnabled(index > 0, forSegment: 0)
+		navigateButton?.setEnabled(index < allImages.value.count - 1, forSegment: 1)
 	}
 	
 	func pageController(_ pageController: NSPageController, identifierFor object: Any) -> String {
-		guard let image = object as? DisplayableImage else { fatalError("invalid object from page controller") }
-		return "\(batchImages.index(of: image)!)"
+		guard let image = object as? SessionImage else { fatalError("invalid object from page controller") }
+		return "\(image.id)"
 	}
 	
 	func pageController(_ pageController: NSPageController, viewControllerForIdentifier identifier: String) -> NSViewController
@@ -169,30 +196,24 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		iv.setContentHuggingPriority(200, for: .horizontal)
 		iv.setContentCompressionResistancePriority(200, for: .horizontal)
 		iv.imageScaling = .scaleProportionallyDown
-		let index = Int(identifier)!
-		let displayedImage = batchImages[index]
-		if let img = displayedImage.image {
-			vc.setImage(image: img)
-		} else if let producer = imageCache?.image(withId: displayedImage.imageId) {
-			vc.setImage(producer: producer)
-		}
+		let imageId = Int(identifier)!
+		vc.setImage(producer: imageCache!.image(withId: imageId))
 		vc.view = iv
 		return vc
+	}
+	
+	func pageController(_ pageController: NSPageController, frameFor object: Any?) -> NSRect {
+		return NSRect(origin: NSPoint.zero, size: pageController.view.frame.size)
 	}
 	
 	func pageController(_ pageController: NSPageController, prepare viewController: NSViewController, with object: Any?)
 	{
 		guard let myViewController = viewController as? ImageViewController else { return }
-		guard let dimg = object as? DisplayableImage else {
+		guard let img = object as? SessionImage else {
 			myViewController.setImage(image: nil)
 			return
 		}
-		guard let img = dimg.image else {
-			myViewController.setImage(producer: imageCache!.image(withId: dimg.imageId))
-			return
-		}
-		myViewController.imageView?.image = img
-		imagePopup?.selectItem(withTag: dimg.imageId)
+		myViewController.setImage(producer: imageCache!.image(withId: img.id))
 	}
 	
 	func pageControllerDidEndLiveTransition(_ pageController: NSPageController) {
