@@ -46,6 +46,8 @@ enum ManagerState: Int, Comparable {
 	}
 }
 
+let volumeNames = ["rc2_dbdata", "rc2_userlib"]
+
 // MARK: -
 /// manages communicating with the local docker engine
 public final class DockerManager: NSObject {
@@ -434,10 +436,13 @@ extension DockerManager {
 	}
 
 	fileprivate func validateVolumes() -> SignalProducer<(), Rc2Error> {
-		let nname = "rc2_dbdata"
-		return api.volumeExists(name: nname)
-			.map { exists in return (nname, exists, self.api.create(volume:)) }
-			.flatMap(.concat, transform: optionallyCreateObject)
+		let producers = volumeNames.map { name in
+			api.volumeExists(name: name)
+				.map { exists in return (name, exists, self.api.create(volume:)) }
+				.flatMap(.concat, transform: optionallyCreateObject)
+		}
+		let combinedProducer = SignalProducer< SignalProducer<(), Rc2Error>, Rc2Error >(producers)
+		return combinedProducer.flatten(.latest)
 	}
 
 	typealias CreateFunction = (String) -> SignalProducer<(), Rc2Error>

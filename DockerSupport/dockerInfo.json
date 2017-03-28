@@ -38,9 +38,12 @@
 		{
 			"Image": "rc2server/compute",
 			"Hostname": "compute",
+			"ExposedPorts": { "7714/tcp": {} },
 			"Labels": { "rc2.live": "" },
 			"HostConfig": {
+				"Binds": ["rc2_userlib:/rc2compute/userlib"],
 				"NetworkMode": "rc2server",
+				"PortBindings": { "7714/tcp": [{ "HostPort": "7714" }] },
 				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "500k" } }
 			},
 			"NetworkingConfig": {

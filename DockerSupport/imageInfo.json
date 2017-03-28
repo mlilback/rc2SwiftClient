@@ -11,12 +11,12 @@
 			"size" : 416309581
 		},
 		"compute" : {
-			"tag" : "rc2server/compute:0.4.3",
-			"estSize" : 1695885483,
-			"size" : 2112195064,
-			"version" : "0.4.3",
-			"id" : "sha256:12f22a6ac93151274b28590a95cb0debd049c3aa6141287a864ca3205a4cad8c",
-			"name" : "compute"
+			"version" : "0.4.4",
+			"size" : 2112361023,
+			"tag" : "rc2server/compute:0.4.4",
+			"estSize" : 1696051442,
+			"name" : "compute",
+			"id" : "sha256:26b3098afb46e32c485bb8051c776d2c6ebf30a328c886acad6c302379ee8950"
 		},
 		"appserver" : {
 			"version" : "0.4.6",
