@@ -954,14 +954,18 @@
                                                         <action selector="navigateClicked:" target="cag-VX-0j2" id="FGf-Nh-mNo"/>
                                                     </connections>
                                                 </segmentedControl>
-                                                <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yDu-X6-HrR">
-                                                    <rect key="frame" x="73" y="3" width="370" height="18"/>
-                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="eer-R1-ODD">
-                                                        <font key="font" metaFont="system" size="14"/>
-                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                    </textFieldCell>
-                                                </textField>
+                                                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3At-n8-Mu8" userLabel="Image popup">
+                                                    <rect key="frame" x="73" y="-3" width="371" height="26"/>
+                                                    <popUpButtonCell key="cell" type="push" title="image name goes here" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="bXV-XP-3ZO" id="yLd-9K-aa8">
+                                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" metaFont="menu"/>
+                                                        <menu key="menu" autoenablesItems="NO" id="Jmg-0F-Ku7">
+                                                            <items>
+                                                                <menuItem title="image name goes here" state="on" id="bXV-XP-3ZO" userLabel="image name here"/>
+                                                            </items>
+                                                        </menu>
+                                                    </popUpButtonCell>
+                                                </popUpButton>
                                                 <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tFy-qc-1rE">
                                                     <rect key="frame" x="447" y="-2" width="38" height="24"/>
                                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="BZo-na-Yrl">
@@ -1025,7 +1029,7 @@
                     </view>
                     <connections>
                         <outlet property="containerView" destination="Gpd-DQ-6DW" id="5FH-PI-MaQ"/>
-                        <outlet property="labelField" destination="yDu-X6-HrR" id="hoL-jk-7d4"/>
+                        <outlet property="imagePopup" destination="3At-n8-Mu8" id="sQ0-iW-KpC"/>
                         <outlet property="navigateButton" destination="oGJ-LH-kvq" id="am5-2x-sqT"/>
                         <outlet property="shareButton" destination="tFy-qc-1rE" id="b7J-TL-EyC"/>
                     </connections>

@@ -12,8 +12,11 @@ public struct SessionImage: JSONDecodable, JSONEncodable, Equatable {
 	public let id: Int
 	public let batchId: Int
 	public let name: String!
+	public let title: String?
 	public let imageData: Data?
 	public let dateCreated: Date!
+	
+	public var displayName: String { return title != nil ? title! : name }
 	
 	fileprivate static var dateFormatter: DateFormatter = {
 		let formatter = DateFormatter()
@@ -41,6 +44,7 @@ public struct SessionImage: JSONDecodable, JSONEncodable, Equatable {
 			self.id = try json.getInt(at: "id")
 			self.batchId = batchId == 0 ? try json.getInt(at: "batchId") : batchId
 			self.name = try json.getString(at: "name")
+			self.title = json.getOptionalString(at: "title")
 			self.dateCreated = SessionImage.dateFormatter.date(from: try json.getString(at: "dateCreated"))
 			var imgData: Data? = nil
 			if let dataStr = try? json.getString(at: "imageData") {
@@ -62,10 +66,15 @@ public struct SessionImage: JSONDecodable, JSONEncodable, Equatable {
 		name = original.name
 		dateCreated = original.dateCreated
 		imageData = nil
+		title = original.title
 	}
 	
 	public func toJSON() -> JSON {
-		return .dictionary(["id": .int(id), "batchId": .int(batchId), "name": .string(name), "dateCreated": .string(SessionImage.dateFormatter.string(from: dateCreated))])
+		var dict: [String: JSON] = ["id": .int(id), "batchId": .int(batchId), "name": .string(name), "dateCreated": .string(SessionImage.dateFormatter.string(from: dateCreated))]
+		if title != nil {
+			dict["title"] = .string(title!)
+		}
+		return .dictionary(dict)
 	}
 	
 	public static func == (lhs: SessionImage, rhs: SessionImage) -> Bool {

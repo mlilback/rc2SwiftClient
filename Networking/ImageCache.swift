@@ -28,6 +28,11 @@ public class ImageCache: JSONEncodable {
 	
 	fileprivate var cache: NSCache<AnyObject, AnyObject>
 	fileprivate var metaCache: [Int: SessionImage]
+
+	/// all cached images sorted in batches
+	public let images: Property< [SessionImage] >
+	
+	private let _images: MutableProperty< [SessionImage] >
 	
 	fileprivate(set) lazy var cacheUrl: URL =
 		{
@@ -50,6 +55,8 @@ public class ImageCache: JSONEncodable {
 		cache = NSCache()
 		metaCache = [:]
 		hostIdentifier = hostIdent
+		_images = MutableProperty< [SessionImage] >([])
+		images = Property< [SessionImage] >(capturing: _images)
 	}
 	
 	/// loads cached data from json serialized by previous call to toJSON()
@@ -58,8 +65,9 @@ public class ImageCache: JSONEncodable {
 	/// - Throws: json decoding errors
 	public func load(from json: JSON) throws {
 		self.hostIdentifier = try json.getString(at: "hostIdentifier")
-		let images: [SessionImage] = try json.decodedArray(at: "images")
-		images.forEach { metaCache[$0.id] = $0 }
+		let decodedImages: [SessionImage] = try json.decodedArray(at: "images")
+		decodedImages.forEach { metaCache[$0.id] = $0 }
+		adjustImageArray()
 	}
 	
 	/// serializes to a JSON that can be restored via load()
@@ -86,7 +94,7 @@ public class ImageCache: JSONEncodable {
 	}
 	
 	///caches to disk and in memory
-	public func cacheImageFromServer(_ img: SessionImage) {
+	private func cacheImageFromServer(_ img: SessionImage) {
 		//cache to disk
 		os_log("caching image %d", log: .cache, type: .info, img.id)
 		let destUrl = URL(fileURLWithPath: "\(img.id).png", isDirectory: false, relativeTo: cacheUrl)
@@ -101,22 +109,18 @@ public class ImageCache: JSONEncodable {
 		for anImage in images {
 			cacheImageFromServer(anImage)
 		}
+		adjustImageArray()
 	}
 	
 	public func sessionImages(forBatch batchId: Int) -> [SessionImage] {
 		os_log("look for batch %d", log: .cache, type: .debug, batchId)
-		var matches: [SessionImage] = []
-		for anImage in metaCache.values {
-			if anImage.batchId == batchId {
-				matches.append(anImage)
-			}
-		}
-		return matches.sorted(by: { $0.id < $1.id })
+		return metaCache.values.filter({ $0.batchId == batchId }).sorted(by: { $0.id < $1.id })
 	}
 	
 	public func clearCache() {
 		cache.removeAllObjects()
 		metaCache.removeAll()
+		_images.value = []
 	}
 	
 	///imageWithId: should have been called at some point to make sure the image is cached
@@ -144,6 +148,15 @@ public class ImageCache: JSONEncodable {
 					observer.send(error: .failedToLoadFromNetwork)
 				}
 			}
+		}
+	}
+	
+	//reset the images property grouped by batch
+	private func adjustImageArray() {
+		_images.value = metaCache.values.sorted { img1, img2 in
+			guard img1.batchId == img2.batchId else { return img1.batchId < img2.batchId }
+			//using id because we know they are in proper order, might be created too close together to use dateCreated
+			return img1.id < img2.id
 		}
 	}
 }

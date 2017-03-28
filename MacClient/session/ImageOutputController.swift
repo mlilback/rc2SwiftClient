@@ -22,13 +22,13 @@ class DisplayableImage: NSObject {
 	}
 	
 	convenience init(_ simage: SessionImage) {
-		self.init(imageId: simage.id, name:simage.name)
+		self.init(imageId: simage.id, name: simage.displayName)
 	}
 }
 
 class ImageOutputController: NSViewController, OutputController, NSPageControllerDelegate, NSSharingServicePickerDelegate {
 	@IBOutlet var containerView: NSView?
-	@IBOutlet var labelField: NSTextField?
+	@IBOutlet var imagePopup: NSPopUpButton?
 	@IBOutlet var shareButton: NSSegmentedControl?
 	@IBOutlet var navigateButton: NSSegmentedControl?
 
@@ -37,6 +37,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	var firstIndex: Int = 0
 	var imageCache: ImageCache?
 	var myShareServices: [NSSharingService] = []
+	fileprivate var selectedImageTag = 0
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -47,9 +48,9 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		view.wantsLayer = true
 		shareButton?.sendAction(on: NSEventMask(rawValue: UInt64(Int(NSEventMask.leftMouseDown.rawValue))))
 		view.layer?.backgroundColor = PlatformColor.white.cgColor
-		labelField?.stringValue = ""
 		navigateButton?.setEnabled(false, forSegment: 0)
 		navigateButton?.setEnabled(false, forSegment: 1)
+		imageCache?.images.producer.startWithValues { self.adjustImagePopup(images: $0) }
 	}
 	
 	override func viewWillAppear() {
@@ -61,19 +62,26 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		if batchImages.count > 0 && pageController.arrangedObjects.count < 1 {
 			pageController?.arrangedObjects = batchImages
 			pageController?.selectedIndex = firstIndex
-			labelField?.stringValue = batchImages[firstIndex].name
+			imagePopup?.selectItem(withTag: batchImages[firstIndex].imageId)
 		}
+		imagePopup?.selectItem(withTag: selectedImageTag)
+	}
+	
+	func display(image: SessionImage) {
+		
 	}
 	
 	func displayImage(atIndex index: Int, images: [SessionImage]) {
 		batchImages = images.map { (simg) -> DisplayableImage in
-			return DisplayableImage(imageId: simg.id, name: simg.name)
+			return DisplayableImage(imageId: simg.id, name: simg.displayName)
 		}
 		firstIndex = index
 		pageController?.arrangedObjects = batchImages
 		pageController?.selectedIndex = index
 		navigateButton?.setEnabled(index > 0, forSegment: 0)
 		navigateButton?.setEnabled(index + 1 < images.count, forSegment: 1)
+		selectedImageTag = batchImages[index].imageId
+		imagePopup?.selectItem(withTag: batchImages[index].imageId)
 	}
 	
 	@IBAction func navigateClicked(_ sender: AnyObject?) {
@@ -110,6 +118,28 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		picker.delegate = self
 		picker.show(relativeTo: (shareButton?.bounds)!, of: shareButton!, preferredEdge: .maxY)
 	}
+
+	// load the images into the popup
+	func adjustImagePopup(images: [SessionImage]) {
+		imagePopup?.removeAllItems()
+		guard images.count > 0 else { return }
+		var currentBatch = images[0].batchId
+		for anImage in images {
+			if anImage.batchId != currentBatch {
+				imagePopup?.menu?.addItem(NSMenuItem.separator())
+				currentBatch = anImage.batchId
+			}
+			let item = NSMenuItem(title: anImage.displayName, action: #selector(selectImage(_:)), keyEquivalent: "")
+			item.tag = anImage.id
+			item.representedObject = anImage
+			imagePopup?.menu?.addItem(item)
+		}
+	}
+	
+	func selectImage(_ sender: Any?) {
+		guard let menuItem = sender as? NSMenuItem, let image = menuItem.representedObject as? SessionImage else { return }
+		display(image: image)
+	}
 	
 	func sharingServicePicker(_ sharingServicePicker: NSSharingServicePicker, sharingServicesForItems items: [Any], proposedSharingServices proposedServices: [NSSharingService]) -> [NSSharingService]
 	{
@@ -118,7 +148,8 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	
 	func pageController(_ pageController: NSPageController, didTransitionTo object: Any) {
 		if let dimage = object as? DisplayableImage {
-			labelField?.stringValue = dimage.name
+			selectedImageTag = dimage.imageId
+			imagePopup?.selectItem(withTag: dimage.imageId)
 			let index = batchImages.index(of: dimage)!
 			navigateButton?.setEnabled(index > 0, forSegment: 0)
 			navigateButton?.setEnabled(index < batchImages.count - 1, forSegment: 1)
@@ -135,8 +166,6 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		let vc = ImageViewController()
 		let iv = NSImageView(frame: (containerView?.frame)!)
 		iv.imageFrameStyle = .none
-		//pagecontroller does not work with autolayout
-	//	iv.translatesAutoresizingMaskIntoConstraints = false
 		iv.setContentHuggingPriority(200, for: .horizontal)
 		iv.setContentCompressionResistancePriority(200, for: .horizontal)
 		iv.imageScaling = .scaleProportionallyDown
@@ -163,7 +192,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 			return
 		}
 		myViewController.imageView?.image = img
-		labelField?.stringValue = dimg.name
+		imagePopup?.selectItem(withTag: dimg.imageId)
 	}
 	
 	func pageControllerDidEndLiveTransition(_ pageController: NSPageController) {
@@ -198,17 +227,4 @@ class ImageViewController: NSViewController {
 			self.imageView?.image = newImage
 		}
 	}
-	
-//	override func viewWillAppear() {
-//		super.viewWillAppear()
-//		guard !didAddConstraints else { return }
-//		if let sv = view.superview, let ssv = sv.superview {
-//			ssv.addConstraint(view.widthAnchor.constraint(equalTo: sv.widthAnchor, multiplier: 1).identifier("width"))
-//			ssv.addConstraint(view.heightAnchor.constraint(equalTo: sv.heightAnchor, multiplier: 1).identifier("height"))
-//			ssv.addConstraint(view.centerXAnchor.constraint(equalTo: sv.centerXAnchor, constant: 0).identifier(" centerX"))
-//			ssv.addConstraint(view.centerYAnchor.constraint(equalTo: sv.centerYAnchor, constant: 0).identifier("centerY"))
-//			ssv.needsLayout = true
-//			didAddConstraints = true
-//		}
-//	}
 }
