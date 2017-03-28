@@ -170,7 +170,7 @@ final class DockerAPIImplementation: DockerAPI {
 	// documentation in DockerAPI protocol
 	public func perform(operation: DockerContainerOperation, container: DockerContainer) -> SignalProducer<(), Rc2Error>
 	{
-		os_log("performing %{public}s on %{public}@", log: .docker, type: .info, operation.rawValue, container.name)
+		os_log("performing %{public}s on %{public}@", log: .docker, type: .debug, operation.rawValue, container.name)
 		if operation == .start && container.state.value == .running {
 			//already running, no need to start
 			return SignalProducer<(), Rc2Error>(result: Result<(), Rc2Error>(value: ()))
@@ -190,7 +190,7 @@ final class DockerAPIImplementation: DockerAPI {
 	// documentation in DockerAPI protocol
 	func create(container: DockerContainer) -> SignalProducer<DockerContainer, Rc2Error> {
 		return SignalProducer<DockerContainer, Rc2Error> { observer, _ in
-			os_log("creating container %{public}s", log: .docker, type: .info, container.name)
+			os_log("creating container %{public}s", log: .docker, type: .debug, container.name)
 			guard container.state.value == .notAvailable else {
 				observer.send(value: container)
 				observer.sendCompleted()
