@@ -17,13 +17,14 @@ public enum SyntaxThemeProperty: String, ThemeProperty {
 	public static var foregroundProperties: [SyntaxThemeProperty] { return [.text, .comment, .quote, .keyword, .function, .symbol] }
 }
 
-public final class SyntaxTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
+public final class SyntaxTheme: NSObject, InternalTheme, JSONDecodable, JSONEncodable {
 	public static let AttributeName = "rc2.SyntaxTheme"
 	
 	public var name: String
-	public var colors = [SyntaxThemeProperty: PlatformColor]()
+	var colors = [SyntaxThemeProperty: PlatformColor]()
 	public var isBuiltin: Bool = false
 	public var fileUrl: URL?
+	var dirty: Bool = false
 	
 	public var propertyCount: Int { return colors.count }
 	

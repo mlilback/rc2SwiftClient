@@ -39,6 +39,7 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 	private var userDirectoryWatcher: DirectoryWatcher?
 	private var userThemeUrl: URL!
 	private var builtinThemeUrl: URL!
+	private var ignoreSelectionChange: Bool = false
 
 	/// factory function since swift won't let us override init() and call another init method
 	static func createInstance<TType: Theme>(userUrl: URL, builtinUrl: URL) -> ThemeEditorController<TType>? {
@@ -64,9 +65,17 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 		
 		themeTable.reloadData()
 		themeTable.selectRowIndexes(IndexSet(integer: indexOfSelectedTheme), byExtendingSelection: false)
-		let scrollview = themeTable.enclosingScrollView!
-		scrollview.addFloatingSubview(themeTable!, for: .vertical)
-		themeFooterView?.setFrameOrigin(NSPoint(x: 0, y: scrollview.bounds.size.height - themeFooterView!.bounds.size.height))
+//		let scrollview = themeTable.enclosingScrollView!
+//		scrollview.addFloatingSubview(themeFooterView!, for: .vertical)
+//		let floatOrigin = NSPoint(x: 0, y: scrollview.bounds.size.height - themeFooterView!.bounds.size.height - 50)
+//		print("origin = \(themeFooterView!.frame)")
+//		themeFooterView?.setFrameOrigin(floatOrigin)
+//		themeFooterView!.translatesAutoresizingMaskIntoConstraints = false
+//		themeFooterView.heightAnchor.constraint(equalToConstant: 30.0)
+//		scrollview.addSubview(themeFooterView!)
+//		scrollview.addConstraint(NSLayoutConstraint(item: themeFooterView!, attribute: .leading, relatedBy: .equal, toItem: scrollview, attribute: .leading, multiplier: 1.0, constant: 0))
+//		scrollview.addConstraint(NSLayoutConstraint(item: themeFooterView!, attribute: .trailing, relatedBy: .equal, toItem: scrollview, attribute: .trailing, multiplier: 1.0, constant: 0))
+//		scrollview.addConstraint(NSLayoutConstraint(item: themeFooterView!, attribute: .bottom, relatedBy: .equal, toItem: scrollview, attribute: .bottom, multiplier: 1.0, constant: 10.0))
 	}
 	
 	@IBAction func addTheme(_ sender: Any?) {
@@ -87,15 +96,18 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 		print("remove theme")
 	}
 	
-	@IBAction func cloneTheme(_ sender: Any?) {
-		
-	}
-	
 	@IBAction func duplicateThemeFromTemplate(_ sender: Any?) {
 		guard let menuItem = sender as? NSMenuItem,
 			let template = menuItem.representedObject as? T
 			else { return }
-		print("copying \(template.name)")
+		selectedTheme = ThemeManager.shared.duplicate(theme: template)
+		ThemeManager.shared.setActive(theme: selectedTheme)
+		updateThemesArray()
+		ignoreSelectionChange = true
+		themeTable.reloadData()
+		ignoreSelectionChange = false
+		themeTable.selectRowIndexes(IndexSet(integer: indexOfSelectedTheme), byExtendingSelection: false)
+		propertyTable.reloadData()
 	}
 	
 	func numberOfRows(in tableView: NSTableView) -> Int {
@@ -105,8 +117,14 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 	
 	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 		if tableView == themeTable {
+			guard entries[row].isSectionLabel else {
+				// swiftlint:disable:next force_cast
+				let view = tableView.make(withIdentifier: "themeNameView", owner: nil) as! NSTableCellView
+				view.textField?.stringValue = entries[row].title
+				return view
+			}
 			// swiftlint:disable:next force_cast
-			let view = tableView.make(withIdentifier: "themeNameView", owner: nil) as! NSTableCellView
+			let view = tableView.make(withIdentifier: "themeGroupView", owner: nil) as! NSTableCellView
 			view.textField?.stringValue = entries[row].title
 			return view
 		}
@@ -114,22 +132,37 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 		let view = tableView.make(withIdentifier: "themeItem", owner: nil) as! NameAndColorCellView
 		let prop = T.Property.allProperties[row]
 		view.textField?.stringValue = prop.localizedDescription
-		view.colorWell?.color = (selectedTheme?.color[prop])!
+		view.colorWell?.color = selectedTheme!.color(for: prop)
 		view.colorWell?.isEnabled = !(selectedTheme?.isBuiltin ?? false)
 		return view
 	}
 	
 	func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
 		if tableView == propertyTable { return false }
-		return true
+		return !entries[row].isSectionLabel
 	}
 	
 	func tableViewSelectionDidChange(_ notification: Notification) {
-		if notification.object as? NSTableView == themeTable {
+		if notification.object as? NSTableView == themeTable && !ignoreSelectionChange {
 			selectedTheme = entries[themeTable.selectedRow].theme
 			propertyTable.reloadData()
 			ThemeManager.shared.setActive(theme: selectedTheme)
 		}
+	}
+	
+	func tableView(_ tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
+		guard tableView == themeTable else { return nil }
+		guard entries[row].isSectionLabel else { return nil }
+		let view = GroupRowView()
+//		view.isGroupRowStyle = true
+		view.backgroundColor = NSColor.lightGray//.withAlphaComponent(0.8)
+		return view
+	}
+	
+	func tableView(_ tableView: NSTableView, isGroupRow row: Int) -> Bool {
+		guard tableView == themeTable else { return false }
+		guard row >= 0 && row < entries.count else { return false }
+		return entries[row].isSectionLabel
 	}
 	
 	private func themeDidChange() {
@@ -142,10 +175,10 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 		let userThemes = wrapper.userThemes
 		if !userThemes.isEmpty {
 			entries.append(ThemeEntry(title: "User Themes"))
-			entries.append(contentsOf: userThemes.map { ThemeEntry(theme: $0) })
+			entries.append(contentsOf: userThemes.sorted(by: { $0.name < $1.name }).map({ ThemeEntry(theme: $0) }))
 			entries.append(ThemeEntry(title: "Default Themes"))
 		}
-		entries.append(contentsOf: wrapper.builtinThemes.map { ThemeEntry(theme: $0) })
+		entries.append(contentsOf: wrapper.builtinThemes.sorted(by: { $0.name < $1.name }).map { ThemeEntry(theme: $0) })
 		if entries.count < 1 {
 			os_log("no themes!", log: .app, type: .error)
 		}
@@ -160,6 +193,14 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 			}
 		}
 	}
+}
+
+class GroupRowView: NSTableRowView {
+//	override var interiorBackgroundStyle: NSBackgroundStyle { return .lowered }
+}
+
+class GroupCellView: NSTableCellView {
+	override var isOpaque: Bool { return true }
 }
 
 class NameAndColorCellView: NSTableCellView {

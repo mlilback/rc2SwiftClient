@@ -17,13 +17,14 @@ public enum OutputThemeProperty: String, ThemeProperty {
 	public static var foregroundProperties: [OutputThemeProperty] { return [.text, .note, .help, .error, .log, .input, .status] }
 }
 
-public final class OutputTheme: NSObject, Theme, JSONDecodable, JSONEncodable {
+public final class OutputTheme: NSObject, InternalTheme, JSONDecodable, JSONEncodable {
 	public static let AttributeName = "rc2.OutputTheme"
 	
 	public var name: String
-	public var colors = [OutputThemeProperty: PlatformColor]()
+	var colors = [OutputThemeProperty: PlatformColor]()
 	public var isBuiltin: Bool = false
 	public var fileUrl: URL?
+	var dirty: Bool = false
 	
 	public var propertyCount: Int { return colors.count }
 	override public var description: String { return "OutputTheme \(name)" }

@@ -6,6 +6,7 @@
 
 import Foundation
 import Freddy
+import os
 import ReactiveSwift
 import SwiftyUserDefaults
 
@@ -48,14 +49,8 @@ public class ThemeManager {
 	
 	public let activeOutputTheme: MutableProperty<OutputTheme>!
 	public let activeSyntaxTheme: MutableProperty<SyntaxTheme>!
-	
-	public func getActive<T: Theme>() -> T {
-		if T.Type.self == type(of: OutputTheme.self) {
-			return activeOutputTheme.value as! T // swiftlint:disable:this force_cast
-		}
-		return activeSyntaxTheme.value as! T // swiftlint:disable:this force_cast
-	}
-	
+
+	/// sets the active theme based on the type of theme passed as an argument
 	public func setActive<T: Theme>(theme: T) {
 		if let otheme = theme as? OutputTheme {
 			activeOutputTheme.value = otheme
@@ -64,6 +59,47 @@ public class ThemeManager {
 		} else {
 			fatalError("invalid theme")
 		}
+	}
+	
+	/// returns a duplicate of theme with a unique name that has already been inserted in the correct array
+	public func duplicate<T: Theme>(theme: T) -> T {
+		let currentNames = existingNames(theme)
+		let baseName = "\(theme.name) copy"
+		var num = 0
+		var curName = baseName
+		while currentNames.contains(curName) {
+			num += 1
+			curName = baseName + " \(num)"
+		}
+		let newTheme = clone(theme: theme, name: curName)
+		setActive(theme: newTheme)
+		return newTheme
+	}
+	
+	/// clone theme by force casting due to limitation in swift type system
+	private func clone<T: Theme>(theme: T, name: String) -> T {
+		// swiftlint:disable force_cast
+		if let outputTheme = theme as? OutputTheme {
+			let copy = outputTheme.duplicate(name: name) as! T
+			_outputThemes.append(copy as! OutputTheme)
+			return copy
+		} else if let syntaxTheme = theme as? SyntaxTheme {
+			let copy = syntaxTheme.duplicate(name: name) as! T
+			_syntaxThemes.append(copy as! SyntaxTheme)
+			return copy
+		}
+		// swiftlint:enable force_try
+		fatalError()
+	}
+	
+	/// returns array of names of existing themes of the same type as instance
+	private func existingNames<T: Theme>(_ instance: T) -> [String] {
+		if instance is OutputTheme {
+			return _outputThemes.map { $0.name }
+		} else if instance is SyntaxTheme {
+			return _syntaxThemes.map { $0.name }
+		}
+		fatalError()
 	}
 	
 	private init() {
