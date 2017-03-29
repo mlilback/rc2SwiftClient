@@ -27,6 +27,8 @@
 * docker event stream can timeout. need to handle this (takes hours to happen)
 * if a dbserver image is updated, the dbdata volume still has the data in it. need to backup the sql and then restore it after creating a new volume. The rc2.last file created on first db run is there, which causes db container to fail.
 * Validate image versions of containers. If a current container is using rc2server/appserver:0.4.1 and we've just pulled 0.4.2, the container needs to be deleted and recreated with the newer image.
+* backup/preserve any locally installed R packages
+* need to be able to update packages over ones in docker image, remembered if container rebuilt. docker image with path in .libPaths(), includes rc2 package
 
 ## compute engine
 * compute engine barfs on markdown files with a space in their name
@@ -59,7 +61,7 @@
 * execute all chunks up to and including current chunk if R code
 * chunk navigation is broken
 * implement searchbar interface to use for console
-* txt and csv files should be editable
+* when editing non-executable files, need to disable buttons, maybe explicit save so refreshes if displayed in output
 
 ## startup
 * need to work without a network connection if docker images already loaded
@@ -70,6 +72,7 @@
 * html output content search
 * implement searchbar interface to use for console
 * viewers should offer quick jump menu to recently viewed items
+* should clearing the console clear the image cache?  How does it get cleared?
 
 ## other
 
