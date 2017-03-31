@@ -48,8 +48,25 @@ public enum NetworkingError: LocalizedError, Rc2DomainError {
 }
 
 public struct WebSocketError: LocalizedError, Rc2DomainError, CustomDebugStringConvertible {
+	public enum ErrorType: Int {
+		case unknown = 0
+		case noSuchFile = 1001
+		case fileVersionMismatch = 1002
+		case databaseUpdateFailed = 1003
+		case computeEngineUnavailable = 1005
+		case invalidRequest = 1006
+		case computeError = 1007
+	}
+	
 	let code: Int
+	let type: ErrorType
 	let message: String
+	
+	init(code: Int, message: String) {
+		self.code = code
+		self.message = message
+		self.type = ErrorType(rawValue: code) ?? .unknown
+	}
 	
 	public var errorDescription: String? { return message }
 	

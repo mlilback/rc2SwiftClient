@@ -47,7 +47,8 @@ public enum ServerResponse: Equatable {
 		}
 		let queryId = jsonObj.getOptionalInt(at: "queryId") ?? 0
 		switch msg {
-			case "results":
+			//TODO: once appserver updated, need to handle these separately instead of testing on images
+			case "results", "execComplete":
 				guard let imagesJson = try? jsonObj.getArray(at: "images") else {
 					return ServerResponse.results(queryId: queryId, text: jsonObj.getOptionalString(at: "string", or: ""))
 				}
