@@ -207,6 +207,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	
 	@IBAction func clearConsole(_ sender: AnyObject?) {
 		resultsView?.textStorage?.deleteCharacters(in: NSRange(location: 0, length: (resultsView?.textStorage?.length)!))
+		session.imageCache.clearCache()
 	}
 	
 	// MARK: textfield delegate

@@ -27,6 +27,8 @@ import Networking
 //}
 
 class ImageOutputController: NSViewController, OutputController, NSPageControllerDelegate, NSSharingServicePickerDelegate {
+	let emptyIdentifier = "empty"
+	
 	@IBOutlet var containerView: NSView?
 	@IBOutlet var imagePopup: NSPopUpButton?
 	@IBOutlet var shareButton: NSSegmentedControl?
@@ -37,6 +39,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	var imageCache: ImageCache? { didSet { imageCacheChanged() } }
 	var myShareServices: [NSSharingService] = []
 	fileprivate var selectedImage: SessionImage?
+	fileprivate let emptyObject: Any = 1 as Any
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -58,21 +61,19 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		navigateButton?.setEnabled(false, forSegment: 0)
 		navigateButton?.setEnabled(false, forSegment: 1)
 		guard let allImages = allImages else { fatalError("images not loaded properly") }
-		pageController.arrangedObjects = allImages.value
 		guard allImages.value.count > 0 else {
-			//no images, don't select anything
+			displayEmptyView()
 			return
 		}
+		pageController.arrangedObjects = allImages.value
 		if nil == selectedImage { selectedImage = allImages.value.first }
 		loadSelectedImage()
 		pageController.selectedIndex = allImages.value.index(of: selectedImage!) ?? 0
-		imageCache?.images.producer.startWithValues { self.adjustImagePopup(images: $0) }
 		imagePopup?.selectItem(withTag: selectedImage?.id ?? 0)
 	}
 	
 	override func viewDidAppear() {
 		super.viewDidAppear()
-//		pageController.selectedViewController?.view.frame = containerView!.frame
 		pageController.view.needsLayout = true
 		pageController.view.needsDisplay = true
 		pageController.selectedViewController?.view.needsLayout = true
@@ -84,7 +85,29 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		if allImages == nil {
 			allImages = MutableProperty([])
 			allImages! <~ icache.images
+			allImages?.signal.observeValues { [weak self] _ in
+				self?.imageArrayChanged()
+				self?.adjustImagePopup()
+			}
 		}
+	}
+	
+	func imageArrayChanged() {
+		//if there are no images, we don't have a selection and should show empty view
+		guard let all = allImages?.value, all.count > 0 else {
+			selectedImage = nil
+			displayEmptyView()
+			return
+		}
+		//if for some reason the selected image isn't in the images array, discard the selection
+		if let selImage = selectedImage, !all.contains(selImage) {
+			selectedImage = nil
+		}
+		//if no selection, select first image
+		if selectedImage == nil {
+			selectedImage = all.first
+		}
+		loadSelectedImage()
 	}
 	
 	func display(image: SessionImage) {
@@ -97,13 +120,24 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		guard let allImages = allImages else { fatalError("invalid call to loadSelectedImages") }
 		guard let image = selectedImage, let index = allImages.value.index(of: image) else {
 			os_log("asked to display image when none are in cache")
+			displayEmptyView()
 			return
 		}
 		pageController?.arrangedObjects = allImages.value
 		pageController?.selectedIndex = index
 		navigateButton?.setEnabled(index > 0, forSegment: 0)
 		navigateButton?.setEnabled(index + 1 < allImages.value.count, forSegment: 1)
+		imagePopup?.isEnabled = true
 		imagePopup?.selectItem(withTag: image.id)
+	}
+	
+	fileprivate func displayEmptyView() {
+		guard isViewLoaded else { return }
+		pageController.arrangedObjects = [emptyObject]
+		pageController.selectedIndex = 0
+		navigateButton?.setEnabled(false, forSegment: 0)
+		navigateButton?.setEnabled(false, forSegment: 1)
+		imagePopup?.isEnabled = false
 	}
 	
 	@IBAction func navigateClicked(_ sender: AnyObject?) {
@@ -144,9 +178,9 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	}
 
 	// load the images into the popup
-	func adjustImagePopup(images: [SessionImage]) {
+	func adjustImagePopup() {
 		imagePopup?.removeAllItems()
-		guard images.count > 0 else { return }
+		guard let images = allImages?.value, images.count > 0 else { return }
 		var currentBatch = images[0].batchId
 		for anImage in images {
 			if anImage.batchId != currentBatch {
@@ -156,6 +190,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 			let item = NSMenuItem(title: anImage.displayName, action: #selector(selectImage(_:)), keyEquivalent: "")
 			item.tag = anImage.id
 			item.target = self
+			item.toolTip = anImage.name
 			item.representedObject = anImage
 			imagePopup?.menu?.addItem(item)
 		}
@@ -174,6 +209,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	func pageController(_ pageController: NSPageController, didTransitionTo object: Any) {
 		guard let img = object as? SessionImage, let allImages = allImages else {
 			os_log("page controller switched to non-existant image")
+			displayEmptyView()
 			return
 		}
 		selectedImage = img
@@ -184,7 +220,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	}
 	
 	func pageController(_ pageController: NSPageController, identifierFor object: Any) -> String {
-		guard let image = object as? SessionImage else { fatalError("invalid object from page controller") }
+		guard let image = object as? SessionImage else { return emptyIdentifier }
 		return "\(image.id)"
 	}
 	
@@ -196,8 +232,9 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		iv.setContentHuggingPriority(200, for: .horizontal)
 		iv.setContentCompressionResistancePriority(200, for: .horizontal)
 		iv.imageScaling = .scaleProportionallyDown
-		let imageId = Int(identifier)!
-		vc.setImage(producer: imageCache!.image(withId: imageId))
+		if let imageId = Int(identifier) {
+			vc.setImage(producer: imageCache!.image(withId: imageId))
+		}
 		vc.view = iv
 		return vc
 	}
