@@ -106,7 +106,7 @@ public enum ServerResponse: Equatable {
 		var result: Result<File?, Rc2Error>?
 		if success {
 			// swiftlint:disable:next force_try (should be impossible since nil is acceptable)
-			result = Result<File?, Rc2Error>(value: try! jsonObj.decode(at: "file", alongPath: [.MissingKeyBecomesNil, .NullBecomesNil], type: File.self))
+			result = Result<File?, Rc2Error>(value: try! jsonObj.decode(at: "file", alongPath: [.missingKeyBecomesNil, .nullBecomesNil], type: File.self))
 		} else {
 			result = Result<File?, Rc2Error>(error: parseRemoteError(jsonObj: try? jsonObj.getDictionary(at: "error")))
 		}

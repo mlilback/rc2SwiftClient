@@ -43,7 +43,7 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 
 	public init(json: JSON) throws {
 		type = ConsoleAttachmentType(rawValue: try json.getInt(at: "type"))!
-		image = try json.decode(at: "image", alongPath: .MissingKeyBecomesNil, type: SessionImage.self)
+		image = try json.decode(at: "image", alongPath: .missingKeyBecomesNil, type: SessionImage.self)
 		fileId = try json.getInt(at: "fileId")
 		fileVersion = try json.getInt(at: "fileVersion")
 		fileName = json.getOptionalString(at: "fileName")
