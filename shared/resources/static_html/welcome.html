@@ -45,6 +45,29 @@
 			padding-bottom: 18px; height: 40px; width: 160ps; padding-left: 40px; padding-top: 2px;
 		}
 		.wspace:hover { background: yellow; cursor: pointer; }
+		.close {
+			position: relative;
+			display: inline-block;
+			width: 50px;
+			height: 50px;
+			overflow: hidden;
+		}
+	.badge {
+		height: 18px;
+		width: 18px;
+		display: table-cell;
+		text-align: center;
+		vertical-align: middle;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0);
+		text-decoration: none;
+	}
+	.badge:link, .badge:visited , .badge:active { color: black; }
+	.badge:hover {
+		background: lightgray;
+	}
+	
+
 	</style>
 	<script src="jquery.min.js"></script>
 	<script>
@@ -77,7 +100,7 @@
 <div id="root">
 
 <div id="content">
-<button id="closeButton" class="closeAction">Close</button>
+<a id="closeButton" class="badge closeAction">&times;</a>
 
 <h1>Welcome to Rc2</h1>
 
