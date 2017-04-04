@@ -182,8 +182,8 @@ extension MacAppDelegate {
 		wc.appStatus = appStatus
 		wc.session = session
 		wc.setupChildren()
-		if let callback = sessionsBeingRestored.removeValue(forKey: session.workspace.identifier) {
-			callback(wc.window, nil)
+		if let _ = sessionsBeingRestored.removeValue(forKey: session.workspace.identifier) {
+			//callback(wc.window, nil)
 			if sessionsBeingRestored.count < 1 {
 				advanceStartupStage()
 			}
@@ -371,6 +371,7 @@ extension MacAppDelegate: NSWindowRestoration {
 			completionHandler(nil, Rc2Error(type: .unknown, nested: nil, explanation: "Unsupported window identifier"))
 			return
 		}
+		completionHandler(nil, nil)
 		me.sessionsBeingRestored[bmark.workspaceIdent] = completionHandler
 	}
 }
