@@ -57,7 +57,8 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 	/// - parameter imageName: the name of the image to pull
 	/// - parameter estimatedSize: the size of the download, used for progress calculation
 	/// - parameter config: sesion configuration to use. If nil, will use system default
-	public init(baseUrl: URL, imageName: String, estimatedSize size: Int, config: URLSessionConfiguration) {
+	public init(baseUrl: URL, imageName: String, estimatedSize size: Int, config: URLSessionConfiguration)
+	{
 		let uconfig = config
 		uconfig.timeoutIntervalForRequest = 300
 		uconfig.timeoutIntervalForResource = 86_400
@@ -72,7 +73,8 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 		assert(urlConfig.protocolClasses!.filter({ $0 == DockerUrlProtocol.self }).count > 0)
 	}
 
-	public func pull() -> SignalProducer<PullProgress, Rc2Error> {
+	public func pull() -> SignalProducer<PullProgress, Rc2Error>
+	{
 		return SignalProducer<PullProgress, Rc2Error> { observer, _ in
 			os_log("starting pull: %{public}@", type:.info, self.url.absoluteString)
 			self.pullObserver = observer
@@ -84,7 +86,7 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 			req.isChunkedResponse = true
 			self._task = self.urlSession!.dataTask(with: req)
 			self._task?.resume()
-		}
+		}.optionalLog("pull \(url.lastPathComponent)")
 	}
 	
 	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)
@@ -92,7 +94,8 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 		completionHandler(Foundation.URLSession.ResponseDisposition.allow)
 	}
 
-	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
+	{
 		let oldTotal = totalDownloaded
 		let str = String(data: data, encoding:String.Encoding.utf8)!
 		let messages = str.components(separatedBy: "\r\n")
@@ -122,7 +125,8 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 		}
 	}
 
-	func handleStatus(status: String, json: JSON) {
+	func handleStatus(status: String, json: JSON)
+	{
 		guard let layerId = try? json.getString(at: "id") else { return }
 		switch status.lowercased() {
 			case "pulling fs layer":
@@ -152,7 +156,8 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 		}
 	}
 
-	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
+	{
 		guard nil == error else {
 			os_log("error in pull operation %{public}@", log: .docker, type: .debug, error! as NSError)
 			pullObserver?.send(error: Rc2Error(type: .cocoa, nested: error))

@@ -165,7 +165,8 @@ public final class DockerManager: NSObject {
 	/// - parameter refresh: if true, discards any cached info about version and required image info
 	///
 	/// - returns: a signal producer whose value is true if pullImage is necessary
-	public func initialize(refresh: Bool = false) -> SignalProducer<Bool, Rc2Error> {
+	public func initialize(refresh: Bool = false) -> SignalProducer<Bool, Rc2Error>
+	{
 		if refresh {
 			state = .unknown
 			versionInfo = nil
@@ -196,7 +197,8 @@ public final class DockerManager: NSObject {
 	/// pulls any images needed from docker hub
 	///
 	/// - returns: the values are repeated progress handlers
-	public func pullImages() -> SignalProducer<PullProgress, Rc2Error> {
+	public func pullImages() -> SignalProducer<PullProgress, Rc2Error>
+	{
 		precondition(imageInfo != nil)
 		precondition(imageInfo!.dbserver.size > 0)
 		os_log("dm.pullImages called", log: .docker, type: .debug)
@@ -216,7 +218,8 @@ public final class DockerManager: NSObject {
 	/// - precondition: initialize() must have been called
 	///
 	/// - returns: a signal producer with no values
-	public func prepareContainers() -> SignalProducer<(), Rc2Error> {
+	public func prepareContainers() -> SignalProducer<(), Rc2Error>
+	{
 		os_log("dm.prepareContainers called", log: .docker, type: .debug)
 		return self.api.refreshContainers()
 			.on(value: { newContainers in
@@ -279,7 +282,8 @@ public final class DockerManager: NSObject {
 	/// - remark: initialize() returns the same information
 	///
 	/// - returns: true if there are newer images we need to pull and pullImages() should be called
-	public func pullIsNecessary() -> Bool {
+	public func pullIsNecessary() -> Bool
+	{
 		//TODO: we need tag/version info as part of the images
 		for aTag in [imageInfo!.dbserver.tag, imageInfo!.appserver.tag, imageInfo!.computeserver.tag] {
 			if installedImages.filter({ img in img.isNamed(aTag) }).count < 1 {
@@ -298,7 +302,8 @@ public final class DockerManager: NSObject {
 	/// - parameter container: the container to perform the operation on
 	///
 	/// - returns: a signal producer with no values, just completed or error
-	public func perform(operation: DockerContainerOperation, on container: DockerContainer) -> SignalProducer<(), Rc2Error> {
+	public func perform(operation: DockerContainerOperation, on container: DockerContainer) -> SignalProducer<(), Rc2Error>
+	{
 		return api.perform(operation: operation, container: container)
 	}
 
@@ -319,7 +324,8 @@ public final class DockerManager: NSObject {
 	/// Returns a signal producer that is completed when all containers are running, can timeout with an error
 	///
 	/// - Returns: signal producer completed when all containers are running
-	public func waitUntilRunning() -> SignalProducer<(), Rc2Error> {
+	public func waitUntilRunning() -> SignalProducer<(), Rc2Error>
+	{
 		os_log("dm.waitUntilRunning called", log: .docker, type: .debug)
 		let notRunningContainers = self.containers.filter({ $0.state.value != .running })
 		guard notRunningContainers.count > 0 else {
@@ -337,17 +343,19 @@ public final class DockerManager: NSObject {
 		let combined: SignalProducer< SignalProducer<ContainerState, Rc2Error>, Rc2Error> = SignalProducer(producers)
 		//return a producer that will listen until all containers are running and then send a completed, timing out if doesn't happen
 		return combined
-			.flatten(.latest)
-			.map({ _ in () }) // map array of empty values to a single empty value
+			.flatten(.merge)
+			.collect()
+			.map { _ in return () }
+			.optionalLog("waitUntilRunning")
 			.observe(on: UIScheduler())
-//			.timeout(after: 3.0, raising: timeoutError, on: QueueScheduler.main)
 	}
 	
 	/// backs up the dbserver database to the specified file location
 	///
 	/// - Parameter url: path to save the file to
 	/// - Returns: a signal producer with an empty value, or an error
-	public func backupDatabase(to url: URL) -> SignalProducer<(), Rc2Error> {
+	public func backupDatabase(to url: URL) -> SignalProducer<(), Rc2Error>
+	{
 		let command = ["/usr/bin/pg_dump", "rc2"]
 		return api.execCommand(command: command, container: containers[.dbserver]!)
 			.flatMap(.concat) { data -> SignalProducer<(), Rc2Error> in
@@ -366,7 +374,8 @@ public final class DockerManager: NSObject {
 extension DockerManager: DockerEventMonitorDelegate {
 	/// handles an event from the event monitor
 	// note that the only events that external observers should care about (as currently implemented) are related to specific containers, which will update their observable state property. Probably need a way to inform application if some serious problem ocurred
-	func handleEvent(_ event: DockerEvent) {
+	func handleEvent(_ event: DockerEvent)
+	{
 		//only care if it is one of our containers
 		guard let from = try? event.json.getString(at:"from"),
 			let ctype = ContainerType.from(imageName:from),
@@ -399,7 +408,8 @@ extension DockerManager: DockerEventMonitorDelegate {
 		}
 	}
 
-	func eventMonitorClosed(error: Error?) {
+	func eventMonitorClosed(error: Error?)
+	{
 		eventMonitor = nil
 		//TODO: actually handle by reseting everything related to docker
 		os_log("event monitor closed. should really do something", log:.docker)
@@ -413,7 +423,8 @@ extension DockerManager {
 	/// - parameter version: the version information to check
 	///
 	/// - returns: a signal producer whose value is the valid version info
-	func verifyValidVersion(version: DockerVersion) -> SignalProducer<DockerVersion, Rc2Error> {
+	func verifyValidVersion(version: DockerVersion) -> SignalProducer<DockerVersion, Rc2Error>
+	{
 		return SignalProducer<DockerVersion, Rc2Error> { observer, _ in
 			//force cast because only should be called if versionInfo was set
 			os_log("dm.verifyValidVersion: %{public}s", log: .docker, type: .debug, version.description)
@@ -428,21 +439,26 @@ extension DockerManager {
 		}
 	}
 
-	fileprivate func validateNetwork() -> SignalProducer<(), Rc2Error> {
+	fileprivate func validateNetwork() -> SignalProducer<(), Rc2Error>
+	{
 		let nname = "rc2server"
 		return api.networkExists(name: nname)
 			.map { exists in return (nname, exists, self.api.create(network:)) }
 			.flatMap(.concat, transform: optionallyCreateObject)
 	}
 
-	fileprivate func validateVolumes() -> SignalProducer<(), Rc2Error> {
+	fileprivate func validateVolumes() -> SignalProducer<(), Rc2Error>
+	{
 		let producers = volumeNames.map { name in
 			api.volumeExists(name: name)
 				.map { exists in return (name, exists, self.api.create(volume:)) }
 				.flatMap(.concat, transform: optionallyCreateObject)
 		}
 		let combinedProducer = SignalProducer< SignalProducer<(), Rc2Error>, Rc2Error >(producers)
-		return combinedProducer.flatten(.latest)
+		return combinedProducer.flatten(.merge)
+			.collect()
+			.map { _ in return () }
+			.optionalLog("combined vols")
 	}
 
 	typealias CreateFunction = (String) -> SignalProducer<(), Rc2Error>
@@ -475,7 +491,8 @@ extension DockerManager {
 	///
 	/// Parameter containers: the containers to examine
 	/// - Returns: a merged array of signal producers that returns the input containers with their state updated
-	func removeOutdatedContainers(containers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error> {
+	func removeOutdatedContainers(containers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error>
+	{
 		os_log("dm.removeOutdatedContainers called", log: .docker, type: .debug)
 		var containersToRemove = [DockerContainer]()
 		for aContainer in containers {
@@ -538,7 +555,8 @@ extension DockerManager {
 	}
 
 	///creates AppSupport/io.rc2.xxx/v1/dbdata
-	func setupDataDirectory() {
+	func setupDataDirectory()
+	{
 		do {
 			let dockerDir = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "docker")
 			let fm = FileManager()
