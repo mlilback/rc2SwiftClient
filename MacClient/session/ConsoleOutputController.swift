@@ -84,7 +84,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	}
 	
 	//stores all custom attributes in the results view for later restoration
-	func serializeCustomAttributes() -> Data {
+	func serializeCustomAttributes() -> JSON {
 		var attributes: [JSON] = []
 		let astr = resultsView!.textStorage!
 		astr.enumerateAttributes(in: astr.string.fullNSRange, options: []) { (attrs, range, _) in
@@ -93,15 +93,13 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 			}
 		}
 		// swiftlint:disable:next force_try (we created it and know it will work)
-		return try! JSON.array(attributes).serialize()
+		return .array(attributes)
 	}
 	
 	//deserializes custom attributes and applies to results view
-	func applyCustomAttributes(data: Data) {
+	func applyCustomAttributes(json: JSON) {
 		let ts = resultsView!.textStorage!
-		guard let json = try? JSON(data: data),
-			let attrs: [SavedOutputThemeAttribute] = try? json.decodedArray()
-			else { return }
+		guard let attrs: [SavedOutputThemeAttribute] = try? json.decodedArray() else { return }
 		for anAttribute in attrs {
 			ts.addAttribute(OutputTheme.AttributeName, value: anAttribute.property, range: anAttribute.range)
 		}
@@ -124,30 +122,30 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		resultsView!.scrollToEndOfDocument(nil)
 	}
 	
-	func saveSessionState() -> AnyObject {
-		var dict = [String: AnyObject]()
-		dict[SessionStateKey.History.rawValue] = cmdHistory.commands as AnyObject?
+	func saveSessionState() -> JSON {
+		var dict = [String: JSON]()
+		dict[SessionStateKey.History.rawValue] = cmdHistory.commands.toJSON()
 		let fullRange = resultsView!.textStorage!.string.fullNSRange
-		let rtfd = resultsView?.textStorage?.rtfd(from: fullRange, documentAttributes: [NSDocumentTypeDocumentAttribute: NSRTFDTextDocumentType])
-		_ = try? rtfd?.write(to: URL(fileURLWithPath: "/tmp/lastSession.rtfd"))
-		dict[SessionStateKey.Results.rawValue] = rtfd as AnyObject?
-		dict["attrs"] = serializeCustomAttributes() as AnyObject
-		return dict as AnyObject
+		if let rtfd = resultsView?.textStorage?.rtfd(from: fullRange, documentAttributes: [NSDocumentTypeDocumentAttribute: NSRTFDTextDocumentType])
+		{
+			_ = try? rtfd.write(to: URL(fileURLWithPath: "/tmp/lastSession.rtfd"))
+			dict[SessionStateKey.Results.rawValue] = .string(rtfd.base64EncodedString())
+		}
+		dict["attrs"] = serializeCustomAttributes()
+		return .dictionary(dict)
 	}
 
-	func restoreSessionState(_ state: [String: AnyObject]) {
-		if state[SessionStateKey.History.rawValue] is NSArray,
-			let commands = state[SessionStateKey.History.rawValue] as? [String]
-		{
+	func restoreSessionState(_ state: JSON) {
+		if let commands: [String] = try? state.decodedArray(at: SessionStateKey.History.rawValue) {
 			cmdHistory.commands = commands
 		}
-		guard let data = state[SessionStateKey.Results.rawValue] as? Data else { return }
+		guard let dataStr = try? state.getString(at: SessionStateKey.Results.rawValue), let data = Data(base64Encoded: dataStr) else { return }
 		let ts = resultsView!.textStorage!
 		//for some reason, NSLayoutManager is initially making the line with an attachment 32 tall, even though image is 48. On window resize, it corrects itself. so we are going to keep an array of attachment indexes so we can fix this later
 		var fileIndexes: [Int] = []
 		resultsView!.replaceCharacters(in: NSRange(location: 0, length: ts.length), withRTFD:data)
-		if let attrData = state["attrs"] as? Data {
-			applyCustomAttributes(data: attrData)
+		if let attrs = state["attrs"] {
+			applyCustomAttributes(json: attrs)
 			themeChanged()
 		}
 		resultsView!.textStorage?.enumerateAttribute(NSAttachmentAttributeName, in: ts.string.fullNSRange, options: [], using:

@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import Freddy
 import Networking
 import NotifyingCollection
 
@@ -35,8 +36,8 @@ extension SearchResponder {
 protocol OutputHandler: class, SearchResponder {
 	var sessionController: SessionController? { get set }
 	func append(responseString: ResponseString)
-	func saveSessionState() -> AnyObject
-	func restoreSessionState(_ state: [String: AnyObject])
+	func saveSessionState() -> JSON
+	func restoreSessionState(_ state: JSON)
 	func handleSearch(action: NSTextFinderAction)
 	func initialFirstResponder() -> NSResponder
 	//can't use File as parameter class because it isn't available in ObjC. We let the bridge pass the object around using AnyObject and the destination will have to cast it to a File object.

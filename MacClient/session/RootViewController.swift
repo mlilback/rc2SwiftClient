@@ -307,18 +307,18 @@ extension RootViewController: SessionControllerDelegate {
 		fileHandler?.filesRefreshed(nil)
 	}
 
-	func saveState() -> [String: AnyObject] {
-		var dict = [String: AnyObject]()
-		dict["editor"] = editor?.saveState() as AnyObject?
-		dict["selFile"] = (fileHandler?.selectedFile?.fileId ?? -1) as AnyObject?
-		return dict
+	func saveState() -> JSON {
+		var dict = [String: JSON]()
+		dict["editor"] = editor!.saveState()
+		dict["selFile"] = .int(fileHandler?.selectedFile?.fileId ?? -1)
+		return .dictionary(dict)
 	}
 	
-	func restoreState(_ state: [String: AnyObject]) {
-		if let editorState = state["editor"] as? [String: AnyObject] {
+	func restoreState(_ state: JSON) {
+		if let editorState = state["editor"] {
 			editor?.restoreState(editorState)
 		}
-		if let fileId = state["selFile"] as? Int, fileId > 0, let file = session.workspace.file(withId: fileId) {
+		if let fileId = try? state.getInt(at: "selFile"), fileId > 0, let file = session.workspace.file(withId: fileId) {
 			fileHandler?.selectedFile = file
 		}
 	}

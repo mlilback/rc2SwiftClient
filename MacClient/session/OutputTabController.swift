@@ -191,22 +191,22 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		currentOutputController.performFind(action: action)
 	}
 	
-	func saveSessionState() -> AnyObject {
-		var dict = [String: AnyObject]()
+	func saveSessionState() -> JSON {
+		var dict = [String: JSON]()
 		dict["console"] = consoleController?.saveSessionState()
-		dict["selTab"] = selectedOutputTab.value.rawValue as AnyObject
-		dict["selImage"] = (imageController?.selectedImageId ?? 0) as AnyObject
-		return dict as AnyObject
+		dict["selTab"] = .int(selectedOutputTab.value.rawValue)
+		dict["selImage"] = .int(imageController?.selectedImageId ?? 0)
+		return .dictionary(dict)
 	}
 	
-	func restoreSessionState(_ state: [String:AnyObject]) {
-		if let consoleState = state["console"] as? [String:AnyObject] {
+	func restoreSessionState(_ state: JSON) {
+		if let consoleState = state["console"] {
 			consoleController?.restoreSessionState(consoleState)
 		}
-		if let rawValue = state["selTab"] as? Int, let selTab = OutputTab(rawValue: rawValue) {
+		if let rawValue = try? state.getInt(at: "selTab"), let selTab = OutputTab(rawValue: rawValue) {
 			restoredOutputTab = selTab
 		}
-		restoredSelectedImageId = state["selImage"] as? Int ?? 0
+		restoredSelectedImageId = state.getOptionalInt(at: "selImage") ?? 0
 	}
 }
 

@@ -15,11 +15,11 @@ import Result
 import ClientCore
 import NotifyingCollection
 
-@objc protocol SessionControllerDelegate {
+protocol SessionControllerDelegate: class {
 	func filesRefreshed()
 	func sessionClosed()
-	func saveState() -> [String: AnyObject]
-	func restoreState(_ state: [String: AnyObject])
+	func saveState() -> JSON
+	func restoreState(_ state: JSON)
 }
 
 /// manages a Session object
@@ -135,22 +135,19 @@ import NotifyingCollection
 extension SessionController {
 	func stateFileUrl() throws -> URL {
 		let dataDirUrl = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "sessions")
-		let fname = "\(session.conInfo.host.name)--\(session.project.userId)--\(session.workspace.wspaceId).plist"
+		let fname = "\(session.conInfo.host.name)--\(session.project.userId)--\(session.workspace.wspaceId).json"
 		let furl = dataDirUrl.appendingPathComponent(fname)
 		return furl
 	}
 	
 	func saveSessionState() {
 		//save data related to this session
-		var dict = [String: Any]()
+		var dict = [String: JSON]()
 		dict["outputController"] = outputHandler.saveSessionState()
-		do {
-			dict["imageCache"] = try session.imageCache.toJSON().serialize()
-		} catch {
-		}
+		dict["imageCache"] = session.imageCache.toJSON()
 		dict["delegate"] = delegate?.saveState()
 		do {
-			let data = NSKeyedArchiver.archivedData(withRootObject: dict)
+			let data = try JSON.dictionary(dict).serialize()
 			//only write to disk if has changed
 			let hash = data.sha256()
 			if hash != savedStateHash {
@@ -169,17 +166,15 @@ extension SessionController {
 			if (furl as NSURL).checkResourceIsReachableAndReturnError(nil),
 				let data = try? Data(contentsOf: furl)
 			{
-				guard let dict = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data as NSData) as? [String:AnyObject] else {
-					return
+				guard let json = try? JSON(data: data), let jsonDict = try? json.getDictionary() else { return }
+				if let outputState = jsonDict["outputController"] {
+					outputHandler.restoreSessionState(outputState)
 				}
-				if let ostate = dict["outputController"] as? [String : AnyObject] {
-					outputHandler.restoreSessionState(ostate)
+				if let editState = jsonDict["delegate"] {
+					delegate?.restoreState(editState)
 				}
-				if let edict = dict["delegate"] as? [String : AnyObject] {
-					delegate?.restoreState(edict)
-				}
-				if let ic = dict["imageCache"] as? Data, let json = try? JSON(data: ic) {
-					try session.imageCache.load(from: json)
+				if let imageState = jsonDict["imageCache"] {
+					try session.imageCache.load(from: imageState)
 				}
 				savedStateHash = data.sha256()
 			}

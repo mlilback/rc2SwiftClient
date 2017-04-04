@@ -6,6 +6,7 @@
 
 import Cocoa
 import os
+import Freddy
 import ReactiveSwift
 import ClientCore
 import Networking
@@ -145,14 +146,14 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		return items
 	}
 	
-	func saveState() -> [String:AnyObject] {
-		var dict = [String: AnyObject]()
-		dict["font"] = NSKeyedArchiver.archivedData(withRootObject: currentFontDescriptor) as AnyObject?
-		return dict
+	func saveState() -> JSON {
+		var dict = [String: JSON]()
+		dict["font"] = .string(NSKeyedArchiver.archivedData(withRootObject: currentFontDescriptor).base64EncodedString())
+		return .dictionary(dict)
 	}
 	
-	func restoreState(_ state: [String:AnyObject]) {
-		if let fontData = state["font"] as? Data,
+	func restoreState(_ state: JSON) {
+		if let fontStr = try? state.getString(at: "font"), let fontData = Data(base64Encoded: fontStr),
 			let fontDesc = NSKeyedUnarchiver.unarchiveObject(with: fontData) as? NSFontDescriptor
 		{
 			currentFontDescriptor = fontDesc
