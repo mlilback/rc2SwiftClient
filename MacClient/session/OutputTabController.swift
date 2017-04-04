@@ -41,6 +41,8 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		set { currentOutputController.performFind(action: newValue ? .showFindInterface : .hideFindInterface) }
 	}
 	let selectedOutputTab = MutableProperty<OutputTab>(.console)
+	fileprivate var restoredOutputTab: OutputTab = .console
+	fileprivate var restoredSelectedImageId: Int = 0
 
 	// MARK: methods
 	override func viewDidLoad() {
@@ -53,6 +55,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	override func viewWillAppear() {
 		super.viewWillAppear()
+		guard consoleController == nil else { return }
 		consoleController = firstChildViewController(self)
 		consoleController?.viewFileOrImage = displayAttachment
 		imageController = firstChildViewController(self)
@@ -64,6 +67,10 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	private func sessionControllerUpdated() {
 		imageController?.imageCache = imageCache
+		DispatchQueue.main.async {
+			self.selectedOutputTab.value = self.restoredOutputTab
+			self.imageController?.display(imageId: self.restoredSelectedImageId)
+		}
 	}
 	
 	override func viewDidAppear() {
@@ -187,6 +194,8 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	func saveSessionState() -> AnyObject {
 		var dict = [String: AnyObject]()
 		dict["console"] = consoleController?.saveSessionState()
+		dict["selTab"] = selectedOutputTab.value.rawValue as AnyObject
+		dict["selImage"] = (imageController?.selectedImageId ?? 0) as AnyObject
 		return dict as AnyObject
 	}
 	
@@ -194,6 +203,10 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		if let consoleState = state["console"] as? [String:AnyObject] {
 			consoleController?.restoreSessionState(consoleState)
 		}
+		if let rawValue = state["selTab"] as? Int, let selTab = OutputTab(rawValue: rawValue) {
+			restoredOutputTab = selTab
+		}
+		restoredSelectedImageId = state["selImage"] as? Int ?? 0
 	}
 }
 

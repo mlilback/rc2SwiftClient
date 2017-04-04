@@ -40,6 +40,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	var myShareServices: [NSSharingService] = []
 	fileprivate var selectedImage: SessionImage?
 	fileprivate let emptyObject: Any = 1 as Any
+	var selectedImageId: Int { return selectedImage?.id ?? 0 }
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -69,6 +70,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		if nil == selectedImage { selectedImage = allImages.value.first }
 		loadSelectedImage()
 		pageController.selectedIndex = allImages.value.index(of: selectedImage!) ?? 0
+		adjustImagePopup()
 		imagePopup?.selectItem(withTag: selectedImage?.id ?? 0)
 	}
 	
@@ -114,6 +116,12 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		selectedImage = image
 		guard isViewLoaded else { return }
 		loadSelectedImage()
+	}
+	
+	func display(imageId: Int) {
+		if let img = allImages?.value.first(where: { $0.id == imageId }) {
+			display(image: img)
+		}
 	}
 	
 	fileprivate func loadSelectedImage() {
