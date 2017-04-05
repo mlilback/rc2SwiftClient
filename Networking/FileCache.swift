@@ -183,7 +183,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 	
 	public func isFileCached(_ file: File) -> Bool {
 		let url = cachedUrl(file: file)
-		return url.fileExists()
+		return url.fileExists() && url.fileSize() > 0
 	}
 
 //	@discardableResult public func flushCache(workspace:Workspace) {
@@ -306,6 +306,14 @@ public final class DefaultFileCache: NSObject, FileCache {
 	//documentation in protocol
 	public func validUrl(for file: File) -> SignalProducer<URL, Rc2Error> {
 		let url = cachedUrl(file: file)
+		var producer: SignalProducer<URL, Rc2Error>?
+		self.taskLockQueue.sync {
+			if let dinfo = self.downloadAll {
+				let sig = dinfo.signal.take(last: 1).map({ _ in return url })
+				producer = SignalProducer<URL, Rc2Error>(sig)
+			}
+		}
+		guard producer == nil else { return producer! }
 		if isFileCached(file) {
 			return SignalProducer<URL, Rc2Error>(value: url)
 		}
@@ -525,9 +533,11 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 					return
 				}
 			}
-			dloadTask.observer.send(value: 1.0)
-			dloadTask.observer.sendCompleted()
-			os_log("successfully downloaded file %d", log: .cache, type: .info, dloadTask.file.fileId)
+			DispatchQueue.main.async {
+				dloadTask.observer.send(value: 1.0)
+				dloadTask.observer.sendCompleted()
+				os_log("successfully downloaded file %d", log: .cache, type: .info, dloadTask.file.fileId)
+			}
 		}
 	}
 	
