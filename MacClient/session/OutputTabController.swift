@@ -195,6 +195,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		dict["selTab"] = .int(selectedOutputTab.value.rawValue)
 		dict["webkit"] = webController?.saveSessionState()
 		dict["selImage"] = .int(imageController?.selectedImageId ?? 0)
+		dict["help"] = helpController?.saveSessionState()
 		return .dictionary(dict)
 	}
 	
@@ -216,6 +217,9 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		self.imageController?.display(imageId: imgId)
 		if let webState = savedState["webkit"] {
 			webController?.restoreSessionState(webState)
+		}
+		if let helpState = savedState["help"] {
+			helpController?.restoreSessionState(helpState)
 		}
 	}
 }

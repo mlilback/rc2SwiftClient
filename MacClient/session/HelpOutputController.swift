@@ -5,15 +5,36 @@
 //
 
 import Foundation
+import Freddy
 import WebKit
 
 class HelpOutputController: WebViewController {
+	private var currentTopic: HelpTopic?
 	
 	override open func viewDidLoad() {
 		super.viewDidLoad()
+		if let topic = currentTopic {
+			loadHelpTopic(topic)
+		}
 	}
 	
+	func saveSessionState() -> JSON {
+		if let topic = currentTopic, let tid = topic.topicId {
+			return .dictionary(["topicId": .int(tid)])
+		}
+		return .dictionary([String: JSON]())
+	}
+	
+	func restoreSessionState(_ state: JSON) {
+		guard let topicId = try? state.getInt(at: "topicId") else { return }
+		currentTopic = HelpController.shared.topic(withId: topicId)
+		if let topic = currentTopic {
+			loadHelpTopic(topic)
+		}
+	}
+
 	func loadHelpTopic(_ topic: HelpTopic) {
+		currentTopic = topic
 		let hcontroller = HelpController.shared
 		let url = hcontroller.urlForTopic(topic)
 		DispatchQueue.main.async {
