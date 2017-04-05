@@ -48,7 +48,7 @@
                         <splitViewItem id="htB-CP-af2"/>
                         <splitViewItem id="HnO-2u-s4D"/>
                     </splitViewItems>
-                    <splitView key="splitView" dividerStyle="thin" vertical="YES" id="o6q-cZ-nGO">
+                    <splitView key="splitView" dividerStyle="thin" vertical="YES" id="o6q-cZ-nGO" customClass="SessionSplitView" customModule="MacClient" customModuleProvider="target">
                         <rect key="frame" x="-223" y="0.0" width="948" height="524"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </splitView>

@@ -40,7 +40,6 @@
 
 ## main splitter
 * opening sidebar on full screen adjust only the size of editor, not results.
-* ability to center splitters (double click is standard, right?)
 
 ## error handling
 * pending transactions need a timeout
@@ -49,9 +48,6 @@
 * restore sessions: what happens if there is an error opening a session? Probably hangs
 
 ## sidebar
-
-### files
-* txt/csv should have menu option to view as result, default as source
 
 ### help
 * partial match searching not working properly
@@ -64,15 +60,12 @@
 * when editing non-executable files, need to disable buttons, maybe explicit save so refreshes if displayed in output
 
 ## startup
-* need to work without a network connection if docker images already loaded
 * new workspace not consistent in full screen w/ session window
-* startup dialog not shown when restoring a session. why?
 
 ## output
 * html output content search
 * implement searchbar interface to use for console
 * viewers should offer quick jump menu to recently viewed items
-* should clearing the console clear the image cache?  How does it get cleared?
 
 ## other
 
@@ -86,3 +79,10 @@
 * move filetype images to asset catalog
 
 
+* better close button on welcome screen
+* downloads missing output files I've they've somehow been deleted
+* no longer tries to login before docker containers started
+* no longer makes network connection at start if network is down
+* shows progress when restoring sessions
+* saves state of output views
+* double click centers splitter between editor/output
