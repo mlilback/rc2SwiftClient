@@ -9,7 +9,7 @@ import WebKit
 import os
 import Freddy
 
-open class WebViewController: NSViewController, OutputController, WKNavigationDelegate {
+class WebViewController: AbstractSessionViewController, OutputController, WKNavigationDelegate {
 	var webView: WKWebView?
 	@IBOutlet var containerView: NSView?
 	@IBOutlet var navButtons: NSSegmentedControl?
@@ -20,6 +20,8 @@ open class WebViewController: NSViewController, OutputController, WKNavigationDe
 	var webConfig: WKWebViewConfiguration?
 	fileprivate var searchBarHeight: CGFloat = 0
 	var searchBarVisible: Bool { return (searchBarHeightConstraint?.constant ?? 0 > 0) }
+	
+	open var pageTitle: String { return webView?.title ?? "" }
 	
 	override open func viewDidLoad() {
 		super.viewDidLoad()
@@ -93,7 +95,7 @@ open class WebViewController: NSViewController, OutputController, WKNavigationDe
 	{
 		navButtons?.setEnabled(webView.canGoBack, forSegment: 0)
 		navButtons?.setEnabled(webView.canGoForward, forSegment: 1)
-		titleLabel?.stringValue = webView.title!
+		titleLabel?.stringValue = pageTitle
 	}
 	
 	open func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {

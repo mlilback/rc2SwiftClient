@@ -41,8 +41,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		set { currentOutputController.performFind(action: newValue ? .showFindInterface : .hideFindInterface) }
 	}
 	let selectedOutputTab = MutableProperty<OutputTab>(.console)
-	fileprivate var restoredOutputTab: OutputTab = .console
-	fileprivate var restoredSelectedImageId: Int = 0
+	fileprivate var restoredState: JSON?
 
 	// MARK: methods
 	override func viewDidLoad() {
@@ -68,8 +67,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	private func sessionControllerUpdated() {
 		imageController?.imageCache = imageCache
 		DispatchQueue.main.async {
-			self.selectedOutputTab.value = self.restoredOutputTab
-			self.imageController?.display(imageId: self.restoredSelectedImageId)
+			self.loadSavedState()
 		}
 	}
 	
@@ -137,7 +135,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		switch attachment.type {
 		case .file:
 			if let file = sessionController?.session.workspace.file(withId: attachment.fileId) {
-				webController?.loadLocalFile(sessionController!.session.fileCache.validUrl(for: file))
+				webController?.load(file: file)
 				selectedOutputTab.value = .webKit
 			} else {
 				//TODO: report error
@@ -171,7 +169,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		displayedFile = file
 		//TODO: need to specially handle images
 		self.selectedOutputTab.value = .webKit
-		self.webController?.loadLocalFile(url)
+		self.webController?.load(file: file)
 	}
 
 	func append(responseString: ResponseString) {
@@ -195,18 +193,30 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		var dict = [String: JSON]()
 		dict["console"] = consoleController?.saveSessionState()
 		dict["selTab"] = .int(selectedOutputTab.value.rawValue)
+		dict["webkit"] = webController?.saveSessionState()
 		dict["selImage"] = .int(imageController?.selectedImageId ?? 0)
 		return .dictionary(dict)
 	}
 	
 	func restoreSessionState(_ state: JSON) {
-		if let consoleState = state["console"] {
+		restoredState = state
+	}
+	
+	/// actually loads the state from instance variable
+	func loadSavedState() {
+		guard let savedState = restoredState else { return }
+		if let consoleState = savedState["console"] {
 			consoleController?.restoreSessionState(consoleState)
 		}
-		if let rawValue = try? state.getInt(at: "selTab"), let selTab = OutputTab(rawValue: rawValue) {
-			restoredOutputTab = selTab
+		if let rawValue = try? savedState.getInt(at: "selTab"), let selTab = OutputTab(rawValue: rawValue)
+		{
+			self.selectedOutputTab.value = selTab
 		}
-		restoredSelectedImageId = state.getOptionalInt(at: "selImage") ?? 0
+		let imgId = savedState.getOptionalInt(at: "selImage") ?? 0
+		self.imageController?.display(imageId: imgId)
+		if let webState = savedState["webkit"] {
+			webController?.restoreSessionState(webState)
+		}
 	}
 }
 

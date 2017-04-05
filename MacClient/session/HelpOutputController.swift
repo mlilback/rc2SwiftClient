@@ -7,7 +7,7 @@
 import Foundation
 import WebKit
 
-open class HelpOutputController: WebViewController {
+class HelpOutputController: WebViewController {
 	
 	override open func viewDidLoad() {
 		super.viewDidLoad()
