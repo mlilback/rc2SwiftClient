@@ -8,48 +8,6 @@ import ClientCore
 import Foundation
 import os
 
-class HelpTopic: NSObject {
-	let name: String
-	let isPackage: Bool
-	let title: String?
-	let desc: String?
-	let aliases: [String]?
-	let subtopics: [HelpTopic]?
-	let packageName: String
-	
-	///initializer for a package description
-	init(name: String, subtopics: [HelpTopic]) {
-		self.isPackage = true
-		self.name = name
-		self.packageName = name
-		self.title = nil
-		self.desc = nil
-		self.aliases = nil
-		self.subtopics = subtopics
-	}
-	
-	///initializer for an actual topic
-	init(name: String, packageName: String, title: String, aliases: String, description: String?) {
-		self.isPackage = false
-		self.name = name
-		self.packageName = packageName
-		self.title = title
-		self.desc = description
-		self.subtopics = nil
-		self.aliases = aliases.components(separatedBy: ":")
-	}
-	
-	///convience for sorting
-	func compare(_ other: HelpTopic) -> Bool {
-		return self.name.caseInsensitiveCompare(other.name) == .orderedAscending
-	}
-	
-	///accesor function to be passed around as a closure
-	static func subtopicsAccessor(_ topic: HelpTopic) -> [HelpTopic]? {
-		return topic.subtopics
-	}
-}
-
 class HelpController {
 	static let shared = HelpController()
 	fileprivate let db: FMDatabase
@@ -79,10 +37,10 @@ class HelpController {
 			var topsByName = [String: [HelpTopic]]()
 			var all = Set<HelpTopic>()
 			var names = Set<String>()
-			let rs = try db.executeQuery("select package,name,title,aliases,desc from helptopic where name not like '.%' order by package, name COLLATE nocase ", values: nil)
+			let rs = try db.executeQuery("select rowid,package,name,title,aliases,desc from helptopic where name not like '.%' order by package, name COLLATE nocase ", values: nil)
 			while rs.next() {
 				guard let package = rs.string(forColumn: "package") else { continue }
-				let topic = HelpTopic(name: rs.string(forColumn: "name"), packageName:package, title: rs.string(forColumn: "title"), aliases:rs.string(forColumn: "aliases"), description: rs.string(forColumn: "desc"))
+				let topic = HelpTopic(id: Int(rs.int(forColumn: "rowid")), name: rs.string(forColumn: "name"), packageName: package, title: rs.string(forColumn: "title"), aliases: rs.string(forColumn: "aliases"), description: rs.string(forColumn: "desc"))
 				if topsByPack[package] == nil {
 					topsByPack[package] = []
 				}
@@ -137,6 +95,10 @@ class HelpController {
 	/// returns true if there is a help topic with the specified name
 	func hasTopic(_ name: String) -> Bool {
 		return allTopicNames.contains(name)
+	}
+	
+	func topic(withId topicId: Int) -> HelpTopic? {
+		return allTopics.first(where: { $0.topicId == topicId })
 	}
 	
 	fileprivate func parseResultSet(_ rs: FMResultSet) throws -> [HelpTopic] {
