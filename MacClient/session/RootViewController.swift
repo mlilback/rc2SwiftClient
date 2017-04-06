@@ -15,6 +15,8 @@ extension Selector {
 	static let promptToImport = #selector(RootViewController.promptToImportFiles(_:))
 	static let switchSidebarTab = #selector(RootViewController.switchSidebarTab(_:))
 	static let switchOutputTab = #selector(RootViewController.switchOutputTab(_:))
+	static let clearConsole = #selector(RootViewController.clearConsole(_:))
+	static let clearImageCache = #selector(RootViewController.clearImageCache(_:))
 }
 
 let MaxEditableFileSize: Int = 1024 * 1024 // 1 MB
@@ -107,6 +109,8 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 			return editor?.validateMenuItem(menuItem) ?? false
 		case Selector.switchOutputTab, Selector.switchSidebarTab:
 			return splitController?.validateMenuItem(menuItem) ?? false
+		case Selector.clearConsole, Selector.clearImageCache:
+			return true
 		default:
 			return false
 		}
@@ -188,6 +192,14 @@ extension RootViewController {
 	
 	@IBAction func clearFileCache(_ sender: AnyObject?) {
 		sessionController?.clearFileCache()
+	}
+	
+	@IBAction func clearImageCache(_ sender: Any?) {
+		sessionController?.clearImageCache()
+	}
+	
+	@IBAction func clearConsole(_ sender: AnyObject?) {
+		outputHandler?.clearConsole(sender)
 	}
 	
 	@IBAction func promptToImportFiles(_ sender: AnyObject?) {

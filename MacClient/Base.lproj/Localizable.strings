@@ -12,6 +12,11 @@
 "ClearWorkspaceWarning" = "Confirm Clear Workspace";
 "ClearWorkspaceInfo" = "This will remove all variables in your workspace and can not be undone.";
 
+"ClearConsoleWarning" = "Clear Image Cache";
+"ClearConsoleInfo" = "Should the image cache also be cleared?";
+"ClearImagesButton" = "Clear Images";
+"ClearConsoleOnlyButton" = "Keep Images";
+
 "SyntaxThemeProperty.codeBackground" = "code background";
 "SyntaxThemeProperty.inlineBackground" = "inline equation background";
 "SyntaxThemeProperty.equationBackground" = "equation background";

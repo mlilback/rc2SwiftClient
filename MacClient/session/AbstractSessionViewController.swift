@@ -43,14 +43,14 @@ class AbstractSessionViewController: NSViewController {
 	///   - suppressionKey: Optional UserDefaults key to set to true if user selects to suppress future alerts. If nil, suppression checkbox is not displayed. Defaults to nil
 	///   - handler: called after the user has selected an action
 	///   - confirmed: true if the user selected the action button
-	func confirmAction(message: String, infoText: String, buttonTitle: String, defaultToCancel: Bool = false, suppressionKey: DefaultsKey<Bool>? = nil, handler: @escaping (_ confirmed: Bool) -> Void)
+	func confirmAction(message: String, infoText: String, buttonTitle: String, cancelTitle: String = NSLocalizedString("Cancel", comment: ""), defaultToCancel: Bool = false, suppressionKey: DefaultsKey<Bool>? = nil, handler: @escaping (_ confirmed: Bool) -> Void)
 	{
 		let alert = NSAlert()
 		alert.showsSuppressionButton = suppressionKey != nil
 		alert.messageText = message
 		alert.informativeText = infoText
 		alert.addButton(withTitle: buttonTitle)
-		alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+		alert.addButton(withTitle: cancelTitle)
 		if defaultToCancel {
 			alert.buttons[0].keyEquivalent = ""
 			alert.buttons[1].keyEquivalent = "\r"

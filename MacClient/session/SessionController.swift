@@ -72,6 +72,10 @@ protocol SessionControllerDelegate: class {
 		session.fileCache.flushCache(files: session.workspace.files).start()
 	}
 	
+	func clearImageCache() {
+		session.imageCache.clearCache()
+	}
+	
 	func format(errorString: String) -> ResponseString {
 		return responseHandler!.formatError(errorString)
 	}

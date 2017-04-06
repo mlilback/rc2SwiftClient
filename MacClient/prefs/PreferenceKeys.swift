@@ -24,8 +24,10 @@ extension DefaultsKeys {
 	static let helpTopicSearchSummaries = DefaultsKey<Bool>("rc2.helpSidebar.searchSummaries")
 	
 	static let consoleOutputFont = DefaultsKey<FontDescriptor?>("rc2.console.font")
+	static let clearImagesWithConsole = DefaultsKey<Bool>("clearImagesWithConsole")
 	
 	static let suppressDeleteFileWarnings = DefaultsKey<Bool>("SuppressDeleteFileWarning")
 	static let suppressClearWorkspace = DefaultsKey<Bool>("SuppressClearWorkspaceWarning")
-	static let suppressKeys = [suppressDeleteFileWarnings, suppressClearWorkspace]
+	static let suppressClearImagesWithConsole = DefaultsKey<Bool>("SuppressClearImagesWithConsole")
+	static let suppressKeys = [suppressDeleteFileWarnings, suppressClearWorkspace, suppressClearImagesWithConsole]
 }

@@ -105,6 +105,10 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		}
 	}
 	
+	fileprivate func actuallyClearConsole() {
+		resultsView?.textStorage?.deleteCharacters(in: NSRange(location: 0, length: (resultsView?.textStorage?.length)!))
+	}
+	
 	// MARK: actions
 	@IBAction func executeQuery(_ sender: AnyObject?) {
 		guard consoleInputText.characters.count > 0 else { return }
@@ -204,8 +208,23 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	}
 	
 	@IBAction func clearConsole(_ sender: AnyObject?) {
-		resultsView?.textStorage?.deleteCharacters(in: NSRange(location: 0, length: (resultsView?.textStorage?.length)!))
-		session.imageCache.clearCache()
+		let defaults = UserDefaults.standard
+		guard !defaults[.suppressClearImagesWithConsole] else {
+			actuallyClearConsole()
+			if defaults[.clearImagesWithConsole] { session.imageCache.clearCache() }
+			return
+		}
+		confirmAction(message: NSLocalizedString("ClearConsoleWarning", comment: ""),
+		              infoText: NSLocalizedString("ClearConsoleInfo", comment: ""),
+		              buttonTitle: NSLocalizedString("ClearImagesButton", comment: ""),
+		              cancelTitle: NSLocalizedString("ClearConsoleOnlyButton", comment: ""),
+		              defaultToCancel: !defaults[.clearImagesWithConsole],
+		              suppressionKey: .suppressClearImagesWithConsole)
+		{ (clearImages) in
+			defaults[.clearImagesWithConsole] = clearImages
+			self.actuallyClearConsole()
+			if (clearImages) { self.session.imageCache.clearCache() }
+		}
 	}
 	
 	// MARK: textfield delegate
