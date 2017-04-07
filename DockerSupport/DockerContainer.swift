@@ -213,7 +213,7 @@ extension DockerContainer: Equatable {
 	}
 }
 
-extension Array where Element:DockerContainer {
+public extension Array where Element: DockerContainer {
 	/// returns the first element of the specified container type
 	///
 	/// - parameter index: the type to find

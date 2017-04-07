@@ -56,7 +56,7 @@ class DockerManagerSpec: BaseDockerSpec {
 			}
 			
 			let testRemoveOutdatedContainers = { (containers: [DockerContainer]) in
-//				let containerName = containers[.compute]!.name
+				let containerName = containers[.compute]!.name
 				//stub all deletes to fail
 				self.stub({ request -> Bool in
 					request.httpMethod == "DELETE"

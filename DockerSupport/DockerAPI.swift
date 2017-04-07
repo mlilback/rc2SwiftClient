@@ -36,13 +36,19 @@ public protocol DockerAPI {
 	/// initializer
 	init(baseUrl: URL, sessionConfig: URLSessionConfiguration)
 	
-	/// Convience mehtod to fetch json
+	/// Convience method to fetch json
 	///
 	/// - parameter url: the url that contains json data
 	///
 	/// - returns: the fetched json data
 	func fetchJson(url: URL) -> SignalProducer<JSON, Rc2Error>
 
+	/// Fetches the logs for the specified container
+	///
+	/// - Parameter container: the container to get logs for
+	/// - Returns: the cotents of the logs (stdout and stderr merged)
+	func fetchLog(container: DockerContainer) -> SignalProducer<String, Rc2Error>
+	
 	/// Executes a command on the docker server and returns stdout
 	///
 	/// - Parameters:

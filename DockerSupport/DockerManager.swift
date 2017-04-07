@@ -54,12 +54,12 @@ public final class DockerManager: NSObject {
 	// MARK: - Properties
 	/// the containers managed.
 	// these should always be referred to as self.containers since many parameters have the name containers
-	public fileprivate(set) var containers: [DockerContainer]!
+	public fileprivate(set) var containers: [DockerContainer]
 	public var isReady: Bool { return state == .ready }
 
 	let sessionConfig: URLSessionConfiguration
 	let session: URLSession
-	let api: DockerAPI!
+	public let api: DockerAPI!
 	let networkName = "rc2server"
 	let requiredApiVersion = 1.24
 	let baseInfoUrl: String
@@ -124,6 +124,7 @@ public final class DockerManager: NSObject {
 		api = apiImplementation.init(baseUrl: baseUrl, sessionConfig: sessionConfig)
 		//read image info from defaults
 		imageInfo = RequiredImageInfo(from: defaults[.cachedImageInfo])
+		containers = []
 		super.init()
 		assert(baseInfoUrl.hasSuffix("/"))
 		let myBundle = Bundle(for: type(of: self))
@@ -314,7 +315,7 @@ public final class DockerManager: NSObject {
 	/// - returns: a signal producer with no value
 	public func perform(operation: DockerContainerOperation, on inContainers: [DockerContainer]? = nil) -> SignalProducer<(), Rc2Error>
 	{
-		var selectedContainers = self.containers!
+		var selectedContainers = self.containers
 		if inContainers != nil {
 			selectedContainers = inContainers!
 		}

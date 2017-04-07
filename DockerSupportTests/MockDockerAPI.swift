@@ -11,6 +11,14 @@ import ClientCore
 import Freddy
 
 class MockDockerAPI: DockerAPI {
+	/// Fetches the logs for the specified container
+	///
+	/// - Parameter container: the container to get logs for
+	/// - Returns: the cotents of the logs (stdout and stderr merged)
+	func fetchLog(container: DockerContainer) -> SignalProducer<String, Rc2Error> {
+		fatalError("not implemented")
+	}
+
 	var baseUrl: URL
 
 	func loadVersion() -> SignalProducer<DockerVersion, Rc2Error> {

@@ -62,6 +62,18 @@ final class DockerAPIImplementation: DockerAPI {
 	}
 
 	// documentation in DockerAPI protocol
+	public func fetchLog(container: DockerContainer) -> SignalProducer<String, Rc2Error>
+	{
+		let url = baseUrl.appendingPathComponent("containers/\(container.name)/logs")
+		var components = URLComponents(url: url, resolvingAgainstBaseURL: true)!
+		components.queryItems?.append(URLQueryItem(name: "stderr", value: "1"))
+		components.queryItems?.append(URLQueryItem(name: "stdout", value: "1"))
+		let req = URLRequest(url: components.url!)
+		return makeRequest(request: req)
+			.optionalLog("\(container.name) logs")
+			.map { String(data: $0, encoding: .utf8)! }
+	}
+	
 	public func execCommand(command: [String], container: DockerContainer) -> SignalProducer<Data, Rc2Error>
 	{
 		precondition(command.count > 0)

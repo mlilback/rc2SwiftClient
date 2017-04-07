@@ -10,17 +10,20 @@ import os
 import Freddy
 import ClientCore
 
-///DockerUrlProtocol is a subclass of NSURLProtocol for dealing with "unix" URLs
+///DockerUrlProtocol is a subclass of NSURLProtocol for dealing with "unix" and "dockerstream" URLs
 /// This is used to communicate with the local Docker daemon using a REST-like syntax
 
-open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
+public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
+	public static let scheme = "unix"
+	/// for "hijacked" streams that stay open and keep sending data
+	public static let streamScheme = "dockerstream"
 	fileprivate let socketPath = "/var/run/docker.sock"
 	fileprivate let crlnData = Data(bytes: [UInt8(13), UInt8(10)])
-	fileprivate var chunkHandler: LinedJsonHandler?
+	fileprivate var chunkHandler: DockerResponseHandler?
 
 	override open class func canInit(with request: URLRequest) -> Bool {
 		os_log("DUP queried about %{public}s", log: .docker, type: .debug, "\(request)")
-		return request.url!.scheme == "unix"
+		return request.url!.scheme == scheme || request.url!.scheme == streamScheme
 	}
 
 	open override class func canonicalRequest(for request: URLRequest) -> URLRequest {
@@ -91,17 +94,22 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	///
 	/// - parameter fileHandle: the fileHandle to asynchronously read chunks of data from
 	fileprivate func handleChunkedResponse(fileHandle: FileHandle) {
-		chunkHandler = LinedJsonHandler(fileHandle: fileHandle, handler: chunkedResponseHandler)
+		if request.url!.scheme! == type(of: self).streamScheme {
+			chunkHandler = RawDataResponseHandler(fileHandle: fileHandle, handler: chunkedResponseHandler)
+		} else {
+			chunkHandler = LinedJsonHandler(fileHandle: fileHandle, handler: chunkedResponseHandler)
+		}
 		chunkHandler?.start()
 	}
 
-	fileprivate func chunkedResponseHandler(msgType: MessageType, json: [JSON]) {
+	fileprivate func chunkedResponseHandler(msgType: MessageType?) {
+		guard let msgType = msgType else { return }
 		switch msgType {
 		case .complete:
 			client?.urlProtocolDidFinishLoading(self)
 		case .error:
 			client?.urlProtocol(self, didFailWithError: Rc2Error(type: .invalidJson))
-		case .json:
+		case .json(let json):
 			var jdata = Data()
 			json.forEach { aLine in
 				// swiftlint:disable:next force_try
@@ -115,6 +123,8 @@ open class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 				return
 			}
 			client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+		case .data(let data):
+			client?.urlProtocol(self, didLoad: data)
 		}
 	}
 	

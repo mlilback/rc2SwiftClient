@@ -117,12 +117,13 @@ class LinedJsonHandlerSpec: QuickSpec {
 		}
 	}
 
-	func testCallback(msgType: MessageType, json: [JSON]) {
+	func testCallback(msgType: MessageType?) {
+		guard let msgType = msgType else { return }
 		lastMessageType = msgType
-		lastJson = json
 		messageCount += 1
 		switch msgType {
-			case .json:
+			case .json(let json):
+				lastJson = json
 				return
 			case .headers(_):
 				return
