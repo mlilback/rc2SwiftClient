@@ -22,7 +22,7 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	fileprivate var chunkHandler: DockerResponseHandler?
 
 	override open class func canInit(with request: URLRequest) -> Bool {
-		os_log("DUP queried about %{public}s", log: .docker, type: .debug, "\(request)")
+		os_log("DUP queried about %{public}@", log: .docker, type: .debug, request.url!.absoluteString)
 		return request.url!.scheme == scheme || request.url!.scheme == streamScheme
 	}
 
@@ -176,7 +176,7 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 			reportBadResponse(error: error)
 			throw error
 		}
-		os_log("connection open to docker %{public}s", log: .docker, type: .debug, request.url!.absoluteString)
+		os_log("connection open to docker %{public}@", log: .docker, type: .debug, request.url!.absoluteString)
 		return fd
 	}
 

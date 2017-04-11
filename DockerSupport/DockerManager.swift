@@ -206,7 +206,7 @@ public final class DockerManager: NSObject {
 		let fullSize = imageInfo!.reduce(0) { val, info in val + info.size }
 		pullProgress = PullProgress(name: "all", size: fullSize)
 		let producers = imageInfo!.map { img -> SignalProducer<PullProgress, Rc2Error> in
-			os_log("got pull for %{public}s", log:.docker, type:.debug, img.fullName)
+			os_log("got pull for %{public}@", log:.docker, type:.debug, img.fullName)
 			return self.pullSingleImage(pull: DockerPullOperation(baseUrl: self.baseUrl, imageName: img.fullName, estimatedSize: img.size, config: sessionConfig))
 		}
 		//use concat instead of merge because progress depends on order of download (layer sizes)
@@ -268,7 +268,7 @@ public final class DockerManager: NSObject {
 				self.imageInfo = newInfo
 				self.defaults[.cachedImageInfo] = json
 			} catch {
-				os_log("got imageInfo error: %{public}s", log: .docker, error as NSError)
+				os_log("got imageInfo error: %{public}@", log: .docker, error.localizedDescription)
 				return false
 			}
 			return true
@@ -383,13 +383,13 @@ extension DockerManager: DockerEventMonitorDelegate {
 			let container = self.containers[ctype] else { return }
 		switch event.eventType {
 			case .die:
-				os_log("warning: container died: %{public}@", log:.docker, from)
+				os_log("warning: container died: %{public}@", log:.docker, from as String)
 				if let exitStatusStr = try? event.json.getString(at: "exitCode"),
 					let exitStatus = Int(exitStatusStr), exitStatus != 0
 				{
 					//abnormally died
 					//TODO: handle abnormal death of container
-					os_log("warning: container %{public}@ died with non-normal exit code", log:.docker, ctype.rawValue)
+					os_log("warning: container %{public}@ died with non-normal exit code", log:.docker, ctype.rawValue as String)
 				}
 				container.update(state: .exited)
 			case .start:
@@ -428,7 +428,7 @@ extension DockerManager {
 	{
 		return SignalProducer<DockerVersion, Rc2Error> { observer, _ in
 			//force cast because only should be called if versionInfo was set
-			os_log("dm.verifyValidVersion: %{public}s", log: .docker, type: .debug, version.description)
+			os_log("dm.verifyValidVersion: %{public}@", log: .docker, type: .debug, version.description)
 			if version.apiVersion >= self.requiredApiVersion {
 				self.versionInfo = version
 				observer.send(value: version)
@@ -499,7 +499,7 @@ extension DockerManager {
 		for aContainer in containers {
 			let image = imageInfo![aContainer.type]
 			if image.id != aContainer.imageId && aContainer.state.value != .notAvailable {
-				os_log("outdated image for %{public}s", log: .docker, type: .info, aContainer.type.rawValue)
+				os_log("outdated image for %{public}@", log: .docker, type: .info, aContainer.type.rawValue as String)
 				containersToRemove.append(aContainer)
 			}
 		}

@@ -196,7 +196,7 @@ final class DockerAPIImplementation: DockerAPI {
 	// documentation in DockerAPI protocol
 	public func perform(operation: DockerContainerOperation, container: DockerContainer) -> SignalProducer<(), Rc2Error>
 	{
-		os_log("performing %{public}s on %{public}@", log: .docker, type: .debug, operation.rawValue, container.name)
+		os_log("performing %{public}@ on %{public}@", log: .docker, type: .debug, operation.rawValue as String, container.name)
 		if operation == .start && container.state.value == .running {
 			//already running, no need to start
 			return SignalProducer<(), Rc2Error>(result: Result<(), Rc2Error>(value: ()))
@@ -217,7 +217,7 @@ final class DockerAPIImplementation: DockerAPI {
 	func create(container: DockerContainer) -> SignalProducer<DockerContainer, Rc2Error>
 	{
 		return SignalProducer<DockerContainer, Rc2Error> { observer, _ in
-			os_log("creating container %{public}s", log: .docker, type: .debug, container.name)
+			os_log("creating container %{public}@", log: .docker, type: .debug, container.name)
 			guard container.state.value == .notAvailable else {
 				observer.send(value: container)
 				observer.sendCompleted()
@@ -328,7 +328,7 @@ extension DockerAPIImplementation {
 	{
 		return SignalProducer<DockerVersion, Rc2Error> { observer, _ in
 			do {
-				os_log("parsing version info: %{public}s", log: .docker, type: .debug, try json.serializeString())
+				os_log("parsing version info: %{public}@", log: .docker, type: .debug, try json.serializeString())
 				let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
 				let verStr = try json.getString(at: "Version")
 				guard let match = regex.firstMatch(in: verStr, options: [], range: verStr.fullNSRange),
