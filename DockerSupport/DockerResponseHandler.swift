@@ -12,12 +12,12 @@ import os
 ///This class takes a socket that contains the response from a docker api call
 
 enum MessageType: Equatable {
-	case headers(Data), json([JSON]), data(Data), complete, error
+	case headers(HttpHeaders), json([JSON]), data(Data), complete, error(Rc2Error)
 	
 	static func == (a: MessageType, b: MessageType) -> Bool {
 		switch (a, b) {
-		case (.error, .error):
-			return true
+		case (.error(let e1), .error(let e2)):
+			return e1.type == e2.type //FIXME: not correct
 		case (.complete, .complete):
 			return true
 		case (.json(let j1), .json(let j2)):
@@ -34,20 +34,24 @@ enum MessageType: Equatable {
 
 ///Parses the http response from a socket that is returning mulitple json messages separated by newlines
 class DockerResponseHandler {
+	let crnl = Data(bytes: [13, 10])
 	private let handler: (MessageType) -> Void
 	private let fileHandle: FileHandle
 	private var readSource: DispatchSourceRead?
 	private var gotHeader = false
 	private var myQueue = DispatchQueue.global()
-	private var leftoverData: Data?
+	private var isChunked: Bool = false
+	private var isHijacked = false
+	private var chunkCount: Int = 0
 	
 	/// Initiailize an instance
 	///
 	/// - Parameters:
 	///   - fileHandle: the source of the data, must have a valid fileDescriptor value
-	init(fileHandle: FileHandle, handler: @escaping (MessageType) -> Void) {
+	init(fileHandle: FileHandle, hijacked: Bool = false, handler: @escaping (MessageType) -> Void) {
 		self.fileHandle = fileHandle
 		self.handler = handler
+		self.isHijacked = hijacked
 	}
 	
 	///chokepoint for logging/debugging
@@ -85,51 +89,141 @@ class DockerResponseHandler {
 			source.cancel()
 			return
 		}
-		var data = fileHandle.readData(ofLength: Int(sizeRead))
+		let data = fileHandle.readData(ofLength: Int(sizeRead))
 		do {
 			guard gotHeader else {
-				parseInitialContent(data)
+				parseHeader(data)
 				return
 			}
-			if leftoverData != nil {
-				leftoverData?.append(data)
-				data = leftoverData!
-				leftoverData = nil
-			}
-			let (message, remaining) = try parse(data: data)
-			leftoverData = remaining
-			if let actualMessage = message {
-				sendMessage(actualMessage)
-			}
+			try parse(data: data)
 		} catch {
 			readSource = nil
-			sendMessage(.error)
+			sendMessage(.error(Rc2Error(type: .network, nested: error)))
 			source.cancel()
 		}
 	}
 	
-	/// Parses the input string into individual lines of json, sending them via handler. Returns any remaining text that didn't have a newline at the end
-	///
-	/// - Parameter data: the data from the socket
-	/// - Returns: any remaining data that didn't end with a newline
-	/// - Throws: json parse errors
-	func parse(data: Data) throws -> (MessageType?, Data?) {
-		fatalError("subclass must implement parse()")
+	private func parseHijacked(data: Data) throws {
+		//header := [8]byte{STREAM_TYPE, 0, 0, 0, SIZE1, SIZE2, SIZE3, SIZE4}
+		let headerSize: Int = 8
+		var currentOffset: Int = 0
+		repeat {
+			guard data.count - currentOffset > headerSize else {
+				throw DockerError.httpError(statusCode: 500, description: "received hijacked data with invalid length", mimeType: nil)
+			}
+			// cast first 8 bytes to array of 2 Int32s. Convert the second to big endian to get size of message
+			let (type, size) = data.subdata(in: currentOffset..<currentOffset + headerSize).withUnsafeBytes
+			{ (ptr: UnsafePointer<UInt8>) -> (UInt8, Int) in
+				return (ptr[0], ptr.withMemoryRebound(to: Int32.self, capacity: 2)
+				{ (intPtr: UnsafePointer<Int32>) -> Int in
+					return Int(Int32(bigEndian: intPtr[1]))
+				})
+			}
+			guard type == 1 || type == 2 else {
+				throw DockerError.httpError(statusCode: 500, description: "invalid hijacked stream type", mimeType: nil)
+			}
+			currentOffset += headerSize
+			let nextOffset = currentOffset + size
+			let currentChunk = data.subdata(in: currentOffset..<nextOffset)
+			sendMessage(.data(currentChunk))
+			currentOffset += size
+		} while data.count > currentOffset
+
+//		let headerSize = 8
+//		var currentOffset = 0
+//		repeat {
+//			guard data.count - currentOffset > headerSize else {
+//				throw DockerError.httpError(statusCode: 500, description: "received hijacked data with invalid length", mimeType: nil)
+//			}
+//			// cast first 8 bytes to array of 2 Int32s. Convert the second to big endian to get size of message
+//			let (type, size) = data.subdata(in: currentOffset..<headerSize).withUnsafeBytes
+//				{ (ptr: UnsafePointer<UInt8>) -> (UInt8, Int) in
+//					return (ptr[0], ptr.withMemoryRebound(to: Int32.self, capacity: 2)
+//						{ (intPtr: UnsafePointer<Int32>) -> Int in
+//							return Int(Int32(bigEndian: intPtr[1]))
+//						})
+//			}
+//			guard type == 1 || type == 2 else {
+//				throw DockerError.httpError(statusCode: 500, description: "invalid hijacked stream type", mimeType: nil)
+//			}
+//			currentOffset += headerSize
+//			let nextOffset = currentOffset + size
+//			let currentChunk = data.subdata(in: headerSize..<nextOffset)
+//			sendMessage(.data(currentChunk))
+//			currentOffset += size
+//		} while data.count > currentOffset
 	}
 	
-	private func parseInitialContent(_ data: Data) {
+	/// Parses the data for any chunks
+	private func parse(data: Data) throws {
+		guard let lineEnd = data.range(of: crnl) else {
+			os_log("failed to find CRNL in chunk", log: .docker)
+			throw DockerError.httpError(statusCode: 500, description: "failed to find CRNL in chunk", mimeType: nil)
+		}
+		let sizeData = data.subdata(in: 0..<lineEnd.lowerBound)
+		guard let dataStr = String(data: sizeData, encoding: .utf8),
+			let chunkLength = Int(dataStr, radix: 16)
+			else { fatalError("failed to read chunk length") }
+		os_log("got chunk length %d", log: .docker, type: .debug, chunkLength)
+		guard chunkLength > 0 else {
+			sendMessage(.complete)
+			return
+		}
+		if isHijacked {
+			try parseHijacked(data: data.subdata(in: lineEnd.upperBound..<data.count))
+			return
+		}
+		let chunkEnd = chunkLength + sizeData.count + 1
+		let chunkData = data.subdata(in: lineEnd.upperBound..<chunkEnd)
+		sendMessage(.data(chunkData))
+		//remaining data starts with the CRNL after chunkEnd
+		let rawRemaining = data.subdata(in: chunkEnd + 1..<data.count)
+		guard let nextCRNL = rawRemaining.range(of: crnl) else {
+			throw DockerError.httpError(statusCode: 500, description: "error parsing chunk remainder", mimeType: "")
+		}
+		let remaining = rawRemaining.subdata(in: nextCRNL.upperBound..<rawRemaining.count)
+		try parse(data: remaining)
+	}
+	
+	/// subclasses should override
+	func parseChunkData(data: Data) -> MessageType {
+		return .data(data)
+	}
+	
+	private func parseHeader(_ data: Data) {
+		var cancel = false
+		defer { if cancel { DispatchQueue.main.async { self.readSource?.cancel() } } }
 		do {
-			let (headData, contentData) = try HttpStringUtils.splitResponseData(data)
+			let (headData, remainingData) = try HttpStringUtils.splitResponseData(data)
+			guard let headString = String(data: headData, encoding: .utf8),
+				let headers = try? HttpStringUtils.extractHeaders(headString)
+				else
+			{
+				sendMessage(.error(Rc2Error(type: .network, explanation: "failed to parse headers")))
+				cancel = true
+				return
+			}
+			guard headers.statusCode >= 200, headers.statusCode <= 299 else {
+				sendMessage(.error(Rc2Error(type: .docker, explanation: "invalid status code")))
+				cancel = true
+				return
+			}
+			if let teheader = headers.headers["Transfer-Encoding"], teheader == "chunked" {
+				isChunked = true
+			} else {
+				cancel = true
+			}
 			//TODO: confirm 200 response on http status from headData
-			let (message, remainingData) = try parse(data: contentData)
-			leftoverData = remainingData
-			sendMessage(.headers(headData))
+			sendMessage(.headers(headers))
 			gotHeader = true
-			if let actualMessage = message {
-				sendMessage(actualMessage)
+			guard remainingData.count > 0 else { return }
+			if isChunked {
+				try parse(data: remainingData)
+			} else {
+				sendMessage(.data(remainingData))
 			}
 		} catch {
-			leftoverData = data
+			os_log("error parsing data %{public}s", log: .docker, error as NSError)
 		}
 	}
 }
