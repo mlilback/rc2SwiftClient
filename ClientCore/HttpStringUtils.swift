@@ -10,6 +10,14 @@ public struct HttpHeaders: Equatable {
 	public let statusCode: Int
 	public let httpVersion: String
 	public let headers: [String: String]
+	public let isChunked: Bool
+
+	public init(statusCode: Int, httpVersion: String, headers: [String: String]) {
+		self.statusCode = statusCode
+		self.httpVersion = httpVersion
+		self.headers = headers
+		isChunked = headers["Transfer-Encoding"] == "chunked"
+	}
 	
 	public static func == (lhs: HttpHeaders, rhs: HttpHeaders) -> Bool {
 		return lhs.statusCode == rhs.statusCode &&
