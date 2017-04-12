@@ -65,7 +65,7 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		} else if let bstream = request.httpBodyStream {
 			writeRequestData(data: Data(bstream), fileHandle: fh)
 		}
-		handleChunkedResponse(fileHandle: fh)
+		queueResponseHandler(fileDescriptor: fd)
 	}
 
 	// required by protocol, even though we don't use
@@ -103,20 +103,16 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		fileHandle.write(data)
 	}
 
-	/// called to read rest of data as chunks
-	///
-	/// - parameter fileHandle: the fileHandle to asynchronously read chunks of data from
-	fileprivate func handleChunkedResponse(fileHandle: FileHandle) {
-		if request.url!.scheme! == type(of: self).streamScheme {
-			chunkHandler = DockerResponseHandler(fileHandle: fileHandle, hijacked: true, handler: chunkedResponseHandler)
+	fileprivate func queueResponseHandler(fileDescriptor: Int32) {
+		if request.url!.scheme! == DockerUrlProtocol.streamScheme {
+			chunkHandler = HijackedResponseHandler(fileDescriptor: fileDescriptor, queue: DispatchQueue.global(), handler: responseCallback)
 		} else {
-			chunkHandler = LinedJsonHandler(fileHandle: fileHandle, handler: chunkedResponseHandler)
+			chunkHandler = SingleDataResponseHandler(fileDescriptor: fileDescriptor, queue: DispatchQueue.global(), handler: responseCallback)
 		}
-		chunkHandler?.start()
+		chunkHandler?.startHandler()
 	}
 
-	fileprivate func chunkedResponseHandler(msgType: MessageType?) {
-		guard let msgType = msgType else { return }
+	fileprivate func responseCallback(msgType: MessageType) {
 		switch msgType {
 		case .complete:
 			client?.urlProtocolDidFinishLoading(self)

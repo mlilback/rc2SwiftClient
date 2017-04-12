@@ -9,21 +9,31 @@ import ClientCore
 import DockerSupport
 
 public class DockerViewController: NSViewController {
-	dynamic var manager: DockerManager? { didSet {
-		self.tableController?.manager = self.manager
-		self.tableController?.containerTable?.reloadData()
-	} }
+	dynamic var manager: DockerManager? { didSet { dockerManagerSet() } }
 	dynamic var tableController: DockerContainerController?
 	@IBOutlet dynamic var startButton: NSButton?
 	@IBOutlet dynamic var stopButton: NSButton?
 	@IBOutlet dynamic var pauseButton: NSButton?
 	@IBOutlet dynamic var unpauseButton: NSButton?
 	@IBOutlet dynamic var restartButton: NSButton?
+	@IBOutlet var logTextView: NSTextView!
 	var buttonArray: [NSButton]!
+	
+	private func dockerManagerSet() {
+	}
 	
 	override public func viewDidLoad() {
 		super.viewDidLoad()
 		buttonArray = [startButton!, stopButton!, restartButton!, pauseButton!, unpauseButton!]
+		self.tableController?.manager = self.manager
+		self.tableController?.containerTable?.reloadData()
+		DispatchQueue.main.async {
+			guard let manager = self.manager else { fatalError() }
+			manager.api.streamLog(container: manager.containers[.compute]!) { (str, _) in
+				guard let str = str else { return } //TODO: handle close
+				self.logTextView.textStorage?.append(NSAttributedString(string: str))
+			}
+		}
 	}
 	
 	override public func viewWillAppear() {

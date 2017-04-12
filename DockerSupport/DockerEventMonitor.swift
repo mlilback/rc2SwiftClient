@@ -88,8 +88,10 @@ final class DockerEventMonitorImpl: NSObject, DockerEventMonitor, URLSessionData
 		super.init()
 		sessionConfig.timeoutIntervalForRequest = TimeInterval(60 * 60 * 24) //wait a day
 		session = URLSession(configuration: sessionConfig, delegate: self, delegateQueue:nil)
-		let url = URL(string: "/events", relativeTo: baseUrl)!
-		var request = URLRequest(url: url)
+		let ourBaseUrl = URL(string: "/events", relativeTo: baseUrl)!
+		var lcomponents = URLComponents(url: ourBaseUrl, resolvingAgainstBaseURL: true)!
+		lcomponents.scheme = DockerUrlProtocol.streamScheme
+		var request = URLRequest(url: lcomponents.url!)
 		request.isHijackedResponse = true
 		let task = session.dataTask(with: request as URLRequest)
 		task.resume()
