@@ -10,23 +10,6 @@ import os
 import Freddy
 import ClientCore
 
-extension URLRequest {
-	var asCFHTTPMessage: CFHTTPMessage {
-		precondition(httpBodyStream == nil, "body streams unsupported")
-		let msg = CFHTTPMessageCreateRequest(kCFAllocatorDefault, httpMethod! as CFString, url! as CFURL, kCFHTTPVersion1_1).takeRetainedValue()
-		if let headers = allHTTPHeaderFields {
-			for (aKey, aValue) in headers {
-				CFHTTPMessageSetHeaderFieldValue(msg, aKey as CFString, aValue as CFString)
-			}
-		}
-		CFHTTPMessageSetHeaderFieldValue(msg, "Connection" as CFString, "closed" as CFString)
-		if let body = httpBody {
-			CFHTTPMessageSetBody(msg, body as CFData)
-		}
-		return msg
-	}
-}
-
 ///DockerUrlProtocol is a subclass of NSURLProtocol for dealing with "unix" and "dockerstream" URLs
 /// This is used to communicate with the local Docker daemon using a REST-like syntax
 

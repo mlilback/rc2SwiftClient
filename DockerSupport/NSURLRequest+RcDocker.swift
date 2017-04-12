@@ -15,4 +15,18 @@ public extension URLRequest {
 			allHTTPHeaderFields?["Rc2Hijacked"] = newValue ? "true" : nil
 		}
 	}
+	public var asCFHTTPMessage: CFHTTPMessage {
+		precondition(httpBodyStream == nil, "body streams unsupported")
+		let msg = CFHTTPMessageCreateRequest(kCFAllocatorDefault, httpMethod! as CFString, url! as CFURL, kCFHTTPVersion1_1).takeRetainedValue()
+		if let headers = allHTTPHeaderFields {
+			for (aKey, aValue) in headers {
+				CFHTTPMessageSetHeaderFieldValue(msg, aKey as CFString, aValue as CFString)
+			}
+		}
+		CFHTTPMessageSetHeaderFieldValue(msg, "Connection" as CFString, "closed" as CFString)
+		if let body = httpBody {
+			CFHTTPMessageSetBody(msg, body as CFData)
+		}
+		return msg
+	}
 }
