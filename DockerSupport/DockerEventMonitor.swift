@@ -90,7 +90,7 @@ final class DockerEventMonitorImpl: NSObject, DockerEventMonitor, URLSessionData
 		session = URLSession(configuration: sessionConfig, delegate: self, delegateQueue:nil)
 		let url = URL(string: "/events", relativeTo: baseUrl)!
 		var request = URLRequest(url: url)
-		request.isChunkedResponse = true
+		request.isHijackedResponse = true
 		let task = session.dataTask(with: request as URLRequest)
 		task.resume()
 	}

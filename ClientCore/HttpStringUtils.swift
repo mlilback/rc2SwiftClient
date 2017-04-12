@@ -6,6 +6,18 @@
 
 import Foundation
 
+public struct HttpHeaders: Equatable {
+	public let statusCode: Int
+	public let httpVersion: String
+	public let headers: [String: String]
+	
+	public static func == (lhs: HttpHeaders, rhs: HttpHeaders) -> Bool {
+		return lhs.statusCode == rhs.statusCode &&
+			lhs.httpVersion == rhs.httpVersion &&
+			lhs.headers == rhs.headers
+	}
+}
+
 public class HttpStringUtils {
 	public enum UtilError: Error {
 		case invalidInput
@@ -28,7 +40,7 @@ public class HttpStringUtils {
 	/// - parameter headerString: the raw headers from an HTTP response
 	/// - returns: tuple of the HTTP status code, HTTP version, and a dictionary of headers
 	// swiftlint:disable:next large_tuple
-	public class func extractHeaders(_ responseString: String) throws -> (status: Int, version: String, headers: [String:String])
+	public class func extractHeaders(_ responseString: String) throws -> HttpHeaders
 	{
 		// swiftlint:disable:next force_try
 		let responseRegex = try! NSRegularExpression(pattern: "^(HTTP/1.\\d) (\\d+)( .*?\r\n)(.*)", options: [.anchorsMatchLines, .dotMatchesLineSeparators])
@@ -50,6 +62,6 @@ public class HttpStringUtils {
 				headers[key] = value
 			}
 		}
-		return (statusCode, versionString, headers)
+		return HttpHeaders(statusCode: statusCode, httpVersion: versionString, headers: headers)
 	}
 }

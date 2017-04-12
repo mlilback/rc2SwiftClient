@@ -10,8 +10,8 @@ class RawDataResponseHandler: DockerResponseHandler {
 
 	/// - Parameter data: the data from the socket
 	/// - Returns: any remaining data that didn't end with a newline
-	override func parse(data: Data) throws -> (MessageType?, Data?) {
-		return (.data(data), nil)
+	override func parseChunkData(data: Data) -> MessageType {
+		return .data(data)
 	}
 	
 }

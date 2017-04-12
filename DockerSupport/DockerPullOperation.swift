@@ -83,7 +83,8 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 			req.httpMethod = "POST"
 			req.addValue("application/json", forHTTPHeaderField:"Content-Type")
 			req.addValue("application/json", forHTTPHeaderField: "Accept")
-			req.isChunkedResponse = true
+//chunked responses are now handled by default
+//			req.isChunkedResponse = true
 			self._task = self.urlSession!.dataTask(with: req)
 			self._task?.resume()
 		}.optionalLog("pull \(url.lastPathComponent)")

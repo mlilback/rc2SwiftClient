@@ -49,6 +49,15 @@ public protocol DockerAPI {
 	/// - Returns: the cotents of the logs (stdout and stderr merged)
 	func fetchLog(container: DockerContainer) -> SignalProducer<String, Rc2Error>
 	
+	/// Opens a stream to the logs for the specified container
+	///
+	/// - Parameters:
+	///   - container: the container whose logs should be streamed
+	///   - dataHandler: closure called when there is log information. If nil is passed, the stream is complete
+	///   - string: log content to process
+	///   - isStdErr: true if the string is from stderr, false if from stdout
+	func streamLog(container: DockerContainer, dataHandler: @escaping (_ string: String?, _ isStdErr: Bool) -> Void)
+
 	/// Executes a command on the docker server and returns stdout
 	///
 	/// - Parameters:

@@ -74,6 +74,27 @@ final class DockerAPIImplementation: DockerAPI {
 			.map { String(data: $0, encoding: .utf8)! }
 	}
 	
+	// documentation in DockerAPI protocol
+	public func streamLog(container: DockerContainer, dataHandler: @escaping (_ string: String?, _ isStdErr: Bool) -> Void)
+	{
+		let myConfig = sessionConfig
+		myConfig.timeoutIntervalForRequest = TimeInterval(60 * 60 * 24) //wait a day
+		let delegate = ChunkedResponseProxy(handler: dataHandler)
+		let mySession = URLSession(configuration: myConfig, delegate: delegate, delegateQueue:nil)
+//		var components = URLComponents(string: "\(DockerUrlProtocol.streamScheme)://containers/\(container.name)/logs")!
+//		components.scheme = DockerUrlProtocol.streamScheme
+//		components.path = "containers/\(container.name)/logs"
+//		components.queryItems?.append(URLQueryItem(name: "stderr", value: "1"))
+//		components.queryItems?.append(URLQueryItem(name: "stdout", value: "1"))
+//		components.queryItems?.append(URLQueryItem(name: "follow", value: "1"))
+		var request = URLRequest(url: URL(string: "dockerstream:/v1.24/containers/\(container.name)/logs?stderr=1&stdout=1&follow=true")!)
+//		var request = URLRequest(url: components.url!)
+		request.isHijackedResponse = true
+		let task = mySession.dataTask(with: request as URLRequest)
+		task.resume()
+	}
+	
+	// documentation in DockerAPI protocol
 	public func execCommand(command: [String], container: DockerContainer) -> SignalProducer<Data, Rc2Error>
 	{
 		precondition(command.count > 0)
@@ -389,11 +410,17 @@ extension DockerAPIImplementation {
 	/// - parameter filter:   a closure that determines if the json meets requirements
 	func jsonCheckHandler(observer: Observer<Bool, Rc2Error>, data: Data?, filter: ((JSON) throws -> Bool))
 	{
-		guard let rdata = data,
-			let json = try? JSON(data: rdata),
-			let result = try? filter(json) else
-		{
-			observer.send(error: Rc2Error(type: .invalidJson)) //is this really the best error?
+		guard let data = data else {
+			observer.send(error: Rc2Error(type: .invalidArgument, explanation: "no data"))
+			return
+		}
+		var json: JSON?
+		var result: Bool = false
+		do {
+			json = try JSON(data: data)
+			result = try filter(json!)
+		} catch {
+			observer.send(error: Rc2Error(type: .invalidJson, nested: error)) //is this really the best error?
 			return
 		}
 		observer.send(value: result)
@@ -434,6 +461,9 @@ extension DockerAPIImplementation {
 				guard let rawData = data, error == nil else {
 					observer.send(error: Rc2Error(type: .network, nested: error))
 					return
+				}
+				if rawData.count == 0 {
+					print("no data")
 				}
 				//default to 200 for non-http status codes (such as file urls)
 				let statusCode = response?.httpResponse?.statusCode ?? 200

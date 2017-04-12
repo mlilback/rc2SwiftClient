@@ -8,11 +8,11 @@ import Foundation
 import ClientCore
 
 public extension URLRequest {
-	public var isChunkedResponse: Bool {
-		get { return allHTTPHeaderFields?["Rc2Chunked"] != nil }
+	public var isHijackedResponse: Bool {
+		get { return allHTTPHeaderFields?["Rc2Hijacked"] != nil }
 		set {
 			if nil == allHTTPHeaderFields { allHTTPHeaderFields = [:] }
-			allHTTPHeaderFields?["Rc2Chunked"] = newValue ? "true" : nil
+			allHTTPHeaderFields?["Rc2Hijacked"] = newValue ? "true" : nil
 		}
 	}
 }

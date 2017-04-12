@@ -10,6 +10,23 @@ import os
 import Freddy
 import ClientCore
 
+extension URLRequest {
+	var asCFHTTPMessage: CFHTTPMessage {
+		precondition(httpBodyStream == nil, "body streams unsupported")
+		let msg = CFHTTPMessageCreateRequest(kCFAllocatorDefault, httpMethod! as CFString, url! as CFURL, kCFHTTPVersion1_1).takeRetainedValue()
+		if let headers = allHTTPHeaderFields {
+			for (aKey, aValue) in headers {
+				CFHTTPMessageSetHeaderFieldValue(msg, aKey as CFString, aValue as CFString)
+			}
+		}
+		CFHTTPMessageSetHeaderFieldValue(msg, "Connection" as CFString, "closed" as CFString)
+		if let body = httpBody {
+			CFHTTPMessageSetBody(msg, body as CFData)
+		}
+		return msg
+	}
+}
+
 ///DockerUrlProtocol is a subclass of NSURLProtocol for dealing with "unix" and "dockerstream" URLs
 /// This is used to communicate with the local Docker daemon using a REST-like syntax
 
@@ -35,28 +52,20 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { fatalError("mock all docker calls") }
 
 		guard let fd = try? openDockerConnection() else { return }
-
+		let massagedRequest = massageRequest()
+		guard let requestData = massagedRequest.CFHTTPMessage.serialized else { fatalError("failed to serialize request") }
+//		let lenWritten = requestData.withUnsafeBytes { (data) -> Int in
+//			return write(fd, data, requestData.count)
+//		}
+//		guard lenWritten == requestData.count else { fatalError() }
 		let fh = FileHandle(fileDescriptor: fd)
-		guard let outStr = buildRequestString(), outStr.characters.count > 0 else { return }
-		os_log("sending request to docker: %{public}s", log: .docker, type: .debug, outStr)
-		fh.write(outStr.data(using: String.Encoding.utf8)!)
+		writeRequestData(data: requestData, fileHandle: fh)
 		if let body = request.httpBody {
-			fh.write(body)
+			writeRequestData(data: body, fileHandle: fh)
 		} else if let bstream = request.httpBodyStream {
-			fh.write(Data(bstream))
+			writeRequestData(data: Data(bstream), fileHandle: fh)
 		}
-
-		if request.isChunkedResponse {
-			handleChunkedResponse(fileHandle: fh)
-			return
-		}
-		let inData = fh.readDataToEndOfFile()
-		close(fd)
-		guard let (response, responseData) = processInitialResponse(data: inData) else { return }
-		//report success to client
-		client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-		client?.urlProtocol(self, didLoad: responseData)
-		client?.urlProtocolDidFinishLoading(self)
+		handleChunkedResponse(fileHandle: fh)
 	}
 
 	// required by protocol, even though we don't use
@@ -66,22 +75,26 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 
 	// MARK: - private methods
 
-	/// Builds a string with the proper http request string
-	///
-	/// - returns: the string to use as an http request
-	func buildRequestString() -> String? {
-		guard var path = request.url?.path else { reportBadResponse(); return nil }
-		if let queryStr = request.url?.query {
-			path += "?\(queryStr)"
+	/// modifies request for use as a docker request
+	func massageRequest() -> URLRequest {
+		guard let origUrl = request.url, var components = URLComponents(url: origUrl, resolvingAgainstBaseURL: true)
+			else { fatalError("request must have URL") }
+		if !components.path.hasPrefix("/") {
+			components.path = "/\(components.path)"
 		}
-		var outStr = "\(request.httpMethod!) \(path) HTTP/1.0\r\n"
-		request.allHTTPHeaderFields?.forEach { (k, v) in
-			outStr += "\(k): \(v)\r\n"
+		guard let newUrl = components.url else { fatalError("failed to generate new url") }
+		var req = request
+		req.url = newUrl
+		req.addValue("localhost:8088", forHTTPHeaderField: "Host")
+		req.addValue("close", forHTTPHeaderField: "Connection")
+		req.addValue("Rc2Engine", forHTTPHeaderField: "User-Agent")
+		if request.isHijackedResponse {
+			req.addValue("*/*", forHTTPHeaderField: "Accept")
 		}
-		outStr += "\r\n"
-		return outStr
+//		req.addValue("chunked", forHTTPHeaderField: "Transfer-Encoding")
+		return req
 	}
-
+	
 	/// actually write data to the file handle. Exists to allow unit test ignore write
 	///
 	/// - parameter data:       the data to write
@@ -95,7 +108,7 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	/// - parameter fileHandle: the fileHandle to asynchronously read chunks of data from
 	fileprivate func handleChunkedResponse(fileHandle: FileHandle) {
 		if request.url!.scheme! == type(of: self).streamScheme {
-			chunkHandler = RawDataResponseHandler(fileHandle: fileHandle, handler: chunkedResponseHandler)
+			chunkHandler = DockerResponseHandler(fileHandle: fileHandle, hijacked: true, handler: chunkedResponseHandler)
 		} else {
 			chunkHandler = LinedJsonHandler(fileHandle: fileHandle, handler: chunkedResponseHandler)
 		}
@@ -107,8 +120,8 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		switch msgType {
 		case .complete:
 			client?.urlProtocolDidFinishLoading(self)
-		case .error:
-			client?.urlProtocol(self, didFailWithError: Rc2Error(type: .invalidJson))
+		case .error(let err):
+			client?.urlProtocol(self, didFailWithError: err)
 		case .json(let json):
 			var jdata = Data()
 			json.forEach { aLine in
@@ -117,8 +130,8 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 				jdata.append(crlnData)
 			}
 			client?.urlProtocol(self, didLoad: jdata)
-		case .headers(let headData):
-			guard let response = generateResponse(headerData: headData) else {
+		case .headers(let headers):
+			guard let response = generateResponse(headers: headers) else {
 				client?.urlProtocol(self, didFailWithError: Rc2Error(type: .network))
 				return
 			}
@@ -128,21 +141,6 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		}
 	}
 	
-	/// parses the incoming data and forwards it to the client
-	///
-	/// - parameter data: the data to parse
-	///
-	/// - throws: NSError if failed to parse the data. The error will have been reported to the client
-	func processData(data: Data) throws {
-		guard let (response, initialData) = processInitialResponse(data: data) else {
-			reportBadResponse()
-			return
-		}
-		//tell the client
-		client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-		client?.urlProtocol(self, didLoad: initialData)
-	}
-
 	/// Opens a socket to docker daemon. Notifies user of any problems
 	///
 	/// - throws: an NSError that has been reported to the client
@@ -180,32 +178,9 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		return fd
 	}
 
-	/// Parses the initial headers/content data from docker
-	///
-	/// - parameter inData: the data sent by docker
-	///
-	/// - returns: a response and the response data
-	func processInitialResponse(data inData: Data) -> (HTTPURLResponse, Data)? {
-		//split the response into headers and content, create a response object
-		guard let (headData, contentData) = try? HttpStringUtils.splitResponseData(inData),
-			let response = generateResponse(headerData: headData)
-			else
-		{
-			reportBadResponse()
-			return nil
-		}
-		return (response, contentData)
-	}
-
-	fileprivate func generateResponse(headerData: Data) -> HTTPURLResponse? {
-		guard let headString = String(data: headerData, encoding: .utf8),
-			let (statusCode, httpVersion, headers) = try? HttpStringUtils.extractHeaders(headString)
-			else
-		{
-			return nil
-		}
-		os_log("docker returned %d", log: .docker, type: .debug, statusCode)
-		guard let response = HTTPURLResponse(url: request.url!, statusCode: statusCode, httpVersion: httpVersion, headerFields: headers) else
+	fileprivate func generateResponse(headers: HttpHeaders) -> HTTPURLResponse? {
+		os_log("docker returned %d", log: .docker, type: .debug, headers.statusCode)
+		guard let response = HTTPURLResponse(url: request.url!, statusCode: headers.statusCode, httpVersion: headers.httpVersion, headerFields: headers.headers) else
 		{ return nil }
 		return response
 	}
