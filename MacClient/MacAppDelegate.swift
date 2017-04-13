@@ -49,6 +49,14 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
 	// MARK: - NSApplicationDelegate
 	func applicationWillFinishLaunching(_ notification: Notification) {
+		#if HOCKEYAPP_ENABLED
+			if ProcessInfo.processInfo.environment["DisableHockeyApp"] == nil {
+				BITHockeyManager.shared().configure(withIdentifier: kHockeyAppIdentifier)
+				//BITHockeyManager.sharedHockeyManager().debugLogEnabled = true
+				// Do some additional configuration if needed here
+				BITHockeyManager.shared().start()
+			}
+		#endif
 		mainStoryboard = NSStoryboard(name: "Main", bundle: nil)
 		precondition(mainStoryboard != nil)
 		//only init dockerManager if not running unit tests
@@ -74,14 +82,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		//skip startup actions if running unit tests
 		guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
-	#if HOCKEYAPP_ENABLED
-		if ProcessInfo.processInfo.environment["DisableHockeyApp"] == nil {
-			BITHockeyManager.shared().configure(withIdentifier: kHockeyAppIdentifier)
-			//BITHockeyManager.sharedHockeyManager().debugLogEnabled = true
-			// Do some additional configuration if needed here
-			BITHockeyManager.shared().start()
-		}
-	#endif
 	}
 
 	func applicationWillTerminate(_ aNotification: Notification) {
@@ -514,3 +514,10 @@ extension MacAppDelegate {
 			.flatMap(.concat) { docker.prepareContainers() }
 	}
 }
+
+//extension MacAppDelegate: BITCrashManagerDelegate {
+//	func attachment(for crashManager: BITCrashManager!) -> BITHockeyAttachment! {
+//
+//	}
+//
+//}
