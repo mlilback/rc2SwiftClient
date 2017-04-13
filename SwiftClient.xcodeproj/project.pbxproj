@@ -12,6 +12,10 @@
 		08037C351D7C5E2200006E9E /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */; };
 		0803FCBE1C84C47400F17E4A /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		080834561C84C13300F5A190 /* SyntaxParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080834551C84C13300F5A190 /* SyntaxParserTests.swift */; };
+		080AB8DC1E92D9D7005452C7 /* MultiImageWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB8DB1E92D9D7005452C7 /* MultiImageWindowController.swift */; };
+		080AB8DE1E92DA10005452C7 /* MultiImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB8DD1E92DA10005452C7 /* MultiImageViewController.swift */; };
+		080AB8E21E92DAE9005452C7 /* MultiImageWindowController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 080AB8E11E92DAE9005452C7 /* MultiImageWindowController.storyboard */; };
+		080AB8E41E9564BA005452C7 /* HelpTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB8E31E9564BA005452C7 /* HelpTopic.swift */; };
 		080AB9071E97E35C005452C7 /* DockerResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB9061E97E35C005452C7 /* DockerResponseHandler.swift */; };
 		080AB90B1E97F155005452C7 /* ChunkedResponseProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB90A1E97F155005452C7 /* ChunkedResponseProxy.swift */; };
 		080AB90D1E991ED4005452C7 /* URLRequest+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB90C1E991ED4005452C7 /* URLRequest+Rc2.swift */; };
@@ -571,6 +575,10 @@
 		08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = EmbeddedFrameworkDebug.xcconfig; path = config/EmbeddedFrameworkDebug.xcconfig; sourceTree = "<group>"; };
 		08037C211D7B74A100006E9E /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = App.xcconfig; path = config/App.xcconfig; sourceTree = "<group>"; };
 		080834551C84C13300F5A190 /* SyntaxParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxParserTests.swift; sourceTree = "<group>"; };
+		080AB8DB1E92D9D7005452C7 /* MultiImageWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiImageWindowController.swift; sourceTree = "<group>"; };
+		080AB8DD1E92DA10005452C7 /* MultiImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiImageViewController.swift; sourceTree = "<group>"; };
+		080AB8E11E92DAE9005452C7 /* MultiImageWindowController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MultiImageWindowController.storyboard; sourceTree = "<group>"; };
+		080AB8E31E9564BA005452C7 /* HelpTopic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpTopic.swift; sourceTree = "<group>"; };
 		080AB9061E97E35C005452C7 /* DockerResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerResponseHandler.swift; sourceTree = "<group>"; };
 		080AB90A1E97F155005452C7 /* ChunkedResponseProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChunkedResponseProxy.swift; sourceTree = "<group>"; };
 		080AB90C1E991ED4005452C7 /* URLRequest+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+Rc2.swift"; sourceTree = "<group>"; };
@@ -1015,6 +1023,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		080AB8DA1E92D8DF005452C7 /* multi image */ = {
+			isa = PBXGroup;
+			children = (
+				080AB8E11E92DAE9005452C7 /* MultiImageWindowController.storyboard */,
+				080AB8DB1E92D9D7005452C7 /* MultiImageWindowController.swift */,
+				080AB8DD1E92DA10005452C7 /* MultiImageViewController.swift */,
+			);
+			name = "multi image";
+			path = multi_image;
+			sourceTree = "<group>";
+		};
 		080E82C21DCBE31D0048F36C /* Networking */ = {
 			isa = PBXGroup;
 			children = (
@@ -1393,6 +1412,7 @@
 				083A567E1D25B818009D3091 /* BookmarkManager.swift */,
 				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
 				08A01FD51CC95C58001EDFAA /* HelpController.swift */,
+				080AB8E31E9564BA005452C7 /* HelpTopic.swift */,
 				08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */,
 				08525E751E300185008A332E /* rdocs.tgz */,
 			);
@@ -1564,6 +1584,7 @@
 				083174031C5571D300071408 /* RootViewController.swift */,
 				083174051C56BE7B00071408 /* SessionSplitController.swift */,
 				08F448F51C4E244500C64706 /* SessionEditorController.swift */,
+				080AB8DA1E92D8DF005452C7 /* multi image */,
 				08BCD3F81E69BA1A00B86BB4 /* output */,
 				0812631D1C862B94003E37A5 /* sidebar */,
 				0812631B1C8628D0003E37A5 /* session views */,
@@ -1983,6 +2004,7 @@
 				0864DA641DA2BDC1003F3F57 /* DockerControl.storyboard in Resources */,
 				08525E7A1E314558008A332E /* InputPrompter.xib in Resources */,
 				0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */,
+				080AB8E21E92DAE9005452C7 /* MultiImageWindowController.storyboard in Resources */,
 				088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */,
 				083305E01C51571500E27F66 /* Localizable.strings in Resources */,
 				08C484F81C9B159000FE824B /* server.cer in Resources */,
@@ -2246,6 +2268,7 @@
 				084199261D903F7A0089A1AC /* StartupController.swift in Sources */,
 				08CB55521C5C06B2002CB7EE /* OutputTabController.swift in Sources */,
 				0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */,
+				080AB8E41E9564BA005452C7 /* HelpTopic.swift in Sources */,
 				0827A4E31C7ED9CE001F0AFB /* LatexCodeHighlighter.swift in Sources */,
 				0890650B1D26F59300C7CA5D /* MacAppStatus.swift in Sources */,
 				088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */,
@@ -2270,8 +2293,10 @@
 				08DAF2F31E4D07EF005A251E /* PreferencesViewController.swift in Sources */,
 				0827A4E41C7ED9CE001F0AFB /* RCodeHighlighter.swift in Sources */,
 				0827A4E11C7ED9CE001F0AFB /* DocumentChunk.swift in Sources */,
+				080AB8DC1E92D9D7005452C7 /* MultiImageWindowController.swift in Sources */,
 				083174141C5828B400071408 /* ResultsView.swift in Sources */,
 				08A01FC21CC7FCA3001EDFAA /* FMDatabase.m in Sources */,
+				080AB8DE1E92DA10005452C7 /* MultiImageViewController.swift in Sources */,
 				08A01FC41CC7FCA3001EDFAA /* FMDatabaseAdditions.m in Sources */,
 				089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,

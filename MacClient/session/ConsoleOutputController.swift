@@ -223,7 +223,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		{ (clearImages) in
 			defaults[.clearImagesWithConsole] = clearImages
 			self.actuallyClearConsole()
-			if (clearImages) { self.session.imageCache.clearCache() }
+			if clearImages { self.session.imageCache.clearCache() }
 		}
 	}
 	

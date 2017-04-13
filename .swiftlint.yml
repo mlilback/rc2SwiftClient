@@ -20,7 +20,7 @@ variable_name:
   excluded:
     - id
 file_length:
-  warning: 450
+  warning: 600
 trailing_whitespace:
   ignores_empty_lines: true
 large_tuple:

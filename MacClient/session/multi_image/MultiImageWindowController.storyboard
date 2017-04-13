@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="1ck-Ok-wk6">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12118"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Window Controller-->
+        <scene sceneID="ekv-yA-R8L">
+            <objects>
+                <windowController storyboardIdentifier="MultiImageWindowController" id="1ck-Ok-wk6" customClass="MultiImageWindowController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <window key="window" title="Images" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="imagewindow" animationBehavior="default" id="9wt-Hy-ufd">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" unifiedTitleAndToolbar="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="320" y="343" width="800" height="600"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2048" height="1129"/>
+                        <value key="minSize" type="size" width="500" height="400"/>
+                        <toolbar key="toolbar" implicitIdentifier="D0B24D4E-8B10-4D2D-B00F-F6ED4B9F0845" autosavesConfiguration="NO" displayMode="iconOnly" sizeMode="small" id="XvX-Vx-R42">
+                            <allowedToolbarItems>
+                                <toolbarItem implicitItemIdentifier="9213411B-E420-46CE-94B3-B8E91B979E0E" explicitItemIdentifier="layout" label="Layout" paletteLabel="Layout" id="TL4-hU-huj">
+                                    <nil key="toolTip"/>
+                                    <size key="minSize" width="100" height="28"/>
+                                    <size key="maxSize" width="100" height="28"/>
+                                    <popUpButton key="view" verticalHuggingPriority="750" id="p0s-zK-56i">
+                                        <rect key="frame" x="0.0" y="14" width="100" height="28"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <popUpButtonCell key="cell" type="roundTextured" title="Auto Layout" bezelStyle="texturedRounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="rsi-a0-zIR" id="DEJ-ZD-NwZ">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system" size="14"/>
+                                            <menu key="menu" id="Jba-N3-AWf">
+                                                <items>
+                                                    <menuItem title="Auto Layout" state="on" id="rsi-a0-zIR"/>
+                                                    <menuItem title="1x1" tag="11" id="kS4-5Y-aBh"/>
+                                                    <menuItem title="2x2" tag="22" id="stR-ni-DZh"/>
+                                                    <menuItem title="3x2" tag="32" id="7EY-B9-XlU"/>
+                                                    <menuItem title="3x3" tag="33" id="Fuf-lb-RsQ"/>
+                                                    <menuItem title="4x2" tag="42" id="zD0-tJ-Yds"/>
+                                                    <menuItem title="4x4" tag="44" id="DuI-OE-9WL"/>
+                                                </items>
+                                            </menu>
+                                        </popUpButtonCell>
+                                        <connections>
+                                            <action selector="changeLayout:" target="dcN-X7-oeu" id="EOh-aT-MVL"/>
+                                        </connections>
+                                    </popUpButton>
+                                </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="NSToolbarPrintItem" id="uFs-k1-L6f"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="GVD-lQ-FYj"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="NGe-Ha-593"/>
+                                <toolbarItem implicitItemIdentifier="614C4FC4-A2D8-4A12-8D37-531461FF5B80" explicitItemIdentifier="share" label="Share" paletteLabel="Share" tag="-1" image="NSShareTemplate" id="bUY-64-POv">
+                                    <connections>
+                                        <action selector="shareImages:" target="dcN-X7-oeu" id="dn2-qd-ST8"/>
+                                    </connections>
+                                </toolbarItem>
+                            </allowedToolbarItems>
+                            <defaultToolbarItems>
+                                <toolbarItem reference="TL4-hU-huj"/>
+                                <toolbarItem reference="NGe-Ha-593"/>
+                                <toolbarItem reference="bUY-64-POv"/>
+                            </defaultToolbarItems>
+                        </toolbar>
+                    </window>
+                    <connections>
+                        <segue destination="u9I-ZJ-YRs" kind="relationship" relationship="window.shadowedContentViewController" id="3Xo-nD-JbS"/>
+                    </connections>
+                </windowController>
+                <customObject id="dcN-X7-oeu" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="290" y="24"/>
+        </scene>
+        <!--Multi Image View Controller-->
+        <scene sceneID="yR5-B0-BE2">
+            <objects>
+                <viewController id="u9I-ZJ-YRs" customClass="MultiImageViewController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="yE3-Vo-YJZ">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <scrollView wantsLayer="YES" fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r8K-Bo-5MI">
+                                <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <clipView key="contentView" ambiguous="YES" drawsBackground="NO" id="y0F-MA-hVz">
+                                    <rect key="frame" x="1" y="1" width="478" height="268"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <collectionView ambiguous="YES" id="ubu-wf-vVi">
+                                            <rect key="frame" x="0.0" y="0.0" width="478" height="268"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" id="vr0-a9-JdM">
+                                                <size key="itemSize" width="50" height="50"/>
+                                            </collectionViewFlowLayout>
+                                            <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <connections>
+                                                <outlet property="dataSource" destination="u9I-ZJ-YRs" id="dDt-To-Ypm"/>
+                                                <outlet property="delegate" destination="u9I-ZJ-YRs" id="Xab-7J-ere"/>
+                                            </connections>
+                                        </collectionView>
+                                    </subviews>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="M6j-L4-4KC">
+                                    <rect key="frame" x="1" y="253" width="469" height="16"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="aTL-2o-jCY">
+                                    <rect key="frame" x="463" y="1" width="16" height="268"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
+                        </subviews>
+                    </view>
+                    <connections>
+                        <outlet property="collection" destination="ubu-wf-vVi" id="cen-Mn-5oM"/>
+                    </connections>
+                </viewController>
+                <customObject id="Udz-Cb-p4m" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="290" y="635"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="NSShareTemplate" width="11" height="16"/>
+    </resources>
+</document>

@@ -77,12 +77,3 @@
 * how are dates formatted for copy? date vs datetime. 
 * write nstexfield that scales font size so text fits (for help page title)
 * move filetype images to asset catalog
-
-
-* better close button on welcome screen
-* downloads missing output files I've they've somehow been deleted
-* no longer tries to login before docker containers started
-* no longer makes network connection at start if network is down
-* shows progress when restoring sessions
-* saves state of output views
-* double click centers splitter between editor/output
