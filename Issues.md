@@ -7,6 +7,7 @@
 * reevaluate all os_log calls to make sure using correct level
 * examine all fataError calls to see if there is a better way to handle the problem
 * are we properly escaping strings to prevent input buffer errors?
+* document why swiftlint rules are disabled, see if bugs might have been fixed
 
 ## unit tests
 * write unit tests for InputPrompter validation

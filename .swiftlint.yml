@@ -3,6 +3,7 @@ disabled_rules:
   - line_length
   - todo
   - variable_name #doesn't allow underscores
+  - unused_optional_binding #doesn't allow try? binding
 opt_in_rules:
   - closure_spacing
   - explicit_init
