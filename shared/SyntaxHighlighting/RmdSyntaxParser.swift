@@ -122,10 +122,8 @@ open class RmdSyntaxParser: SyntaxParser {
 			self.textStorage.addAttribute(NSBackgroundColorAttributeName, value: color, range: aRange)
 		}
 		//highlight latex code in display equation blocks
-		for aChunk in chunks {
-			if aChunk.type == .rCode {
-				self.latexHighlighter.highlightText(self.textStorage, range: aChunk.parsedRange)
-			}
+		for aChunk in chunks where aChunk.type == .rCode {
+			self.latexHighlighter.highlightText(self.textStorage, range: aChunk.parsedRange)
 		}
 	}
 }
