@@ -50,11 +50,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		pageController.view = containerView!
 		// for some reason, the selected controller's view's frame is not correct. This fixes it, even though there is probably a more efficent way to fix this
 		pageController.view.postsFrameChangedNotifications = true
-		NotificationCenter.default.addObserver(forName: .NSViewFrameDidChange, object: nil, queue: nil) { [weak self] _ in
-			guard let pc = self?.pageController, pc.view.frame.size != pc.selectedViewController?.view.frame.size else { return }
-			let newFrame = NSRect(origin: .zero, size: pc.view.frame.size)
-			pc.selectedViewController?.view.frame = newFrame
-		}
+		NotificationCenter.default.addObserver(self, selector: #selector(viewFrameChanged(_:)), name: .NSViewFrameDidChange, object: nil)
 
 		view.wantsLayer = true
 		shareButton?.sendAction(on: NSEventMask(rawValue: UInt64(Int(NSEventMask.leftMouseDown.rawValue))))
@@ -82,6 +78,12 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		pageController.selectedViewController?.view.needsDisplay = true
 	}
 
+	func viewFrameChanged(_ note: Notification) {
+		guard let pc = pageController, pc.view.frame.size != pc.selectedViewController?.view.frame.size else { return }
+		let newFrame = NSRect(origin: .zero, size: pc.view.frame.size)
+		pc.selectedViewController?.view.frame = newFrame
+	}
+	
 	func imageCacheChanged() {
 		guard let icache = imageCache else { return }
 		if allImages == nil {
