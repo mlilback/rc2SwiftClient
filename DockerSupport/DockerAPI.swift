@@ -16,6 +16,8 @@ public enum DockerContainerOperation: String {
 	public static var all: [DockerContainerOperation] = [.start, .stop, .restart, .pause, .resume]
 }
 
+typealias LogEntryCallback = (_ string: String?, _ isStdErr: Bool) -> Void
+
 public struct DockerVersion: CustomStringConvertible {
 	public let major: Int
 	public let minor: Int

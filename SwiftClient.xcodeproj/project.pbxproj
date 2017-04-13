@@ -94,6 +94,7 @@
 		081996701E36A78A0000AA0E /* EditableTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0819966F1E36A78A0000AA0E /* EditableTableCellView.swift */; };
 		081C71B11E9DD02D00A1BD3B /* SingleDataResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081C71B01E9DD02D00A1BD3B /* SingleDataResponseHandler.swift */; };
 		081C71B31E9DD08B00A1BD3B /* HijackedResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081C71B21E9DD08B00A1BD3B /* HijackedResponseHandler.swift */; };
+		081C71B51E9EB92000A1BD3B /* LocalDockerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081C71B41E9EB92000A1BD3B /* LocalDockerConnection.swift */; };
 		0826108F1DB02FC300C03422 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082610901DB02FC300C03422 /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082610911DB02FEE00C03422 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; };
@@ -635,6 +636,7 @@
 		0819966F1E36A78A0000AA0E /* EditableTableCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableTableCellView.swift; sourceTree = "<group>"; };
 		081C71B01E9DD02D00A1BD3B /* SingleDataResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleDataResponseHandler.swift; sourceTree = "<group>"; };
 		081C71B21E9DD08B00A1BD3B /* HijackedResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HijackedResponseHandler.swift; sourceTree = "<group>"; };
+		081C71B41E9EB92000A1BD3B /* LocalDockerConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDockerConnection.swift; sourceTree = "<group>"; };
 		0826108D1DB02FC300C03422 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/Mac/Nimble.framework; sourceTree = "<group>"; };
 		0826108E1DB02FC300C03422 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/Mac/Quick.framework; sourceTree = "<group>"; };
 		0826109B1DB8E0F000C03422 /* Data+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Rc2.swift"; sourceTree = "<group>"; };
@@ -1588,6 +1590,7 @@
 				08F6ADE81DD9172C00AF0722 /* DockerPullOperation.swift */,
 				08F6ADE91DD9172C00AF0722 /* DockerTag.swift */,
 				08F6ADEA1DD9172C00AF0722 /* DockerUrlProtocol.swift */,
+				081C71B41E9EB92000A1BD3B /* LocalDockerConnection.swift */,
 				08F6ADED1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift */,
 				083D11871DED00D200549268 /* LinedJsonHandler.swift */,
 				080AB9061E97E35C005452C7 /* DockerResponseHandler.swift */,
@@ -2375,6 +2378,7 @@
 			files = (
 				08F6ADF21DD9172C00AF0722 /* DockerEventMonitor.swift in Sources */,
 				08F6ADF71DD9172C00AF0722 /* DockerPullOperation.swift in Sources */,
+				081C71B51E9EB92000A1BD3B /* LocalDockerConnection.swift in Sources */,
 				08F6ADFC1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift in Sources */,
 				08F6ADF81DD9172C00AF0722 /* DockerTag.swift in Sources */,
 				08F6ADF61DD9172C00AF0722 /* DockerManager.swift in Sources */,

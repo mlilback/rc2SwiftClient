@@ -12,25 +12,25 @@ class SingleDataResponseHandler: DockerResponseHandler {
 	let maxReadDataSize: Int = 1024 * 1024 * 4 // 4 MB
 	let crnl = Data(bytes: [13, 10])
 
-	let callback: (MessageType) -> Void
+	let callback: DockerMessageHandler
 	let fileDescriptor: Int32
 	private var readChannel: DispatchIO?
 	private var dataBuffer = Data()
 	private let myQueue: DispatchQueue
 	var headers: HttpHeaders?
 	
-	init(fileDescriptor: Int32, queue: DispatchQueue, handler: @escaping (MessageType) -> Void) {
+	required init(fileDescriptor: Int32, queue: DispatchQueue, handler: @escaping DockerMessageHandler)
+	{
 		self.fileDescriptor = fileDescriptor
 		callback = handler
 		myQueue = queue
 	}
 	
-	deinit {
-		print("single handler deinit")
-	}
-	
 	///chokepoint for logging/debugging
-	func sendMessage(_ msgType: MessageType) {
+	func sendMessage(_ msgType: LocalDockerMessage) {
+		if case .data(let data) = msgType, data.count == 0 {
+			print("oops")
+		}
 		self.callback(msgType)
 	}
 	
@@ -55,12 +55,15 @@ class SingleDataResponseHandler: DockerResponseHandler {
 	}
 	
 	func closeHandler() {
+		readChannel?.close(flags: .stop)
+		readChannel = nil
 	}
 	
 	private func readHandler(_ done: Bool, _ data: DispatchData?, _ error: Int32) {
+//		guard let channel = readChannel else { return } // must have been closed while waiting on callback
 		//schedule a cleanup if done or error
-		if error != 0 || done { defer { closeHandler() } }
-		guard error == 0 else {
+//		if error != 0 || done { defer { closeHandler() } }
+		guard error == 0 || error == 89 else {
 			let nserr = NSError(domain: NSPOSIXErrorDomain, code: Int(error), userInfo: nil)
 			sendMessage(.error(Rc2Error(type: .docker, nested: DockerError.cocoaError(nserr), explanation: "error reading io channel")))
 			return
@@ -71,6 +74,8 @@ class SingleDataResponseHandler: DockerResponseHandler {
 			dispatchData.withUnsafeBytes { (ptr: UnsafePointer<UInt8>) -> Void in
 				dataBuffer.append(ptr, count: dispatchData.count)
 			}
+		} else if done {
+			return
 		}
 		if nil == headers {
 			do {
@@ -81,20 +86,52 @@ class SingleDataResponseHandler: DockerResponseHandler {
 			} catch {
 				fatalError()
 			}
+			sendMessage(.headers(headers!))
 		}
 		guard let headers = headers else { fatalError() }
 		guard headers.isChunked else {
-			sendMessage(.headers(headers))
-			sendMessage(.data(dataBuffer))
-			sendMessage(.complete)
+			handleNonChunkedData()
 			return
 		}
 		// data is chunked. we'll just parse a single chunk and return it. ignore if says it is done
-		parseSingleChunk(data: dataBuffer)
+		if dataBuffer.count > 0 {
+			parseSingleChunk(data: dataBuffer)
+			return
+		}
 		// read next chunk
-//		readChannel!.read(offset: 0, length: maxReadDataSize, queue: myQueue, ioHandler: readHandler)
+//		channel.read(offset: 0, length: maxReadDataSize, queue: myQueue, ioHandler: readHandler)
 	}
 
+	private func handleNonChunkedData() {
+		guard let channel = readChannel else { return } // must have been closed while waiting on callback
+		guard let headers = headers else { fatalError() }
+		guard let dataLen = headers.contentLength else { fatalError() }
+		guard dataBuffer.count >= dataLen else {
+//			channel.read(offset: 0, length: dataLen, queue: myQueue, ioHandler: readNonChunkedExtra)
+			return
+		}
+		sendMessage(.data(dataBuffer))
+		sendMessage(.complete)
+		channel.close()
+	}
+	
+	private func readNonChunkedExtra(_ done: Bool, _ data: DispatchData?, _ error: Int32) {
+		precondition(headers?.contentLength ?? 0 > 0)
+		guard let channel = readChannel else { return } // must have been closed while waiting on callback
+		if let dispatchData = data {
+			dispatchData.withUnsafeBytes { (ptr: UnsafePointer<UInt8>) -> Void in
+				dataBuffer.append(ptr, count: dispatchData.count)
+			}
+		}
+		if let dataLen = headers?.contentLength, dataBuffer.count < dataLen {
+			channel.read(offset: 0, length: dataLen, queue: myQueue, ioHandler: readNonChunkedExtra)
+			return
+		}
+		sendMessage(.data(dataBuffer))
+		sendMessage(.complete)
+		channel.close()
+	}
+	
 	private func parseSingleChunk(data: Data) {
 		guard let lineEnd = data.range(of: crnl) else {
 			os_log("failed to find CRNL in chunk", log: .docker)
@@ -110,7 +147,7 @@ class SingleDataResponseHandler: DockerResponseHandler {
 			sendMessage(.complete)
 			return
 		}
-		let chunkEnd = chunkLength + sizeData.count + 1
+		let chunkEnd = chunkLength + sizeData.count + crnl.count
 		let chunkData = data.subdata(in: lineEnd.upperBound..<chunkEnd)
 		sendMessage(.data(chunkData))
 		sendMessage(.complete)

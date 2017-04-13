@@ -12,21 +12,22 @@ class HijackedResponseHandler: DockerResponseHandler {
 	let maxReadDataSize: Int = 1024 * 1024 * 4 // 4 MB
 	let crnl = Data(bytes: [13, 10])
 	
-	let callback: (MessageType) -> Void
+	let callback: DockerMessageHandler
 	let fileDescriptor: Int32
 	private var readChannel: DispatchIO?
 	private var dataBuffer = Data()
 	private let myQueue: DispatchQueue
 	var headers: HttpHeaders?
 	
-	init(fileDescriptor: Int32, queue: DispatchQueue, handler: @escaping (MessageType) -> Void) {
+	required init(fileDescriptor: Int32, queue: DispatchQueue, handler: @escaping DockerMessageHandler)
+	{
 		self.fileDescriptor = fileDescriptor
 		callback = handler
 		myQueue = queue
 	}
 	
 	///chokepoint for logging/debugging
-	func sendMessage(_ msgType: MessageType) {
+	func sendMessage(_ msgType: LocalDockerMessage) {
 //		myQueue.async {
 			self.callback(msgType)
 //		}
@@ -90,11 +91,7 @@ class HijackedResponseHandler: DockerResponseHandler {
 				fatalError() //should always be an Rc2Error
 			}
 			//make sure returned data is chunked
-			guard headers!.isChunked else {
-				sendMessage(.error(Rc2Error(type: .docker, nested: DockerError.httpError(statusCode: 500, description: "response is not chunked", mimeType: nil))))
-				DispatchQueue.global().async { self.closeHandler() }
-				return
-			}
+			guard headers!.isChunked else { fatalError() }
 		}
 		// we've got headers and possibly data. if the data is a complete chunk, send it as a message
 		if let chunkData = parseNextChunk() {
@@ -106,10 +103,11 @@ class HijackedResponseHandler: DockerResponseHandler {
 			return
 		}
 		// schedule another read
-		readChannel?.read(offset: 0, length: maxReadDataSize, queue: myQueue, ioHandler: readHandler)
+//		readChannel?.read(offset: 0, length: maxReadDataSize, queue: myQueue, ioHandler: readHandler)
 	}
 	
 	func parseNextChunk() -> Data? {
+		guard dataBuffer.count > 0 else { return nil }
 		guard let lineEnd = dataBuffer.range(of: crnl) else {
 			os_log("failed to find CRNL in chunk", log: .docker)
 			return nil
@@ -122,11 +120,12 @@ class HijackedResponseHandler: DockerResponseHandler {
 			return nil
 		}
 		os_log("got hijacked chunk length %d", log: .docker, type: .debug, chunkLength)
-		let chunkEnd = chunkLength + sizeData.count + 1
-		guard chunkEnd < dataBuffer.count else { return nil } //if don't have all the chunk data, wait for more data
+		let chunkEnd = chunkLength + sizeData.count + crnl.count
+		guard chunkEnd < dataBuffer.count else {
+			return nil
+		} //if don't have all the chunk data, wait for more data
 		let chunkData = dataBuffer.subdata(in: lineEnd.upperBound..<chunkEnd)
-		dataBuffer.removeSubrange(0..<(chunkEnd + 3)) // chunk ends points to first of CR NL CR NL
+		dataBuffer.removeSubrange(0..<(chunkEnd + crnl.count))
 		return chunkData
 	}
-	
 }

@@ -75,12 +75,12 @@ final class DockerAPIImplementation: DockerAPI {
 	}
 	
 	// documentation in DockerAPI protocol
-	public func streamLog(container: DockerContainer, dataHandler: @escaping (_ string: String?, _ isStdErr: Bool) -> Void)
+	public func streamLog(container: DockerContainer, dataHandler: @escaping LogEntryCallback)
 	{
-		let myConfig = sessionConfig
-		myConfig.timeoutIntervalForRequest = TimeInterval(60 * 60 * 24) //wait a day
-		let delegate = ChunkedResponseProxy(handler: dataHandler)
-		let mySession = URLSession(configuration: myConfig, delegate: delegate, delegateQueue:nil)
+//		let myConfig = sessionConfig
+//		myConfig.timeoutIntervalForRequest = TimeInterval(60 * 60 * 24) //wait a day
+//		let delegate = ChunkedResponseProxy(handler: dataHandler)
+//		let mySession = URLSession(configuration: myConfig, delegate: delegate, delegateQueue:nil)
 //		var components = URLComponents(string: "\(DockerUrlProtocol.streamScheme)://containers/\(container.name)/logs")!
 //		components.scheme = DockerUrlProtocol.streamScheme
 //		components.path = "containers/\(container.name)/logs"
@@ -90,8 +90,18 @@ final class DockerAPIImplementation: DockerAPI {
 		var request = URLRequest(url: URL(string: "dockerstream:/v1.24/containers/\(container.name)/logs?stderr=1&stdout=1&follow=true")!)
 //		var request = URLRequest(url: components.url!)
 		request.isHijackedResponse = true
-		let task = mySession.dataTask(with: request as URLRequest)
-		task.resume()
+		let connection = LocalDockerConnectionImpl<HijackedResponseHandler>(request: request) { (message) in
+			switch message {
+			case .data(let data):
+				self.parseDockerChunk(data: data, callback: dataHandler)
+			default:
+				print("got message")
+			}
+		}
+		connection.openConnection()
+		connection.writeRequest()
+//		let task = mySession.dataTask(with: request as URLRequest)
+//		task.resume()
 	}
 	
 	// documentation in DockerAPI protocol
@@ -379,6 +389,41 @@ extension DockerAPIImplementation {
 		var urlcomponents = URLComponents(url: self.baseUrl.appendingPathComponent("/containers/json"), resolvingAgainstBaseURL: true)!
 		urlcomponents.queryItems = [URLQueryItem(name:"all", value:"1"), URLQueryItem(name:"filters", value:filtersStr)]
 		return URLRequest(url: urlcomponents.url!)
+	}
+
+	/// parse a chunk of log lines (i.e. blocks)
+	///
+	/// - Parameters:
+	///   - data: chunk of log entries with 8 byte header
+	///   - callback: called with each string entry from the log
+	func parseDockerChunk(data: Data, callback: @escaping LogEntryCallback) {
+		let headerSize: Int = 8
+		var currentOffset: Int = 0
+		// add new data to old data
+		repeat {
+			// cast first 8 bytes to array of 2 Int32s. Convert the second to big endian to get size of message
+			let (type, size) = data.subdata(in: currentOffset..<currentOffset + headerSize).withUnsafeBytes
+			{ (ptr: UnsafePointer<UInt8>) -> (UInt8, Int) in
+				return (ptr[0], ptr.withMemoryRebound(to: Int32.self, capacity: 2)
+				{ (intPtr: UnsafePointer<Int32>) -> Int in
+					return Int(Int32(bigEndian: intPtr[1]))
+				})
+			}
+			// type must be stdout or stderr
+			guard type == 1 || type == 2 else {
+				// FIXME: need to have way to pass error back to caller. until then, crash
+				fatalError("invalid hijacked stream type")
+			}
+			currentOffset += headerSize
+			let nextOffset = currentOffset + size
+			// if all the data required is not available, break out of loop
+			guard nextOffset <= data.count else { fatalError() }
+			// pass the data as a string to handler
+			let currentChunk = data.subdata(in: currentOffset..<nextOffset)
+			callback(String(data: currentChunk, encoding: .utf8), type == 2)
+			// mark that data as used
+			currentOffset += size
+		} while data.count > currentOffset
 	}
 
 	/// handles sending completed or error for a docker response based on http status code
