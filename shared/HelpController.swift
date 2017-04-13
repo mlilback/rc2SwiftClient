@@ -27,8 +27,8 @@ class HelpController {
 		do {
 			rootHelpUrl = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "rdocs")
 			baseHelpUrl = rootHelpUrl.appendingPathComponent("helpdocs/library", isDirectory: true)
-			if !rootHelpUrl.directoryExists() {
-				try fileManager.createDirectory(at: rootHelpUrl, withIntermediateDirectories: true, attributes: nil)
+			if !baseHelpUrl.directoryExists() {
+				try fileManager.createDirectory(at: baseHelpUrl, withIntermediateDirectories: true, attributes: nil)
 			}
 			//load help index
 			db = FMDatabase(path: dbpath)
