@@ -28,9 +28,7 @@ class HijackedResponseHandler: DockerResponseHandler {
 	
 	///chokepoint for logging/debugging
 	func sendMessage(_ msgType: LocalDockerMessage) {
-//		myQueue.async {
-			self.callback(msgType)
-//		}
+		self.callback(msgType)
 	}
 	
 	/// starts reading
@@ -102,8 +100,6 @@ class HijackedResponseHandler: DockerResponseHandler {
 			sendMessage(.complete)
 			return
 		}
-		// schedule another read
-//		readChannel?.read(offset: 0, length: maxReadDataSize, queue: myQueue, ioHandler: readHandler)
 	}
 	
 	func parseNextChunk() -> Data? {

@@ -87,7 +87,7 @@ final class DockerAPIImplementation: DockerAPI {
 //		components.queryItems?.append(URLQueryItem(name: "stderr", value: "1"))
 //		components.queryItems?.append(URLQueryItem(name: "stdout", value: "1"))
 //		components.queryItems?.append(URLQueryItem(name: "follow", value: "1"))
-		var request = URLRequest(url: URL(string: "dockerstream:/v1.24/containers/\(container.name)/logs?stderr=1&stdout=1&follow=true")!)
+		var request = URLRequest(url: URL(string: "dockerstream:/v1.24/containers/\(container.name)/logs?stderr=1&stdout=1&follow=1&timestamps=1")!)
 //		var request = URLRequest(url: components.url!)
 		request.isHijackedResponse = true
 		let connection = LocalDockerConnectionImpl<HijackedResponseHandler>(request: request) { (message) in

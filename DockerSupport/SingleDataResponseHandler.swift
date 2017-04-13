@@ -28,9 +28,9 @@ class SingleDataResponseHandler: DockerResponseHandler {
 	
 	///chokepoint for logging/debugging
 	func sendMessage(_ msgType: LocalDockerMessage) {
-		if case .data(let data) = msgType, data.count == 0 {
-			print("oops")
-		}
+//		if case .data(let data) = msgType, data.count == 0 {
+//			print("oops")
+//		}
 		self.callback(msgType)
 	}
 	
@@ -98,8 +98,6 @@ class SingleDataResponseHandler: DockerResponseHandler {
 			parseSingleChunk(data: dataBuffer)
 			return
 		}
-		// read next chunk
-//		channel.read(offset: 0, length: maxReadDataSize, queue: myQueue, ioHandler: readHandler)
 	}
 
 	private func handleNonChunkedData() {
@@ -107,24 +105,6 @@ class SingleDataResponseHandler: DockerResponseHandler {
 		guard let headers = headers else { fatalError() }
 		guard let dataLen = headers.contentLength else { fatalError() }
 		guard dataBuffer.count >= dataLen else {
-//			channel.read(offset: 0, length: dataLen, queue: myQueue, ioHandler: readNonChunkedExtra)
-			return
-		}
-		sendMessage(.data(dataBuffer))
-		sendMessage(.complete)
-		channel.close()
-	}
-	
-	private func readNonChunkedExtra(_ done: Bool, _ data: DispatchData?, _ error: Int32) {
-		precondition(headers?.contentLength ?? 0 > 0)
-		guard let channel = readChannel else { return } // must have been closed while waiting on callback
-		if let dispatchData = data {
-			dispatchData.withUnsafeBytes { (ptr: UnsafePointer<UInt8>) -> Void in
-				dataBuffer.append(ptr, count: dispatchData.count)
-			}
-		}
-		if let dataLen = headers?.contentLength, dataBuffer.count < dataLen {
-			channel.read(offset: 0, length: dataLen, queue: myQueue, ioHandler: readNonChunkedExtra)
 			return
 		}
 		sendMessage(.data(dataBuffer))

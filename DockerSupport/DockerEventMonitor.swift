@@ -94,7 +94,7 @@ final class DockerEventMonitorImpl: NSObject, DockerEventMonitor, URLSessionData
 		var request = URLRequest(url: lcomponents.url!)
 		request.isHijackedResponse = true
 		let task = session.dataTask(with: request as URLRequest)
-//FIXE: 		task.resume()
+//FIXME: 		task.resume()
 	}
 
 	open func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)

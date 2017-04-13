@@ -16,7 +16,7 @@ public enum DockerContainerOperation: String {
 	public static var all: [DockerContainerOperation] = [.start, .stop, .restart, .pause, .resume]
 }
 
-typealias LogEntryCallback = (_ string: String?, _ isStdErr: Bool) -> Void
+public typealias LogEntryCallback = (_ string: String?, _ isStdErr: Bool) -> Void
 
 public struct DockerVersion: CustomStringConvertible {
 	public let major: Int
@@ -58,7 +58,7 @@ public protocol DockerAPI {
 	///   - dataHandler: closure called when there is log information. If nil is passed, the stream is complete
 	///   - string: log content to process
 	///   - isStdErr: true if the string is from stderr, false if from stdout
-	func streamLog(container: DockerContainer, dataHandler: @escaping (_ string: String?, _ isStdErr: Bool) -> Void)
+	func streamLog(container: DockerContainer, dataHandler: @escaping LogEntryCallback)
 
 	/// Executes a command on the docker server and returns stdout
 	///
