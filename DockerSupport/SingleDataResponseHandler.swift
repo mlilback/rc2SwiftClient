@@ -63,6 +63,7 @@ class SingleDataResponseHandler: DockerResponseHandler {
 //		guard let channel = readChannel else { return } // must have been closed while waiting on callback
 		//schedule a cleanup if done or error
 //		if error != 0 || done { defer { closeHandler() } }
+		// TODO: examine why 89 is the error if we canceled the channel
 		guard error == 0 || error == 89 else {
 			let nserr = NSError(domain: NSPOSIXErrorDomain, code: Int(error), userInfo: nil)
 			sendMessage(.error(Rc2Error(type: .docker, nested: DockerError.cocoaError(nserr), explanation: "error reading io channel")))
@@ -102,14 +103,20 @@ class SingleDataResponseHandler: DockerResponseHandler {
 
 	private func handleNonChunkedData() {
 		guard let channel = readChannel else { return } // must have been closed while waiting on callback
+		if let expectedLen = headers?.contentLength, dataBuffer.count < expectedLen
+		{
+			//don't have all the data. continue reading
+			return
+		}
+		defer {
+			sendMessage(.complete)
+			channel.close()
+		}
 		guard let headers = headers else { fatalError() }
-		guard let dataLen = headers.contentLength else { fatalError() }
-		guard dataBuffer.count >= dataLen else {
+		guard let dataLen = headers.contentLength, dataBuffer.count >= dataLen else {
 			return
 		}
 		sendMessage(.data(dataBuffer))
-		sendMessage(.complete)
-		channel.close()
 	}
 	
 	private func parseSingleChunk(data: Data) {
