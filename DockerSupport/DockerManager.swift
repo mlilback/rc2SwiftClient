@@ -52,6 +52,7 @@ let volumeNames = ["rc2_dbdata", "rc2_userlib"]
 /// manages communicating with the local docker engine
 public final class DockerManager: NSObject {
 	// MARK: - Properties
+	let waitingOnContainersTimeout: TimeInterval = 4.0
 	/// the containers managed.
 	// these should always be referred to as self.containers since many parameters have the name containers
 	public fileprivate(set) var containers: [DockerContainer]
@@ -339,7 +340,7 @@ public final class DockerManager: NSObject {
 		let producers = notRunningContainers.map { aContainer in
 			aContainer.state.producer.filter({ $0 == .running })
 				.take(first: 1)
-				.timeout(after: 3.0, raising: timeoutError, on: QueueScheduler.main)
+				.timeout(after: waitingOnContainersTimeout, raising: timeoutError, on: QueueScheduler.main)
 		}
 		let combined: SignalProducer< SignalProducer<ContainerState, Rc2Error>, Rc2Error> = SignalProducer(producers)
 		//return a producer that will listen until all containers are running and then send a completed, timing out if doesn't happen

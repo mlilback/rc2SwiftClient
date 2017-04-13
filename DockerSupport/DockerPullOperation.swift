@@ -164,13 +164,13 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 			pullObserver?.send(error: Rc2Error(type: .cocoa, nested: error))
 			return
 		}
-		os_log("pull %{public}s finished: %d", log: .docker, type:.info, pullProgress.name, totalDownloaded)
+		os_log("pull %{public}@ finished: %@", log: .docker, type:.info, pullProgress.name, totalDownloaded)
 		pullProgress.currentSize = totalDownloaded
 		pullProgress.complete = true
 		pullObserver?.send(value: pullProgress)
 		pullObserver?.sendCompleted()
 		for aLayer in layers.values {
-			os_log("layer %{public}@ is %d", log: .docker, type:.info, aLayer.id, aLayer.finalSize)
+			os_log("layer %{public}@ is %@", log: .docker, type:.info, aLayer.id, aLayer.finalSize)
 		}
 	}
 
