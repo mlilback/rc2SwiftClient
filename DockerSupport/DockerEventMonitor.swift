@@ -26,6 +26,7 @@ enum DockerEventType: String {
 	case stop
 	case start
 	case unpause
+	case volume
 }
 
 struct DockerEvent: CustomStringConvertible {
@@ -59,6 +60,8 @@ struct DockerEvent: CustomStringConvertible {
 				eventType = .stop
 			case "unpause":
 				eventType = .unpause
+			case "volume":
+				eventType = .volume
 			default:
 				return nil
 		}
@@ -78,48 +81,45 @@ protocol DockerEventMonitor {
 	init(baseUrl: URL, delegate: DockerEventMonitorDelegate, sessionConfig: URLSessionConfiguration)
 }
 
-final class DockerEventMonitorImpl: NSObject, DockerEventMonitor, URLSessionDataDelegate {
+final class DockerEventMonitorImpl: DockerEventMonitor
+{
 	weak var delegate: DockerEventMonitorDelegate?
-	var session: URLSession!
+	var connection: LocalDockerConnection!
 
 	required init(baseUrl: URL, delegate: DockerEventMonitorDelegate, sessionConfig: URLSessionConfiguration)
 	{
 		self.delegate = delegate
-		super.init()
-		sessionConfig.timeoutIntervalForRequest = TimeInterval(60 * 60 * 24) //wait a day
-		session = URLSession(configuration: sessionConfig, delegate: self, delegateQueue:nil)
-		let ourBaseUrl = URL(string: "/events", relativeTo: baseUrl)!
-		var lcomponents = URLComponents(url: ourBaseUrl, resolvingAgainstBaseURL: true)!
-		lcomponents.scheme = DockerUrlProtocol.streamScheme
-		var request = URLRequest(url: lcomponents.url!)
-		request.isHijackedResponse = true
-		let task = session.dataTask(with: request as URLRequest)
-//FIXME: 		task.resume()
+		let request = URLRequest(url: baseUrl.appendingPathComponent("/events").absoluteURL)
+		self.connection = LocalDockerConnectionImpl<HijackedResponseHandler>(request: request, handler: connectionCallback)
+		connection.openConnection()
+		connection.writeRequest()
 	}
 
-	open func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)
-	{
-		completionHandler(Foundation.URLSession.ResponseDisposition.allow)
-	}
-
-	open func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-		let str = String(data: data, encoding:String.Encoding.utf8)!
-		let messages = str.components(separatedBy: "\n")
-		for aMessage in messages {
-			guard !aMessage.characters.isEmpty else { continue }
-			guard let jsonData = aMessage.data(using: .utf8), let json = try? JSON(data: jsonData) else {
-				os_log("failed to parse json: %{public}@", log: .docker, aMessage)
-				continue
-			}
-			if let event = DockerEvent(json) {
-				os_log("got event: %{public}@", log:.dockerEvt, type:.info, event.description)
-				delegate?.handleEvent(event)
-			}
+	func connectionCallback(message: LocalDockerMessage) {
+		switch message {
+		case .headers(let headers):
+			assert(headers.statusCode == 200)
+		case .data(let data):
+			handleData(data: data)
+		case .complete:
+			os_log("docker event monitor connection ended", log: .docker, type: .info)
+			delegate?.eventMonitorClosed(error: nil)
+		case .error(let error):
+			os_log("error from docker event connection: %{public}@", log: .docker, error.debugDescription)
+			delegate?.eventMonitorClosed(error: error)
 		}
 	}
-
-	open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-		os_log("why did our session end?: %{public}@", log: .docker, error as NSError? ?? "unknown")
-		delegate?.eventMonitorClosed(error: error)
+	
+	private func handleData(data: Data) {
+		do {
+			let json = try JSON(data: data)
+			guard let event = DockerEvent(json) else {
+				os_log("got invalid event from docker: %{public}@", log: .docker, type: .debug, String(data: data, encoding: .utf8)!)
+				return
+			}
+			delegate?.handleEvent(event)
+		} catch {
+			os_log("error parsing docker event: %{public}@", log: .docker, error.localizedDescription)
+		}
 	}
 }
