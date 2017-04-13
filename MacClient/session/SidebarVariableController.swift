@@ -123,7 +123,7 @@ extension SidebarVariableController: VariableHandler {
 	}
 	
 	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String]) {
-		for (_, variable) in assigned.enumerated() {
+		for variable in assigned {
 			if let curVal = variableNamed(variable.name) {
 				rootVariables[rootVariables.index(of: curVal)!] = variable
 			} else {

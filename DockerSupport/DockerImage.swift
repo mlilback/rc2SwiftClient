@@ -31,7 +31,7 @@ public struct DockerImage: JSONDecodable, Named {
 	}
 
 	public func isNamed(_ str: String) -> Bool {
-		for (_, aTag) in tags.enumerated() {
+		for aTag in tags {
 			if aTag.description.hasPrefix(str) { return true }
 		}
 		return false

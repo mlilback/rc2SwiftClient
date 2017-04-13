@@ -328,8 +328,8 @@ public final class DefaultFileCache: NSObject, FileCache {
 	}
 	
 	fileprivate func downloadTaskWithFileId(_ fileId: Int) -> DownloadTask? {
-		for aTask in tasks {
-			if aTask.1.file.fileId == fileId { return aTask.1 }
+		for aTask in tasks where aTask.1.file.fileId == fileId {
+			return aTask.1
 		}
 		return nil
 	}

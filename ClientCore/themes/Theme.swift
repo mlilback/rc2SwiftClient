@@ -112,9 +112,7 @@ public extension Theme {
 	
 	/// attributes to add to a NSAttributedString to represent the theme property
 	public func stringAttributes(for property: Property) -> [String: Any] {
-		return [attributeName: property,
-		        NSBackgroundColorAttributeName: color(for: property)]
-			as [String: Any]
+		return [attributeName: property, NSBackgroundColorAttributeName: color(for: property)] as [String: Any]
 	}
 	
 	/// Updates the attributed string so its attributes use this theme

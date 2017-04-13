@@ -36,10 +36,8 @@ extension NSFont {
 
 extension NSMenu {
 	func itemWithAction(_ action: Selector, recursive: Bool = true) -> NSMenuItem? {
-		for anItem in items {
-			if anItem.action == action {
-				return anItem
-			}
+		for anItem in items where anItem.action == action {
+			return anItem
 		}
 		if recursive {
 			for anItem in items {

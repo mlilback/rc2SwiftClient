@@ -120,15 +120,13 @@ protocol SessionControllerDelegate: class {
 		}
 		//TODO: need to wait until file exists then load it
 		let handler = { (changes: [CollectionChange<File>]) in
-			for aChange in changes {
-				if aChange.object?.fileId == fileId {
-					//our file was inserted, we can show it
-					DispatchQueue.main.async {
-						self.outputHandler.showFile(self.session.workspace.file(withId: fileId))
+			for aChange in changes where aChange.object?.fileId == fileId {
+				//our file was inserted, we can show it
+				DispatchQueue.main.async {
+					self.outputHandler.showFile(self.session.workspace.file(withId: fileId))
 //						self.showFile(fileId)
-					}
-					break
 				}
+				break
 			}
 		}
 		fileLoadDisposable = session.workspace.fileChangeSignal.observeValues(handler)
@@ -218,7 +216,7 @@ extension SessionController: SessionDelegate {
 		}
 		//if the file doesn't exist, wait until it does and then handle the response
 		guard let oldFile = session.workspace.file(withId: updatedFile.fileId) else {
-			listenForInsert(fileId: updatedFile.fileId) { fileId in
+			listenForInsert(fileId: updatedFile.fileId) { _ in
 				self.handle(response: response)
 			}
 			return

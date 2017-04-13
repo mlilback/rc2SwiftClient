@@ -32,10 +32,8 @@ extension ToolbarItemHandler {
 
 extension ToolbarDelegatingOwner {
 	func assignUnclaimedToolbarItems(_ toolbar: NSToolbar, handler: ToolbarItemHandler) {
-		for item in toolbar.items {
-			if item.action == nil {
-				_ = handler.handlesToolbarItem(item)
-			}
+		for item in toolbar.items where item.action == nil {
+			_ = handler.handlesToolbarItem(item)
 		}
 	}
 	

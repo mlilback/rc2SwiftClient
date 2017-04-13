@@ -131,11 +131,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			fa.sort(by: { $0.name > $1.name })
 		}
 		rowData.removeAll()
-		for i in 0..<sectionNames.count {
-			if sectionedFiles[i].count > 0 {
-				rowData.append(FileRowData(name: sectionNames[i], file: nil))
-				rowData.append(contentsOf: sectionedFiles[i].map({ return FileRowData(name:nil, file:$0) }))
-			}
+		for i in 0..<sectionNames.count where sectionedFiles[i].count > 0 {
+			rowData.append(FileRowData(name: sectionNames[i], file: nil))
+			rowData.append(contentsOf: sectionedFiles[i].map({ return FileRowData(name:nil, file:$0) }))
 		}
 	}
 	
@@ -180,8 +178,8 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	func fileDataIndex(fileId: Int) -> Int? {
-		for (idx, data) in rowData.enumerated() {
-			if data.file?.fileId == fileId { return idx }
+		for (idx, data) in rowData.enumerated() where data.file?.fileId == fileId {
+			return idx
 		}
 		return nil
 	}

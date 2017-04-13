@@ -360,7 +360,7 @@ class DimmingView: NSView {
 	}
 
 	required init?(coder: NSCoder) {
-	    fatalError("DimmingView does not support NSCoding")
+		fatalError("DimmingView does not support NSCoding")
 	}
 
 	override func viewDidMoveToSuperview() {

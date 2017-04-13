@@ -107,8 +107,8 @@ class BookmarkManager {
 		{
 			hostSet = hostSet.union(jhosts)
 		}
-		for aMark in bookmarks {
-			if aMark.server != nil { hostSet.insert(aMark.server!) }
+		for aMark in bookmarks where aMark.server != nil {
+			hostSet.insert(aMark.server!)
 		}
 		hosts.append(contentsOf: hostSet)
 		hosts.sort { $0.name < $1.name }

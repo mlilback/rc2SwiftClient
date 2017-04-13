@@ -352,8 +352,8 @@ extension MacAppDelegate {
 	}
 	
 	func windowControllerForSession(_ session: Session) -> MainWindowController? {
-		for wc in sessionWindowControllers {
-			if wc.session === session { return wc }
+		for wc in sessionWindowControllers where wc.session === session {
+			return wc
 		}
 		return nil
 	}
