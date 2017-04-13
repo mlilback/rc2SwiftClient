@@ -39,7 +39,7 @@ protocol LocalDockerConnection: class {
 	func closeConnection()
 }
 
-class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: LocalDockerConnection {
+final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: LocalDockerConnection {
 	fileprivate let socketPath = "/var/run/docker.sock"
 	fileprivate let crlnData = Data(bytes: [UInt8(13), UInt8(10)])
 	fileprivate var responseHandler: HandlerClass?
@@ -125,6 +125,9 @@ class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: LocalDocke
 			else { fatalError("request must have URL") }
 		if !components.path.hasPrefix("/") {
 			components.path = "/\(components.path)"
+		}
+		if components.path.range(of: "^/v1.2\\d/", options: .regularExpression) == nil {
+			components.path = "/v1.27\(components.path)"
 		}
 		guard let newUrl = components.url else { fatalError("failed to generate new url") }
 		var req = request
