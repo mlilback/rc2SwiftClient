@@ -11,12 +11,18 @@ public struct HttpHeaders: Equatable {
 	public let httpVersion: String
 	public let headers: [String: String]
 	public let isChunked: Bool
+	public let contentLength: Int?
 
 	public init(statusCode: Int, httpVersion: String, headers: [String: String]) {
 		self.statusCode = statusCode
 		self.httpVersion = httpVersion
 		self.headers = headers
 		isChunked = headers["Transfer-Encoding"] == "chunked"
+		if let lengthStr = headers["Content-Length"] {
+			contentLength = Int(lengthStr)
+		} else {
+			contentLength = nil
+		}
 	}
 	
 	public static func == (lhs: HttpHeaders, rhs: HttpHeaders) -> Bool {
