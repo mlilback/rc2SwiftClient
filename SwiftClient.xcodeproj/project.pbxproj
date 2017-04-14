@@ -79,7 +79,6 @@
 		081559B21DDFB2D80047B3CE /* DockerManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559A51DDFB2D80047B3CE /* DockerManagerSpec.swift */; };
 		081559B31DDFB2D80047B3CE /* DockerPullTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559A61DDFB2D80047B3CE /* DockerPullTest.swift */; };
 		081559B41DDFB2D80047B3CE /* DockerTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559A71DDFB2D80047B3CE /* DockerTagTests.swift */; };
-		081559B51DDFB2D80047B3CE /* DockerUrlProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559A81DDFB2D80047B3CE /* DockerUrlProtocolTests.swift */; };
 		081559B71DDFB2D80047B3CE /* networks.json in Resources */ = {isa = PBXBuildFile; fileRef = 081559AA1DDFB2D80047B3CE /* networks.json */; };
 		081559B81DDFB2D80047B3CE /* version.json in Resources */ = {isa = PBXBuildFile; fileRef = 081559AB1DDFB2D80047B3CE /* version.json */; };
 		081559B91DDFB2D80047B3CE /* volumes.json in Resources */ = {isa = PBXBuildFile; fileRef = 081559AC1DDFB2D80047B3CE /* volumes.json */; };
@@ -154,7 +153,6 @@
 		083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
 		083D11861DECC37900549268 /* Process+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11851DECC37900549268 /* Process+Rc2.swift */; };
 		083D118A1DED032000549268 /* HttpStringUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11891DED032000549268 /* HttpStringUtils.swift */; };
-		083D118C1DEDEAED00549268 /* LinedJsonHandlerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D118B1DEDEAED00549268 /* LinedJsonHandlerSpec.swift */; };
 		083D118F1DEDECEC00549268 /* linedBadHeader.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D118D1DEDECEC00549268 /* linedBadHeader.json */; };
 		083D11901DEDECEC00549268 /* linedNormal.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D118E1DEDECEC00549268 /* linedNormal.json */; };
 		083D11921DEDF7F000549268 /* HttpStringUtilsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11911DEDF7F000549268 /* HttpStringUtilsSpec.swift */; };
@@ -369,6 +367,11 @@
 		08F6ADFE1DD917A900AF0722 /* ClientCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; };
 		08F6AE001DD918CF00AF0722 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADFF1DD918CF00AF0722 /* FileCache.swift */; };
 		08FDB19B1C5917C3006FCD1A /* graph.png in Resources */ = {isa = PBXBuildFile; fileRef = 08FDB19A1C5917C3006FCD1A /* graph.png */; };
+		08FDE53E1EA02AFA00F14FAA /* LocalConnectionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDE53D1EA02AFA00F14FAA /* LocalConnectionSpec.swift */; };
+		08FDE53F1EA1054000F14FAA /* LinedJsonHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11871DED00D200549268 /* LinedJsonHandler.swift */; };
+		08FDE5431EA10E3500F14FAA /* busybox1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 08FDE5401EA10E3500F14FAA /* busybox1.txt */; };
+		08FDE5441EA10E3500F14FAA /* busybox2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 08FDE5411EA10E3500F14FAA /* busybox2.txt */; };
+		08FDE5451EA10E3500F14FAA /* busybox3.txt in Resources */ = {isa = PBXBuildFile; fileRef = 08FDE5421EA10E3500F14FAA /* busybox3.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -887,6 +890,10 @@
 		08F6ADFF1DD918CF00AF0722 /* FileCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
 		08FDB1981C591409006FCD1A /* ImageCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCacheTests.swift; sourceTree = "<group>"; };
 		08FDB19A1C5917C3006FCD1A /* graph.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graph.png; sourceTree = "<group>"; };
+		08FDE53D1EA02AFA00F14FAA /* LocalConnectionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalConnectionSpec.swift; sourceTree = "<group>"; };
+		08FDE5401EA10E3500F14FAA /* busybox1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = busybox1.txt; sourceTree = "<group>"; };
+		08FDE5411EA10E3500F14FAA /* busybox2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = busybox2.txt; sourceTree = "<group>"; };
+		08FDE5421EA10E3500F14FAA /* busybox3.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = busybox3.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1143,6 +1150,9 @@
 		081559BA1DDFB2F50047B3CE /* test resources */ = {
 			isa = PBXGroup;
 			children = (
+				08FDE5401EA10E3500F14FAA /* busybox1.txt */,
+				08FDE5411EA10E3500F14FAA /* busybox2.txt */,
+				08FDE5421EA10E3500F14FAA /* busybox3.txt */,
 				083D11951DEF535C00549268 /* complexImages.json */,
 				083D118D1DEDECEC00549268 /* linedBadHeader.json */,
 				083D118E1DEDECEC00549268 /* linedNormal.json */,
@@ -1300,6 +1310,7 @@
 				088CE66A1C4B0AF400153414 /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 1;
 		};
 		088CE66A1C4B0AF400153414 /* Products */ = {
 			isa = PBXGroup;
@@ -1636,6 +1647,7 @@
 				081559A61DDFB2D80047B3CE /* DockerPullTest.swift */,
 				081559A71DDFB2D80047B3CE /* DockerTagTests.swift */,
 				081559A81DDFB2D80047B3CE /* DockerUrlProtocolTests.swift */,
+				08FDE53D1EA02AFA00F14FAA /* LocalConnectionSpec.swift */,
 				081559BE1DDFB4300047B3CE /* TestDataProtocol.swift */,
 				081559BF1DDFB4300047B3CE /* TestDataProtocolTests.swift */,
 				081559BA1DDFB2F50047B3CE /* test resources */,
@@ -2068,10 +2080,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				081559B81DDFB2D80047B3CE /* version.json in Resources */,
+				08FDE5431EA10E3500F14FAA /* busybox1.txt in Resources */,
 				081559B91DDFB2D80047B3CE /* volumes.json in Resources */,
+				08FDE5451EA10E3500F14FAA /* busybox3.txt in Resources */,
 				083D11961DEF535C00549268 /* complexImages.json in Resources */,
 				081559AD1DDFB2D80047B3CE /* containers.json in Resources */,
 				081559BC1DDFB4230047B3CE /* busybox.jsonData in Resources */,
+				08FDE5441EA10E3500F14FAA /* busybox2.txt in Resources */,
 				088D1F951DF36E4D00BC891E /* updatedContainers.json in Resources */,
 				083D11901DEDECEC00549268 /* linedNormal.json in Resources */,
 				081559B71DDFB2D80047B3CE /* networks.json in Resources */,
@@ -2412,6 +2427,7 @@
 				08F6ADEF1DD9172C00AF0722 /* DockerAPIImplementation.swift in Sources */,
 				081C71B31E9DD08B00A1BD3B /* HijackedResponseHandler.swift in Sources */,
 				080AB90B1E97F155005452C7 /* ChunkedResponseProxy.swift in Sources */,
+				08FDE53F1EA1054000F14FAA /* LinedJsonHandler.swift in Sources */,
 				08F6ADEE1DD9172C00AF0722 /* DockerAPI.swift in Sources */,
 				08F6ADF11DD9172C00AF0722 /* DockerError.swift in Sources */,
 				081C71B11E9DD02D00A1BD3B /* SingleDataResponseHandler.swift in Sources */,
@@ -2429,14 +2445,13 @@
 				081559B31DDFB2D80047B3CE /* DockerPullTest.swift in Sources */,
 				081559B21DDFB2D80047B3CE /* DockerManagerSpec.swift in Sources */,
 				081559C21DDFB4300047B3CE /* TestDataProtocolTests.swift in Sources */,
+				08FDE53E1EA02AFA00F14FAA /* LocalConnectionSpec.swift in Sources */,
 				081559AE1DDFB2D80047B3CE /* DockerContainerSpec.swift in Sources */,
 				083D119A1DF201BB00549268 /* BaseDockerSpec.swift in Sources */,
 				081559AF1DDFB2D80047B3CE /* DockerImageInfoTests.swift in Sources */,
 				081559B41DDFB2D80047B3CE /* DockerTagTests.swift in Sources */,
 				088F591A1E732EC40009A0B1 /* MockDockerAPI.swift in Sources */,
-				083D118C1DEDEAED00549268 /* LinedJsonHandlerSpec.swift in Sources */,
 				081559B11DDFB2D80047B3CE /* DockerImageTest.swift in Sources */,
-				081559B51DDFB2D80047B3CE /* DockerUrlProtocolTests.swift in Sources */,
 				081559C01DDFB4300047B3CE /* DefaultDockerAPISpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

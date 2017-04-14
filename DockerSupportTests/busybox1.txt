@@ -1,0 +1,57 @@
+HTTP/1.1 200 OK
+Api-Version: 1.27
+Content-Type: application/json
+Date: Thu, 13 Apr 2017 21:48:10 GMT
+Docker-Experimental: true
+Server: Docker/17.03.1-ce (linux)
+Transfer-Encoding: chunked
+
+81
+{"status":"Pulling from library/busybox","id":"1-glibc"}
+{"status":"Pulling fs layer","progressDetail":{},"id":"1172579cdcc3"}
+
+bb
+{"status":"Downloading","progressDetail":{"current":27512,"total":2215934},"progress":"[\u003e                                                  ] 27.51 kB/2.216 MB","id":"1172579cdcc3"}
+
+bc
+{"status":"Downloading","progressDetail":{"current":467991,"total":2215934},"progress":"[==========\u003e                                        ]   468 kB/2.216 MB","id":"1172579cdcc3"}
+
+bd
+{"status":"Downloading","progressDetail":{"current":1457279,"total":2215934},"progress":"[================================\u003e                  ] 1.457 MB/2.216 MB","id":"1172579cdcc3"}
+
+49
+{"status":"Verifying Checksum","progressDetail":{},"id":"1172579cdcc3"}
+
+48
+{"status":"Download complete","progressDetail":{},"id":"1172579cdcc3"}
+
+ba
+{"status":"Extracting","progressDetail":{"current":32768,"total":2215934},"progress":"[\u003e                                                  ] 32.77 kB/2.216 MB","id":"1172579cdcc3"}
+
+bb
+{"status":"Extracting","progressDetail":{"current":589824,"total":2215934},"progress":"[=============\u003e                                     ] 589.8 kB/2.216 MB","id":"1172579cdcc3"}
+
+bc
+{"status":"Extracting","progressDetail":{"current":2215934,"total":2215934},"progress":"[==================================================\u003e] 2.216 MB/2.216 MB","id":"1172579cdcc3"}
+
+44
+{"status":"Pull complete","progressDetail":{},"id":"1172579cdcc3"}
+
+5e
+{"status":"Digest: sha256:6d425bec009c1597370377e52f009a91d698a1791bf9dcb6491e3a1057cb393f"}
+
+80
+{"status":"Pulling from library/busybox","id":"1-musl"}
+{"status":"Pulling fs layer","progressDetail":{},"id":"379e44095b05"}
+
+ba
+{"status":"Downloading","progressDetail":{"current":15881,"total":723278},"progress":"[=\u003e                                                 ] 15.88 kB/723.3 kB","id":"379e44095b05"}
+
+bb
+{"status":"Downloading","progressDetail":{"current":343168,"total":723278},"progress":"[=======================\u003e                           ] 343.2 kB/723.3 kB","id":"379e44095b05"}
+
+49
+{"status":"Verifying Checksum","progressDetail":{},"id":"379e44095b05"}
+
+48
+{"status":"Download complete","progressD

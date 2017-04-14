@@ -208,7 +208,7 @@ public final class DockerManager: NSObject {
 		pullProgress = PullProgress(name: "all", size: fullSize)
 		let producers = imageInfo!.map { img -> SignalProducer<PullProgress, Rc2Error> in
 			os_log("got pull for %{public}@", log:.docker, type:.debug, img.fullName)
-			return self.pullSingleImage(pull: DockerPullOperation(baseUrl: self.baseUrl, imageName: img.fullName, estimatedSize: img.size, config: sessionConfig))
+			return self.pullSingleImage(pull: DockerPullOperation(imageName: img.fullName, estimatedSize: img.size))
 		}
 		//use concat instead of merge because progress depends on order of download (layer sizes)
 		let producer = SignalProducer< SignalProducer<PullProgress, Rc2Error>, Rc2Error >(producers)

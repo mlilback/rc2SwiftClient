@@ -40,62 +40,66 @@ struct LayerProgress {
 	}
 }
 
-public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
-	fileprivate let url: URL
-	fileprivate let urlConfig: URLSessionConfiguration
-	fileprivate var urlSession: Foundation.URLSession?
-	fileprivate var _task: URLSessionDataTask?
-	fileprivate(set) var pullProgress: PullProgress
-	fileprivate var _lastUpdate: Double = 0
+public final class DockerPullOperation {
+//	private let url: URL
+	private let imageName: String
+	private var connection: LocalDockerConnection!
+	private(set) var pullProgress: PullProgress
+	private var _lastUpdate: Double = 0
 	let estimatedSize: Int
 	var layers = [String: LayerProgress]()
 	var totalDownloaded: Int = 0
 	var statuses = Set<String>()
-	fileprivate var pullObserver: Signal<PullProgress, Rc2Error>.Observer?
+	private var pullObserver: Signal<PullProgress, Rc2Error>.Observer?
 
-	/// - parameter baseUrl: the scheme/host/port to use for the connection
 	/// - parameter imageName: the name of the image to pull
 	/// - parameter estimatedSize: the size of the download, used for progress calculation
-	/// - parameter config: sesion configuration to use. If nil, will use system default
-	public init(baseUrl: URL, imageName: String, estimatedSize size: Int, config: URLSessionConfiguration)
-	{
-		let uconfig = config
-		uconfig.timeoutIntervalForRequest = 300
-		uconfig.timeoutIntervalForResource = 86_400
-		urlConfig = uconfig
-		var urlparts = URLComponents(url: baseUrl, resolvingAgainstBaseURL: true)
-		urlparts?.path = "/images/create"
-		urlparts?.queryItems = [URLQueryItem(name:"fromImage", value: imageName)]
-		self.url = urlparts!.url!
-		self.estimatedSize = size
-		pullProgress = PullProgress(name: imageName, size: size)
-		super.init()
-		assert(urlConfig.protocolClasses!.filter({ $0 == DockerUrlProtocol.self }).count > 0)
+	public init(imageName: String, estimatedSize: Int) {
+		self.imageName = imageName
+		self.estimatedSize = estimatedSize
+		var urlparts = URLComponents()
+		urlparts.scheme = "dockerstream"
+		urlparts.host = "localhost"
+		urlparts.path = "/images/create"
+		urlparts.queryItems = [URLQueryItem(name:"fromImage", value: imageName)]
+		var request = URLRequest(url: urlparts.url!)
+		request.httpMethod = "POST"
+		pullProgress = PullProgress(name: imageName, size: estimatedSize)
+		connection = LocalDockerConnectionImpl<HijackedResponseHandler>(request: request, handler: messageHandler)
 	}
-
+	
+	private func messageHandler(message: LocalDockerMessage) {
+		switch message {
+		case .headers(_):
+			break //we don't care
+		case .error(let error):
+			os_log("error in pull operation %{public}@", log: .docker, type: .debug, error as NSError)
+			pullObserver?.send(error: error)
+		case .data(let data):
+			handle(data: data)
+		case .complete:
+			os_log("pull %{public}@ finished: %@", log: .docker, type:.info, pullProgress.name, totalDownloaded)
+			pullProgress.currentSize = totalDownloaded
+			pullProgress.complete = true
+			pullObserver?.send(value: pullProgress)
+			pullObserver?.sendCompleted()
+			for aLayer in layers.values {
+				os_log("layer %{public}@ is %@", log: .docker, type:.info, aLayer.id, aLayer.finalSize)
+			}
+		}
+	}
+	
 	public func pull() -> SignalProducer<PullProgress, Rc2Error>
 	{
 		return SignalProducer<PullProgress, Rc2Error> { observer, _ in
-			os_log("starting pull: %{public}@", type:.info, self.url.absoluteString)
+			os_log("starting pull: %{public}@", type:.info, self.imageName)
 			self.pullObserver = observer
-			self.urlSession = Foundation.URLSession(configuration: self.urlConfig, delegate: self, delegateQueue:OperationQueue.main)
-			var req = URLRequest(url: self.url)
-			req.httpMethod = "POST"
-			req.addValue("application/json", forHTTPHeaderField:"Content-Type")
-			req.addValue("application/json", forHTTPHeaderField: "Accept")
-//chunked responses are now handled by default
-//			req.isChunkedResponse = true
-			self._task = self.urlSession!.dataTask(with: req)
-			self._task?.resume()
-		}.optionalLog("pull \(url.lastPathComponent)")
+			self.connection.openConnection()
+			self.connection.writeRequest()
+		}.optionalLog("pull \(imageName)")
 	}
 	
-	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)
-	{
-		completionHandler(Foundation.URLSession.ResponseDisposition.allow)
-	}
-
-	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
+	private func handle(data: Data)
 	{
 		let oldTotal = totalDownloaded
 		let str = String(data: data, encoding:String.Encoding.utf8)!
@@ -126,7 +130,7 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 		}
 	}
 
-	func handleStatus(status: String, json: JSON)
+	private func handleStatus(status: String, json: JSON)
 	{
 		guard let layerId = try? json.getString(at: "id") else { return }
 		switch status.lowercased() {
@@ -156,22 +160,4 @@ public final class DockerPullOperation: NSObject, URLSessionDataDelegate {
 				break
 		}
 	}
-
-	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
-	{
-		guard nil == error else {
-			os_log("error in pull operation %{public}@", log: .docker, type: .debug, error! as NSError)
-			pullObserver?.send(error: Rc2Error(type: .cocoa, nested: error))
-			return
-		}
-		os_log("pull %{public}@ finished: %@", log: .docker, type:.info, pullProgress.name, totalDownloaded)
-		pullProgress.currentSize = totalDownloaded
-		pullProgress.complete = true
-		pullObserver?.send(value: pullProgress)
-		pullObserver?.sendCompleted()
-		for aLayer in layers.values {
-			os_log("layer %{public}@ is %@", log: .docker, type:.info, aLayer.id, aLayer.finalSize)
-		}
-	}
-
 }

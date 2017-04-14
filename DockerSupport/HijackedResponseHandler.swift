@@ -92,8 +92,17 @@ class HijackedResponseHandler: DockerResponseHandler {
 			guard headers!.isChunked else { fatalError() }
 		}
 		// we've got headers and possibly data. if the data is a complete chunk, send it as a message
-		if let chunkData = parseNextChunk() {
-			sendMessage(.data(chunkData))
+		var exit = false
+		while !exit {
+			let (complete, chunkData) = parseNextChunk()
+			if let cdata = chunkData {
+				sendMessage(.data(cdata))
+			} else {
+				exit = true
+			}
+			if complete {
+				sendMessage(.complete)
+			}
 		}
 		if done {
 			sendMessage(.data(dataBuffer))
@@ -102,26 +111,27 @@ class HijackedResponseHandler: DockerResponseHandler {
 		}
 	}
 	
-	func parseNextChunk() -> Data? {
-		guard dataBuffer.count > 0 else { return nil }
+	func parseNextChunk() -> (Bool, Data?) {
+		guard dataBuffer.count > 0 else { return (false, nil) }
 		guard let lineEnd = dataBuffer.range(of: crnl) else {
 			os_log("failed to find CRNL in chunk", log: .docker)
-			return nil
+			return (false, nil)
 		}
 		let sizeData = dataBuffer.subdata(in: 0..<lineEnd.lowerBound)
 		guard let dataStr = String(data: sizeData, encoding: .utf8),
 			let chunkLength = Int(dataStr, radix: 16)
 		else {
 			os_log("failed to find a chunk header in hijacked data", log: .docker)
-			return nil
+			return (false, nil)
 		}
 		os_log("got hijacked chunk length %d", log: .docker, type: .debug, chunkLength)
 		let chunkEnd = chunkLength + sizeData.count + crnl.count
 		guard chunkEnd < dataBuffer.count else {
-			return nil
+			return (false, nil)
 		} //if don't have all the chunk data, wait for more data
 		let chunkData = dataBuffer.subdata(in: lineEnd.upperBound..<chunkEnd)
 		dataBuffer.removeSubrange(0..<(chunkEnd + crnl.count))
-		return chunkData
+		guard chunkData.count > 0 else { return (true, nil) }
+		return (false, chunkData)
 	}
 }
