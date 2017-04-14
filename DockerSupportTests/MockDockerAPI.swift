@@ -11,6 +11,17 @@ import ClientCore
 import Freddy
 
 class MockDockerAPI: DockerAPI {
+	/// Opens a stream to the logs for the specified container
+	///
+	/// - Parameters:
+	///   - container: the container whose logs should be streamed
+	///   - dataHandler: closure called when there is log information. If nil is passed, the stream is complete
+	///   - string: log content to process
+	///   - isStdErr: true if the string is from stderr, false if from stdout
+	func streamLog(container: DockerContainer, dataHandler: @escaping LogEntryCallback) {
+		fatalError("not implemented")
+	}
+
 	/// Fetches the logs for the specified container
 	///
 	/// - Parameter container: the container to get logs for
