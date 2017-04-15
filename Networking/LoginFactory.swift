@@ -128,7 +128,7 @@ extension LoginFactory: URLSessionDataDelegate {
 		{
 			os_log("login connection lost, retrying", log: .network)
 			retryCount += 1
-			DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+			DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
 				self.attemptLogin()
 			}
 			return

@@ -410,6 +410,8 @@ extension MacAppDelegate {
 		case .docker:
 			startupController!.stage = .localLogin
 			startupLocalLogin()
+		case .downloading:
+			break //changes handled via observing pull signal
 		case .localLogin:
 			startupController!.stage = .restoreSessions
 			restoreSessions()
@@ -503,9 +505,13 @@ extension MacAppDelegate {
 			return docker.prepareContainers()
 		}
 		return docker.pullImages()
+			.observe(on: UIScheduler())
 			.on( //inject side-effect to update the progress bar
 				starting: {
 					self.startupController?.statusMesssage = "Pulling Images…"
+					self.startupController?.stage = .downloading
+			}, completed: { _ in
+				self.startupController?.stage = .docker
 			}, value: { (pprogress) in
 				self.startupController?.pullProgress = pprogress
 			})

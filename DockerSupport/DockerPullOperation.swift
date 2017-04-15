@@ -78,13 +78,14 @@ public final class DockerPullOperation {
 		case .data(let data):
 			handle(data: data)
 		case .complete:
-			os_log("pull %{public}@ finished: %@", log: .docker, type:.info, pullProgress.name, totalDownloaded)
+			os_log("pull %{public}@ finished: %d", log: .docker, type:.info, pullProgress.name, totalDownloaded)
 			pullProgress.currentSize = totalDownloaded
+			if pullProgress.currentSize == 0 { pullProgress.currentSize = pullProgress.estSize }
 			pullProgress.complete = true
 			pullObserver?.send(value: pullProgress)
 			pullObserver?.sendCompleted()
 			for aLayer in layers.values {
-				os_log("layer %{public}@ is %@", log: .docker, type:.info, aLayer.id, aLayer.finalSize)
+				os_log("layer %{public}@ is %d", log: .docker, type:.info, aLayer.id, aLayer.finalSize)
 			}
 		}
 	}

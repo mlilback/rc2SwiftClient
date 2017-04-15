@@ -52,7 +52,7 @@ let volumeNames = ["rc2_dbdata", "rc2_userlib"]
 /// manages communicating with the local docker engine
 public final class DockerManager: NSObject {
 	// MARK: - Properties
-	let waitingOnContainersTimeout: TimeInterval = 4.0
+	let waitingOnContainersTimeout: TimeInterval = 8.0
 	/// the containers managed.
 	// these should always be referred to as self.containers since many parameters have the name containers
 	public fileprivate(set) var containers: [DockerContainer]
@@ -72,6 +72,7 @@ public final class DockerManager: NSObject {
 	fileprivate(set) var imageInfo: RequiredImageInfo?
 	fileprivate(set) var installedImages: [DockerImage] = []
 	fileprivate(set) var pullProgress: PullProgress?
+	fileprivate var pullAlreadyDownloaded: Int = 0
 	fileprivate(set) var dataDirectory: URL?
 	fileprivate let socketPath = "/var/run/docker.sock"
 	///the path to use for the source shared folder for dbserver. overridden when using a remote docker daemon
@@ -187,6 +188,7 @@ public final class DockerManager: NSObject {
 			}
 			.flatMap(.concat, transform: validateNetwork)
 			.flatMap(.concat, transform: validateVolumes)
+			.flatMap(.concat, transform: loadInitialContainerInfo)
 			.flatMap(.concat, transform: api.loadImages)
 			.map { images in self.installedImages = images; return refresh }
 			.flatMap(.concat, transform: checkForImageUpdate)
@@ -204,12 +206,17 @@ public final class DockerManager: NSObject {
 		precondition(imageInfo != nil)
 		precondition(imageInfo!.dbserver.size > 0)
 		os_log("dm.pullImages called", log: .docker, type: .debug)
-		let fullSize = imageInfo!.reduce(0) { val, info in val + info.size }
-		pullProgress = PullProgress(name: "all", size: fullSize)
-		let producers = imageInfo!.map { img -> SignalProducer<PullProgress, Rc2Error> in
+		var fullSize = 0 //imageInfo!.reduce(0) { val, info in val + info.size }
+		let producers = imageInfo!.flatMap { img -> SignalProducer<PullProgress, Rc2Error>? in
 			os_log("got pull for %{public}@", log:.docker, type:.debug, img.fullName)
+			//skip pull if container already using that image
+			if let ctype = ContainerType(rawValue: img.name), img.id == containers[ctype]?.imageId ?? "" {
+				return nil
+			}
+			fullSize += img.estSize
 			return self.pullSingleImage(pull: DockerPullOperation(imageName: img.fullName, estimatedSize: img.size))
 		}
+		pullProgress = PullProgress(name: "all", size: fullSize)
 		//use concat instead of merge because progress depends on order of download (layer sizes)
 		let producer = SignalProducer< SignalProducer<PullProgress, Rc2Error>, Rc2Error >(producers)
 		return producer.flatten(.concat)
@@ -463,6 +470,24 @@ extension DockerManager {
 			.optionalLog("combined vols")
 	}
 
+	// first check of containers, before images are loaded
+	fileprivate func loadInitialContainerInfo() -> SignalProducer<(), Rc2Error>
+	{
+		let producer = self.api.refreshContainers()
+			.on(value: { newContainers in
+				//need to set the version used to create our containers from the image info we just processed
+				for aType in ContainerType.all {
+					newContainers[aType]?.createInfo = self.containers[aType]!.createInfo
+					// swiftlint:disable:next force_try
+					try! newContainers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
+				}
+			})
+			.map { newContainers in return (newContainers, self.containers) }
+			.flatMap(.concat, transform: mergeContainers)
+			.map { _ in return () }
+		return producer
+	}
+	
 	typealias CreateFunction = (String) -> SignalProducer<(), Rc2Error>
 
 	fileprivate func optionallyCreateObject(name: String, exists: Bool, handler: CreateFunction) -> SignalProducer<(), Rc2Error>
@@ -548,12 +573,16 @@ extension DockerManager {
 	{
 		os_log("dm.pullSingleImage called for %{public}@", log: .docker, type: .debug, pull.pullProgress.name)
 		pullProgress?.extracting = false
-		let alreadyDownloaded = pullProgress!.currentSize
+ 		var lastValue: Int = 0
 		return pull.pull().map { pp in
-			var npp = pp
-			npp.currentSize = pp.currentSize + alreadyDownloaded
+			var npp = PullProgress(name: pp.name, size: self.pullProgress!.estSize)
+			npp.currentSize = pp.currentSize + self.pullAlreadyDownloaded
+			lastValue = pp.currentSize
 			return npp
-		}
+		}.on(completed: {
+			self.pullAlreadyDownloaded += lastValue
+			lastValue = 0
+		})
 	}
 
 	///creates AppSupport/io.rc2.xxx/v1/dbdata
