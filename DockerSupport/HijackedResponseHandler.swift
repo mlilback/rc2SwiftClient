@@ -64,7 +64,7 @@ class HijackedResponseHandler: DockerResponseHandler {
 			sendMessage(.error(Rc2Error(type: .docker, nested: DockerError.cocoaError(nserr), explanation: "error reading io channel")))
 			return
 		}
-		if data == nil && done { // EOF
+		if done && (data == nil || data!.count == 0) { // EOF
 			sendMessage(.complete)
 			DispatchQueue.global().async { self.closeHandler() }
 			return
