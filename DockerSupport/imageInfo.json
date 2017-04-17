@@ -1,30 +1,31 @@
 {
-	"timestamp" : "2017-03-29T19:47:13Z",
+	"version" : 2,
+	"lastCompatibleVersion": 2,
+	"timestamp" : "2017-04-17T01:57:28Z",
 	"images" : {
-		"appserver" : {
-			"tag" : "rc2server/appserver:0.4.7",
-			"version" : "0.4.7",
-			"name" : "appserver",
-			"estSize" : 374889434,
-			"size" : 501951004,
-			"id" : "sha256:68845b3501902bad07147af0ad8b9ee8e0f4c2226ee4f6d203495997733a745d"
-		},
 		"compute" : {
-			"id" : "sha256:e4f4d1cafac7e4e9b572b804766277a6ec5118931a3765114619b09ea9bfe895",
-			"size" : 2112484262,
-			"estSize" : 1696174681,
+			"estSize" : 1730937841,
 			"tag" : "rc2server/compute:0.4.4",
 			"name" : "compute",
+			"size" : 2112484262,
+			"id" : "sha256:e4f4d1cafac7e4e9b572b804766277a6ec5118931a3765114619b09ea9bfe895",
 			"version" : "0.4.4"
 		},
+		"appserver" : {
+			"version" : "0.4.8",
+			"id" : "sha256:9512c58bcec5c35aa19d387313d29ed19fb019f894eadacbe467c887ba2ff1f4",
+			"size" : 501950800,
+			"estSize" : 374889230,
+			"tag" : "rc2server/appserver:0.4.8",
+			"name" : "appserver"
+		},
 		"dbserver" : {
-			"size" : 416309581,
-			"estSize" : 416309581,
-			"version" : "0.4.3",
+			"version" : "0.4.4",
 			"name" : "dbserver",
-			"tag" : "rc2server/dbserver:0.4.3",
-			"id" : "sha256:95eb6c69abbf19157cb8b7d03f09f4c6a462985cd5c3f834436b8bf186c25873"
+			"tag" : "rc2server/dbserver:0.4.4",
+			"estSize" : 381546421,
+			"size" : 381546421,
+			"id" : "sha256:b8807df42eaf5695335078a9a4e52717e59a4215bcfe3fddc90443f32e46d39d"
 		}
-	},
-	"version" : 2
+	}
 }
