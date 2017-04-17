@@ -788,17 +788,17 @@
             <objects>
                 <viewController storyboardIdentifier="console" id="cmA-J2-3x3" userLabel="console controller" customClass="ConsoleOutputController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="sbQ-OJ-NsG">
-                        <rect key="frame" x="0.0" y="0.0" width="435" height="513"/>
+                        <rect key="frame" x="0.0" y="0.0" width="466" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <box autoresizesSubviews="NO" boxType="custom" borderType="none" title="Box" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="SDE-7t-peQ">
-                                <rect key="frame" x="0.0" y="0.0" width="435" height="38"/>
+                                <rect key="frame" x="0.0" y="0.0" width="466" height="38"/>
                                 <view key="contentView" id="grt-Wd-dbd">
-                                    <rect key="frame" x="0.0" y="0.0" width="435" height="38"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="466" height="38"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yCP-oo-1VS">
-                                            <rect key="frame" x="10" y="8" width="405" height="22"/>
+                                            <rect key="frame" x="10" y="8" width="436" height="22"/>
                                             <subviews>
                                                 <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FY8-og-Aex" userLabel="history">
                                                     <rect key="frame" x="0.0" y="0.0" width="34" height="23"/>
@@ -814,7 +814,7 @@
                                                     </connections>
                                                 </segmentedControl>
                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="500" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y6X-8g-t8y" customClass="ConsoleTextField" customModule="MacClient" customModuleProvider="target">
-                                                    <rect key="frame" x="42" y="0.0" width="278" height="22"/>
+                                                    <rect key="frame" x="42" y="0.0" width="309" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="563" constant="50" id="Xik-b7-zR2"/>
                                                     </constraints>
@@ -834,7 +834,7 @@
                                                     </connections>
                                                 </textField>
                                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ogZ-Ni-wlf">
-                                                    <rect key="frame" x="322" y="-7" width="89" height="32"/>
+                                                    <rect key="frame" x="353" y="-7" width="89" height="32"/>
                                                     <buttonCell key="cell" type="push" title="Execute" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dh4-dU-GOd">
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                         <font key="font" metaFont="system"/>
@@ -874,17 +874,17 @@
                                 <color key="fillColor" name="windowBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </box>
                             <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="77W-4U-1WA">
-                                <rect key="frame" x="0.0" y="38" width="435" height="475"/>
+                                <rect key="frame" x="0.0" y="38" width="466" height="475"/>
                                 <clipView key="contentView" id="n15-ti-4jq">
-                                    <rect key="frame" x="1" y="1" width="433" height="473"/>
+                                    <rect key="frame" x="1" y="1" width="464" height="473"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textView editable="NO" importsGraphics="NO" usesFontPanel="YES" findStyle="bar" incrementalSearchingEnabled="YES" continuousSpellChecking="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" smartInsertDelete="YES" id="R7r-5U-fzT" customClass="ResultsView" customModule="MacClient" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="0.0" width="433" height="473"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="464" height="473"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <size key="minSize" width="433" height="473"/>
-                                            <size key="maxSize" width="463" height="10000000"/>
+                                            <size key="minSize" width="464" height="473"/>
+                                            <size key="maxSize" width="464" height="10000000"/>
                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                             <connections>
                                                 <outlet property="delegate" destination="cmA-J2-3x3" id="0KL-ea-ctq"/>
@@ -893,12 +893,15 @@
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </clipView>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="250" id="AP2-ba-RHy"/>
+                                </constraints>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="eZk-yD-Kme">
                                     <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="S4R-a9-cju">
-                                    <rect key="frame" x="418" y="1" width="16" height="473"/>
+                                    <rect key="frame" x="449" y="1" width="16" height="473"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
@@ -921,7 +924,7 @@
                 </viewController>
                 <customObject id="ziC-jg-V0t" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1566" y="-41"/>
+            <point key="canvasLocation" x="1574" y="-41.5"/>
         </scene>
         <!--image Controller-->
         <scene sceneID="Guo-sO-Vgq">

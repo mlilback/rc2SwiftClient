@@ -139,20 +139,18 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 // subclass that resizes views 2/3 on double click on splitter
 class SessionSplitView: NSSplitView {
 	override func mouseDown(with event: NSEvent) {
-		precondition(subviews.count == 3)
 		guard event.type == .leftMouseDown, event.clickCount == 2 else {
 			super.mouseDown(with: event)
 			return
 		}
-		let frame2 = subviews[1].frame
-		let frame3 = subviews[2].frame
+		let frame2 = arrangedSubviews[1].frame
+		let frame3 = arrangedSubviews[2].frame
 		let dividerRect = NSRect(x: frame2.maxX - 1.0, y: frame3.origin.y, width: dividerThickness + 1.0, height: frame3.height)
 		let position = convert(event.locationInWindow, from: nil)
 		guard dividerRect.contains(position) else {
 			super.mouseDown(with: event)
 			return
 		}
-		Swift.print("center")
 		let contentWidth = frame3.maxX - frame2.origin.x
 		let dest = frame2.origin.x + (contentWidth / 2.0)
 		setPosition(dest, ofDividerAt: 1)
