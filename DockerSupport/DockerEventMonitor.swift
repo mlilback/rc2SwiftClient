@@ -90,7 +90,7 @@ final class DockerEventMonitorImpl: DockerEventMonitor
 	{
 		self.delegate = delegate
 		let request = URLRequest(url: baseUrl.appendingPathComponent("/events").absoluteURL)
-		self.connection = LocalDockerConnectionImpl<HijackedResponseHandler>(request: request, handler: connectionCallback)
+		self.connection = LocalDockerConnectionImpl<HijackedResponseHandler>(request: request, hijack: true, handler: connectionCallback)
 		connection.openConnection()
 		connection.writeRequest()
 	}

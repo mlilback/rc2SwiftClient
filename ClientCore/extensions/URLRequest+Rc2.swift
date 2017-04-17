@@ -16,7 +16,6 @@ public extension URLRequest {
 				CFHTTPMessageSetHeaderFieldValue(msg, aKey as CFString, aValue as CFString)
 			}
 		}
-		CFHTTPMessageSetHeaderFieldValue(msg, "Connection" as CFString, "closed" as CFString)
 		if let body = httpBody {
 			CFHTTPMessageSetBody(msg, body as CFData)
 		}

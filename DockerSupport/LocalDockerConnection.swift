@@ -31,7 +31,7 @@ enum LocalDockerMessage: Equatable {
 typealias DockerMessageHandler = (LocalDockerMessage) -> Void
 
 protocol LocalDockerConnection: class {
-	init(request: URLRequest, handler: @escaping DockerMessageHandler)
+	init(request: URLRequest, hijack: Bool, handler: @escaping DockerMessageHandler)
 	@discardableResult
 	func writeRequest() -> Bool
 	@discardableResult
@@ -46,10 +46,12 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 	fileprivate var request: URLRequest!
 	fileprivate let handler: DockerMessageHandler
 	fileprivate var fileDescriptor: Int32 = 0
+	fileprivate let hijack: Bool
 	
-	required init(request: URLRequest, handler: @escaping DockerMessageHandler)
+	required init(request: URLRequest, hijack: Bool = false, handler: @escaping DockerMessageHandler)
 	{
 		self.handler = handler
+		self.hijack = hijack
 		self.request = massage(request: request)
 	}
 	
@@ -119,7 +121,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 		responseHandler = nil
 	}
 
-	/// modifies request for use as a docker request
+	/// modifies request for use as a docker request by adding headers
 	private func massage(request: URLRequest) -> URLRequest {
 		guard let origUrl = request.url, var components = URLComponents(url: origUrl, resolvingAgainstBaseURL: true)
 			else { fatalError("request must have URL") }
@@ -133,7 +135,9 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 		var req = request
 		req.url = newUrl
 		req.addValue("localhost:8088", forHTTPHeaderField: "Host")
-		req.addValue("close", forHTTPHeaderField: "Connection")
+		if !hijack {
+			req.addValue("close", forHTTPHeaderField: "Connection")
+		}
 		req.addValue("Rc2Engine", forHTTPHeaderField: "User-Agent")
 		if request.isHijackedResponse {
 			req.addValue("*/*", forHTTPHeaderField: "Accept")

@@ -70,7 +70,7 @@ class SingleDataResponseHandler: DockerResponseHandler {
 			return
 		}
 		// dispatchData can be nil if done
-		if let dispatchData = data {
+		if let dispatchData = data, dispatchData.count > 0 {
 			// add to buffer
 			dispatchData.withUnsafeBytes { (ptr: UnsafePointer<UInt8>) -> Void in
 				dataBuffer.append(ptr, count: dispatchData.count)
@@ -94,12 +94,13 @@ class SingleDataResponseHandler: DockerResponseHandler {
 			handleNonChunkedData()
 			return
 		}
-		// data is chunked. we'll just parse a single chunk and return it. ignore if says it is done
-		if dataBuffer.count > 0 {
-			parseSingleChunk(data: dataBuffer)
+		let chunkData = parseSingleChunk()
+		guard let cdata = chunkData else {
 			return
 		}
-	}
+		sendMessage(.data(cdata))
+		sendMessage(.complete)
+}
 
 	private func handleNonChunkedData() {
 		guard let channel = readChannel else { return } // must have been closed while waiting on callback
@@ -119,24 +120,47 @@ class SingleDataResponseHandler: DockerResponseHandler {
 		sendMessage(.data(dataBuffer))
 	}
 	
-	private func parseSingleChunk(data: Data) {
-		guard let lineEnd = data.range(of: crnl) else {
+	func parseSingleChunk() -> Data? {
+		guard dataBuffer.count > 0 else { return nil }
+		guard let lineEnd = dataBuffer.range(of: crnl) else {
 			os_log("failed to find CRNL in chunk", log: .docker)
-			sendMessage(.error(Rc2Error(type: .docker, nested: DockerError.httpError(statusCode: 500, description: "failed to find CRNL in chunk", mimeType: nil))))
-			return
+			return nil
 		}
-		let sizeData = data.subdata(in: 0..<lineEnd.lowerBound)
+		let sizeData = dataBuffer.subdata(in: 0..<lineEnd.lowerBound)
 		guard let dataStr = String(data: sizeData, encoding: .utf8),
 			let chunkLength = Int(dataStr, radix: 16)
-			else { fatalError("failed to read chunk length") }
-		os_log("got chunk length %d", log: .docker, type: .debug, chunkLength)
-		guard chunkLength > 0 else {
-			sendMessage(.complete)
-			return
+			else {
+				os_log("failed to find a chunk header in hijacked data", log: .docker)
+				return nil
 		}
+		os_log("got hijacked chunk length %d", log: .docker, type: .debug, chunkLength)
 		let chunkEnd = chunkLength + sizeData.count + crnl.count
-		let chunkData = data.subdata(in: lineEnd.upperBound..<chunkEnd)
-		sendMessage(.data(chunkData))
-		sendMessage(.complete)
+		guard chunkEnd < dataBuffer.count else {
+			return nil
+		} //if don't have all the chunk data, wait for more data
+		let chunkData = dataBuffer.subdata(in: lineEnd.upperBound..<chunkEnd)
+		guard chunkData.count > 0 else { return nil }
+		return chunkData
 	}
+//
+//	private func parseSingleChunk(data: Data) {
+//		guard let lineEnd = data.range(of: crnl) else {
+//			os_log("failed to find CRNL in chunk", log: .docker)
+//			sendMessage(.error(Rc2Error(type: .docker, nested: DockerError.httpError(statusCode: 500, description: "failed to find CRNL in chunk", mimeType: nil))))
+//			return
+//		}
+//		let sizeData = data.subdata(in: 0..<lineEnd.lowerBound)
+//		guard let dataStr = String(data: sizeData, encoding: .utf8),
+//			let chunkLength = Int(dataStr, radix: 16)
+//			else { fatalError("failed to read chunk length") }
+//		os_log("got chunk length %d", log: .docker, type: .debug, chunkLength)
+//		guard chunkLength > 0 else {
+//			sendMessage(.complete)
+//			return
+//		}
+//		let chunkEnd = chunkLength + sizeData.count + crnl.count
+//		let chunkData = data.subdata(in: lineEnd.upperBound..<chunkEnd)
+//		sendMessage(.data(chunkData))
+//		sendMessage(.complete)
+//	}
 }
