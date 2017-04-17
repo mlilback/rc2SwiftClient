@@ -90,7 +90,7 @@ final class DockerAPIImplementation: DockerAPI {
 		var request = URLRequest(url: URL(string: "dockerstream:/v1.24/containers/\(container.name)/logs?stderr=1&stdout=1&follow=1&timestamps=1")!)
 //		var request = URLRequest(url: components.url!)
 		request.isHijackedResponse = true
-		let connection = LocalDockerConnectionImpl<HijackedResponseHandler>(request: request) { (message) in
+		let connection = LocalDockerConnectionImpl<HijackedResponseHandler>(request: request, hijack: true) { (message) in
 			switch message {
 			case .data(let data):
 				self.parseDockerChunk(data: data, callback: dataHandler)
