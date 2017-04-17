@@ -47,7 +47,10 @@ protocol SessionControllerDelegate: class {
 		let nc = NotificationCenter.default
 		nc.addObserver(self, selector: #selector(SessionController.appWillTerminate), name: NSNotification.Name.NSApplicationWillTerminate, object: nil)
 		nc.addObserver(self, selector:  #selector(SessionController.saveSessionState), name: NSNotification.Name.NSWorkspaceWillSleep, object:nil)
-		restoreSessionState()
+		// need to finish the init process we are a part of
+		DispatchQueue.main.async {
+			self.restoreSessionState()
+		}
 	}
 
 	deinit {
