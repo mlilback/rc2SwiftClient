@@ -50,7 +50,7 @@ public final class DockerPullOperation {
 	var layers = [String: LayerProgress]()
 	var totalDownloaded: Int = 0
 	var statuses = Set<String>()
-	private var pullObserver: Signal<PullProgress, Rc2Error>.Observer?
+	private var pullObserver: Signal<PullProgress, DockerError>.Observer?
 
 	/// - parameter imageName: the name of the image to pull
 	/// - parameter estimatedSize: the size of the download, used for progress calculation
@@ -90,9 +90,9 @@ public final class DockerPullOperation {
 		}
 	}
 	
-	public func pull() -> SignalProducer<PullProgress, Rc2Error>
+	public func pull() -> SignalProducer<PullProgress, DockerError>
 	{
-		return SignalProducer<PullProgress, Rc2Error> { observer, _ in
+		return SignalProducer<PullProgress, DockerError> { observer, _ in
 			os_log("starting pull: %{public}@", type:.info, self.imageName)
 			self.pullObserver = observer
 			self.connection.openConnection()

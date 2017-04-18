@@ -7,22 +7,22 @@
 import Foundation
 import Freddy
 
-public protocol EventData {
+public protocol EventType {
 	init(json: JSON) throws
-	var id: String { get }
+	var id: String? { get }
 	var time: Date { get }
 	var attributes: [String: String]? { get }
 }
 
-public enum EventType {
+public enum Event {
 	case container(ContainerEvent)
 	case image(ImageEvent)
-	case plugin(JSON)
+	case plugin(PluginEvent)
 	case volume(VolumeEvent)
 	case network(NetworkEvent)
-	case daemon(JSON)
+	case daemon(DaemonEvent)
 	
-	static func parse(json: JSON) throws -> EventType? {
+	static func parse(json: JSON) throws -> Event? {
 		switch try json.getString(at: "Type") {
 		case "container":
 			return .container(try ContainerEvent(json: json))
@@ -33,16 +33,16 @@ public enum EventType {
 		case "network":
 			return .network(try NetworkEvent(json: json))
 		case "plugin":
-			return .plugin(json)
+			return .plugin(try PluginEvent(json: json))
 		case "daemon":
-			return .daemon(json)
+			return .daemon(try DaemonEvent(json: json))
 		default:
 			return nil
 		}
 	}
 }
 
-public struct ContainerEvent: EventData, CustomStringConvertible {
+public struct ContainerEvent: EventType, CustomStringConvertible {
 	public enum Action: String {
 		case attach
 		case commit
@@ -69,13 +69,15 @@ public struct ContainerEvent: EventData, CustomStringConvertible {
 		case update
 	}
 
-	public let id: String
+	public let id: String?
 	public let action: Action
 	public let time: Date
+	public let from: String
 	public let attributes: [String: String]?
 	
 	public init(json: JSON) throws {
 		try id = json.getString(at: "id")
+		try from = json.getString(at: "from")
 		try time = Date(timeIntervalSince1970: json.getDouble(at: "time"))
 		attributes = try json.decodedDictionary(at: "Actor", "Attributes", alongPath: .missingKeyBecomesNil)
 		guard let decodedAction = Action(rawValue: try  json.getString(at: "Action")) else {
@@ -89,7 +91,7 @@ public struct ContainerEvent: EventData, CustomStringConvertible {
 	}
 }
 
-public struct ImageEvent: EventData, CustomStringConvertible {
+public struct ImageEvent: EventType, CustomStringConvertible {
 	public enum Action: String {
 		case delete
 		case importEvt //import is a swift keyword
@@ -101,7 +103,7 @@ public struct ImageEvent: EventData, CustomStringConvertible {
 		case untag
 	}
 	
-	public let id: String
+	public let id: String?
 	public let action: Action
 	public let time: Date
 	public let attributes: [String: String]?
@@ -117,11 +119,11 @@ public struct ImageEvent: EventData, CustomStringConvertible {
 	}
 
 	public var description: String {
-		return "Image event: \(action), id: \(id), time:\(time)"
+		return "Image event: \(action), id: \(id ?? "n/a"), time:\(time)"
 	}
 }
 
-public struct NetworkEvent: EventData, CustomStringConvertible {
+public struct NetworkEvent: EventType, CustomStringConvertible {
 	public enum Action: String {
 		case create
 		case connect
@@ -129,14 +131,14 @@ public struct NetworkEvent: EventData, CustomStringConvertible {
 		case destroy
 	}
 	
-	public let id: String
+	public let id: String?
 	public let name: String
 	public let action: Action
 	public let time: Date
 	public let attributes: [String: String]?
 
 	public init(json: JSON) throws {
-		try id = json.getString(at: "id")
+		id = json.getOptionalString(at: "id")
 		try time = Date(timeIntervalSince1970: json.getDouble(at: "time"))
 		try name = json.getString(at: "Actor", "Attributes", "name")
 		attributes = try json.decodedDictionary(at: "Actor", "Attributes", alongPath: .missingKeyBecomesNil)
@@ -151,7 +153,7 @@ public struct NetworkEvent: EventData, CustomStringConvertible {
 	}
 }
 
-public struct VolumeEvent: EventData, CustomStringConvertible {
+public struct VolumeEvent: EventType, CustomStringConvertible {
 	public enum Action: String {
 		case create, mount, unmount, destroy
 	}
@@ -159,15 +161,15 @@ public struct VolumeEvent: EventData, CustomStringConvertible {
 	public let container: String
 	public let volumeId: String
 	public let driver: String?
-	public let id: String
+	public let id: String?
 	public let time: Date
 	public let attributes: [String: String]?
 
 	public init(json: JSON) throws {
-		try id = json.getString(at: "id")
-		try volumeId = json.getString(at: "Action", "ID")
+		id = json.getOptionalString(at: "id")
+		try volumeId = json.getString(at: "Actor", "ID")
 		try time = Date(timeIntervalSince1970: json.getDouble(at: "time"))
-		container = try json.getString(at: "Actor", "ID")
+		container = try json.getString(at: "Actor", "Attributes", "container")
 		driver = try? json.getString(at: "Actor", "driver")
 		attributes = try json.decodedDictionary(at: "Actor", "Attributes", alongPath: .missingKeyBecomesNil)
 		guard let decodedAction = Action(rawValue: try  json.getString(at: "Action")) else {
@@ -178,5 +180,54 @@ public struct VolumeEvent: EventData, CustomStringConvertible {
 	
 	public var description: String {
 		return "Volume event: \(action), volume: \(volumeId), time:\(time)"
+	}
+}
+
+public struct PluginEvent: EventType, CustomStringConvertible {
+	public enum Action: String {
+		case install, enable, disable, remove
+	}
+	
+	public let action: Action
+	public let id: String?
+	public let time: Date
+	public let attributes: [String: String]?
+	
+	public init(json: JSON) throws {
+		id = json.getOptionalString(at: "id")
+		try time = Date(timeIntervalSince1970: json.getDouble(at: "time"))
+		attributes = try json.decodedDictionary(at: "Actor", "Attributes", alongPath: .missingKeyBecomesNil)
+		guard let decodedAction = Action(rawValue: try  json.getString(at: "Action")) else {
+			throw DockerError.unsupportedEvent
+		}
+		action = decodedAction
+	}
+
+	public var description: String {
+		return "PluginEvent \(action)"
+	}
+}
+
+public struct DaemonEvent: EventType, CustomStringConvertible {
+	public enum Action: String {
+		case reload
+	}
+	public let action: Action
+	public let id: String?
+	public let time: Date
+	public let attributes: [String: String]?
+	
+	public init(json: JSON) throws {
+		id = json.getOptionalString(at: "id")
+		try time = Date(timeIntervalSince1970: json.getDouble(at: "time"))
+		attributes = try json.decodedDictionary(at: "Actor", "Attributes", alongPath: .missingKeyBecomesNil)
+		guard let decodedAction = Action(rawValue: try  json.getString(at: "Action")) else {
+			throw DockerError.unsupportedEvent
+		}
+		action = decodedAction
+	}
+
+	public var description: String {
+		return "DaemonEvent"
 	}
 }

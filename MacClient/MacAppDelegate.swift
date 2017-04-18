@@ -516,6 +516,7 @@ extension MacAppDelegate {
 				self.startupController?.pullProgress = pprogress
 			})
 			.collect() // colalesce individual PullProgress values into a single array sent when pullImages is complete
+			.mapError({ derror in return Rc2Error(type: .docker, nested: derror) })
 			.map( { _ in }) //map [PullProgress] to () as that is the input parameter to prepareContainers
 			.flatMap(.concat) { docker.prepareContainers() }
 	}

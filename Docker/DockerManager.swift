@@ -80,11 +80,11 @@ public final class DockerManager: NSObject {
 	/// used for time to start listening to events
 	private let startupTime = Int(Date.timeIntervalSinceReferenceDate)
 	/// monitors event stream
-	fileprivate var eventMonitor: Docker?
+	fileprivate var eventMonitor: EventMonitor?
 	private var state: ManagerState = .unknown
 
 	//for dependency injection
-	var eventMonitorClass: Docker.Type = DockerImpl.self
+	var eventMonitorClass: EventMonitor.Type = EventMonitorImpl<LocalDockerConnectionImpl<HijackedResponseHandler>>.self
 	
 	#if DEBUG
 	private let updateDelay = 60.0 //1 minute
@@ -184,7 +184,7 @@ public final class DockerManager: NSObject {
 			.map { v in
 				self.versionInfo = v
 				self.state = .initialized
-				self.eventMonitor = self.eventMonitorClass.init(baseUrl: self.baseUrl, delegate: self, sessionConfig: self.sessionConfig)
+				self.eventMonitor = self.eventMonitorClass.init(delegate: self)
 			}
 			.flatMap(.concat, transform: validateNetwork)
 			.flatMap(.concat, transform: validateVolumes)
@@ -201,13 +201,13 @@ public final class DockerManager: NSObject {
 	/// pulls any images needed from docker hub
 	///
 	/// - returns: the values are repeated progress handlers
-	public func pullImages() -> SignalProducer<PullProgress, Rc2Error>
+	public func pullImages() -> SignalProducer<PullProgress, DockerError>
 	{
 		precondition(imageInfo != nil)
 		precondition(imageInfo!.dbserver.size > 0)
 		os_log("dm.pullImages called", log: .docker, type: .debug)
 		var fullSize = 0 //imageInfo!.reduce(0) { val, info in val + info.size }
-		let producers = imageInfo!.flatMap { img -> SignalProducer<PullProgress, Rc2Error>? in
+		let producers = imageInfo!.flatMap { img -> SignalProducer<PullProgress, DockerError>? in
 			os_log("got pull for %{public}@", log:.docker, type:.debug, img.fullName)
 			//skip pull if container already using that image
 			if let ctype = ContainerType(rawValue: img.name), img.id == containers[ctype]?.imageId ?? "" {
@@ -218,7 +218,7 @@ public final class DockerManager: NSObject {
 		}
 		pullProgress = PullProgress(name: "all", size: fullSize)
 		//use concat instead of merge because progress depends on order of download (layer sizes)
-		let producer = SignalProducer< SignalProducer<PullProgress, Rc2Error>, Rc2Error >(producers)
+		let producer = SignalProducer< SignalProducer<PullProgress, DockerError>, DockerError >(producers)
 		return producer.flatten(.concat)
 	}
 
@@ -380,24 +380,44 @@ public final class DockerManager: NSObject {
 }
 
 // MARK: - Event Monitor Delegate
-extension DockerManager: DockerDelegate {
+extension DockerManager: EventMonitorDelegate {
 	/// handles an event from the event monitor
 	// note that the only events that external observers should care about (as currently implemented) are related to specific containers, which will update their observable state property. Probably need a way to inform application if some serious problem ocurred
-	func handleEvent(_ event: DockerEvent)
+	func handleEvent(_ event: Event)
 	{
+		print("got event \(event)")
 		//only care if it is one of our containers
-		guard let from = try? event.json.getString(at:"from"),
-			let ctype = ContainerType.from(imageName:from),
+		switch event {
+		case .container(let containerEvent):
+			handleContainerEvent(containerEvent)
+		default:
+			os_log("unsupported event")
+		}
+	}
+	
+	func handleImageEvent(_ event: ImageEvent) {
+		switch event.action {
+		case .delete:
+			os_log("one of our images was deleted", log: .docker, type: .error)
+			//TODO: need to handle image being deleted
+		default:
+			//TODO: implement handling image events
+			os_log("unhandled image event", log: .docker)
+		}
+	}
+
+	func handleContainerEvent(_ event: ContainerEvent) {
+		guard let ctype = ContainerType.from(imageName: event.from),
 			let container = self.containers[ctype] else { return }
-		switch event.eventType {
+		switch event.action {
 			case .die:
-				os_log("warning: container died: %{public}@", log:.docker, from as String)
-				if let exitStatusStr = try? event.json.getString(at: "exitCode"),
+				os_log("warning: container died: %{public}@", log: .docker, event.from)
+				if let exitStatusStr = event.attributes?["exitCode"],
 					let exitStatus = Int(exitStatusStr), exitStatus != 0
 				{
 					//abnormally died
 					//TODO: handle abnormal death of container
-					os_log("warning: container %{public}@ died with non-normal exit code", log:.docker, ctype.rawValue as String)
+					os_log("warning: container %{public}@ died with non-normal exit code", log: .docker, ctype.rawValue as String)
 				}
 				container.update(state: .exited)
 			case .start:
@@ -407,21 +427,18 @@ extension DockerManager: DockerDelegate {
 			case .unpause:
 				container.update(state: .running)
 			case .destroy:
-				os_log("one of our containers was destroyed", log:.docker, type:.error)
+				os_log("one of our containers was destroyed", log: .docker, type: .error)
 				//TODO: need to handle container being destroyed
-			case .deleteImage:
-				os_log("one of our images was deleted", log:.docker, type:.error)
-				//TODO: need to handle image being deleted
 			default:
 				break
 		}
 	}
 
-	func eventMonitorClosed(error: Error?)
+	func eventMonitorClosed(error: DockerError?)
 	{
 		eventMonitor = nil
 		//TODO: actually handle by reseting everything related to docker
-		os_log("event monitor closed. should really do something", log:.docker)
+		os_log("event monitor closed. should really do something", log: .docker)
 	}
 }
 
@@ -569,7 +586,7 @@ extension DockerManager {
 	}
 
 	//for now maps promise/future pull operation to a signal producer
-	func pullSingleImage(pull: DockerPullOperation) -> SignalProducer<PullProgress, Rc2Error>
+	func pullSingleImage(pull: DockerPullOperation) -> SignalProducer<PullProgress, DockerError>
 	{
 		os_log("dm.pullSingleImage called for %{public}@", log: .docker, type: .debug, pull.pullProgress.name)
 		pullProgress?.extracting = false

@@ -39,7 +39,7 @@ class HijackedResponseHandler: DockerResponseHandler {
 		readChannel = DispatchIO(type: .stream, fileDescriptor: fileDescriptor, queue: myQueue) { [weak self] (errCode) in
 			guard errCode == 0 else {
 				let nserr = NSError(domain: NSPOSIXErrorDomain, code: Int(errCode), userInfo: nil)
-				self?.sendMessage(.error(Rc2Error(type: .docker, nested: DockerError.cocoaError(nserr), explanation: "error creating io channel")))
+				self?.sendMessage(.error(DockerError.cocoaError(nserr)))
 				return
 			}
 			close(fd)
@@ -61,7 +61,7 @@ class HijackedResponseHandler: DockerResponseHandler {
 		if error != 0 || done { defer { closeHandler() } }
 		guard error == 0 else {
 			let nserr = NSError(domain: NSPOSIXErrorDomain, code: Int(error), userInfo: nil)
-			sendMessage(.error(Rc2Error(type: .docker, nested: DockerError.cocoaError(nserr), explanation: "error reading io channel")))
+			sendMessage(.error(DockerError.cocoaError(nserr)))
 			return
 		}
 		if done && (data == nil || data!.count == 0) { // EOF
@@ -81,12 +81,12 @@ class HijackedResponseHandler: DockerResponseHandler {
 			//headers must be included in first read
 			do {
 				dataBuffer = try parseHeaders(data: dataBuffer)
-			} catch let error as Rc2Error {
+			} catch let error as DockerError {
 				sendMessage(.error(error))
 				DispatchQueue.global().async { self.closeHandler() }
 				return
 			} catch {
-				fatalError() //should always be an Rc2Error
+				fatalError() //should always be a DockerError
 			}
 			//make sure returned data is chunked
 			guard headers!.isChunked else { fatalError() }

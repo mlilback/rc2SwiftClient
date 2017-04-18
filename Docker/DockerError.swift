@@ -8,7 +8,7 @@ import Foundation
 import os
 import ClientCore
 
-fileprivate let myBundle = Bundle(for: DockerManager.self)
+fileprivate let myBundle = Bundle(for: DockerAPIImplementation.self)
 
 /// Possible errors from Docker-related types
 ///
@@ -20,6 +20,7 @@ fileprivate let myBundle = Bundle(for: DockerManager.self)
 /// - alreadyExists:     the object to be created already exists
 /// - noSuchObject:      the requested/specified object does not exist
 /// - conflict:          a conflict (container can't be removed, name already assigned, etc.)
+/// - internalError:     an internal error with a description
 /// - unsupportedEvent:  a docker event that is not supported by this framework
 public enum DockerError: LocalizedError, Rc2DomainError {
 	case dockerNotInstalled
@@ -32,6 +33,7 @@ public enum DockerError: LocalizedError, Rc2DomainError {
 	case alreadyExists
 	case noSuchObject
 	case conflict
+	case internalError(String)
 	case unsupportedEvent
 
 	var localizedDescription: String {
@@ -73,6 +75,8 @@ extension DockerError: Equatable {
 			case (.conflict, .conflict): return true
 			case (.dockerNotInstalled, .dockerNotInstalled): return true
 			case (.unsupportedDockerVersion, .unsupportedDockerVersion): return true
+			case (.internalError(let str1), .internalError(let str2)):
+				return str1 == str2
 			case (.unsupportedEvent, .unsupportedEvent): return true
 			default: return false
 		}

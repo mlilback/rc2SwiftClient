@@ -42,7 +42,7 @@ class SingleDataResponseHandler: DockerResponseHandler {
 		readChannel = DispatchIO(type: .stream, fileDescriptor: fileDescriptor, queue: myQueue) { [weak self] (errCode) in
 			guard errCode == 0 else {
 				let nserr = NSError(domain: NSPOSIXErrorDomain, code: Int(errCode), userInfo: nil)
-				self?.sendMessage(.error(Rc2Error(type: .docker, nested: DockerError.cocoaError(nserr), explanation: "error creating io channel")))
+				self?.sendMessage(.error(DockerError.cocoaError(nserr)))
 				return
 			}
 			close(fd)
@@ -66,7 +66,7 @@ class SingleDataResponseHandler: DockerResponseHandler {
 		// TODO: examine why 89 is the error if we canceled the channel
 		guard error == 0 || error == 89 else {
 			let nserr = NSError(domain: NSPOSIXErrorDomain, code: Int(error), userInfo: nil)
-			sendMessage(.error(Rc2Error(type: .docker, nested: DockerError.cocoaError(nserr), explanation: "error reading io channel")))
+			sendMessage(.error(DockerError.cocoaError(nserr)))
 			return
 		}
 		// dispatchData can be nil if done
@@ -81,7 +81,7 @@ class SingleDataResponseHandler: DockerResponseHandler {
 		if nil == headers {
 			do {
 				dataBuffer = try parseHeaders(data: dataBuffer)
-			} catch let error as Rc2Error {
+			} catch let error as DockerError {
 				sendMessage(.error(error))
 				return
 			} catch {

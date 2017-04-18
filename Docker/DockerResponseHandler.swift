@@ -29,7 +29,7 @@ extension DockerResponseHandler {
 				throw Rc2Error(type: .network, explanation: "failed to parse headers")
 			}
 			guard parsedHeaders.statusCode >= 200, parsedHeaders.statusCode <= 299 else {
-				throw Rc2Error(type: .docker, explanation: "invalid status code")
+				throw DockerError.httpError(statusCode: parsedHeaders.statusCode, description: nil, mimeType: nil)
 			}
 			headers = parsedHeaders
 			return remainingData

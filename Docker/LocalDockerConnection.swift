@@ -10,12 +10,12 @@ import os
 import ClientCore
 
 enum LocalDockerMessage: Equatable {
-	case headers(HttpHeaders), data(Data), complete, error(Rc2Error)
+	case headers(HttpHeaders), data(Data), complete, error(DockerError)
 	
 	static func == (a: LocalDockerMessage, b: LocalDockerMessage) -> Bool {
 		switch (a, b) {
 		case (.error(let e1), .error(let e2)):
-			return e1.type == e2.type //FIXME: not correct
+			return e1 == e2
 		case (.complete, .complete):
 			return true
 		case (.data(let d1), .data(let d2)):
@@ -60,7 +60,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 	func writeRequest() -> Bool {
 		precondition(fileDescriptor > 0) // must have called openConnection()
 		guard let requestData = request.CFHTTPMessage.serialized else {
-			handler(.error(Rc2Error(type: .invalidArgument, explanation: "failed to serialize docker request")))
+			handler(.error(.internalError("failed to serialize docker request")))
 			return false
 		}
 		let fh = FileHandle(fileDescriptor: fileDescriptor)
@@ -80,8 +80,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 		fileDescriptor = socket(AF_UNIX, SOCK_STREAM, 0)
 		guard fileDescriptor >= 0 else {
 			let rootError = NSError(domain: NSPOSIXErrorDomain, code: Int(Darwin.errno), userInfo: nil)
-			let error = Rc2Error(type: .cocoa, nested: rootError, explanation: "failed to open connection to docker daemon")
-			handler(.error(error))
+			handler(.error(.cocoaError(rootError)))
 			return false
 		}
 		let pathLen = socketPath.utf8CString.count
@@ -102,8 +101,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 		guard code >= 0 else {
 			os_log("bad response %d, %d", type:.error, code, errno)
 			let rootError = NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey: request.url!])
-			let error = Rc2Error(type: .cocoa, nested: rootError, explanation: "error connecting to docker daemon")
-			handler(.error(error))
+			handler(.error(.networkError(rootError)))
 			return false
 		}
 		os_log("connection open to docker %{public}@", log: .docker, type: .debug, request.url!.absoluteString)

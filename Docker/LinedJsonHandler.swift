@@ -14,7 +14,7 @@ import os
 enum LinedJsonMessage {
 	case string(String)
 	case completed
-	case error(Rc2Error)
+	case error(DockerError)
 }
 
 typealias LinedJsonCallback = (LinedJsonMessage) -> Void
@@ -32,7 +32,7 @@ class LinedJsonHandler: HijackedResponseHandler {
 				jsonHandler(.error(err))
 			case .headers(let headers):
 				guard headers.statusCode == 200 else {
-					let err = Rc2Error(type: .docker, nested: DockerError.httpError(statusCode: headers.statusCode, description: nil, mimeType: nil))
+					let err = DockerError.httpError(statusCode: headers.statusCode, description: nil, mimeType: nil)
 					jsonHandler(.error(err))
 					return
 				}

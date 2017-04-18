@@ -9,88 +9,25 @@ import Freddy
 import os
 import ClientCore
 
-enum DockerEventType: String {
-	//don't care
-	// attach, commit, copy, create, exec_create, exec_detach, exec_start, export, top
-	//don't know what they do
-	// resize, update
-	//case oom: out of memory, followed by a die event
-	case deleteImage //fail if they are deleting one of our images
-	case destroy //only happens if stopped, otherwise die should be sent first
-	case die
-	case healthStatus
-	case kill //die called first
-	case pause
-	case rename //should not be done under our nose
-	case restart //die and start called first
-	case stop
-	case start
-	case unpause
-	case volume
+protocol EventMonitorDelegate: class {
+	func handleEvent(_ event: Event)
+	func eventMonitorClosed(error: DockerError?)
 }
 
-struct DockerEvent: CustomStringConvertible {
-	let eventType: DockerEventType
-	let json: JSON
-
-	// swiftlint:disable:next cyclomatic_complexity //how else do we implement this?
-	 init?(_ json: JSON) {
-		self.json = json
-		guard let action = try? json.getString(at: "Action") else { return nil }
-		switch action {
-			case "delete":
-				eventType = .deleteImage
-			case "destroy":
-				eventType = .destroy
-			case "die":
-				eventType = .die
-			case "health_status":
-				eventType = .healthStatus
-			case "kill":
-				eventType = .kill
-			case "pause":
-				eventType = .pause
-			case "rename":
-				eventType = .rename
-			case "restart":
-				eventType = .restart
-			case "start":
-				eventType = .start
-			case "stop":
-				eventType = .stop
-			case "unpause":
-				eventType = .unpause
-			case "volume":
-				eventType = .volume
-			default:
-				return nil
-		}
-	}
-
-	var description: String {
-		return "\(eventType.rawValue): \(json)"
-	}
+protocol EventMonitor: class {
+	init(delegate: EventMonitorDelegate)
 }
 
-protocol DockerDelegate: class {
-	func handleEvent(_ event: DockerEvent)
-	func eventMonitorClosed(error: Error?)
-}
-
-protocol Docker {
-	init(baseUrl: URL, delegate: DockerDelegate, sessionConfig: URLSessionConfiguration)
-}
-
-final class DockerImpl: Docker
+final class EventMonitorImpl<ConnectionType: LocalDockerConnection>: EventMonitor
 {
-	weak var delegate: DockerDelegate?
-	var connection: LocalDockerConnection!
+	private weak var delegate: EventMonitorDelegate?
+	private var connection: ConnectionType!
 
-	required init(baseUrl: URL, delegate: DockerDelegate, sessionConfig: URLSessionConfiguration)
+	required init(delegate: EventMonitorDelegate)
 	{
 		self.delegate = delegate
-		let request = URLRequest(url: baseUrl.appendingPathComponent("/events").absoluteURL)
-		self.connection = LocalDockerConnectionImpl<HijackedResponseHandler>(request: request, hijack: true, handler: connectionCallback)
+		let request = URLRequest(url: URL(string: "/events")!)
+		self.connection = ConnectionType(request: request, hijack: true, handler: connectionCallback)
 		connection.openConnection()
 		connection.writeRequest()
 	}
@@ -98,14 +35,17 @@ final class DockerImpl: Docker
 	func connectionCallback(message: LocalDockerMessage) {
 		switch message {
 		case .headers(let headers):
-			assert(headers.statusCode == 200)
+			guard headers.statusCode == 200 else {
+				delegate?.eventMonitorClosed(error: DockerError.httpError(statusCode: headers.statusCode, description: "failed to connect", mimeType: nil))
+				return
+			}
 		case .data(let data):
 			handleData(data: data)
 		case .complete:
 			os_log("docker event monitor connection ended", log: .docker, type: .info)
 			delegate?.eventMonitorClosed(error: nil)
 		case .error(let error):
-			os_log("error from docker event connection: %{public}@", log: .docker, error.debugDescription)
+			os_log("error from docker event connection: %{public}@", log: .docker, error.errorDescription ?? "unknown")
 			delegate?.eventMonitorClosed(error: error)
 		}
 	}
@@ -113,7 +53,7 @@ final class DockerImpl: Docker
 	private func handleData(data: Data) {
 		do {
 			let json = try JSON(data: data)
-			guard let event = DockerEvent(json) else {
+			guard let parsedEvent = try? Event.parse(json: json), let event = parsedEvent else {
 				os_log("got invalid event from docker: %{public}@", log: .docker, type: .debug, String(data: data, encoding: .utf8)!)
 				return
 			}
