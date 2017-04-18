@@ -10,7 +10,7 @@ import Freddy
 import ClientCore
 import ReactiveSwift
 import SwiftyUserDefaults
-import DockerSupport
+import Docker
 import Networking
 import SBInjector
 

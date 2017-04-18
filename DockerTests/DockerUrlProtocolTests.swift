@@ -10,7 +10,7 @@ import XCTest
 import Freddy
 import Darwin
 import Nimble
-@testable import DockerSupport
+@testable import Docker
 
 class DockerUrlProtocolTests: XCTestCase, URLSessionDataDelegate {
 	var sessionConfig: URLSessionConfiguration?

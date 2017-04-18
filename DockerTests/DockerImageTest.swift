@@ -8,7 +8,7 @@
 
 import XCTest
 import Freddy
-@testable import DockerSupport
+@testable import Docker
 
 class DockerImageTest: XCTestCase {
 	var jsonArray:JSON?

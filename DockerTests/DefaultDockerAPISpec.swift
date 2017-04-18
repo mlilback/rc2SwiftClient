@@ -7,7 +7,7 @@
 import Foundation
 import Quick
 import Nimble
-@testable import DockerSupport
+@testable import Docker
 import Mockingjay
 import Result
 import ReactiveSwift

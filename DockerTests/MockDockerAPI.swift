@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import DockerSupport
+import Docker
 import ReactiveSwift
 import ClientCore
 import Freddy

@@ -8,7 +8,7 @@ import Foundation
 import Quick
 import Nimble
 import Freddy
-@testable import DockerSupport
+@testable import Docker
 import ClientCore
 
 class LinedJsonHandlerSpec: QuickSpec {

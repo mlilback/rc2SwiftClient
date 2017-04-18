@@ -8,7 +8,7 @@ import Foundation
 import Quick
 import Nimble
 import ReactiveSwift
-@testable import DockerSupport
+@testable import Docker
 
 class DockerContainerSpec: QuickSpec {
 	override func spec() {

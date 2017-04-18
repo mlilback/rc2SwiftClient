@@ -347,10 +347,10 @@
 		08F6ADB61DD90F3500AF0722 /* CryptoSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08F6ADB91DD911D500AF0722 /* Workspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADB81DD911D500AF0722 /* Workspace.swift */; };
 		08F6ADBC1DD914F800AF0722 /* ClientCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; };
-		08F6ADCB1DD9169400AF0722 /* DockerSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F6ADC21DD9169300AF0722 /* DockerSupport.framework */; };
-		08F6ADD41DD9169400AF0722 /* DockerSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F6ADC41DD9169300AF0722 /* DockerSupport.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		08F6ADD71DD9169400AF0722 /* DockerSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F6ADC21DD9169300AF0722 /* DockerSupport.framework */; };
-		08F6ADD81DD9169400AF0722 /* DockerSupport.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08F6ADC21DD9169300AF0722 /* DockerSupport.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08F6ADCB1DD9169400AF0722 /* Docker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F6ADC21DD9169300AF0722 /* Docker.framework */; };
+		08F6ADD41DD9169400AF0722 /* Docker.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F6ADC41DD9169300AF0722 /* Docker.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		08F6ADD71DD9169400AF0722 /* Docker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F6ADC21DD9169300AF0722 /* Docker.framework */; };
+		08F6ADD81DD9169400AF0722 /* Docker.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08F6ADC21DD9169300AF0722 /* Docker.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08F6ADEE1DD9172C00AF0722 /* DockerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADDF1DD9172C00AF0722 /* DockerAPI.swift */; };
 		08F6ADEF1DD9172C00AF0722 /* DockerAPIImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADE01DD9172C00AF0722 /* DockerAPIImplementation.swift */; };
 		08F6ADF01DD9172C00AF0722 /* DockerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADE11DD9172C00AF0722 /* DockerContainer.swift */; };
@@ -437,14 +437,14 @@
 			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 08F6ADC11DD9169300AF0722;
-			remoteInfo = DockerSupport;
+			remoteInfo = Docker;
 		};
 		08F6ADD51DD9169400AF0722 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 08F6ADC11DD9169300AF0722;
-			remoteInfo = DockerSupport;
+			remoteInfo = Docker;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -531,7 +531,7 @@
 				08C2D5E61E719DE20007A02D /* SBInjector.framework in Embed Frameworks */,
 				08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */,
 				08F6ADA61DD63C6600AF0722 /* NotifyingCollection.framework in Embed Frameworks */,
-				08F6ADD81DD9169400AF0722 /* DockerSupport.framework in Embed Frameworks */,
+				08F6ADD81DD9169400AF0722 /* Docker.framework in Embed Frameworks */,
 				08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */,
 				080E82D71DCBE31D0048F36C /* Networking.framework in Embed Frameworks */,
 				082FF1CE1C7F321B00CCC27F /* Result.framework in Embed Frameworks */,
@@ -871,10 +871,10 @@
 		08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2RestClient.swift; sourceTree = "<group>"; };
 		08F6ADB11DD90E3600AF0722 /* Rc2FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2FileManager.swift; sourceTree = "<group>"; };
 		08F6ADB81DD911D500AF0722 /* Workspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Workspace.swift; sourceTree = "<group>"; };
-		08F6ADC21DD9169300AF0722 /* DockerSupport.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DockerSupport.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		08F6ADC41DD9169300AF0722 /* DockerSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DockerSupport.h; sourceTree = "<group>"; };
+		08F6ADC21DD9169300AF0722 /* Docker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Docker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		08F6ADC41DD9169300AF0722 /* Docker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Docker.h; sourceTree = "<group>"; };
 		08F6ADC51DD9169300AF0722 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		08F6ADCA1DD9169300AF0722 /* DockerSupportTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DockerSupportTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		08F6ADCA1DD9169300AF0722 /* DockerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DockerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		08F6ADD31DD9169400AF0722 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		08F6ADDF1DD9172C00AF0722 /* DockerAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerAPI.swift; sourceTree = "<group>"; };
 		08F6ADE01DD9172C00AF0722 /* DockerAPIImplementation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerAPIImplementation.swift; sourceTree = "<group>"; };
@@ -952,7 +952,7 @@
 				080E82D61DCBE31D0048F36C /* Networking.framework in Frameworks */,
 				08F6ADA51DD63C5800AF0722 /* NotifyingCollection.framework in Frameworks */,
 				082FF1C71C7F321B00CCC27F /* CryptoSwift.framework in Frameworks */,
-				08F6ADD71DD9169400AF0722 /* DockerSupport.framework in Frameworks */,
+				08F6ADD71DD9169400AF0722 /* Docker.framework in Frameworks */,
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				0897942F1D7B68F0003339EE /* ClientCore.framework in Frameworks */,
@@ -1019,7 +1019,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08F6ADCB1DD9169400AF0722 /* DockerSupport.framework in Frameworks */,
+				08F6ADCB1DD9169400AF0722 /* Docker.framework in Frameworks */,
 				08F03E371DDFB5B500D02153 /* Freddy.framework in Frameworks */,
 				08F03E391DDFB5BB00D02153 /* ReactiveSwift.framework in Frameworks */,
 				08F03E3C1DDFB5CD00D02153 /* Nimble.framework in Frameworks */,
@@ -1306,8 +1306,8 @@
 				08A01FAF1CC7FA28001EDFAA /* createHelpIndex */,
 				080E82C21DCBE31D0048F36C /* Networking */,
 				080E82CF1DCBE31D0048F36C /* NetworkingTests */,
-				08F6ADC31DD9169300AF0722 /* DockerSupport */,
-				08F6ADD01DD9169400AF0722 /* DockerSupportTests */,
+				08F6ADC31DD9169300AF0722 /* Docker */,
+				08F6ADD01DD9169400AF0722 /* DockerTests */,
 				088CE6931C4B144800153414 /* Frameworks */,
 				088CE66A1C4B0AF400153414 /* Products */,
 			);
@@ -1325,8 +1325,8 @@
 				08127CD21DAD2434002E0D01 /* ClientCoreIntegrationTests.xctest */,
 				080E82C11DCBE31D0048F36C /* Networking.framework */,
 				080E82C91DCBE31D0048F36C /* NetworkingTests.xctest */,
-				08F6ADC21DD9169300AF0722 /* DockerSupport.framework */,
-				08F6ADCA1DD9169300AF0722 /* DockerSupportTests.xctest */,
+				08F6ADC21DD9169300AF0722 /* Docker.framework */,
+				08F6ADCA1DD9169300AF0722 /* DockerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1606,10 +1606,10 @@
 			path = session;
 			sourceTree = "<group>";
 		};
-		08F6ADC31DD9169300AF0722 /* DockerSupport */ = {
+		08F6ADC31DD9169300AF0722 /* Docker */ = {
 			isa = PBXGroup;
 			children = (
-				08F6ADC41DD9169300AF0722 /* DockerSupport.h */,
+				08F6ADC41DD9169300AF0722 /* Docker.h */,
 				08F6ADC51DD9169300AF0722 /* Info.plist */,
 				08F6ADE61DD9172C00AF0722 /* dockerInfo.json */,
 				083D11971DF0B8AF00549268 /* imageInfo.json */,
@@ -1633,10 +1633,10 @@
 				081C71B21E9DD08B00A1BD3B /* HijackedResponseHandler.swift */,
 				080AB90A1E97F155005452C7 /* ChunkedResponseProxy.swift */,
 			);
-			path = DockerSupport;
+			path = Docker;
 			sourceTree = "<group>";
 		};
-		08F6ADD01DD9169400AF0722 /* DockerSupportTests */ = {
+		08F6ADD01DD9169400AF0722 /* DockerTests */ = {
 			isa = PBXGroup;
 			children = (
 				088F59191E732EC40009A0B1 /* MockDockerAPI.swift */,
@@ -1656,7 +1656,7 @@
 				081559BA1DDFB2F50047B3CE /* test resources */,
 				08F6ADD31DD9169400AF0722 /* Info.plist */,
 			);
-			path = DockerSupportTests;
+			path = DockerTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1683,7 +1683,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08F6ADD41DD9169400AF0722 /* DockerSupport.h in Headers */,
+				08F6ADD41DD9169400AF0722 /* Docker.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1848,9 +1848,9 @@
 			productReference = 08A01FAE1CC7FA28001EDFAA /* createHelpIndex */;
 			productType = "com.apple.product-type.tool";
 		};
-		08F6ADC11DD9169300AF0722 /* DockerSupport */ = {
+		08F6ADC11DD9169300AF0722 /* Docker */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 08F6ADD91DD9169400AF0722 /* Build configuration list for PBXNativeTarget "DockerSupport" */;
+			buildConfigurationList = 08F6ADD91DD9169400AF0722 /* Build configuration list for PBXNativeTarget "Docker" */;
 			buildPhases = (
 				08F6ADBD1DD9169300AF0722 /* Sources */,
 				08F6ADBE1DD9169300AF0722 /* Frameworks */,
@@ -1862,14 +1862,14 @@
 			);
 			dependencies = (
 			);
-			name = DockerSupport;
-			productName = DockerSupport;
-			productReference = 08F6ADC21DD9169300AF0722 /* DockerSupport.framework */;
+			name = Docker;
+			productName = Docker;
+			productReference = 08F6ADC21DD9169300AF0722 /* Docker.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		08F6ADC91DD9169300AF0722 /* DockerSupportTests */ = {
+		08F6ADC91DD9169300AF0722 /* DockerTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 08F6ADDC1DD9169400AF0722 /* Build configuration list for PBXNativeTarget "DockerSupportTests" */;
+			buildConfigurationList = 08F6ADDC1DD9169400AF0722 /* Build configuration list for PBXNativeTarget "DockerTests" */;
 			buildPhases = (
 				08F6ADC61DD9169300AF0722 /* Sources */,
 				08F6ADC71DD9169300AF0722 /* Frameworks */,
@@ -1881,9 +1881,9 @@
 			dependencies = (
 				08F6ADCD1DD9169400AF0722 /* PBXTargetDependency */,
 			);
-			name = DockerSupportTests;
-			productName = DockerSupportTests;
-			productReference = 08F6ADCA1DD9169300AF0722 /* DockerSupportTests.xctest */;
+			name = DockerTests;
+			productName = DockerTests;
+			productReference = 08F6ADCA1DD9169300AF0722 /* DockerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -1976,8 +1976,8 @@
 				080E82C01DCBE31D0048F36C /* Networking */,
 				080E82C81DCBE31D0048F36C /* NetworkingTests */,
 				08A01FAD1CC7FA28001EDFAA /* createHelpIndex */,
-				08F6ADC11DD9169300AF0722 /* DockerSupport */,
-				08F6ADC91DD9169300AF0722 /* DockerSupportTests */,
+				08F6ADC11DD9169300AF0722 /* Docker */,
+				08F6ADC91DD9169300AF0722 /* DockerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -2128,7 +2128,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n(cd DockerSupport; swiftlint)\nelse\necho \"Warning: swiftlint not installed\"\nfi\n";
+			shellScript = "if which swiftlint >/dev/null; then\n(cd Docker; swiftlint)\nelse\necho \"Warning: swiftlint not installed\"\nfi\n";
 		};
 		0815C9871E788DF80031D69A /* swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2505,12 +2505,12 @@
 		};
 		08F6ADCD1DD9169400AF0722 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 08F6ADC11DD9169300AF0722 /* DockerSupport */;
+			target = 08F6ADC11DD9169300AF0722 /* Docker */;
 			targetProxy = 08F6ADCC1DD9169400AF0722 /* PBXContainerItemProxy */;
 		};
 		08F6ADD61DD9169400AF0722 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 08F6ADC11DD9169300AF0722 /* DockerSupport */;
+			target = 08F6ADC11DD9169300AF0722 /* Docker */;
 			targetProxy = 08F6ADD51DD9169400AF0722 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -3101,12 +3101,12 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = DockerSupport/Info.plist;
+				INFOPLIST_FILE = Docker/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.DockerSupport;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.Docker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -3139,11 +3139,11 @@
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = DockerSupport/Info.plist;
+				INFOPLIST_FILE = Docker/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.DockerSupport;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.Docker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -3167,11 +3167,11 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = DockerSupportTests/Info.plist;
+				INFOPLIST_FILE = DockerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.DockerSupportTests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.DockerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -3189,10 +3189,10 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Carthage/Build/Mac";
-				INFOPLIST_FILE = DockerSupportTests/Info.plist;
+				INFOPLIST_FILE = DockerTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.DockerSupportTests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.DockerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 3.0;
@@ -3283,7 +3283,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		08F6ADD91DD9169400AF0722 /* Build configuration list for PBXNativeTarget "DockerSupport" */ = {
+		08F6ADD91DD9169400AF0722 /* Build configuration list for PBXNativeTarget "Docker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				08F6ADDA1DD9169400AF0722 /* Debug */,
@@ -3292,7 +3292,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		08F6ADDC1DD9169400AF0722 /* Build configuration list for PBXNativeTarget "DockerSupportTests" */ = {
+		08F6ADDC1DD9169400AF0722 /* Build configuration list for PBXNativeTarget "DockerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				08F6ADDD1DD9169400AF0722 /* Debug */,

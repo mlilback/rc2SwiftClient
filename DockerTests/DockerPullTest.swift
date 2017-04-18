@@ -6,7 +6,7 @@
 
 import Foundation
 import XCTest
-@testable import DockerSupport
+@testable import Docker
 
 class DockerPullTest: XCTestCase {
 	var expect:XCTestExpectation?

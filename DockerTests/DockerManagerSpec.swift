@@ -13,7 +13,7 @@ import Result
 import Freddy
 import SwiftyUserDefaults
 import ClientCore
-@testable import DockerSupport
+@testable import Docker
 
 class DockerManagerSpec: BaseDockerSpec {
 	override func spec() {

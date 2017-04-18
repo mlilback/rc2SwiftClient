@@ -7,7 +7,7 @@
 import Cocoa
 import os
 import ClientCore
-import DockerSupport
+import Docker
 
 public enum SetupStage {
 	case initial

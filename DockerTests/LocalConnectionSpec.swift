@@ -7,7 +7,7 @@
 //
 
 import Foundation
-@testable import DockerSupport
+@testable import Docker
 import os
 import ClientCore
 import Darwin
