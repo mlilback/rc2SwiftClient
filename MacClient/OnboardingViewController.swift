@@ -24,9 +24,7 @@ class OnboardingViewController: NSViewController {
 		}
 	} }
 	fileprivate var workspaceToken: Disposable?
-	fileprivate var project: Project? { didSet {
-		print("setting project")
-	} }
+	fileprivate var project: Project?
 	fileprivate var didFirstInit: Bool = false
 	var openLocalWorkspace: ((WorkspaceIdentifier?) -> Void)?
 	
