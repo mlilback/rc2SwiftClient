@@ -25,7 +25,7 @@ class DockerManagerSpec: BaseDockerSpec {
 
 			// to properly stub out DockerManager.initialize, need to
 			// stub /version
-			// inject implementation of DockerEventMonitor
+			// inject implementation of Docker
 			// stub /volumes for volumeExists(_)
 			// stub /networks for networkExists(_)
 			// stub /images/json for loadImages()
@@ -124,8 +124,8 @@ class DockerManagerSpec: BaseDockerSpec {
 	}
 }
 
-class DummyEventMonitor: DockerEventMonitor {
-	required init(baseUrl: URL, delegate: DockerEventMonitorDelegate, sessionConfig: URLSessionConfiguration)
+class DummyEventMonitor: Docker {
+	required init(baseUrl: URL, delegate: DockerDelegate, sessionConfig: URLSessionConfiguration)
 	{
 		
 	}

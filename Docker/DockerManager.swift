@@ -80,11 +80,11 @@ public final class DockerManager: NSObject {
 	/// used for time to start listening to events
 	private let startupTime = Int(Date.timeIntervalSinceReferenceDate)
 	/// monitors event stream
-	fileprivate var eventMonitor: DockerEventMonitor?
+	fileprivate var eventMonitor: Docker?
 	private var state: ManagerState = .unknown
 
 	//for dependency injection
-	var eventMonitorClass: DockerEventMonitor.Type = DockerEventMonitorImpl.self
+	var eventMonitorClass: Docker.Type = DockerImpl.self
 	
 	#if DEBUG
 	private let updateDelay = 60.0 //1 minute
@@ -380,7 +380,7 @@ public final class DockerManager: NSObject {
 }
 
 // MARK: - Event Monitor Delegate
-extension DockerManager: DockerEventMonitorDelegate {
+extension DockerManager: DockerDelegate {
 	/// handles an event from the event monitor
 	// note that the only events that external observers should care about (as currently implemented) are related to specific containers, which will update their observable state property. Probably need a way to inform application if some serious problem ocurred
 	func handleEvent(_ event: DockerEvent)

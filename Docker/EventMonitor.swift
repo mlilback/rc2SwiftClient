@@ -1,5 +1,5 @@
 //
-//  DockerEventMonitor.swift
+//  EventMonitor.swift
 //
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
@@ -72,21 +72,21 @@ struct DockerEvent: CustomStringConvertible {
 	}
 }
 
-protocol DockerEventMonitorDelegate: class {
+protocol DockerDelegate: class {
 	func handleEvent(_ event: DockerEvent)
 	func eventMonitorClosed(error: Error?)
 }
 
-protocol DockerEventMonitor {
-	init(baseUrl: URL, delegate: DockerEventMonitorDelegate, sessionConfig: URLSessionConfiguration)
+protocol Docker {
+	init(baseUrl: URL, delegate: DockerDelegate, sessionConfig: URLSessionConfiguration)
 }
 
-final class DockerEventMonitorImpl: DockerEventMonitor
+final class DockerImpl: Docker
 {
-	weak var delegate: DockerEventMonitorDelegate?
+	weak var delegate: DockerDelegate?
 	var connection: LocalDockerConnection!
 
-	required init(baseUrl: URL, delegate: DockerEventMonitorDelegate, sessionConfig: URLSessionConfiguration)
+	required init(baseUrl: URL, delegate: DockerDelegate, sessionConfig: URLSessionConfiguration)
 	{
 		self.delegate = delegate
 		let request = URLRequest(url: baseUrl.appendingPathComponent("/events").absoluteURL)
