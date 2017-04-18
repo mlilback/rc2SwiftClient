@@ -20,6 +20,7 @@ fileprivate let myBundle = Bundle(for: DockerManager.self)
 /// - alreadyExists:     the object to be created already exists
 /// - noSuchObject:      the requested/specified object does not exist
 /// - conflict:          a conflict (container can't be removed, name already assigned, etc.)
+/// - unsupportedEvent:  a docker event that is not supported by this framework
 public enum DockerError: LocalizedError, Rc2DomainError {
 	case dockerNotInstalled
 	case unsupportedDockerVersion
@@ -31,6 +32,7 @@ public enum DockerError: LocalizedError, Rc2DomainError {
 	case alreadyExists
 	case noSuchObject
 	case conflict
+	case unsupportedEvent
 
 	var localizedDescription: String {
 		// swiftlint:disable:next cyclomatic_complexity //how else do we implement this?
@@ -71,6 +73,7 @@ extension DockerError: Equatable {
 			case (.conflict, .conflict): return true
 			case (.dockerNotInstalled, .dockerNotInstalled): return true
 			case (.unsupportedDockerVersion, .unsupportedDockerVersion): return true
+			case (.unsupportedEvent, .unsupportedEvent): return true
 			default: return false
 		}
 	}

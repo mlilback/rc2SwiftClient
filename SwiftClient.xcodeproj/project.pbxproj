@@ -112,6 +112,7 @@
 		0827A4E61C7ED9CE001F0AFB /* RmdSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4DD1C7ED9CE001F0AFB /* RmdSyntaxParser.swift */; };
 		0827A4E71C7ED9CE001F0AFB /* RnwSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4DE1C7ED9CE001F0AFB /* RnwSyntaxParser.swift */; };
 		0827A4E91C7ED9CE001F0AFB /* SyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0827A4E01C7ED9CE001F0AFB /* SyntaxParser.swift */; };
+		0828FB1E1EA51D3100AECEC5 /* EventTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0828FB1D1EA51D3100AECEC5 /* EventTypes.swift */; };
 		082FF1C71C7F321B00CCC27F /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */; };
 		082FF1C81C7F321B00CCC27F /* CryptoSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
@@ -659,6 +660,7 @@
 		0827A4DD1C7ED9CE001F0AFB /* RmdSyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RmdSyntaxParser.swift; sourceTree = "<group>"; };
 		0827A4DE1C7ED9CE001F0AFB /* RnwSyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RnwSyntaxParser.swift; sourceTree = "<group>"; };
 		0827A4E01C7ED9CE001F0AFB /* SyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxParser.swift; sourceTree = "<group>"; };
+		0828FB1D1EA51D3100AECEC5 /* EventTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTypes.swift; sourceTree = "<group>"; };
 		082FF1BD1C7F321B00CCC27F /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/Mac/CryptoSwift.framework; sourceTree = "<group>"; };
 		082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mockingjay.framework; path = Carthage/Build/Mac/Mockingjay.framework; sourceTree = "<group>"; };
 		082FF1C01C7F321B00CCC27F /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/Mac/Result.framework; sourceTree = "<group>"; };
@@ -1617,6 +1619,7 @@
 				08F6ADE11DD9172C00AF0722 /* DockerContainer.swift */,
 				08F6ADE21DD9172C00AF0722 /* DockerError.swift */,
 				08F6ADE31DD9172C00AF0722 /* DockerEventMonitor.swift */,
+				0828FB1D1EA51D3100AECEC5 /* EventTypes.swift */,
 				08F6ADE41DD9172C00AF0722 /* DockerImage.swift */,
 				08F6ADE51DD9172C00AF0722 /* DockerImageInfo.swift */,
 				08F6ADE81DD9172C00AF0722 /* DockerPullOperation.swift */,
@@ -2418,6 +2421,7 @@
 			files = (
 				08F6ADF21DD9172C00AF0722 /* DockerEventMonitor.swift in Sources */,
 				08F6ADF71DD9172C00AF0722 /* DockerPullOperation.swift in Sources */,
+				0828FB1E1EA51D3100AECEC5 /* EventTypes.swift in Sources */,
 				081C71B51E9EB92000A1BD3B /* LocalDockerConnection.swift in Sources */,
 				08F6ADFC1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift in Sources */,
 				08F6ADF81DD9172C00AF0722 /* DockerTag.swift in Sources */,

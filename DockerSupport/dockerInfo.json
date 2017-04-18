@@ -7,6 +7,7 @@
 			"HostConfig": { "Binds": ["rc2_dbdata:/rc2"] },
 			"HostConfig": {
 				"NetworkMode": "rc2server",
+				"Tmpfs": { "/tmp": "rw,noexec,nosuid,size=128M" },
 				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "500k" } }
 			},
 			"NetworkingConfig": {
@@ -24,6 +25,7 @@
 			"Labels": { "rc2.live": "" },
 			"HostConfig": {
 				"NetworkMode": "rc2server",
+				"Tmpfs": { "/tmp": "rw,noexec,nosuid,size=64M" },
 				"PortBindings": { "8088/tcp": [{ "HostPort": "8088" }] },
 				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "500k" } }
 			},
@@ -43,6 +45,7 @@
 			"HostConfig": {
 				"Binds": ["rc2_userlib:/rc2compute/userlib"],
 				"NetworkMode": "rc2server",
+				"Tmpfs": { "/tmp": "rw,noexec,nosuid,size=64M" },
 				"PortBindings": { "7714/tcp": [{ "HostPort": "7714" }] },
 				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "500k" } }
 			},
