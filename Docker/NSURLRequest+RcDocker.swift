@@ -5,7 +5,6 @@
 //
 
 import Foundation
-import ClientCore
 
 public extension URLRequest {
 	public var isHijackedResponse: Bool {

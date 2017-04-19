@@ -7,7 +7,6 @@
 import Foundation
 import Darwin
 import os
-import ClientCore
 
 enum LocalDockerMessage: Equatable {
 	case headers(HttpHeaders), data(Data), complete, error(DockerError)

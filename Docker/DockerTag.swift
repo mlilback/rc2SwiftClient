@@ -6,7 +6,6 @@
 
 import Foundation
 import Freddy
-import ClientCore
 
 ///Representation of a tag on a docker image
 public struct DockerTag: JSONDecodable, CustomStringConvertible, Hashable {

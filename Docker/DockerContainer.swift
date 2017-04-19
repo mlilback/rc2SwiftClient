@@ -155,17 +155,18 @@ public final class DockerContainer: JSONDecodable {
 	/// - parameter json: the JSON to update from
 	///
 	func update(json: JSON) throws {
-		let jid = try json.getString(at: "Id")
-		let jimgId = try json.getString(at: "ImageID")
-		let jstateStr = try json.getString(at: "State")
-		guard let jstate = ContainerState(rawValue:jstateStr) else
-		{
-			throw DockerError.invalidJson
+		do {
+			id = try json.getString(at: "Id")
+			imageId = try json.getString(at: "ImageID")
+			let jstateStr = try json.getString(at: "State")
+			guard let jstate = ContainerState(rawValue:jstateStr) else {
+				throw DockerError.invalidArgument("unknown container state")
+			}
+			state.value = jstate
+			mountPoints = try json.decodedArray(at: "Mounts", type: DockerMount.self)
+		} catch {
+			throw DockerError.invalidJson(error)
 		}
-		id = jid
-		imageId = jimgId
-		state.value = jstate
-		mountPoints = try json.decodedArray(at: "Mounts", type: DockerMount.self)
 	}
 
 	/// Update this container to match another container

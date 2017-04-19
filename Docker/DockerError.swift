@@ -6,12 +6,16 @@
 
 import Foundation
 import os
-import ClientCore
 
 fileprivate let myBundle = Bundle(for: DockerAPIImplementation.self)
 
+public extension OSLog {
+	static let docker: OSLog = OSLog(subsystem: myBundle.bundleIdentifier ?? "unknown.app", category: "docker")
+}
+
 /// Possible errors from Docker-related types
 ///
+/// - invalidArgument:   invalid data in argument
 /// - networkError:      error from a Cocoa network call
 /// - cocoaError:        a non-network Cocoa error
 /// - httpError:         error returned from a remote server (4xx or 5xx)
@@ -22,14 +26,15 @@ fileprivate let myBundle = Bundle(for: DockerAPIImplementation.self)
 /// - conflict:          a conflict (container can't be removed, name already assigned, etc.)
 /// - internalError:     an internal error with a description
 /// - unsupportedEvent:  a docker event that is not supported by this framework
-public enum DockerError: LocalizedError, Rc2DomainError {
+public enum DockerError: LocalizedError {
 	case dockerNotInstalled
 	case unsupportedDockerVersion
+	case invalidArgument(String?)
 	case networkError(NSError?)
 	case cocoaError(NSError?)
 	case httpError(statusCode: Int, description: String?, mimeType: String?)
 	case alreadyInProgress
-	case invalidJson
+	case invalidJson(Error?)
 	case alreadyExists
 	case noSuchObject
 	case conflict
@@ -64,6 +69,7 @@ extension DockerError: Equatable {
 	// swiftlint:disable:next cyclomatic_complexity //how else do we implement this?
 	public static func == (lhs: DockerError, rhs: DockerError) -> Bool {
 		switch (lhs, rhs) {
+			case (.invalidArgument(let a), .invalidArgument(let b)) where a == b: return true
 			case (.networkError(let a), .networkError(let b)) where a == b: return true
 			case (.cocoaError(let a), .cocoaError(let b)) where a == b: return true
 			case (.httpError(let code1, let desc1, let mime1), .httpError(let code2, let desc2, let mime2))

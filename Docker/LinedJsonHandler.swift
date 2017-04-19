@@ -6,7 +6,6 @@
 
 import Foundation
 import Freddy
-import ClientCore
 import os
 
 ///This class takes a socket that contains the response from a docker api call that returned line-delimeted JSON, such as /images/create, and /events. See [this docker issue](https://github.com/docker/docker/issues/16925)

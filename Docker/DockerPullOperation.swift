@@ -8,7 +8,6 @@ import Foundation
 import ReactiveSwift
 import Freddy
 import os
-import ClientCore
 
 ///progress information on the pull
 public struct PullProgress {

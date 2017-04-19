@@ -7,7 +7,6 @@
 import Foundation
 import Freddy
 import os
-import ClientCore
 
 protocol EventMonitorDelegate: class {
 	func handleEvent(_ event: Event)

@@ -6,7 +6,6 @@
 
 import Foundation
 import Freddy
-import ClientCore
 import os
 
 protocol DockerResponseHandler: class {
@@ -26,7 +25,8 @@ extension DockerResponseHandler {
 				let parsedHeaders = try? HttpStringUtils.extractHeaders(headString)
 				else
 			{
-				throw Rc2Error(type: .network, explanation: "failed to parse headers")
+				os_log("failed to parse headers", log: .docker)
+				throw DockerError.internalError("failed to parse headers")
 			}
 			guard parsedHeaders.statusCode >= 200, parsedHeaders.statusCode <= 299 else {
 				throw DockerError.httpError(statusCode: parsedHeaders.statusCode, description: nil, mimeType: nil)

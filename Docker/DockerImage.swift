@@ -6,9 +6,8 @@
 
 import Foundation
 import Freddy
-import ClientCore
 
-public struct DockerImage: JSONDecodable, Named {
+public struct DockerImage: JSONDecodable {
 	let id: String
 	let tags: [DockerTag]
 	let size: Int

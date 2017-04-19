@@ -8,7 +8,6 @@ import Foundation
 import Darwin
 import os
 import Freddy
-import ClientCore
 
 ///DockerUrlProtocol is a subclass of NSURLProtocol for dealing with "unix" and "dockerstream" URLs
 /// This is used to communicate with the local Docker daemon using a REST-like syntax
@@ -55,7 +54,7 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 			client?.urlProtocol(self, didFailWithError: err)
 		case .headers(let headers):
 			guard let response = generateResponse(headers: headers) else {
-				client?.urlProtocol(self, didFailWithError: Rc2Error(type: .network))
+				client?.urlProtocol(self, didFailWithError: DockerError.networkError(nil)) //FIXME: better error reporting
 				return
 			}
 			client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)

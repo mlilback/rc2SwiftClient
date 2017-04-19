@@ -7,7 +7,6 @@
 import Foundation
 import Freddy
 import os
-import ClientCore
 
 public struct DockerImageInfo: JSONDecodable, JSONEncodable {
 	let size: Int
@@ -74,15 +73,15 @@ public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
 	public init(json: JSON) throws {
 		version = try json.getInt(at: "version")
 		guard version == RequiredImageInfo.supportedVersion else {
-			throw Rc2Error(type: .invalidArgument, explanation: "unsupported imageInfo version (\(version))")
+			throw DockerError.internalError("unsupported imageInfo version (\(version))")
 		}
 		guard let ts = type(of: self).timestampFormatter.date(from: try json.getString(at: "timestamp")) else {
-			throw Rc2Error(type: .invalidJson, explanation: "timestamp format invalid")
+			throw DockerError.invalidJson(nil) //FIXME: report nested error
 		}
 		timestamp = ts
 		let imageDict = try json.decodedDictionary(at: "images", type: DockerImageInfo.self)
 		guard let db = imageDict["dbserver"], let app = imageDict["appserver"], let comp = imageDict["compute"] else {
-			throw DockerError.invalidJson
+			throw DockerError.invalidJson(nil) //FIXME: report nested error
 		}
 		dbserver = db
 		appserver = app

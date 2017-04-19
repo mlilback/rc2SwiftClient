@@ -6,7 +6,6 @@
 
 import Foundation
 import os
-import ClientCore
 
 class HijackedResponseHandler: DockerResponseHandler {
 	let maxReadDataSize: Int = 1024 * 1024 * 4 // 4 MB

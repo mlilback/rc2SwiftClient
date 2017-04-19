@@ -7,6 +7,17 @@
 import Foundation
 import Freddy
 
+extension JSON {
+	/// Returns default value instead of throwing an error if value does not exist
+	///
+	/// - Parameter at: path type to get the value of
+	/// - Returns: the value or nil
+	func getOptionalString(at: JSONPathType) -> String? {
+		guard let str = try? getString(at: at) else { return nil }
+		return str
+	}
+}
+
 public protocol EventType {
 	init(json: JSON) throws
 	var id: String? { get }

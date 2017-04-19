@@ -6,7 +6,6 @@
 
 import Foundation
 import os
-import ClientCore
 
 class ChunkedResponseProxy: NSObject, URLSessionDataDelegate {
 	private let handler: (String?, Bool) -> Void
