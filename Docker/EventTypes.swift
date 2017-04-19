@@ -179,7 +179,7 @@ public struct VolumeEvent: EventType, CustomStringConvertible {
 	}
 	
 	public var description: String {
-		return "Volume event: \(action), volume: \(volumeId), time:\(time)"
+		return "Volume event: \(action), volume:  \(volumeId), time:\(time)"
 	}
 }
 

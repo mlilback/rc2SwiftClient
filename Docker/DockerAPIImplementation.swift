@@ -11,6 +11,8 @@ import Result
 import os
 import ClientCore
 
+// swiftlint:disable file_length type_body_length
+
 /// Default implementation of DockerAPI protocol
 final class DockerAPIImplementation: DockerAPI {
 	// MARK: - properties
@@ -287,6 +289,37 @@ final class DockerAPIImplementation: DockerAPI {
 		}.optionalLog("remove container \(container.name)").observe(on: scheduler)
 	}
 
+	/// documentation in DockerAPI protocol
+	func execute(command: [String], container: DockerContainer) -> SignalProducer<Data, Rc2Error>
+	{
+		let encodedCommand: [JSON] = command.map { .string($0) }
+		let json: JSON = .dictionary(["AttachStdout": .bool(true), "Cmd": .array(encodedCommand)])
+		var request = URLRequest(url: URL(string: "/containers/\(container.name)/exec")!)
+		request.httpMethod = "POST"
+		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+		do {
+			request.httpBody = try json.serialize()
+		} catch {
+			return SignalProducer<Data, Rc2Error>(error: Rc2Error(type: .invalidJson, nested: error))
+		}
+		return SignalProducer<Data, Rc2Error> { observer, _ in
+			let connection = LocalDockerConnectionImpl<HijackedResponseHandler>(request: request, hijack: true) { (message) in
+				switch message {
+				case .headers(_):
+					break
+				case .data(let data):
+					observer.send(value: data)
+				case .complete:
+					observer.sendCompleted()
+				case .error(let err):
+					observer.send(error: Rc2Error(type: .docker, nested: err))
+				}
+			}
+			connection.openConnection()
+			connection.writeRequest()
+		}
+	}
+	
 	// MARK: - network operations
 
 	/// documentation in DockerAPI protocol

@@ -115,6 +115,14 @@ public protocol DockerAPI {
 	/// - returns: the parameter unchanged
 	func create(container: DockerContainer) -> SignalProducer<DockerContainer, Rc2Error>
 
+	/// Execute a command in the specified container
+	///
+	/// - Parameters:
+	///   - command: array of command and arguments to perform
+	///   - container: the container to use
+	/// - Returns: signal producer with the stdout of the command
+	func execute(command: [String], container: DockerContainer) -> SignalProducer<Data, Rc2Error>
+
 	/// Remove a container
 	///
 	/// - parameter container: container to remove
