@@ -24,6 +24,7 @@ public extension OSLog {
 /// - alreadyExists:     the object to be created already exists
 /// - noSuchObject:      the requested/specified object does not exist
 /// - conflict:          a conflict (container can't be removed, name already assigned, etc.)
+/// - execFailed:        exec command returned non zero value
 /// - internalError:     an internal error with a description
 /// - unsupportedEvent:  a docker event that is not supported by this framework
 public enum DockerError: LocalizedError {
@@ -38,6 +39,7 @@ public enum DockerError: LocalizedError {
 	case alreadyExists
 	case noSuchObject
 	case conflict
+	case execFailed
 	case internalError(String)
 	case unsupportedEvent
 
@@ -79,6 +81,7 @@ extension DockerError: Equatable {
 			case (.alreadyExists, .alreadyExists): return true
 			case (.noSuchObject, .noSuchObject): return true
 			case (.conflict, .conflict): return true
+			case (.execFailed, .execFailed): return true
 			case (.dockerNotInstalled, .dockerNotInstalled): return true
 			case (.unsupportedDockerVersion, .unsupportedDockerVersion): return true
 			case (.internalError(let str1), .internalError(let str2)):

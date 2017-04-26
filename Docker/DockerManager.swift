@@ -180,6 +180,7 @@ public final class DockerManager: NSObject {
 			return SignalProducer<Bool, Rc2Error>(value: true)
 		}
 		let producer = self.api.loadVersion()
+			.mapError { Rc2Error(type: .docker, nested: $0) }
 			.flatMap(.concat, transform: verifyValidVersion)
 			.map { v in
 				self.versionInfo = v
@@ -189,7 +190,7 @@ public final class DockerManager: NSObject {
 			.flatMap(.concat, transform: validateNetwork)
 			.flatMap(.concat, transform: validateVolumes)
 			.flatMap(.concat, transform: loadInitialContainerInfo)
-			.flatMap(.concat, transform: api.loadImages)
+			.flatMap(.concat, transform: { self.api.loadImages().mapError { Rc2Error(type: .docker, nested: $0) } })
 			.map { images in self.installedImages = images; return refresh }
 			.flatMap(.concat, transform: checkForImageUpdate)
 			.map { _ in
@@ -231,6 +232,7 @@ public final class DockerManager: NSObject {
 	{
 		os_log("dm.prepareContainers called", log: .docker, type: .debug)
 		return self.api.refreshContainers()
+			.mapError { Rc2Error(type: .docker, nested: $0) }
 			.on(value: { newContainers in
 				//need to set the version used to create our containers from the image info we just processed
 				for aType in ContainerType.all {
@@ -314,6 +316,7 @@ public final class DockerManager: NSObject {
 	public func perform(operation: DockerContainerOperation, on container: DockerContainer) -> SignalProducer<(), Rc2Error>
 	{
 		return api.perform(operation: operation, container: container)
+			.mapError { Rc2Error(type: .docker, nested: $0) }
 	}
 
 	/// performs operation on all containers
@@ -328,6 +331,7 @@ public final class DockerManager: NSObject {
 			selectedContainers = inContainers!
 		}
 		return api.perform(operation: operation, containers: selectedContainers)
+			.mapError { Rc2Error(type: .docker, nested: $0) }
 	}
 	
 	/// Returns a signal producer that is completed when all containers are running, can timeout with an error
@@ -359,6 +363,44 @@ public final class DockerManager: NSObject {
 			.observe(on: UIScheduler())
 	}
 	
+	public func waitUntilDBRunning(attempts: Int = 3) -> SignalProducer<(), Rc2Error> {
+		return SignalProducer<(), Rc2Error> { observer, _ in
+			self.checkDatabase(attempts: 3, observer: observer)
+		}.logEvents(identifier: "waitondb")
+	}
+	
+	private func checkDatabase(attempts: Int = 3, observer: Signal<(), Rc2Error>.Observer) {
+		guard attempts > 0 else {
+			observer.sendInterrupted(); return
+		}
+		let command = ["psql", "-Urc2", "-c", "select * from metadata", "rc2"]
+		let exec = api.execute(command: command, container: self.containers[.dbserver]!).logEvents(identifier: "checkdb \(attempts)")
+		var sendComplete = true
+		exec.start { (event) in
+			switch event {
+			case .failed(let nestedErr):
+				print("err = \(nestedErr)")
+				self.checkDatabase(attempts: attempts - 1, observer: observer)
+			case .value(let exitCode, let data):
+				let str = String(data: data, encoding: .utf8)
+				print("exec returned: \(String(describing: str))")
+				if exitCode == 0 {
+					observer.send(value: ())
+					return
+				}
+				sendComplete = false
+				//need to recursively call
+				DispatchQueue.global().async {
+					self.checkDatabase(attempts: attempts - 1, observer: observer)
+				}
+			case .completed:
+				if sendComplete { observer.sendCompleted() }
+			case .interrupted:
+				observer.sendInterrupted()
+			}
+		}
+	}
+	
 	/// backs up the dbserver database to the specified file location
 	///
 	/// - Parameter url: path to save the file to
@@ -366,10 +408,15 @@ public final class DockerManager: NSObject {
 	public func backupDatabase(to url: URL) -> SignalProducer<(), Rc2Error>
 	{
 		let command = ["/usr/bin/pg_dump", "rc2"]
-		return api.execCommand(command: command, container: containers[.dbserver]!)
-			.flatMap(.concat) { data -> SignalProducer<(), Rc2Error> in
+		return api.execute(command: command, container: containers[.dbserver]!)
+			.mapError { Rc2Error(type: .docker, nested: $0) }
+			.flatMap(.concat) { results -> SignalProducer<(), Rc2Error> in
+				guard results.0 == 0 else {
+					let rc2err = Rc2Error(type: .docker, nested: DockerError.execFailed, explanation: "returned error \(results.0)")
+					return SignalProducer<(), Rc2Error>(error: rc2err)
+				}
 				do {
-					try data.write(to: url)
+					try results.1.write(to: url)
 				} catch {
 					let rc2err = Rc2Error(type: .file, nested: error, explanation: "failed to write backup file")
 					return SignalProducer<(), Rc2Error>(error: rc2err)
@@ -471,6 +518,7 @@ extension DockerManager {
 		return api.networkExists(name: nname)
 			.map { exists in return (nname, exists, self.api.create(network:)) }
 			.flatMap(.concat, transform: optionallyCreateObject)
+			.mapError { Rc2Error(type: .docker, nested: $0) }
 	}
 
 	fileprivate func validateVolumes() -> SignalProducer<(), Rc2Error>
@@ -480,10 +528,11 @@ extension DockerManager {
 				.map { exists in return (name, exists, self.api.create(volume:)) }
 				.flatMap(.concat, transform: optionallyCreateObject)
 		}
-		let combinedProducer = SignalProducer< SignalProducer<(), Rc2Error>, Rc2Error >(producers)
+		let combinedProducer = SignalProducer< SignalProducer<(), DockerError>, DockerError >(producers)
 		return combinedProducer.flatten(.merge)
 			.collect()
 			.map { _ in return () }
+			.mapError { Rc2Error(type: .docker, nested: $0) }
 			.optionalLog("combined vols")
 	}
 
@@ -500,19 +549,21 @@ extension DockerManager {
 				}
 			})
 			.map { newContainers in return (newContainers, self.containers) }
+			.mapError { Rc2Error(type: .docker, nested: $0) }
 			.flatMap(.concat, transform: mergeContainers)
 			.map { _ in return () }
 		return producer
 	}
 	
-	typealias CreateFunction = (String) -> SignalProducer<(), Rc2Error>
+	typealias CreateFunction = (String) -> SignalProducer<(), DockerError>
 
-	fileprivate func optionallyCreateObject(name: String, exists: Bool, handler: CreateFunction) -> SignalProducer<(), Rc2Error>
+	fileprivate func optionallyCreateObject(name: String, exists: Bool, handler: CreateFunction) -> SignalProducer<(), DockerError>
 	{
 		guard !exists else {
-			return SignalProducer<(), Rc2Error>(value: ())
+			return SignalProducer<(), DockerError>(value: ())
 		}
 		return handler(name)
+//			.mapError { Rc2Error(type: .docker, nested: $0) }
 	}
 
 	/// Creates any containers that don't exist
@@ -528,7 +579,9 @@ extension DockerManager {
 			try! containers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
 		}
 		let producers = containers.map { self.api.create(container: $0) }
-		return SignalProducer.merge(producers).collect()
+		return SignalProducer.merge(producers)
+			.mapError { Rc2Error(type: .docker, nested: $0) }
+			.collect()
 	}
 
 	/// Remove any containers whose images are outdated
@@ -552,9 +605,11 @@ extension DockerManager {
 		var producers = [SignalProducer<(), Rc2Error>]()
 		containersToRemove.forEach { aContainer in
 			if aContainer.state.value == .running {
-				producers.append(api.perform(operation: .stop, container: aContainer))
+				producers.append(api.perform(operation: .stop, container: aContainer).mapError { Rc2Error(type: .docker, nested: $0) })
 			}
-			producers.append(api.remove(container: aContainer).on(completed: {
+			producers.append(api.remove(container: aContainer)
+				.mapError { Rc2Error(type: .docker, nested: $0) }
+				.on(completed: {
 				aContainer.update(state: .notAvailable)
 			}))
 		}

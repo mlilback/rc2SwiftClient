@@ -56,7 +56,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 	func toolbarWillAddItem(_ notification: Notification) {
 		//schedule assigning handlers after toolbar items are loaded
 		if !toolbarSetupScheduled {
-			DispatchQueue.main.async { () -> Void in
+			DispatchQueue.main.async {
 				self.assignHandlers(self.contentViewController!, items: (self.window?.toolbar?.items)!)
 			}
 			toolbarSetupScheduled = true

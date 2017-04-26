@@ -91,10 +91,17 @@ public struct ContainerEvent: EventType, CustomStringConvertible {
 		try from = json.getString(at: "from")
 		try time = Date(timeIntervalSince1970: json.getDouble(at: "time"))
 		attributes = try json.decodedDictionary(at: "Actor", "Attributes", alongPath: .missingKeyBecomesNil)
-		guard let decodedAction = Action(rawValue: try  json.getString(at: "Action")) else {
-			throw DockerError.unsupportedEvent
+		guard let actionStr = try? json.getString(at: "Action") else { throw DockerError.unsupportedEvent }
+		if let decodedAction = Action(rawValue: actionStr) {
+			action = decodedAction
+			return
+		} else {
+			//certain events don't use Action like a enum. there is an issue https://github.com/moby/moby/pull/25800
+			if actionStr.hasPrefix("exec_start:") { action = .exec_start }
+			else if actionStr.hasPrefix("exec_create:") { action = .exec_create }
+			else if actionStr.hasPrefix("health_status:") { action = .health_status }
+			else { throw DockerError.unsupportedEvent }
 		}
-		action = decodedAction
 	}
 	
 	public var description: String {

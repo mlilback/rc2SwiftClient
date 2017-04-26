@@ -65,7 +65,7 @@ public protocol DockerAPI {
 	///   - command: the command and arguments to send
 	///   - container: the container to execute in
 	/// - Returns: the returned data
-	func execCommand(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
+//	func execCommand(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
 	
 	/// Loads images from docker daemon
 	///
@@ -120,7 +120,7 @@ public protocol DockerAPI {
 	///   - command: array of command and arguments to perform
 	///   - container: the container to use
 	/// - Returns: signal producer with the stdout of the command
-	func execute(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
+	func execute(command: [String], container: DockerContainer) -> SignalProducer<(Int, Data), DockerError>
 
 	/// Remove a container
 	///

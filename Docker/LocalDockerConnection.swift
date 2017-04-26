@@ -139,6 +139,9 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 		if request.isHijackedResponse {
 			req.addValue("*/*", forHTTPHeaderField: "Accept")
 		}
+		if let body = req.httpBody {
+			req.addValue("\(body.count)", forHTTPHeaderField: "Content-Length")
+		}
 		//		req.addValue("chunked", forHTTPHeaderField: "Transfer-Encoding")
 		return req
 	}

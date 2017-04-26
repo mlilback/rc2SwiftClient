@@ -10,7 +10,7 @@ import ClientCore
 protocol ToolbarItemHandler : class {
 	///called by a top level controller for each toolbar item no one has claimed
 	func handlesToolbarItem(_ item: NSToolbarItem) -> Bool
-	///shoudl be called in viewDidAppear for lazy loaded views to hookup to toolbar items
+	///should be called in viewDidAppear for lazy loaded views to hookup to toolbar items
 	func hookupToToolbarItems(_ handler: ToolbarItemHandler, window: NSWindow)
 }
 

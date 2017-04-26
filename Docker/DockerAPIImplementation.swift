@@ -106,44 +106,44 @@ public final class DockerAPIImplementation: DockerAPI {
 	}
 	
 	// documentation in DockerAPI protocol
-	public func execCommand(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
-	{
-		precondition(command.count > 0)
-		//create an exec job
-		var req = URLRequest(url: baseUrl.appendingPathComponent("containers/\(container.name)/exec"))
-		req.httpMethod = "POST"
-		req.setValue("application-json", forHTTPHeaderField: "Content-Type")
-		req.setValue("application-json", forHTTPHeaderField: "Accept")
-		do {
-			let json: JSON = .dictionary(["AttachStdout": .bool(true), "Tty": .bool(false), "Cmd": command.toJSON()])
-			let data = try json.serialize()
-			req.httpBody = data
-		} catch {
-			os_log("invalid json: %{public}@", log: .docker, error.localizedDescription)
-			return SignalProducer<Data, DockerError>(error: DockerError.invalidJson(error))
-		}
-		return self.makeRequest(request: req)
-			.optionalLog("execCommand \(command[0]) on \(container.name)")
-			.flatMap(.concat, transform: self.dataToJson)
-			.flatMap(.concat) { (json) -> SignalProducer<Data, DockerError> in
-				//start the exec job
-				guard let execId: String = try? json.getString(at: "Id") else {
-					return SignalProducer<Data, DockerError>(error: DockerError.invalidJson(nil))
-				}
-				var req2 = URLRequest(url: self.baseUrl.appendingPathComponent("exec/\(execId)/start"))
-				req2.httpMethod = "POST"
-				req2.setValue("application-json", forHTTPHeaderField: "Content-Type")
-				req2.setValue("application/vnd.docker.raw-stream", forHTTPHeaderField: "Accept")
-				do {
-					let json: JSON = .dictionary(["Detach": .bool(false), "Tty": .bool(false)])
-					req2.httpBody = try json.serialize()
-				} catch {
-					os_log("invalid json: %{public}@", log: .docker, error.localizedDescription)
-					return SignalProducer<Data, DockerError>(error: DockerError.invalidJson(error))
-				}
-				return self.makeRequest(request: req2)
-			}
-	}
+//	public func execCommand(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
+//	{
+//		precondition(command.count > 0)
+//		//create an exec job
+//		var req = URLRequest(url: baseUrl.appendingPathComponent("containers/\(container.name)/exec"))
+//		req.httpMethod = "POST"
+//		req.setValue("application-json", forHTTPHeaderField: "Content-Type")
+//		req.setValue("application-json", forHTTPHeaderField: "Accept")
+//		do {
+//			let json: JSON = .dictionary(["AttachStdout": .bool(true), "Tty": .bool(false), "Cmd": command.toJSON()])
+//			let data = try json.serialize()
+//			req.httpBody = data
+//		} catch {
+//			os_log("invalid json: %{public}@", log: .docker, error.localizedDescription)
+//			return SignalProducer<Data, DockerError>(error: DockerError.invalidJson(error))
+//		}
+//		return self.makeRequest(request: req)
+//			.optionalLog("execCommand \(command[0]) on \(container.name)")
+//			.flatMap(.concat, transform: self.dataToJson)
+//			.flatMap(.concat) { (json) -> SignalProducer<Data, DockerError> in
+//				//start the exec job
+//				guard let execId: String = try? json.getString(at: "Id") else {
+//					return SignalProducer<Data, DockerError>(error: DockerError.invalidJson(nil))
+//				}
+//				var req2 = URLRequest(url: self.baseUrl.appendingPathComponent("exec/\(execId)/start"))
+//				req2.httpMethod = "POST"
+//				req2.setValue("application-json", forHTTPHeaderField: "Content-Type")
+//				req2.setValue("application/vnd.docker.raw-stream", forHTTPHeaderField: "Accept")
+//				do {
+//					let json: JSON = .dictionary(["Detach": .bool(false), "Tty": .bool(false)])
+//					req2.httpBody = try json.serialize()
+//				} catch {
+//					os_log("invalid json: %{public}@", log: .docker, error.localizedDescription)
+//					return SignalProducer<Data, DockerError>(error: DockerError.invalidJson(error))
+//				}
+//				return self.makeRequest(request: req2)
+//			}
+//	}
 	
 	// MARK: - image operations
 
@@ -291,26 +291,72 @@ public final class DockerAPIImplementation: DockerAPI {
 	}
 
 	/// documentation in DockerAPI protocol
-	public func execute(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
+	public func execute(command: [String], container: DockerContainer) -> SignalProducer<(Int, Data), DockerError>
 	{
+		return prepExecTask(command: command, container: container)
+			.flatMap(.concat, transform: runExecTask)
+			.flatMap(.concat, transform: checkExecSuccess)
+	}
+
+	private func prepExecTask(command: [String], container: DockerContainer) -> SignalProducer<String, DockerError> {
 		let encodedCommand: [JSON] = command.map { .string($0) }
 		let json: JSON = .dictionary(["AttachStdout": .bool(true), "Cmd": .array(encodedCommand)])
 		var request = URLRequest(url: URL(string: "/containers/\(container.name)/exec")!)
 		request.httpMethod = "POST"
 		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 		do {
-			request.httpBody = try json.serialize()
+			let str = try json.serializeString() + "\n"
+			request.httpBody = str.data(using: .utf8)
 		} catch {
-			return SignalProducer<Data, DockerError>(error: DockerError.invalidJson(error))
+			return SignalProducer<String, DockerError>(error: DockerError.invalidJson(error))
 		}
-		return SignalProducer<Data, DockerError> { observer, _ in
-			let connection = LocalDockerConnectionImpl<HijackedResponseHandler>(request: request, hijack: true) { (message) in
+		return SignalProducer<String, DockerError> { observer, _ in
+			var ended = false
+			let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request, hijack: false) { (message) in
 				switch message {
 				case .headers(_):
 					break
 				case .data(let data):
-					observer.send(value: data)
+					do {
+						let json = try JSON(data: data)
+						let str = try json.getString(at: "Id")
+						observer.send(value: str)
+					} catch {
+						observer.send(error: DockerError.networkError(error as NSError?))
+						ended = true
+					}
 				case .complete:
+					if !ended {
+						observer.sendCompleted()
+						ended = true
+					}
+				case .error(let err):
+					if !ended {
+						observer.send(error: DockerError.networkError(err as NSError?))
+						ended = true
+					}
+				}
+			}
+			connection.openConnection()
+			connection.writeRequest()
+		}
+	}
+	
+	private func runExecTask(taskId: String) -> SignalProducer<(String, Data), DockerError> {
+		var request = URLRequest(url: URL(string: "/exec/\(taskId)/start")!)
+		request.httpMethod = "POST"
+		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+		request.httpBody = "{}".data(using: .utf8)
+		return SignalProducer<(String, Data), DockerError> { observer, _ in
+			var inData = Data()
+			let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request, hijack: true) { (message) in
+				switch message {
+				case .headers(_):
+					break
+				case .data(let data):
+					inData.append(data)
+				case .complete:
+					observer.send(value: (taskId, inData))
 					observer.sendCompleted()
 				case .error(let err):
 					observer.send(error: DockerError.networkError(err as NSError?))
@@ -318,6 +364,41 @@ public final class DockerAPIImplementation: DockerAPI {
 			}
 			connection.openConnection()
 			connection.writeRequest()
+		}
+	}
+	
+	private func checkExecSuccess(taskId: String, data: Data) -> SignalProducer<(Int, Data), DockerError> {
+		let request = URLRequest(url: URL(string: "/exec/\(taskId)/json")!)
+		return SignalProducer<(Int, Data), DockerError> { observer, _ in
+			let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request, hijack: false)
+			{ (message) in
+				switch message {
+				case .headers(_):
+					break
+				case .data(let data):
+					do {
+						let json = try JSON(data: data)
+						let running = try json.getBool(at: "Running")
+						guard !running else {
+							//TODO: recursively call self
+							return
+						}
+						let exitCode = try json.getInt(at: "ExitCode")
+						observer.send(value: (exitCode, data))
+					} catch {
+						observer.send(error: DockerError.networkError(error as NSError?))
+					}
+				case .complete:
+					observer.sendCompleted()
+				case .error(let err):
+					observer.send(error: DockerError.networkError(err as NSError?))
+				}
+			}
+			//give half a second for the execute to run
+			DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) {
+				connection.openConnection()
+				connection.writeRequest()
+			}
 		}
 	}
 	
