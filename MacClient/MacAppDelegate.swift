@@ -22,6 +22,7 @@ fileprivate struct Actions {
 	static let showDockerControls = #selector(MacAppDelegate.showDockerControl(_:))
 	static let newWorkspace = #selector(MacAppDelegate.newWorkspace(_:))
 	static let showWorkspace = #selector(MacAppDelegate.showWorkspace(_:))
+	static let backupDatabase = #selector(MacAppDelegate.backupDatabase(_:))
 }
 
 @NSApplicationMain
@@ -117,8 +118,10 @@ extension MacAppDelegate {
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action  {
-			case Actions.showBookmarks:
-				return true
+		case Actions.backupDatabase:
+			return true
+		case Actions.showBookmarks:
+			return true
 		case Actions.newWorkspace:
 			return true
 		case Actions.showDockerControls:
@@ -326,7 +329,19 @@ extension MacAppDelegate {
 //		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
 	}
 	
-	@IBAction func showDockerControl(_ sender:Any?) {
+	@IBAction func backupDatabase(_ sender: Any?) {
+		//TODO: save to useful location with useful name
+		let url = URL(fileURLWithPath: "/tmp/dbserver.sql")
+		dockerManager?.backupDatabase(to: url).startWithResult { result in
+			guard result.error == nil else {
+				print("error \(result.error!)")
+				return
+			}
+			print("success")
+		}
+	}
+	
+	@IBAction func showDockerControl(_ sender: Any?) {
 		if nil == dockerWindowController {
 			let icontext = InjectorContext()
 			icontext.register(DockerViewController.self) { controller in
