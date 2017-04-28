@@ -409,31 +409,21 @@ public final class DockerManager: NSObject {
 	public func backupDatabase(to url: URL) -> SignalProducer<(), Rc2Error>
 	{
 		let command = ["/usr/bin/pg_dump", "rc2"]
-		return api.execCommand(command: command, container: containers[.dbserver]!)
+		return api.executeSync(command: command, container: containers[.dbserver]!)
 			.mapError { Rc2Error(type: .docker, nested: $0) }
 		.flatMap(.concat) { data -> SignalProducer<(), Rc2Error> in
 			do {
+				var data = data
+				//trim of the 8 bytes from the begining if they start with x1x0x0x0
+				if data[0] == 0x01 && data[1] == 0x0 && data[2] == 0x0 && data[3] == 0x0 {
+					data.removeSubrange(0..<8)
+				}
 				try data.write(to: url)
 			} catch {
-				return SignalProducer<(), Rc2Error>(error: Rc2Error(type: .network, nested: error))
+				return SignalProducer<(), Rc2Error>(error: Rc2Error(type: .file, nested: error, explanation: "Failed to write data to disk"))
 			}
 			return SignalProducer<(), Rc2Error>(value: ())
 		}
-//		return api.execute(command: command, container: containers[.dbserver]!)
-//			.mapError { Rc2Error(type: .docker, nested: $0) }
-//			.flatMap(.concat) { results -> SignalProducer<(), Rc2Error> in
-//				guard results.0 == 0 else {
-//					let rc2err = Rc2Error(type: .docker, nested: DockerError.execFailed, explanation: "returned error \(results.0)")
-//					return SignalProducer<(), Rc2Error>(error: rc2err)
-//				}
-//				do {
-//					try results.1.write(to: url)
-//				} catch {
-//					let rc2err = Rc2Error(type: .file, nested: error, explanation: "failed to write backup file")
-//					return SignalProducer<(), Rc2Error>(error: rc2err)
-//				}
-//				return SignalProducer<(), Rc2Error>(value: ())
-//			}
 	}
 }
 

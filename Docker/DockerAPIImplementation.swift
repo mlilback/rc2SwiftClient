@@ -105,46 +105,6 @@ public final class DockerAPIImplementation: DockerAPI {
 //		task.resume()
 	}
 	
-	// documentation in DockerAPI protocol
-//	public func execCommand(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
-//	{
-//		precondition(command.count > 0)
-//		//create an exec job
-//		var req = URLRequest(url: baseUrl.appendingPathComponent("containers/\(container.name)/exec"))
-//		req.httpMethod = "POST"
-//		req.setValue("application-json", forHTTPHeaderField: "Content-Type")
-//		req.setValue("application-json", forHTTPHeaderField: "Accept")
-//		do {
-//			let json: JSON = .dictionary(["AttachStdout": .bool(true), "Tty": .bool(false), "Cmd": command.toJSON()])
-//			let data = try json.serialize()
-//			req.httpBody = data
-//		} catch {
-//			os_log("invalid json: %{public}@", log: .docker, error.localizedDescription)
-//			return SignalProducer<Data, DockerError>(error: DockerError.invalidJson(error))
-//		}
-//		return self.makeRequest(request: req)
-//			.optionalLog("execCommand \(command[0]) on \(container.name)")
-//			.flatMap(.concat, transform: self.dataToJson)
-//			.flatMap(.concat) { (json) -> SignalProducer<Data, DockerError> in
-//				//start the exec job
-//				guard let execId: String = try? json.getString(at: "Id") else {
-//					return SignalProducer<Data, DockerError>(error: DockerError.invalidJson(nil))
-//				}
-//				var req2 = URLRequest(url: self.baseUrl.appendingPathComponent("exec/\(execId)/start"))
-//				req2.httpMethod = "POST"
-//				req2.setValue("application-json", forHTTPHeaderField: "Content-Type")
-//				req2.setValue("application/vnd.docker.raw-stream", forHTTPHeaderField: "Accept")
-//				do {
-//					let json: JSON = .dictionary(["Detach": .bool(false), "Tty": .bool(false)])
-//					req2.httpBody = try json.serialize()
-//				} catch {
-//					os_log("invalid json: %{public}@", log: .docker, error.localizedDescription)
-//					return SignalProducer<Data, DockerError>(error: DockerError.invalidJson(error))
-//				}
-//				return self.makeRequest(request: req2)
-//			}
-//	}
-	
 	// MARK: - image operations
 
 	// documentation in DockerAPI protocol
@@ -298,126 +258,12 @@ public final class DockerAPIImplementation: DockerAPI {
 			.flatMap(.concat, transform: checkExecSuccess)
 	}
 
-	/// Prepare an exec task on the docker server
-	///
-	/// - Parameters:
-	///   - command: array of command arguements to execute
-	///   - container: container to excute inside of
-	/// - Returns: SignalProducer with the unique ID for this execution task
-	private func prepExecTask(command: [String], container: DockerContainer) -> SignalProducer<String, DockerError>
+	/// documentation in DockerAPI protocol
+	public func executeSync(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
 	{
-		let encodedCommand: [JSON] = command.map { .string($0) }
-		let json: JSON = .dictionary(["AttachStdout": .bool(true), "Cmd": .array(encodedCommand)])
-		var request = URLRequest(url: URL(string: "/containers/\(container.name)/exec")!)
-		request.httpMethod = "POST"
-		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-		do {
-			let str = try json.serializeString() + "\n"
-			request.httpBody = str.data(using: .utf8)
-		} catch {
-			return SignalProducer<String, DockerError>(error: DockerError.invalidJson(error))
-		}
-		return SignalProducer<String, DockerError> { observer, _ in
-			var ended = false // have we sent a completed/error event to observer. don't want to send twice
-			let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request) { (message) in
-				switch message {
-				case .headers(_):
-					break
-				case .data(let data):
-					do {
-						let json = try JSON(data: data)
-						let str = try json.getString(at: "Id")
-						observer.send(value: str)
-					} catch {
-						observer.send(error: DockerError.networkError(error as NSError?))
-						ended = true
-					}
-				case .complete:
-					if !ended {
-						observer.sendCompleted()
-						ended = true
-					}
-				case .error(let err):
-					if !ended {
-						observer.send(error: DockerError.networkError(err as NSError?))
-						ended = true
-					}
-				}
-			}
-			connection.openConnection()
-			connection.writeRequest()
-		}
-	}
-	
-	private func runExecTask(taskId: String) -> SignalProducer<(String, Data), DockerError> {
-		var request = URLRequest(url: URL(string: "/exec/\(taskId)/start")!)
-		request.httpMethod = "POST"
-		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-		request.httpBody = "{}".data(using: .utf8)
-		return SignalProducer<(String, Data), DockerError> { observer, _ in
-			var inData = Data()
-			let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request) { (message) in
-				switch message {
-				case .headers(_):
-					break
-				case .data(let data):
-					inData.append(data)
-				case .complete:
-					observer.send(value: (taskId, inData))
-					observer.sendCompleted()
-				case .error(let err):
-					observer.send(error: DockerError.networkError(err as NSError?))
-				}
-			}
-			connection.openConnection()
-			connection.writeRequest()
-		}
-	}
-	
-	private func checkExecSuccess(taskId: String, data: Data) -> SignalProducer<(Int, Data), DockerError> {
-		return SignalProducer<(Int, Data), DockerError> { observer, _ in
-			self.singleExecCheck(taskId: taskId, data: data, observer: observer, attempts: 3)
-		}
-	}
-	
-	private func singleExecCheck(taskId: String, data: Data, observer: Signal<(Int, Data), DockerError>.Observer, attempts: Int)
-	{
-		guard attempts > 0 else {
-			observer.send(error: DockerError.execFailed)
-			return
-		}
-		let request = URLRequest(url: URL(string: "/exec/\(taskId)/json")!)
-		var ended = false
-		let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request)
-		{ (message) in
-			switch message {
-			case .headers(_):
-				break
-			case .data(let data):
-				do {
-					let json = try JSON(data: data)
-					let running = try json.getBool(at: "Running")
-					guard !running else {
-						ended = true
-						self.singleExecCheck(taskId: taskId, data: data, observer: observer, attempts: attempts - 1)
-						return
-					}
-					let exitCode = try json.getInt(at: "ExitCode")
-					observer.send(value: (exitCode, data))
-				} catch {
-					observer.send(error: DockerError.networkError(error as NSError?))
-				}
-			case .complete:
-				if !ended { observer.sendCompleted() }
-			case .error(let err):
-				if !ended { observer.send(error: DockerError.networkError(err as NSError?)) }
-			}
-		}
-		//give half a second for the execute to run
-		DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) {
-			connection.openConnection()
-			connection.writeRequest()
-		}
+		precondition(command.count > 0)
+		return prepExecTask(command: command, container: container)
+			.flatMap(.concat, transform: dataForExecTask)
 	}
 	
 	// MARK: - network operations
@@ -655,6 +501,163 @@ extension DockerAPIImplementation {
 				observer.send(value: rawData)
 				observer.sendCompleted()
 			}).resume()
+		}
+	}
+}
+
+// MARK: execute methods
+extension DockerAPIImplementation {
+	
+	/// Prepare an exec task on the docker server
+	///
+	/// - Parameters:
+	///   - command: array of command arguements to execute
+	///   - container: container to excute inside of
+	/// - Returns: SignalProducer with the unique ID for this execution task
+	fileprivate func prepExecTask(command: [String], container: DockerContainer) -> SignalProducer<String, DockerError>
+	{
+		let encodedCommand: [JSON] = command.map { .string($0) }
+		let json: JSON = .dictionary(["AttachStdout": .bool(true), "Cmd": .array(encodedCommand)])
+		var request = URLRequest(url: URL(string: "/containers/\(container.name)/exec")!)
+		request.httpMethod = "POST"
+		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+		do {
+			let str = try json.serializeString() + "\n"
+			request.httpBody = str.data(using: .utf8)
+		} catch {
+			return SignalProducer<String, DockerError>(error: DockerError.invalidJson(error))
+		}
+		return SignalProducer<String, DockerError> { observer, _ in
+			var ended = false // have we sent a completed/error event to observer. don't want to send twice
+			let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request) { (message) in
+				switch message {
+				case .headers(_):
+					break
+				case .data(let data):
+					do {
+						let json = try JSON(data: data)
+						let str = try json.getString(at: "Id")
+						observer.send(value: str)
+					} catch {
+						observer.send(error: DockerError.networkError(error as NSError?))
+						ended = true
+					}
+				case .complete:
+					if !ended {
+						observer.sendCompleted()
+						ended = true
+					}
+				case .error(let err):
+					if !ended {
+						observer.send(error: DockerError.networkError(err as NSError?))
+						ended = true
+					}
+				}
+			}
+			connection.openConnection()
+			connection.writeRequest()
+		}
+	}
+	
+	fileprivate func runExecTask(taskId: String) -> SignalProducer<(String, Data), DockerError> {
+		var request = URLRequest(url: URL(string: "/exec/\(taskId)/start")!)
+		request.httpMethod = "POST"
+		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+		request.httpBody = "{}".data(using: .utf8)
+		return SignalProducer<(String, Data), DockerError> { observer, _ in
+			var inData = Data()
+			let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request) { (message) in
+				switch message {
+				case .headers(_):
+					break
+				case .data(let data):
+					inData.append(data)
+				case .complete:
+					observer.send(value: (taskId, inData))
+					observer.sendCompleted()
+				case .error(let err):
+					observer.send(error: DockerError.networkError(err as NSError?))
+				}
+			}
+			connection.openConnection()
+			connection.writeRequest()
+		}
+	}
+	
+	fileprivate func dataForExecTask(taskId: String) -> SignalProducer<Data, DockerError> {
+		var request = URLRequest(url: URL(string: "/exec/\(taskId)/start")!)
+		request.httpMethod = "POST"
+		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+		request.addValue("application/vnd.docker.raw-stream", forHTTPHeaderField: "Accept")
+		let bodyData = "{}".data(using: .utf8)!
+		request.httpBody = bodyData
+		return SignalProducer<Data, DockerError> { observer, _ in
+			var inData = Data()
+			let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request) { (message) in
+				switch message {
+				case .headers(_):
+					break
+				case .data(let data):
+					inData.append(data)
+				case .complete:
+					if inData.count > bodyData.count, Data(inData[0..<bodyData.count]) == bodyData {
+						// it is returning our body data echoed at beginning, which never happens via curl or the command line. Strip it.
+						inData.removeSubrange(0..<bodyData.count)
+					}
+					observer.send(value: inData)
+					observer.sendCompleted()
+				case .error(let err):
+					observer.send(error: DockerError.networkError(err as NSError?))
+				}
+			}
+			connection.openConnection()
+			connection.writeRequest()
+		}
+	}
+	
+	fileprivate func checkExecSuccess(taskId: String, data: Data) -> SignalProducer<(Int, Data), DockerError> {
+		return SignalProducer<(Int, Data), DockerError> { observer, _ in
+			self.singleExecCheck(taskId: taskId, data: data, observer: observer, attempts: 3)
+		}
+	}
+	
+	fileprivate func singleExecCheck(taskId: String, data: Data, observer: Signal<(Int, Data), DockerError>.Observer, attempts: Int)
+	{
+		guard attempts > 0 else {
+			observer.send(error: DockerError.execFailed)
+			return
+		}
+		let request = URLRequest(url: URL(string: "/exec/\(taskId)/json")!)
+		var ended = false
+		let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request)
+		{ (message) in
+			switch message {
+			case .headers(_):
+				break
+			case .data(let data):
+				do {
+					let json = try JSON(data: data)
+					let running = try json.getBool(at: "Running")
+					guard !running else {
+						ended = true
+						self.singleExecCheck(taskId: taskId, data: data, observer: observer, attempts: attempts - 1)
+						return
+					}
+					let exitCode = try json.getInt(at: "ExitCode")
+					observer.send(value: (exitCode, data))
+				} catch {
+					observer.send(error: DockerError.networkError(error as NSError?))
+				}
+			case .complete:
+				if !ended { observer.sendCompleted() }
+			case .error(let err):
+				if !ended { observer.send(error: DockerError.networkError(err as NSError?)) }
+			}
+		}
+		//give half a second for the execute to run
+		DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) {
+			connection.openConnection()
+			connection.writeRequest()
 		}
 	}
 }

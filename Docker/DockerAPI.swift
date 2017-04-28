@@ -59,14 +59,6 @@ public protocol DockerAPI {
 	///   - isStdErr: true if the string is from stderr, false if from stdout
 	func streamLog(container: DockerContainer, dataHandler: @escaping LogEntryCallback)
 
-	/// Executes a command on the docker server and returns stdout
-	///
-	/// - Parameters:
-	///   - command: the command and arguments to send
-	///   - container: the container to execute in
-	/// - Returns: the returned data
-//	func execCommand(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
-	
 	/// Loads images from docker daemon
 	///
 	/// - returns: signal producer that will send array of images
@@ -114,14 +106,22 @@ public protocol DockerAPI {
 	/// - returns: the parameter unchanged
 	func create(container: DockerContainer) -> SignalProducer<DockerContainer, DockerError>
 
-	/// Execute a command in the specified container
+	/// Execute a command in the specified container asynchronously
 	///
 	/// - Parameters:
 	///   - command: array of command and arguments to perform
 	///   - container: the container to use
-	/// - Returns: signal producer with the stdout of the command
+	/// - Returns: signal producer with the exit code and stdout of the command
 	func execute(command: [String], container: DockerContainer) -> SignalProducer<(Int, Data), DockerError>
 
+	/// Executes a command on the docker server synchronously (as vnd.docker.raw-stream) and returns stdout
+	///
+	/// - Parameters:
+	///   - command: the command and arguments to send
+	///   - container: the container to execute in
+	/// - Returns: the returned data
+	func executeSync(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
+	
 	/// Remove a container
 	///
 	/// - parameter container: container to remove
