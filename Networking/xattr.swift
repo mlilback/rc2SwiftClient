@@ -13,7 +13,8 @@ func errnoDescription() -> String {
 }
 
 /** Convience wrapper using URL instead of path */
-@discardableResult public func setXAttributeWithName(_ name: String, data: Data, atURL url: URL) -> String? {
+@discardableResult
+public func setXAttributeWithName(_ name: String, data: Data, atURL url: URL) -> String? {
 	guard url.isFileURL else { return "invalid file URL" }
 	return setxattr(url.path, name, (data as NSData).bytes, data.count, 0, 0) == -1 ? errnoDescription() : nil
 }
@@ -25,7 +26,8 @@ public func dataForXAttributeNamed(_ name: String, atURL url: URL) -> (error: St
 }
 
 /** Convience wrapper using URL instead of path */
-@discardableResult public func removeXAttributeNamed(_ name: String, atURL url: URL) -> String? {
+@discardableResult
+public func removeXAttributeNamed(_ name: String, atURL url: URL) -> String? {
 	guard url.isFileURL else { return "invalid file URL" }
 	return removeXAttributeNamed(name, atPath: url.path)
 }
@@ -39,7 +41,8 @@ Set extended attribute at path
 
 :returns: error description if failed, otherwise nil
 */
-@discardableResult public func setXAttributeWithName(_ name: String, data: Data, atPath path: String) -> String? {
+@discardableResult
+public func setXAttributeWithName(_ name: String, data: Data, atPath path: String) -> String? {
 	return setxattr(path, name, (data as NSData).bytes, data.count, 0, 0) == -1 ? errnoDescription() : nil
 }
 

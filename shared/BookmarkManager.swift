@@ -48,7 +48,8 @@ class BookmarkManager {
 	/// - parameter old: the bookmark to replace
 	/// - parameter with: the replacement bookmark
 	/// - returns: true if old was found and replaced
-	@discardableResult func replaceBookmark(_ old: Bookmark, with new: Bookmark) -> Bool {
+	@discardableResult
+	func replaceBookmark(_ old: Bookmark, with new: Bookmark) -> Bool {
 		if let idx = bookmarks.index(of: old) {
 			bookmarks[idx] = new
 			groupBookmarks()

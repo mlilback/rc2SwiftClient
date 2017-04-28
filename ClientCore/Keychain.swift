@@ -29,7 +29,8 @@ open class Keychain {
 		return nil
 	}
 
-	@discardableResult open func removeKey(_ key: String) -> Bool {
+	@discardableResult
+	open func removeKey(_ key: String) -> Bool {
 		let query = setupQuery(key)
 		return noErr == SecItemDelete(query as CFDictionary)
 	}

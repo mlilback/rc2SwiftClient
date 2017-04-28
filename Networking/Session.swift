@@ -483,7 +483,8 @@ private extension Session {
 		}
 	}
 	
-	@discardableResult func sendMessage(json: JSON) -> Bool {
+	@discardableResult
+	func sendMessage(json: JSON) -> Bool {
 		do {
 			self.wsSource.write(string: try json.serializeString())
 		} catch let err as NSError {

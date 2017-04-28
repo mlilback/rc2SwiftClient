@@ -5,6 +5,7 @@ disabled_rules:
   - variable_name #doesn't allow underscores
   - unused_optional_binding #doesn't allow try? binding
 opt_in_rules:
+  - attributes
   - closure_spacing
   - explicit_init
   - first_where
@@ -13,6 +14,8 @@ opt_in_rules:
   - overridden_super_call
   - prohibited_super_call
   - redundant_nil_coalescing
+  - object_literal
+  - valid_docs
     
 excluded:
   - Carthage
@@ -24,8 +27,16 @@ file_length:
   warning: 600
 trailing_whitespace:
   ignores_empty_lines: true
+  ignores_comments: true
 large_tuple:
   warning: 4
   error: 4
 number_separator:
   minimum_length: 5
+type_body_length:
+  warning: 300
+attributes:
+  always_on_same_line:
+    - "@IBAction"
+    - "@NSManaged"
+    - "@objc"

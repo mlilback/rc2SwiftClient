@@ -96,11 +96,13 @@ public struct ContainerEvent: EventType, CustomStringConvertible {
 			action = decodedAction
 			return
 		} else {
+			// swiftlint:disable statement_position
 			//certain events don't use Action like a enum. there is an issue https://github.com/moby/moby/pull/25800
 			if actionStr.hasPrefix("exec_start:") { action = .exec_start }
 			else if actionStr.hasPrefix("exec_create:") { action = .exec_create }
 			else if actionStr.hasPrefix("health_status:") { action = .health_status }
 			else { throw DockerError.unsupportedEvent }
+			// swiftlint:enable statement_position
 		}
 	}
 	

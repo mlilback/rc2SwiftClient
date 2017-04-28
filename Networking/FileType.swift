@@ -98,7 +98,7 @@ extension FileType {
 			img.backgroundColor = NSColor.clear
 			return img
 		}
-		return NSImage(named: "file-plain")
+		return #imageLiteral(resourceName: "file-plain")
 	}
 	func fileImage() -> NSImage? {
 		if let iname = self.iconName {
@@ -119,7 +119,7 @@ extension FileType {
 		if let img = UIImage(named: "console/\(self.fileExtension)-file") {
 			return img
 		}
-		return UIImage(named:"console/plain-file")
+		return UIImage(named:"console/plain-file") //swiftlint:disable:this object_literal
 	}
 	func fileImage() -> UIImage? {
 		return image()
