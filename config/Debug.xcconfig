@@ -9,3 +9,6 @@
 
 ONLY_ACTIVE_ARCH = YES
 
+SWIFT_OPTIMIZATION_LEVEL = -Owholemodule
+
+OTHER_SWIFT_FLAGS = $(inherited) -Onone
