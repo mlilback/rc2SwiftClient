@@ -366,15 +366,16 @@ public final class DockerManager: NSObject {
 	public func waitUntilDBRunning(attempts: Int = 3) -> SignalProducer<(), Rc2Error> {
 		return SignalProducer<(), Rc2Error> { observer, _ in
 			self.checkDatabase(attempts: 3, observer: observer)
-		}.logEvents(identifier: "waitondb")
+		}.optionalLog("waitondb")
 	}
 	
 	private func checkDatabase(attempts: Int = 3, observer: Signal<(), Rc2Error>.Observer) {
 		guard attempts > 0 else {
-			observer.sendInterrupted(); return
+			observer.send(error: Rc2Error(type: .docker, nested: DockerError.conflict, explanation: "database didn't start"))
+			return
 		}
 		let command = ["psql", "-Urc2", "-c", "select * from metadata", "rc2"]
-		let exec = api.execute(command: command, container: self.containers[.dbserver]!).logEvents(identifier: "checkdb \(attempts)")
+		let exec = api.execute(command: command, container: self.containers[.dbserver]!).optionalLog("checkdb \(attempts)")
 		var sendComplete = true
 		exec.start { (event) in
 			switch event {
@@ -408,21 +409,31 @@ public final class DockerManager: NSObject {
 	public func backupDatabase(to url: URL) -> SignalProducer<(), Rc2Error>
 	{
 		let command = ["/usr/bin/pg_dump", "rc2"]
-		return api.execute(command: command, container: containers[.dbserver]!)
+		return api.execCommand(command: command, container: containers[.dbserver]!)
 			.mapError { Rc2Error(type: .docker, nested: $0) }
-			.flatMap(.concat) { results -> SignalProducer<(), Rc2Error> in
-				guard results.0 == 0 else {
-					let rc2err = Rc2Error(type: .docker, nested: DockerError.execFailed, explanation: "returned error \(results.0)")
-					return SignalProducer<(), Rc2Error>(error: rc2err)
-				}
-				do {
-					try results.1.write(to: url)
-				} catch {
-					let rc2err = Rc2Error(type: .file, nested: error, explanation: "failed to write backup file")
-					return SignalProducer<(), Rc2Error>(error: rc2err)
-				}
-				return SignalProducer<(), Rc2Error>(value: ())
+		.flatMap(.concat) { data -> SignalProducer<(), Rc2Error> in
+			do {
+				try data.write(to: url)
+			} catch {
+				return SignalProducer<(), Rc2Error>(error: Rc2Error(type: .network, nested: error))
 			}
+			return SignalProducer<(), Rc2Error>(value: ())
+		}
+//		return api.execute(command: command, container: containers[.dbserver]!)
+//			.mapError { Rc2Error(type: .docker, nested: $0) }
+//			.flatMap(.concat) { results -> SignalProducer<(), Rc2Error> in
+//				guard results.0 == 0 else {
+//					let rc2err = Rc2Error(type: .docker, nested: DockerError.execFailed, explanation: "returned error \(results.0)")
+//					return SignalProducer<(), Rc2Error>(error: rc2err)
+//				}
+//				do {
+//					try results.1.write(to: url)
+//				} catch {
+//					let rc2err = Rc2Error(type: .file, nested: error, explanation: "failed to write backup file")
+//					return SignalProducer<(), Rc2Error>(error: rc2err)
+//				}
+//				return SignalProducer<(), Rc2Error>(value: ())
+//			}
 	}
 }
 
