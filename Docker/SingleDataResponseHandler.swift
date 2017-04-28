@@ -17,6 +17,7 @@ class SingleDataResponseHandler: DockerResponseHandler {
 	private var dataBuffer = Data()
 	private let myQueue: DispatchQueue
 	var headers: HttpHeaders?
+	private var isRawStream = false
 	
 	required init(fileDescriptor: Int32, queue: DispatchQueue, handler: @escaping DockerMessageHandler)
 	{
@@ -75,6 +76,10 @@ class SingleDataResponseHandler: DockerResponseHandler {
 				dataBuffer.append(ptr, count: dispatchData.count)
 			}
 		} else if done {
+			if isRawStream {
+				sendMessage(.data(dataBuffer))
+				sendMessage(.complete)
+			}
 			return
 		}
 		if nil == headers {
@@ -87,6 +92,7 @@ class SingleDataResponseHandler: DockerResponseHandler {
 				fatalError()
 			}
 			sendMessage(.headers(headers!))
+			isRawStream = headers!.headers["Content-Type"] == "application/vnd.docker.raw-stream"
 		}
 		guard let headers = headers else { fatalError() }
 		guard headers.isChunked else {
@@ -103,6 +109,7 @@ class SingleDataResponseHandler: DockerResponseHandler {
 
 	private func handleNonChunkedData() {
 		guard let channel = readChannel else { return } // must have been closed while waiting on callback
+		guard !isRawStream else { return } //we don't do anything with the data
 		if let expectedLen = headers?.contentLength, dataBuffer.count < expectedLen
 		{
 			//don't have all the data. continue reading
