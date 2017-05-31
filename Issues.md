@@ -54,8 +54,6 @@
 * partial match searching not working properly
 
 ##editor
-* execute current chunk if R code
-* execute all chunks up to and including current chunk if R code
 * chunk navigation is broken
 * implement searchbar interface to use for console
 * when editing non-executable files, need to disable buttons, maybe explicit save so refreshes if displayed in output
@@ -77,4 +75,3 @@
 * variable sidebar should support copy: for specific types
 * how are dates formatted for copy? date vs datetime. 
 * write nstexfield that scales font size so text fits (for help page title)
-* move filetype images to asset catalog
