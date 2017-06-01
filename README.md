@@ -2,13 +2,21 @@
 
 This project is a rewrite of the [Rc2-client](https://github.com/wvuRc2/rc2client) project started at WVU 4-5 years ago. There was a lot of legacy cruft from old features that are no longer needed.
 
-This version is a complete rewrite in Swift, though where possible it is a pretty straight forward port of the Objective C code.
+The current Mac client requires Docker, and runs the server portion in docker containers. The server portions are developed at [rc2server](https://github.com/rc2server/rc2). Eventually this client project will move there, too.
+
+Eventually we'll add back iOS support, once we figure out a hosting solution for the server side stuff.
+
+The wiki contains more details on specific topics.
 
 ## Dependencies
 
 The macOS client requires 10.12 Sierra. Development is being done with Xcode 8.
 
+The following 3rd party frameworks are used (via Carthage or in the vendor directory). Aside from HockeyApp, I'm willing/capable of maintaining a fork if necessary (or replacing them). Using them allows much faster development (or I wrote them myself).
+
 * [CryptoSwift](https://github.com/krzyzanowskim/CryptoSwift.git) a pure swift implementation of cryptographic functions
+
+* [FMDB](https://github.com/ccgus/fmdb} wrapper around SQlite
 
 * [Freddy](https://github.com/bignerdranch/Freddy) for simplified JSON parsing
 
@@ -16,17 +24,17 @@ The macOS client requires 10.12 Sierra. Development is being done with Xcode 8.
 
 * [MessagePackSwift](https://github.com/mlilback/MessagePackSwift.git) a Swift implementation of [MessagePack](http://msgpack.org/)
 
-* [Mockingjay](https://github.com/kylef/Mockingjay) for networking unit tests
+* [Mockingjay](https://github.com/kylef/Mockingjay) for network unit tests
+
+* [NotifyingCollection](https://github.com/mlilback/NotifyingCollection) allows monitoring changes in nested arrays (one callback for any nested change in array of Projects that has an array of Workspaces with an array of Files).
 
 * [PEGKit](https://github.com/itod/pegkit.git) a parsing expression grammar used for syntax highlighting
 
-* [PMKVObserver](https://github.com/postmates/PMKVObserver.git) a wrapper around KVO to make it thread-safe and type-safe
+* [ReactiveCocoa](https://github.com/ReactiveCocoa/ReactiveCocoa) reactive programming is awesome for handling of async callbacks (like making 14 network calls in a row with a single block of error handling code)
 
-* [ReactiveSwift](https://github.com/ReactiveCocoa/ReactiveSwift) the latest core library of ReactiveCocoa.
+* [Result] used by ReactiveCocoa
 
-* [Result] used by ReactiveSwift
-
-* [SBInjector](https://github.com/mlilback/SBInjector.git) for dependency injection
+* [SBInjector](https://github.com/mlilback/SBInjector.git) very simple dependency injection
 
 * [Sparkle](https://sparkle-project.org/) enables update notification
 
@@ -42,19 +50,11 @@ The macOS client requires 10.12 Sierra. Development is being done with Xcode 8.
 
 2. `git submodule update --init`
 
-# Docker support
-
-By default, all communication is done via /var/run/docker.sock. A remote host can be used by putting a URL with port number in the environment variable `DockerHostUrl`.
-
-# Help support (local)
+# Help support
 
 In the help directory, indexDocs.pl is a perl script to generate a json file with the help information necessary to make an index to search. These files are checked into git. The createHelpIndex target parses these files and creates an sqllite db that is embedded in the application for searching help.
 
 The perl script requires `Cpanel::JSON::XS` and `Statistics::R`.
-
-# Help support (server)
-
-The URL for help documentation on the web is part of info.plist.
 
 ## Generating help files ##
 
