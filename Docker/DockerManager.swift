@@ -73,7 +73,6 @@ public final class DockerManager: NSObject {
 	fileprivate(set) var installedImages: [DockerImage] = []
 	fileprivate(set) var pullProgress: PullProgress?
 	fileprivate var pullAlreadyDownloaded: Int = 0
-	fileprivate(set) var dataDirectory: URL?
 	fileprivate let socketPath = "/var/run/docker.sock"
 	///the path to use for the source shared folder for dbserver. overridden when using a remote docker daemon
 	fileprivate var remoteLocalSharePath: String?
@@ -138,7 +137,6 @@ public final class DockerManager: NSObject {
 			imageInfo = RequiredImageInfo(from: try! JSON(data: infoData))
 			assert(imageInfo != nil)
 		}
-		setupDataDirectory()
 		//check for a host specified as an environment variable - useful for testing
 		if nil == host, let envHost = ProcessInfo.processInfo.environment["DockerHostUrl"] {
 			//remove any trailing slash as docker doesn't like double slashes in a url
@@ -656,20 +654,5 @@ extension DockerManager {
 			self.pullAlreadyDownloaded += lastValue
 			lastValue = 0
 		})
-	}
-
-	///creates AppSupport/io.rc2.xxx/v1/dbdata
-	func setupDataDirectory()
-	{
-		do {
-			let dockerDir = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "docker")
-			let fm = FileManager()
-			let pgdir = dockerDir.appendingPathComponent("dbdata", isDirectory: true)
-			if !fm.directoryExists(at: pgdir) {
-				try fm.createDirectory(at: pgdir, withIntermediateDirectories: true, attributes: nil)
-			}
-		} catch let err {
-			os_log("error setting up data diretory: %{public}@", log:.docker, err as NSError)
-		}
 	}
 }
