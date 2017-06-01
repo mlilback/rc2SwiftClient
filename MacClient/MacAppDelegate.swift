@@ -32,7 +32,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 	var sessionWindowControllers = Set<MainWindowController>()
 	var bookmarkWindowController: NSWindowController?
 	let bookmarkManager = BookmarkManager()
-	dynamic var dockerManager: DockerManager?
+	var dockerManager: DockerManager?
+	fileprivate var backupManager: DockerBackupManager?
 	var startupWindowController: StartupWindowController?
 	var startupController: StartupController?
 	fileprivate var onboardingController: OnboardingWindowController?
@@ -62,7 +63,9 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 		precondition(mainStoryboard != nil)
 		//only init dockerManager if not running unit tests
 		if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
-			dockerManager = DockerManager()
+			let dm = DockerManager()
+			dockerManager = dm
+			backupManager = DockerBackupManager(manager: dm)
 		}
 		
 		DispatchQueue.global().async {
@@ -330,15 +333,7 @@ extension MacAppDelegate {
 	}
 	
 	@IBAction func backupDatabase(_ sender: Any?) {
-		//TODO: save to useful location with useful name
-		let url = URL(fileURLWithPath: "/tmp/dbserver.sql")
-		dockerManager?.backupDatabase(to: url).startWithResult { result in
-			guard result.error == nil else {
-				print("error \(result.error!)")
-				return
-			}
-			print("success")
-		}
+		backupManager?.performBackup().start()
 	}
 	
 	@IBAction func showDockerControl(_ sender: Any?) {
