@@ -9,11 +9,11 @@ import ClientCore
 import ReactiveSwift
 import Docker
 
-public class DockerContainerController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
+public class DockerContainerController: DockerManagerInjectable, NSTableViewDataSource, NSTableViewDelegate {
 	@IBOutlet dynamic var containerTable: NSTableView?
 	dynamic var selection: NSIndexSet?
 	var selectedContainer = MutableProperty<DockerContainer?>(nil)
-	var manager: DockerManager? { didSet {
+	override var manager: DockerManager? { didSet {
 		containerTable?.reloadData()
 		for container in (manager?.containers ?? []) {
 			container.state.signal.observeValues { [weak self] _ in

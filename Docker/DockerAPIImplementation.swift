@@ -14,12 +14,19 @@ import os
 
 /// Default implementation of DockerAPI protocol
 public final class DockerAPIImplementation: DockerAPI {
+	/// used to hold log data if there wasn't enough for the next chunk
+	fileprivate struct LeftoverLogData {
+		let data: Data
+		let type: UInt8
+		let size: Int
+	}
+
 	// MARK: - properties
 	public let baseUrl: URL
 	fileprivate let sessionConfig: URLSessionConfiguration
 	fileprivate var session: URLSession
 	public let scheduler: QueueScheduler
-
+	
 	// MARK: - init
 
 	/// Instantiates object to make calls to docker daemon
@@ -91,10 +98,11 @@ public final class DockerAPIImplementation: DockerAPI {
 		var request = URLRequest(url: URL(string: "dockerstream:/v1.24/containers/\(container.name)/logs?stderr=1&stdout=1&follow=1&timestamps=1")!)
 //		var request = URLRequest(url: components.url!)
 		request.isHijackedResponse = true
+		var leftover: LeftoverLogData?
 		let connection = LocalDockerConnectionImpl<HijackedResponseHandler>(request: request, hijack: true) { (message) in
 			switch message {
 			case .data(let data):
-				self.parseDockerChunk(data: data, callback: dataHandler)
+				leftover = self.parseDockerChunk(data: data, leftover: leftover, callback: dataHandler)
 			default:
 				print("got message")
 			}
@@ -375,19 +383,28 @@ extension DockerAPIImplementation {
 	///
 	/// - Parameters:
 	///   - data: chunk of log entries with 8 byte header
+	///   - leftover: any partial chunk data returned from the last call
 	///   - callback: called with each string entry from the log
-	func parseDockerChunk(data: Data, callback: @escaping LogEntryCallback) {
+	fileprivate func parseDockerChunk(data: Data, leftover: LeftoverLogData?, callback: @escaping LogEntryCallback) -> LeftoverLogData?
+	{
 		let headerSize: Int = 8
 		var currentOffset: Int = 0
+		var data = Data(data) //mutatable copy
 		// add new data to old data
 		repeat {
-			// cast first 8 bytes to array of 2 Int32s. Convert the second to big endian to get size of message
-			let (type, size) = data.subdata(in: currentOffset..<currentOffset + headerSize).withUnsafeBytes
-			{ (ptr: UnsafePointer<UInt8>) -> (UInt8, Int) in
-				return (ptr[0], ptr.withMemoryRebound(to: Int32.self, capacity: 2)
-				{ (intPtr: UnsafePointer<Int32>) -> Int in
-					return Int(Int32(bigEndian: intPtr[1]))
-				})
+			let (type, size): (UInt8, Int)
+			if let leftover = leftover {
+				(type, size) = (leftover.type, leftover.size)
+				data = leftover.data + data
+			} else {
+				// cast first 8 bytes to array of 2 Int32s. Convert the second to big endian to get size of message
+				(type, size) = data.subdata(in: currentOffset..<currentOffset + headerSize).withUnsafeBytes
+				{ (ptr: UnsafePointer<UInt8>) -> (UInt8, Int) in
+					return (ptr[0], ptr.withMemoryRebound(to: Int32.self, capacity: 2)
+					{ (intPtr: UnsafePointer<Int32>) -> Int in
+						return Int(Int32(bigEndian: intPtr[1]))
+					})
+				}
 			}
 			// type must be stdout or stderr
 			guard type == 1 || type == 2 else {
@@ -397,13 +414,16 @@ extension DockerAPIImplementation {
 			currentOffset += headerSize
 			let nextOffset = currentOffset + size
 			// if all the data required is not available, break out of loop
-			guard nextOffset <= data.count else { fatalError() }
+			guard nextOffset <= data.count else {
+				return LeftoverLogData(data: data.subdata(in: currentOffset..<data.count), type: type, size: size)
+			}
 			// pass the data as a string to handler
 			let currentChunk = data.subdata(in: currentOffset..<nextOffset)
 			callback(String(data: currentChunk, encoding: .utf8), type == 2)
 			// mark that data as used
 			currentOffset += size
 		} while data.count > currentOffset
+		return nil
 	}
 
 	/// handles sending completed or error for a docker response based on http status code

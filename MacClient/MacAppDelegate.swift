@@ -339,7 +339,10 @@ extension MacAppDelegate {
 	@IBAction func showDockerControl(_ sender: Any?) {
 		if nil == dockerWindowController {
 			let icontext = InjectorContext()
-			icontext.register(DockerViewController.self) { controller in
+			icontext.register(DockerTabViewController.self) { controller in
+				controller.manager = self.dockerManager
+			}
+			icontext.register(DockerManagerInjectable.self) { controller in
 				controller.manager = self.dockerManager
 			}
 			let sboard = NSStoryboard(name: "DockerControl", bundle: nil)
