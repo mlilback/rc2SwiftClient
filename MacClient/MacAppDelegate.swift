@@ -345,6 +345,9 @@ extension MacAppDelegate {
 			icontext.register(DockerManagerInjectable.self) { controller in
 				controller.manager = self.dockerManager
 			}
+			icontext.register(DockerBackupViewController.self) { controller in
+				controller.backupManager = self.backupManager
+			}
 			let sboard = NSStoryboard(name: "DockerControl", bundle: nil)
 			sboard.injectionContext = icontext
 			dockerWindowController = sboard.instantiateWindowController()
