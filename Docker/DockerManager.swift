@@ -183,7 +183,11 @@ public final class DockerManager: NSObject {
 			.map { v in
 				self.versionInfo = v
 				self.state = .initialized
-				self.eventMonitor = self.eventMonitorClass.init(delegate: self)
+				do {
+					self.eventMonitor = try self.eventMonitorClass.init(delegate: self)
+				} catch let err {
+					os_log("failed to open event monitor: %{public}s", log: .docker, type: .error, err.localizedDescription)
+				}
 			}
 			.flatMap(.concat, transform: validateNetwork)
 			.flatMap(.concat, transform: validateVolumes)

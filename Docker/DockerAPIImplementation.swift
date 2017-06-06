@@ -107,7 +107,13 @@ public final class DockerAPIImplementation: DockerAPI {
 				print("got message")
 			}
 		}
-		connection.openConnection()
+		do {
+			try connection.openConnection()
+		} catch {
+			//TODO: better error handling
+			dataHandler(nil, true)
+			return
+		}
 		connection.writeRequest()
 //		let task = mySession.dataTask(with: request as URLRequest)
 //		task.resume()
@@ -574,7 +580,11 @@ extension DockerAPIImplementation {
 					}
 				}
 			}
-			connection.openConnection()
+			do {
+				try connection.openConnection()
+			} catch {
+				observer.send(error: DockerError.networkError(error as NSError))
+			}
 			connection.writeRequest()
 		}
 	}
@@ -599,7 +609,11 @@ extension DockerAPIImplementation {
 					observer.send(error: DockerError.networkError(err as NSError?))
 				}
 			}
-			connection.openConnection()
+			do {
+				try connection.openConnection()
+			} catch {
+				observer.send(error: DockerError.networkError(error as NSError))
+			}
 			connection.writeRequest()
 		}
 	}
@@ -630,7 +644,11 @@ extension DockerAPIImplementation {
 					observer.send(error: DockerError.networkError(err as NSError?))
 				}
 			}
-			connection.openConnection()
+			do {
+				try connection.openConnection()
+			} catch {
+				observer.send(error: DockerError.networkError(error as NSError))
+			}
 			connection.writeRequest()
 		}
 	}
@@ -676,7 +694,11 @@ extension DockerAPIImplementation {
 		}
 		//give half a second for the execute to run
 		DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) {
-			connection.openConnection()
+			do {
+				try connection.openConnection()
+			} catch {
+				observer.send(error: DockerError.networkError(error as NSError))
+			}
 			connection.writeRequest()
 		}
 	}

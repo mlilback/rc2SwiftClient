@@ -36,7 +36,12 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 		} else {
 			connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request, handler: responseCallback)
 		}
-		connection?.openConnection()
+		do {
+			try connection?.openConnection()
+		} catch {
+			client?.urlProtocol(self, didFailWithError: error)
+			return
+		}
 		connection?.writeRequest()
 	}
 

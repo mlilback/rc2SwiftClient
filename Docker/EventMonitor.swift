@@ -14,7 +14,7 @@ protocol EventMonitorDelegate: class {
 }
 
 protocol EventMonitor: class {
-	init(delegate: EventMonitorDelegate)
+	init(delegate: EventMonitorDelegate) throws
 }
 
 final class EventMonitorImpl<ConnectionType: LocalDockerConnection>: EventMonitor
@@ -22,12 +22,12 @@ final class EventMonitorImpl<ConnectionType: LocalDockerConnection>: EventMonito
 	private weak var delegate: EventMonitorDelegate?
 	private var connection: ConnectionType!
 
-	required init(delegate: EventMonitorDelegate)
+	required init(delegate: EventMonitorDelegate) throws
 	{
 		self.delegate = delegate
 		let request = URLRequest(url: URL(string: "/events")!)
 		self.connection = ConnectionType(request: request, hijack: true, handler: connectionCallback)
-		connection.openConnection()
+		try connection.openConnection()
 		connection.writeRequest()
 	}
 

@@ -94,7 +94,12 @@ public final class DockerPullOperation {
 		return SignalProducer<PullProgress, DockerError> { observer, _ in
 			os_log("starting pull: %{public}@", type:.info, self.imageName)
 			self.pullObserver = observer
-			self.connection.openConnection()
+			do {
+				try self.connection.openConnection()
+			} catch {
+				observer.send(error: DockerError.networkError(error as NSError))
+				return
+			}
 			self.connection.writeRequest()
 		}.optionalLog("pull \(imageName)")
 	}

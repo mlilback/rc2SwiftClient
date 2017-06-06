@@ -33,8 +33,7 @@ protocol LocalDockerConnection: class {
 	init(request: URLRequest, hijack: Bool, handler: @escaping DockerMessageHandler)
 	@discardableResult
 	func writeRequest() -> Bool
-	@discardableResult
-	func openConnection() -> Bool
+	func openConnection() throws
 	func closeConnection()
 }
 
@@ -74,13 +73,12 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 	}
 	
 	/// opens the connection to the docker daemon
-	@discardableResult
-	func openConnection() -> Bool {
+	func openConnection() throws {
 		fileDescriptor = socket(AF_UNIX, SOCK_STREAM, 0)
 		guard fileDescriptor >= 0 else {
 			let rootError = NSError(domain: NSPOSIXErrorDomain, code: Int(Darwin.errno), userInfo: nil)
 			handler(.error(.cocoaError(rootError)))
-			return false
+			throw DockerError.cocoaError(rootError)
 		}
 		let pathLen = socketPath.utf8CString.count
 		precondition(pathLen < 104) //size limit of struct
@@ -101,11 +99,10 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 			os_log("bad response %d, %d", type:.error, code, errno)
 			let rootError = NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey: request.url!])
 			handler(.error(.networkError(rootError)))
-			return false
+			throw DockerError.networkError(rootError)
 		}
 		os_log("connection open to docker %{public}@", log: .docker, type: .debug, request.url!.absoluteString)
 		responseHandler = HandlerClass(fileDescriptor: fileDescriptor, queue: DispatchQueue.global(), handler: handler)
-		return true
 	}
 	
 	/// closes the connection to the docker daemon. handler will no longer receive any messages
