@@ -35,8 +35,10 @@ class DockerManagerSpec: BaseDockerSpec {
 				sessionConfig = URLSessionConfiguration.default
 				//if DUP isn't there, DM will add it to front of array. We need MJ before it, even though MJ will have put itself there already
 				sessionConfig.protocolClasses = [MockingjayProtocol.self, DockerUrlProtocol.self] as [AnyClass] + sessionConfig.protocolClasses!
-				let defaults = UserDefaults()
-				defaults[.lastImageInfoCheck] = Date.distantFuture.timeIntervalSinceReferenceDate
+				let suiteName = "io.rc2.TestSuite"
+				UserDefaults().removePersistentDomain(forName: suiteName)
+				let defaults = UserDefaults(suiteName: suiteName)!
+				defaults[.lastImageInfoCheck] = 0//Date.distantFuture.timeIntervalSinceReferenceDate
 				dockerM = DockerManager(hostUrl: nil, baseInfoUrl: "http://foo.com/", userDefaults: defaults, sessionConfiguration: sessionConfig)
 				dockerM?.eventMonitorClass = DummyEventMonitor.self
 				self.stubDockerGetRequest(uriPath: "/version", fileName: "version")
@@ -44,6 +46,7 @@ class DockerManagerSpec: BaseDockerSpec {
 				self.stubDockerGetRequest(uriPath: "/volumes", fileName: "volumes")
 				self.stubDockerGetRequest(uriPath: "/images/json", fileName: "complexImages")
 				self.stubDockerGetRequest(uriPath: "/imageInfo.json", fileName: "updatedImageInfo")
+				self.stubDockerGetRequest(uriPath: "/containers/json", fileName: "containers")
 			}
 			
 			let testMergeContainers = { (old: [DockerContainer], new: [DockerContainer]) -> [DockerContainer] in
@@ -56,23 +59,23 @@ class DockerManagerSpec: BaseDockerSpec {
 			}
 			
 			let testRemoveOutdatedContainers = { (containers: [DockerContainer]) in
-				let containerName = containers[.compute]!.name
 				//stub all deletes to fail
 				self.stub({ request -> Bool in
 					request.httpMethod == "DELETE"
 				}, builder: http(404))
-				//stub desired delete to succeed
-				self.stub({ request -> Bool in
-					request.httpMethod! == "DELETE" && request.url!.path == "/containers/\(containerName)"
-				}, builder: http(204))
-				self.stub(self.postMatcher(uriPath: "/containers/\(containerName)/stop"), builder: http(204))
+				containers.forEach { container in
+					self.stub(self.postMatcher(uriPath: "/containers/\(container.name)/stop"), builder: http(204))
+					self.stub({ request -> Bool in
+						request.httpMethod! == "DELETE" && request.url!.path == "/containers/\(container.name)"
+					}, builder: http(204))
+				}
 				let outdatedProducer = dockerM!.removeOutdatedContainers(containers: containers)
 				let outdatedResult = self.makeValueRequest(producer: outdatedProducer, queue: .global())
 				expect(outdatedResult.error).to(beNil())
 				expect(outdatedResult.value![.compute]!.state.value).to(equal(ContainerState.notAvailable))
 			}
 			
-			let testRefreshContainers = { (fileName: String) -> Result<[DockerContainer], Rc2Error> in
+			let testRefreshContainers = { (fileName: String) -> Result<[DockerContainer], DockerError> in
 				self.stubDockerGetRequest(uriPath: "/containers/json", fileName: fileName)
 				let result = self.makeValueRequest(producer: dockerM!.api.refreshContainers(), queue: .global())
 				expect (result.error).to(beNil())
@@ -84,7 +87,8 @@ class DockerManagerSpec: BaseDockerSpec {
 				///confirm dm is what we expect
 				expect(dm.api).toNot(beNil())
 				expect(dm.imageInfo!.version).to(equal(2))
-				expect(dm.imageInfo!.computeserver.id).to(equal(compute42Id))
+				// this was just testing constant loaded from imageInfo.json.
+//				expect(dm.imageInfo!.computeserver.id).to(equal(compute42Id))
 
 				///confirm .initialize() works
 				let result = self.makeValueRequest(producer: dm.initialize(), queue: .global())
@@ -111,21 +115,24 @@ class DockerManagerSpec: BaseDockerSpec {
 
 			it("checkForImageUpdate works") {
 				testInitialize()
-				expect(dockerM!.imageInfo!.timestampString).to(equal("2016-12-04T20:50:24Z"))
+				dockerM?.defaults[.lastImageInfoCheck] = 0
+				//this date should match what is in imageInfo.json
+				expect(dockerM!.imageInfo!.timestampString).to(equal("2017-04-25T19:48:57Z"))
 				self.stub({ (request) -> (Bool) in
 					return request.httpMethod == "GET" && request.url!.path.hasSuffix("/imageInfo.json")
 				}, builder: jsonData(self.resourceDataFor(fileName: "updatedImageInfo", fileExtension: "json")))
 				let iiresult = self.makeValueRequest(producer: dockerM!.checkForImageUpdate(forceRefresh: true), queue: .global())
 				expect(iiresult.error).to(beNil())
 				expect(iiresult.value!).to(beTrue())
-				expect(dockerM!.imageInfo!.timestampString).to(equal("2016-12-05T21:50:24Z"))
+				//compare to value in updateImageInfo.json
+				expect(dockerM!.imageInfo!.timestampString).to(equal("2017-12-05T21:50:24Z"))
 			}
 		}
 	}
 }
 
-class DummyEventMonitor: Docker {
-	required init(baseUrl: URL, delegate: DockerDelegate, sessionConfig: URLSessionConfiguration)
+class DummyEventMonitor: EventMonitor {
+	required init(delegate: EventMonitorDelegate)
 	{
 		
 	}

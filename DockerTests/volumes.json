@@ -1,14 +1,25 @@
 {
   "Volumes": [
-    {
-      "Driver": "local", 
-      "Labels": {
-        "rc2.live": ""
-      }, 
-      "Mountpoint": "/var/lib/docker/volumes/rc2_dbdata/_data", 
-      "Name": "rc2_dbdata", 
-      "Scope": "local"
-    }
-  ], 
+			  {
+			  "Options" : {},
+			  "Mountpoint" : "/var/lib/docker/volumes/rc2_dbdata/_data",
+			  "Labels" : {
+			  "rc2.live" : ""
+			  },
+			  "Scope" : "local",
+			  "Driver" : "local",
+			  "Name" : "rc2_dbdata"
+			  },
+			  {
+			  "Name" : "rc2_userlib",
+			  "Driver" : "local",
+			  "Mountpoint" : "/var/lib/docker/volumes/rc2_userlib/_data",
+			  "Scope" : "local",
+			  "Labels" : {
+			  "rc2.live" : ""
+			  },
+			  "Options" : {}
+			  }
+  ],
   "Warnings": null
 }

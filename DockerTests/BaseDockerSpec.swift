@@ -39,8 +39,8 @@ class BaseDockerSpec: QuickSpec {
 	///   - producer: The producer to run
 	///   - queue: the queue to run it on (should not be main queue in a unit test)
 	/// - Returns: the result of the producer
-	func makeValueRequest<T>(producer: SignalProducer<T, Rc2Error>, queue: DispatchQueue) -> Result<T, Rc2Error> {
-		var result: Result<T, Rc2Error>?
+	func makeValueRequest<T, E:Error>(producer: SignalProducer<T, E>, queue: DispatchQueue) -> Result<T, E> {
+		var result: Result<T, E>?
 		let group = DispatchGroup()
 		queue.async(group: group) {
 			result = producer.single()
@@ -56,8 +56,8 @@ class BaseDockerSpec: QuickSpec {
 	///   - producer: The producer to run
 	///   - queue: the queue to run it on (should not be main queue in a unit test)
 	/// - Returns: the result of the producer
-	func makeNoValueRequest(producer: SignalProducer<(), Rc2Error>, queue: DispatchQueue) -> Result<(), Rc2Error> {
-		var result: Result<(), Rc2Error>?
+	func makeNoValueRequest<E: Error>(producer: SignalProducer<(), E>, queue: DispatchQueue) -> Result<(), E> {
+		var result: Result<(), E>?
 		let group = DispatchGroup()
 		queue.async(group: group) {
 			result = producer.wait()
@@ -72,10 +72,10 @@ class BaseDockerSpec: QuickSpec {
 	///   - api: the api object to call refreshContainers on
 	///   - queue: the queue to perform the operation on
 	/// - Returns: the result of the call
-	func loadContainers(api: DockerAPI, queue:DispatchQueue) -> Result<[DockerContainer], Rc2Error> {
+	func loadContainers(api: DockerAPI, queue:DispatchQueue) -> Result<[DockerContainer], DockerError> {
 		let scheduler = QueueScheduler(name: "\(#file)\(#line)")
 		let producer = api.refreshContainers().observe(on: scheduler)
-		var result: Result<[DockerContainer], Rc2Error>?
+		var result: Result<[DockerContainer], DockerError>?
 		let group = DispatchGroup()
 		
 		queue.async(group: group) {

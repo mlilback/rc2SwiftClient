@@ -20,7 +20,7 @@ class DockerImageInfoTests: XCTestCase {
 	}
 
 	func testParseInfo() {
-		let path : String = Bundle(for: DockerManager.self).path(forResource: "imageInfo", ofType: "json")!
+		let path : String = Bundle(for: DockerImageInfoTests.self).path(forResource: "updatedImageInfo", ofType: "json")!
 		let resultData = try? Data(contentsOf: URL(fileURLWithPath: path))
 		stub(http(method: .get, uri: "/imageInfo.json"), builder: jsonData(resultData!))
 		var fetchedData: Data?
