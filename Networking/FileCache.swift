@@ -518,7 +518,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 				self.lastModTimes[dloadTask.file.fileId] = Date.timeIntervalSinceReferenceDate
 				self.tasks.removeValue(forKey: urlTask.taskIdentifier)
 				if generatedError != nil {
-					os_log("failure downloading file %d: %{public}s", log: .network, type: .error, dloadTask.file.fileId, generatedError!.errorDescription ?? "unknown")
+					os_log("failure downloading file %d: %{public}@", log: .network, type: .error, dloadTask.file.fileId, generatedError!.errorDescription ?? "unknown")
 					self.mainQueue.async { dloadTask.observer.send(error: generatedError!) }
 				}
 			}
@@ -556,7 +556,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 			}
 			///move the file to the appropriate local cache url
 			guard let _ = try? fileManager.move(tempFile: location, to: cacheUrl, file: cacheTask.file) else {
-				os_log("error moving downloaded file to final location %{public}s", log: .cache, cacheUrl.absoluteString)
+				os_log("error moving downloaded file to final location %{public}@", log: .cache, cacheUrl.absoluteString)
 				return
 			}
 		}

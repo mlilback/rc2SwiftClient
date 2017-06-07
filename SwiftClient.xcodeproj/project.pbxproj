@@ -632,11 +632,11 @@
 		08127CD41DAD2434002E0D01 /* ClientCoreIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCoreIntegrationTests.swift; sourceTree = "<group>"; };
 		08127CD61DAD2434002E0D01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacConsoleAttachment.swift; sourceTree = "<group>"; };
-		0815597C1DDB9F630047B3CE /* ServerResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerResponse.swift; sourceTree = "<group>"; };
+		0815597C1DDB9F630047B3CE /* ServerResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ServerResponse.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0815597E1DDBAEB30047B3CE /* ServerResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerResponseHandler.swift; sourceTree = "<group>"; };
 		081559801DDBAF030047B3CE /* ConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleAttachment.swift; sourceTree = "<group>"; };
 		081559841DDBB3760047B3CE /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
-		081559861DDBB4310047B3CE /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		081559861DDBB4310047B3CE /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Session.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Freddy+Rc2.swift"; path = "ClientCore/Freddy+Rc2.swift"; sourceTree = SOURCE_ROOT; };
 		081559901DDC84850047B3CE /* SessionImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionImage.swift; sourceTree = "<group>"; };
 		081559921DDC889D0047B3CE /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
@@ -699,7 +699,7 @@
 		083305D81C501B7300E27F66 /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainWindowController.swift; sourceTree = "<group>"; };
 		083305DC1C511F4700E27F66 /* RecursiveFlatMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecursiveFlatMap.swift; sourceTree = "<group>"; };
 		083305DF1C51571500E27F66 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
-		083305E11C517F8900E27F66 /* SidebarFileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarFileController.swift; sourceTree = "<group>"; };
+		083305E11C517F8900E27F66 /* SidebarFileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SidebarFileController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		083305E31C517FC000E27F66 /* SidebarVariableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarVariableController.swift; sourceTree = "<group>"; };
 		083305E51C517FE300E27F66 /* SidebarHelpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarHelpController.swift; sourceTree = "<group>"; };
 		083305E71C51812300E27F66 /* AbstractSessionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractSessionViewController.swift; sourceTree = "<group>"; };
@@ -714,7 +714,7 @@
 		083382F91C68F2A900D40EEB /* BaseTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BaseTest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0833A8211D2D7E770033654B /* HockeySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HockeySDK.framework; path = "vendor/HockeySDK-Mac/HockeySDK.framework"; sourceTree = "<group>"; };
 		0833A8251D2D87120033654B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = vendor/Sparkle.framework; sourceTree = "<group>"; };
-		0835A07D1E57823500123820 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		0835A07D1E57823500123820 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OnboardingViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08367BD21E3FCEA800FAFC8A /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/Mac/Starscream.framework; sourceTree = "<group>"; };
 		083A566E1D246D85009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/ProjectManagement.storyboard; sourceTree = "<group>"; };
 		083A56701D24722C009D3091 /* ProjectManagerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectManagerViewController.swift; sourceTree = "<group>"; };
@@ -738,7 +738,7 @@
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		084FEA7F1D3044E700060A7D /* ObjcConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcConstants.h; sourceTree = "<group>"; };
 		084FEA801D3045D800060A7D /* ObjcConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjcConstants.m; sourceTree = "<group>"; };
-		08525E4F1E204672008A332E /* URLStaleChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLStaleChecker.swift; sourceTree = "<group>"; };
+		08525E4F1E204672008A332E /* URLStaleChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = URLStaleChecker.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08525E721E256A8B008A332E /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		08525E741E2D7D4E008A332E /* Rc².entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Rc².entitlements"; sourceTree = "<group>"; };
 		08525E751E300185008A332E /* rdocs.tgz */ = {isa = PBXFileReference; lastKnownFileType = file; name = rdocs.tgz; path = vendor/rdocs.tgz; sourceTree = SOURCE_ROOT; };
@@ -759,7 +759,7 @@
 		0866599A1CA1F3E5007AC555 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/MainWindow.xib; sourceTree = SOURCE_ROOT; };
 		08678C961DCA78CE00F9F283 /* Freddy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Freddy.framework; path = Carthage/Build/Mac/Freddy.framework; sourceTree = "<group>"; };
 		086A40D01E7AEC5000AE476B /* OutputTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputTheme.swift; sourceTree = "<group>"; };
-		086A40D21E7B048B00AE476B /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		086A40D21E7B048B00AE476B /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Theme.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		086A40D41E7B04F400AE476B /* ThemeEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThemeEditorController.swift; path = prefs/ThemeEditorController.swift; sourceTree = "<group>"; };
 		086A40D61E7B1E8600AE476B /* ThemeEditorController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ThemeEditorController.xib; path = prefs/ThemeEditorController.xib; sourceTree = "<group>"; };
 		086A40D81E7B3F0C00AE476B /* SyntaxTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxTheme.swift; sourceTree = "<group>"; };
@@ -767,14 +767,14 @@
 		086A40DC1E7B578400AE476B /* ThemeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		086A40DE1E7D956400AE476B /* PlatformTypeAliases.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlatformTypeAliases.swift; sourceTree = "<group>"; };
 		086A40E01E7DAEE300AE476B /* InternalTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternalTheme.swift; sourceTree = "<group>"; };
-		0872676C1EE20A37004251C1 /* DockerBackupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerBackupViewController.swift; sourceTree = "<group>"; };
+		0872676C1EE20A37004251C1 /* DockerBackupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DockerBackupViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08765C811DC58AB300F75D8E /* DispatchReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchReader.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		0881B5031DCD23FD00679DB3 /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
 		0881B5051DCD329300679DB3 /* VariableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableSpec.swift; sourceTree = "<group>"; };
 		0881B5071DCD336500679DB3 /* variables.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = variables.json; sourceTree = "<group>"; };
 		0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionInfo.swift; sourceTree = "<group>"; };
-		0881B50D1DCF896500679DB3 /* LoginFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginFactory.swift; sourceTree = "<group>"; };
+		0881B50D1DCF896500679DB3 /* LoginFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LoginFactory.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0881B50F1DCFA99A00679DB3 /* LoginSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginSpec.swift; sourceTree = "<group>"; };
 		088935831E004FF500C94B19 /* SessionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionSpec.swift; sourceTree = "<group>"; };
 		088935851E00530C00C94B19 /* TestingWebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestingWebSocket.swift; sourceTree = "<group>"; };
@@ -826,7 +826,7 @@
 		08A01FC01CC7FCA3001EDFAA /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
 		08A01FCD1CC80189001EDFAA /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		08A01FD11CC81479001EDFAA /* helpindex.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = helpindex.db; sourceTree = BUILT_PRODUCTS_DIR; };
-		08A01FD51CC95C58001EDFAA /* HelpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpController.swift; sourceTree = "<group>"; };
+		08A01FD51CC95C58001EDFAA /* HelpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HelpController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08A01FD71CC965F8001EDFAA /* HelpControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpControllerTests.swift; sourceTree = "<group>"; };
 		08A01FD91CC9692C001EDFAA /* BasicOutlineDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicOutlineDataSource.swift; sourceTree = "<group>"; };
 		08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
@@ -886,7 +886,7 @@
 		08F189BC1D2184EB00866A05 /* BookmarkTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BookmarkTest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F189BE1D21938F00866A05 /* BookmarkViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BookmarkViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F42FA11D33F47000A1EE8D /* MockSessionHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockSessionHelpers.swift; sourceTree = "<group>"; };
-		08F448F51C4E244500C64706 /* SessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionEditorController.swift; sourceTree = "<group>"; };
+		08F448F51C4E244500C64706 /* SessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SessionEditorController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F448F61C4E244500C64706 /* SidebarTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarTabController.swift; sourceTree = "<group>"; };
 		08F448F71C4E244500C64706 /* ConsoleOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleOutputController.swift; sourceTree = "<group>"; };
 		08F448F81C4E244500C64706 /* MainController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainController.storyboard; sourceTree = "<group>"; };
@@ -898,7 +898,7 @@
 		08F6ADA81DD643C900AF0722 /* Copyable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Copyable.swift; sourceTree = "<group>"; };
 		08F6ADAB1DD6502000AF0722 /* ModelSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelSpec.swift; sourceTree = "<group>"; };
 		08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = modelChanges.json; sourceTree = "<group>"; };
-		08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2RestClient.swift; sourceTree = "<group>"; };
+		08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Rc2RestClient.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F6ADB11DD90E3600AF0722 /* Rc2FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2FileManager.swift; sourceTree = "<group>"; };
 		08F6ADB81DD911D500AF0722 /* Workspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Workspace.swift; sourceTree = "<group>"; };
 		08F6ADC21DD9169300AF0722 /* Docker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Docker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -918,7 +918,7 @@
 		08F6ADE91DD9172C00AF0722 /* DockerTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerTag.swift; sourceTree = "<group>"; };
 		08F6ADEA1DD9172C00AF0722 /* DockerUrlProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerUrlProtocol.swift; sourceTree = "<group>"; };
 		08F6ADED1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURLRequest+RcDocker.swift"; sourceTree = "<group>"; };
-		08F6ADFF1DD918CF00AF0722 /* FileCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
+		08F6ADFF1DD918CF00AF0722 /* FileCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = FileCache.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08FDB1981C591409006FCD1A /* ImageCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCacheTests.swift; sourceTree = "<group>"; };
 		08FDB19A1C5917C3006FCD1A /* graph.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graph.png; sourceTree = "<group>"; };
 		08FDE53D1EA02AFA00F14FAA /* LocalConnectionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalConnectionSpec.swift; sourceTree = "<group>"; };

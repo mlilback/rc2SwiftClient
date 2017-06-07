@@ -36,7 +36,7 @@ public class URLStateChecker: NSObject {
 		let req = request(url: url, lastModified: lastModified, etag: etag)
 		session.dataTask(with: req) { (_, response, error) in
 			if let err = error {
-				os_log("error checking http request: %{public}s", log: .network, type: .default, err as NSError)
+				os_log("error checking http request: %{public}@", log: .network, type: .default, err as NSError)
 				handler(false)
 				return
 			}

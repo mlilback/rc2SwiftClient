@@ -53,7 +53,7 @@ public struct Bookmark: JSONDecodable, JSONEncodable, CustomStringConvertible, C
 		do {
 			try self.init(json: from)
 		} catch {
-			os_log("failed to decode from json: %{public}s", log: .app, error.localizedDescription)
+			os_log("failed to decode from json: %{public}@", log: .app, error.localizedDescription)
 		}
 		return nil
 	}

@@ -168,7 +168,7 @@ open class BookmarkViewController: NSViewController {
 //			case .completed:
 //				self.openSessionCallback?(session)
 //			case .failed(let err):
-//				os_log("failed to open websocket: %{public}s", log: .session, err.localizedDescription)
+//				os_log("failed to open websocket: %{public}@", log: .session, err.localizedDescription)
 //				fatalError()
 //			case .value: //(let _):
 //				// do nothing as using indeterminate progress

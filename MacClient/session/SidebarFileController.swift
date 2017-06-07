@@ -199,7 +199,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				self.session.create(fileName: newName, contentUrl: nil) { result in
 					// the id of the file that was created
 					guard let fid = result.value else {
-						self.logMessage("error creating empty file: %{public}s", result.error!.localizedDescription)
+						self.logMessage("error creating empty file: %{public}@", result.error!.localizedDescription)
 						self.appStatus?.presentError(result.error!, session: self.session)
 						return
 					}
@@ -246,7 +246,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 					.startWithResult { result in
 					// the id of the file that was created
 					guard let fid = result.value else {
-						self.logMessage("error duplicating file: %{public}s", result.error!.localizedDescription)
+						self.logMessage("error duplicating file: %{public}@", result.error!.localizedDescription)
 						self.appStatus?.presentError(result.error!, session: self.session)
 						return
 					}
@@ -283,7 +283,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 					self.select(fileId: file.fileId)
 					return
 				}
-				self.logMessage("error duplicating file: %{public}s", error.localizedDescription)
+				self.logMessage("error duplicating file: %{public}@", error.localizedDescription)
 				self.appStatus?.presentError(error, session: self.session)
 			}
 		}

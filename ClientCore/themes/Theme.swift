@@ -92,7 +92,7 @@ public extension Theme {
 				theme.fileUrl = aFile
 				themes.append(theme)
 			} catch {
-				os_log("error reading theme from %{public}s: %{public}s", log: .app, aFile.lastPathComponent, error.localizedDescription)
+				os_log("error reading theme from %{public}@: %{public}@", log: .app, aFile.lastPathComponent, error.localizedDescription)
 			}
 		}
 		return themes

@@ -529,7 +529,7 @@ private extension Session {
 			}
 		}
 		wsSource.onDisconnect = { [weak self] (error) in
-			os_log("websocket closed: %{public}s", log: .session, error?.localizedDescription ?? "unknown")
+			os_log("websocket closed: %{public}@", log: .session, error?.localizedDescription ?? "unknown")
 			self?.connectionOpen = false
 			self?.delegate?.sessionClosed()
 		}

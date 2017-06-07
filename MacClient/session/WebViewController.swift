@@ -144,7 +144,7 @@ extension WebViewController: SearchBarViewDelegate {
 				searchBar.matchCount = matchCount
 			}
 		} catch {
-			os_log("error encoding java script search: %{public}s", log: .app, error.localizedDescription)
+			os_log("error encoding java script search: %{public}@", log: .app, error.localizedDescription)
 		}
 	}
 	

@@ -186,7 +186,7 @@ public final class DockerManager: NSObject {
 				do {
 					self.eventMonitor = try self.eventMonitorClass.init(delegate: self)
 				} catch let err {
-					os_log("failed to open event monitor: %{public}s", log: .docker, type: .error, err.localizedDescription)
+					os_log("failed to open event monitor: %{public}@", log: .docker, type: .error, err.localizedDescription)
 				}
 			}
 			.flatMap(.concat, transform: validateNetwork)
@@ -659,4 +659,5 @@ extension DockerManager {
 			lastValue = 0
 		})
 	}
+	
 }

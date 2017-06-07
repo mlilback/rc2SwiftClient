@@ -85,7 +85,7 @@ extension OnboardingViewController: WKScriptMessageHandler {
 			}
 			openLocalWorkspace?(WorkspaceIdentifier(projectId: projId, wspaceId: Int(wspaceId)))
 		default:
-			os_log("unhandled action: %{public}s", log: .app, action)
+			os_log("unhandled action: %{public}@", log: .app, action)
 		}
 	}
 }

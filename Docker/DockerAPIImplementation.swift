@@ -54,7 +54,7 @@ public final class DockerAPIImplementation: DockerAPI {
 	public func loadVersion() -> SignalProducer<DockerVersion, DockerError>
 	{
 		let req = URLRequest(url: baseUrl.appendingPathComponent("/version"))
-		os_log("dm.loadVersion called to %{public}s", log: .docker, type: .debug, req.debugDescription)
+		os_log("dm.loadVersion called to %{public}@", log: .docker, type: .debug, req.debugDescription)
 		return makeRequest(request: req)
 			.optionalLog("loadVersion")
 			.flatMap(.concat, transform: dataToJson)
@@ -520,7 +520,7 @@ extension DockerAPIImplementation {
 				let statusCode = response?.httpResponse?.statusCode ?? 200
 				guard statusCode >= 200 && statusCode < 400 else {
 					let rsp = response!.httpResponse!
-					os_log("docker request got bad status: %d response = %{public}s", log: .docker, rsp.statusCode, String(data: data!, encoding: .utf8)!)
+					os_log("docker request got bad status: %d response = %{public}@", log: .docker, rsp.statusCode, String(data: data!, encoding: .utf8)!)
 					observer.send(error: DockerError.generateHttpError(from: rsp, body: data))
 					return
 				}

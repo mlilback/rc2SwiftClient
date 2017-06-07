@@ -52,7 +52,7 @@ class DockerBackupViewController: DockerManagerInjectable {
 		do {
 			try FileManager.default.removeItem(at: targetBackup.url)
 		} catch {
-			os_log("error removing backup: %{public}s", log: .app, error.localizedDescription)
+			os_log("error removing backup: %{public}@", log: .app, error.localizedDescription)
 			NSBeep()
 			return
 		}

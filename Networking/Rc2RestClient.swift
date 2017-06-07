@@ -74,7 +74,7 @@ public final class Rc2RestClient {
 					do {
 						try project.added(workspace: newWspace)
 					} catch {
-						os_log("failed to add new workspace to project: %{public}s", log: .session, error.localizedDescription)
+						os_log("failed to add new workspace to project: %{public}@", log: .session, error.localizedDescription)
 						//long-term should refetch the project list
 						fatalError()
 					}

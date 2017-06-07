@@ -227,7 +227,7 @@ extension SessionController: SessionDelegate {
 		//need to refetch file from server, then show it
 		session.fileCache.update(file: oldFile, withData: nil).startWithResult { result in
 			guard nil == result.error else {
-				os_log("error updating file cache: %{public}s", log: .session, result.error!.errorDescription ?? "??")
+				os_log("error updating file cache: %{public}@", log: .session, result.error!.errorDescription ?? "??")
 				return
 			}
 			self.handle(response: response)

@@ -205,7 +205,7 @@ extension MacAppDelegate {
 			return
 		}
 		guard !workspacesBeingOpened.contains(ident) else {
-			os_log("already opening %{public}s", log: .app, ident.description)
+			os_log("already opening %{public}@", log: .app, ident.description)
 			return
 		}
 		guard let conInfo = connectionManager.localConnection, let wspace = conInfo.project(withId: ident.projectId)?.workspace(withId: ident.wspaceId) else
@@ -222,7 +222,7 @@ extension MacAppDelegate {
 			case .completed:
 				self?.openSessionWindow(session)
 			case .failed(let err):
-				os_log("failed to open websocket: %{public}s", log: .session, err.localizedDescription)
+				os_log("failed to open websocket: %{public}@", log: .session, err.localizedDescription)
 				fatalError()
 			case .value: //(let _):
 				// do nothing as using indeterminate progress
@@ -448,10 +448,11 @@ extension MacAppDelegate {
 		}
 	}
 	
-	private func handleStartupError(_ error: Error) {
+	private func handleStartupError(_ error: Rc2Error) {
+		onboardingController?.window?.orderOut(nil)
 		let alert = NSAlert()
 		alert.messageText = "Error starting application"
-		alert .informativeText = error.localizedDescription
+		alert .informativeText = error.nestedDescription ?? error.localizedDescription
 		alert.addButton(withTitle: "Quit")
 		alert.runModal()
 		NSApp.terminate(self)
@@ -497,7 +498,7 @@ extension MacAppDelegate {
 			.observe(on: UIScheduler())
 			.startWithResult { [weak self] result in
 				guard result.error == nil else {
-					os_log("failed to start docker: %{public}s", log: .app, type: .error, result.error!.debugDescription)
+					os_log("fail to start docker: '%{public}@', (%{public}@)", log: .app, type: .error, result.error?.description ?? "-", result.error!.nestedDescription ?? "-")
 					self!.appStatus?.presentError(result.error!, session: nil)
 					self!.handleStartupError(result.error!) //should never return
 					return

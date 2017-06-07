@@ -34,7 +34,7 @@ extension DockerResponseHandler {
 			headers = parsedHeaders
 			return remainingData
 		} catch {
-			os_log("error parsing data %{public}s", log: .docker, error as NSError)
+			os_log("error parsing data %{public}@", log: .docker, error as NSError)
 			throw error
 		}
 	}

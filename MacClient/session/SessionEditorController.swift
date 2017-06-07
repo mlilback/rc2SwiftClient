@@ -195,7 +195,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		guard currentDocument?.dirty ?? false else { return }
 		saveWithProgress(isAutoSave: true).startWithResult { result in
 			guard result.error == nil else {
-				os_log("autosave failed: %{public}s", log: .session, result.error!.localizedDescription)
+				os_log("autosave failed: %{public}@", log: .session, result.error!.localizedDescription)
 				return
 			}
 			//need to do anything when successful?

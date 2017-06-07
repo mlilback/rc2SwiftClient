@@ -171,7 +171,7 @@ class HelpController {
 		let str = "\(topic.packageName)\(HelpUrlFuncSeperator)/\(topic.name).html"
 		let helpUrl = baseHelpUrl.appendingPathComponent(str)
 		if !helpUrl.fileExists() {
-			os_log("missing help file: %{public}s", log: .app, str)
+			os_log("missing help file: %{public}@", log: .app, str)
 		}
 		return helpUrl
 	}

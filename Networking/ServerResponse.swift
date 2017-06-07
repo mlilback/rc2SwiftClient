@@ -137,7 +137,7 @@ public enum ServerResponse: Equatable {
 			let removed: [String] = try jsonObj.decodedArray(at: "variables", "removed")
 			return ServerResponse.variablesDelta(assigned: assigned, removed: removed)
 		} catch {
-			os_log("error parsing variable message: %{public}s", log: .session, type: .error, error.localizedDescription)
+			os_log("error parsing variable message: %{public}@", log: .session, type: .error, error.localizedDescription)
 		}
 		return nil
 	}
