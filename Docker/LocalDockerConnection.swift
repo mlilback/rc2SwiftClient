@@ -107,8 +107,12 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 	
 	/// closes the connection to the docker daemon. handler will no longer receive any messages
 	func closeConnection() {
-		precondition(fileDescriptor > 0)
-		precondition(responseHandler != nil, "connection already closed")
+		guard fileDescriptor > 0, responseHandler != nil else {
+			os_log("closeConnection called when closed", log: .app)
+			return
+		}
+//		precondition(fileDescriptor > 0)
+//		precondition(responseHandler != nil, "connection already closed")
 		close(fileDescriptor)
 		fileDescriptor = 0
 		responseHandler?.closeHandler()
