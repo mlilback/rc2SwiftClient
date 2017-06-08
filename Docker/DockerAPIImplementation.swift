@@ -25,6 +25,7 @@ public final class DockerAPIImplementation: DockerAPI {
 	public let baseUrl: URL
 	fileprivate let sessionConfig: URLSessionConfiguration
 	fileprivate var session: URLSession
+	fileprivate let fileManager: FileManager
 	public let scheduler: QueueScheduler
 	
 	// MARK: - init
@@ -35,7 +36,7 @@ public final class DockerAPIImplementation: DockerAPI {
 	/// - parameter sessionConfig: configuration to use for httpsession, defaults to .default
 	///
 	/// - returns: an instance of this class
-	public init(baseUrl: URL = URL(string: "unix://")!, sessionConfig: URLSessionConfiguration = URLSessionConfiguration.default)
+	public init(baseUrl: URL = URL(string: "unix://")!, sessionConfig: URLSessionConfiguration = URLSessionConfiguration.default, fileManager: FileManager = FileManager.default)
 	{
 		precondition(baseUrl.absoluteString.hasPrefix("unix:") || !baseUrl.absoluteString.hasSuffix("/"))
 		self.scheduler = QueueScheduler(qos: .default, name: "rc2.dockerAPI")
@@ -46,6 +47,7 @@ public final class DockerAPIImplementation: DockerAPI {
 		}
 		sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
 		session = URLSession(configuration: sessionConfig)
+		self.fileManager = fileManager
 	}
 
 	// MARK: - general
@@ -117,6 +119,35 @@ public final class DockerAPIImplementation: DockerAPI {
 		connection.writeRequest()
 //		let task = mySession.dataTask(with: request as URLRequest)
 //		task.resume()
+	}
+	
+	// documentation in DockerAPI protocol
+	public func upload(url source: URL, path: String, containerName: String, overwrite: Bool = false) -> SignalProducer<(), DockerError>
+	{
+		precondition(source.isFileURL && source.fileExists())
+		let tarballUrl = fileManager.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+		return SignalProducer<Data, DockerError> { observer, _ in
+			// tar source
+			do {
+				try DCTar.compressFile(atPath: source.path, toPath: tarballUrl.path)
+			} catch {
+				observer.send(error: DockerError.cocoaError(error as NSError))
+				return
+			}
+			// build request
+			let url = self.baseUrl.appendingPathComponent("/containers/\(containerName)/archive")
+			guard var urlcomp = URLComponents(url: url, resolvingAgainstBaseURL: true) else { fatalError("failed to prepare url") }
+			urlcomp.queryItems = [URLQueryItem(name: "noOverwriteDirNonDir", value: overwrite ? "false" : "true"), URLQueryItem(name: "path", value: path)]
+			guard let builtUrl = urlcomp.url else { fatalError("failed to create upload url") }
+			var req = URLRequest(url: builtUrl)
+			req.setValue("application/x-tar", forHTTPHeaderField: "Content-Type")
+			// make the request
+			self.make(request: req, observer: observer)
+		}
+		.map({ _ in return () })
+		.optionalLog("upload \(source.absoluteString)")
+		.on(terminated: { try? self.fileManager.removeItem(at: tarballUrl) }) //delete tmp file
+		.observe(on: scheduler)
 	}
 	
 	// MARK: - image operations
@@ -505,29 +536,43 @@ extension DockerAPIImplementation {
 	}
 
 	@discardableResult
+	/// return a signal producer that will make a request
+	///
+	/// - Parameter request: the request to make
+	/// - Returns: a signal producer that will make the request
 	fileprivate func makeRequest(request: URLRequest) -> SignalProducer<Data, DockerError>
 	{
 		return SignalProducer<Data, DockerError> { observer, _ in
-			self.session.dataTask(with: request, completionHandler: { (data, response, error) in
-				guard let rawData = data, error == nil else {
-					observer.send(error: DockerError.networkError(error as NSError?))
-					return
-				}
-				if rawData.count == 0 {
-					print("no data")
-				}
-				//default to 200 for non-http status codes (such as file urls)
-				let statusCode = response?.httpResponse?.statusCode ?? 200
-				guard statusCode >= 200 && statusCode < 400 else {
-					let rsp = response!.httpResponse!
-					os_log("docker request got bad status: %d response = %{public}@", log: .docker, rsp.statusCode, String(data: data!, encoding: .utf8)!)
-					observer.send(error: DockerError.generateHttpError(from: rsp, body: data))
-					return
-				}
-				observer.send(value: rawData)
-				observer.sendCompleted()
-			}).resume()
+			self.make(request: request, observer: observer)
 		}
+	}
+
+	/// Make a request passing data or error to the observer
+	///
+	/// - Parameters:
+	///   - request: request to make
+	///   - observer: observer to send results or error
+	fileprivate func make(request: URLRequest, observer: Signal<Data, DockerError>.Observer)
+	{
+		self.session.dataTask(with: request, completionHandler: { (data, response, error) in
+			guard let rawData = data, error == nil else {
+				observer.send(error: DockerError.networkError(error as NSError?))
+				return
+			}
+			if rawData.count == 0 {
+				os_log("request returned no data", log: .docker, type: .debug)
+			}
+			//default to 200 for non-http status codes (such as file urls)
+			let statusCode = response?.httpResponse?.statusCode ?? 200
+			guard statusCode >= 200 && statusCode < 400 else {
+				let rsp = response!.httpResponse!
+				os_log("docker request got bad status: %d response = %{public}@", log: .docker, rsp.statusCode, String(data: data!, encoding: .utf8)!)
+				observer.send(error: DockerError.generateHttpError(from: rsp, body: data))
+				return
+			}
+			observer.send(value: rawData)
+			observer.sendCompleted()
+		}).resume()
 	}
 }
 

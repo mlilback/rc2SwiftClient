@@ -22,6 +22,11 @@ class MockDockerAPI: DockerAPI {
 		fatalError("not implemented")
 	}
 
+	func upload(url source: URL, path: String, containerName: String, overwrite: Bool = false) -> SignalProducer<(), DockerError>
+	{
+		fatalError("not implemented")
+	}
+	
 	/// Fetches the logs for the specified container
 	///
 	/// - Parameter container: the container to get logs for

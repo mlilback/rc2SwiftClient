@@ -27,15 +27,23 @@ public struct DockerVersion: CustomStringConvertible {
 }
 
 /// Abstracts communicating with docker. Protocol allows for dependency injection.
-public protocol DockerAPI {
+public protocol DockerAPI: class {
+	/// the baseUrl to use for all requests
 	var baseUrl: URL { get }
+	
 	/// Fetches version information from docker daemon
 	///
 	/// - returns: a signal producer with a single value
 	func loadVersion() -> SignalProducer<DockerVersion, DockerError>
 
 	/// initializer
-	init(baseUrl: URL, sessionConfig: URLSessionConfiguration)
+	/// required to allow dynamic call based on class type
+	///
+	/// - Parameters:
+	///   - baseUrl: the base url for the docker server
+	///   - sessionConfig: the session configuration to use
+	///   - fileManager: the file manager to use for file operations
+	init(baseUrl: URL, sessionConfig: URLSessionConfiguration, fileManager: FileManager)
 	
 	/// Convience method to fetch json
 	///
@@ -58,6 +66,16 @@ public protocol DockerAPI {
 	///   - string: log content to process
 	///   - isStdErr: true if the string is from stderr, false if from stdout
 	func streamLog(container: DockerContainer, dataHandler: @escaping LogEntryCallback)
+
+	/// upload a file/directory to a container
+	///
+	/// - Parameters:
+	///   - source: the source url or directory to upload
+	///   - path: the path to extract contents to
+	///   - containerName: name of container to upload to
+	///   - overwrite: true if an existing directory can be replaced by a file
+	/// - Returns: a signal producer to perform upload operation
+	func upload(url source: URL, path: String, containerName: String, overwrite: Bool) -> SignalProducer<(), DockerError>
 
 	/// Loads images from docker daemon
 	///
@@ -142,4 +160,18 @@ public protocol DockerAPI {
 	///
 	/// - returns: a signal producer with a single Bool value
 	func networkExists(name: String) -> SignalProducer<Bool, DockerError>
+}
+
+public extension DockerAPI {
+	/// initializes with the default file manager
+	/// required to allow dynamic call based on class type
+	///
+	/// - Parameters:
+	///   - baseUrl: the base url for the docker server
+	///   - sessionConfig: the session configuration to use
+	///   - fileManager: the file manager to use for file operations
+	public init(baseUrl: URL, sessionConfig: URLSessionConfiguration, fileManager: FileManager = FileManager.default)
+	{
+		self.init(baseUrl: baseUrl, sessionConfig: sessionConfig, fileManager: fileManager)
+	}
 }

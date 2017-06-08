@@ -211,6 +211,32 @@ class DefaultDockerAPISpec: BaseDockerSpec {
 //				}
 			}
 			
+			context("test upload") {
+				it("test successful upload") {
+					self.stub({ (req) -> (Bool) in
+						return req.url?.path == "/containers/rc2_dbserver/archive"
+					}, builder: http(200))
+					let srcFile = Bundle(for: type(of: self)).url(forResource: "containers", withExtension: "json")!
+					let producer = api.upload(url: srcFile, path: "/tmp/c.json", containerName: "rc2_dbserver")
+					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
+					expect(result.error).to(beNil())
+				}
+
+				it("test failed upload") {
+					self.stub({ (req) -> (Bool) in
+						return req.url?.path == "/containers/rc2_dbserver/archive"
+					}, builder: http(400))
+					let srcFile = Bundle(for: type(of: self)).url(forResource: "containers", withExtension: "json")!
+					let producer = api.upload(url: srcFile, path: "/tmp/c.json", containerName: "rc2_dbserver")
+					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
+					expect(result.error).toNot(beNil())
+					guard case let .httpError(statusCode, _, _) = result.error!, statusCode == 400 else {
+						XCTFail("incorrect error code")
+						return
+					}
+				}
+}
+			
 			context("test images") {
 				it("load images from big list") {
 					self.stubGetRequest(uriPath: "/images/json", fileName: "complexImages")

@@ -99,6 +99,9 @@
 		081C71B11E9DD02D00A1BD3B /* SingleDataResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081C71B01E9DD02D00A1BD3B /* SingleDataResponseHandler.swift */; };
 		081C71B31E9DD08B00A1BD3B /* HijackedResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081C71B21E9DD08B00A1BD3B /* HijackedResponseHandler.swift */; };
 		081C71B51E9EB92000A1BD3B /* LocalDockerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081C71B41E9EB92000A1BD3B /* LocalDockerConnection.swift */; };
+		0823F2301EE7419500A8F8C6 /* DCTar.h in Headers */ = {isa = PBXBuildFile; fileRef = 0823F22E1EE7419500A8F8C6 /* DCTar.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0823F2311EE7419500A8F8C6 /* DCTar.m in Sources */ = {isa = PBXBuildFile; fileRef = 0823F22F1EE7419500A8F8C6 /* DCTar.m */; };
+		0823F2331EE742B100A8F8C6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0823F2321EE742B100A8F8C6 /* libz.tbd */; };
 		0826108F1DB02FC300C03422 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082610901DB02FC300C03422 /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082610911DB02FEE00C03422 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; };
@@ -668,6 +671,9 @@
 		081C71B01E9DD02D00A1BD3B /* SingleDataResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleDataResponseHandler.swift; sourceTree = "<group>"; };
 		081C71B21E9DD08B00A1BD3B /* HijackedResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HijackedResponseHandler.swift; sourceTree = "<group>"; };
 		081C71B41E9EB92000A1BD3B /* LocalDockerConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDockerConnection.swift; sourceTree = "<group>"; };
+		0823F22E1EE7419500A8F8C6 /* DCTar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCTar.h; path = vendor/tarkit/DCTar.h; sourceTree = SOURCE_ROOT; };
+		0823F22F1EE7419500A8F8C6 /* DCTar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DCTar.m; path = vendor/tarkit/DCTar.m; sourceTree = SOURCE_ROOT; };
+		0823F2321EE742B100A8F8C6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		0826108D1DB02FC300C03422 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/Mac/Nimble.framework; sourceTree = "<group>"; };
 		0826108E1DB02FC300C03422 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/Mac/Quick.framework; sourceTree = "<group>"; };
 		0826109B1DB8E0F000C03422 /* Data+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Rc2.swift"; sourceTree = "<group>"; };
@@ -1039,6 +1045,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0823F2331EE742B100A8F8C6 /* libz.tbd in Frameworks */,
 				08F6ADFD1DD9178A00AF0722 /* Freddy.framework in Frameworks */,
 				0828FB331EA7FEEA00AECEC5 /* ReactiveSwift.framework in Frameworks */,
 			);
@@ -1415,6 +1422,7 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0823F2321EE742B100A8F8C6 /* libz.tbd */,
 				08C2D5E41E719DE20007A02D /* SBInjector.framework */,
 				08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */,
 				08367BD21E3FCEA800FAFC8A /* Starscream.framework */,
@@ -1666,6 +1674,8 @@
 				081C71B01E9DD02D00A1BD3B /* SingleDataResponseHandler.swift */,
 				081C71B21E9DD08B00A1BD3B /* HijackedResponseHandler.swift */,
 				080AB90A1E97F155005452C7 /* ChunkedResponseProxy.swift */,
+				0823F22E1EE7419500A8F8C6 /* DCTar.h */,
+				0823F22F1EE7419500A8F8C6 /* DCTar.m */,
 				0828FB251EA7FB4A00AECEC5 /* ReactiveSwift+Docker.swift */,
 				0828FB231EA7F42D00AECEC5 /* HttpStringUtils.swift */,
 				0828FB311EA7FE4200AECEC5 /* Data+Docker.swift */,
@@ -1724,6 +1734,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				08F6ADD41DD9169400AF0722 /* Docker.h in Headers */,
+				0823F2301EE7419500A8F8C6 /* DCTar.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1981,7 +1992,7 @@
 					};
 					08F6ADC11DD9169300AF0722 = {
 						CreatedOnToolsVersion = 8.1;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0830;
 						ProvisioningStyle = Automatic;
 					};
 					08F6ADC91DD9169300AF0722 = {
@@ -2469,6 +2480,7 @@
 				0828FB241EA7F42D00AECEC5 /* HttpStringUtils.swift in Sources */,
 				08F6ADF21DD9172C00AF0722 /* EventMonitor.swift in Sources */,
 				08F6ADF71DD9172C00AF0722 /* DockerPullOperation.swift in Sources */,
+				0823F2311EE7419500A8F8C6 /* DCTar.m in Sources */,
 				0828FB2E1EA7FCF000AECEC5 /* NSTextCheckingResult+Rc2.swift in Sources */,
 				0828FB1E1EA51D3100AECEC5 /* EventTypes.swift in Sources */,
 				081C71B51E9EB92000A1BD3B /* LocalDockerConnection.swift in Sources */,
@@ -3154,6 +3166,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MODULEMAP_FILE = Docker/module.modulemap;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.Docker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3192,6 +3205,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MODULEMAP_FILE = Docker/module.modulemap;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.Docker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
