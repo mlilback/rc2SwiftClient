@@ -1,7 +1,0 @@
-framework module Docker {
-  umbrella header "Docker.h"
-  header "DCTar.h"
-  
-  export *
-  module * { export * }
-}
