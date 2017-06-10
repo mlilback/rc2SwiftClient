@@ -22,7 +22,7 @@ class MockDockerAPI: DockerAPI {
 		fatalError("not implemented")
 	}
 
-	func upload(url source: URL, path: String, containerName: String, overwrite: Bool = false) -> SignalProducer<(), DockerError>
+	func upload(url source: URL, path: String, filename: String, containerName: String) -> SignalProducer<(), DockerError>
 	{
 		fatalError("not implemented")
 	}

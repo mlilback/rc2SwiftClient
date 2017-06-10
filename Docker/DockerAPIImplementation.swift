@@ -122,32 +122,11 @@ public final class DockerAPIImplementation: DockerAPI {
 	}
 	
 	// documentation in DockerAPI protocol
-	public func upload(url source: URL, path: String, containerName: String, overwrite: Bool = false) -> SignalProducer<(), DockerError>
+	public func upload(url source: URL, path: String, filename: String, containerName: String) -> SignalProducer<(), DockerError>
 	{
-		precondition(source.isFileURL && source.fileExists())
-		let tarballUrl = fileManager.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-		return SignalProducer<Data, DockerError> { observer, _ in
-			// tar source
-			do {
-				try DCTar.compressFile(atPath: source.path, toPath: tarballUrl.path)
-			} catch {
-				observer.send(error: DockerError.cocoaError(error as NSError))
-				return
-			}
-			// build request
-			let url = self.baseUrl.appendingPathComponent("/containers/\(containerName)/archive")
-			guard var urlcomp = URLComponents(url: url, resolvingAgainstBaseURL: true) else { fatalError("failed to prepare url") }
-			urlcomp.queryItems = [URLQueryItem(name: "noOverwriteDirNonDir", value: overwrite ? "false" : "true"), URLQueryItem(name: "path", value: path)]
-			guard let builtUrl = urlcomp.url else { fatalError("failed to create upload url") }
-			var req = URLRequest(url: builtUrl)
-			req.setValue("application/x-tar", forHTTPHeaderField: "Content-Type")
-			// make the request
-			self.make(request: req, observer: observer)
-		}
-		.map({ _ in return () })
-		.optionalLog("upload \(source.absoluteString)")
-		.on(terminated: { try? self.fileManager.removeItem(at: tarballUrl) }) //delete tmp file
-		.observe(on: scheduler)
+		return tarballFile(source: source, filename: filename)
+			.map { ($0, path, containerName, true) }
+			.flatMap(.concat, transform: self.tarredUpload)
 	}
 	
 	// MARK: - image operations
@@ -468,7 +447,11 @@ extension DockerAPIImplementation {
 	{
 		guard let rsp = response as? HTTPURLResponse, error == nil else {
 			os_log("api remote error: %{public}@", log: .docker, type: .default, error! as NSError)
-			observer.send(error: DockerError.networkError(error as NSError?))
+			if let dockerError = error as? DockerError {
+				observer.send(error: dockerError)
+			} else {
+				observer.send(error: DockerError.networkError(error as NSError?))
+			}
 			return
 		}
 		os_log("api status: %d", log: .docker, type: .debug, rsp.statusCode)
@@ -573,6 +556,100 @@ extension DockerAPIImplementation {
 			observer.send(value: rawData)
 			observer.sendCompleted()
 		}).resume()
+	}
+
+	/// tar a file
+	///
+	/// - Parameters:
+	///   - source: file to tar
+	///   - filename: name to encoded in tar file
+	/// - Returns: signal producer to return tarred file URL
+	func tarballFile(source: URL, filename: String = "data.sql") -> SignalProducer<URL, DockerError>
+	{
+		precondition(source.isFileURL && source.fileExists())
+		let tarfilename = "data.tar"
+		let fm = fileManager //so no ref to self in closure
+		return SignalProducer<URL, DockerError> { observer, _ in
+			// create a working directory
+			let workingDir = fm.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+			print("working with \(workingDir.path)")
+			let tmpFile = workingDir.appendingPathComponent(filename)
+			do {
+				precondition(!workingDir.directoryExists())
+				try fm.createDirectory(at: workingDir, withIntermediateDirectories: true, attributes: nil)
+				// try linking file (faster)
+				if ((try? fm.linkItem(at: source, to: tmpFile)) != nil) {
+					//failed to link, copy it
+					try fm.copyItem(at: source, to: tmpFile)
+				}
+				//tar the file
+				let tar = Process()
+				tar.currentDirectoryPath = workingDir.path
+				tar.arguments = ["cf", tarfilename, filename]
+				tar.launchPath = "/usr/bin/tar"
+				tar.terminationHandler = { process in
+					guard process.terminationStatus == 0 else {
+						observer.send(error: DockerError.internalError("failed to tar src file"))
+						os_log("tar creation: %d", log: .app, type: .default, process.terminationReason.rawValue)
+						return
+					}
+					observer.send(value: workingDir.appendingPathComponent(tarfilename))
+					observer.sendCompleted()
+				}
+				tar.launch()
+			} catch {
+				observer.send(error: .cocoaError(error as NSError))
+			}
+		}
+	}
+	
+	/// uploads a tarred file to the specified container
+	///
+	/// - Parameters:
+	///   - file: file in tar format to upload
+	///   - path: path to extract file into
+	///   - containerName: container to upload to
+	///   - removeFile: true if the file should be deleted on completion. defaults to true.
+	/// - Returns: signal producer without a return value
+	func tarredUpload(file: URL, path: String, containerName: String, removeFile: Bool = true) -> SignalProducer<(), DockerError>
+	{
+		os_log("uploading %{public}@", log: .docker, type: .info, file.path)
+		var producer = SignalProducer<(), DockerError> { observer, _ in
+			// build request
+			let url = self.baseUrl.appendingPathComponent("/containers/\(containerName)/archive")
+			guard var urlcomp = URLComponents(url: url, resolvingAgainstBaseURL: true) else { fatalError("failed to prepare url") }
+			urlcomp.queryItems = [/*URLQueryItem(name: "noOverwriteDirNonDir", value: overwrite ? "true" : "false"), */ URLQueryItem(name: "path", value: path)]
+			guard let builtUrl = urlcomp.url else { fatalError("failed to create upload url") }
+			var req = URLRequest(url: builtUrl)
+			req.httpMethod = "PUT"
+			req.setValue("*/*", forHTTPHeaderField: "Accept")
+			req.setValue("application/x-tar", forHTTPHeaderField: "Content-Type")
+			req.httpBody = try? Data(contentsOf: file)
+			// make the request
+			var connection: LocalDockerConnection? = nil
+			connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: req)
+			{ [weak connection] (message) in
+				switch message {
+				case .headers(let headers):
+					print("rsp=\(headers.statusCode)")
+					break
+				case .data(let data):
+					print("got data len \(data.count)")
+				case .complete:
+					observer.sendCompleted()
+					connection?.closeConnection()
+				case .error(let err):
+					observer.send(error: err)
+					connection?.closeConnection()
+				}
+			}
+			try? connection?.openConnection()
+			connection?.writeRequest()
+		}
+		if removeFile {
+			producer = producer.on(terminated: { try? self.fileManager.removeItem(at: file) })
+		}
+		return producer
 	}
 }
 

@@ -217,7 +217,7 @@ class DefaultDockerAPISpec: BaseDockerSpec {
 						return req.url?.path == "/containers/rc2_dbserver/archive"
 					}, builder: http(200))
 					let srcFile = Bundle(for: type(of: self)).url(forResource: "containers", withExtension: "json")!
-					let producer = api.upload(url: srcFile, path: "/tmp/c.json", containerName: "rc2_dbserver")
+					let producer = api.upload(url: srcFile, path: "/rc2", filename: "foo.txt", containerName: "rc2_dbserver")
 					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
 					expect(result.error).to(beNil())
 				}
@@ -227,15 +227,18 @@ class DefaultDockerAPISpec: BaseDockerSpec {
 						return req.url?.path == "/containers/rc2_dbserver/archive"
 					}, builder: http(400))
 					let srcFile = Bundle(for: type(of: self)).url(forResource: "containers", withExtension: "json")!
-					let producer = api.upload(url: srcFile, path: "/tmp/c.json", containerName: "rc2_dbserver")
+					let producer = api.upload(url: srcFile, path: "/xde", filename: "bar.txt", containerName: "rc2_dbserver")
 					let result = self.makeNoValueRequest(producer: producer, queue: globalQueue)
-					expect(result.error).toNot(beNil())
-					guard case let .httpError(statusCode, _, _) = result.error!, statusCode == 400 else {
-						XCTFail("incorrect error code")
+					guard let err = result.error else {
+						XCTFail()
+						return
+					}
+					guard case let .httpError(statusCode, _, _) = err, statusCode == 404 else {
+						XCTFail("incorrect error code \(err)")
 						return
 					}
 				}
-}
+			}
 			
 			context("test images") {
 				it("load images from big list") {

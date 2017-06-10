@@ -71,11 +71,11 @@ public protocol DockerAPI: class {
 	///
 	/// - Parameters:
 	///   - source: the source url or directory to upload
-	///   - path: the path to extract contents to
+	///   - path: directory to extract contents into
+	///   - filename: the destination file name (possibly source.lastPathComponent)
 	///   - containerName: name of container to upload to
-	///   - overwrite: true if an existing directory can be replaced by a file
 	/// - Returns: a signal producer to perform upload operation
-	func upload(url source: URL, path: String, containerName: String, overwrite: Bool) -> SignalProducer<(), DockerError>
+	func upload(url source: URL, path: String, filename: String, containerName: String) -> SignalProducer<(), DockerError>
 
 	/// Loads images from docker daemon
 	///

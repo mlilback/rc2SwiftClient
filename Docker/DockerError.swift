@@ -43,11 +43,16 @@ public enum DockerError: LocalizedError {
 	case internalError(String)
 	case unsupportedEvent
 
-	var localizedDescription: String {
+	public var errorDescription: String? { return localizedDescription }
+	
+	public var localizedDescription: String {
 		// swiftlint:disable:next cyclomatic_complexity //how else do we implement this?
 		switch self {
 			case .dockerNotInstalled: return NSLocalizedString("DockerError_DockerNotInstalled", bundle: myBundle, comment: "")
 			case .unsupportedDockerVersion: return NSLocalizedString("DockerError_UnsupportedVersion", bundle: myBundle, comment: "")
+			case .httpError(let statusCode, let desc, _):
+				guard let desc = desc else { return "http error \(statusCode)" }
+				return "\(statusCode) (\(desc))"
 			default: return ""
 		}
 	}
