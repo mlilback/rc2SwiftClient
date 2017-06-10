@@ -44,6 +44,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 	fileprivate var request: URLRequest!
 	fileprivate let handler: DockerMessageHandler
 	fileprivate var fileDescriptor: Int32 = 0
+	fileprivate var channel: DispatchIO?
 	fileprivate let hijack: Bool
 	
 	required init(request: URLRequest, hijack: Bool = false, handler: @escaping DockerMessageHandler)
@@ -56,19 +57,35 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 	/// actually writes the request to the docker connection
 	@discardableResult
 	func writeRequest() -> Bool {
-		precondition(fileDescriptor > 0) // must have called openConnection()
-		guard let requestData = request.CFHTTPMessage.serialized else {
+		precondition(channel != nil) // must have called openConnection()
+		var bodyData: Data?
+		if let body = request.httpBody {
+			bodyData = body
+			request.httpBody = nil
+		} else if let bstream = request.httpBodyStream {
+			bodyData = Data(bstream)
+			request.httpBodyStream = nil
+		}
+		guard var requestData = request.CFHTTPMessage.serialized else {
 			handler(.error(.internalError("failed to serialize docker request")))
 			return false
 		}
-		let fh = FileHandle(fileDescriptor: fileDescriptor)
-		fh.write(requestData)
-		if let body = request.httpBody {
-			fh.write(body)
-		} else if let bstream = request.httpBodyStream {
-			fh.write(Data(bstream))
+		if let body = bodyData {
+			requestData.append(body)
 		}
-		responseHandler?.startHandler()
+		let outData = requestData.withUnsafeBytes { (ptr) -> DispatchData in
+			DispatchData(bytes: UnsafeBufferPointer(start: ptr, count: requestData.count))
+		}
+		channel?.write(offset: 0, data: outData, queue: DispatchQueue.global())
+		{ (done, _, errCode) in
+			guard errCode == 0 else {
+				self.handler(.error(.networkError(NSError(domain: NSPOSIXErrorDomain, code: Int(errCode), userInfo: nil))))
+				return
+			}
+			if done {
+				self.responseHandler?.startHandler()
+			}
+		}
 		return true
 	}
 	
@@ -102,7 +119,17 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 			throw DockerError.networkError(rootError)
 		}
 		os_log("connection open to docker %{public}@", log: .docker, type: .debug, request.url!.absoluteString)
-		responseHandler = HandlerClass(fileDescriptor: fileDescriptor, queue: DispatchQueue.global(), handler: handler)
+		channel = DispatchIO(type: .stream, fileDescriptor: fileDescriptor, queue: DispatchQueue.global())
+		{ [weak self] (errCode) in
+			guard let me = self else { return }
+			guard errCode == 0 else {
+				let nserr = NSError(domain: NSPOSIXErrorDomain, code: Int(errCode), userInfo: nil)
+				me.handler(.error(.networkError(nserr)))
+				close(me.fileDescriptor)
+				return
+			}
+		}
+		responseHandler = HandlerClass(channel: channel!, queue: DispatchQueue.global(), handler: handler)
 	}
 	
 	/// closes the connection to the docker daemon. handler will no longer receive any messages

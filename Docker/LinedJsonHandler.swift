@@ -22,7 +22,7 @@ typealias LinedJsonCallback = (LinedJsonMessage) -> Void
 class LinedJsonHandler: HijackedResponseHandler {
 	private var jsonCallback: LinedJsonCallback
 	
-	required init(fileDescriptor: Int32, queue: DispatchQueue, jsonHandler: @escaping LinedJsonCallback) {
+	required init(channel: DispatchIO, queue: DispatchQueue, jsonHandler: @escaping LinedJsonCallback) {
 		let superHandler: DockerMessageHandler = { msg in
 			switch msg {
 			case .complete:
@@ -40,11 +40,11 @@ class LinedJsonHandler: HijackedResponseHandler {
 			}
 		}
 		jsonCallback = jsonHandler
-		super.init(fileDescriptor: fileDescriptor, queue: queue, handler: superHandler)
+		super.init(channel: channel, queue: queue, handler: superHandler)
 	}
 	
-	required init(fileDescriptor: Int32, queue: DispatchQueue, handler: @escaping DockerMessageHandler) {
-		fatalError("init(fileDescriptor:queue:handler:) has not been implemented")
+	required init(channel: DispatchIO, queue: DispatchQueue, handler: @escaping DockerMessageHandler) {
+		fatalError("init(channel:queue:handler:) has not been implemented")
 	}
 	
 	//use class func since can't call self in closure defined before calling super.init

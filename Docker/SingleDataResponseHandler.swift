@@ -12,16 +12,15 @@ class SingleDataResponseHandler: DockerResponseHandler {
 	let crnl = Data(bytes: [13, 10])
 
 	let callback: DockerMessageHandler
-	let fileDescriptor: Int32
-	private var readChannel: DispatchIO?
+	private let readChannel: DispatchIO
 	private var dataBuffer = Data()
 	private let myQueue: DispatchQueue
 	var headers: HttpHeaders?
 	private var isRawStream = false
 	
-	required init(fileDescriptor: Int32, queue: DispatchQueue, handler: @escaping DockerMessageHandler)
+	required init(channel: DispatchIO, queue: DispatchQueue, handler: @escaping DockerMessageHandler)
 	{
-		self.fileDescriptor = fileDescriptor
+		self.readChannel = channel
 		callback = handler
 		myQueue = queue
 	}
@@ -38,25 +37,15 @@ class SingleDataResponseHandler: DockerResponseHandler {
 	///
 	/// - Parameter queue: the queue to receive dispatch callbacks on
 	func startHandler() {
-		let fd = fileDescriptor
-		readChannel = DispatchIO(type: .stream, fileDescriptor: fileDescriptor, queue: myQueue) { [weak self] (errCode) in
-			guard errCode == 0 else {
-				let nserr = NSError(domain: NSPOSIXErrorDomain, code: Int(errCode), userInfo: nil)
-				self?.sendMessage(.error(DockerError.cocoaError(nserr)))
-				return
-			}
-			close(fd)
-		}
-		readChannel!.setLimit(lowWater: 1)
-		readChannel!.setLimit(highWater: maxReadDataSize)
+		readChannel.setLimit(lowWater: 1)
+		readChannel.setLimit(highWater: maxReadDataSize)
 
 		// schedule first read
-		readChannel!.read(offset: 0, length: maxReadDataSize, queue: myQueue, ioHandler: readHandler)
+		readChannel.read(offset: 0, length: maxReadDataSize, queue: myQueue, ioHandler: readHandler)
 	}
 	
 	func closeHandler() {
-		readChannel?.close(flags: .stop)
-		readChannel = nil
+		readChannel.close(flags: .stop)
 	}
 	
 	private func readHandler(_ done: Bool, _ data: DispatchData?, _ error: Int32) {
@@ -108,7 +97,6 @@ class SingleDataResponseHandler: DockerResponseHandler {
 }
 
 	private func handleNonChunkedData() {
-		guard let channel = readChannel else { return } // must have been closed while waiting on callback
 		guard !isRawStream else { return } //we don't do anything with the data
 		if let expectedLen = headers?.contentLength, dataBuffer.count < expectedLen
 		{
@@ -117,7 +105,7 @@ class SingleDataResponseHandler: DockerResponseHandler {
 		}
 		defer {
 			sendMessage(.complete)
-			channel.close()
+			readChannel.close()
 		}
 		guard let headers = headers else { fatalError() }
 		guard let dataLen = headers.contentLength, dataBuffer.count >= dataLen else {

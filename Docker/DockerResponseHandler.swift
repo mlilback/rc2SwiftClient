@@ -9,8 +9,7 @@ import Freddy
 import os
 
 protocol DockerResponseHandler: class {
-	init(fileDescriptor: Int32, queue: DispatchQueue, handler: @escaping DockerMessageHandler)
-	var fileDescriptor: Int32 { get }
+	init(channel: DispatchIO, queue: DispatchQueue, handler: @escaping DockerMessageHandler)
 	var callback: DockerMessageHandler { get }
 	var headers: HttpHeaders? { get set }
 	func startHandler()

@@ -12,15 +12,14 @@ class HijackedResponseHandler: DockerResponseHandler {
 	let crnl = Data(bytes: [13, 10])
 	
 	let callback: DockerMessageHandler
-	let fileDescriptor: Int32
-	private var readChannel: DispatchIO?
+	private let readChannel: DispatchIO
 	private var dataBuffer = Data()
 	private let myQueue: DispatchQueue
 	var headers: HttpHeaders?
 	
-	required init(fileDescriptor: Int32, queue: DispatchQueue, handler: @escaping DockerMessageHandler)
+	required init(channel: DispatchIO, queue: DispatchQueue, handler: @escaping DockerMessageHandler)
 	{
-		self.fileDescriptor = fileDescriptor
+		readChannel = channel
 		callback = handler
 		myQueue = queue
 	}
@@ -34,25 +33,15 @@ class HijackedResponseHandler: DockerResponseHandler {
 	///
 	/// - Parameter queue: the queue to receive dispatch callbacks on
 	func startHandler() {
-		let fd = fileDescriptor
-		readChannel = DispatchIO(type: .stream, fileDescriptor: fileDescriptor, queue: myQueue) { [weak self] (errCode) in
-			guard errCode == 0 else {
-				let nserr = NSError(domain: NSPOSIXErrorDomain, code: Int(errCode), userInfo: nil)
-				self?.sendMessage(.error(DockerError.cocoaError(nserr)))
-				return
-			}
-			close(fd)
-		}
-		readChannel!.setLimit(lowWater: 1)
-		readChannel!.setLimit(highWater: maxReadDataSize)
+		readChannel.setLimit(lowWater: 1)
+		readChannel.setLimit(highWater: maxReadDataSize)
 		
 		// schedule first read
-		readChannel!.read(offset: 0, length: maxReadDataSize, queue: myQueue, ioHandler: readHandler)
+		readChannel.read(offset: 0, length: maxReadDataSize, queue: myQueue, ioHandler: readHandler)
 	}
 	
 	func closeHandler() {
-		readChannel?.close(flags: .stop)
-		readChannel = nil
+		readChannel.close(flags: .stop)
 	}
 	
 	private func readHandler(_ done: Bool, _ data: DispatchData?, _ error: Int32) {
