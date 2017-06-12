@@ -52,7 +52,8 @@ let volumeNames = ["rc2_dbdata", "rc2_userlib"]
 /// manages communicating with the local docker engine
 public final class DockerManager: NSObject {
 	// MARK: - Properties
-	let waitingOnContainersTimeout: TimeInterval = 8.0
+	/// how long to wait for containers to be setup/started
+	let waitingOnContainersTimeout: TimeInterval = 90.0
 	/// the containers managed.
 	// these should always be referred to as self.containers since many parameters have the name containers
 	public fileprivate(set) var containers: [DockerContainer]
