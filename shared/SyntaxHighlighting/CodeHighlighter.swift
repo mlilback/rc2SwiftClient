@@ -33,7 +33,7 @@ open class CodeHighlighter: NSObject {
 		guard range.length > 0 else { return }
 		content.removeAttribute(NSForegroundColorAttributeName, range: range)
 		addAttributes(content, range:range)
-		let sourceStr = content.string.substring(with: range.toStringRange(content.string)!)
+		let sourceStr = content.mutableString.substring(with: range)
 
 		let tokenizer = PKTokenizer(string: sourceStr)!
 		let slash = Int32("/".unicodeScalars.first!.value)

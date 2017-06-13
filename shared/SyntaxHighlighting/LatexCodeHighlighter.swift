@@ -21,7 +21,7 @@ open class LatexCodeHighlighter: CodeHighlighter {
 	
 	override func addAttributes(_ content: NSMutableAttributedString, range: NSRange) {
 		let color = theme.value.color(for: .comment)
-		let sourceStr = content.string.substring(with: range.toStringRange(content.string)!)
+		let sourceStr = content.mutableString.substring(with: range)
 		commentRegex.enumerateMatches(in: sourceStr, options: [], range: NSRange(location: 0, length: sourceStr.characters.count))
 		{ (results, _, _) -> Void in
 			content.addAttribute(NSForegroundColorAttributeName, value: color, range: (results?.rangeAt(1))!)
