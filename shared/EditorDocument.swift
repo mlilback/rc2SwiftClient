@@ -40,6 +40,14 @@ public class EditorDocument: NSObject {
 		self.fileUrl = fileCache.cachedUrl(file: file)
 		self.undoManager = UndoManager()
 		super.init()
+		if fileUrl.fileExists() {
+			do {
+				savedContents = String(data: try Data(contentsOf: fileUrl), encoding: .utf8)
+				isLoaded = true
+			} catch {
+				os_log("error caching new file %{public}@", log:.session, error as NSError)
+			}
+		}
 	}
 
 	public func loadContents() -> SignalProducer<String, Rc2Error> {
