@@ -4,8 +4,8 @@
 			"Image": "rc2server/dbserver",
 			"Hostname": "dbserver",
 			"Labels": { "rc2.live": "" },
-			"HostConfig": { "Binds": ["rc2_dbdata:/rc2"] },
 			"HostConfig": {
+				"Binds": ["rc2_dbdata:/rc2"],
 				"NetworkMode": "rc2server",
 				"Tmpfs": { "/tmp": "rw,noexec,nosuid,size=128M" },
 				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "500k" } }

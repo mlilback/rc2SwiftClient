@@ -245,6 +245,7 @@ public final class DockerAPIImplementation: DockerAPI {
 				observer.send(error: DockerError.invalidJson(nil))
 				return
 			}
+			//swiftlint:disable:next force_try
 //			try! jsonData.write(to: URL(fileURLWithPath: "/tmp/json.\(container.type.rawValue).json"))
 			var comps = URLComponents(url: URL(string:"/containers/create", relativeTo:self.baseUrl)!, resolvingAgainstBaseURL: true)!
 			comps.queryItems = [URLQueryItem(name:"name", value:container.name)]

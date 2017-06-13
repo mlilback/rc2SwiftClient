@@ -47,6 +47,8 @@ enum ManagerState: Int, Comparable {
 }
 
 let volumeNames = ["rc2_dbdata", "rc2_userlib"]
+let dbConnectAttemptMaxAttempts = 10
+let dbConnectAttemptDelay = 3
 
 // MARK: -
 /// manages communicating with the local docker engine
@@ -365,18 +367,18 @@ public final class DockerManager: NSObject {
 			.optionalLog("waitUntilRunning")
 			.observe(on: UIScheduler())
 	}
-	
-	public func waitUntilDBRunning(attempts: Int = 3) -> SignalProducer<(), Rc2Error> {
+	public func waitUntilDBRunning(attempts: Int = dbConnectAttemptMaxAttempts) -> SignalProducer<(), Rc2Error> {
 		return SignalProducer<(), Rc2Error> { observer, _ in
-			self.checkDatabase(attempts: 3, observer: observer)
+			self.checkDatabase(attempts: attempts, observer: observer)
 		}.optionalLog("waitondb")
 	}
 	
-	private func checkDatabase(attempts: Int = 3, observer: Signal<(), Rc2Error>.Observer) {
+	private func checkDatabase(attempts: Int, observer: Signal<(), Rc2Error>.Observer) {
 		guard attempts > 0 else {
 			observer.send(error: Rc2Error(type: .docker, nested: DockerError.conflict, explanation: "database didn't start"))
 			return
 		}
+		os_log("checkdatabase attempt %{public}d", log: .docker, type: .debug, attempts)
 		let command = ["psql", "-Urc2", "-c", "select * from metadata", "rc2"]
 		let exec = api.execute(command: command, container: self.containers[.dbserver]!).optionalLog("checkdb \(attempts)")
 		var sendComplete = true
@@ -394,7 +396,7 @@ public final class DockerManager: NSObject {
 				}
 				sendComplete = false
 				//need to recursively call
-				DispatchQueue.global().async {
+				DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(dbConnectAttemptDelay)) {
 					self.checkDatabase(attempts: attempts - 1, observer: observer)
 				}
 			case .completed:

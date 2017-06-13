@@ -112,7 +112,7 @@ class HijackedResponseHandler: DockerResponseHandler {
 			os_log("failed to find a chunk header in hijacked data", log: .docker)
 			return (false, nil)
 		}
-		os_log("got hijacked chunk length %d", log: .docker, type: .debug, chunkLength)
+//		os_log("got hijacked chunk length %d", log: .docker, type: .debug, chunkLength)
 		let chunkEnd = chunkLength + sizeData.count + crnl.count
 		guard chunkEnd < dataBuffer.count else {
 			return (false, nil)
