@@ -79,7 +79,7 @@ class HelpController {
 		let versionUrl = rootHelpUrl.appendingPathComponent("rc2help.json")
 		if versionUrl.fileExists() { return }
 		let tar = Process()
-		tar.currentDirectoryPath = baseHelpUrl.path
+		tar.currentDirectoryPath = rootHelpUrl.path
 		let tarball = Bundle(for: type(of: self)).url(forResource: "rdocs", withExtension: "tgz")
 		precondition(tarball != nil && tarball!.fileExists())
 		tar.arguments = ["zxf", tarball!.path]
