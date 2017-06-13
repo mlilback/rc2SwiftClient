@@ -54,6 +54,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 
 	@IBOutlet var tableView: NSTableView!
 	@IBOutlet var addRemoveButtons: NSSegmentedControl?
+	@IBOutlet var messageView: NSView?
+	@IBOutlet var messageLabel: NSTextField?
+	@IBOutlet var messageButtons: NSStackView?
+	
 	var rowData: [FileRowData] = [FileRowData]()
 	weak var delegate: FileViewControllerDelegate?
 	lazy var importPrompter: MacFileImportSetup? = { MacFileImportSetup() }()
@@ -61,6 +65,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	private var fileChangeDisposable: Disposable?
 	private var busyDisposable: Disposable?
 	fileprivate var selectionChangeInProgress = false
+	fileprivate var formatMenu: NSMenu?
 	
 	var selectedFile: File? { didSet { fileSelectionChanged() } }
 
@@ -84,6 +89,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			NotificationCenter.default.addObserver(self, selector: .addFileMenu, name: NSNotification.Name.NSMenuDidSendAction, object: menu)
 			addRemoveButtons?.setMenu(menu, forSegment: 0)
 			addRemoveButtons?.target = self
+			formatMenu = menu
 		}
 		if tableView != nil {
 			tableView.setDraggingSourceOperationMask(.copy, forLocal: true)
@@ -101,6 +107,11 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		tableView.reloadData()
 		if selectedFile != nil {
 			fileSelectionChanged()
+		}
+		if rowData.count == 0 {
+			messageView?.isHidden = false
+		} else {
+			messageView?.isHidden = true
 		}
 	}
 	
@@ -210,6 +221,23 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	// MARK: - actions
+	@IBAction func createFirstFile(_ sender: Any?) {
+		guard let button = sender as? NSButton else { return }
+		DispatchQueue.main.async {
+			switch button.tag {
+			case 0: self.promptToImportFiles(sender)
+			case 1:
+				self.formatMenu?.popUp(positioning: nil, at: NSPoint.zero, in: self.messageButtons)
+			default: break
+			}
+			//			NSAnimationContext.runAnimationGroup({ (context) in
+			//				context.allowsImplicitAnimation = true
+			self.messageView?.animator().isHidden = true
+			//			}, completionHandler: nil)
+		}
+		//		messageView?.isHidden = true
+	}
+	
 	@IBAction func deleteFile(_ sender: AnyObject?) {
 		guard let file = selectedFile else {
 			logMessage("deleteFile should never be called without selected file")

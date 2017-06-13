@@ -76,6 +76,11 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 		outputTabController().selectedOutputTab.value = tab
 	}
 
+	func visibleSidebarTab() -> SidebarTab? {
+		guard !sidebarSplitItem().isCollapsed else { return nil }
+		return SidebarTab(rawValue: sidebarTabController().selectedTabViewItemIndex)
+	}
+	
 	@IBAction func switchOutputTab(_ sender: NSMenuItem?) {
 		guard let tab = OutputTab(rawValue: sender?.tag ?? -1) else { fatalError() }
 		outputTabController().selectedOutputTab.value = tab

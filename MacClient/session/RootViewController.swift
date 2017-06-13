@@ -35,7 +35,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	weak var editor: SessionEditorController?
 	weak var splitController: SessionSplitController?
 	weak var outputHandler: OutputHandler?
-	weak var fileHandler: FileHandler?
+	weak var fileHandler: SidebarFileController?
 	var formerFirstResponder: NSResponder? //used to restore first responder when dimmingview goes away
 	
 	deinit {
@@ -56,10 +56,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 		splitController = firstChildViewController(self)
 		outputHandler = firstChildViewController(self)
 		fileHandler = firstChildViewController(self)
-		let concreteFH = fileHandler as? SidebarFileController
-		if concreteFH != nil {
-			concreteFH!.delegate = self
-		}
+		fileHandler?.delegate = self
 	}
 	
 	override func viewDidAppear() {
@@ -73,7 +70,6 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 		(view as? RootView)?.dimmingView = dimmingView //required to block clicks to subviews
 		//we have to wait until next time through event loop to set first responder
 		self.performSelector(onMainThread: #selector(RootViewController.setupResponder), with: nil, waitUntilDone: false)
-
 	}
 	
 	func windowWillClose(_ note: Notification) {
@@ -82,7 +78,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 			sessionController = nil
 		}
 	}
-	
+
 	// swiftlint:disable:next cyclomatic_complexity
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }

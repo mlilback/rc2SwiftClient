@@ -22,3 +22,7 @@
 "SyntaxThemeProperty.equationBackground" = "equation background";
 
 "Edit File" = "Edit %@";
+
+"NoFileMessage" = "You have  no files";
+"NoFileMessageCreateAction" = "Create";
+"NoFileMessageImportAction" = "Import";
