@@ -7,11 +7,17 @@
 import Cocoa
 import ReactiveSwift
 import os
+import Docker
+import ClientCore
 
 class DockerBackupViewController: DockerManagerInjectable {
 	@IBOutlet var backupTableView: NSTableView!
 	@IBOutlet var backupButton: NSButton!
 	@IBOutlet var restoreButton: NSButton!
+	@IBOutlet private var progressStackView: NSStackView!
+	@IBOutlet private var progressView: NSProgressIndicator!
+	
+	private dynamic var isRestoring: Bool = false
 	fileprivate var backups: [DockerBackup] = []
 	var backupManager: DockerBackupManager?
 	
@@ -42,7 +48,26 @@ class DockerBackupViewController: DockerManagerInjectable {
 	}
 	
 	@IBAction func performRestore(_ sender: AnyObject?) {
-		//TODO: implement restore
+		let selRow = backupTableView.selectedRow
+		guard selRow >= 0 else { return }
+		let targetBackup = backups[selRow]
+		isRestoring = true
+		DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+		self.backupManager?.restore(backup: targetBackup).observe(on: UIScheduler()).startWithResult { result in
+			self.isRestoring = false
+			guard result.error == nil else {
+				self.presentError(result.error!, modalFor: self.view.window!, delegate: nil, didPresent: nil, contextInfo: nil)
+				return
+			}
+		}
+		}
+	}
+	
+	override func willPresentError(_ error: Error) -> Error {
+		guard let rerror = error as? Rc2Error, let derror = rerror.nestedError as? DockerError else { return error }
+		let reason = derror.localizedDescription
+		let nerror = NSError(domain: Rc2ErrorDomain, code: 0, userInfo: [NSUnderlyingErrorKey: derror, NSLocalizedDescriptionKey: "backup restore failed", NSLocalizedRecoverySuggestionErrorKey: reason, NSLocalizedFailureReasonErrorKey: reason])
+		return nerror
 	}
 	
 	func delete(_ sender: Any?) {

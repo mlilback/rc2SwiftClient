@@ -232,17 +232,17 @@
             <objects>
                 <viewController id="0ke-9v-f0c" customClass="DockerBackupViewController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="0Az-Pu-Q4G">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="336"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rEp-3k-B9e">
-                                <rect key="frame" x="20" y="61" width="410" height="219"/>
+                                <rect key="frame" x="20" y="74" width="410" height="242"/>
                                 <clipView key="contentView" id="7Zi-vc-z2N">
-                                    <rect key="frame" x="1" y="1" width="408" height="217"/>
+                                    <rect key="frame" x="1" y="1" width="408" height="240"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" viewBased="YES" id="vGd-yk-1cJ">
-                                            <rect key="frame" x="0.0" y="0.0" width="408" height="217"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="408" height="240"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -299,48 +299,112 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vxa-NZ-lGa">
-                                <rect key="frame" x="14" y="13" width="86" height="32"/>
-                                <buttonCell key="cell" type="push" title="Backup" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Xxd-Ue-hgl">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="performBackup:" target="0ke-9v-f0c" id="ZIX-HQ-qCf"/>
-                                </connections>
-                            </button>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E3r-4f-a75">
-                                <rect key="frame" x="349" y="13" width="87" height="32"/>
-                                <buttonCell key="cell" type="push" title="Restore" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="GBw-bb-BYW">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="performRestore:" target="0ke-9v-f0c" id="l0Y-Vn-RrD"/>
-                                </connections>
-                            </button>
+                            <stackView distribution="equalSpacing" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3dZ-Pv-mZg">
+                                <rect key="frame" x="20" y="20" width="410" height="46"/>
+                                <subviews>
+                                    <stackView distribution="equalSpacing" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sip-hv-YTK">
+                                        <rect key="frame" x="0.0" y="25" width="410" height="21"/>
+                                        <subviews>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vxa-NZ-lGa">
+                                                <rect key="frame" x="-6" y="-7" width="86" height="32"/>
+                                                <buttonCell key="cell" type="push" title="Backup" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Xxd-Ue-hgl">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="performBackup:" target="0ke-9v-f0c" id="ZIX-HQ-qCf"/>
+                                                </connections>
+                                            </button>
+                                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E3r-4f-a75">
+                                                <rect key="frame" x="329" y="-7" width="87" height="32"/>
+                                                <buttonCell key="cell" type="push" title="Restore" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="GBw-bb-BYW">
+                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                    <font key="font" metaFont="system"/>
+                                                </buttonCell>
+                                                <connections>
+                                                    <action selector="performRestore:" target="0ke-9v-f0c" id="l0Y-Vn-RrD"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                    </stackView>
+                                    <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cV1-3k-PlX">
+                                        <rect key="frame" x="0.0" y="0.0" width="93" height="17"/>
+                                        <subviews>
+                                            <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="Rm4-Oq-0kg">
+                                                <rect key="frame" x="0.0" y="1" width="16" height="16"/>
+                                                <connections>
+                                                    <binding destination="0ke-9v-f0c" name="animate" keyPath="isRestoring" id="Fvh-zh-nxM"/>
+                                                </connections>
+                                            </progressIndicator>
+                                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mhs-Yu-Pfa">
+                                                <rect key="frame" x="22" y="0.0" width="73" height="17"/>
+                                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Restoring…" id="i1J-vE-ZdY">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                            </textField>
+                                        </subviews>
+                                        <visibilityPriorities>
+                                            <integer value="1000"/>
+                                            <integer value="1000"/>
+                                        </visibilityPriorities>
+                                        <customSpacing>
+                                            <real value="3.4028234663852886e+38"/>
+                                            <real value="3.4028234663852886e+38"/>
+                                        </customSpacing>
+                                        <connections>
+                                            <binding destination="0ke-9v-f0c" name="hidden" keyPath="isRestoring" id="dav-Uq-XE3">
+                                                <dictionary key="options">
+                                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                                </dictionary>
+                                            </binding>
+                                        </connections>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="sip-hv-YTK" secondAttribute="trailing" id="2re-B9-w9s"/>
+                                    <constraint firstItem="sip-hv-YTK" firstAttribute="leading" secondItem="3dZ-Pv-mZg" secondAttribute="leading" id="GWd-nD-iEw"/>
+                                </constraints>
+                                <visibilityPriorities>
+                                    <integer value="1000"/>
+                                    <integer value="1000"/>
+                                </visibilityPriorities>
+                                <customSpacing>
+                                    <real value="3.4028234663852886e+38"/>
+                                    <real value="3.4028234663852886e+38"/>
+                                </customSpacing>
+                            </stackView>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="rEp-3k-B9e" secondAttribute="trailing" constant="20" symbolic="YES" id="98L-XV-bSJ"/>
-                            <constraint firstAttribute="bottom" secondItem="Vxa-NZ-lGa" secondAttribute="bottom" constant="20" symbolic="YES" id="MY4-rz-XqJ"/>
-                            <constraint firstItem="E3r-4f-a75" firstAttribute="top" secondItem="rEp-3k-B9e" secondAttribute="bottom" constant="20" symbolic="YES" id="Qsm-6z-0US"/>
                             <constraint firstItem="rEp-3k-B9e" firstAttribute="leading" secondItem="0Az-Pu-Q4G" secondAttribute="leading" constant="20" symbolic="YES" id="Xlg-td-cVe"/>
-                            <constraint firstAttribute="trailing" secondItem="E3r-4f-a75" secondAttribute="trailing" constant="20" symbolic="YES" id="coZ-vK-CIy"/>
-                            <constraint firstItem="Vxa-NZ-lGa" firstAttribute="top" secondItem="rEp-3k-B9e" secondAttribute="bottom" constant="20" symbolic="YES" id="dgI-QQ-Wjm"/>
-                            <constraint firstItem="Vxa-NZ-lGa" firstAttribute="leading" secondItem="0Az-Pu-Q4G" secondAttribute="leading" constant="20" symbolic="YES" id="ilf-2Z-0JI"/>
+                            <constraint firstItem="3dZ-Pv-mZg" firstAttribute="top" secondItem="rEp-3k-B9e" secondAttribute="bottom" constant="8" symbolic="YES" id="dT1-Xh-Rsj"/>
+                            <constraint firstAttribute="trailing" secondItem="3dZ-Pv-mZg" secondAttribute="trailing" constant="20" symbolic="YES" id="gp5-UO-9gU"/>
+                            <constraint firstAttribute="bottom" secondItem="3dZ-Pv-mZg" secondAttribute="bottom" constant="20" symbolic="YES" id="jAG-kY-GB0"/>
+                            <constraint firstItem="3dZ-Pv-mZg" firstAttribute="leading" secondItem="0Az-Pu-Q4G" secondAttribute="leading" constant="20" symbolic="YES" id="lRl-2o-oNM"/>
                             <constraint firstItem="rEp-3k-B9e" firstAttribute="top" secondItem="0Az-Pu-Q4G" secondAttribute="top" constant="20" symbolic="YES" id="tB8-aH-fMv"/>
-                            <constraint firstAttribute="bottom" secondItem="E3r-4f-a75" secondAttribute="bottom" constant="20" symbolic="YES" id="tQd-7i-ZZq"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="backupButton" destination="Vxa-NZ-lGa" id="nJD-Iv-LMG"/>
                         <outlet property="backupTableView" destination="vGd-yk-1cJ" id="zNx-eY-xca"/>
+                        <outlet property="progressStackView" destination="cV1-3k-PlX" id="VyM-Dm-r1X"/>
+                        <outlet property="progressView" destination="Rm4-Oq-0kg" id="cTE-6K-sPd"/>
                         <outlet property="restoreButton" destination="E3r-4f-a75" id="uyd-QM-B9R"/>
                     </connections>
                 </viewController>
                 <customObject id="mI1-eg-bXO" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="107" y="501"/>
+            <point key="canvasLocation" x="107" y="519"/>
         </scene>
         <!--Docker Container Controller-->
         <scene sceneID="8pc-ej-3A4">
