@@ -42,9 +42,9 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 		guard item.action == #selector(adjustSearchOption(_:)) else { return super.validateMenuItem(item) }
 		switch item.tag {
 		case 1:
-			item.state = fullContentSearch ? NSOffState : NSOnState
+			item.state = fullContentSearch ? .offState : .onState
 		case 2:
-			item.state = fullContentSearch ? NSOnState : NSOffState
+			item.state = fullContentSearch ? .onState : .offState
 		default:
 			break
 		}
@@ -111,7 +111,7 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 	}
 	
 	func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
-		let cell = outline?.make(withIdentifier: "string", owner: self) as? NSTableCellView
+		let cell = outline?.makeView(withIdentifier: NSUserInterfaceItemIdentifier("string"), owner: self) as? NSTableCellView
 		cell?.textField?.stringValue = (item as! TopicWrapper).topic.name // swiftlint:disable:this force_cast
 		return cell
 	}

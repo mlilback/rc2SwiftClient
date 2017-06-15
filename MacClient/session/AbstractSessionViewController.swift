@@ -56,10 +56,10 @@ class AbstractSessionViewController: NSViewController {
 			alert.buttons[1].keyEquivalent = "\r"
 		}
 		alert.beginSheetModal(for: self.view.window!, completionHandler: { [weak alert] response in
-			if let key = suppressionKey, alert?.suppressionButton?.state ?? NSOffState == NSOnState {
+			if let key = suppressionKey, alert?.suppressionButton?.state ?? .offState == .onState {
 				UserDefaults.standard[key] = true
 			}
-			handler(response == NSAlertFirstButtonReturn)
+			handler(response == .alertFirstButtonReturn)
 		})
 	}
 }

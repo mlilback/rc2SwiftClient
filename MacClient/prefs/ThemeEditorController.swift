@@ -42,8 +42,8 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 	private var ignoreSelectionChange: Bool = false
 
 	/// factory function since swift won't let us override init() and call another init method
-	static func createInstance<TType: Theme>(userUrl: URL, builtinUrl: URL) -> ThemeEditorController<TType>? {
-		let controller = ThemeEditorController<TType>(nibName: "ThemeEditorController", bundle: nil)!
+	static func createInstance<TType>(userUrl: URL, builtinUrl: URL) -> ThemeEditorController<TType>? {
+		let controller = ThemeEditorController<TType>(nibName: NSNib.Name(rawValue: "ThemeEditorController"), bundle: nil)
 		controller.wrapper = ThemeWrapper<TType>()
 		controller.userThemeUrl = userUrl
 		controller.builtinThemeUrl = builtinUrl
@@ -119,17 +119,17 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 		if tableView == themeTable {
 			guard entries[row].isSectionLabel else {
 				// swiftlint:disable:next force_cast
-				let view = tableView.make(withIdentifier: "themeNameView", owner: nil) as! NSTableCellView
+				let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("themeNameView"), owner: nil) as! NSTableCellView
 				view.textField?.stringValue = entries[row].title
 				return view
 			}
 			// swiftlint:disable:next force_cast
-			let view = tableView.make(withIdentifier: "themeGroupView", owner: nil) as! NSTableCellView
+			let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("themeGroupView"), owner: nil) as! NSTableCellView
 			view.textField?.stringValue = entries[row].title
 			return view
 		}
 		// swiftlint:disable:next force_cast
-		let view = tableView.make(withIdentifier: "themeItem", owner: nil) as! NameAndColorCellView
+		let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("themeItem"), owner: nil) as! NameAndColorCellView
 		let prop = T.Property.allProperties[row]
 		view.textField?.stringValue = prop.localizedDescription
 		view.colorWell?.color = selectedTheme!.color(for: prop)

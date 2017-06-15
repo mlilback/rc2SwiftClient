@@ -523,7 +523,7 @@ private extension Session {
 	}
 	
 	func setupWebSocketHandlers() {
-		wsSource.onConnect = { [unowned self] in
+		wsSource.onConnect = { [unowned self] (Void) in
 			DispatchQueue.global().async {
 				self.websocketOpened()
 			}

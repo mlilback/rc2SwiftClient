@@ -24,8 +24,8 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	@IBOutlet var historyButton: NSSegmentedControl?
 	var outputFont: NSFont = NSFont(name: "Menlo", size: 14)!
 	let cmdHistory: CommandHistory
-	dynamic var consoleInputText = "" { didSet { canExecute = consoleInputText.characters.count > 0 } }
-	dynamic var canExecute = false
+	@objc dynamic var consoleInputText = "" { didSet { canExecute = consoleInputText.characters.count > 0 } }
+	@objc dynamic var canExecute = false
 	var viewFileOrImage: ((_ fileWrapper: FileWrapper) -> Void)?
 	var currentFontDescriptor: NSFontDescriptor {
 		didSet {
@@ -77,7 +77,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	func themeChanged() {
 		let theme = ThemeManager.shared.activeOutputTheme.value
 		let fullRange = resultsView!.textStorage!.string.fullNSRange
-		let fontAttrs = [NSFontAttributeName: outputFont, NSForegroundColorAttributeName: theme.color(for: .text)] as [String: Any]
+		let fontAttrs: [NSAttributedStringKey: Any] = [.font: outputFont, .foregroundColor: theme.color(for: .text)]
 		resultsView?.textStorage?.addAttributes(fontAttrs, range: fullRange)
 		theme.update(attributedString: resultsView!.textStorage!)
 		resultsView?.backgroundColor = theme.color(for: .background)
@@ -121,7 +121,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	func append(responseString: ResponseString) {
 		// swiftlint:disable:next force_cast
 		let mutStr = responseString.string.mutableCopy() as! NSMutableAttributedString
-		mutStr.addAttributes([NSFontAttributeName: outputFont], range: NSRange(location: 0, length: mutStr.length))
+		mutStr.addAttributes([.font: outputFont], range: NSRange(location: 0, length: mutStr.length))
 		resultsView!.textStorage?.append(mutStr)
 		resultsView!.scrollToEndOfDocument(nil)
 	}
@@ -130,7 +130,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		var dict = [String: JSON]()
 		dict[SessionStateKey.History.rawValue] = cmdHistory.commands.toJSON()
 		let fullRange = resultsView!.textStorage!.string.fullNSRange
-		if let rtfd = resultsView?.textStorage?.rtfd(from: fullRange, documentAttributes: [NSDocumentTypeDocumentAttribute: NSRTFDTextDocumentType])
+		if let rtfd = resultsView?.textStorage?.rtfd(from: fullRange, documentAttributes: [NSAttributedString.DocumentAttributeKey.documentType: NSAttributedString.DocumentType.rtfd])
 		{
 			_ = try? rtfd.write(to: URL(fileURLWithPath: "/tmp/lastSession.rtfd"))
 			dict[SessionStateKey.Results.rawValue] = .string(rtfd.base64EncodedString())
@@ -152,7 +152,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 			applyCustomAttributes(json: attrs)
 			themeChanged()
 		}
-		resultsView!.textStorage?.enumerateAttribute(NSAttachmentAttributeName, in: ts.string.fullNSRange, options: [], using:
+		resultsView!.textStorage?.enumerateAttribute(.attachment, in: ts.string.fullNSRange, options: [], using:
 		{ (value, range, _) -> Void in
 			guard let attach = value as? NSTextAttachment else { return }
 			let fw = attach.fileWrapper
@@ -160,9 +160,9 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 			if fname.hasPrefix("img") {
 				let cell = NSTextAttachmentCell(imageCell: #imageLiteral(resourceName: "graph"))
 				cell.image?.size = ConsoleAttachmentImageSize
-				ts.removeAttribute(NSAttachmentAttributeName, range: range)
+				ts.removeAttribute(.attachment, range: range)
 				attach.attachmentCell = cell
-				ts.addAttribute(NSAttachmentAttributeName, value: attach, range: range)
+				ts.addAttribute(.attachment, value: attach, range: range)
 			} else {
 				attach.attachmentCell = self.attachmentCellForAttachment(attach)
 				fileIndexes.append(range.location)
@@ -246,7 +246,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 }
 
 extension ConsoleOutputController: Searchable {
-	func performFind(action: NSTextFinderAction) {
+	func performFind(action: NSTextFinder.Action) {
 		let menuItem = NSMenuItem(title: "foo", action: #selector(NSTextView.performFindPanelAction(_:)), keyEquivalent: "")
 		menuItem.tag = action.rawValue
 		resultsView?.performFindPanelAction(menuItem)

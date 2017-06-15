@@ -18,7 +18,7 @@ public enum SyntaxThemeProperty: String, ThemeProperty {
 }
 
 public final class SyntaxTheme: NSObject, InternalTheme, JSONDecodable, JSONEncodable {
-	public static let AttributeName = "rc2.SyntaxTheme"
+	public static let AttributeName = NSAttributedStringKey("rc2.SyntaxTheme")
 	
 	public var name: String
 	var colors = [SyntaxThemeProperty: PlatformColor]()

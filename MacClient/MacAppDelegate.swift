@@ -32,7 +32,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 	var sessionWindowControllers = Set<MainWindowController>()
 	var bookmarkWindowController: NSWindowController?
 	let bookmarkManager = BookmarkManager()
-	var dockerManager: DockerManager?
+	@objc dynamic var dockerManager: DockerManager?
 	fileprivate var backupManager: DockerBackupManager?
 	var startupWindowController: StartupWindowController?
 	var startupController: StartupController?
@@ -59,7 +59,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 				BITHockeyManager.shared().start()
 			}
 		#endif
-		mainStoryboard = NSStoryboard(name: "Main", bundle: nil)
+		mainStoryboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
 		precondition(mainStoryboard != nil)
 		//only init dockerManager if not running unit tests
 		if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
@@ -76,7 +76,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 		// swiftlint:disable:next force_cast (swift value types don't support dictionaries from files)
 		UserDefaults.standard.register(defaults: NSDictionary(contentsOf: cdUrl!)! as! [String : AnyObject])
 		
-		NotificationCenter.default.addObserver(self, selector: #selector(MacAppDelegate.windowWillClose), name: .NSWindowWillClose, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(MacAppDelegate.windowWillClose(_:)), name: NSWindow.willCloseNotification, object: nil)
 		
 		DispatchQueue.main.async {
 			self.beginStartup()
@@ -89,7 +89,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 	}
 
 	func applicationWillTerminate(_ aNotification: Notification) {
-		NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSWindowWillClose, object: nil)
+		NotificationCenter.default.removeObserver(self, name: NSWindow.willCloseNotification, object: nil)
 		dockerManager = nil
 	}
 
@@ -176,12 +176,12 @@ extension MacAppDelegate {
 			controller.appStatus = self.appStatus
 		}
 		
-		let sboard = NSStoryboard(name: "MainController", bundle: nil)
+		let sboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "MainController"), bundle: nil)
 		sboard.injectionContext = icontext
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window
-		let root = sboard.instantiateController(withIdentifier: "rootController") as? RootViewController
+		let root = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "rootController")) as? RootViewController
 		wc.contentViewController = root
-		wc.window?.identifier = "session"
+		wc.window?.identifier = NSUserInterfaceItemIdentifier(rawValue: "session")
 		wc.window?.restorationClass = type(of: self)
 		//we had to set the content before making visible, and have to set variables after visible
 		wc.window?.makeKeyAndOrderFront(self)
@@ -302,9 +302,9 @@ extension MacAppDelegate {
 	
 	@IBAction func showPreferencesWindow(_ sender: AnyObject?) {
 		if nil == preferencesWindowController {
-			let sboard = NSStoryboard(name: "Preferences", bundle: nil)
+			let sboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Preferences"), bundle: nil)
 			preferencesWindowController = sboard.instantiateInitialController() as? NSWindowController
-			preferencesWindowController?.window?.setFrameAutosaveName("PrefsWindow")
+			preferencesWindowController?.window?.setFrameAutosaveName(NSWindow.FrameAutosaveName(rawValue: "PrefsWindow"))
 		}
 		preferencesWindowController?.showWindow(self)
 	}
@@ -348,14 +348,14 @@ extension MacAppDelegate {
 			icontext.register(DockerBackupViewController.self) { controller in
 				controller.backupManager = self.backupManager
 			}
-			let sboard = NSStoryboard(name: "DockerControl", bundle: nil)
+			let sboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "DockerControl"), bundle: nil)
 			sboard.injectionContext = icontext
-			dockerWindowController = sboard.instantiateWindowController()
+			dockerWindowController = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("DockerControl")) as? NSWindowController
 		}
 		dockerWindowController?.window?.makeKeyAndOrderFront(self)
 	}
 	
-	func windowWillClose(_ note: Notification) {
+	@objc func windowWillClose(_ note: Notification) {
 		//if no windows will be visible, acitvate/show bookmark window
 		if let window = note.object as? NSWindow,
 			let sessionWC = window.windowController as? MainWindowController
@@ -377,9 +377,9 @@ extension MacAppDelegate {
 
 // MARK: - restoration
 extension MacAppDelegate: NSWindowRestoration {
-	class func restoreWindow(withIdentifier identifier: String, state: NSCoder, completionHandler: @escaping (NSWindow?, Error?) -> Void)
+	class func restoreWindow(withIdentifier identifier: NSUserInterfaceItemIdentifier, state: NSCoder, completionHandler: @escaping (NSWindow?, Error?) -> Void)
 	{
-		guard identifier == "session",
+		guard identifier.rawValue == "session",
 			let me = NSApp.delegate as? MacAppDelegate,
 			let bmarkData = state.decodeObject(forKey: "bookmark") as? Data,
 			let bmark = try? Bookmark(json: JSON(data: bmarkData)) else
@@ -400,7 +400,7 @@ extension MacAppDelegate {
 		precondition(dockerManager != nil)
 		
 		// load window and setupController.
-		startupWindowController = mainStoryboard.instantiateController(withIdentifier: "StartupWindowController") as? StartupWindowController
+		startupWindowController = mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "StartupWindowController")) as? StartupWindowController
 		guard let wc = startupWindowController else { fatalError("failed to load startup window controller") }
 		startupController = startupWindowController!.contentViewController as? StartupController
 		assert(startupController != nil)
@@ -475,7 +475,7 @@ extension MacAppDelegate {
 	fileprivate func showOnboarding() {
 		if nil == onboardingController {
 			// swiftlint:disable:next force_cast
-			onboardingController = (mainStoryboard.instantiateController(withIdentifier: "OnboardingWindowController") as! OnboardingWindowController)
+			onboardingController = (mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "OnboardingWindowController")) as! OnboardingWindowController)
 			onboardingController?.viewController.conInfo = connectionManager.localConnection
 			onboardingController?.viewController.openLocalWorkspace = openLocalSession
 		}
@@ -488,13 +488,13 @@ extension MacAppDelegate {
 		
 		_ = docker.initialize()
 			.flatMap(.concat, transform: performPullAndPrepareContainers)
-			.flatMap(.concat, transform: {
+			.flatMap(.concat, transform: { _ in
 				return docker.perform(operation: .start)
 			})
 			//really want to act when complete, but have to map, so we collect all values and pass on a single value
 			.collect().map({ _ in return () })
-			.flatMap(.concat, transform: { return docker.waitUntilRunning() })
-			.flatMap(.concat, transform: { return docker.waitUntilDBRunning() })
+			.flatMap(.concat, transform: { _ in return docker.waitUntilRunning() })
+			.flatMap(.concat, transform: { _ in return docker.waitUntilDBRunning() })
 			.observe(on: UIScheduler())
 			.startWithResult { [weak self] result in
 				guard result.error == nil else {
@@ -528,15 +528,18 @@ extension MacAppDelegate {
 				starting: {
 					self.startupController?.statusMesssage = "Pulling Images…"
 					self.startupController?.stage = .downloading
-			}, completed: { _ in
+			}, completed: {
 				self.startupController?.stage = .docker
 			}, value: { (pprogress) in
 				self.startupController?.pullProgress = pprogress
 			})
-			.collect() // colalesce individual PullProgress values into a single array sent when pullImages is complete
-			.mapError({ derror in return Rc2Error(type: .docker, nested: derror) })
+			.collect() // coalesce individual PullProgress values into a single array sent when pullImages is complete
+			.mapError({ (derror) -> Rc2Error in
+				let err = Rc2Error(type: .docker, nested: derror)
+				return err
+			})
 			.map( { _ in }) //map [PullProgress] to () as that is the input parameter to prepareContainers
-			.flatMap(.concat) { docker.prepareContainers() }
+			.flatMap(.concat) { _ in docker.prepareContainers() }
 	}
 }
 

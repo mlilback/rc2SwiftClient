@@ -31,7 +31,7 @@ open class CodeHighlighter: NSObject {
 	
 	func highlightText(_ content: NSMutableAttributedString, range: NSRange) {
 		guard range.length > 0 else { return }
-		content.removeAttribute(NSForegroundColorAttributeName, range: range)
+		content.removeAttribute(.foregroundColor, range: range)
 		addAttributes(content, range:range)
 		let sourceStr = content.mutableString.substring(with: range)
 
@@ -56,12 +56,12 @@ open class CodeHighlighter: NSObject {
 					tokenRange.location -= 1
 					tokenRange.length += 1
 				}
-				content.addAttribute(NSForegroundColorAttributeName, value: color, range: tokenRange)
+				content.addAttribute(.foregroundColor, value: color, range: tokenRange)
 				
 			}
 			if token.tokenType == .word && HelpController.shared.hasTopic(token.stringValue) {
 				//add tag marking as having help
-				content.addAttribute(NSLinkAttributeName, value: "help:\(token.stringValue!)", range: tokenRange)
+				content.addAttribute(.link, value: "help:\(token.stringValue!)", range: tokenRange)
 			}
 			lastToken = token
 		}

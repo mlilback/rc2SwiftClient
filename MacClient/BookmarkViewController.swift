@@ -222,7 +222,7 @@ extension BookmarkViewController: NSTableViewDelegate {
 //				}
 //		}
 		// swiftlint:disable:next force_cast
-		let cellView = tableView.make(withIdentifier: "name", owner: nil) as! NSTableCellView
+		let cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "name"), owner: nil) as! NSTableCellView
 		cellView.textField?.stringValue = str
 		return cellView
 	}
@@ -253,7 +253,6 @@ extension BookmarkViewController: NSTableViewDelegate {
 
 extension BookmarkViewController: NSTextFieldDelegate {
 	public func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
-		guard let editorString = fieldEditor.string else { return false }
-		return editorString.characters.count > 0
+		return fieldEditor.string.characters.count > 0
 	}
 }

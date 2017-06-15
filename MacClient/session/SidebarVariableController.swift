@@ -65,11 +65,11 @@ class SidebarVariableController: AbstractSessionViewController {
 	
 	@IBAction func copy(_ sender: AnyObject?) {
 		guard let row = varTableView?.selectedRow, row >= 0 else { return }
-		let pasteboard = NSPasteboard.general()
+		let pasteboard = NSPasteboard.general
 		pasteboard.clearContents()
 		// swiftlint:disable:next force_try
-		pasteboard.setString(try! rootVariables[row].toJSON().serializeString(), forType: PasteboardTypes.variable)
-		pasteboard.setString(rootVariables[row].description, forType: NSPasteboardTypeString)
+		pasteboard.setString(try! rootVariables[row].toJSON().serializeString(), forType: .variable)
+		pasteboard.setString(rootVariables[row].description, forType: .string)
 	}
 	
 	@IBAction func clearWorkspace(_ sender: Any?) {
@@ -149,10 +149,10 @@ extension SidebarVariableController: NSTableViewDataSource {
 	{
 		guard let row = rowIndexes.first else { return false }
 		pboard.clearContents()
-		pboard.declareTypes([PasteboardTypes.variable, NSPasteboardTypeString], owner: nil)
+		pboard.declareTypes([.variable, .string], owner: nil)
 		// swiftlint:disable:next force_try
-		pboard.setString(try! rootVariables[row].toJSON().serializeString(), forType: PasteboardTypes.variable)
-		pboard.setString(rootVariables[row].description, forType: NSPasteboardTypeString)
+		pboard.setString(try! rootVariables[row].toJSON().serializeString(), forType: .variable)
+		pboard.setString(rootVariables[row].description, forType: .string)
 		return true
 	}
 }
@@ -161,10 +161,10 @@ extension SidebarVariableController: NSTableViewDataSource {
 extension SidebarVariableController: NSTableViewDelegate {
 	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView?
 	{
-		let isValue = tableColumn!.identifier == "value"
+		let isValue = tableColumn!.identifier.rawValue == "value"
 		let cellIdent = isValue ? "varValueView" : "varNameView"
 		// swiftlint:disable:next force_cast
-		let view: NSTableCellView = tableView.make(withIdentifier: cellIdent, owner: self) as! NSTableCellView
+		let view: NSTableCellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: cellIdent), owner: self) as! NSTableCellView
 		let variable = rootVariables[row]
 		view.textField?.stringValue = isValue ? variable.description : variable.name ?? ""
 		if changedIndexes.contains(row) {

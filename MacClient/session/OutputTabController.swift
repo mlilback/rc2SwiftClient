@@ -85,7 +85,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	}
 	
 	func handlesToolbarItem(_ item: NSToolbarItem) -> Bool {
-		if item.itemIdentifier == "clear" {
+		if item.itemIdentifier.rawValue == "clear" {
 			item.target = self
 			item.action = #selector(OutputTabController.clearConsole(_:))
 			if let myItem = item as? ClearConsoleToolbarItem {
@@ -111,7 +111,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		showHelpTopic(topics[0])
 	}
 	
-	func handleDisplayHelp(_ note: Notification) {
+	@objc func handleDisplayHelp(_ note: Notification) {
 		if let topic: HelpTopic = note.object as? HelpTopic {
 			showHelpTopic(topic)
 		} else if let topicName: String = note.object as? String {
@@ -121,7 +121,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		}
 	}
 
-	func clearConsole(_ sender: AnyObject?) {
+	@objc func clearConsole(_ sender: AnyObject?) {
 		consoleController?.clearConsole(sender)
 		imageCache?.clearCache()
 	}
@@ -185,7 +185,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		}
 	}
 
-	func handleSearch(action: NSTextFinderAction) {
+	func handleSearch(action: NSTextFinder.Action) {
 		currentOutputController.performFind(action: action)
 	}
 	

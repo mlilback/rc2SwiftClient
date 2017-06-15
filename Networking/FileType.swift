@@ -94,7 +94,7 @@ extension FileType {
 	#if os(OSX)
 	public func image() -> NSImage? {
 		let imgName = "file-\(fileExtension)"
-		if let img = NSImage(named: imgName) {
+		if let img = NSImage(named: NSImage.Name(imgName)) {
 			img.backgroundColor = NSColor.clear
 			return img
 		}
@@ -103,9 +103,9 @@ extension FileType {
 	func fileImage() -> NSImage? {
 		if let iname = self.iconName {
 			var img: NSImage?
-			img = NSImage(named: iname)
+			img = NSImage(named: NSImage.Name(iname))
 			if img == nil {
-				img = NSWorkspace.shared().icon(forFileType: self.fileExtension)
+				img = NSWorkspace.shared.icon(forFileType: self.fileExtension)
 			}
 			img?.size = NSSize(width: 48, height: 48)
 			if img != nil {

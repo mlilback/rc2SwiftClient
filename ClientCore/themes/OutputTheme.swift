@@ -18,7 +18,7 @@ public enum OutputThemeProperty: String, ThemeProperty {
 }
 
 public final class OutputTheme: NSObject, InternalTheme, JSONDecodable, JSONEncodable {
-	public static let AttributeName = "rc2.OutputTheme"
+	public static let AttributeName = NSAttributedStringKey("rc2.OutputTheme")
 	
 	public var name: String
 	var colors = [OutputThemeProperty: PlatformColor]()

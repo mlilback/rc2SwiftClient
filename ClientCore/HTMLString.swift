@@ -70,8 +70,8 @@ open class HTMLString {
 		attrText = NSAttributedString(attributedString: outString)
 	}
 
-	fileprivate func parseColorAttrs(_ srcString: NSString, attrString: NSString) -> [String: AnyObject] {
-		var dict = [String: AnyObject]()
+	fileprivate func parseColorAttrs(_ srcString: NSString, attrString: NSString) -> [NSAttributedStringKey: AnyObject] {
+		var dict = [NSAttributedStringKey: AnyObject]()
 		HTMLString.argumentRegex.enumerateMatches(in: attrString as String, options: [], range: NSRange(location: 0, length: attrString.length))
 		{ (result, _, _) -> Void in
 			let attrName = srcString.substring(with: (result?.rangeAt(1))!)
@@ -82,7 +82,7 @@ open class HTMLString {
 						os_log("Invalid color attribute: %{public}@", log: .core, srcString.substring(with: (result?.range)!))
 						return
 					}
-					dict[NSForegroundColorAttributeName] = color
+					dict[NSAttributedStringKey.foregroundColor] = color
 				default:
 					os_log("unsupport color attribute '%{public}@'", log: .core, attrName)
 			}

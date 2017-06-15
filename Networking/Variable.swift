@@ -297,7 +297,7 @@ public final class DoublePrimitiveVariable: Variable {
 			switch val {
 			case .string(let str):
 				if str == "Inf" { return Double.infinity }
-				if str == "-Inf" { return Double(kCFNumberNegativeInfinity) }
+				if str == "-Inf" { return -Double.infinity }
 				if str == "NaN" { return Double.nan }
 				return Double.nan
 			case .double(let dval):

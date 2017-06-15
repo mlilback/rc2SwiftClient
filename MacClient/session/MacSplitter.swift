@@ -22,10 +22,10 @@ import ClientCore
 		rect.origin.x += 3
 		let color = PlatformColor(hexString: "b3b3b3")!
 		color.set()
-		NSRectFill(rect)
+		rect.fill()
 	}
 	
 	override open func cursorUpdate(with event: NSEvent) {
-		NSCursor.resizeLeftRight().set()
+		NSCursor.resizeLeftRight.set()
 	}
 }

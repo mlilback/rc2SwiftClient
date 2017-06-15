@@ -26,8 +26,9 @@ import Networking
 //	}
 //}
 
-class ImageOutputController: NSViewController, OutputController, NSPageControllerDelegate, NSSharingServicePickerDelegate {
-	let emptyIdentifier = "empty"
+class ImageOutputController: NSViewController, OutputController, NSPageControllerDelegate, NSSharingServicePickerDelegate
+{
+	let emptyIdentifier = NSPageController.ObjectIdentifier("empty")
 	
 	@IBOutlet var containerView: NSView?
 	@IBOutlet var imagePopup: NSPopUpButton?
@@ -50,10 +51,10 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		pageController.view = containerView!
 		// for some reason, the selected controller's view's frame is not correct. This fixes it, even though there is probably a more efficent way to fix this
 		pageController.view.postsFrameChangedNotifications = true
-		NotificationCenter.default.addObserver(self, selector: #selector(viewFrameChanged(_:)), name: .NSViewFrameDidChange, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(viewFrameChanged(_:)), name: NSView.frameDidChangeNotification, object: nil)
 
 		view.wantsLayer = true
-		shareButton?.sendAction(on: NSEventMask(rawValue: UInt64(Int(NSEventMask.leftMouseDown.rawValue))))
+		shareButton?.sendAction(on: .leftMouseDown)
 		view.layer?.backgroundColor = PlatformColor.white.cgColor
 		navigateButton?.setEnabled(false, forSegment: 0)
 		navigateButton?.setEnabled(false, forSegment: 1)
@@ -78,7 +79,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		pageController.selectedViewController?.view.needsDisplay = true
 	}
 
-	func viewFrameChanged(_ note: Notification) {
+	@objc func viewFrameChanged(_ note: Notification) {
 		guard let pc = pageController, pc.view.frame.size != pc.selectedViewController?.view.frame.size else { return }
 		let newFrame = NSRect(origin: .zero, size: pc.view.frame.size)
 		pc.selectedViewController?.view.frame = newFrame
@@ -206,7 +207,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		}
 	}
 	
-	func selectImage(_ sender: Any?) {
+	@objc func selectImage(_ sender: Any?) {
 		guard let menuItem = sender as? NSMenuItem, let image = menuItem.representedObject as? SessionImage else { return }
 		display(image: image)
 	}
@@ -229,20 +230,21 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		navigateButton?.setEnabled(index < allImages.value.count - 1, forSegment: 1)
 	}
 	
-	func pageController(_ pageController: NSPageController, identifierFor object: Any) -> String {
+	func pageController(_ pageController: NSPageController, identifierFor object: Any) -> NSPageController.ObjectIdentifier
+	{
 		guard let image = object as? SessionImage else { return emptyIdentifier }
-		return "\(image.id)"
+		return NSPageController.ObjectIdentifier(rawValue: "\(image.id)")
 	}
 	
-	func pageController(_ pageController: NSPageController, viewControllerForIdentifier identifier: String) -> NSViewController
+	func pageController(_ pageController: NSPageController, viewControllerForIdentifier identifier: NSPageController.ObjectIdentifier) -> NSViewController
 	{
 		let vc = ImageViewController()
 		let iv = NSImageView(frame: (containerView?.frame)!)
 		iv.imageFrameStyle = .none
-		iv.setContentHuggingPriority(200, for: .horizontal)
-		iv.setContentCompressionResistancePriority(200, for: .horizontal)
+		iv.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 200), for: .horizontal)
+		iv.setContentCompressionResistancePriority(NSLayoutConstraint.Priority(rawValue: 200), for: .horizontal)
 		iv.imageScaling = .scaleProportionallyDown
-		if let imageId = Int(identifier) {
+		if let imageId = Int(identifier.rawValue) {
 			vc.setImage(producer: imageCache!.image(withId: imageId))
 		}
 		vc.view = iv

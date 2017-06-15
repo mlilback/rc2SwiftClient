@@ -153,7 +153,7 @@ extension FileImporter: URLSessionDataDelegate {
 			progressObserver?.send(error: Rc2Error(type: .network, nested: NetworkingError.uploadFailed(error!)))
 			return
 		}
-		guard let index: Int = tasks.filter({ $1.task == task }).map({ $0.0 }).first,
+		guard let index: Int = tasks.filter({ $0.value.task == task }).map({ $0.key }).first,
 			let importData = tasks[index] else
 		{
 			fatalError("failed to find task info for import file")
@@ -193,9 +193,8 @@ extension FileImporter: URLSessionDataDelegate {
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64)
 	{
 		os_log("session said sent data %d", log: .importer, type:.info, bytesSent)
-		let index: Int = tasks.filter { $1.task == task }.map { $0.0 }.first!
-		guard tasks[index] != nil else {
-			fatalError("failed to find progress for task of \(index)")
+		guard let index = tasks.filter({ $0.value.task == task }).map({ $0.key }).first, tasks[index] != nil else {
+			fatalError("failed to find progress for task of \(task.taskIdentifier)")
 		}
 		tasks[index]!.bytesDownloaded = Int(totalBytesSent)
 		calculateAndSendProgress()
@@ -204,9 +203,8 @@ extension FileImporter: URLSessionDataDelegate {
 	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
 	{
 		os_log("session said received data %d", log: .importer, type:.info, data.count)
-		let index: Int = tasks.filter { $1.task == dataTask }.map { $0.0 }.first!
-		guard tasks[index] != nil else {
-			fatalError("failed to find progress for task of \(index)")
+		guard let index = tasks.filter({ $0.value.task == dataTask }).map({ $0.key }).first, tasks[index] != nil else {
+			fatalError("failed to find progress for task of \(dataTask.taskIdentifier)")
 		}
 		tasks[index]!.data.append(data)
 	}

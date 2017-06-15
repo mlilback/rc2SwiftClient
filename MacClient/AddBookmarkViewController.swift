@@ -20,12 +20,12 @@ class AddBookmarkViewController: NSViewController {
 //	fileprivate var selectServerKVO:PMKVObserver?
 //	fileprivate var projectKVO:PMKVObserver?
 	
-	dynamic var isBusy: Bool = false
-	dynamic var canContinue: Bool = false
+	@objc dynamic var isBusy: Bool = false
+	@objc dynamic var canContinue: Bool = false
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		tabViewController = self.storyboard?.instantiateController(withIdentifier: "bookmarkTabController") as? NSTabViewController
+		tabViewController = self.storyboard?.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "bookmarkTabController")) as? NSTabViewController
 		addChildViewController(tabViewController!)
 		containerView?.addSubview(tabViewController!.view)
 		tabViewController?.view.topAnchor.constraint(equalTo: (containerView?.topAnchor)!)

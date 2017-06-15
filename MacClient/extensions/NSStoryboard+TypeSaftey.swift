@@ -23,10 +23,10 @@ extension NSStoryboard {
 	}
 	
 	convenience init(storyboard: Storyboard, bundle: Bundle? = nil) {
-		self.init(name:storyboard.rawValue, bundle:bundle)
+		self.init(name:NSStoryboard.Name(rawValue: storyboard.rawValue), bundle:bundle)
 	}
 
-	func instantiateViewController<T: NSViewController>() -> T where T: StoryboardIdentifiable {
+	func instantiateViewController<T: NSViewController>() -> T {
 		let optionalViewController = self.instantiateController(withIdentifier: T.storyboardIdentifier)
 		
 		guard let viewController = optionalViewController as? T  else {
@@ -36,7 +36,7 @@ extension NSStoryboard {
 		return viewController
 	}
 
-	func instantiateWindowController<T: NSWindowController>() -> T where T: StoryboardIdentifiable {
+	func instantiateWindowController<T: NSWindowController & StoryboardIdentifiable>() -> T {
 		let optionalController = self.instantiateController(withIdentifier: T.storyboardIdentifier)
 		
 		guard let controller = optionalController as? T  else {
@@ -48,12 +48,12 @@ extension NSStoryboard {
 }
 
 protocol StoryboardIdentifiable {
-	static var storyboardIdentifier: String { get }
+	static var storyboardIdentifier: NSStoryboard.SceneIdentifier { get }
 }
 
 extension StoryboardIdentifiable where Self: NSViewController {
-	static var storyboardIdentifier: String {
-		return String(describing: self)
+	static var storyboardIdentifier: NSStoryboard.SceneIdentifier {
+		return NSStoryboard.SceneIdentifier(String(describing: self))
 	}
 }
 
@@ -65,4 +65,4 @@ extension StoryboardIdentifiable where Self: NSWindowController {
 
 extension NSViewController: StoryboardIdentifiable { }
 
-extension NSWindowController: StoryboardIdentifiable { }
+//extension NSWindowController: StoryboardIdentifiable { }

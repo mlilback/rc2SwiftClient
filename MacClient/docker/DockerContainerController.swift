@@ -9,9 +9,11 @@ import ClientCore
 import ReactiveSwift
 import Docker
 
-public class DockerContainerController: DockerManagerInjectable, NSTableViewDataSource, NSTableViewDelegate {
+public class DockerContainerController: DockerManagerInjectable, NSTableViewDataSource, NSTableViewDelegate
+{
+	let dockerCellIdentifier = NSUserInterfaceItemIdentifier("dockerCell")
 	@IBOutlet dynamic var containerTable: NSTableView?
-	dynamic var selection: NSIndexSet?
+	@objc dynamic var selection: NSIndexSet?
 	var selectedContainer = MutableProperty<DockerContainer?>(nil)
 	override var manager: DockerManager? { didSet {
 		containerTable?.reloadData()
@@ -36,9 +38,10 @@ public class DockerContainerController: DockerManagerInjectable, NSTableViewData
 		return manager?.containers.count ?? 0
 	}
 	
-	public func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-		let cell = tableView.make(withIdentifier: "dockerCell", owner: nil) as? NSTableCellView
-		switch tableColumn!.identifier {
+	public func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView?
+	{
+		let cell = tableView.makeView(withIdentifier: dockerCellIdentifier, owner: nil) as? NSTableCellView
+		switch tableColumn!.identifier.rawValue {
 			case "state":
 				cell?.textField?.stringValue = manager?.containers[row].state.value.rawValue ?? ""
 			default:

@@ -7,8 +7,8 @@
 import Cocoa
 
 extension NSFontDescriptor {
-	var fontName: String { return object(forKey: NSFontNameAttribute) as? String ?? "Unknown" }
-	var visibleName: String { return object(forKey: NSFontVisibleNameAttribute) as? String ?? fontName }
+	var fontName: String { return object(forKey: NSFontDescriptor.AttributeName.name) as? String ?? "Unknown" }
+	var visibleName: String { return object(forKey: NSFontDescriptor.AttributeName.visibleName) as? String ?? fontName }
 }
 
 extension NSFont {
@@ -22,13 +22,13 @@ extension NSFont {
 	func font(for string: String, maxWidth: CGFloat, minFontSize: CGFloat = 9.0) -> NSFont {
 		let increment: CGFloat = 0.2
 		var curSize: CGFloat = 14.0
-		var sz = string.size(withAttributes: [NSFontAttributeName: self])
+		var sz = string.size(withAttributes: [NSAttributedStringKey.font: self])
 		if sz.width < maxWidth { return self }
 		var curFont = self
 		while sz.width > maxWidth && (curSize - increment) > minFontSize {
 			curSize -= increment
 			curFont = NSFont(name: fontName, size: curSize)!
-			sz = string.size(withAttributes: [NSFontAttributeName: curFont])
+			sz = string.size(withAttributes: [NSAttributedStringKey.font: curFont])
 		}
 		return curFont
 	}

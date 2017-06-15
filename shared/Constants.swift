@@ -26,9 +26,9 @@ struct LocalStrings {
 	
 }
 
-struct PasteboardTypes {
-	static let file = "io.rc2.model.file"
-	static let variable = "io.rc2.model.variable.json"
+extension NSPasteboard.PasteboardType {
+	static let file = NSPasteboard.PasteboardType("io.rc2.model.file")
+	static let variable = NSPasteboard.PasteboardType("io.rc2.model.variable.json")
 }
 
 let ConsoleAttachmentImageSize = CGSize(width: 48, height: 48)

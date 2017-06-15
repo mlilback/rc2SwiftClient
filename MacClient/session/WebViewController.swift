@@ -151,7 +151,7 @@ extension WebViewController: SearchBarViewDelegate {
 }
 
 extension WebViewController: Searchable {
-	func performFind(action: NSTextFinderAction) {
+	func performFind(action: NSTextFinder.Action) {
 		guard currentPageSearchable() else { return }
 		switch action {
 		case .showFindInterface:

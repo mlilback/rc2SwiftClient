@@ -108,14 +108,14 @@ class AppStatusView: NSView {
 	}
 
 	override func draw(_ dirtyRect: NSRect) {
-		NSGraphicsContext.current()?.saveGraphicsState()
+		NSGraphicsContext.current?.saveGraphicsState()
 		let path = NSBezierPath(roundedRect: bounds, xRadius: 4, yRadius: 4)
 		path.addClip()
 		NSColor.white.setFill()
 		path.fill()
 		NSColor.black.set()
 		path.stroke()
-		NSGraphicsContext.current()?.restoreGraphicsState()
+		NSGraphicsContext.current?.restoreGraphicsState()
 		super.draw(dirtyRect)
 	}
 }

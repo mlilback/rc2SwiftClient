@@ -65,7 +65,7 @@ class MacAppStatus {
 	/// observer for sending busy events
 	private let busyObserver: Signal<Bool, NoError>.Observer
 	
-	dynamic var busy: Bool {
+	@objc dynamic var busy: Bool {
 		var result = false
 		_statusQueue.sync { result = _currentDisposable != nil }
 		return result
@@ -143,7 +143,7 @@ class MacAppStatus {
 	///   - isCritical: true if alert is critical
 	///   - queue: the queue to call the handler on, defaults to main queue
 	///   - handler: closure called returning the index of the button clicked by the user
-	func presentAlert(_ session: Session?, message: String, details: String, buttons: [String] = [], defaultButtonIndex: Int = 0, isCritical: Bool = false, queue: DispatchQueue = .main, handler: ((Int) -> Void)?)
+	func presentAlert(_ session: Session?, message: String, details: String, buttons: [String] = [], defaultButtonIndex: Int = 0, isCritical: Bool = false, queue: DispatchQueue = .main, handler: ((NSApplication.ModalResponse) -> Void)?)
 	{
 		let alert = NSAlert()
 		alert.messageText = message
@@ -161,12 +161,11 @@ class MacAppStatus {
 				guard buttons.count > 1 else { return }
 				queue.async {
 					//convert rsp to an index to buttons
-					handler?(rsp - NSAlertFirstButtonReturn)
+					handler?(rsp)
 				}
 			})
 		} else {
-			let result = alert.runModal() - NSAlertFirstButtonReturn
-			handler?(result)
+			handler?(alert.runModal())
 		}
 	}
 }

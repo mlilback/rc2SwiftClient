@@ -37,7 +37,7 @@ class InputPrompter: NSObject {
 		self.stringValue = defaultValue
 		requiredSuffix = suffix
 		super.init()
-		guard let nib = NSNib(nibNamed: "InputPrompter", bundle: nil) else { fatalError() }
+		guard let nib = NSNib(nibNamed: NSNib.Name(rawValue: "InputPrompter"), bundle: nil) else { fatalError() }
 		nib.instantiate(withOwner: self, topLevelObjects: nil)
 		assert(window != nil)
 		assert(textField != nil)
@@ -59,23 +59,23 @@ class InputPrompter: NSObject {
 		if parent == nil {
 			//run modal
 			let response = NSApp.runModal(for: window)
-			handler(response == NSModalResponseOK, self.stringValue)
+			handler(response == .OK, self.stringValue)
 			return
 		}
 		//run as sheet
 		parent!.beginSheet(window) { (response) in
-			handler(response == NSModalResponseOK, self.stringValue)
+			handler(response == .OK, self.stringValue)
 		}
 	}
 	
 	@IBAction func saveValue(_ sender: AnyObject) {
 		stringValue = textField.stringValue
 		guard let parent = parentWindow else {
-			NSApp.stopModal(withCode: NSModalResponseOK)
+			NSApp.stopModal(withCode: .OK)
 			window?.orderOut(nil)
 			return
 		}
-		parent.endSheet(window, returnCode: NSModalResponseOK)
+		parent.endSheet(window, returnCode: .OK)
 	}
 	
 	@IBAction func cancel(_ sender: AnyObject) {
@@ -84,7 +84,7 @@ class InputPrompter: NSObject {
 			window?.orderOut(nil)
 			return
 		}
-		parent.endSheet(window, returnCode: NSModalResponseCancel)
+		parent.endSheet(window, returnCode: .cancel)
 	}
 	
 	func observe(change: String) {

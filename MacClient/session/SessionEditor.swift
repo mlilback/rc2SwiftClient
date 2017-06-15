@@ -25,16 +25,16 @@ class SessionEditor: TextViewWithContextualMenu {
 	}
 	
 	func moveCursorToNextNonBlankLine() {
-		guard let contents = string else { return }
+		let contents = string
 		var lastLocation: String.Index = contents.endIndex
 		while true {
 			moveToEndOfParagraph(nil)
 			moveRight(nil)
-			guard let selRange = selectedRange().toStringRange(contents),
-				let nextLineRange = string?.lineRange(for: selRange) else { break }
+			guard let selRange = selectedRange().toStringRange(contents) else { break }
+			let nextLineRange = string.lineRange(for: selRange)
 			guard nextLineRange.lowerBound > lastLocation else { break } //end of line
 			lastLocation = nextLineRange.lowerBound
-			let nextStr = string!.substring(with: nextLineRange).trimmingCharacters(in: .whitespacesAndNewlines)
+			let nextStr = string.substring(with: nextLineRange).trimmingCharacters(in: .whitespacesAndNewlines)
 			if nextStr.characters.count > 0 {
 				//end of string
 				break
@@ -55,11 +55,11 @@ class SessionEditor: TextViewWithContextualMenu {
 		let openRange = NSRange(location: openLoc, length: 1)
 		let color = PlatformColor(hexString: "888888")!
 //		layoutManager?.addTemporaryAttribute(NSBackgroundColorAttributeName, value: color, forCharacterRange: closeRange)
-		layoutManager?.addTemporaryAttribute(NSBackgroundColorAttributeName, value: color, forCharacterRange: openRange)
+		layoutManager?.addTemporaryAttribute(.backgroundColor, value: color, forCharacterRange: openRange)
 		//FIXME: code smell
 		delay(0.1) {
 //			self.layoutManager?.removeTemporaryAttribute(NSBackgroundColorAttributeName, forCharacterRange: closeRange)
-			self.layoutManager?.removeTemporaryAttribute(NSBackgroundColorAttributeName, forCharacterRange: openRange)
+			self.layoutManager?.removeTemporaryAttribute(.backgroundColor, forCharacterRange: openRange)
 		}
 	}
 	

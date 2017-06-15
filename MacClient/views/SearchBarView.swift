@@ -48,10 +48,10 @@ public class SearchBarView: NSView {
 	}
 	
 	public override func awakeAfter(using aDecoder: NSCoder) -> Any? {
-		var topObjects = NSArray()
+		var topObjects: NSArray? = NSArray()
 		self.translatesAutoresizingMaskIntoConstraints = false
-		guard Bundle(for: type(of: self)).loadNibNamed("SearchBarView", owner: self, topLevelObjects: &topObjects) else { fatalError("failed to load search xib") }
-		self.topLevelView = topObjects.first(where: { $0 is NSView }) as? NSView
+		guard Bundle(for: type(of: self)).loadNibNamed(NSNib.Name(rawValue: "SearchBarView"), owner: self, topLevelObjects: &topObjects), let fetchedTopObjects = topObjects else { fatalError("failed to load search xib") }
+		self.topLevelView = fetchedTopObjects.first(where: { $0 is NSView }) as? NSView
 		topLevelView?.translatesAutoresizingMaskIntoConstraints = false
 		self.addSubview(self.topLevelView!)
 		self.addConstraint(leadingAnchor.constraint(equalTo: topLevelView!.leadingAnchor))
@@ -87,13 +87,13 @@ public class SearchBarView: NSView {
 	/// menu action for whole word search option
 	@IBAction func toggleWholeWords(_ sender: Any) {
 		guard let menuItem = sender as? NSMenuItem else { return }
-		wholeWordsOption = menuItem.state == NSOnState
+		wholeWordsOption = menuItem.state == .onState
 	}
 
 	/// menu action for teh case sensitive search option
 	@IBAction func toggleCaseInsensitive(_ sender: Any) {
 		guard let menuItem = sender as? NSMenuItem else { return }
-		caseSensitiveOption = menuItem.state == NSOnState
+		caseSensitiveOption = menuItem.state == .onState
 	}
 	
 	/// updates controls to match current result state
@@ -108,10 +108,10 @@ extension SearchBarView: NSMenuDelegate {
 	override public func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		var enable = false
 		if menuItem.tag == SearchOptionTags.caseSensitive.rawValue {
-			menuItem.state = caseSensitiveOption ? NSOnState : NSOffState
+			menuItem.state = caseSensitiveOption ? .onState : .offState
 			enable = true
 		} else if menuItem.tag == SearchOptionTags.wholeWords.rawValue {
-			menuItem.state = wholeWordsOption ? NSOnState : NSOffState
+			menuItem.state = wholeWordsOption ? .onState : .offState
 			enable = true
 		}
 		return enable

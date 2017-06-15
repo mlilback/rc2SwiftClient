@@ -11,10 +11,10 @@ class PreferencesViewController: NSTabViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		var image = NSImage(named: NSImageNamePreferencesGeneral)
-		if let appPath = NSWorkspace.shared().absolutePathForApplication(withBundleIdentifier: "com.docker.docker")
+		var image = NSImage(named: .preferencesGeneral)
+		if let appPath = NSWorkspace.shared.absolutePathForApplication(withBundleIdentifier: "com.docker.docker")
 		{
-			image = NSWorkspace.shared().icon(forFile: appPath)
+			image = NSWorkspace.shared.icon(forFile: appPath)
 		}
 		let dockerItem = tabViewItems.first(where: { $0.identifier as? String == "Docker" })
 		dockerItem?.image = image

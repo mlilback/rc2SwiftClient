@@ -17,7 +17,7 @@ class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
 	@IBOutlet var projectOutline: NSOutlineView!
 	@IBOutlet var addRemoveButtons: NSSegmentedControl?
 	
-	dynamic var canContinue: Bool = false
+	@objc dynamic var canContinue: Bool = false
 	
 	var host: ServerHost?
 	var connectInfo: ConnectionInfo?
@@ -76,7 +76,7 @@ extension ProjectManagerViewController: NSOutlineViewDelegate {
 		} else if let wspace = item as? Workspace {
 			val = wspace.name
 		}
-		let view = outlineView.make(withIdentifier: "string", owner: nil) as? NSTableCellView
+		let view = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "string"), owner: nil) as? NSTableCellView
 		view?.textField?.stringValue = val
 		return view
 	}

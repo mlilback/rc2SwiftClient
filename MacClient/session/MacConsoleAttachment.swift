@@ -102,7 +102,7 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 		cell.image?.size = NSSize(width: 48, height: 48)
 		attachment.attachmentCell = cell
 		let str = NSMutableAttributedString(attributedString: NSAttributedString(attachment: attachment))
-		str.addAttribute(NSToolTipAttributeName, value: (attachment.fileWrapper?.filename)!, range: NSRange(location: 0, length: 1))
+		str.addAttribute(.toolTip, value: (attachment.fileWrapper?.filename)!, range: NSRange(location: 0, length: 1))
 		return str
 	}
 }

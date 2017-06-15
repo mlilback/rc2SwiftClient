@@ -22,7 +22,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 	fileprivate var toolbarSetupScheduled = false
 	
 	class func createFromNib() -> Self {
-		let winc = self.init(windowNibName: "MainWindow")
+		let winc = self.init(windowNibName: NSNib.Name(rawValue: "MainWindow"))
 		return winc
 	}
 	
@@ -62,7 +62,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 			toolbarSetupScheduled = true
 		}
 		let item: NSToolbarItem = ((notification as NSNotification).userInfo!["item"] as? NSToolbarItem)!
-		if item.itemIdentifier == "status",
+		if item.itemIdentifier.rawValue == "status",
 			let sview = item.view as? AppStatusView
 		{
 			statusView = sview

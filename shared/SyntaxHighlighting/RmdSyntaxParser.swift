@@ -103,9 +103,9 @@ open class RmdSyntaxParser: SyntaxParser {
 		}
 		//renumber and sort by number
 		var nextIdx = 0
-		chunks = docChunks.enumerated().map { (_, element) in
+		chunks = docChunks.enumerated().map { (arg) in
 			nextIdx += 1
-			return element.duplicateWithChunkNumber(nextIdx)
+			return arg.element.duplicateWithChunkNumber(nextIdx)
 		}.sorted { (chunk1, chunk2) -> Bool in
 			return chunk1.chunkNumber < chunk2.chunkNumber
 		}
@@ -115,11 +115,11 @@ open class RmdSyntaxParser: SyntaxParser {
 		let color = theme.value.color(for: .inlineBackground)
 		inlineRegex.enumerateMatches(in: str, options: [], range: range)
 		{ (results, _, _) -> Void in
-			self.textStorage.addAttribute(NSBackgroundColorAttributeName, value: color, range: results!.range)
+			self.textStorage.addAttribute(.backgroundColor, value: color, range: results!.range)
 			self.latexHighlighter.highlightText(self.textStorage, range: results!.rangeAt(1))
 		}
 		for aRange in inlineMathML {
-			self.textStorage.addAttribute(NSBackgroundColorAttributeName, value: color, range: aRange)
+			self.textStorage.addAttribute(.backgroundColor, value: color, range: aRange)
 		}
 		//highlight latex code in display equation blocks
 		for aChunk in chunks where aChunk.type == .rCode {

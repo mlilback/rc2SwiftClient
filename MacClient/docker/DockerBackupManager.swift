@@ -61,7 +61,7 @@ class DockerBackupManager {
 		let fileName = dateFormatter.string(from: backupDate) + ".sql"
 		let destUrl = backupDirUrl.appendingPathComponent(fileName)
 		return dockerManager.backupDatabase(to: destUrl)
-			.map { return DockerBackup(url: destUrl, date: backupDate) }
+			.map { _ in return DockerBackup(url: destUrl, date: backupDate) }
 			.on(value: { self.backupObserver.send(value: $0) })
 	}
 	

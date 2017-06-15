@@ -56,8 +56,8 @@ class HelpController {
 				}
 			}
 			var packs: [HelpTopic] = []
-			topsByPack.forEach { (key, ptopics) in
-				let package = HelpTopic(name: key, subtopics: ptopics.sorted(by: { return $0.compare($1) }))
+			topsByPack.forEach { (pair) in
+				let package = HelpTopic(name: pair.key, subtopics: pair.value.sorted(by: { return $0.compare($1) }))
 				packs.append(package)
 			}
 			self.packages = packs.sorted(by: { return $0.compare($1) })
@@ -111,7 +111,7 @@ class HelpController {
 			}
 			topicsByPack[package]!.append(topic)
 		}
-		let matches: [HelpTopic] = topicsByPack.map { HelpTopic(name: $0, subtopics: $1) }
+		let matches: [HelpTopic] = topicsByPack.map { pair in return HelpTopic(name: pair.key, subtopics: pair.value) }
 		return matches.sorted(by: { return $0.compare($1) })
 	}
 	
@@ -125,7 +125,7 @@ class HelpController {
 			}
 			topicsByPack[aMatch.packageName]!.append(aMatch)
 		}
-		let matches: [HelpTopic] = topicsByPack.map { HelpTopic(name: $0, subtopics: $1) }
+		let matches: [HelpTopic] = topicsByPack.map { pair in return HelpTopic(name: pair.key, subtopics: pair.value) }
 		return matches.sorted(by: { return $0.compare($1) })
 	}
 	
@@ -154,8 +154,8 @@ class HelpController {
 				topsByPack[aTopic.packageName] = [aTopic]
 			}
 		}
-		topsByPack.forEach { (key, ptopics) in
-			let package = HelpTopic(name: key, subtopics: ptopics.sorted(by: { return $0.compare($1) }))
+		topsByPack.forEach { (arg) in
+			let package = HelpTopic(name: arg.key, subtopics: arg.value.sorted(by: { return $0.compare($1) }))
 			packs.append(package)
 		}
 		packs = packs.reduce([], { (pks, ht) in

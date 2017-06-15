@@ -62,7 +62,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	override func viewDidAppear() {
 		super.viewDidAppear()
 		self.hookupToToolbarItems(self, window: view.window!)
-		NotificationCenter.default.addObserver(self, selector: #selector(RootViewController.windowWillClose(_:)), name: .NSWindowWillClose, object:view.window!)
+		NotificationCenter.default.addObserver(self, selector: #selector(RootViewController.windowWillClose(_:)), name: NSWindow.willCloseNotification, object:view.window!)
 		NotificationCenter.default.addObserver(self, selector: #selector(RootViewController.receivedImportNotification(_:)), name: .FilesImported, object: nil)
 		//create dimming view
 		dimmingView = DimmingView(frame: view.bounds)
@@ -72,7 +72,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 		self.performSelector(onMainThread: #selector(RootViewController.setupResponder), with: nil, waitUntilDone: false)
 	}
 	
-	func windowWillClose(_ note: Notification) {
+	@objc func windowWillClose(_ note: Notification) {
 		if sessionOptional?.connectionOpen ?? false && (note.object as? NSWindow == view.window) {
 			sessionController?.close()
 			sessionController = nil
@@ -112,12 +112,12 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 		}
 	}
 
-	func setupResponder() {
+	@objc func setupResponder() {
 		view.window?.makeFirstResponder(outputHandler?.initialFirstResponder())
 	}
 	
 	func handlesToolbarItem(_ item: NSToolbarItem) -> Bool {
-		if item.itemIdentifier == "search" {
+		if item.itemIdentifier.rawValue == "search" {
 			searchButton = item.view as? NSSegmentedControl
 			TargetActionBlock { [weak self] sender in
 				self?.toggleSearch(sender)
@@ -133,7 +133,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	}
 	
 	/// selects the first file imported if it is a source file
-	func receivedImportNotification(_ note: Notification) {
+	@objc func receivedImportNotification(_ note: Notification) {
 		guard let importer = note.object as? FileImporter else { return }
 		guard let file = importer.importedFiles.first, file.fileType.isSourceFile else { return }
 		os_log("selecting imported file", log: .app, type: .info)
@@ -178,7 +178,7 @@ extension RootViewController {
 	}
 	
 	@IBAction override func performTextFinderAction(_ sender: Any?) {
-		guard let item = sender as? NSValidatedUserInterfaceItem, let tag = NSTextFinderAction(rawValue: item.tag) else { return }
+		guard let item = sender as? NSValidatedUserInterfaceItem, let tag = NSTextFinder.Action(rawValue: item.tag) else { return }
 		if responderChainContains(editor)  {
 			editor?.performTextFinderAction(sender)
 		} else if responderChainContains(outputHandler as? NSResponder) {
@@ -241,8 +241,8 @@ extension RootViewController: ManageFontMenu {
 			return
 		}
 		//prompt for size to use
-		let sboard = NSStoryboard(name: "Main", bundle: nil)
-		guard let wc = sboard.instantiateController(withIdentifier: "FontSizeWindowController") as? NSWindowController, let vc = wc.contentViewController as? SingleInputViewController else
+		let sboard = NSStoryboard(name: NSStoryboard.Name("Main"), bundle: nil)
+		guard let wc = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "FontSizeWindowController")) as? NSWindowController, let vc = wc.contentViewController as? SingleInputViewController else
 		{
 			fatalError()
 		}
@@ -265,20 +265,20 @@ extension RootViewController: ManageFontMenu {
 	func updateFontFaceMenu(_ menu: NSMenu, fontUser: UsesAdjustableFont) {
 		menu.removeAllItems()
 		//we want regular weight monospaced fonts
-		let traits = [NSFontSymbolicTrait: NSFontMonoSpaceTrait, NSFontWeightTrait: 0]
-		let attrs = [NSFontTraitsAttribute: traits]
+		let traits = [NSFontDescriptor.TraitKey.symbolic: NSFontMonoSpaceTrait, .weight: 0]
+		let attrs = [NSFontDescriptor.AttributeName.traits: traits]
 		let filterDesc = NSFontDescriptor(fontAttributes: attrs)
 		//get matching fonts and sort them by name
 		let fonts = filterDesc.matchingFontDescriptors(withMandatoryKeys: nil).sorted {
 			// swiftlint:disable:next force_cast
-			($0.object(forKey: NSFontNameAttribute) as! String).lowercased() < ($1.object(forKey: NSFontNameAttribute) as! String).lowercased()
+			($0.object(forKey: NSFontDescriptor.AttributeName.name) as! String).lowercased() < ($1.object(forKey: NSFontDescriptor.AttributeName.name) as! String).lowercased()
 		}
 		//now add menu items for them
 		for aFont in fonts {
 			let menuItem = NSMenuItem(title: aFont.visibleName, action: #selector(UsesAdjustableFont.fontChanged), keyEquivalent: "")
 			menuItem.representedObject = aFont
 			if fontUser.currentFontDescriptor.fontName == aFont.fontName {
-				menuItem.state = NSOnState
+				menuItem.state = .onState
 				menuItem.isEnabled = false
 			}
 			menu.addItem(menuItem)
@@ -290,9 +290,9 @@ extension RootViewController: ManageFontMenu {
 		var customItem: NSMenuItem?
 		let curSize = Int(fontUser.currentFontDescriptor.pointSize)
 		for anItem in menu.items {
-			anItem.state = NSOffState
+			anItem.state = .offState
 			if anItem.tag == curSize {
-				anItem.state = NSOnState
+				anItem.state = .onState
 				markedCurrent = true
 			} else if anItem.tag == 0 {
 				customItem = anItem
@@ -300,7 +300,7 @@ extension RootViewController: ManageFontMenu {
 			anItem.isEnabled = true
 		}
 		if !markedCurrent {
-			customItem?.state = NSOnState
+			customItem?.state = .onState
 		}
 	}
 }

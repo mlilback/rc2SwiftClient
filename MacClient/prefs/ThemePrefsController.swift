@@ -21,8 +21,8 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		let blueAttrs = [NSForegroundColorAttributeName: NSColor.blue, NSFontAttributeName: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize())]
-		let blackAttrs = [NSForegroundColorAttributeName: NSColor.black, NSFontAttributeName: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize())]
+		let blueAttrs: [NSAttributedStringKey: Any] = [.foregroundColor: NSColor.blue, .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)]
+		let blackAttrs: [NSAttributedStringKey: Any] = [.foregroundColor: NSColor.black, .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)]
 		syntaxButton.attributedTitle = NSAttributedString(string: syntaxButton.title, attributes: blueAttrs)
 		syntaxButton.attributedAlternateTitle = NSAttributedString(string: syntaxButton.title, attributes: blackAttrs)
 		outputButton.attributedTitle = NSAttributedString(string: outputButton.title, attributes: blueAttrs)
@@ -52,8 +52,8 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 	@IBAction func switchEditor(_ sender: Any?) {
 		guard let button = sender as? NSButton else { return }
 		let syntaxClicked = button == syntaxButton
-		syntaxButton.state = syntaxClicked ? NSOffState : NSOnState
-		outputButton.state = syntaxClicked ? NSOnState : NSOffState
+		syntaxButton.state = syntaxClicked ? .offState : .onState
+		outputButton.state = syntaxClicked ? .onState : .offState
 		syntaxButton.isEnabled = !syntaxClicked
 		outputButton.isEnabled = syntaxClicked
 		tabView.selectTabViewItem(at: syntaxClicked ? 1 : 0)

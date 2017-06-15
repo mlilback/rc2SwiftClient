@@ -36,7 +36,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	var parser: SyntaxParser?
 	fileprivate(set) var currentDocument: EditorDocument?
 	fileprivate var openDocuments: [Int: EditorDocument] = [:]
-	fileprivate var defaultAttributes: [String: AnyObject] = [:]
+	fileprivate var defaultAttributes: [NSAttributedStringKey: AnyObject] = [:]
 	fileprivate var currentChunkIndex = 0
 	
 	///true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
@@ -46,7 +46,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		didSet {
 			let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
 			editor?.font = font
-			defaultAttributes[NSFontAttributeName] = font
+			defaultAttributes[.font] = font
 		}
 	}
 	
@@ -55,23 +55,23 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		willSet {
 			if newValue != notificationCenter {
 				notificationCenter?.removeObserver(self)
-				NSWorkspace.shared().notificationCenter.removeObserver(self)
+				NSWorkspace.shared.notificationCenter.removeObserver(self)
 			}
 		}
 		didSet {
 			if oldValue != notificationCenter {
 				let ncenter = NotificationCenter.default
-				ncenter.addObserver(self, selector: .autoSave, name: NSNotification.Name.NSApplicationDidResignActive, object: NSApp)
-				ncenter.addObserver(self, selector: .autoSave, name: NSNotification.Name.NSApplicationWillTerminate, object: NSApp)
-				let nswspace = NSWorkspace.shared()
-				nswspace.notificationCenter.addObserver(self, selector: .autoSave, name: NSNotification.Name.NSWorkspaceWillSleep, object: nswspace)
+				ncenter.addObserver(self, selector: .autoSave, name: NSApplication.didResignActiveNotification, object: NSApp)
+				ncenter.addObserver(self, selector: .autoSave, name: NSApplication.willTerminateNotification, object: NSApp)
+				let nswspace = NSWorkspace.shared
+				nswspace.notificationCenter.addObserver(self, selector: .autoSave, name: NSWorkspace.willSleepNotification, object: nswspace)
 			}
 		}
 	}
 	
 	// MARK: init/deinit
 	deinit {
-		NSWorkspace.shared().notificationCenter.removeObserver(self)
+		NSWorkspace.shared.notificationCenter.removeObserver(self)
 		NotificationCenter.default.removeObserver(self)
 	}
 	
@@ -112,7 +112,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 			} else {
 				menuItem.title = NSLocalizedString("Execute Line", comment: "")
 			}
-			return editor?.string?.characters.count ?? 0 > 0
+			return editor?.string.characters.count ?? 0 > 0
 		default:
 			return false
 		}
@@ -191,7 +191,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		}
 	}
 	
-	func autosaveCurrentDocument() {
+	@objc func autosaveCurrentDocument() {
 		guard currentDocument?.dirty ?? false else { return }
 		saveWithProgress(isAutoSave: true).startWithResult { result in
 			guard result.error == nil else {
@@ -240,7 +240,8 @@ extension SessionEditorController {
 	}
 	
 	@IBAction func executeCurrentLine(_ sender: AnyObject?) {
-		guard let editor = self.editor,	let sourceString = editor.string else { fatalError() }
+		guard let editor = self.editor else { fatalError() }
+		let sourceString = editor.string
 		let selRange = editor.selectedRange()
 		var command: String = ""
 		if selRange.length > 0 {
@@ -319,7 +320,7 @@ fileprivate extension SessionEditorController {
 		let chunkRange = parser!.chunks[currentChunkIndex].parsedRange
 		var desiredRange = NSRange(location: chunkRange.location, length: 0)
 		//adjust desired range so it advances past any newlines at start of chunk
-		let str = editor!.string!
+		let str = editor!.string
 		let curIdx = str.characters.index(str.startIndex, offsetBy: desiredRange.location)
 		if curIdx != str.endIndex && str.characters[curIdx] == "\n" {
 			desiredRange.location += 1

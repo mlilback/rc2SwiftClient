@@ -23,7 +23,7 @@ class TargetActionBlock: NSObject {
 	}
 	
 	/// called to execute the block as an action
-	func performAction(_ sender: Any?) {
+	@objc func performAction(_ sender: Any?) {
 		actionBlock(sender == nil ? self : sender!)
 	}
 	

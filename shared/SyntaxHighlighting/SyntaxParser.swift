@@ -148,14 +148,14 @@ open class SyntaxParser: NSObject {
 			if chunk.type == .rCode {
 				if colorBackgrounds {
 					let bgcolor = theme.value.color(for: .codeBackground)
-					textStorage.addAttribute(NSBackgroundColorAttributeName, value: bgcolor, range: chunk.parsedRange)
+					textStorage.addAttribute(.backgroundColor, value: bgcolor, range: chunk.parsedRange)
 				}
 				codeHighlighter?.highlightText(textStorage, range: chunk.parsedRange)
 			} else if chunk.type == .documentation {
 				docHighlighter?.highlightText(textStorage, range: chunk.parsedRange)
 			} else if chunk.type == .equation && colorBackgrounds {
 				let bgcolor = theme.value.color(for: .equationBackground)
-				textStorage.addAttribute(NSBackgroundColorAttributeName, value: bgcolor, range: chunk.parsedRange)
+				textStorage.addAttribute(.backgroundColor, value: bgcolor, range: chunk.parsedRange)
 			}
 		}
 	}

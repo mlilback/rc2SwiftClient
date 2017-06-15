@@ -37,9 +37,9 @@ extension ThemeProperty {
 public protocol Theme: NSObjectProtocol, JSONEncodable, JSONDecodable, CustomStringConvertible {
 	associatedtype Property: ThemeProperty
 	/// the name for this type's property in an NSAttributedString
-	static var AttributeName: String { get }
+	static var AttributeName: NSAttributedStringKey { get }
 	/// implemented in protocol extension to allow using AttributeName w/o the type name
-	var attributeName: String { get }
+	var attributeName: NSAttributedStringKey { get }
 	/// for user-editable themes, the file location of this theme
 	var fileUrl: URL? { get set }
 	
@@ -60,7 +60,7 @@ public protocol Theme: NSObjectProtocol, JSONEncodable, JSONDecodable, CustomStr
 	static func loadThemes(from: URL, builtin: Bool) -> [Self]
 	
 	/// attributes to add to a NSAttributedString to represent the theme property
-	func stringAttributes(for property: Property) -> [String: Any]
+	func stringAttributes(for property: Property) -> [NSAttributedStringKey: Any]
 
 	/// Updates the attributed string so its attributes use this theme
 	///
@@ -70,7 +70,7 @@ public protocol Theme: NSObjectProtocol, JSONEncodable, JSONDecodable, CustomStr
 
 public extension Theme {
 	/// map the static AttributeName to a non-static property so type name is not required to reference it
-	public var attributeName: String { return type(of: self).AttributeName }
+	public var attributeName: NSAttributedStringKey { return type(of: self).AttributeName }
 	
 	static func loadThemes(from url: URL, builtin: Bool = false) -> [Self] {
 		guard !builtin else { return loadBuiltinThemes(from: url) }
@@ -111,8 +111,8 @@ public extension Theme {
 	}
 	
 	/// attributes to add to a NSAttributedString to represent the theme property
-	public func stringAttributes(for property: Property) -> [String: Any] {
-		return [attributeName: property, NSBackgroundColorAttributeName: color(for: property)] as [String: Any]
+	public func stringAttributes(for property: Property) -> [NSAttributedStringKey: Any] {
+		return [attributeName: property, NSAttributedStringKey.backgroundColor: color(for: property)]
 	}
 	
 	/// Updates the attributed string so its attributes use this theme

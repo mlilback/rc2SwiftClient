@@ -14,9 +14,9 @@ import Networking
 /** Handles importing via a save panel or drag and drop. */
 class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 	
-	var pboardReadOptions: [String: Any] {
-		return [NSPasteboardURLReadingFileURLsOnlyKey: true as AnyObject,
-			NSPasteboardURLReadingContentsConformToTypesKey: [kUTTypePlainText, kUTTypePDF]]
+	var pboardReadOptions: [NSPasteboard.ReadingOptionKey: Any] {
+		return [NSPasteboard.ReadingOptionKey.urlReadingFileURLsOnly: true as AnyObject,
+		        NSPasteboard.ReadingOptionKey.urlReadingContentsConformToTypes: [kUTTypePlainText, kUTTypePDF]]
 	}
 
 	/** Prompts the user to select files to upload.
@@ -47,18 +47,18 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 		accessoryView.setButtonType(.switch)
 		accessoryView.title = NSLocalizedString("Replace existing files", comment: "")
 		let replace = defaults[.replaceFiles]
-		accessoryView.state = replace ? NSOffState : NSOnState
+		accessoryView.state = replace ? .offState : .onState
 		panel.beginSheetModal(for: window) { result in
 			do {
 				let urlbmark = try (panel.directoryURL as NSURL?)?.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
 				defaults[.lastImportDirectory] = urlbmark
-				defaults[.replaceFiles] = accessoryView.state == NSOnState
+				defaults[.replaceFiles] = accessoryView.state == .onState
 			} catch let err as NSError {
 				os_log("why did we get error creating import bookmark: %{public}@", log: .app, err)
 			}
 			panel.close()
-			if result == NSFileHandlingPanelOKButton && panel.urls.count > 0 {
-				let replaceFiles = accessoryView.state == NSOnState
+			if result == .OK && panel.urls.count > 0 {
+				let replaceFiles = accessoryView.state == .onState
 				let files = panel.urls.map { url -> FileImporter.FileToImport in
 					let uname = replaceFiles ? self.uniqueFileName(url.lastPathComponent, inWorkspace: workspace) : nil
 					return FileImporter.FileToImport(url: url, uniqueName: uname)
@@ -108,12 +108,11 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 			alert.addButton(withTitle: NSLocalizedString("Cancel", comment:""))
 			let uniqButton = alert.addButton(withTitle: NSLocalizedString("Create Unique Names", comment:""))
 			uniqButton.keyEquivalent = "u"
-			//following is stupid conversion to bad swift conversion of property. filed radar 24660685
-			uniqButton.keyEquivalentModifierMask = NSEventModifierFlags(rawValue: UInt(Int(NSEventModifierFlags.command.rawValue)))
+			uniqButton.keyEquivalentModifierMask = .command
 			alert.beginSheetModal(for: window, completionHandler: { response in
-				guard response != NSAlertSecondButtonReturn else { return }
+				guard response != .alertSecondButtonReturn else { return }
 				let files = urls.map { url -> FileImporter.FileToImport in
-					let uname = response == NSAlertFirstButtonReturn ? nil : self.uniqueFileName(url.lastPathComponent, inWorkspace: workspace)
+					let uname = response == .alertFirstButtonReturn ? nil : self.uniqueFileName(url.lastPathComponent, inWorkspace: workspace)
 					return FileImporter.FileToImport(url: url, uniqueName: uname)
 				}
 				handler(files)

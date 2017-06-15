@@ -42,7 +42,7 @@ protocol FileViewControllerDelegate: class {
 	func fileSelectionChanged(_ file: File?, forEditing: Bool)
 }
 
-let FileDragTypes = [kUTTypeFileURL as String]
+let FileDragTypes = [NSPasteboard.PasteboardType(kUTTypeFileURL as String)]
 
 let addFileSegmentIndex: Int = 0
 let removeFileSegmentIndex: Int = 1
@@ -86,7 +86,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			}
 			menu.autoenablesItems = false
 			//NOTE: the action method of the menu item wasn't being called the first time. This works all times.
-			NotificationCenter.default.addObserver(self, selector: .addFileMenu, name: NSNotification.Name.NSMenuDidSendAction, object: menu)
+			NotificationCenter.default.addObserver(self, selector: .addFileMenu, name: NSMenu.didSendActionNotification, object: menu)
 			addRemoveButtons?.setMenu(menu, forSegment: 0)
 			addRemoveButtons?.target = self
 			formatMenu = menu
@@ -95,7 +95,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			tableView.setDraggingSourceOperationMask(.copy, forLocal: true)
 			tableView.setDraggingSourceOperationMask(.copy, forLocal: false)
 			tableView.draggingDestinationFeedbackStyle = .none
-			tableView.register(forDraggedTypes: FileDragTypes)
+			tableView.registerForDraggedTypes(FileDragTypes)
 		}
 		adjustForFileSelectionChange()
 	}
@@ -121,7 +121,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			if isBusy {
 				tv.unregisterDraggedTypes()
 			} else {
-				tv.register(forDraggedTypes: FileDragTypes)
+				tv.registerForDraggedTypes(FileDragTypes)
 			}
 		}
 	}
@@ -196,7 +196,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	// NSMenu calls this method before an item's action is called. we listen to it from the add button's menu
-	func addFileMenuAction(_ note: Notification) {
+	@objc func addFileMenuAction(_ note: Notification) {
 		guard let menuItem = note.userInfo?["MenuItem"] as? NSMenuItem,
 			let index = menuItem.representedObject as? Int
 			else { return }
@@ -367,7 +367,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				os_log("why did we get error creating export bookmark: %{public}@", log: .app, type:.error, err)
 			}
 			savePanel.close()
-			if result == NSFileHandlingPanelOKButton && savePanel.url != nil {
+			if result == .OK && savePanel.url != nil {
 				do {
 					try Foundation.FileManager.default.copyItem(at: self.session.fileCache.cachedUrl(file:self.selectedFile!), to: savePanel.url!)
 				} catch let error as NSError {
@@ -527,12 +527,12 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		let data = rowData[row]
 		if data.sectionName != nil {
 			// swiftlint:disable:next force_cast
-			let tview = tableView.make(withIdentifier: "string", owner: nil) as! NSTableCellView
+			let tview = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "string"), owner: nil) as! NSTableCellView
 			tview.textField!.stringValue = data.sectionName!
 			return tview
 		} else {
 			// swiftlint:disable:next force_cast
-			let fview = tableView.make(withIdentifier: "file", owner: nil) as! EditableTableCellView
+			let fview = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "file"), owner: nil) as! EditableTableCellView
 			fview.objectValue = data.file
 			fview.textField?.stringValue = data.file!.name
 			return fview
@@ -565,12 +565,12 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		return true
 	}
 	
-	func tableView(_ tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation dropOperation: NSTableViewDropOperation) -> NSDragOperation
+	func tableView(_ tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation dropOperation: NSTableView.DropOperation) -> NSDragOperation
 	{
 		return importPrompter!.validateTableViewDrop(info)
 	}
 
-	func tableView(_ tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableViewDropOperation) -> Bool
+	func tableView(_ tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableView.DropOperation) -> Bool
 	{
 		importPrompter!.acceptTableViewDrop(info, workspace: session.workspace, window: view.window!) { (files) in
 			self.importFiles(files)

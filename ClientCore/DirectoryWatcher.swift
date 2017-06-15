@@ -32,7 +32,7 @@ public final class DirectoryWatcher {
 		
 		monitorFileDescriptor = open(url.path, O_EVTONLY)
 		monitorSource = DispatchSource.makeFileSystemObjectSource(fileDescriptor: monitorFileDescriptor, eventMask: [.write, .delete], queue: monitorQueue)
-		monitorSource?.setEventHandler { [weak self] _ in
+		monitorSource?.setEventHandler { [weak self] in
 			self?.changeCallback(self!)
 		}
 		monitorSource?.setCancelHandler { [weak self] in

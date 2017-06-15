@@ -45,8 +45,8 @@ protocol SessionControllerDelegate: class {
 		session.delegate = self
 		self.responseHandler = ServerResponseHandler(delegate: self)
 		let nc = NotificationCenter.default
-		nc.addObserver(self, selector: #selector(SessionController.appWillTerminate), name: NSNotification.Name.NSApplicationWillTerminate, object: nil)
-		nc.addObserver(self, selector:  #selector(SessionController.saveSessionState), name: NSNotification.Name.NSWorkspaceWillSleep, object:nil)
+		nc.addObserver(self, selector: #selector(SessionController.appWillTerminate), name: NSApplication.willTerminateNotification, object: nil)
+		nc.addObserver(self, selector:  #selector(SessionController.saveSessionState), name: NSWorkspace.willSleepNotification, object:nil)
 		// need to finish the init process we are a part of
 		DispatchQueue.main.async {
 			self.restoreSessionState()
@@ -67,7 +67,7 @@ protocol SessionControllerDelegate: class {
 		properlyClosed = true
 	}
 	
-	func appWillTerminate(_ note: Notification) {
+	@objc func appWillTerminate(_ note: Notification) {
 		saveSessionState()
 	}
 	
@@ -145,7 +145,7 @@ extension SessionController {
 		return furl
 	}
 	
-	func saveSessionState() {
+	@objc func saveSessionState() {
 		//save data related to this session
 		var dict = [String: JSON]()
 		dict["outputController"] = outputHandler.saveSessionState()

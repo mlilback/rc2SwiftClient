@@ -7,9 +7,9 @@
 import Cocoa
 
 protocol Searchable {
-	func performFind(action: NSTextFinderAction)
+	func performFind(action: NSTextFinder.Action)
 }
 
 extension Searchable {
-	func performFind(action: NSTextFinderAction) { }
+	func performFind(action: NSTextFinder.Action) { }
 }

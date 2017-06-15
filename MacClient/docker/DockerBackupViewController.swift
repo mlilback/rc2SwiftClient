@@ -17,7 +17,7 @@ class DockerBackupViewController: DockerManagerInjectable {
 	@IBOutlet private var progressStackView: NSStackView!
 	@IBOutlet private var progressView: NSProgressIndicator!
 	
-	private dynamic var isRestoring: Bool = false
+	@objc private dynamic var isRestoring: Bool = false
 	fileprivate var backups: [DockerBackup] = []
 	var backupManager: DockerBackupManager?
 	
@@ -70,7 +70,7 @@ class DockerBackupViewController: DockerManagerInjectable {
 		return nerror
 	}
 	
-	func delete(_ sender: Any?) {
+	@objc func delete(_ sender: Any?) {
 		let selRow = backupTableView.selectedRow
 		guard selRow >= 0 else { return }
 		let targetBackup = backups[selRow]
@@ -78,7 +78,6 @@ class DockerBackupViewController: DockerManagerInjectable {
 			try FileManager.default.removeItem(at: targetBackup.url)
 		} catch {
 			os_log("error removing backup: %{public}@", log: .app, error.localizedDescription)
-			NSBeep()
 			return
 		}
 		backups.remove(at: selRow)
@@ -95,7 +94,7 @@ extension DockerBackupViewController: NSTableViewDataSource {
 		return backups.count
 	}
 	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-		let view = tableView.make(withIdentifier: "backup", owner: nil) as? NSTableCellView
+		let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "backup"), owner: nil) as? NSTableCellView
 		view?.objectValue = backups[row]
 		view?.textField?.objectValue = backups[row].date
 		return view

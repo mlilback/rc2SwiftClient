@@ -28,17 +28,17 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	@IBOutlet var serverNameField: NSTextField?
 	
 	var bookmarkManager: BookmarkManager?
-	dynamic var canContinue: Bool = false
-	dynamic var valuesEditable: Bool = false
-	dynamic var busy: Bool = false
-	dynamic var serverName: String = "" { didSet { adjustCanContinue() } }
-	dynamic var hostName: String = "" { didSet { adjustCanContinue() } }
-	dynamic var login: String = "" { didSet { adjustCanContinue() } }
-	dynamic var password: String = "" { didSet { adjustCanContinue() } }
+	@objc dynamic var canContinue: Bool = false
+	@objc dynamic var valuesEditable: Bool = false
+	@objc dynamic var busy: Bool = false
+	@objc dynamic var serverName: String = "" { didSet { adjustCanContinue() } }
+	@objc dynamic var hostName: String = "" { didSet { adjustCanContinue() } }
+	@objc dynamic var login: String = "" { didSet { adjustCanContinue() } }
+	@objc dynamic var password: String = "" { didSet { adjustCanContinue() } }
 	var selectedServer: ServerHost?
 	fileprivate let keychain = Keychain()
 	
-	dynamic var selectedServerIndex: Int = 0 { didSet {
+	@objc dynamic var selectedServerIndex: Int = 0 { didSet {
 		serverDetailsView?.animator().isHidden = selectedServerIndex == 0
 		adjustCanContinue()
 		let serverCount = (serverMenu?.menu?.items.count)!

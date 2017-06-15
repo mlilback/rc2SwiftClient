@@ -37,7 +37,7 @@ class ConsoleTextField: NSTextField {
 	
 	override func textDidEndEditing(_ notification: Notification) {
 		super.textDidEndEditing(notification)
-		currentEditor()?.menu = NSTextView.defaultMenu()
+		currentEditor()?.menu = NSTextView.defaultMenu
 	}
 	
 	///This is a method of the NSTextViewDelegate protocol. When a TextField is being edited,

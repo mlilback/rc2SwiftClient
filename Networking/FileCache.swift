@@ -363,7 +363,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 
 	///returns a producer that forwards values/completed from our progress signal, converting an interrupted into completed.
 	/// This is because signals send interrupted if they are already closed, but the caller expects a normal signal producer.
-	func producer<E: Error>(signal: Signal<Double, E>) -> SignalProducer<Double, Rc2Error> {
+	func producer<E>(signal: Signal<Double, E>) -> SignalProducer<Double, Rc2Error> {
 		var theProducer: SignalProducer<Double, Rc2Error>?
 		var nestedObserver: Signal<Double, Rc2Error>.Observer?
 		let obsClosure = { (cObserver: Signal<Double, Rc2Error>.Observer, disp: Disposable?) in
