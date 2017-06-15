@@ -40,7 +40,7 @@ public class EditorDocument: NSObject {
 		self.fileUrl = fileCache.cachedUrl(file: file)
 		self.undoManager = UndoManager()
 		super.init()
-		if fileUrl.fileExists() {
+		if !fileUrl.fileExists() {
 			do {
 				savedContents = String(data: try Data(contentsOf: fileUrl), encoding: .utf8)
 				isLoaded = true
