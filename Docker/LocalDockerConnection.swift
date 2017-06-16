@@ -74,7 +74,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 			requestData.append(body)
 		}
 		let outData = requestData.withUnsafeBytes { (ptr) -> DispatchData in
-			DispatchData(bytes: UnsafeBufferPointer(start: ptr, count: requestData.count))
+			DispatchData(bytes: UnsafeRawBufferPointer(start: ptr, count: requestData.count))
 		}
 		channel?.write(offset: 0, data: outData, queue: DispatchQueue.global())
 		{ (done, _, errCode) in

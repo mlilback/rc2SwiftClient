@@ -125,8 +125,9 @@ public final class DockerAPIImplementation: DockerAPI {
 	public func upload(url source: URL, path: String, filename: String, containerName: String) -> SignalProducer<(), DockerError>
 	{
 		return tarballFile(source: source, filename: filename)
-			.map { ($0, path, containerName, true) }
-			.flatMap(.concat, transform: self.tarredUpload)
+			.flatMap(.concat, transform: {
+				self.tarredUpload(file: $0, path: path, containerName: containerName, removeFile: true)
+			})
 	}
 	
 	// MARK: - image operations
@@ -279,8 +280,12 @@ public final class DockerAPIImplementation: DockerAPI {
 	public func execute(command: [String], container: DockerContainer) -> SignalProducer<(Int, Data), DockerError>
 	{
 		return prepExecTask(command: command, container: container)
-			.flatMap(.concat, transform: runExecTask)
-			.flatMap(.concat, transform: checkExecSuccess)
+			.flatMap(.concat, transform: { (taskId) in
+				return self.runExecTask(taskId: taskId)
+			})
+			.flatMap(.concat, transform: { (arg) in
+				return self.checkExecSuccess(taskId: arg.0, data: arg.1) 
+			})
 	}
 
 	/// documentation in DockerAPI protocol
