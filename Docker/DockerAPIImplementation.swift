@@ -284,7 +284,7 @@ public final class DockerAPIImplementation: DockerAPI {
 				return self.runExecTask(taskId: taskId)
 			})
 			.flatMap(.concat, transform: { (arg) in
-				return self.checkExecSuccess(taskId: arg.0, data: arg.1) 
+				return self.checkExecSuccess(taskId: arg.0, data: arg.1)
 			})
 	}
 
