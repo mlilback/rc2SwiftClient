@@ -114,10 +114,14 @@ class SessionSpec: NetworkingBaseSpec {
 				self.waitForExpectations(timeout: 1.0, handler: nil)
 				expect(createdResult?.error).toNot(beNil())
 				expect(createdResult?.error?.type).to(equal(Rc2Error.Rc2ErrorType.network))
-				expect(createdResult?.error?.nestedError).to( MatcherFunc<Error?> { expression, message in
-					guard let actualVal = try expression.evaluate() as? NetworkingError else { return false }
-					if case .invalidHttpStatusCode(let rsp) = actualVal, rsp.statusCode == 500 { return true }
-					return false
+				expect(createdResult?.error?.nestedError).to( Predicate { expression in
+					guard let actualVal = try expression.evaluate() as? NetworkingError else {
+						return PredicateResult(status: .fail, message: ExpectationMessage.fail("networking error"))
+					}
+					if case .invalidHttpStatusCode(let rsp) = actualVal, rsp.statusCode == 500 {
+						return PredicateResult(status: .matches, message: ExpectationMessage.expectedTo("http status is 500"))
+					}
+					return PredicateResult(status: .doesNotMatch, message: ExpectationMessage.expectedActualValueTo("be 500"))
 				})
 			}
 		}

@@ -9,7 +9,6 @@ import Foundation
 import os
 import Freddy
 import ClientCore
-import Networking
 
 /// represents a bookmark to an rc2 server
 /// project/workspace names are for display purposes and fallback if the workspaceIdentifier is no longer valid
@@ -19,11 +18,11 @@ public struct Bookmark: JSONDecodable, JSONEncodable, CustomStringConvertible, C
 		return Bookmark(name: NetworkConstants.defaultBookmarkName, server: nil, workspaceIdent: WorkspaceIdentifier(projectId: 0, wspaceId: 0), project: NetworkConstants.defaultProjectName, workspace: NetworkConstants.defaultWorkspaceName)
 	}
 	
-	let name: String?
-	let server: ServerHost?
-	let workspaceIdent: WorkspaceIdentifier
-	let projectName: String?
-	let workspaceName: String?
+	public let name: String?
+	public let server: ServerHost?
+	public let workspaceIdent: WorkspaceIdentifier
+	public let projectName: String?
+	public let workspaceName: String?
 	var lastUsed: TimeInterval
 	
 	fileprivate init(name: String?, server: ServerHost?, workspaceIdent: WorkspaceIdentifier, project: String?, workspace: String?, lastUsed: TimeInterval = NSDate.distantPast.timeIntervalSinceReferenceDate)

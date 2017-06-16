@@ -15,10 +15,10 @@ import ClientCore
 //TODO: implement FileImporterTests
 
 class FileImporterTests: NetworkingBaseSpec, URLSessionDataDelegate {
-	override class func initialize() {
+	private static let foo: Int = {
 		URLSessionConfiguration.mockingjaySwizzleDefaultSessionConfiguration()
-	}
-
+		return 1
+	}()
 	func fileUrlsForTesting() -> [URL] {
 		let imgUrl = URL(fileURLWithPath: "/Library/Desktop Pictures/Art")
 		let files = try! FileManager.default.contentsOfDirectory(at: imgUrl, includingPropertiesForKeys: [URLResourceKey.fileSizeKey], options: [.skipsHiddenFiles])

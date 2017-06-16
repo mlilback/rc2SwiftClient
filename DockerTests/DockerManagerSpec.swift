@@ -117,7 +117,7 @@ class DockerManagerSpec: BaseDockerSpec {
 				testInitialize()
 				dockerM?.defaults[.lastImageInfoCheck] = 0
 				//this date should match what is in imageInfo.json
-				expect(dockerM!.imageInfo!.timestampString).to(equal("2017-04-25T19:48:57Z"))
+				expect(dockerM!.imageInfo!.timestampString).to(equal("2017-06-12T19:40:40Z"))
 				self.stub({ (request) -> (Bool) in
 					return request.httpMethod == "GET" && request.url!.path.hasSuffix("/imageInfo.json")
 				}, builder: jsonData(self.resourceDataFor(fileName: "updatedImageInfo", fileExtension: "json")))

@@ -7,7 +7,7 @@
 import Foundation
 import Quick
 import Nimble
-@testable import ClientCore
+@testable import Docker
 
 class HttpStringUtilsSpec: QuickSpec {
 	override func spec() {

@@ -67,7 +67,6 @@
 		081559911DDC84850047B3CE /* SessionImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559901DDC84850047B3CE /* SessionImage.swift */; };
 		081559931DDC889D0047B3CE /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559921DDC889D0047B3CE /* ImageCache.swift */; };
 		081559951DDCCD960047B3CE /* RACSignals+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559941DDCCD960047B3CE /* RACSignals+Rc2.swift */; };
-		081559971DDCFEB00047B3CE /* FileCacheSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559961DDCFEB00047B3CE /* FileCacheSpec.swift */; };
 		081559981DDD06AD0047B3CE /* MessagePackSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559991DDE83250047B3CE /* Rc2Error.swift */; };
 		0815599C1DDF396E0047B3CE /* FileImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815599B1DDF396E0047B3CE /* FileImporter.swift */; };
@@ -160,11 +159,9 @@
 		083A56731D247B52009D3091 /* AddBookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56721D247B52009D3091 /* AddBookmarkViewController.swift */; };
 		083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */; };
 		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
-		083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
 		083D11861DECC37900549268 /* Process+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11851DECC37900549268 /* Process+Rc2.swift */; };
 		083D118F1DEDECEC00549268 /* linedBadHeader.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D118D1DEDECEC00549268 /* linedBadHeader.json */; };
 		083D11901DEDECEC00549268 /* linedNormal.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D118E1DEDECEC00549268 /* linedNormal.json */; };
-		083D11921DEDF7F000549268 /* HttpStringUtilsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11911DEDF7F000549268 /* HttpStringUtilsSpec.swift */; };
 		083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11931DEE0DF300549268 /* DataRc2Spec.swift */; };
 		083D11961DEF535C00549268 /* complexImages.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D11951DEF535C00549268 /* complexImages.json */; };
 		083D11981DF0B8AF00549268 /* imageInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D11971DF0B8AF00549268 /* imageInfo.json */; };
@@ -234,6 +231,13 @@
 		088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6BB1C4C508000153414 /* KeychainTests.swift */; };
 		088D1F931DF36B7F00BC891E /* updatedImageInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 088D1F921DF36B7F00BC891E /* updatedImageInfo.json */; };
 		088D1F951DF36E4D00BC891E /* updatedContainers.json in Resources */ = {isa = PBXBuildFile; fileRef = 088D1F941DF36E4D00BC891E /* updatedContainers.json */; };
+		088E38051EF3FD9F00136CFA /* HttpStringUtilsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11911DEDF7F000549268 /* HttpStringUtilsSpec.swift */; };
+		088E38061EF4024100136CFA /* ZipArchive.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		088E38071EF4025700136CFA /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		088E38081EF40B7700136CFA /* Bookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B81D216E5400866A05 /* Bookmark.swift */; };
+		088E38091EF40B7B00136CFA /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
+		088E380B1EF40C8300136CFA /* BookmarkSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088E380A1EF40C5300136CFA /* BookmarkSpec.swift */; };
+		088E380C1EF410DC00136CFA /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		088F591A1E732EC40009A0B1 /* MockDockerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F59191E732EC40009A0B1 /* MockDockerAPI.swift */; };
 		088F591C1E74BCEA0009A0B1 /* ThemePrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */; };
 		088F59221E74C4D10009A0B1 /* PlatformColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F59211E74C4D10009A0B1 /* PlatformColor.swift */; };
@@ -336,8 +340,6 @@
 		08F189A61D09EE4000866A05 /* NSViewController+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189A51D09EE4000866A05 /* NSViewController+Rc2.swift */; };
 		08F189A81D0A0E7200866A05 /* static_html in Resources */ = {isa = PBXBuildFile; fileRef = 08F189A71D0A0E7200866A05 /* static_html */; };
 		08F189AA1D109A4F00866A05 /* TextViewWithContextualMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189A91D109A4F00866A05 /* TextViewWithContextualMenu.swift */; };
-		08F189B91D216E5400866A05 /* Bookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B81D216E5400866A05 /* Bookmark.swift */; };
-		08F189BD1D2184EB00866A05 /* BookmarkTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BC1D2184EB00866A05 /* BookmarkTest.swift */; };
 		08F42FA21D33F47000A1EE8D /* MockSessionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F42FA11D33F47000A1EE8D /* MockSessionHelpers.swift */; };
 		08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* SessionEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* SidebarTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* SidebarTabController.swift */; };
@@ -490,6 +492,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				088E380C1EF410DC00136CFA /* Result.framework in CopyFiles */,
 				0803FCBE1C84C47400F17E4A /* Mockingjay.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -500,6 +503,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				088E38071EF4025700136CFA /* ReactiveCocoa.framework in CopyFiles */,
+				088E38061EF4024100136CFA /* ZipArchive.framework in CopyFiles */,
 				0865087D1E49360A0067C8CA /* Starscream.framework in CopyFiles */,
 				081559731DDB82970047B3CE /* NotifyingCollection.framework in CopyFiles */,
 				081559701DDA763A0047B3CE /* ClientCore.framework in CopyFiles */,
@@ -793,6 +798,7 @@
 		088CE6BB1C4C508000153414 /* KeychainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
 		088D1F921DF36B7F00BC891E /* updatedImageInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedImageInfo.json; sourceTree = "<group>"; };
 		088D1F941DF36E4D00BC891E /* updatedContainers.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedContainers.json; sourceTree = "<group>"; };
+		088E380A1EF40C5300136CFA /* BookmarkSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkSpec.swift; sourceTree = "<group>"; };
 		088F59191E732EC40009A0B1 /* MockDockerAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockDockerAPI.swift; sourceTree = "<group>"; };
 		088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThemePrefsController.swift; path = prefs/ThemePrefsController.swift; sourceTree = "<group>"; };
 		088F59211E74C4D10009A0B1 /* PlatformColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlatformColor.swift; path = ClientCore/PlatformColor.swift; sourceTree = SOURCE_ROOT; };
@@ -863,8 +869,6 @@
 		08D610731CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAAdaptiveSpaceItemView.h; sourceTree = "<group>"; };
 		08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItemView.m; sourceTree = "<group>"; };
 		08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PreferencesViewController.swift; path = prefs/PreferencesViewController.swift; sourceTree = "<group>"; };
-		08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwinjectStoryboard.framework; path = Carthage/Build/Mac/SwinjectStoryboard.framework; sourceTree = "<group>"; };
-		08DB1A971D32EF930079DA6B /* Swinject.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Swinject.framework; path = Carthage/Build/Mac/Swinject.framework; sourceTree = "<group>"; };
 		08E5D2081EAA58FD00374055 /* TimedEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimedEvent.swift; path = TimedEvents/TimedEvent.swift; sourceTree = SOURCE_ROOT; };
 		08E5D2111EAFD31000374055 /* DockerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerManager.swift; sourceTree = "<group>"; };
 		08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = Carthage/Build/Mac/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
@@ -884,7 +888,6 @@
 		08F189AD1D18818700866A05 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Shared.xcconfig; path = config/Shared.xcconfig; sourceTree = "<group>"; };
 		08F189B01D19B0D500866A05 /* ServerHost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ServerHost.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F189B81D216E5400866A05 /* Bookmark.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Bookmark.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		08F189BC1D2184EB00866A05 /* BookmarkTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BookmarkTest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F189BE1D21938F00866A05 /* BookmarkViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BookmarkViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F42FA11D33F47000A1EE8D /* MockSessionHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockSessionHelpers.swift; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* SessionEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SessionEditorController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -1079,6 +1082,8 @@
 				080E82C31DCBE31D0048F36C /* Networking.h */,
 				080E82C41DCBE31D0048F36C /* Info.plist */,
 				08F03E421DE3323100D02153 /* NetworkingConstants.swift */,
+				08F189B81D216E5400866A05 /* Bookmark.swift */,
+				083A567E1D25B818009D3091 /* BookmarkManager.swift */,
 				08F6ADFF1DD918CF00AF0722 /* FileCache.swift */,
 				081559921DDC889D0047B3CE /* ImageCache.swift */,
 				080E82FF1DCD07930048F36C /* NetworkingError.swift */,
@@ -1101,6 +1106,7 @@
 				080E82FD1DCCD77D0048F36C /* loginResults.json */,
 				08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */,
 				0881B5071DCD336500679DB3 /* variables.json */,
+				088E380A1EF40C5300136CFA /* BookmarkSpec.swift */,
 				086508801E4A431C0067C8CA /* FileImporterTests.swift */,
 				081559961DDCFEB00047B3CE /* FileCacheSpec.swift */,
 				080E82F91DCCD4E90048F36C /* FileSpec.swift */,
@@ -1395,7 +1401,6 @@
 			children = (
 				083382F41C68E43400D40EEB /* test resources */,
 				083382F91C68F2A900D40EEB /* BaseTest.swift */,
-				08F189BC1D2184EB00866A05 /* BookmarkTest.swift */,
 				0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */,
 				081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */,
 				08FDB1981C591409006FCD1A /* ImageCacheTests.swift */,
@@ -1435,8 +1440,6 @@
 				082FF1C01C7F321B00CCC27F /* Result.framework */,
 				088CE6B91C4C44BD00153414 /* Security.framework */,
 				0833A8251D2D87120033654B /* Sparkle.framework */,
-				08DB1A971D32EF930079DA6B /* Swinject.framework */,
-				08DB1A951D32EF8A0079DA6B /* SwinjectStoryboard.framework */,
 				08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */,
 				082FF1ED1C7F339400CCC27F /* URITemplate.framework */,
 			);
@@ -1457,8 +1460,6 @@
 				08F189A71D0A0E7200866A05 /* static_html */,
 				08A01FB51CC7FCA3001EDFAA /* fmdb */,
 				0827A4D71C7ED9CE001F0AFB /* SyntaxHighlighting */,
-				08F189B81D216E5400866A05 /* Bookmark.swift */,
-				083A567E1D25B818009D3091 /* BookmarkManager.swift */,
 				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
 				08A01FD51CC95C58001EDFAA /* HelpController.swift */,
 				080AB8E31E9564BA005452C7 /* HelpTopic.swift */,
@@ -1498,7 +1499,6 @@
 			isa = PBXGroup;
 			children = (
 				0897942B1D7B68F0003339EE /* Info.plist */,
-				083D11911DEDF7F000549268 /* HttpStringUtilsSpec.swift */,
 				083D11931DEE0DF300549268 /* DataRc2Spec.swift */,
 			);
 			path = ClientCoreTests;
@@ -1693,6 +1693,7 @@
 				081559A71DDFB2D80047B3CE /* DockerTagTests.swift */,
 				081559A81DDFB2D80047B3CE /* DockerUrlProtocolTests.swift */,
 				08FDE53D1EA02AFA00F14FAA /* LocalConnectionSpec.swift */,
+				083D11911DEDF7F000549268 /* HttpStringUtilsSpec.swift */,
 				081559BE1DDFB4300047B3CE /* TestDataProtocol.swift */,
 				081559BF1DDFB4300047B3CE /* TestDataProtocolTests.swift */,
 				081559BA1DDFB2F50047B3CE /* test resources */,
@@ -1968,6 +1969,7 @@
 					088CE6791C4B0AF500153414 = {
 						CreatedOnToolsVersion = 7.2;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
 						TestTargetID = 088CE6681C4B0AF400153414;
 					};
 					089794191D7B68F0003339EE = {
@@ -2253,6 +2255,7 @@
 				08F6ADAA1DD643C900AF0722 /* Copyable.swift in Sources */,
 				081559851DDBB3760047B3CE /* SessionDelegate.swift in Sources */,
 				081559811DDBAF030047B3CE /* ConsoleAttachment.swift in Sources */,
+				088E38081EF40B7700136CFA /* Bookmark.swift in Sources */,
 				080E82E11DCBEE590048F36C /* User.swift in Sources */,
 				08C6055E1E574355007F83C4 /* ConnectionManager.swift in Sources */,
 				0881B50B1DCF856B00679DB3 /* ConnectionInfo.swift in Sources */,
@@ -2266,6 +2269,7 @@
 				081559871DDBB4310047B3CE /* Session.swift in Sources */,
 				08F6AE001DD918CF00AF0722 /* FileCache.swift in Sources */,
 				08F03E431DE3323100D02153 /* NetworkingConstants.swift in Sources */,
+				088E38091EF40B7B00136CFA /* BookmarkManager.swift in Sources */,
 				0815597F1DDBAEB30047B3CE /* ServerResponseHandler.swift in Sources */,
 				0881B5041DCD23FD00679DB3 /* Variable.swift in Sources */,
 				0815599C1DDF396E0047B3CE /* FileImporter.swift in Sources */,
@@ -2278,12 +2282,12 @@
 			files = (
 				080E82FA1DCCD4E90048F36C /* FileSpec.swift in Sources */,
 				088935861E00530C00C94B19 /* TestingWebSocket.swift in Sources */,
-				081559971DDCFEB00047B3CE /* FileCacheSpec.swift in Sources */,
 				088935881E00AA5700C94B19 /* FakeFileCache.swift in Sources */,
 				0881B5101DCFA99A00679DB3 /* LoginSpec.swift in Sources */,
 				088935841E004FF500C94B19 /* SessionSpec.swift in Sources */,
 				080E82FC1DCCD56F0048F36C /* NetworkingBaseSpec.swift in Sources */,
 				086508811E4A431C0067C8CA /* FileImporterTests.swift in Sources */,
+				088E380B1EF40C8300136CFA /* BookmarkSpec.swift in Sources */,
 				0881B5061DCD329300679DB3 /* VariableSpec.swift in Sources */,
 				08F6ADAC1DD6502000AF0722 /* ModelSpec.swift in Sources */,
 				080E82EC1DCC001E0048F36C /* FileTypeSpec.swift in Sources */,
@@ -2359,7 +2363,6 @@
 				08F189A21D09AA0300866A05 /* SessionController.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
 				08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */,
-				083A567F1D25B819009D3091 /* BookmarkManager.swift in Sources */,
 				08A01FC81CC7FCA3001EDFAA /* FMDatabaseQueue.m in Sources */,
 				08DAF2F31E4D07EF005A251E /* PreferencesViewController.swift in Sources */,
 				0827A4E41C7ED9CE001F0AFB /* RCodeHighlighter.swift in Sources */,
@@ -2375,7 +2378,6 @@
 				08A01FD61CC95C58001EDFAA /* HelpController.swift in Sources */,
 				083174101C57B2E200071408 /* CommandHistory.swift in Sources */,
 				089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */,
-				08F189B91D216E5400866A05 /* Bookmark.swift in Sources */,
 				08CCED4B1EE1DDFC004B5ADE /* DockerLogController.swift in Sources */,
 				0872676D1EE20A37004251C1 /* DockerBackupViewController.swift in Sources */,
 				08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */,
@@ -2401,7 +2403,6 @@
 			files = (
 				08A01FD81CC965F8001EDFAA /* HelpControllerTests.swift in Sources */,
 				08F42FA21D33F47000A1EE8D /* MockSessionHelpers.swift in Sources */,
-				08F189BD1D2184EB00866A05 /* BookmarkTest.swift in Sources */,
 				088CE6BC1C4C508000153414 /* KeychainTests.swift in Sources */,
 				08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */,
 				0845CB1E1C616E060090267C /* MockFileManagers.swift in Sources */,
@@ -2454,7 +2455,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */,
-				083D11921DEDF7F000549268 /* HttpStringUtilsSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2511,6 +2511,7 @@
 				081559B31DDFB2D80047B3CE /* DockerPullTest.swift in Sources */,
 				081559B21DDFB2D80047B3CE /* DockerManagerSpec.swift in Sources */,
 				081559C21DDFB4300047B3CE /* TestDataProtocolTests.swift in Sources */,
+				088E38051EF3FD9F00136CFA /* HttpStringUtilsSpec.swift in Sources */,
 				08FDE53E1EA02AFA00F14FAA /* LocalConnectionSpec.swift in Sources */,
 				081559AE1DDFB2D80047B3CE /* DockerContainerSpec.swift in Sources */,
 				083D119A1DF201BB00549268 /* BaseDockerSpec.swift in Sources */,
@@ -2955,17 +2956,21 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)/vendor/HockeySDK-Mac",
 					"$(PROJECT_DIR)/vendor",
-					"$(PROJECT_DIR)/HockeySDK-Mac",
 				);
 				INFOPLIST_FILE = MacClientTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(BUILT_PRODUCTS_DIR)";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClientTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rc².app/Contents/MacOS/Rc²";
@@ -2977,17 +2982,21 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)/vendor/HockeySDK-Mac",
 					"$(PROJECT_DIR)/vendor",
-					"$(PROJECT_DIR)/HockeySDK-Mac",
 				);
 				INFOPLIST_FILE = MacClientTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(BUILT_PRODUCTS_DIR)";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClientTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rc².app/Contents/MacOS/Rc²";

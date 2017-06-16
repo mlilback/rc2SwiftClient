@@ -19,6 +19,9 @@ struct FakeFileInfo {
 }
 
 class FakeFileCache: FileCache {
+	func close() {
+	}
+	
 	let baseUrl: URL
 	var fileManager: Rc2FileManager
 	var workspace: Workspace

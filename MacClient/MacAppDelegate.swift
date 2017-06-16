@@ -397,7 +397,9 @@ extension MacAppDelegate {
 	/// load the setup window and start setup process
 	fileprivate func beginStartup() {
 		precondition(startupController == nil)
-		precondition(dockerManager != nil)
+		if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+			precondition(dockerManager != nil)
+		}
 		
 		// load window and setupController.
 		startupWindowController = mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "StartupWindowController")) as? StartupWindowController

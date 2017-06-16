@@ -8,7 +8,6 @@ import Foundation
 import Freddy
 import SwiftyUserDefaults
 import os
-import Networking
 
 // MARK: Keys for UserDefaults
 extension DefaultsKeys {
@@ -17,20 +16,20 @@ extension DefaultsKeys {
 }
 
 ///manages access to Bookmarks and ServerHosts
-class BookmarkManager {
+public class BookmarkManager {
 	///all existing bookmarks
-	fileprivate(set) var bookmarks: [Bookmark] = []
+	public fileprivate(set) var bookmarks: [Bookmark] = []
 	///bookmarks grouped by ServerHost.name
-	fileprivate(set) var bookmarkGroups: [String:BookmarkGroup] = [:]
+	public fileprivate(set) var bookmarkGroups: [String:BookmarkGroup] = [:]
 	///all known ServerHosts
-	fileprivate(set) var hosts: [ServerHost] = []
+	public fileprivate(set) var hosts: [ServerHost] = []
 	
-	init() {
+	public init() {
 		loadBookmarks()
 	}
 
 	///saves bookmarks and hosts to NSUserDefaults
-	func save() {
+	public func save() {
 		let defaults = UserDefaults.standard
 		defaults[.bookmarks] = bookmarks.toJSON()
 		defaults[.hosts] = hosts.toJSON()
@@ -38,7 +37,7 @@ class BookmarkManager {
 	
 	///adds a new bookmark to bookmarks array
 	/// - parameter bookmark: the bookmark to add
-	func addBookmark(_ bookmark: Bookmark) {
+	public func addBookmark(_ bookmark: Bookmark) {
 		bookmarks.append(bookmark)
 		addBookmarkToAppropriateGroup(bookmark)
 		bookmarks.sort()
@@ -49,7 +48,7 @@ class BookmarkManager {
 	/// - parameter with: the replacement bookmark
 	/// - returns: true if old was found and replaced
 	@discardableResult
-	func replaceBookmark(_ old: Bookmark, with new: Bookmark) -> Bool {
+	public func replaceBookmark(_ old: Bookmark, with new: Bookmark) -> Bool {
 		if let idx = bookmarks.index(of: old) {
 			bookmarks[idx] = new
 			groupBookmarks()
@@ -94,7 +93,7 @@ class BookmarkManager {
 	
 	///add a server host
 	/// - parameter host: the host to add
-	func addHost(_ host: ServerHost) {
+	public func addHost(_ host: ServerHost) {
 		hosts.append(host)
 		hosts.sort { $0.name < $1.name }
 	}
@@ -122,21 +121,21 @@ class BookmarkManager {
 }
 
 ///represents a collection of Bookmarks grouped by a key
-struct BookmarkGroup {
-	let key: String
-	var bookmarks: [Bookmark] = []
+public struct BookmarkGroup {
+	public let key: String
+	public private(set) var bookmarks: [Bookmark] = []
 	
-	init(key: String, firstBookmark: Bookmark? = nil) {
+	public init(key: String, firstBookmark: Bookmark? = nil) {
 		self.key = key
 		if firstBookmark != nil { bookmarks.append(firstBookmark!) }
 	}
 	
-	init(original: BookmarkGroup) {
+	public init(original: BookmarkGroup) {
 		self.key = original.key
 		self.bookmarks = original.bookmarks
 	}
 	
-	mutating func addBookmark(_ bmark: Bookmark) {
+	public mutating func addBookmark(_ bmark: Bookmark) {
 		bookmarks.append(bmark)
 	}
 }

@@ -18,6 +18,9 @@ struct MockFileEntry {
 }
 
 class MockFileCache: FileCache {
+	func close() {
+	}
+	
 	var fileManager: Rc2FileManager
 	var workspace: Workspace
 	
