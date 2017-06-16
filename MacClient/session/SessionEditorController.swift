@@ -32,17 +32,18 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	@IBOutlet var fileNameField: NSTextField?
 	@IBOutlet var contextualMenuAdditions: NSMenu?
 	
-	let defaultUndoManager = UndoManager()
 	var parser: SyntaxParser?
-	fileprivate(set) var currentDocument: EditorDocument?
-	fileprivate var openDocuments: [Int: EditorDocument] = [:]
-	fileprivate var defaultAttributes: [NSAttributedStringKey: AnyObject] = [:]
-	fileprivate var currentChunkIndex = 0
+	private(set) var currentDocument: EditorDocument?
+	private var openDocuments: [Int: EditorDocument] = [:]
+	private var defaultAttributes: [NSAttributedStringKey: Any] = [:]
+	private var currentChunkIndex = 0
 	
 	///true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
-	fileprivate var ignoreTextStorageNotifications = false
+	private var ignoreTextStorageNotifications = false
 	
-	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFont(ofSize: 14.0)!.fontDescriptor {
+	static let defaultFontSize = CGFloat(14.0)
+	
+	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFont(ofSize: defaultFontSize)!.fontDescriptor {
 		didSet {
 			let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
 			editor?.font = font
@@ -72,7 +73,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	// MARK: init/deinit
 	deinit {
 		NSWorkspace.shared.notificationCenter.removeObserver(self)
-		NotificationCenter.default.removeObserver(self)
+		notificationCenter?.removeObserver(self)
 	}
 	
 	// MARK: methods
@@ -80,7 +81,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		super.viewDidLoad()
 		guard editor != nil else { return }
 		//try switching to Menlo instead of default monospaced font
-		let fdesc = NSFontDescriptor(name: "Menlo-Regular", size: 14.0)
+		let fdesc = NSFontDescriptor(name: "Menlo-Regular", size: SessionEditorController.defaultFontSize)
 		if let _ = NSFont(descriptor: fdesc, size: fdesc.pointSize)
 		{
 			currentFontDescriptor = fdesc
@@ -352,7 +353,7 @@ fileprivate extension SessionEditorController {
 	}
 	
 	//should be the only place an actual save is performed
-	fileprivate func saveWithProgress(isAutoSave: Bool = false) -> SignalProducer<Bool, Rc2Error> {
+	private func saveWithProgress(isAutoSave: Bool = false) -> SignalProducer<Bool, Rc2Error> {
 		guard let doc = currentDocument, let file = currentDocument?.file else {
 			return SignalProducer<Bool, Rc2Error>(error: Rc2Error(type: .logic, severity: .error, explanation: "save called with nothing to save"))
 		}
@@ -443,3 +444,4 @@ fileprivate extension SessionEditorController {
 	}
 	
 }
+
