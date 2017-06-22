@@ -18,7 +18,7 @@ class VariableSpec: NetworkingBaseSpec {
 		describe("variable testing") {
 			let variableDict = try! json.getDictionary(at: "variables")
 			var variables: [String: Variable] = [:]
-			variableDict.forEach { (key, value) in
+			variableDict.forEach { (arg) in let (key, value) = arg;
 				do {
 					try variables[key] = Variable.variableForJson(value)
 				} catch {

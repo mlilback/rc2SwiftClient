@@ -13,7 +13,8 @@ class TestingWebSocket: WebSocket {
 	var stringsWritten = [String]()
 
 	override func connect() {
-		onConnect?()
+		// FIXME: xcode 9b2 bitches about missing argument
+//		onConnect?()
 	}
 
 	override func write(string: String, completion: (() -> ())?) {

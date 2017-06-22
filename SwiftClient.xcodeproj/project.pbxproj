@@ -1949,13 +1949,13 @@
 					080E82C01DCBE31D0048F36C = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 					080E82C81DCBE31D0048F36C = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 					08127CD11DAD2434002E0D01 = {
@@ -1965,7 +1965,7 @@
 					088CE6681C4B0AF400153414 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 						SystemCapabilities = {
 							com.apple.iCloud = {
 								enabled = 0;
@@ -1974,7 +1974,7 @@
 					};
 					088CE6791C4B0AF500153414 = {
 						CreatedOnToolsVersion = 7.2;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 088CE6681C4B0AF400153414;
 					};
@@ -2689,6 +2689,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2723,6 +2724,7 @@
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2755,7 +2757,7 @@
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -2779,7 +2781,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.NetworkingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -2932,6 +2934,7 @@
 				PRODUCT_MODULE_NAME = MacClient;
 				PRODUCT_NAME = "Rc²";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -2954,6 +2957,7 @@
 				PRODUCT_MODULE_NAME = MacClient;
 				PRODUCT_NAME = "Rc²";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -2978,7 +2982,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rc².app/Contents/MacOS/Rc²";
 			};
 			name = Debug;
@@ -3004,7 +3008,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rc².app/Contents/MacOS/Rc²";
 			};
 			name = Release;
@@ -3115,7 +3119,6 @@
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -3141,7 +3144,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
@@ -3203,6 +3205,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -3237,6 +3240,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
