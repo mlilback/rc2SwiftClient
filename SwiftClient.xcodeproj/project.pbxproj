@@ -276,6 +276,8 @@
 		08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FD91CC9692C001EDFAA /* BasicOutlineDataSource.swift */; };
 		08A01FDC1CCA8B2F001EDFAA /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */; };
 		08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */; };
+		08A28D401EF7CC3A004C236A /* ChunkTypesetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A28D3F1EF7CC3A004C236A /* ChunkTypesetter.swift */; };
+		08A28D421EF7D261004C236A /* ChunkHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A28D411EF7D261004C236A /* ChunkHeaderView.swift */; };
 		08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 08AA5F071E5350AA00389089 /* SearchBarField.m */; };
 		08B184D21E5F36E800F4A6D6 /* defaultWorkspaceFiles in Resources */ = {isa = PBXBuildFile; fileRef = 08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */; };
 		08B184D41E5F384800F4A6D6 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B184D31E5F384800F4A6D6 /* AppInfo.swift */; };
@@ -838,6 +840,8 @@
 		08A01FD91CC9692C001EDFAA /* BasicOutlineDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicOutlineDataSource.swift; sourceTree = "<group>"; };
 		08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpOutputController.swift; sourceTree = "<group>"; };
+		08A28D3F1EF7CC3A004C236A /* ChunkTypesetter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChunkTypesetter.swift; sourceTree = "<group>"; };
+		08A28D411EF7D261004C236A /* ChunkHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChunkHeaderView.swift; sourceTree = "<group>"; };
 		08AA5F061E5350AA00389089 /* SearchBarField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchBarField.h; sourceTree = "<group>"; };
 		08AA5F071E5350AA00389089 /* SearchBarField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchBarField.m; sourceTree = "<group>"; };
 		08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; name = defaultWorkspaceFiles; path = shared/resources/defaultWorkspaceFiles; sourceTree = SOURCE_ROOT; };
@@ -1633,6 +1637,8 @@
 				083174031C5571D300071408 /* RootViewController.swift */,
 				083174051C56BE7B00071408 /* SessionSplitController.swift */,
 				08F448F51C4E244500C64706 /* SessionEditorController.swift */,
+				08A28D3F1EF7CC3A004C236A /* ChunkTypesetter.swift */,
+				08A28D411EF7D261004C236A /* ChunkHeaderView.swift */,
 				080AB8DA1E92D8DF005452C7 /* multi image */,
 				08BCD3F81E69BA1A00B86BB4 /* output */,
 				0812631D1C862B94003E37A5 /* sidebar */,
@@ -2357,12 +2363,14 @@
 				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,
 				08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */,
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
+				08A28D401EF7CC3A004C236A /* ChunkTypesetter.swift in Sources */,
 				083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */,
 				08F673D01D020B2700B87049 /* FontManagement.swift in Sources */,
 				084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */,
 				08F189A21D09AA0300866A05 /* SessionController.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
 				08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */,
+				08A28D421EF7D261004C236A /* ChunkHeaderView.swift in Sources */,
 				08A01FC81CC7FCA3001EDFAA /* FMDatabaseQueue.m in Sources */,
 				08DAF2F31E4D07EF005A251E /* PreferencesViewController.swift in Sources */,
 				0827A4E41C7ED9CE001F0AFB /* RCodeHighlighter.swift in Sources */,
@@ -3035,7 +3043,8 @@
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -3071,7 +3080,8 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -3105,7 +3115,7 @@
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -3131,7 +3141,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;

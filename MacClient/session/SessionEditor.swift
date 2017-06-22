@@ -11,6 +11,11 @@ import SwiftyUserDefaults
 class SessionEditor: TextViewWithContextualMenu {
 	var wordWrapEnabled: Bool { return textContainer!.widthTracksTextView }
 	
+	override var typingAttributes: [NSAttributedStringKey : Any] {
+		get { return super.typingAttributes }
+		set { var attrs = newValue; attrs.removeValue(forKey: ChunkAttrName); super.typingAttributes = attrs }
+	}
+
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		usesFindBar = true

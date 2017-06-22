@@ -37,6 +37,8 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	private var openDocuments: [Int: EditorDocument] = [:]
 	private var defaultAttributes: [NSAttributedStringKey: Any] = [:]
 	private var currentChunkIndex = 0
+	/// map of chunk header views for each chunk by chunk number
+	private var chunkHeaders = [Int: ChunkHeaderView]()
 	
 	///true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
 	private var ignoreTextStorageNotifications = false
@@ -94,6 +96,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		editor?.isEditable = false
 		fileNameField?.stringValue = ""
 		editor?.textStorage?.delegate = self
+		editor?.layoutManager?.typesetter = ChunkTypesetter()
 		let lnv = NoodleLineNumberView(scrollView: editor!.enclosingScrollView)
 		editor!.enclosingScrollView!.verticalRulerView = lnv
 		editor!.enclosingScrollView!.rulersVisible = true
@@ -286,6 +289,10 @@ extension SessionEditorController: NSTextStorageDelegate {
 		//parse() return true if the chunks changed. in that case, we need to recolor all of them
 		if parser!.parse() {
 			parser!.colorChunks(parser!.chunks)
+			// remove all chunk attributes
+			textStorage.removeAttribute(ChunkAttrName, range: NSRange(location: 0, length: textStorage.length))
+			// add back updated chunk attributes
+			updateHeaderViews(chunks: parser!.chunks)
 		} else {
 			//only color chunks in the edited range
 			parser!.colorChunks(parser!.chunksForRange(editedRange))
@@ -313,8 +320,69 @@ extension SessionEditorController: NSTextViewDelegate {
 	}
 }
 
+extension SessionEditorController: ChunkTypsetterDelegate {
+	/// returns the header view to use for chunk
+	func headerViewFor(chunk: DocumentChunk) -> NSView? {
+		guard chunk.hasHeader else { return nil }
+		if let hview = chunkHeaders[chunk.chunkNumber] { return hview }
+		// create a headerchunk
+		let frame = NSRect(x: 0, y: 0, width: 200, height: ChunkHeaderView.defaultHeight)
+		let header = ChunkHeaderView(frame: frame)
+		chunkHeaders[chunk.chunkNumber] = header
+		return header
+	}
+}
+
 // MARK: private methods
 fileprivate extension SessionEditorController {
+	//returns the origin for where a ChunkHeaderView should be placed for the range of a chunk
+	func originFor(range: NSRange, layoutManager lm: NSLayoutManager) -> NSPoint? {
+		let gindex = lm.glyphIndexForCharacter(at: range.location)
+		guard gindex < lm.numberOfGlyphs else { return nil }
+		let rect = lm.lineFragmentRect(forGlyphAt: gindex, effectiveRange: nil)
+		let pt = lm.location(forGlyphAt: gindex)
+		print("\(pt.y) . \(rect.origin.y) . \(rect.size.height)")
+		let thePoint = NSPoint(x: rect.origin.x, y: pt.y + rect.origin.y - 20 + 4)
+		print("pt=\(thePoint)")
+		return thePoint
+	}
+	
+	// creates/updates chunk header views to be at correct position
+	func updateHeaderViews(chunks: [DocumentChunk]) {
+		guard let editor = editor, let text = editor.textStorage, let lm = editor.layoutManager else { fatalError() }
+		let oldViews = editor.subviews.flatMap { aView in return aView as? ChunkHeaderView }
+		var remainingViews = Set<ChunkHeaderView>(oldViews)
+		chunks.forEach { aChunk in
+			guard aChunk.type == .rCode else { return }
+			text.addAttribute(ChunkAttrName, value: aChunk, range: NSRange(location: aChunk.parsedRange.location, length: 1))
+			if let currentHeader = chunkHeaders[aChunk.chunkNumber], let origin = originFor(range: aChunk.parsedRange, layoutManager: lm)
+			{
+				remainingViews.remove(currentHeader)
+				currentHeader.chunk = aChunk
+//				currentHeader.setFrameOrigin(origin)
+				currentHeader.topConstraint?.constant = origin.y
+			} else {
+				guard let origin = originFor(range: aChunk.parsedRange, layoutManager: lm) else {
+					print("failed to find origin")
+					return
+				}
+				let header = ChunkHeaderView(frame: NSRect(x: 0, y: 0, width: editor.frame.size.width, height: ChunkHeaderView.defaultHeight))
+				header.chunk = aChunk
+				header.translatesAutoresizingMaskIntoConstraints = false
+				chunkHeaders[aChunk.chunkNumber] = header
+				editor.addSubview(header)
+				header.leadingAnchor.constraint(equalTo: editor.leadingAnchor, constant: 2).isActive = true
+				header.trailingAnchor.constraint(equalTo: editor.trailingAnchor, constant: 2).isActive = true
+				header.heightAnchor.constraint(equalToConstant: ChunkHeaderView.defaultHeight).isActive = true
+				header.topConstraint = header.topAnchor.constraint(equalTo: editor.topAnchor, constant: origin.y)
+				header.topConstraint?.isActive = true
+//				header.setFrameOrigin(origin)
+			}
+		}
+		//remove any old headers still in oldHeaderViews
+		remainingViews.forEach { $0.removeFromSuperview() }
+	}
+	
 	///adjusts the UI to mark the current chunk
 	func adjustUIForCurrentChunk() {
 		//for now we will move the cursor and scroll so it is visible
@@ -411,6 +479,9 @@ fileprivate extension SessionEditorController {
 				editor.enclosingScrollView?.contentView.scroll(to: point.origin)
 			}
 		}
+		if self.parser!.parse() {
+			updateHeaderViews(chunks: parser!.chunks)
+		}
 		self.updateUIForCurrentDocument()
 	}
 	
@@ -442,6 +513,4 @@ fileprivate extension SessionEditorController {
 		editor?.isEditable = selected
 		editor?.font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
 	}
-	
 }
-
