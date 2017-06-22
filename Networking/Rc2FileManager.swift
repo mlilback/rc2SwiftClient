@@ -5,7 +5,6 @@
 //
 
 import ClientCore
-import CryptoSwift
 import Foundation
 import os
 import ReactiveSwift
@@ -136,7 +135,7 @@ extension File {
 		setXAttributeWithName(FileAttrVersion, data: versionData!, atURL: toUrl)
 		if let fileData = try? Data(contentsOf: toUrl)
 		{
-			let shaData = fileData.sha256()
+			let shaData = (fileData as NSData).sha1hash()
 			setXAttributeWithName(FileAttrChecksum, data: shaData, atURL: toUrl)
 		} else {
 			os_log("failed to create sha256 checksum for %{public}@", log: .network, type:.error, toUrl.path)

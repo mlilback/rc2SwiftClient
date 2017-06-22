@@ -154,7 +154,7 @@ extension SessionController {
 		do {
 			let data = try JSON.dictionary(dict).serialize()
 			//only write to disk if has changed
-			let hash = data.sha256()
+			let hash = (data as NSData).sha256()
 			if hash != savedStateHash {
 				let furl = try stateFileUrl()
 				try? data.write(to: furl, options: [.atomic])
@@ -181,7 +181,7 @@ extension SessionController {
 				if let imageState = jsonDict["imageCache"] {
 					try session.imageCache.load(from: imageState)
 				}
-				savedStateHash = data.sha256()
+				savedStateHash = (data as NSData).sha256()
 			}
 		} catch let err as NSError {
 			os_log("error restoring session state: %{public}@", log: .app, type:.error, err)
