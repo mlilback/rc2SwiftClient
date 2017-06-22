@@ -44,8 +44,8 @@ open class RmdSyntaxParser: SyntaxParser {
 		{ (result, _, _) -> Void in
 			guard let result = result else { return }
 			var cname: String?
-			if result.rangeAt(1).length > 0 {
-				cname = str.substring(with: result.rangeAt(1).toStringRange(str)!)
+			if result.range(at:1).length > 0 {
+				cname = str.substring(with: result.range(at:1).toStringRange(str)!)
 			}
 			let codeChunk = DocumentChunk(chunkType: .rCode, chunkNumber: nextChunkIndex, name: cname)
 			nextChunkIndex += 1
@@ -66,7 +66,7 @@ open class RmdSyntaxParser: SyntaxParser {
 		//look for MathML
 		mathRegex.enumerateMatches(in: str, options: [], range: range)
 		{ (results, _, _) -> Void in
-			if str.substring(with: (results?.rangeAt(4).toStringRange(str))!) == "block" {
+			if str.substring(with: (results?.range(at:4).toStringRange(str))!) == "block" {
 				let newChunk = DocumentChunk(chunkType: .equation, chunkNumber: 1)
 				newChunk.equationType = .MathML
 				newChunk.parsedRange = results!.range
@@ -116,7 +116,7 @@ open class RmdSyntaxParser: SyntaxParser {
 		inlineRegex.enumerateMatches(in: str, options: [], range: range)
 		{ (results, _, _) -> Void in
 			self.textStorage.addAttribute(.backgroundColor, value: color, range: results!.range)
-			self.latexHighlighter.highlightText(self.textStorage, range: results!.rangeAt(1))
+			self.latexHighlighter.highlightText(self.textStorage, range: results!.range(at:1))
 		}
 		for aRange in inlineMathML {
 			self.textStorage.addAttribute(.backgroundColor, value: color, range: aRange)

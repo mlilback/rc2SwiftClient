@@ -45,26 +45,26 @@ open class HTMLString {
 				outString.append(NSAttributedString(string: srcString.substring(from: nextStart)))
 				return
 			}
-			let tagName = srcString.substring(with: (result?.rangeAt(1))!)
-			let valueString = srcString.substring(with: (result?.rangeAt(3))!)
+			let tagName = srcString.substring(with: (result?.range(at:1))!)
+			let valueString = srcString.substring(with: (result?.range(at:3))!)
 			var destStr: NSAttributedString?
 			switch tagName {
 				case "b":
 					destStr = NSMutableAttributedString(string: valueString)
-					(destStr as? NSMutableAttributedString)?.applyFontTraits(.boldFontMask, range: result!.rangeAt(3))
+					(destStr as? NSMutableAttributedString)?.applyFontTraits(.boldFontMask, range: result!.range(at:3))
 				case "i":
 					destStr = NSMutableAttributedString(string: valueString)
-					(destStr as? NSMutableAttributedString)?.applyFontTraits(.italicFontMask, range: result!.rangeAt(3))
+					(destStr as? NSMutableAttributedString)?.applyFontTraits(.italicFontMask, range: result!.range(at:3))
 				case "color":
-					let content = srcString.substring(with: (result?.rangeAt(2))!)
-					let attrs = self.parseColorAttrs(srcString, attrString:srcString.substring(with: (result?.rangeAt(2))!) as NSString)
+					let content = srcString.substring(with: (result?.range(at:2))!)
+					let attrs = self.parseColorAttrs(srcString, attrString:srcString.substring(with: (result?.range(at:2))!) as NSString)
 					destStr = NSAttributedString(string: content, attributes: attrs)
 				default:
 					os_log("unsupported tag: '%{public}@'", log: .core, tagName)
-					destStr = NSAttributedString(string: srcString.substring(with: (result?.rangeAt(0))!))
+					destStr = NSAttributedString(string: srcString.substring(with: (result?.range(at:0))!))
 			}
 			outString.append(destStr!)
-			let rng: NSRange = (result?.rangeAt(3))!
+			let rng: NSRange = (result?.range(at:3))!
 			nextStart = rng.location + rng.length
 		}
 		attrText = NSAttributedString(attributedString: outString)
@@ -74,8 +74,8 @@ open class HTMLString {
 		var dict = [NSAttributedStringKey: AnyObject]()
 		HTMLString.argumentRegex.enumerateMatches(in: attrString as String, options: [], range: NSRange(location: 0, length: attrString.length))
 		{ (result, _, _) -> Void in
-			let attrName = srcString.substring(with: (result?.rangeAt(1))!)
-			let attrValue = srcString.substring(with: (result?.rangeAt(2))!)
+			let attrName = srcString.substring(with: (result?.range(at:1))!)
+			let attrValue = srcString.substring(with: (result?.range(at:2))!)
 			switch attrName {
 				case "hex":
 					guard let color = PlatformColor(hexString: attrValue) else {

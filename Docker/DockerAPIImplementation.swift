@@ -373,9 +373,9 @@ extension DockerAPIImplementation {
 				let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
 				let verStr = try json.getString(at: "Version")
 				guard let match = regex.firstMatch(in: verStr, options: [], range: verStr.fullNSRange),
-					let primaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(1))),
-					let secondaryVersion = Int((verStr as NSString).substring(with: match.rangeAt(2))),
-					let fixVersion = Int((verStr as NSString).substring(with: match.rangeAt(3))),
+					let primaryVersion = Int((verStr as NSString).substring(with: match.range(at:1))),
+					let secondaryVersion = Int((verStr as NSString).substring(with: match.range(at:2))),
+					let fixVersion = Int((verStr as NSString).substring(with: match.range(at:3))),
 					let apiStr = try? json.getString(at: "ApiVersion"),
 					let apiVersion = Double(apiStr) else
 				{
