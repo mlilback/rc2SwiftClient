@@ -5,7 +5,6 @@
 //
 
 import Cocoa
-import CryptoSwift
 import Freddy
 import os
 import ReactiveSwift
