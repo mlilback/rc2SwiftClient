@@ -151,7 +151,7 @@ public class Session {
 		var script = srcScript
 		let helpCheck = helpRegex.firstMatch(in: script, options: [], range: NSRange(location: 0, length: script.utf16.count))
 		if helpCheck?.numberOfRanges == 3 {
-			let topic = script.substring(with: (helpCheck?.rangeAt(2).toStringRange(script))!)
+			let topic = script.substring(with: (helpCheck?.range(at:2).toStringRange(script))!)
 			let adjScript = script.replacingCharacters(in: (helpCheck?.range.toStringRange(script))!, with: "")
 			delegate?.respondToHelp(topic)
 			guard !adjScript.utf16.isEmpty else {

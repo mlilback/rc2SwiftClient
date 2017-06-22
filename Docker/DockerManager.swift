@@ -47,7 +47,7 @@ enum ManagerState: Int, Comparable {
 }
 
 let volumeNames = ["rc2_dbdata", "rc2_userlib"]
-let dbConnectAttemptMaxAttempts = 10
+public let dbConnectAttemptMaxAttempts = 10
 let dbConnectAttemptDelay = 3
 
 // MARK: -

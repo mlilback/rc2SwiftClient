@@ -59,10 +59,10 @@ public class HttpStringUtils {
 		// swiftlint:disable:next force_try
 		let responseRegex = try! NSRegularExpression(pattern: "^(HTTP/1.\\d) (\\d+)( .*?\r\n)(.*)", options: [.anchorsMatchLines, .dotMatchesLineSeparators])
 		guard let matchResult = responseRegex.firstMatch(in: responseString, options: [], range: responseString.fullNSRange), matchResult.numberOfRanges == 5,
-			let statusString = responseString.substring(from: matchResult.rangeAt(2)),
+			let statusString = responseString.substring(from: matchResult.range(at:2)),
 			let statusCode = Int(statusString),
-			let versionString = responseString.substring(from: matchResult.rangeAt(1)),
-			let headersString = responseString.substring(from: matchResult.rangeAt(4))
+			let versionString = responseString.substring(from: matchResult.range(at:1)),
+			let headersString = responseString.substring(from: matchResult.range(at:4))
 			else { throw UtilError.invalidInput }
 		var headers = [String: String]()
 		// swiftlint:disable:next force_try
@@ -70,8 +70,8 @@ public class HttpStringUtils {
 		headerRegex.enumerateMatches(in: headersString, options: [], range: headersString.fullNSRange)
 		{ (matchResult, _, _) in
 			if let match = matchResult,
-				let key = headersString.substring(from: match.rangeAt(1)),
-				let value = headersString.substring(from: match.rangeAt(2))
+				let key = headersString.substring(from: match.range(at:1)),
+				let value = headersString.substring(from: match.range(at:2))
 			{
 				headers[key] = value
 			}

@@ -24,7 +24,7 @@ open class LatexCodeHighlighter: CodeHighlighter {
 		let sourceStr = content.mutableString.substring(with: range)
 		commentRegex.enumerateMatches(in: sourceStr, options: [], range: NSRange(location: 0, length: sourceStr.characters.count))
 		{ (results, _, _) -> Void in
-			content.addAttribute(.foregroundColor, value: color, range: (results?.rangeAt(1))!)
+			content.addAttribute(.foregroundColor, value: color, range: (results?.range(at:1))!)
 		}
 	}
 	

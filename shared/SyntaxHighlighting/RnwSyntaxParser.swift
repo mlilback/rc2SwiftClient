@@ -45,8 +45,8 @@ open class RnwSyntaxParser: SyntaxParser {
 				newChunk = DocumentChunk(chunkType: .documentation, chunkNumber: curChunkNum)
 			} else  {
 				var cname: String?
-				if result.rangeAt(2).length > 0 {
-					cname = str.substring(with: (result.rangeAt(2).toStringRange(str))!)
+				if result.range(at:2).length > 0 {
+					cname = str.substring(with: (result.range(at:2).toStringRange(str))!)
 				}
 				newChunk = DocumentChunk(chunkType: .rCode, chunkNumber: curChunkNum, name: cname)
 			}
