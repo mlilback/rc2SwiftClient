@@ -42,7 +42,9 @@ open class SyntaxParser: NSObject {
 	internal(set) var chunks: [DocumentChunk] = []
 	fileprivate var lastSource: String = ""
 	var colorBackgrounds = false
-
+	
+	var executableChunks: [DocumentChunk] { return chunks.filter({ $0.type == .rCode }) }
+	
 	internal var docHighlighter: CodeHighlighter?
 	internal var codeHighlighter: CodeHighlighter?
 

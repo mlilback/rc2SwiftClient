@@ -21,6 +21,7 @@ extension Selector {
 	static let previousChunkAction = #selector(SessionEditorController.previousChunkAction(_:))
 	static let nextChunkAction = #selector(SessionEditorController.nextChunkAction(_:))
 	static let executeLine = #selector(SessionEditorController.executeCurrentLine(_:))
+	static let executePrevousChunks = #selector(SessionEditorController.executePreviousChunks(_:))
 }
 
 class SessionEditorController: AbstractSessionViewController, TextViewMenuDelegate
@@ -70,6 +71,18 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		}
 	}
 	
+	var currentChunk: DocumentChunk? {
+		guard let parser = parser, parser.chunks.count > 0 else { return nil }
+		return parser.chunks[currentChunkIndex]
+	}
+	
+	var currentChunkHasPreviousExecutableChunks: Bool {
+		guard let parser = parser, parser.executableChunks.count > 0, let curChunk = currentChunk, curChunk.isExecutable
+			else { return false }
+		// return true if not the first executable chunk
+		return parser.executableChunks.index(of: curChunk) ?? 0 > 0
+	}
+	
 	// MARK: init/deinit
 	deinit {
 		NSWorkspace.shared.notificationCenter.removeObserver(self)
@@ -107,6 +120,8 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		switch action  {
 		case Selector.runQuery, Selector.sourceQuery:
 			return currentDocument?.currentContents.characters.count ?? 0 > 0
+		case Selector.executePrevousChunks:
+			return currentChunkHasPreviousExecutableChunks
 		case Selector.executeLine:
 			if editor?.selectedRange().length ?? 0 > 0 {
 				menuItem.title = NSLocalizedString("Execute Selection", comment: "")
@@ -125,6 +140,8 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 			return currentChunkIndex + 1 < (parser?.chunks.count ?? 0)
 		case Selector.previousChunkAction:
 			return currentChunkIndex > 0
+		case Selector.executePrevousChunks:
+			return currentChunkHasPreviousExecutableChunks
 		case #selector(ManageFontMenu.adjustFontSize(_:)):
 			return true
 		case #selector(UsesAdjustableFont.fontChanged(_:)):
@@ -240,6 +257,7 @@ extension SessionEditorController {
 		executeQuery(type:.Source)
 	}
 	
+	/// if there is a selection, executes the selection. Otherwise, executes the current line.
 	@IBAction func executeCurrentLine(_ sender: AnyObject?) {
 		guard let editor = self.editor else { fatalError() }
 		let sourceString = editor.string
@@ -256,6 +274,10 @@ extension SessionEditorController {
 			//if execute line, move to next line
 			editor.moveCursorToNextNonBlankLine()
 		}
+	}
+	
+	@IBAction func executePreviousChunks(_ sender: Any?) {
+		print("execute previous chunks")
 	}
 }
 

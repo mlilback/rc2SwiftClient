@@ -28,6 +28,8 @@ open class DocumentChunk: NSObject {
 	//should only be used by the parser/highlighter
 	internal(set) var parsedRange: NSRange = NSRange(location: 0, length: 0)
 	
+	public var isExecutable: Bool { return type == .rCode }
+	
 	init(chunkType: ChunkType, chunkNumber: Int, name: String?=nil) {
 		self.chunkNumber = chunkNumber
 		self.type = chunkType
