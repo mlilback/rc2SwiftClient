@@ -7,3 +7,6 @@
 [submodule "vendor/SBInjector"]
 	path = vendor/SBInjector
 	url = https://github.com/mlilback/SBInjector.git
+[submodule "vendor/MJLCommon"]
+	path = vendor/MJLCommon
+	url = https://github.com/mlilback/MJLCommon.git

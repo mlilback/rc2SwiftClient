@@ -39,7 +39,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 				self?.window?.close()
 			}
 		}
-		let viewControllers = recursiveFlatMap(rootVC, transform: { $0 as? AbstractSessionViewController }, children: { $0.childViewControllers })
+		let viewControllers = recursiveFlatMap(rootVC, children: { $0.childViewControllers }, transform: { $0 as? AbstractSessionViewController })
 		for aController in viewControllers {
 			aController.sessionOptional = session
 		}
