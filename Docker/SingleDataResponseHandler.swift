@@ -17,7 +17,14 @@ class SingleDataResponseHandler: DockerResponseHandler {
 	private let myQueue: DispatchQueue
 	var headers: HttpHeaders?
 	private var isRawStream = false
+	private let dataQueue = DispatchQueue(label: "singledata handler")
 	
+	/// create a response handler that reads all data from a dispatch channel
+	///
+	/// - Parameters:
+	///   - channel: the channel to read from
+	///   - queue: the queue to perform reads on
+	///   - handler: a message handler to call with details on progress
 	required init(channel: DispatchIO, queue: DispatchQueue, handler: @escaping DockerMessageHandler)
 	{
 		self.readChannel = channel
@@ -41,7 +48,7 @@ class SingleDataResponseHandler: DockerResponseHandler {
 		readChannel.setLimit(highWater: maxReadDataSize)
 
 		// schedule first read
-		readChannel.read(offset: 0, length: maxReadDataSize, queue: myQueue, ioHandler: readHandler)
+		readChannel.read(offset: 0, length: maxReadDataSize, queue: dataQueue, ioHandler: readHandler)
 	}
 	
 	func closeHandler() {
@@ -61,8 +68,10 @@ class SingleDataResponseHandler: DockerResponseHandler {
 		// dispatchData can be nil if done
 		if let dispatchData = data, dispatchData.count > 0 {
 			// add to buffer
-			dispatchData.withUnsafeBytes { (ptr: UnsafePointer<UInt8>) -> Void in
-				dataBuffer.append(ptr, count: dispatchData.count)
+			myQueue.sync {
+				dispatchData.withUnsafeBytes { (ptr: UnsafePointer<UInt8>) -> Void in
+					dataBuffer.append(ptr, count: dispatchData.count)
+				}
 			}
 		} else if done {
 			if isRawStream {

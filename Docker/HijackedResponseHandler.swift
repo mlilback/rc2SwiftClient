@@ -16,6 +16,7 @@ class HijackedResponseHandler: DockerResponseHandler {
 	private var dataBuffer = Data()
 	private let myQueue: DispatchQueue
 	var headers: HttpHeaders?
+	private let dataQueue = DispatchQueue(label: "hijacked handler")
 	
 	required init(channel: DispatchIO, queue: DispatchQueue, handler: @escaping DockerMessageHandler)
 	{
@@ -26,7 +27,9 @@ class HijackedResponseHandler: DockerResponseHandler {
 	
 	///chokepoint for logging/debugging
 	func sendMessage(_ msgType: LocalDockerMessage) {
-		self.callback(msgType)
+		dataQueue.async {
+			self.callback(msgType)
+		}
 	}
 	
 	/// starts reading
@@ -62,13 +65,17 @@ class HijackedResponseHandler: DockerResponseHandler {
 			fatalError("dispatchIO read gave !done with nil data")
 		}
 		// get data and add to buffer
-		dispatchData.withUnsafeBytes { (ptr: UnsafePointer<UInt8>) -> Void in
-			dataBuffer.append(ptr, count: dispatchData.count)
+		dataQueue.sync {
+			dispatchData.withUnsafeBytes { (ptr: UnsafePointer<UInt8>) -> Void in
+				dataBuffer.append(ptr, count: dispatchData.count)
+			}
 		}
 		if headers == nil {
 			//headers must be included in first read
 			do {
-				dataBuffer = try parseHeaders(data: dataBuffer)
+				try dataQueue.sync {
+					dataBuffer = try parseHeaders(data: dataBuffer)
+				}
 			} catch let error as DockerError {
 				sendMessage(.error(error))
 				DispatchQueue.global().async { self.closeHandler() }
@@ -82,14 +89,16 @@ class HijackedResponseHandler: DockerResponseHandler {
 		// we've got headers and possibly data. if the data is a complete chunk, send it as a message
 		var exit = false
 		while !exit {
-			let (complete, chunkData) = parseNextChunk()
-			if let cdata = chunkData {
-				sendMessage(.data(cdata))
-			} else {
-				exit = true
-			}
-			if complete {
-				sendMessage(.complete)
+			dataQueue.sync {
+				let (complete, chunkData) = parseNextChunk()
+				if let cdata = chunkData {
+					sendMessage(.data(cdata))
+				} else {
+					exit = true
+				}
+				if complete {
+					sendMessage(.complete)
+				}
 			}
 		}
 		if done {
