@@ -442,6 +442,4 @@ fileprivate extension SessionEditorController {
 		editor?.isEditable = selected
 		editor?.font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
 	}
-	
 }
-

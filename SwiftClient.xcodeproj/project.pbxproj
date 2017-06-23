@@ -1933,7 +1933,7 @@
 		088CE6611C4B0AF400153414 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0810;
+				LastSwiftUpdateCheck = 0900;
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = Rc2;
 				TargetAttributes = {
@@ -1984,7 +1984,7 @@
 					08A01FAD1CC7FA28001EDFAA = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 					};
 					08F6ADC11DD9169300AF0722 = {
 						CreatedOnToolsVersion = 8.1;
