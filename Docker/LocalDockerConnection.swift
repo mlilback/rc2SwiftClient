@@ -113,7 +113,12 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 			}
 		}
 		guard code >= 0 else {
-			os_log("bad response %d, %d", type:.error, code, errno)
+			let savedErrno = errno
+			os_log("bad response %d, %d", type:.error, code, savedErrno)
+			if savedErrno == 2 { //file not found, i.e. docker not running
+				handler(.error(.dockerNotRunning))
+				throw DockerError.dockerNotRunning
+			}
 			let rootError = NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey: request.url!])
 			handler(.error(.networkError(rootError)))
 			throw DockerError.networkError(rootError)

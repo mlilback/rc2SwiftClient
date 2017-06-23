@@ -325,6 +325,7 @@
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08F01E961EFC74690047F397 /* NSData+Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F01E941EFC74690047F397 /* NSData+Hash.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		08F01E971EFC74690047F397 /* NSData+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F01E951EFC74690047F397 /* NSData+Hash.m */; };
+		08F01EA11EFD59120047F397 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 08F01EA01EFD59120047F397 /* Localizable.strings */; };
 		08F03E371DDFB5B500D02153 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
 		08F03E391DDFB5BB00D02153 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		08F03E3A1DDFB5BE00D02153 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
@@ -874,6 +875,7 @@
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
 		08F01E941EFC74690047F397 /* NSData+Hash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Hash.h"; sourceTree = "<group>"; };
 		08F01E951EFC74690047F397 /* NSData+Hash.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+Hash.m"; sourceTree = "<group>"; };
+		08F01EA01EFD59120047F397 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		08F03E421DE3323100D02153 /* NetworkingConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingConstants.swift; sourceTree = "<group>"; };
 		08F03E441DE4BF0A00D02153 /* URLResponse+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLResponse+Rc2.swift"; sourceTree = "<group>"; };
 		08F189A11D09AA0300866A05 /* SessionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SessionController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -1670,6 +1672,7 @@
 				0828FB2D1EA7FCF000AECEC5 /* NSTextCheckingResult+Rc2.swift */,
 				0828FB271EA7FC3600AECEC5 /* URLRequest+Docker.swift */,
 				0828FB291EA7FC7900AECEC5 /* URLResponse+Rc2.swift */,
+				08F01EA01EFD59120047F397 /* Localizable.strings */,
 			);
 			path = Docker;
 			sourceTree = "<group>";
@@ -2123,6 +2126,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08F01EA11EFD59120047F397 /* Localizable.strings in Resources */,
 				08F6ADF51DD9172C00AF0722 /* dockerInfo.json in Resources */,
 				083D11981DF0B8AF00549268 /* imageInfo.json in Resources */,
 			);

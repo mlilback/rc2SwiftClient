@@ -181,7 +181,9 @@ public final class DockerManager: NSObject {
 			return SignalProducer<Bool, Rc2Error>(value: true)
 		}
 		let producer = self.api.loadVersion()
-			.mapError { Rc2Error(type: .docker, nested: $0) }
+			.mapError {
+				Rc2Error(type: .docker, nested: $0)
+			}
 			.flatMap(.concat, transform: verifyValidVersion)
 			.map { v in
 				self.versionInfo = v

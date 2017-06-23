@@ -543,25 +543,50 @@ extension DockerAPIImplementation {
 	///   - observer: observer to send results or error
 	fileprivate func make(request: URLRequest, observer: Signal<Data, DockerError>.Observer)
 	{
-		self.session.dataTask(with: request, completionHandler: { (data, response, error) in
-			guard let rawData = data, error == nil else {
-				observer.send(error: DockerError.networkError(error as NSError?))
+		var inData = Data()
+		let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request) { (message) in
+			switch message {
+			case .headers(_):
+				break
+			case .data(let data):
+				inData.append(data)
+			case .complete:
+				observer.send(value: inData)
+				observer.sendCompleted()
+			case .error(let err):
+				observer.send(error: err)
+			}
+		}
+		do {
+			try connection.openConnection()
+		} catch {
+			guard let derror = error as? DockerError else {
+				observer.send(error: DockerError.networkError(error as NSError))
 				return
 			}
-			if rawData.count == 0 {
-				os_log("request returned no data", log: .docker, type: .debug)
-			}
-			//default to 200 for non-http status codes (such as file urls)
-			let statusCode = response?.httpResponse?.statusCode ?? 200
-			guard statusCode >= 200 && statusCode < 400 else {
-				let rsp = response!.httpResponse!
-				os_log("docker request got bad status: %d response = %{public}@", log: .docker, rsp.statusCode, String(data: data!, encoding: .utf8)!)
-				observer.send(error: DockerError.generateHttpError(from: rsp, body: data))
-				return
-			}
-			observer.send(value: rawData)
-			observer.sendCompleted()
-		}).resume()
+			observer.send(error: derror)
+			return
+		}
+		connection.writeRequest()
+//		self.session.dataTask(with: request, completionHandler: { (data, response, error) in
+//			guard let rawData = data, error == nil else {
+//				observer.send(error: DockerError.networkError(error as NSError?))
+//				return
+//			}
+//			if rawData.count == 0 {
+//				os_log("request returned no data", log: .docker, type: .debug)
+//			}
+//			//default to 200 for non-http status codes (such as file urls)
+//			let statusCode = response?.httpResponse?.statusCode ?? 200
+//			guard statusCode >= 200 && statusCode < 400 else {
+//				let rsp = response!.httpResponse!
+//				os_log("docker request got bad status: %d response = %{public}@", log: .docker, rsp.statusCode, String(data: data!, encoding: .utf8)!)
+//				observer.send(error: DockerError.generateHttpError(from: rsp, body: data))
+//				return
+//			}
+//			observer.send(value: rawData)
+//			observer.sendCompleted()
+//		}).resume()
 	}
 
 	/// tar a file

@@ -29,6 +29,7 @@ public extension OSLog {
 /// - unsupportedEvent:  a docker event that is not supported by this framework
 public enum DockerError: LocalizedError {
 	case dockerNotInstalled
+	case dockerNotRunning
 	case unsupportedDockerVersion
 	case invalidArgument(String?)
 	case networkError(NSError?)
@@ -49,6 +50,7 @@ public enum DockerError: LocalizedError {
 		// swiftlint:disable:next cyclomatic_complexity //how else do we implement this?
 		switch self {
 			case .dockerNotInstalled: return NSLocalizedString("DockerError_DockerNotInstalled", bundle: myBundle, comment: "")
+			case .dockerNotRunning: return NSLocalizedString("DockerError_DockerNotRunning", bundle: myBundle, comment: "")
 			case .unsupportedDockerVersion: return NSLocalizedString("DockerError_UnsupportedVersion", bundle: myBundle, comment: "")
 			case .httpError(let statusCode, let desc, _):
 				guard let desc = desc else { return "http error \(statusCode)" }
