@@ -218,13 +218,13 @@ public class Session {
 			}
 			//write empty file to cache
 			do {
-				let updatedFile = try self.workspace.imported(file: file)
-				let destUrl = self.fileCache.cachedUrl(file: updatedFile)
+				let destUrl = self.fileCache.cachedUrl(file: file)
 				if let srcUrl = contentUrl, srcUrl.fileExists() {
 					try self.fileCache.fileManager.copyItem(at: contentUrl!, to: srcUrl)
 				} else {
 					try Data().write(to: destUrl)
 				}
+				let updatedFile = try self.workspace.imported(file: file)
 				completionHandler?(Result<Int, Rc2Error>(value: updatedFile.fileId))
 			} catch let rc2Err as Rc2Error {
 				completionHandler?(Result<Int, Rc2Error>(error: rc2Err))
