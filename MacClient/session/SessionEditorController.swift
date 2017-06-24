@@ -326,6 +326,11 @@ extension SessionEditorController: NSTextViewDelegate {
 		return editor?.undoManager
 	}
 	
+	func textViewDidChangeSelection(_ notification: Notification) {
+		guard let parser = parser else { return }
+		currentChunkIndex = parser.indexOfChunkForRange(range: editor!.selectedRange())
+	}
+	
 	func textView(_ textView: NSTextView, clickedOnLink link: Any, at charIndex: Int) -> Bool {
 		if let pieces = (link as? String)?.components(separatedBy: ":"), pieces.count == 2 {
 			NotificationCenter.default.post(name: .DisplayHelpTopic, object:pieces[1], userInfo:nil)
