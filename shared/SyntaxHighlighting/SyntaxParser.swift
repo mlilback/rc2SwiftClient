@@ -59,8 +59,11 @@ open class SyntaxParser: NSObject {
 	
 	///returns the index of the chunk in the specified range
 	func indexOfChunkForRange(range inRange: NSRange) -> Int {
-		guard chunks.count > 0 else { return 0 }
-		return chunks.index(of: chunksForRange(inRange).first!)!
+		guard chunks.count > 0,
+			let selRange = chunksForRange(inRange).first,
+			let chunkIndex = chunks.index(of: selRange)
+			else { return 0 }
+		return chunkIndex
 	}
 	
 	func chunkForRange(_ inRange: NSRange) -> DocumentChunk? {
