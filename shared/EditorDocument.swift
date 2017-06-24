@@ -91,7 +91,10 @@ public class EditorDocument: NSObject {
 	/// - Parameter autosave: true if this is an autosaves. Defaults to false.
 	/// - Returns: signal producer that will complete with the contents that were saved
 	public func saveContents(isAutoSave autosave: Bool = false) -> SignalProducer<String, Rc2Error> {
-		precondition(isLoaded)
+		guard isLoaded else {
+			os_log("saveContents called when not loaded)")
+			return SignalProducer<String, Rc2Error>.empty
+		}
 		if saveInProgress.value { return SignalProducer<String, Rc2Error>(error: Rc2Error(type: .alreadyInProgress)) }
 		return SignalProducer<String, Rc2Error> { observer, _ in
 			os_log("EditorDocument.saveContents called", log: .app, type: .info)
