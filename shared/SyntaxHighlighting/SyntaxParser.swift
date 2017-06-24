@@ -91,9 +91,9 @@ open class SyntaxParser: NSObject {
 		}
 		guard chunks.count > 0 else { return [] }
 		if range.length == 0 {
-			guard range.length > 0 else { return [chunks[0]] }
+			guard range.location > 0 else { return [chunks[0]] }
 			for aChunk in chunks {
-				if NSLocationInRange(range.location - 1, aChunk.parsedRange) {
+				if NSLocationInRange(range.location, aChunk.parsedRange) {
 					return [aChunk]
 				}
 			}
