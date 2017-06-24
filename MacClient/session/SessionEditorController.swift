@@ -130,7 +130,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 			}
 			return editor?.string.characters.count ?? 0 > 0
 		default:
-			return false
+			return validateUserInterfaceItem(menuItem)
 		}
 	}
 
@@ -342,11 +342,15 @@ fileprivate extension SessionEditorController {
 		//for now we will move the cursor and scroll so it is visible
 		let chunkRange = parser!.chunks[currentChunkIndex].parsedRange
 		var desiredRange = NSRange(location: chunkRange.location, length: 0)
-		//adjust desired range so it advances past any newlines at start of chunk
+		//adjust desired range so it advances past any newlines at start of chunk (if not just whitespace)
 		let str = editor!.string
-		let curIdx = str.characters.index(str.startIndex, offsetBy: desiredRange.location)
-		if curIdx != str.endIndex && str.characters[curIdx] == "\n" {
-			desiredRange.location += 1
+		//only adjust if it includes a non-newline character
+		if let nlcount = str.substring(from: desiredRange)?.unicodeScalars.filter({ CharacterSet.newlines.contains($0) }), nlcount.count != chunkRange.length
+		{
+			let curIdx = str.characters.index(str.startIndex, offsetBy: desiredRange.location)
+			if curIdx != str.endIndex && str.characters[curIdx] == "\n" {
+				desiredRange.location += 1
+			}
 		}
 		editor!.setSelectedRange(desiredRange)
 		editor!.scrollRangeToVisible(desiredRange)
