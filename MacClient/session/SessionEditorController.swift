@@ -156,7 +156,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		var items = [NSMenuItem]()
 		for anItem in contextualMenuAdditions?.items ?? [] {
 			if let dupItem = anItem.copy() as? NSMenuItem,
-				validateMenuItem(dupItem) || validateUserInterfaceItem(dupItem)
+				validateMenuItem(dupItem)
 			{
 				items.append(dupItem)
 			}
@@ -276,8 +276,13 @@ extension SessionEditorController {
 		}
 	}
 	
+	/// Execute every code chunk up to, but not including, the current chunk
 	@IBAction func executePreviousChunks(_ sender: Any?) {
-		print("execute previous chunks")
+		guard let parser = parser, let editor = editor else { fatalError("why is there no parser?") }
+		let chunkNumber = currentChunk?.chunkNumber ?? 0
+		let fullScript = editor.textStorage!.mutableString as String //string makes a copy, we only need reference
+		let validChunks = parser.executableChunks.prefix(while: { $0.chunkNumber < chunkNumber })
+		validChunks.forEach({ self.session.executeScript($0.executableCode(from: fullScript)) })
 	}
 }
 

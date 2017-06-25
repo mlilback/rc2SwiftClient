@@ -28,7 +28,26 @@ open class DocumentChunk: NSObject {
 	//should only be used by the parser/highlighter
 	internal(set) var parsedRange: NSRange = NSRange(location: 0, length: 0)
 	
+	/// is this chunk one of the types that are executable
 	public var isExecutable: Bool { return type == .rCode }
+	
+	/// Returns the substring between the first and last newlines if this chunk is executable
+	///
+	/// - Parameter from: the string this chunk is a part of
+	/// - Returns: the substring beteen first and last newlines
+	public func executableCode(from: String) -> String {
+		guard isExecutable else { return "" }
+		guard let fullText = from.substring(from: parsedRange) else { return "" }
+		//exclude character up to the first newline and before the last newline
+		do {
+			let regex = try NSRegularExpression(pattern: "(.*?\\n)(.*\\n)(.*\\n)")
+			guard let result = regex.firstMatch(in: fullText, options: [], range: NSRange(location: 0, length: fullText.count)) else { return "" }
+			guard let range = result.range(at: 2).toStringRange(fullText) else { return "" }
+			return fullText.substring(with: range)
+		} catch {
+			return ""
+		}
+	}
 	
 	init(chunkType: ChunkType, chunkNumber: Int, name: String?=nil) {
 		self.chunkNumber = chunkNumber
