@@ -21,6 +21,7 @@ extension Selector {
 	static let previousChunkAction = #selector(SessionEditorController.previousChunkAction(_:))
 	static let nextChunkAction = #selector(SessionEditorController.nextChunkAction(_:))
 	static let executeLine = #selector(SessionEditorController.executeCurrentLine(_:))
+	static let executeCurrentChunk = #selector(SessionEditorController.executeCurrentChunk(_:))
 	static let executePrevousChunks = #selector(SessionEditorController.executePreviousChunks(_:))
 }
 
@@ -120,6 +121,8 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		switch action  {
 		case Selector.runQuery, Selector.sourceQuery:
 			return currentDocument?.currentContents.characters.count ?? 0 > 0
+		case Selector.executeCurrentChunk:
+			return currentChunk?.isExecutable ?? false
 		case Selector.executePrevousChunks:
 			return currentChunkHasPreviousExecutableChunks
 		case Selector.executeLine:
@@ -283,6 +286,13 @@ extension SessionEditorController {
 		let fullScript = editor.textStorage!.mutableString as String //string makes a copy, we only need reference
 		let validChunks = parser.executableChunks.prefix(while: { $0.chunkNumber < chunkNumber })
 		validChunks.forEach({ self.session.executeScript($0.executableCode(from: fullScript)) })
+	}
+	
+	@IBAction func executeCurrentChunk(_ sender: Any?) {
+		guard let chunk = currentChunk, chunk.isExecutable,
+			let fullScript = editor?.textStorage?.mutableString as String? //string makes a copy, we only need reference
+			else { return }
+		session.executeScript(chunk.executableCode(from: fullScript))
 	}
 }
 

@@ -550,9 +550,18 @@ DQ
                                             <string key="keyEquivalent" base64-UTF8="YES">
 DQ
 </string>
-                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                             <connections>
                                                 <action selector="executeCurrentLine:" target="Ady-hI-5gd" id="QcW-Ry-jhZ"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Execute Current Chunk" id="UfQ-SE-Qjg">
+                                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="executeCurrentChunk:" target="Ady-hI-5gd" id="uRP-lK-OSO"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Execute Previous Chunks" id="aBq-j0-GPZ">

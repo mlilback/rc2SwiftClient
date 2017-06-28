@@ -229,10 +229,16 @@
                                 <action selector="executeCurrentLine:" target="thj-QN-rY1" id="Oam-gz-FWw"/>
                             </connections>
                         </menuItem>
-                        <menuItem title="Execute Previous Chunks" id="qMh-xh-Bac">
+                        <menuItem title="Execute Current Chunk" id="qMh-xh-Bac">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <action selector="executePreviousChunks:" target="thj-QN-rY1" id="QpY-JN-iGe"/>
+                                <action selector="executeCurrentChunk:" target="thj-QN-rY1" id="kRh-aH-rKU"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Execute Previous Chunks" id="2lq-w5-VVj">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="executePreviousChunks:" target="thj-QN-rY1" id="HhA-88-vF8"/>
                             </connections>
                         </menuItem>
                     </items>
