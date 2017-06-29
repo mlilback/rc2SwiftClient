@@ -40,7 +40,7 @@ open class DocumentChunk: NSObject {
 		guard let fullText = from.substring(from: parsedRange) else { return "" }
 		//exclude character up to the first newline and before the last newline
 		do {
-			let regex = try NSRegularExpression(pattern: "(.*?\\n)(.*\\n)(.*\\n)")
+			let regex = try NSRegularExpression(pattern: "(.*?\\n)(.*\\n)(.*\\n)", options: .dotMatchesLineSeparators)
 			guard let result = regex.firstMatch(in: fullText, options: [], range: NSRange(location: 0, length: fullText.count)) else { return "" }
 			guard let range = result.range(at: 2).toStringRange(fullText) else { return "" }
 			return fullText.substring(with: range)
