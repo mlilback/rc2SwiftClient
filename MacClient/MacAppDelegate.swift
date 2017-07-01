@@ -350,7 +350,7 @@ extension MacAppDelegate {
 			}
 			let sboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "DockerControl"), bundle: nil)
 			sboard.injectionContext = icontext
-			dockerWindowController = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("DockerControl")) as? NSWindowController
+			dockerWindowController = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("DockerWindowController")) as? NSWindowController
 		}
 		dockerWindowController?.window?.makeKeyAndOrderFront(self)
 	}
