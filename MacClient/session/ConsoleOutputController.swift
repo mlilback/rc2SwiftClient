@@ -154,9 +154,10 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		}
 		resultsView!.textStorage?.enumerateAttribute(.attachment, in: ts.string.fullNSRange, options: [], using:
 		{ (value, range, _) -> Void in
-			guard let attach = value as? NSTextAttachment else { return }
-			let fw = attach.fileWrapper
-			let fname = (fw?.filename!)!
+			guard let attach = value as? NSTextAttachment,
+				let fw = attach.fileWrapper,
+				let fname = fw.preferredFilename
+				else { return }
 			if fname.hasPrefix("img") {
 				let cell = NSTextAttachmentCell(imageCell: #imageLiteral(resourceName: "graph"))
 				cell.image?.size = ConsoleAttachmentImageSize
