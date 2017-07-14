@@ -404,7 +404,7 @@ fileprivate extension SessionEditorController {
 			return SignalProducer<Bool, Rc2Error>(error: Rc2Error(type: .logic, severity: .error, explanation: "save called with nothing to save"))
 		}
 		return doc.saveContents(isAutoSave: isAutoSave)
-			.flatMap(.concat, transform: { self.session.sendSaveFileMessage(file: file, contents: $0) })
+			.flatMap(.concat, { self.session.sendSaveFileMessage(file: file, contents: $0) })
 			.updateProgress(status: self.appStatus!, actionName: "Save document")
 			.observe(on: UIScheduler())
 	}

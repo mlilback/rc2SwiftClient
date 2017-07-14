@@ -32,7 +32,7 @@ public class FileImporter: NSObject {
 	let totalSize: Int
 	let queue: DispatchQueue
 	fileprivate var progressObserver: Signal<ImportProgress, Rc2Error>.Observer?
-	fileprivate var progressDisposable: Disposable?
+	fileprivate var progressLifetime: Lifetime?
 	fileprivate let fileManager: FileManager
 	
 	/// Imports files to the server
@@ -86,9 +86,9 @@ public class FileImporter: NSObject {
 			let task = uploadSession.uploadTask(with: request as URLRequest, fromFile: srcUrl)
 			tasks[index] = ImportData(task: task, srcFile: srcUrl)
 		}
-		return ProgressSignalProducer { observer, disposable in
+		return ProgressSignalProducer { observer, lifetime in
 			self.progressObserver = observer
-			self.progressDisposable = disposable
+			self.progressLifetime = lifetime
 			self.queue.async {
 				self.tasks.values.forEach { $0.task.resume() }
 			}
@@ -186,7 +186,7 @@ extension FileImporter: URLSessionDataDelegate {
 			os_log("file importer children done", log: .importer, type:.info)
 			progressObserver?.sendCompleted()
 			progressObserver = nil
-			progressDisposable = nil
+			progressLifetime = nil
 		}
 	}
 	

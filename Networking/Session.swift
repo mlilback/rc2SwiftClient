@@ -113,7 +113,7 @@ public class Session {
 		
 		//setup a timer to send keep alive messages every 2 minutes
 		let start = DispatchTime.now() + DispatchTimeInterval.seconds(120)
-		keepAliveTimer.scheduleRepeating(deadline: start, interval: .seconds(120), leeway: .milliseconds(100))
+		keepAliveTimer.schedule(deadline: start, repeating: .seconds(120), leeway: .milliseconds(100))
 		keepAliveTimer.setEventHandler { [unowned self] in
 			_ = self.sendMessage(json: .dictionary(["msg": .string("keepAlive")]))
 		}

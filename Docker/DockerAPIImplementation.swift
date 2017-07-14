@@ -59,8 +59,8 @@ public final class DockerAPIImplementation: DockerAPI {
 		os_log("dm.loadVersion called to %{public}@", log: .docker, type: .debug, req.debugDescription)
 		return makeRequest(request: req)
 			.optionalLog("loadVersion")
-			.flatMap(.concat, transform: dataToJson)
-			.flatMap(.concat, transform: parseVersionInfo)
+			.flatMap(.concat, dataToJson)
+			.flatMap(.concat, parseVersionInfo)
 			.observe(on: scheduler)
 	}
 
@@ -68,7 +68,7 @@ public final class DockerAPIImplementation: DockerAPI {
 	public func fetchJson(url: URL) -> SignalProducer<JSON, DockerError> {
 		return self.makeRequest(request: URLRequest(url: url))
 			.optionalLog("fetchJson \(url.lastPathComponent)")
-			.flatMap(.concat, transform: self.dataToJson)
+			.flatMap(.concat, self.dataToJson)
 	}
 
 	// documentation in DockerAPI protocol
@@ -125,7 +125,7 @@ public final class DockerAPIImplementation: DockerAPI {
 	public func upload(url source: URL, path: String, filename: String, containerName: String) -> SignalProducer<(), DockerError>
 	{
 		return tarballFile(source: source, filename: filename)
-			.flatMap(.concat, transform: {
+			.flatMap(.concat, {
 				self.tarredUpload(file: $0, path: path, containerName: containerName, removeFile: true)
 			})
 	}
@@ -138,8 +138,8 @@ public final class DockerAPIImplementation: DockerAPI {
 		let req = URLRequest(url: baseUrl.appendingPathComponent("/images/json"))
 		return makeRequest(request: req)
 			.optionalLog("loadImages")
-			.flatMap(.concat, transform: dataToJson)
-			.flatMap(.concat, transform: parseImages)
+			.flatMap(.concat, dataToJson)
+			.flatMap(.concat, parseImages)
 			.observe(on: scheduler)
 	}
 
@@ -156,7 +156,7 @@ public final class DockerAPIImplementation: DockerAPI {
 
 		return makeRequest(request: req)
 			.optionalLog("vol \(name) exists", events: LoggingEvent.SignalProducer.allEvents)
-			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
+			.flatMap(.concat, { (data) -> SignalProducer<Bool, DockerError> in
 				return SignalProducer<Bool, DockerError> { observer, _ in
 					self.jsonCheckHandler(observer: observer, data: data) { json in
 						guard let filteredVolumes = try? json.getArray(at: "Volumes") else { return false }
@@ -194,8 +194,8 @@ public final class DockerAPIImplementation: DockerAPI {
 	{
 		return self.makeRequest(request: self.containersRequest())
 			.optionalLog("refresh containers")
-			.flatMap(.concat, transform: dataToJson)
-			.flatMap(.concat, transform: parseContainers)
+			.flatMap(.concat, dataToJson)
+			.flatMap(.concat, parseContainers)
 			.observe(on: scheduler)
 	}
 
@@ -280,10 +280,10 @@ public final class DockerAPIImplementation: DockerAPI {
 	public func execute(command: [String], container: DockerContainer) -> SignalProducer<(Int, Data), DockerError>
 	{
 		return prepExecTask(command: command, container: container)
-			.flatMap(.concat, transform: { (taskId) in
+			.flatMap(.concat, { (taskId) in
 				return self.runExecTask(taskId: taskId)
 			})
-			.flatMap(.concat, transform: { (arg) in
+			.flatMap(.concat, { (arg) in
 				return self.checkExecSuccess(taskId: arg.0, data: arg.1)
 			})
 	}
@@ -293,7 +293,7 @@ public final class DockerAPIImplementation: DockerAPI {
 	{
 		precondition(command.count > 0)
 		return prepExecTask(command: command, container: container)
-			.flatMap(.concat, transform: dataForExecTask)
+			.flatMap(.concat, dataForExecTask)
 	}
 	
 	// MARK: - network operations
@@ -323,7 +323,7 @@ public final class DockerAPIImplementation: DockerAPI {
 	{
 		let req = URLRequest(url: baseUrl.appendingPathComponent("/networks"))
 		return makeRequest(request: req)
-			.flatMap(.concat, transform: { (data) -> SignalProducer<Bool, DockerError> in
+			.flatMap(.concat, { (data) -> SignalProducer<Bool, DockerError> in
 				return SignalProducer<Bool, DockerError> { observer, _ in
 					self.jsonCheckHandler(observer: observer, data: data) { json in
 						guard let networks = try? json.getArray() else { return false }
@@ -449,7 +449,7 @@ extension DockerAPIImplementation {
 	}
 
 	/// handles sending completed or error for a docker response based on http status code
-	func statusCodeResponseHandler<T>(observer: Observer<T, DockerError>, data: Data?, response: URLResponse?, error: Error?, valueHandler:(() -> Void))
+	func statusCodeResponseHandler<T>(observer: Signal<T, DockerError>.Observer, data: Data?, response: URLResponse?, error: Error?, valueHandler:(() -> Void))
 	{
 		guard let rsp = response as? HTTPURLResponse, error == nil else {
 			os_log("api remote error: %{public}@", log: .docker, type: .default, error! as NSError)
@@ -479,7 +479,7 @@ extension DockerAPIImplementation {
 	/// - parameter observer: the observer to send signals on
 	/// - parameter data:     the data from a GET request
 	/// - parameter filter:   a closure that determines if the json meets requirements
-	func jsonCheckHandler(observer: Observer<Bool, DockerError>, data: Data?, filter: ((JSON) throws -> Bool))
+	func jsonCheckHandler(observer: Signal<Bool, DockerError>.Observer, data: Data?, filter: ((JSON) throws -> Bool))
 	{
 		guard let data = data else {
 			observer.send(error: DockerError.invalidArgument("no data"))

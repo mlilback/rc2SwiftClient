@@ -95,7 +95,7 @@ class MacAppStatus {
 	/// Handles an progress update for the current action
 	///
 	/// - Parameter event: the progress update event passed on via the progressSignal
-	fileprivate func process(_ event: Event<ProgressUpdate, Rc2Error>) {
+	fileprivate func process(_ event: Signal<ProgressUpdate, Rc2Error>.Event) {
 		var ended: Bool = true
 		switch event {
 		case .value(let value):
@@ -188,14 +188,14 @@ extension SignalProducer where Error == Rc2Error {
 					.on(event: { (original) in
 						switch original {
 						case .completed:
-							status.process(Event<ProgressUpdate, Rc2Error>.completed)
+							status.process(Signal<ProgressUpdate, Rc2Error>.Event.completed)
 						case .interrupted:
-							status.process(Event<ProgressUpdate, Rc2Error>.interrupted)
+							status.process(Signal<ProgressUpdate, Rc2Error>.Event.interrupted)
 						case .failed(let err):
-							status.process(Event<ProgressUpdate, Rc2Error>.failed(err))
+							status.process(Signal<ProgressUpdate, Rc2Error>.Event.failed(err))
 						case .value(let val):
 							if let convertedValue = converter(val) {
-								status.process(Event<ProgressUpdate, Rc2Error>.value(convertedValue))
+								status.process(Signal<ProgressUpdate, Rc2Error>.Event.value(convertedValue))
 							}
 						}
 					})

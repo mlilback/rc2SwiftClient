@@ -184,8 +184,8 @@ public final class DockerManager: NSObject {
 			.mapError {
 				Rc2Error(type: .docker, nested: $0)
 			}
-			.flatMap(.concat, transform: verifyValidVersion)
-			.map { v in
+			.flatMap(.concat, verifyValidVersion)
+			.map { (v) -> Void in
 				self.versionInfo = v
 				self.state = .initialized
 				do {
@@ -194,12 +194,12 @@ public final class DockerManager: NSObject {
 					os_log("failed to open event monitor: %{public}@", log: .docker, type: .error, err.localizedDescription)
 				}
 			}
-			.flatMap(.concat, transform: { _ in self.validateNetwork() })
-			.flatMap(.concat, transform: { _ in self.validateVolumes() })
-			.flatMap(.concat, transform: { _ in self.loadInitialContainerInfo() })
-			.flatMap(.concat, transform: { _ in self.api.loadImages().mapError { Rc2Error(type: .docker, nested: $0) } })
+			.flatMap(.concat, { _ in self.validateNetwork() })
+			.flatMap(.concat, { _ in self.validateVolumes() })
+			.flatMap(.concat, { _ in self.loadInitialContainerInfo() })
+			.flatMap(.concat, { _ in self.api.loadImages().mapError { Rc2Error(type: .docker, nested: $0) } })
 			.map { images in self.installedImages = images; return refresh }
-			.flatMap(.concat, transform: checkForImageUpdate)
+			.flatMap(.concat, checkForImageUpdate)
 			.map { _ in
 				return self.pullIsNecessary()
 			}
@@ -248,11 +248,11 @@ public final class DockerManager: NSObject {
 					try! newContainers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
 				}
 			})
-			.flatMap(.concat, transform: { newContainers in
+			.flatMap(.concat, { newContainers in
 				self.mergeContainers(newContainers: newContainers, oldContainers: self.containers)
 			})
-			.flatMap(.concat, transform: removeOutdatedContainers)
-			.flatMap(.concat, transform: createUnavailable)
+			.flatMap(.concat, removeOutdatedContainers)
+			.flatMap(.concat, createUnavailable)
 			.map { _ in }
 	}
 
@@ -525,7 +525,7 @@ extension DockerManager {
 	{
 		let nname = "rc2server"
 		return api.networkExists(name: nname)
-			.flatMap(.concat, transform: { exists in
+			.flatMap(.concat, { exists in
 				self.optionallyCreateObject(name: nname, exists: exists, handler: self.api.create(network:))
 			})
 			.mapError { Rc2Error(type: .docker, nested: $0) }
@@ -535,7 +535,7 @@ extension DockerManager {
 	{
 		let producers = volumeNames.map { name in
 			api.volumeExists(name: name)
-				.flatMap(.concat, transform: { exists in
+				.flatMap(.concat, { exists in
 					self.optionallyCreateObject(name: name, exists: exists, handler: self.api.create(volume:))
 				})
 		}
@@ -560,7 +560,7 @@ extension DockerManager {
 				}
 			})
 			.mapError { Rc2Error(type: .docker, nested: $0) }
-			.flatMap(.concat, transform: { newContainers in
+			.flatMap(.concat, { newContainers in
 				self.mergeContainers(newContainers: newContainers, oldContainers: self.containers)
 			})
 			.map { _ in return () }

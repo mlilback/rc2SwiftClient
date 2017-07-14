@@ -366,7 +366,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 	func producer<E>(signal: Signal<Double, E>) -> SignalProducer<Double, Rc2Error> {
 		var theProducer: SignalProducer<Double, Rc2Error>?
 		var nestedObserver: Signal<Double, Rc2Error>.Observer?
-		let obsClosure = { (cObserver: Signal<Double, Rc2Error>.Observer, disp: Disposable?) in
+		let obsClosure = { (cObserver: Signal<Double, Rc2Error>.Observer, disp: Lifetime?) in
 			nestedObserver = cObserver
 		}
 		theProducer = SignalProducer<Double, Rc2Error>(obsClosure).on(started: {

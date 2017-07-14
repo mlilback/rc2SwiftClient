@@ -22,8 +22,8 @@ public final class LoginFactory: NSObject {
 	fileprivate var requestData: Data!
 	fileprivate var loginResponse: URLResponse?
 	fileprivate var responseData: Data
-	fileprivate var signalObserver: Observer<ConnectionInfo, Rc2Error>?
-	fileprivate var signalDisposable: Disposable?
+	fileprivate var signalObserver: Signal<ConnectionInfo, Rc2Error>.Observer?
+	fileprivate var signalLifetime: Lifetime?
 	fileprivate var host: ServerHost?
 	fileprivate var task: URLSessionDataTask?
 	fileprivate var retryCount: Int = 0
@@ -58,9 +58,9 @@ public final class LoginFactory: NSObject {
 		}
 		requestData = reqdata
 		requestUrl = URL(string: "login", relativeTo: destHost.url!)!
-		return SignalProducer<ConnectionInfo, Rc2Error> { [weak self] observer, disposable in
+		return SignalProducer<ConnectionInfo, Rc2Error> { [weak self] observer, lifetime in
 			self?.signalObserver = observer
-			self?.signalDisposable = disposable
+			self?.signalLifetime = lifetime
 			self?.attemptLogin()
 		}
 	}
@@ -71,7 +71,7 @@ public final class LoginFactory: NSObject {
 		urlSession = nil
 		task = nil
 		signalObserver?.sendInterrupted()
-		signalDisposable?.dispose()
+		signalLifetime = nil
 	}
 	
 	func attemptLogin() {

@@ -489,14 +489,14 @@ extension MacAppDelegate {
 		guard let docker = dockerManager else { fatalError() }
 		
 		_ = docker.initialize()
-			.flatMap(.concat, transform: performPullAndPrepareContainers)
-			.flatMap(.concat, transform: { _ in
+			.flatMap(.concat, performPullAndPrepareContainers)
+			.flatMap(.concat, { _ in
 				return docker.perform(operation: .start)
 			})
 			//really want to act when complete, but have to map, so we collect all values and pass on a single value
 			.collect().map({ _ in return () })
-			.flatMap(.concat, transform: { _ in return docker.waitUntilRunning() })
-			.flatMap(.concat, transform: { _ in return docker.waitUntilDBRunning() })
+			.flatMap(.concat, { _ in return docker.waitUntilRunning() })
+			.flatMap(.concat, { _ in return docker.waitUntilDBRunning() })
 			.observe(on: UIScheduler())
 			.startWithResult { [weak self] result in
 				guard result.error == nil else {
@@ -540,7 +540,7 @@ extension MacAppDelegate {
 				let err = Rc2Error(type: .docker, nested: derror)
 				return err
 			})
-			.map( { _ in }) //map [PullProgress] to () as that is the input parameter to prepareContainers
+			.map( { (_) -> Void in }) //map [PullProgress] to () as that is the input parameter to prepareContainers
 			.flatMap(.concat) { _ in docker.prepareContainers() }
 	}
 }

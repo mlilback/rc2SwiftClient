@@ -16,7 +16,7 @@ fileprivate struct TimerAction {
 	init(interval: DispatchTimeInterval, queue: DispatchQueue, action: @escaping () -> Void) {
 		timer = DispatchSource.makeTimerSource(queue: queue)
 		timer.setEventHandler(handler: action)
-		timer.scheduleOneshot(deadline: .now() + interval, leeway: messageLeeway)
+		timer.schedule(deadline: .now() + interval, leeway: messageLeeway)
 		timer.resume()
 	}
 }
