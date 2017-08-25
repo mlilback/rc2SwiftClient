@@ -277,7 +277,7 @@ extension RootViewController: ManageFontMenu {
 			let menuItem = NSMenuItem(title: aFont.visibleName, action: #selector(UsesAdjustableFont.fontChanged), keyEquivalent: "")
 			menuItem.representedObject = aFont
 			if fontUser.currentFontDescriptor.fontName == aFont.fontName {
-				menuItem.state = .onState
+				menuItem.state = .on
 				menuItem.isEnabled = false
 			}
 			menu.addItem(menuItem)
@@ -289,9 +289,9 @@ extension RootViewController: ManageFontMenu {
 		var customItem: NSMenuItem?
 		let curSize = Int(fontUser.currentFontDescriptor.pointSize)
 		for anItem in menu.items {
-			anItem.state = .offState
+			anItem.state = .off
 			if anItem.tag == curSize {
-				anItem.state = .onState
+				anItem.state = .on
 				markedCurrent = true
 			} else if anItem.tag == 0 {
 				customItem = anItem
@@ -299,7 +299,7 @@ extension RootViewController: ManageFontMenu {
 			anItem.isEnabled = true
 		}
 		if !markedCurrent {
-			customItem?.state = .onState
+			customItem?.state = .on
 		}
 	}
 }

@@ -60,7 +60,7 @@ public final class File: JSONDecodable, JSONEncodable, Copyable, CustomStringCon
 	/// returns the file name w/o a file extension
 	public var baseName: String {
 		guard let idx = name.range(of: ".", options: .backwards) else { return name }
-		return name.substring(from: idx.upperBound)
+		return String(name[idx.upperBound...])
 	}
 	
 	///initialize with native dictionary from a MessagePackDictionary

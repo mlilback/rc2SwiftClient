@@ -58,13 +58,13 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 		switch action {
 		case Selector.switchSidebarTab:
 			if sidebarSplitItem().isCollapsed {
-				menuItem.state = .offState
+				menuItem.state = .off
 			} else {
-				menuItem.state = menuItem.tag == sidebarSegmentControl?.selectedSegment ? .onState : .offState
+				menuItem.state = menuItem.tag == sidebarSegmentControl?.selectedSegment ? .on : .off
 			}
 			return true
 		case Selector.switchOutputTab:
-			menuItem.state = menuItem.tag == outputSegmentControl?.selectedSegment ? .onState : .offState
+			menuItem.state = menuItem.tag == outputSegmentControl?.selectedSegment ? .on : .off
 			return true
 		default:
 			return super.validateMenuItem(menuItem)

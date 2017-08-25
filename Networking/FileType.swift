@@ -40,7 +40,7 @@ public class FileType: JSONDecodable {
 		guard let range = fileName.range(of: ".", options: .backwards) else {
 			return nil
 		}
-		return fileType(withExtension: fileName.substring(from: range.upperBound))
+		return fileType(withExtension: String(fileName[range.upperBound...]))
 	}
 	
 	public let name: String

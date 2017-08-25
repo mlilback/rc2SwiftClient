@@ -34,7 +34,7 @@ public extension SignalProducer {
 		//strip most of the filename 'cause it is too long
 		var myFilename = fileName
 		if let idx = fileName.range(of: "/", options: .backwards) {
-			myFilename = fileName.substring(from: idx.lowerBound)
+			myFilename = String(fileName[idx.lowerBound...])
 		}
 		return logEvents(identifier: identifier, events: myEvents, fileName: myFilename, functionName: functionName, lineNumber: lineNumber)
 	}

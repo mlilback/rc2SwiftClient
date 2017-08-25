@@ -10,6 +10,6 @@ extension NSTextCheckingResult {
 	///returns the substring of inputString at the specified range
 	public func string(index: Int, forString inputString: String) -> String? {
 		guard let strRange = range(at:index).toStringRange(inputString) else { return nil }
-		return inputString.substring(with: strRange)
+		return String(inputString[strRange])
 	}
 }

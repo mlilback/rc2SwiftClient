@@ -47,18 +47,18 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 		accessoryView.setButtonType(.switch)
 		accessoryView.title = NSLocalizedString("Replace existing files", comment: "")
 		let replace = defaults[.replaceFiles]
-		accessoryView.state = replace ? .offState : .onState
+		accessoryView.state = replace ? .off : .on
 		panel.beginSheetModal(for: window) { result in
 			do {
 				let urlbmark = try (panel.directoryURL as NSURL?)?.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
 				defaults[.lastImportDirectory] = urlbmark
-				defaults[.replaceFiles] = accessoryView.state == .onState
+				defaults[.replaceFiles] = accessoryView.state == .on
 			} catch let err as NSError {
 				os_log("why did we get error creating import bookmark: %{public}@", log: .app, err)
 			}
 			panel.close()
 			if result == .OK && panel.urls.count > 0 {
-				let replaceFiles = accessoryView.state == .onState
+				let replaceFiles = accessoryView.state == .on
 				let files = panel.urls.map { url -> FileImporter.FileToImport in
 					let uname = replaceFiles ? self.uniqueFileName(url.lastPathComponent, inWorkspace: workspace) : nil
 					return FileImporter.FileToImport(url: url, uniqueName: uname)

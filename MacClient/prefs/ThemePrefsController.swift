@@ -52,8 +52,8 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 	@IBAction func switchEditor(_ sender: Any?) {
 		guard let button = sender as? NSButton else { return }
 		let syntaxClicked = button == syntaxButton
-		syntaxButton.state = syntaxClicked ? .offState : .onState
-		outputButton.state = syntaxClicked ? .onState : .offState
+		syntaxButton.state = syntaxClicked ? .off : .on
+		outputButton.state = syntaxClicked ? .on : .off
 		syntaxButton.isEnabled = !syntaxClicked
 		outputButton.isEnabled = syntaxClicked
 		tabView.selectTabViewItem(at: syntaxClicked ? 1 : 0)

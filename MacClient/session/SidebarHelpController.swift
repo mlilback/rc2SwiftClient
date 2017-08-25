@@ -42,9 +42,9 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 		guard item.action == #selector(adjustSearchOption(_:)) else { return super.validateMenuItem(item) }
 		switch item.tag {
 		case 1:
-			item.state = fullContentSearch ? .offState : .onState
+			item.state = fullContentSearch ? .off : .on
 		case 2:
-			item.state = fullContentSearch ? .onState : .offState
+			item.state = fullContentSearch ? .on : .off
 		default:
 			break
 		}

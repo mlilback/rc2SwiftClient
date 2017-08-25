@@ -78,7 +78,7 @@ public struct Rc2Error: LocalizedError, CustomStringConvertible, CustomDebugStri
 		self.explanation = explanation
 		var shortFile = fileName
 		if let lastSlashIdx = fileName.range(of: "/", options: .backwards) {
-			shortFile = fileName.substring(from: lastSlashIdx.upperBound)
+			shortFile = String(fileName[lastSlashIdx.upperBound...])
 		}
 		self.location = "\(shortFile):\(lineNumber)"
 	}

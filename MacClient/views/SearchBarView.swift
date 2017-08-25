@@ -87,13 +87,13 @@ public class SearchBarView: NSView {
 	/// menu action for whole word search option
 	@IBAction func toggleWholeWords(_ sender: Any) {
 		guard let menuItem = sender as? NSMenuItem else { return }
-		wholeWordsOption = menuItem.state == .onState
+		wholeWordsOption = menuItem.state == .on
 	}
 
 	/// menu action for teh case sensitive search option
 	@IBAction func toggleCaseInsensitive(_ sender: Any) {
 		guard let menuItem = sender as? NSMenuItem else { return }
-		caseSensitiveOption = menuItem.state == .onState
+		caseSensitiveOption = menuItem.state == .on
 	}
 	
 	/// updates controls to match current result state
@@ -108,10 +108,10 @@ extension SearchBarView: NSMenuDelegate {
 	override public func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		var enable = false
 		if menuItem.tag == SearchOptionTags.caseSensitive.rawValue {
-			menuItem.state = caseSensitiveOption ? .onState : .offState
+			menuItem.state = caseSensitiveOption ? .on : .off
 			enable = true
 		} else if menuItem.tag == SearchOptionTags.wholeWords.rawValue {
-			menuItem.state = wholeWordsOption ? .onState : .offState
+			menuItem.state = wholeWordsOption ? .on : .off
 			enable = true
 		}
 		return enable

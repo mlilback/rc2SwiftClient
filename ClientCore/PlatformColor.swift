@@ -28,13 +28,13 @@ public extension PlatformColor {
 	public convenience init?(hexString: String, alpha: CGFloat = 1.0) {
 		var hcode = hexString
 		if hcode.hasPrefix("#") {
-			hcode = hcode.substring(from: hcode.characters.index(hcode.characters.startIndex, offsetBy: 1))
+			hcode = String(hcode[hcode.index(hcode.startIndex, offsetBy: 1)...])
 		}
 		guard hcode.characters.count == 6, hcode.trimmingCharacters(in: CharacterSet.hexadecimal) == "" else { return nil }
 		
-		let redHex = hexString.substring(to: hexString.characters.index(hexString.startIndex, offsetBy: 2))
-		let greenHex = hexString.substring(with: hexString.characters.index(hexString.startIndex, offsetBy: 2) ..< hexString.characters.index(hexString.startIndex, offsetBy: 4))
-		let blueHex = hexString.substring(with: hexString.characters.index(hexString.startIndex, offsetBy: 4) ..< hexString.characters.index(hexString.startIndex, offsetBy: 6))
+		let redHex = String(hexString[...hexString.characters.index(hexString.startIndex, offsetBy: 2)])
+		let greenHex = String(hexString[hexString.characters.index(hexString.startIndex, offsetBy: 2) ..< hexString.characters.index(hexString.startIndex, offsetBy: 4)])
+		let blueHex = String(hexString[hexString.characters.index(hexString.startIndex, offsetBy: 4) ..< hexString.characters.index(hexString.startIndex, offsetBy: 6)])
 		var redInt: CUnsignedInt = 0
 		var greenInt: CUnsignedInt = 0
 		var blueInt: CUnsignedInt = 0

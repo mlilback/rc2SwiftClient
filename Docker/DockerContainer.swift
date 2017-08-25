@@ -136,7 +136,7 @@ public final class DockerContainer: JSONDecodable {
 		let names = try json.decodedArray(at: "Names", type: String.self)
 		if !names.isEmpty {
 			let nname = names.first!
-			inName = nname.substring(from: nname.index(after: nname.startIndex)) //strip off the leading '/'
+			inName = String(nname[nname.index(after: nname.startIndex)...]) //strip off the leading '/'
 		}
 		guard inName != nil else { throw ContainerError.containsNoName }
 		guard let jtype = ContainerType.from(containerName:inName!) else { throw ContainerError.invalidContainerType }
