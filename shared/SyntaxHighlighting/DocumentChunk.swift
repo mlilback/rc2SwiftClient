@@ -43,7 +43,7 @@ open class DocumentChunk: NSObject {
 			let regex = try NSRegularExpression(pattern: "(.*?\\n)(.*\\n)(.*\\n)", options: .dotMatchesLineSeparators)
 			guard let result = regex.firstMatch(in: fullText, options: [], range: NSRange(location: 0, length: fullText.count)) else { return "" }
 			guard let range = result.range(at: 2).toStringRange(fullText) else { return "" }
-			return fullText.substring(with: range)
+			return String(fullText[range])
 		} catch {
 			return ""
 		}

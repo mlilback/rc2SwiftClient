@@ -270,7 +270,7 @@ extension SessionEditorController {
 			command = sourceString.substring(from: selRange)!
 		} else {
 			let lineRange = sourceString.lineRange(for: selRange.toStringRange(sourceString)!)
-			command = sourceString.substring(with: lineRange)
+			command = String(sourceString[lineRange])
 		}
 		session.executeScript(command)
 		if selRange.length < 1 {

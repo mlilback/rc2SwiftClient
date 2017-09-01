@@ -97,7 +97,7 @@ class InputPrompter: NSObject {
 		if requiredSuffix != nil {
 			if !ignoreSuffix && !change.hasSuffix(requiredSuffix!) { return false }
 			if let range = change.range(of: requiredSuffix!) {
-				let woSuffix = change.substring(to: range.lowerBound)
+				let woSuffix = change[..<range.lowerBound]
 				guard woSuffix.characters.count >= minimumStringLength else { return false }
 			}
 		}

@@ -44,8 +44,8 @@ open class RmdSyntaxParser: SyntaxParser {
 		{ (result, _, _) -> Void in
 			guard let result = result else { return }
 			var cname: String?
-			if result.range(at:1).length > 0 {
-				cname = str.substring(with: result.range(at:1).toStringRange(str)!)
+			if let subRange = result.range(at: 2).toStringRange(str) {
+				cname = String(str[subRange])
 			}
 			let codeChunk = DocumentChunk(chunkType: .rCode, chunkNumber: nextChunkIndex, name: cname)
 			nextChunkIndex += 1
@@ -66,7 +66,7 @@ open class RmdSyntaxParser: SyntaxParser {
 		//look for MathML
 		mathRegex.enumerateMatches(in: str, options: [], range: range)
 		{ (results, _, _) -> Void in
-			if str.substring(with: (results?.range(at:4).toStringRange(str))!) == "block" {
+			if let subRange = results?.range(at:4).toStringRange(str), str[subRange] == "block" {
 				let newChunk = DocumentChunk(chunkType: .equation, chunkNumber: 1)
 				newChunk.equationType = .MathML
 				newChunk.parsedRange = results!.range

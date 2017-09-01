@@ -34,7 +34,7 @@ class SessionEditor: TextViewWithContextualMenu {
 			let nextLineRange = string.lineRange(for: selRange)
 			guard nextLineRange.lowerBound > lastLocation else { break } //end of line
 			lastLocation = nextLineRange.lowerBound
-			let nextStr = string.substring(with: nextLineRange).trimmingCharacters(in: .whitespacesAndNewlines)
+			let nextStr = string[nextLineRange].trimmingCharacters(in: .whitespacesAndNewlines)
 			if nextStr.characters.count > 0 {
 				//end of string
 				break

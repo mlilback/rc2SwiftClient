@@ -43,7 +43,8 @@ class CommandHistory {
 		for aCommand in commands {
 			var menuCommand = aCommand
 			if aCommand.characters.count > 50 {
-				menuCommand = menuCommand.substring(to: menuCommand.characters.index(menuCommand.startIndex, offsetBy: 49)) + "…"
+				let idx = menuCommand.index(menuCommand.startIndex, offsetBy: 49)
+				menuCommand = menuCommand[..<idx] + "…"
 			}
 			let menuItem = NSMenuItem(title: menuCommand, action: action, keyEquivalent: "")
 			menuItem.target = target

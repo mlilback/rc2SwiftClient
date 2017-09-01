@@ -40,13 +40,13 @@ open class RnwSyntaxParser: SyntaxParser {
 				self.chunks.append(newChunk!)
 				curChunkNum += 1
 			}
-			let matchStr: String = str.substring(with: result.range.toStringRange(str)!)
+			let matchStr = String(str[result.range.toStringRange(str)!])
 			if matchStr[matchStr.startIndex] == "@" {
 				newChunk = DocumentChunk(chunkType: .documentation, chunkNumber: curChunkNum)
 			} else  {
 				var cname: String?
-				if result.range(at:2).length > 0 {
-					cname = str.substring(with: (result.range(at:2).toStringRange(str))!)
+				if let subRange = result.range(at: 2).toStringRange(str) {
+					cname = String(str[subRange])
 				}
 				newChunk = DocumentChunk(chunkType: .rCode, chunkNumber: curChunkNum, name: cname)
 			}

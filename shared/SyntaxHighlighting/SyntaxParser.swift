@@ -17,7 +17,7 @@ extension OSLog {
 	static let syntax = OSLog(subsystem: AppInfo.bundleIdentifier, category: "parser")
 }
 
-/** parses the contents of an NSTextStorage into an array of chunks that can be syntax colored */
+/// parses the contents of an NSTextStorage into an array of chunks that can be syntax colored
 open class SyntaxParser: NSObject {
 	///returns the approprate syntax parser to use for fileType
 	class func parserWithTextStorage(_ storage: NSTextStorage, fileType: FileType) -> SyntaxParser?
