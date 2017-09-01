@@ -20,45 +20,46 @@ extension OSLog {
 /// parses the contents of an NSTextStorage into an array of chunks that can be syntax colored
 open class SyntaxParser: NSObject {
 	///returns the approprate syntax parser to use for fileType
-	class func parserWithTextStorage(_ storage: NSTextStorage, fileType: FileType) -> SyntaxParser?
+	public class func parserWithTextStorage(_ storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HighlighterHasHelpCallback) -> SyntaxParser?
 	{
 		var parser: SyntaxParser?
 		var highlighter: CodeHighlighter?
 		if fileType.isSweave {
-			parser = RnwSyntaxParser(storage: storage, fileType: fileType)
+			parser = RnwSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
 		} else if fileType.fileExtension == "Rmd" {
-			parser = RmdSyntaxParser(storage: storage, fileType: fileType)
+			parser = RmdSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
 		} else if fileType.fileExtension == "R" {
-			parser = RSyntaxParser(storage: storage, fileType: fileType)
-			highlighter = RCodeHighlighter()
+			parser = RSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
+			highlighter = RCodeHighlighter(helpCallback: helpCallback)
 		}
 		parser?.codeHighlighter = highlighter
 		return parser
 	}
 	
-	let textStorage: NSTextStorage
-	let fileType: FileType
-	let theme = Property(ThemeManager.shared.activeSyntaxTheme)
-	internal(set) var chunks: [DocumentChunk] = []
+	public let textStorage: NSTextStorage
+	public let fileType: FileType
+	public let theme = Property(ThemeManager.shared.activeSyntaxTheme)
+	public internal(set) var chunks: [DocumentChunk] = []
 	fileprivate var lastSource: String = ""
 	var colorBackgrounds = false
 	
-	var executableChunks: [DocumentChunk] { return chunks.filter({ $0.type == .rCode }) }
+	public var executableChunks: [DocumentChunk] { return chunks.filter({ $0.type == .rCode }) }
 	
 	internal var docHighlighter: CodeHighlighter?
 	internal var codeHighlighter: CodeHighlighter?
 
 	/// - parameter storage: A text storage whose changes are tracked to keep chunks up to date
 	/// - parameter fileType: used to determine the proper highlighter(s) to use
-	init(storage: NSTextStorage, fileType: FileType)
+	init(storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HighlighterHasHelpCallback)
 	{
 		self.textStorage = storage
 		self.fileType = fileType
 		super.init()
+		codeHighlighter?.helpCallback = helpCallback
 	}
 	
 	///returns the index of the chunk in the specified range
-	func indexOfChunkForRange(range inRange: NSRange) -> Int {
+	public func indexOfChunkForRange(range inRange: NSRange) -> Int {
 		guard chunks.count > 0,
 			let selRange = chunksForRange(inRange).first,
 			let chunkIndex = chunks.index(of: selRange)
@@ -66,7 +67,7 @@ open class SyntaxParser: NSObject {
 		return chunkIndex
 	}
 	
-	func chunkForRange(_ inRange: NSRange) -> DocumentChunk? {
+	public func chunkForRange(_ inRange: NSRange) -> DocumentChunk? {
 		var range = inRange
 		if range.location == NSNotFound { return nil }
 		if range.location == 0 && range.length == 0 {
@@ -84,7 +85,7 @@ open class SyntaxParser: NSObject {
 		return nil
 	}
 	
-	func chunksForRange(_ range: NSRange) -> [DocumentChunk] {
+	public func chunksForRange(_ range: NSRange) -> [DocumentChunk] {
 		//if full range of textstorage, just return all chunks
 		if NSEqualRanges(range, NSRange(location: 0, length: textStorage.length)) {
 			return chunks
@@ -112,7 +113,7 @@ open class SyntaxParser: NSObject {
 	
 	///returns true if the chunks changed
 	@discardableResult
-	func parse() -> Bool {
+	public func parse() -> Bool {
 		if textStorage.length == 0 || textStorage.string != lastSource {
 			let oldChunks = chunks
 			parseRange(NSRange(location: 0, length: textStorage.length))
@@ -148,7 +149,7 @@ open class SyntaxParser: NSObject {
 		chunks.last!.parsedRange = finalRange
 	}
 	
-	func colorChunks(_ chunksToColor: [DocumentChunk]) {
+	public func colorChunks(_ chunksToColor: [DocumentChunk]) {
 		for chunk in chunksToColor {
 			if chunk.type == .rCode {
 				if colorBackgrounds {

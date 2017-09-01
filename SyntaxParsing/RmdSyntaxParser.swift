@@ -12,13 +12,13 @@ import ClientCore
 import Networking
 
 open class RmdSyntaxParser: SyntaxParser {
-	let latexHighlighter: LatexCodeHighlighter = LatexCodeHighlighter()
+	let latexHighlighter: LatexCodeHighlighter
 	let rChunkRegex: NSRegularExpression
 	let blockEqRegex: NSRegularExpression
 	let inlineRegex: NSRegularExpression
 	let mathRegex: NSRegularExpression
 	
-	override init(storage: NSTextStorage, fileType: FileType)
+	override init(storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HighlighterHasHelpCallback)
 	{
 		// swiftlint:disable force_try
 		try! rChunkRegex = NSRegularExpression(pattern: "\n```\\{r\\s*([^\\}]*)\\}\\s*\n+(.*?)\n```\n", options: .dotMatchesLineSeparators)
@@ -26,9 +26,10 @@ open class RmdSyntaxParser: SyntaxParser {
 		try! blockEqRegex = NSRegularExpression(pattern: "(\\$\\$\\p{blank}*\\n+(.*?)\\$\\$\\p{blank}*\n)", options:.dotMatchesLineSeparators)
 		try! inlineRegex = NSRegularExpression(pattern: "`r\\s+([^`]*)`", options: .dotMatchesLineSeparators)
 		try! mathRegex = NSRegularExpression(pattern: "(<math(\\s+[^>]*)(display\\s*=\\s*\"(block|inline)\")([^>]*)>)(.*?)</math>\\s*?\\n?", options: .dotMatchesLineSeparators)
+		latexHighlighter = LatexCodeHighlighter(helpCallback: helpCallback)
 		// swiftlint:enable force_try
-		super.init(storage: storage, fileType: fileType)
-		codeHighlighter = RCodeHighlighter()
+		super.init(storage: storage, fileType: fileType, helpCallback: helpCallback)
+		codeHighlighter = RCodeHighlighter(helpCallback: helpCallback)
 		colorBackgrounds = true
 	}
 	

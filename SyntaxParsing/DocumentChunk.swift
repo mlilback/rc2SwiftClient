@@ -18,15 +18,15 @@ public enum EquationType: String {
 /// Rmd and Rnw documents can have multiple chunks of different types.
 open class DocumentChunk: NSObject {
 	///A unique, serial number for each chunk.
-	let chunkNumber: Int
-	let name: String?
+	public let chunkNumber: Int
+	public let name: String?
 	///One of Documentation, RCode, or Equation
-	let type: ChunkType
+	public let type: ChunkType
 	
 	var equationType: EquationType = .NotAnEquation
 	var contentOffset: Int = 0
 	//should only be used by the parser/highlighter
-	internal(set) var parsedRange: NSRange = NSRange(location: 0, length: 0)
+	public internal(set) var parsedRange: NSRange = NSRange(location: 0, length: 0)
 	
 	/// is this chunk one of the types that are executable
 	public var isExecutable: Bool { return type == .rCode }

@@ -11,6 +11,7 @@ import ReactiveSwift
 import ClientCore
 import Networking
 import NotifyingCollection
+import SyntaxParsing
 
 ///selectors used in this file, aliased with shorter, descriptive names
 extension Selector {
@@ -347,7 +348,7 @@ extension SessionEditorController: NSTextViewDelegate {
 	}
 	
 	func textView(_ textView: NSTextView, clickedOnLink link: Any, at charIndex: Int) -> Bool {
-		if let pieces = (link as? String)?.components(separatedBy: ":"), pieces.count == 2 {
+		if let str = link as? String, let pieces = Optional(str.components(separatedBy: ":")), pieces.count == 2 {
 			NotificationCenter.default.post(name: .DisplayHelpTopic, object:pieces[1], userInfo:nil)
 			return true
 		}
@@ -445,7 +446,9 @@ fileprivate extension SessionEditorController {
 		let storage = editor.textStorage!
 		self.ignoreTextStorageNotifications = true
 		storage.deleteCharacters(in: editor.rangeOfAllText)
-		self.parser = SyntaxParser.parserWithTextStorage(storage, fileType: doc.file.fileType)
+		self.parser = SyntaxParser.parserWithTextStorage(storage, fileType: doc.file.fileType) { (topic) in
+			return HelpController.shared.hasTopic(topic)
+		}
 		self.ignoreTextStorageNotifications = false
 		storage.setAttributedString(NSAttributedString(string: content, attributes: self.defaultAttributes))
 		if doc.topVisibleIndex > 0 {

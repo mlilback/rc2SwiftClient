@@ -9,14 +9,15 @@ import Foundation
 	import AppKit
 #endif
 import ClientCore
+import PEGKit
 
 open class LatexCodeHighlighter: CodeHighlighter {
 	let commentRegex: NSRegularExpression
 	
-	override init()  {
+	required public init(helpCallback: @escaping HighlighterHasHelpCallback)  {
 		// swiftlint:disable:next force_try
 		self.commentRegex = try! NSRegularExpression(pattern: "(?<!\\\\)(%.*\n)", options: [])
-		super.init()
+		super.init(helpCallback: helpCallback)
 	}
 	
 	override func addAttributes(_ content: NSMutableAttributedString, range: NSRange) {

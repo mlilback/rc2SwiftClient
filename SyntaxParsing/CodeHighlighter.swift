@@ -10,12 +10,17 @@ import Foundation
 #endif
 import ClientCore
 import ReactiveSwift
+import PEGKit
+
+public typealias HighlighterHasHelpCallback = (String) -> Bool
 
 open class CodeHighlighter: NSObject {
 	let theme = Property<SyntaxTheme>(ThemeManager.shared.activeSyntaxTheme)
+	var helpCallback: HighlighterHasHelpCallback?
 	
-	override public init() {
+	public required init(helpCallback: @escaping HighlighterHasHelpCallback) {
 		super.init()
+		self.helpCallback = helpCallback
 	}
 	
 	///subclass should override this to return the color to use and if the previous character should be colorized, too (for latex)
@@ -59,7 +64,8 @@ open class CodeHighlighter: NSObject {
 				content.addAttribute(.foregroundColor, value: color, range: tokenRange)
 				
 			}
-			if token.tokenType == .word && HelpController.shared.hasTopic(token.stringValue) {
+//			if token.tokenType == .word && HelpController.shared.hasTopic(token.stringValue) {
+			if token.tokenType == .word, helpCallback?(token.stringValue) ?? false {
 				//add tag marking as having help
 				content.addAttribute(.link, value: "help:\(token.stringValue!)", range: tokenRange)
 			}

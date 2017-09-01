@@ -9,13 +9,17 @@ import Foundation
 	import AppKit
 #endif
 import ClientCore
+import PEGKit
 
 let RCodeHighlighterColors = "RCodeHighlighterColors"
 
 open class RCodeHighlighter: CodeHighlighter {
 	
 	let keywords: Set<String> = {
-		let url = Bundle.main.url(forResource: "RKeywords", withExtension: "txt")!
+		let bundle = Bundle(for: RCodeHighlighter.self)
+		guard let url = bundle.url(forResource: "RKeywords", withExtension: "txt") else {
+			fatalError("failed to find RKeywords file")
+		}
 		// swiftlint:disable:next force_try
 		let keyArray = try! NSString(contentsOf: url, encoding: String.Encoding.utf8.rawValue).components(separatedBy: "\n")
 		return Set<String>(keyArray)

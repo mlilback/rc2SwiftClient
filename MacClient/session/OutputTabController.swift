@@ -100,7 +100,8 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	func showHelp(_ topics: [HelpTopic]) {
 		guard topics.count > 0 else {
-			consoleController?.append(responseString: sessionController!.format(errorString: "No help found"))
+			let rstr = sessionController!.format(errorString: NSLocalizedString("No Help Found", comment: ""))
+			consoleController?.append(responseString: rstr)
 			return
 		}
 		if topics.count == 1 {
@@ -114,7 +115,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	@objc func handleDisplayHelp(_ note: Notification) {
 		if let topic: HelpTopic = note.object as? HelpTopic {
 			showHelpTopic(topic)
-		} else if let topicName: String = note.object as? String {
+		} else if let topicName = note.object as? String {
 			showHelp(HelpController.shared.topicsWithName(topicName))
 		} else { //told to show without a topic. switch back to console.
 			selectedOutputTab.value = .console

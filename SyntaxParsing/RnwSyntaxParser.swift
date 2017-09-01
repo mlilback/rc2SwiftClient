@@ -14,13 +14,13 @@ import Networking
 open class RnwSyntaxParser: SyntaxParser {
 	fileprivate let startExpression: NSRegularExpression
 	
-	override init(storage: NSTextStorage, fileType: FileType)
+	override init(storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HighlighterHasHelpCallback)
 	{
 		// swiftlint:disable:next force_try
 		startExpression = try! NSRegularExpression(pattern: "(?:@( \\s*|\\n))|(?:<<([^>]*)>>= ?.*?)", options: [.anchorsMatchLines])
-		super.init(storage: storage, fileType: fileType)
-		codeHighlighter = RCodeHighlighter()
-		docHighlighter = LatexCodeHighlighter()
+		super.init(storage: storage, fileType: fileType, helpCallback: helpCallback)
+		codeHighlighter = RCodeHighlighter(helpCallback: helpCallback)
+		docHighlighter = LatexCodeHighlighter(helpCallback: helpCallback)
 		colorBackgrounds = true
 	}
 	
