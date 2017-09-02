@@ -2205,6 +2205,7 @@
 					};
 					082BE0881F59D549006CE0B7 = {
 						CreatedOnToolsVersion = 9.0;
+						DevelopmentTeam = V97NV337TR;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
@@ -2216,6 +2217,7 @@
 					};
 					082BE1551F5B3682006CE0B7 = {
 						CreatedOnToolsVersion = 9.0;
+						DevelopmentTeam = V97NV337TR;
 						ProvisioningStyle = Automatic;
 					};
 					088CE6681C4B0AF400153414 = {
@@ -3162,6 +3164,7 @@
 		};
 		082BE0A01F59D549006CE0B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -3301,6 +3304,7 @@
 		};
 		082BE15F1F5B3682006CE0B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
