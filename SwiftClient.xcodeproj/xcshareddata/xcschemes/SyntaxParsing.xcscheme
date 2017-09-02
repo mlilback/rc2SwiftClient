@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
-               BuildableName = "createHelpIndex"
-               BlueprintName = "createHelpIndex"
+               BlueprintIdentifier = "082BE0881F59D549006CE0B7"
+               BuildableName = "SyntaxParsing.framework"
+               BlueprintName = "SyntaxParsing"
                ReferencedContainer = "container:SwiftClient.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,13 +29,23 @@
       language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "082BE0901F59D549006CE0B7"
+               BuildableName = "SyntaxParsingTests.xctest"
+               BlueprintName = "SyntaxParsingTests"
+               ReferencedContainer = "container:SwiftClient.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
-            BuildableName = "createHelpIndex"
-            BlueprintName = "createHelpIndex"
+            BlueprintIdentifier = "082BE0881F59D549006CE0B7"
+            BuildableName = "SyntaxParsing.framework"
+            BlueprintName = "SyntaxParsing"
             ReferencedContainer = "container:SwiftClient.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -53,16 +63,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
-            BuildableName = "createHelpIndex"
-            BlueprintName = "createHelpIndex"
+            BlueprintIdentifier = "082BE0881F59D549006CE0B7"
+            BuildableName = "SyntaxParsing.framework"
+            BlueprintName = "SyntaxParsing"
             ReferencedContainer = "container:SwiftClient.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -72,16 +81,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
-            BuildableName = "createHelpIndex"
-            BlueprintName = "createHelpIndex"
+            BlueprintIdentifier = "082BE0881F59D549006CE0B7"
+            BuildableName = "SyntaxParsing.framework"
+            BlueprintName = "SyntaxParsing"
             ReferencedContainer = "container:SwiftClient.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

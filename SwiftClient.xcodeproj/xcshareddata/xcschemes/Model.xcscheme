@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
-               BuildableName = "createHelpIndex"
-               BlueprintName = "createHelpIndex"
+               BlueprintIdentifier = "082BE1551F5B3682006CE0B7"
+               BuildableName = "Model.framework"
+               BlueprintName = "Model"
                ReferencedContainer = "container:SwiftClient.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -30,15 +30,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
-            BuildableName = "createHelpIndex"
-            BlueprintName = "createHelpIndex"
-            ReferencedContainer = "container:SwiftClient.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -53,16 +44,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
-            BuildableName = "createHelpIndex"
-            BlueprintName = "createHelpIndex"
+            BlueprintIdentifier = "082BE1551F5B3682006CE0B7"
+            BuildableName = "Model.framework"
+            BlueprintName = "Model"
             ReferencedContainer = "container:SwiftClient.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -72,16 +62,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
-            BuildableName = "createHelpIndex"
-            BlueprintName = "createHelpIndex"
+            BlueprintIdentifier = "082BE1551F5B3682006CE0B7"
+            BuildableName = "Model.framework"
+            BlueprintName = "Model"
             ReferencedContainer = "container:SwiftClient.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
