@@ -47,7 +47,7 @@ let FileDragTypes = [NSPasteboard.PasteboardType(kUTTypeFileURL as String)]
 let addFileSegmentIndex: Int = 0
 let removeFileSegmentIndex: Int = 1
 
-class SidebarFileController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, FileHandler, NSOpenSavePanelDelegate, NSMenuDelegate
+class SidebarFileController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, NSOpenSavePanelDelegate, NSMenuDelegate
 {
 	// MARK: properties
 	let sectionNames: [String] = ["Source Files", "Images", "Other"]
@@ -486,38 +486,6 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			}
 	}
 
-	// MARK: - FileHandler implementation
-	func filesRefreshed(_ changes: [CollectionChange<File>]?) {
-		//TODO: ideally should figure out what file was changed and animate the tableview update instead of refreshing all rows
-		//TODO: updated file always shows last, which is wrong
-		loadData()
-		//preserve selection
-		let selFile = selectedFile
-		tableView.reloadData()
-		if selFile != nil, let idx = rowData.index(where: { $0.file?.fileId ?? -1 == selFile!.fileId }) {
-			tableView.selectRowIndexes(IndexSet(integer: idx), byExtendingSelection: false)
-		}
-	}
-	
-	func fileSelectionChanged() {
-		guard !selectionChangeInProgress else { return }
-		selectionChangeInProgress = true
-		defer { selectionChangeInProgress = false }
-		guard let file = selectedFile else {
-			DispatchQueue.main.async {
-				 self.tableView.selectRowIndexes(IndexSet(), byExtendingSelection: false)
-			}
-			return
-		}
-		guard let idx = fileDataIndex(fileId: file.fileId) else {
-			os_log("failed to find file to select", log: .app, type: .info)
-			return
-		}
-		DispatchQueue.main.async {
-			self.tableView.selectRowIndexes(IndexSet(integer: idx), byExtendingSelection: false)
-		}
-	}
-	
 	// MARK: - TableView datasource/delegate implementation
 	func numberOfRows(in tableView: NSTableView) -> Int {
 		return rowData.count
@@ -579,6 +547,41 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 }
 
+// MARK: - FileHandler implementation
+extension SidebarFileController: FileHandler {
+	func filesRefreshed(_ changes: [CollectionChange<File>]?) {
+		//TODO: ideally should figure out what file was changed and animate the tableview update instead of refreshing all rows
+		//TODO: updated file always shows last, which is wrong
+		loadData()
+		//preserve selection
+		let selFile = selectedFile
+		tableView.reloadData()
+		if selFile != nil, let idx = rowData.index(where: { $0.file?.fileId ?? -1 == selFile!.fileId }) {
+			tableView.selectRowIndexes(IndexSet(integer: idx), byExtendingSelection: false)
+		}
+	}
+	
+	func fileSelectionChanged() {
+		guard !selectionChangeInProgress else { return }
+		selectionChangeInProgress = true
+		defer { selectionChangeInProgress = false }
+		guard let file = selectedFile else {
+			DispatchQueue.main.async {
+				self.tableView.selectRowIndexes(IndexSet(), byExtendingSelection: false)
+			}
+			return
+		}
+		guard let idx = fileDataIndex(fileId: file.fileId) else {
+			os_log("failed to find file to select", log: .app, type: .info)
+			return
+		}
+		DispatchQueue.main.async {
+			self.tableView.selectRowIndexes(IndexSet(integer: idx), byExtendingSelection: false)
+		}
+	}
+}
+
+// MARK: - Accessory Classes
 //least hackish way to get segment's menu to show immediately if set, otherwise perform control's action
 class AddRemoveSegmentedCell: NSSegmentedCell {
 	override var action: Selector? {
