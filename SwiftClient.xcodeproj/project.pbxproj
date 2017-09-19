@@ -239,7 +239,6 @@
 		088E38071EF4025700136CFA /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		088E38081EF40B7700136CFA /* Bookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B81D216E5400866A05 /* Bookmark.swift */; };
 		088E38091EF40B7B00136CFA /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
-		088E380B1EF40C8300136CFA /* BookmarkSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088E380A1EF40C5300136CFA /* BookmarkSpec.swift */; };
 		088E380C1EF410DC00136CFA /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		088F591A1E732EC40009A0B1 /* MockDockerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F59191E732EC40009A0B1 /* MockDockerAPI.swift */; };
 		088F591C1E74BCEA0009A0B1 /* ThemePrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */; };
@@ -361,6 +360,7 @@
 		08F5746D1E4D04A70000956B /* Preferences.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08F5746B1E4D04A70000956B /* Preferences.storyboard */; };
 		08F673D01D020B2700B87049 /* FontManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F673CF1D020B2700B87049 /* FontManagement.swift */; };
 		08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F673D11D0214C700B87049 /* AppKitExtensions.swift */; };
+		08F675401F6ADA9C00EC3AC9 /* URLSession+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6753F1F6ADA9C00EC3AC9 /* URLSession+Rc2.swift */; };
 		08F6ADA51DD63C5800AF0722 /* NotifyingCollection.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */; };
 		08F6ADA61DD63C6600AF0722 /* NotifyingCollection.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08F6ADA71DD63C7100AF0722 /* NotifyingCollection.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */; };
@@ -866,7 +866,6 @@
 		088CE6B91C4C44BD00153414 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		088D1F921DF36B7F00BC891E /* updatedImageInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedImageInfo.json; sourceTree = "<group>"; };
 		088D1F941DF36E4D00BC891E /* updatedContainers.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedContainers.json; sourceTree = "<group>"; };
-		088E380A1EF40C5300136CFA /* BookmarkSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkSpec.swift; sourceTree = "<group>"; };
 		088F59191E732EC40009A0B1 /* MockDockerAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockDockerAPI.swift; sourceTree = "<group>"; };
 		088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThemePrefsController.swift; path = prefs/ThemePrefsController.swift; sourceTree = "<group>"; };
 		088F59211E74C4D10009A0B1 /* PlatformColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlatformColor.swift; path = ClientCore/PlatformColor.swift; sourceTree = SOURCE_ROOT; };
@@ -1211,7 +1210,6 @@
 				080E82FD1DCCD77D0048F36C /* loginResults.json */,
 				08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */,
 				0881B5071DCD336500679DB3 /* variables.json */,
-				088E380A1EF40C5300136CFA /* BookmarkSpec.swift */,
 				086508801E4A431C0067C8CA /* FileImporterTests.swift */,
 				081559961DDCFEB00047B3CE /* FileCacheSpec.swift */,
 				080E82F91DCCD4E90048F36C /* FileSpec.swift */,
@@ -1664,6 +1662,7 @@
 				081559941DDCCD960047B3CE /* RACSignals+Rc2.swift */,
 				08F03E441DE4BF0A00D02153 /* URLResponse+Rc2.swift */,
 				080AB90C1E991ED4005452C7 /* URLRequest+Rc2.swift */,
+				08F6753F1F6ADA9C00EC3AC9 /* URLSession+Rc2.swift */,
 				086508781E452D3A0067C8CA /* Result+Rc2.swift */,
 			);
 			path = extensions;
@@ -2577,7 +2576,6 @@
 				088935841E004FF500C94B19 /* SessionSpec.swift in Sources */,
 				080E82FC1DCCD56F0048F36C /* NetworkingBaseSpec.swift in Sources */,
 				086508811E4A431C0067C8CA /* FileImporterTests.swift in Sources */,
-				088E380B1EF40C8300136CFA /* BookmarkSpec.swift in Sources */,
 				0881B5061DCD329300679DB3 /* VariableSpec.swift in Sources */,
 				08F6ADAC1DD6502000AF0722 /* ModelSpec.swift in Sources */,
 				080E82EC1DCC001E0048F36C /* FileTypeSpec.swift in Sources */,
@@ -2736,6 +2734,7 @@
 				08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */,
 				08F01EBC1EFD887A0047F397 /* URL+MJL.swift in Sources */,
 				086A40DF1E7D956400AE476B /* PlatformTypeAliases.swift in Sources */,
+				08F675401F6ADA9C00EC3AC9 /* URLSession+Rc2.swift in Sources */,
 				08CFE8CF1E75BA42002A35C1 /* DirectoryWatcher.swift in Sources */,
 				08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */,
 				081559891DDBD7DA0047B3CE /* Freddy+Rc2.swift in Sources */,
