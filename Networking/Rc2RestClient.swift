@@ -10,6 +10,7 @@ import Freddy
 import os
 import ReactiveSwift
 import ZipArchive
+import Model
 
 fileprivate let wspaceDirName = "defaultWorkspaceFiles"
 
@@ -47,37 +48,34 @@ public final class Rc2RestClient {
 	///   - workspace: name of the workspace to create
 	///   - project: project to create the workspace in
 	/// - Returns: SignalProducer that returns the new workspace or an error
-	public func create(workspace: String, project: Project) -> SignalProducer<Workspace, Rc2Error>
+	public func create(workspace: String, project: AppProject) -> SignalProducer<AppWorkspace, Rc2Error>
 	{
-		let requestJson: JSON = .dictionary(["projectId": .int(project.projectId), "name": .string(workspace)])
-		return SignalProducer<Workspace, Rc2Error> { observer, _ in
-			guard var requestData = try? requestJson.serialize() else {
-				os_log("failed to encode createworkspace json", log: .session)
-				observer.send(error: Rc2Error(type: .network, nested: nil, explanation: "failed to encode json"))
-				return
-			}
-			var req = self.request("workspaces", method: "POST")
+		return SignalProducer<AppWorkspace, Rc2Error> { observer, _ in
+			var req = self.request("proj/\(project.projectId)/wspace", method: "POST")
 			let zippedUrl = self.defaultWorkspaceFiles()
 			if zippedUrl != nil, let zippedData = try? Data(contentsOf: zippedUrl!) {
 				req.addValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
-				req.addValue("\(project.projectId)", forHTTPHeaderField: "Rc2-ProjectId")
 				req.addValue(workspace, forHTTPHeaderField: "Rc2-WorkspaceName")
-				requestData = zippedData
+				req.httpBody = zippedData
 			} else {
 				req.addValue("application/json", forHTTPHeaderField: "Content-Type")
 			}
 			req.addValue("application/json", forHTTPHeaderField: "Accept")
-			req.httpBody = requestData
-			req.addValue(self.conInfo.authToken, forHTTPHeaderField: "Rc2-Auth")
 			let handler = { (data: Data?, response: URLResponse?, error: Error?) in
-				self.handleCreateResponse(observer: observer, data: data, response: response, error: error) { newWspace in
-					do {
-						try project.added(workspace: newWspace)
-					} catch {
-						os_log("failed to add new workspace to project: %{public}@", log: .session, error.localizedDescription)
-						//long-term should refetch the project list
-						fatalError()
-					}
+				do {
+					let results: CreateWorkspaceResult = try self.handleResponse(data: data, response: response, error: error)
+					self.conInfo.update(bulkInfo: results.bulkInfo)
+					let wspace = try self.conInfo.workspace(withId: results.wspaceId, in: project)
+					observer.send(value: wspace)
+					observer.sendCompleted()
+				} catch let nferror as ConnectionInfo.Errors {
+					os_log("created workspace not found", log: .network)
+					observer.send(error: Rc2Error(type: .network, nested: nferror, explanation: "created workspace not found"))
+				} catch let rc2error as Rc2Error {
+					observer.send(error: rc2error)
+				} catch {
+					os_log("error parsing create workspace response %{public}@", log: .network, error.localizedDescription)
+					observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "unknown error parsing create workspace response"))
 				}
 			}
 			self.urlSession!.dataTask(with: req, completionHandler: handler).resume()
@@ -91,7 +89,7 @@ public final class Rc2RestClient {
 	///   - workspace: workspace to contain the file
 	///   - contentUrl: optional URL to use as a template for the file
 	/// - Returns: SignalProducer for the file to add to the workspace, or an error
-	public func create(fileName: String, workspace: Workspace, contentUrl: URL?) -> SignalProducer<File, Rc2Error>
+	public func create(fileName: String, workspace: AppWorkspace, contentUrl: URL?) -> SignalProducer<File, Rc2Error>
 	{
 		return SignalProducer<File, Rc2Error> { observer, _ in
 			var req = self.request("workspaces/\(workspace.wspaceId)/files/upload", method: "POST")
@@ -100,7 +98,16 @@ public final class Rc2RestClient {
 			req.addValue(fileName, forHTTPHeaderField: "Rc2-Filename")
 			req.addValue(self.conInfo.authToken, forHTTPHeaderField: "Rc2-Auth")
 			let handler = { (data: Data?, response: URLResponse?, error: Error?) in
-				self.handleCreateResponse(observer: observer, data: data, response: response, error: error)
+				do {
+					let file: File = try self.handleResponse(data: data, response: response, error: error)
+					observer.send(value: file)
+					observer.sendCompleted()
+				} catch let err as Rc2Error {
+					observer.send(error: err)
+				} catch {
+				os_log("error parsing create workspace response %{public}@", log: .network, error.localizedDescription)
+				observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "unknown error parsing create workspace response"))
+				}
 			}
 			if let contentUrl = contentUrl {
 				self.urlSession!.uploadTask(with: req, fromFile: contentUrl, completionHandler: handler).resume()
@@ -109,8 +116,8 @@ public final class Rc2RestClient {
 			}
 		}
 	}
-
-	public func downloadImage(imageId: Int, from wspace: Workspace, destination: URL) -> SignalProducer<URL, Rc2Error>
+	
+	public func downloadImage(imageId: Int, from wspace: AppWorkspace, destination: URL) -> SignalProducer<URL, Rc2Error>
 	{
 		return SignalProducer<URL, Rc2Error> { observer, _ in
 			var req = self.request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET")
@@ -132,7 +139,7 @@ public final class Rc2RestClient {
 			task.resume()
 		}
 	}
-
+	
 	/// returns array of default files to add to any new workspace
 	/// - returns: URL to a zip file with the default files to add
 	private func defaultWorkspaceFiles() -> URL? {
@@ -160,25 +167,30 @@ public final class Rc2RestClient {
 		return nil
 	}
 	
-	private func handleCreateResponse<T: JSONDecodable>(observer: Signal<T, Rc2Error>.Observer, data: Data?, response: URLResponse?, error: Error?, onSuccess: ((T) -> Void)? = nil)
+	/// parses the response from a URLSessionTask callback
+	///
+	/// - Parameters:
+	///   - data: data parameter from callback
+	///   - response: response parameter from callback
+	///   - error: error parameter from callback
+	/// - Returns: decoded object from data
+	/// - Throws: server error wrapped as Rc2Error
+	private func handleResponse<T: Decodable>(data: Data?, response: URLResponse?, error: Error?) throws -> T
 	{
-		guard nil == error else { observer.send(error: Rc2Error(type: .cocoa, nested: error)); return }
+		guard nil == error else { throw Rc2Error(type: .cocoa, nested: error) }
 		switch response?.httpResponse?.statusCode ?? 500 {
 		case 201:
 			do {
-				let json = try JSON(data: data!)
-				let object = try T(json: json)
-				observer.send(value: object)
-				observer.sendCompleted()
-				onSuccess?(object)
+				let object: T = try conInfo.decode(data: data!)
+				return object
 			} catch {
-				observer.send(error: Rc2Error(type: .invalidJson, explanation: "error parsing create REST response"))
+				throw Rc2Error(type: .invalidJson, explanation: "error parsing create REST response")
 			}
 		case 422:
-			observer.send(error: Rc2Error(type: .invalidArgument, nested: NetworkingError.errorFor(response: response!.httpResponse!, data: data!), explanation: "Workspace already exists with that name"))
+			throw Rc2Error(type: .invalidArgument, nested: NetworkingError.errorFor(response: response!.httpResponse!, data: data!), explanation: "Workspace already exists with that name")
 		default:
 			// swiftlint:disable:next force_cast
-			observer.send(error: Rc2Error(type: .network, nested: NetworkingError.invalidHttpStatusCode(response as! HTTPURLResponse)))
+			throw Rc2Error(type: .network, nested: NetworkingError.invalidHttpStatusCode(response as! HTTPURLResponse))
 		}
 	}
 }

@@ -49,12 +49,12 @@ protocol OutputHandler: class, SearchResponder {
 
 /// Implemented by objects that need to response to changes related to files
 protocol FileHandler: class {
-	var selectedFile: File? { get set }
+	var selectedFile: AppFile? { get set }
 
 	/// Updates data for file changes
 	///
 	/// - Parameter changes: the file changes
-	func filesRefreshed(_ changes: [CollectionChange<File>]?)
+	func filesRefreshed(_ changes: [CollectionChange<AppFile>]?)
 
 	/// prompts the user to import file(s)
 	///

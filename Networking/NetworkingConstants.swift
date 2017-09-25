@@ -7,6 +7,10 @@
 import ClientCore
 import Foundation
 import os
+import Model
+
+/// insert, update, delete
+public typealias FileChangeType = SessionResponse.FileChangedData.FileChangeType
 
 //extension OSLog {
 //	static let network: OSLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "network")

@@ -36,7 +36,7 @@ class SessionSpec: NetworkingBaseSpec {
 	override func spec() {
 		var json: JSON!
 		var conInfo: ConnectionInfo!
-		var wspace: Workspace!
+		var wspace: AppWorkspace!
 		var fakeDelegate: FakeSessionDelegate!
 		var fakeSocket: TestingWebSocket!
 		var fakeCache: FakeFileCache!
@@ -133,7 +133,7 @@ class SessionSpec: NetworkingBaseSpec {
 		expect(result.error).to(beNil())
 	}
 	
-	func cacheFiles(for wspace: Workspace, cache: FakeFileCache) {
+	func cacheFiles(for wspace: AppWorkspace, cache: FakeFileCache) {
 		let bundle = Bundle(for: type(of: self))
 		for aFile in wspace.files {
 			let fileUrl = bundle.url(forResource: aFile.baseName, withExtension: aFile.fileType.fileExtension, subdirectory: "testFiles")!

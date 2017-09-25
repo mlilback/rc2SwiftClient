@@ -35,7 +35,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	var helpController: HelpOutputController?
 	var imageCache: ImageCache? { return sessionController?.session.imageCache }
 	weak var sessionController: SessionController? { didSet { sessionControllerUpdated() } }
-	weak var displayedFile: File?
+	weak var displayedFile: AppFile?
 	var searchBarVisible: Bool {
 		get { return currentOutputController.searchBarVisible }
 		set { currentOutputController.performFind(action: newValue ? .showFindInterface : .hideFindInterface) }
@@ -153,7 +153,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	func showFile(_ fileObject: AnyObject?) {
 		//strip optional
-		guard let file = fileObject as? File else {
+		guard let file = fileObject as? AppFile else {
 			webController?.clearContents()
 			selectedOutputTab.value = .console
 			displayedFile = nil

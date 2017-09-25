@@ -13,7 +13,7 @@ import ReactiveSwift
 class FileSpec: NetworkingBaseSpec {
 	override func spec() {
 		let loginResultsJson = loadTestJson("loginResults")
-		let file = try! loginResultsJson.decode(at: "projects", 0, "workspaces", 0, "files", 0, type: File.self)
+		let file = try! loginResultsJson.decode(at: "projects", 0, "workspaces", 0, "files", 0, type: AppFile.self)
 		
 		describe("test File type") {
 			it("file should encapsulate values from json") {

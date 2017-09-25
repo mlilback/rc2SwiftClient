@@ -5,38 +5,31 @@
 //
 
 import Foundation
-import Freddy
 import NotifyingCollection
 import ReactiveSwift
 import Result
+import Model
 
-public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomStringConvertible, Hashable
+public final class AppProject: Copyable, UpdateInPlace, CustomStringConvertible, Hashable
 {
-	public let projectId: Int
-	public let userId: Int
-	public fileprivate(set) var name: String
-	public fileprivate(set) var version: Int
-	public var workspaces: [Workspace] { return _workspaces.values }
-	public var workspaceChangeSignal: Signal<[CollectionChange<Workspace>], NoError> { return _workspaces.changeSignal }
+	public private(set) var model: Project
+	public var projectId: Int { return model.id }
+	public var userId: Int { return model.userId }
+	public var name: String { return model.name }
+	public var version: Int { return model.version }
+	public var workspaces: [AppWorkspace] { return _workspaces.values }
+	public var workspaceChangeSignal: Signal<[CollectionChange<AppWorkspace>], NoError> { return _workspaces.changeSignal }
 
-	private var _workspaces = NestingCollectionNotifier<Workspace>()
+	private var _workspaces = NestingCollectionNotifier<AppWorkspace>()
 
-	//documentation inherited from protocol
-	public init(json: JSON) throws {
-		projectId = try json.getInt(at: "id")
-		userId = try json.getInt(at: "userId")
-		version = try json.getInt(at: "version")
-		name = try json.getString(at: "name")
-		let wspaces = try json.decodedArray(at: "workspaces", type: Workspace.self)
-		try _workspaces.append(contentsOf: wspaces)
+	public init(model: Project, workspaces rawWorkspaces: [AppWorkspace]) throws {
+		self.model = model
+		try _workspaces.append(contentsOf: rawWorkspaces)
 	}
 
 	//documentation inherited from protocol
-	public init(instance other: Project) {
-		projectId = other.projectId
-		userId = other.userId
-		name = other.name
-		version = other.version
+	public init(instance other: AppProject) {
+		model = other.model
 		//can force because they are from another copy so must be valid
 		// swiftlint:disable:next force_try
 		try! _workspaces.append(contentsOf: other.workspaces)
@@ -53,7 +46,7 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 	/// searches for a workspace with the specified id
 	/// - Parameter withId: the id to look for
 	/// - returns: a matching workspace or nil if not found
-	public func workspace(withId: Int) -> Workspace? {
+	public func workspace(withId: Int) -> AppWorkspace? {
 		guard let idx = _workspaces.index(where: { $0.wspaceId == withId }) else {
 			return nil
 		}
@@ -63,7 +56,7 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 	/// searches for a workspace with the specified name
 	/// - Parameter withName: the name to look for
 	/// - returns: a matching workspace or nil if not found
-	public func workspace(withName: String) -> Workspace? {
+	public func workspace(withName: String) -> AppWorkspace? {
 		guard let idx = _workspaces.index(where: { $0.name == withName }) else {
 			return nil
 		}
@@ -71,16 +64,16 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 	}
 	
 	//documentation inherited from protocol
-	public func update(to other: Project) throws {
+	public func update(to other: AppProject) throws {
+		// MODEL: fix me, broken
 		assert(projectId == other.projectId)
 		assert(version <= other.version)
 		assert(userId == other.userId)
-		name = other.name
-		version = other.version
+		model = other.model
 		_workspaces.startGroupingChanges()
 		defer { _workspaces.stopGroupingChanges() }
-		var wspacesToRemove = Set<Workspace>(_workspaces)
-		var wspacesToAdd = [Workspace]()
+		var wspacesToRemove = Set<AppWorkspace>(_workspaces)
+		var wspacesToAdd = [AppWorkspace]()
 		try other.workspaces.forEach { (aWspace) in
 			guard let wspace = workspace(withId: aWspace.wspaceId) else {
 				//a new workspace to add
@@ -102,11 +95,11 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 	///
 	/// - Parameter workspace: workspace that was added
 	/// - Throws: Rc2Error
-	internal func added(workspace: Workspace) throws {
+	internal func added(workspace: AppWorkspace) throws {
 		try _workspaces.append(workspace)
 	}
 	
-	public func addWorkspaceObserver(identifier: String, observer: @escaping (Workspace) -> Disposable?) {
+	public func addWorkspaceObserver(identifier: String, observer: @escaping (AppWorkspace) -> Disposable?) {
 		_workspaces.observe(identifier: identifier, observer: observer)
 	}
 	
@@ -114,7 +107,7 @@ public final class Project: JSONDecodable, Copyable, UpdateInPlace, CustomString
 		_workspaces.removeObserver(identifier: identifier)
 	}
 
-	public static func == (lhs: Project, rhs: Project) -> Bool {
+	public static func == (lhs: AppProject, rhs: AppProject) -> Bool {
 		return lhs.projectId == rhs.projectId && lhs.version == rhs.version
 	}
 }

@@ -24,27 +24,27 @@ class FakeFileCache: FileCache {
 	
 	let baseUrl: URL
 	var fileManager: Rc2FileManager
-	var workspace: Workspace
+	var workspace: AppWorkspace
 	var fileInfo: [Int: FakeFileInfo] = [:]
 	
-	init(workspace: Workspace, baseUrl: URL) {
+	init(workspace: AppWorkspace, baseUrl: URL) {
 		self.baseUrl = baseUrl
 		fileManager = Rc2DefaultFileManager()
 		self.workspace = workspace
 	}
 	
-	func isFileCached(_ file:File) -> Bool {
+	func isFileCached(_ file:AppFile) -> Bool {
 		guard let iscached = fileInfo[file.fileId]?.cached else { return false }
 		return iscached
 	}
 	
 	//removes the cached file
-	func flushCache(file: File) {
+	func flushCache(file: AppFile) {
 		guard var finfo = fileInfo[file.fileId] else { return }
 		finfo.cached = false
 	}
 	
-	func recache(file: File) -> SignalProducer<Double, Rc2Error> {
+	func recache(file: AppFile) -> SignalProducer<Double, Rc2Error> {
 		if nil != fileInfo[file.fileId] {
 			fileInfo[file.fileId]!.cached = true
 			return SignalProducer<Double, Rc2Error>(value: 1.0)
@@ -54,7 +54,7 @@ class FakeFileCache: FileCache {
 		return SignalProducer<Double, Rc2Error>(value: 1.0)
 	}
 	
-	func flushCache(files: [File]) -> SignalProducer<Double, Rc2Error> {
+	func flushCache(files: [AppFile]) -> SignalProducer<Double, Rc2Error> {
 		return SignalProducer<Double, Rc2Error> { observer, _ in
 			for aFile in files {
 				if self.fileInfo[aFile.fileId] != nil {
@@ -70,18 +70,18 @@ class FakeFileCache: FileCache {
 		return SignalProducer<Double, Rc2Error>(value: 1.0)
 	}
 	
-	func cachedUrl(file: File) -> URL {
+	func cachedUrl(file: AppFile) -> URL {
 		if let furl = fileInfo[file.fileId]?.url {
 			return furl
 		}
 		return URL(string: "workspaces/\(workspace.wspaceId)/files/\(file.fileId)", relativeTo: baseUrl)!
 	}
 	
-	func validUrl(for file: File) -> SignalProducer<URL, Rc2Error> {
+	func validUrl(for file: AppFile) -> SignalProducer<URL, Rc2Error> {
 		return SignalProducer<URL, Rc2Error>(error: Rc2Error(type: .unknown, explanation: "not implemented"))
 	}
 	
-	func contents(of file: File) -> SignalProducer<Data, Rc2Error> {
+	func contents(of file: AppFile) -> SignalProducer<Data, Rc2Error> {
 		guard let finfo = fileInfo[file.fileId] else {
 			return SignalProducer<Data, Rc2Error>(error: Rc2Error(type: .noSuchElement))
 		}
@@ -99,11 +99,11 @@ class FakeFileCache: FileCache {
 		}
 	}
 	
-	func update(file: File, withData data: Data?) -> SignalProducer<Void, Rc2Error> {
+	func update(file: AppFile, withData data: Data?) -> SignalProducer<Void, Rc2Error> {
 		return SignalProducer<Void, Rc2Error>(error: Rc2Error(type: .unknown, explanation: "not implemented"))
 	}
 	
-	func save(file: File, contents: String) -> SignalProducer<Void, Rc2Error> {
+	func save(file: AppFile, contents: String) -> SignalProducer<Void, Rc2Error> {
 		return SignalProducer<Void, Rc2Error>(error: Rc2Error(type: .unknown, explanation: "not implemented"))
 	}
 }

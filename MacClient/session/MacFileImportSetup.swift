@@ -24,7 +24,7 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 		parameter workspace: the workspace the files will be imported into
 		parameter completionHandler: a closure called with an array of files to import, or nil if the user canceled the import
 	*/
-	func performFileImport(_ window: NSWindow, workspace: Workspace, completionHandler:@escaping ([FileImporter.FileToImport]?) -> Void) {
+	func performFileImport(_ window: NSWindow, workspace: AppWorkspace, completionHandler:@escaping ([FileImporter.FileToImport]?) -> Void) {
 		
 		let defaults = UserDefaults.standard
 		let panel = NSOpenPanel()
@@ -95,7 +95,7 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 		parameter workspace: the workspace the file(s) will be imported into
 		parameter handler: called with the array of files to import
 	*/
-	func acceptTableViewDrop(_ info: NSDraggingInfo, workspace: Workspace, window: NSWindow, handler:@escaping ([FileImporter.FileToImport]) -> Void)
+	func acceptTableViewDrop(_ info: NSDraggingInfo, workspace: AppWorkspace, window: NSWindow, handler:@escaping ([FileImporter.FileToImport]) -> Void)
 	{
 		assert(validateTableViewDrop(info) != NSDragOperation(), "validate wasn't called on drag info")
 		guard let urls = info.draggingPasteboard().readObjects(forClasses: [NSURL.self], options: pboardReadOptions) as? [URL], urls.count > 0 else { return }
@@ -123,7 +123,7 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 	}
 	
 	/** generates a unique file name (by adding a number to the end) for a file in a workspace */
-	func uniqueFileName(_ desiredName: String, inWorkspace workspace: Workspace) -> String {
+	func uniqueFileName(_ desiredName: String, inWorkspace workspace: AppWorkspace) -> String {
 		var i = 1
 		let nsname = NSString(string:desiredName)
 		let baseName = nsname.deletingPathExtension

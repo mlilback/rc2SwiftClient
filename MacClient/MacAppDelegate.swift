@@ -258,7 +258,7 @@ extension MacAppDelegate {
 	/// - Parameters:
 	///   - menu: menu to add workspaces to
 	///   - project: project whose workspaces will be added to menu
-	fileprivate func update(menu: NSMenu, for project: Project) {
+	fileprivate func update(menu: NSMenu, for project: AppProject) {
 		menu.title = project.name
 		menu.removeAllItems()
 		for aWorkspace in project.workspaces.sorted(by: { $0.name < $1.name }) {

@@ -26,7 +26,7 @@ public protocol Rc2FileManager {
 //	func createDirectory(at url: URL, withIntermediateDirectories createIntermediates: Bool, attributes: [String : Any]?) throws
 	func createDirectoryHierarchy(at url: URL) throws
 	/// synchronously move the file setting xattrs
-	func move(tempFile: URL, to toUrl: URL, file: File?) throws
+	func move(tempFile: URL, to toUrl: URL, file: AppFile?) throws
 }
 
 open class Rc2DefaultFileManager: Rc2FileManager {
@@ -91,7 +91,7 @@ open class Rc2DefaultFileManager: Rc2FileManager {
 	
 	///Synchronously moves the tmpFile downloaded via NSURLSession (or elsewhere) to toUrl, setting the appropriate
 	/// metadata including xattributes for validating cached File objects
-	public func move(tempFile: URL, to toUrl: URL, file: File?) throws {
+	public func move(tempFile: URL, to toUrl: URL, file: AppFile?) throws {
 		do {
 			if let _ = try? toUrl.checkResourceIsReachable() {
 				try self.removeItem(at: toUrl)
@@ -115,7 +115,7 @@ open class Rc2DefaultFileManager: Rc2FileManager {
 	}
 }
 
-extension File {
+extension AppFile {
 	///checks to see if file at url is the file we represent
 	public func urlXAttributesMatch(_ url: URL) -> Bool {
 		if let versionData = dataForXAttributeNamed(FileAttrVersion, atURL: url).data,

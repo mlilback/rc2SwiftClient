@@ -27,8 +27,8 @@ class ModelSpec: NetworkingBaseSpec {
 		}
 		
 		describe("test loading of projects") {
-			var proj: Project?
-			var wspace: Workspace?
+			var proj: AppProject?
+			var wspace: AppWorkspace?
 			
 			beforeEach {
 				loadData()
@@ -57,10 +57,10 @@ class ModelSpec: NetworkingBaseSpec {
 		}
 		
 		describe("workspace change notification") {
-			var proj: Project?
-			var wspace: Workspace?
+			var proj: AppProject?
+			var wspace: AppWorkspace?
 			let updateJson = self.loadTestJson("modelChanges")
-			var lastChanges: [CollectionChange<File>]?
+			var lastChanges: [CollectionChange<AppFile>]?
 			var fileDisposable: Disposable?
 			
 			beforeEach {
@@ -82,7 +82,7 @@ class ModelSpec: NetworkingBaseSpec {
 			it("listen to file changes") {
 				let json = updateJson["update_200_201_201"]
 				expect(json).toNot(beNil())
-				let updatedProject = try! Project(json: json!)
+				let updatedProject = try! AppProject(json: json!)
 				proj?.addWorkspaceObserver(identifier: "test") { (wspace) -> Disposable? in
 					return wspace.fileChangeSignal.observe { /*[weak self]*/ event in
 						guard let changes = event.value else { return }
@@ -97,7 +97,7 @@ class ModelSpec: NetworkingBaseSpec {
 				
 				lastChanges = nil
 				let fjson = updateJson["update_f202_bar"]
-				let updatedFile = try! File(json: fjson!)
+				let updatedFile = try! AppFile(json: fjson!)
 				try! wspace?.update(fileId: 202, to: updatedFile)
 				//try! file?.update(to: updatedFile)
 				expect(lastChanges?.count).to(equal(1))

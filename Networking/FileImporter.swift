@@ -9,6 +9,7 @@ import Foundation
 import Freddy
 import os
 import ReactiveSwift
+import Model
 
 /// FINISH: not properly handlind multiple task progress, compeltion when all tasks are finished
 /// need unit tests with multiple uploads
@@ -21,9 +22,9 @@ public class FileImporter: NSObject {
 	public typealias ProgressSignalProducer = SignalProducer<ImportProgress, Rc2Error>
 	
 	public let fileCache: FileCache
-	public var workspace: Workspace { return fileCache.workspace }
+	public var workspace: AppWorkspace { return fileCache.workspace }
 	/// array of files that were imported. Only available after the import is completed
-	public fileprivate(set) var importedFiles: [File]
+	public fileprivate(set) var importedFiles: [AppFile]
 	fileprivate let files: [FileToImport]
 	fileprivate var uploadSession: URLSession!
 	fileprivate var tasks: [Int: ImportData] = [:]
@@ -167,9 +168,8 @@ extension FileImporter: URLSessionDataDelegate {
 			return
 		}
 		do {
-			let json = try JSON(data: importData.data)
-			var newFile = try File(json: json)
-			newFile = try workspace.imported(file: newFile)
+			let rawFile: File = try conInfo.decode(data: importData.data)
+			let newFile = try workspace.imported(file: rawFile)
 			let fileData = try Data(contentsOf: importData.srcFile)
 			//is this really the best way to handle this error? oberver might have been set to nil
 			fileCache.update(file: newFile, withData: fileData).startWithFailed { updateError in

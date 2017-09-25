@@ -333,7 +333,7 @@ extension RootViewController: SessionControllerDelegate {
 
 // MARK: - FileViewControllerDelegate
 extension RootViewController: FileViewControllerDelegate {
-	func fileSelectionChanged(_ file: File?, forEditing: Bool) {
+	func fileSelectionChanged(_ file: AppFile?, forEditing: Bool) {
 		if nil == file {
 			self.editor?.fileSelectionChanged(nil)
 			self.outputHandler?.showFile(nil)

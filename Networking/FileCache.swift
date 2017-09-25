@@ -10,12 +10,13 @@ import NotifyingCollection
 import os
 import ReactiveSwift
 import Result
+import Model
 
 // this file is long because it has lots of helpers that need to be fileprivate
 // swiftlint:disable file_length
 
 public enum FileCacheError: Error, Rc2DomainError {
-	case failedToCreateURL(file: File)
+	case failedToCreateURL(file: AppFile)
 	case downloadAlreadyInProgress
 	case downloadError(urlError: Error)
 	case fileError(FileError)
@@ -25,30 +26,32 @@ public enum FileCacheError: Error, Rc2DomainError {
 
 public protocol FileCache {
 	var fileManager: Rc2FileManager { get }
-	var workspace: Workspace { get }
+	var workspace: AppWorkspace { get }
 
 	func close()
-	func isFileCached(_ file: File) -> Bool
+	func isFileCached(_ file: AppFile) -> Bool
 //	func flushCache(workspace:Workspace)
 	//removes the cached file
-	func flushCache(file: File)
+	func flushCache(file: AppFile)
 	///recaches the specified file if it has changed
-	func recache(file: File) -> SignalProducer<Double, Rc2Error>
+	func recache(file: AppFile) -> SignalProducer<Double, Rc2Error>
 	//recaches an array of files
-	func flushCache(files: [File]) -> SignalProducer<Double, Rc2Error>
+	func flushCache(files: [AppFile]) -> SignalProducer<Double, Rc2Error>
 	///caches all the files in the workspace that aren't already cached with the current version of the file
 	func cacheAllFiles() -> SignalProducer<Double, Rc2Error>
 	///returns the file system url where the file is/will be stored
-	func cachedUrl(file: File) -> URL
+	func cachedUrl(file: AppFile) -> URL
 	///calls cachedUrl, but downloads the file if correct version is not cached on disk
 	/// - Parameter file: the file whose url is desired
 	/// - Returns: signal producer that returns the URL to the cached contents of file
-	func validUrl(for file: File) -> SignalProducer<URL, Rc2Error>
+	func validUrl(for file: AppFile) -> SignalProducer<URL, Rc2Error>
 	/// get the contents of a file
 	///
 	/// - Parameter file: the file whose contents should be returned
 	/// - Returns: a signal producer that returns the file data or an error
-	func contents(of file: File) -> SignalProducer<Data, Rc2Error>
+	func contents(of file: AppFile) -> SignalProducer<Data, Rc2Error>
+	
+	func handle(change: SessionResponse.FileChangedData) throws
 	
 	/// updates a file's contents on disk (from the network). will update the workspace's file object
 	///
@@ -56,7 +59,7 @@ public protocol FileCache {
 	///   - file: the file whose contents changed
 	///   - data: the data with the contents of the file
 	/// - Returns: signal producer that signals completed or error
-	func update(file: File, withData data: Data?) -> SignalProducer<Void, Rc2Error>
+	func update(file: AppFile, withData data: Data) -> SignalProducer<Void, Rc2Error>
 	
 	/// saves file contents (does not update file object)
 	///
@@ -64,20 +67,20 @@ public protocol FileCache {
 	///   - file: the file to save data to
 	///   - contents: the contents to save to the file
 	/// - Returns: a signal producer that signals success or error
-	func save(file: File, contents: String) -> SignalProducer<Void, Rc2Error>
+	func save(file: AppFile, contents: String) -> SignalProducer<Void, Rc2Error>
 }
 
 // MARK: FileCache implementation
 
 fileprivate class DownloadTask {
-	let file: File
+	let file: AppFile
 	let task: URLSessionDownloadTask
 	var bytesDownloaded: Int = 0
 	var partOfDownloadAll: Bool
 	fileprivate var signal: Signal<Double, Rc2Error>
 	fileprivate var observer: Signal<Double, Rc2Error>.Observer
 	
-	init(file aFile: File, task: URLSessionDownloadTask, forAll: Bool = false)
+	init(file aFile: AppFile, task: URLSessionDownloadTask, forAll: Bool = false)
 	{
 		file = aFile
 		self.task = task
@@ -136,7 +139,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 	// MARK: properties
 	public let mainQueue: DispatchQueue
 	public var fileManager: Rc2FileManager
-	public let workspace: Workspace
+	public let workspace: AppWorkspace
 	fileprivate var baseUrl: URL
 	fileprivate var urlSession: URLSession?
 	fileprivate var tasks: [Int: DownloadTask] = [:] //key is task identifier
@@ -155,7 +158,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 	}()
 	
 	// MARK: methods
-	public init(workspace: Workspace, baseUrl: URL, config: URLSessionConfiguration, fileManager: Rc2FileManager? = nil, queue: DispatchQueue = DispatchQueue.main)
+	public init(workspace: AppWorkspace, baseUrl: URL, config: URLSessionConfiguration, fileManager: Rc2FileManager? = nil, queue: DispatchQueue = DispatchQueue.main)
 	{
 		if fileManager != nil {
 			self.fileManager = fileManager!
@@ -181,7 +184,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 		urlSession = nil
 	}
 	
-	public func isFileCached(_ file: File) -> Bool {
+	public func isFileCached(_ file: AppFile) -> Bool {
 		let url = cachedUrl(file: file)
 		return url.fileExists() && url.fileSize() > 0
 	}
@@ -190,7 +193,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 //
 //	}
 	
-	public func flushCache(file: File) {
+	public func flushCache(file: AppFile) {
 		self.taskLockQueue.sync {
 			guard self.downloadTaskWithFileId(file.fileId) == nil else {
 				//download already in progress. no need to erase
@@ -209,7 +212,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 	}
 	
 	///recaches the specified file if it has changed
-	public func recache(file: File) -> SignalProducer<Double, Rc2Error> {
+	public func recache(file: AppFile) -> SignalProducer<Double, Rc2Error> {
 		os_log("recache of %d started", log: .cache, type: .debug, file.fileId)
 		var producer: SignalProducer<Double, Rc2Error>?
 		self.taskLockQueue.sync {
@@ -232,7 +235,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 		return producer!
 	}
 	
-	public func flushCache(files: [File]) -> SignalProducer<Double, Rc2Error>
+	public func flushCache(files: [AppFile]) -> SignalProducer<Double, Rc2Error>
 	{
 		let sortedFiles = files.sorted { (f1, f2) in
 			return f1.fileSize < f2.fileSize
@@ -304,7 +307,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 	}
 	
 	//documentation in protocol
-	public func validUrl(for file: File) -> SignalProducer<URL, Rc2Error> {
+	public func validUrl(for file: AppFile) -> SignalProducer<URL, Rc2Error> {
 		let url = cachedUrl(file: file)
 		var producer: SignalProducer<URL, Rc2Error>?
 		self.taskLockQueue.sync {
@@ -322,7 +325,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 	}
 	
 	///returns the file system url where the file is/will be stored
-	public func cachedUrl(file: File) -> URL {
+	public func cachedUrl(file: AppFile) -> URL {
 		let fileUrl = URL(fileURLWithPath: "\(file.fileId).\(file.fileType.fileExtension)", relativeTo: fileCacheUrl).absoluteURL
 		return fileUrl
 	}
@@ -334,7 +337,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 		return nil
 	}
 	
-	fileprivate func makeTask(file: File, partOfDownloadAll: Bool = false) -> DownloadTask {
+	fileprivate func makeTask(file: AppFile, partOfDownloadAll: Bool = false) -> DownloadTask {
 		let fileUrl = URL(string: "workspaces/\(workspace.wspaceId)/files/\(file.fileId)", relativeTo: baseUrl)!
 		var request = URLRequest(url: fileUrl.absoluteURL)
 		let cacheUrl = cachedUrl(file: file)
@@ -391,7 +394,7 @@ extension DefaultFileCache {
 	///
 	/// - Parameter file: the file whose contents should be returned
 	/// - Returns: a signal producer that returns the file data or an error
-	public func contents(of file: File) -> SignalProducer<Data, Rc2Error> {
+	public func contents(of file: AppFile) -> SignalProducer<Data, Rc2Error> {
 		return SignalProducer<Data, Rc2Error> { observer, _ in
 			self.taskLockQueue.sync {
 				if let dinfo = self.downloadAll {
@@ -415,7 +418,7 @@ extension DefaultFileCache {
 	/// - Parameters:
 	///   - file: the file to load contents of
 	///   - observer: observer to signal data/completed or error
-	private func loadContents(file: File, observer: Signal<Data, Rc2Error>.Observer) {
+	private func loadContents(file: AppFile, observer: Signal<Data, Rc2Error>.Observer) {
 		let fileUrl = cachedUrl(file: file)
 		//for some unknown reason the cached file could be empty and cause a crash
 		guard fileUrl.fileExists() && fileUrl.fileSize() > 0 else {
@@ -432,7 +435,7 @@ extension DefaultFileCache {
 	}
 	
 	/// reads raw data of file from filesystem, sends along to observer
-	private func readDataFromFile(file: File, observer: Signal<Data, Rc2Error>.Observer) {
+	private func readDataFromFile(file: AppFile, observer: Signal<Data, Rc2Error>.Observer) {
 		do {
 			let data = try Data(contentsOf: self.cachedUrl(file: file))
 			observer.send(value: data)
@@ -440,34 +443,24 @@ extension DefaultFileCache {
 			observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "failed to load contents of file \(file.name)"))
 		}
 	}
+
+	public func handle(change: SessionResponse.FileChangedData) throws {
+		//TODO: implement
+	}
 	
-	/// updates a file's contents on disk (from the network). will update the workspace's file object
+	/// combines a save() and a recache() operation
 	///
 	/// - Parameters:
 	///   - file: the file whose contents changed
 	///   - data: the data with the contents of the file
 	/// - Returns: signal producer that signals completed or error
-	public func update(file: File, withData data: Data?) -> SignalProducer<Void, Rc2Error>
+	public func update(file: AppFile, withData data: Data) -> SignalProducer<Void, Rc2Error>
 	{
-		let updateSP = SignalProducer<Void, Rc2Error> { observer, _ in
-			do {
-				try self.workspace.update(fileId: file.fileId, to: file)
-				observer.sendCompleted()
-			} catch let err as CollectionNotifierError {
-				observer.send(error: Rc2Error(type: .updateFailed, nested: FileCacheError.fileUpdateFailed(err)))
-			} catch {
-				observer.send(error: Rc2Error(type: .unknown, nested: error))
-			}
-		}
-		if let fileContents = data {
-			return save(file: file, contents: String(data: fileContents, encoding: .utf8)!)
-				.mapError({ ferr in
-					return Rc2Error(type: .file, nested: ferr)
-				}).concat(updateSP)
-		}
-		//need to download it
-		let dloadSP = recache(file: file).map({ _ in return () })
-		return updateSP.concat(dloadSP)
+		let cacheSP = recache(file: file).map({ _ in return () })
+		return save(file: file, contents: String(data: data, encoding: .utf8)!)
+			.mapError({ ferr in
+				return Rc2Error(type: .file, nested: ferr)
+			}).concat(cacheSP)
 	}
 	
 	/// saves file contents (does not update file object)
@@ -476,7 +469,7 @@ extension DefaultFileCache {
 	///   - file: the file to save data to
 	///   - contents: the contents to save to the file
 	/// - Returns: a signal producer that signals success or error
-	public func save(file: File, contents: String) -> SignalProducer<Void, Rc2Error> {
+	public func save(file: AppFile, contents: String) -> SignalProducer<Void, Rc2Error> {
 		return SignalProducer<Void, Rc2Error> { observer, _ in
 			let url = self.cachedUrl(file: file)
 			do {

@@ -14,7 +14,7 @@ let MinTimeBetweenAutoSaves: TimeInterval = 2
 
 public class EditorDocument: NSObject {
 
-	fileprivate(set) var file: File
+	fileprivate(set) var file: AppFile
 	public let fileUrl: URL
 	public let fileCache: FileCache
 	let undoManager: UndoManager
@@ -34,7 +34,7 @@ public class EditorDocument: NSObject {
 		return editedContents != savedContents
 	}
 
-	public init(file: File, fileCache: FileCache) {
+	public init(file: AppFile, fileCache: FileCache) {
 		self.file = file
 		self.fileCache = fileCache
 		self.fileUrl = fileCache.cachedUrl(file: file)
@@ -79,7 +79,7 @@ public class EditorDocument: NSObject {
 		editedContents = text
 	}
 
-	public func updateFile(_ newFile: File) {
+	public func updateFile(_ newFile: AppFile) {
 		guard isLoaded else { return }
 		precondition(isLoaded)
 		self.editedContents = nil

@@ -16,7 +16,7 @@ import Result
 
 class WebKitOutputController: WebViewController {
 	private var loadDisposable: Disposable?
-	private var file: File?
+	private var file: AppFile?
 	private var restoredFileId: Int?
 	
 	override var pageTitle: String { return file?.name ?? "" }
@@ -59,7 +59,7 @@ class WebKitOutputController: WebViewController {
 	/// Loads the specified file, downloading if not cached
 	///
 	/// - Parameter file: file to display
-	func load(file: File) {
+	func load(file: AppFile) {
 		loadLocalFile(session.fileCache.validUrl(for: file).start(on: UIScheduler()))
 		self.file = file
 		restoredFileId = nil

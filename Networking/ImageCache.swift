@@ -9,6 +9,7 @@ import Dispatch
 import Freddy
 import os
 import ReactiveSwift
+import Model
 
 public enum ImageCacheError: Error, Rc2DomainError {
 	case noSuchImage
@@ -16,11 +17,11 @@ public enum ImageCacheError: Error, Rc2DomainError {
 }
 
 /// Handles caching of SessionImage(s)
-public class ImageCache: JSONEncodable {
+public class ImageCache {
 	///to allow dependency injection
 	var fileManager: Foundation.FileManager
 	///to allow dependency injection
-	var workspace: Workspace?
+	var workspace: AppWorkspace?
 	let restClient: Rc2RestClient
 	///caching needs to be unique for each server. we don't care what the identifier is, just that it is unique per host
 	///mutable because we need to be able to read it from an archive
@@ -63,18 +64,19 @@ public class ImageCache: JSONEncodable {
 	///
 	/// - Parameter json: the input json
 	/// - Throws: json decoding errors
-	public func load(from json: JSON) throws {
-		self.hostIdentifier = try json.getString(at: "hostIdentifier")
-		let decodedImages: [SessionImage] = try json.decodedArray(at: "images")
-		decodedImages.forEach { metaCache[$0.id] = $0 }
+	public func load(from data: Data) throws {
+		let sdata: SaveData = try restClient.conInfo.decode(data: data)
+		self.hostIdentifier = sdata.hostIdentifier
+		sdata.images.forEach { metaCache[$0.id] = $0 }
 		adjustImageArray()
 	}
 	
-	/// serializes to a JSON that can be restored via load()
+	/// serializes to Data that can be restored via load()
 	///
-	/// - Returns: data encoded as JSON
-	public func toJSON() -> JSON {
-		return .dictionary(["hostIdentifier": .string(hostIdentifier), "images": Array(metaCache.values).toJSON()])
+	/// - Returns: data to save
+	public func persistentData() throws -> Data {
+		let sdata = SaveData(hostIdentifier: hostIdentifier, images: Array(metaCache.values))
+		return try restClient.conInfo.encode(sdata)
 	}
 	
 	func image(withId imageId: Int) -> PlatformImage? {
@@ -98,11 +100,11 @@ public class ImageCache: JSONEncodable {
 		//cache to disk
 		os_log("caching image %d", log: .cache, type: .info, img.id)
 		let destUrl = URL(fileURLWithPath: "\(img.id).png", isDirectory: false, relativeTo: cacheUrl)
-		try? img.imageData!.write(to: destUrl, options: [.atomic])
+		try? img.imageData.write(to: destUrl, options: [.atomic])
 		//cache in memory
-		let pdata = NSData(data: img.imageData! as Data) as Data
+		let pdata = NSData(data: img.imageData) as Data
 		cache.setObject(pdata as AnyObject, forKey: img.id as AnyObject)
-		metaCache[img.id] = SessionImage(img)
+		metaCache[img.id] = img
 	}
 	
 	func cacheImagesFromServer(_ images: [SessionImage]) {
@@ -158,5 +160,10 @@ public class ImageCache: JSONEncodable {
 			//using id because we know they are in proper order, might be created too close together to use dateCreated
 			return img1.id < img2.id
 		}
+	}
+	
+	private struct SaveData: Codable {
+		let hostIdentifier: String
+		let images: [SessionImage]
 	}
 }

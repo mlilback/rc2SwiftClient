@@ -11,12 +11,14 @@ import os
 
 // MARK: Keys for UserDefaults
 extension DefaultsKeys {
-	static let bookmarks = DefaultsKey<JSON?>("Bookmarks")
-	static let hosts = DefaultsKey<JSON?>("ServerHosts")
+	static let bookmarks = DefaultsKey<Data?>("Bookmarks")
+	static let hosts = DefaultsKey<Data?>("ServerHosts")
 }
 
 ///manages access to Bookmarks and ServerHosts
 public class BookmarkManager {
+	private let encoder = JSONEncoder()
+	private let decoder = JSONDecoder()
 	///all existing bookmarks
 	public fileprivate(set) var bookmarks: [Bookmark] = []
 	///bookmarks grouped by ServerHost.name
@@ -27,12 +29,16 @@ public class BookmarkManager {
 	public init() {
 		loadBookmarks()
 	}
-
+	
 	///saves bookmarks and hosts to NSUserDefaults
 	public func save() {
-		let defaults = UserDefaults.standard
-		defaults[.bookmarks] = bookmarks.toJSON()
-		defaults[.hosts] = hosts.toJSON()
+		do {
+			let defaults = UserDefaults.standard
+			defaults[.bookmarks] = try encoder.encode(bookmarks)
+			defaults[.hosts] = try encoder.encode(hosts)
+		} catch {
+			os_log("error saving bookmarks: %{public}@", log: .app, error.localizedDescription)
+		}
 	}
 	
 	///adds a new bookmark to bookmarks array
@@ -62,8 +68,7 @@ public class BookmarkManager {
 		let defaults = UserDefaults.standard
 		bookmarks.removeAll()
 		//load them, or create default ones
-		if let json = defaults[.bookmarks],
-			let bmarks: [Bookmark] = try? json.decodedArray()
+		if let data = defaults[.bookmarks], let bmarks = try? decoder.decode([Bookmark].self, from: data)
 		{
 			bookmarks.append(contentsOf: bmarks)
 		}
@@ -74,14 +79,14 @@ public class BookmarkManager {
 		groupBookmarks()
 		loadHosts()
 	}
-
+	
 	fileprivate func groupBookmarks() {
 		bookmarkGroups.removeAll()
 		for aMark in bookmarks {
 			addBookmarkToAppropriateGroup(aMark)
 		}
 	}
-
+	
 	fileprivate func addBookmarkToAppropriateGroup(_ bookmark: Bookmark) {
 		let localKey: String = bookmark.server?.name ?? NetworkConstants.localBookmarkGroupName
 		if let _ = bookmarkGroups[localKey] {
@@ -103,9 +108,10 @@ public class BookmarkManager {
 		let defaults = UserDefaults.standard
 		var hostSet = Set<ServerHost>()
 		hosts.removeAll()
-		if let json = defaults[.hosts], let jhosts: [ServerHost] = try? json.decodedArray()
+		if let data = defaults[.hosts],
+			let hostArray = try? decoder.decode([ServerHost].self, from: data)
 		{
-			hostSet = hostSet.union(jhosts)
+			hostSet = hostSet.union(hostArray)
 		}
 		for aMark in bookmarks where aMark.server != nil {
 			hostSet.insert(aMark.server!)

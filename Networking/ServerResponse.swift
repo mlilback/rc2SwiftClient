@@ -10,6 +10,7 @@ import os
 import SwiftyUserDefaults
 import Result
 import ClientCore
+import Model
 
 // MARK: Keys for UserDefaults
 extension DefaultsKeys {
@@ -27,11 +28,11 @@ public enum ServerResponse: Equatable {
 	case execComplete(queryId: Int, batchId: Int, images: [SessionImage])
 	case results(queryId: Int, text: String)
 	case saveResponse(transId: String)
-	case fileChanged(changeType: String, fileId: Int, file: File?)
-	case showOutput(queryId: Int, updatedFile: File)
+	case fileChanged(changeType: String, fileId: Int, file: AppFile?)
+	case showOutput(queryId: Int, updatedFile: AppFile)
 	case variables(single: Bool, variables: [Variable])
 	case variablesDelta(assigned: [Variable], removed: [String])
-	case fileOperationResponse(transId: String, operation: FileOperation, result: Result<File?, Rc2Error>)
+	case fileOperationResponse(transId: String, operation: FileOperation, result: Result<AppFile?, Rc2Error>)
 	
 	public func isEcho() -> Bool {
 		if case .echoQuery(_, _, _) = self { return true }
@@ -58,7 +59,7 @@ public enum ServerResponse: Equatable {
 				UserDefaults.standard[.nextBatchId] = batchId + 1
 				return ServerResponse.execComplete(queryId: queryId, batchId: jsonObj.getOptionalInt(at: "imageBatchId", or: -1), images: images)
 			case "showOutput":
-				guard let sfile: File = try? jsonObj.decode(at: "file") else {
+				guard let sfile: AppFile = try? jsonObj.decode(at: "file") else {
 					os_log("failed to decode file parameter to showOutput response", log: .session)
 					return nil
 				}
@@ -78,7 +79,7 @@ public enum ServerResponse: Equatable {
 					os_log("failed to parse filechanged response", log: .session)
 					return nil
 				}
-				let file: File? = try? jsonObj.decode(at: "file")
+				let file: AppFile? = try? jsonObj.decode(at: "file")
 				return ServerResponse.fileChanged(changeType: ftype, fileId: fileId, file: file)
 			case "variables":
 				return parseVariables(jsonObj: jsonObj)
@@ -103,12 +104,12 @@ public enum ServerResponse: Equatable {
 		{
 			return nil
 		}
-		var result: Result<File?, Rc2Error>?
+		var result: Result<AppFile?, Rc2Error>?
 		if success {
 			// swiftlint:disable:next force_try (should be impossible since nil is acceptable)
-			result = Result<File?, Rc2Error>(value: try! jsonObj.decode(at: "file", alongPath: [.missingKeyBecomesNil, .nullBecomesNil], type: File.self))
+			result = Result<AppFile?, Rc2Error>(value: try! jsonObj.decode(at: "file", alongPath: [.missingKeyBecomesNil, .nullBecomesNil], type: AppFile.self))
 		} else {
-			result = Result<File?, Rc2Error>(error: parseRemoteError(jsonObj: try? jsonObj.getDictionary(at: "error")))
+			result = Result<AppFile?, Rc2Error>(error: parseRemoteError(jsonObj: try? jsonObj.getDictionary(at: "error")))
 		}
 		return ServerResponse.fileOperationResponse(transId: transId, operation: op, result: result!)
 	}

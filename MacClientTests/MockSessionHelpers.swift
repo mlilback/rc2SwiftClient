@@ -13,7 +13,7 @@ import os
 import Networking
 
 struct MockFileEntry {
-	let file: File
+	let file: AppFile
 	let url: URL
 }
 
@@ -22,31 +22,31 @@ class MockFileCache: FileCache {
 	}
 	
 	var fileManager: Rc2FileManager
-	var workspace: Workspace
+	var workspace: AppWorkspace
 	
 	var cachedFiles = [Int: MockFileEntry]()
 	
-	init(fileManager fm: Rc2FileManager, workspace: Workspace) {
+	init(fileManager fm: Rc2FileManager, workspace: AppWorkspace) {
 		self.fileManager = fm
 		self.workspace = workspace
 	}
 	
-	func append(file: File, url: URL) {
+	func append(file: AppFile, url: URL) {
 		cachedFiles[file.fileId] = MockFileEntry(file: file, url: url)
 	}
 	
-	func isFileCached(_ file: File) -> Bool {
+	func isFileCached(_ file: AppFile) -> Bool {
 		return cachedFiles[file.fileId] != nil
 	}
 	
-	func flushCache(file: File) {
+	func flushCache(file: AppFile) {
 	}
 	
-	func flushCache(files: [File]) -> SignalProducer<Double, Rc2Error> {
+	func flushCache(files: [AppFile]) -> SignalProducer<Double, Rc2Error> {
 		return SignalProducer<Double, Rc2Error>.init(value: 1.0)
 	}
 	
-	func recache(file: File) -> SignalProducer<Double, Rc2Error> {
+	func recache(file: AppFile) -> SignalProducer<Double, Rc2Error> {
 		return SignalProducer<Double, Rc2Error>.init(value: 1.0)
 	}
 	
@@ -57,26 +57,26 @@ class MockFileCache: FileCache {
 	}
 	
 	///returns the file system url where the file is/will be stored
-	func cachedUrl(file:File) -> URL {
+	func cachedUrl(file:AppFile) -> URL {
 		let theFile = cachedFiles[file.fileId]
 		XCTAssertNotNil(theFile)
 		return theFile!.url
 	}
 	
-	func validUrl(for file: File) -> SignalProducer<URL, Rc2Error> {
+	func validUrl(for file: AppFile) -> SignalProducer<URL, Rc2Error> {
 		return SignalProducer<URL, Rc2Error>(value: cachedUrl(file: file))
 	}
 	
-	func contents(of file: File) -> SignalProducer<Data, Rc2Error> {
+	func contents(of file: AppFile) -> SignalProducer<Data, Rc2Error> {
 		let fileUrl = cachedUrl(file: file)
 		return SignalProducer<Data, Rc2Error>(value: try! Data(contentsOf: fileUrl))
 	}
 	
-	func update(file: File, withData data: Data?) -> SignalProducer<Void, Rc2Error> {
+	func update(file: AppFile, withData data: Data?) -> SignalProducer<Void, Rc2Error> {
 		return SignalProducer<Void, Rc2Error>(value: ())
 	}
 	
-	func save(file: File, contents: String) -> SignalProducer<Void, Rc2Error> {
+	func save(file: AppFile, contents: String) -> SignalProducer<Void, Rc2Error> {
 		return SignalProducer<Void, Rc2Error>(value: ())
 	}
 }

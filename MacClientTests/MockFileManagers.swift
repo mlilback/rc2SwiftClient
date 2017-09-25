@@ -16,7 +16,7 @@ public class DefaultFileManager: Rc2FileManager {
 		return try FileManager.default.url(for: directory, in: domain, appropriateFor: url, create: shouldCreate)
 	}
 	
-	public func move(tempFile: URL, to toUrl: URL, file: File?) throws {
+	public func move(tempFile: URL, to toUrl: URL, file: AppFile?) throws {
 		fatalError()
 	}
 	

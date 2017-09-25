@@ -189,7 +189,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	}
 
 	//called when file has changed in UI
-	func fileSelectionChanged(_ file: File?) {
+	func fileSelectionChanged(_ file: AppFile?) {
 		if let theFile = file {
 			if currentDocument?.file.fileId == theFile.fileId && currentDocument?.file.version == theFile.version { return } //same file
 			self.adjustCurrentDocumentForFile(file)
@@ -200,7 +200,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	}
 	
 	//called when a file in the workspace file array has changed
-	func process(changes: [CollectionChange<File>]) {
+	func process(changes: [CollectionChange<AppFile>]) {
 		//if it was a file change (content or metadata)
 		guard let change = changes.first(where: { $0.object?.fileId == currentDocument?.file.fileId }), let file = change.object else { return }
 		if change.changeType == .update {
@@ -385,7 +385,7 @@ fileprivate extension SessionEditorController {
 		let file = currentDocument.file
 		guard currentDocument.dirty else {
 			os_log("executeQuery executing without save", log: .app, type: .debug)
-			session.executeScriptFile(file.fileId, type: type)
+			session.execute(file: file, type: type)
 			return
 		}
 		saveWithProgress().startWithResult { result in
@@ -410,7 +410,7 @@ fileprivate extension SessionEditorController {
 			.observe(on: UIScheduler())
 	}
 	
-	func adjustCurrentDocumentForFile(_ file: File?) {
+	func adjustCurrentDocumentForFile(_ file: AppFile?) {
 		let editor = self.editor!
 		//save old document
 		if let oldDocument = currentDocument, oldDocument.file.fileId != file?.fileId {

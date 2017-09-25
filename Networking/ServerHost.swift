@@ -9,7 +9,7 @@ import Foundation
 import Freddy
 
 ///Represents a remote host
-public struct ServerHost: JSONDecodable, JSONEncodable, CustomStringConvertible, Hashable {
+public struct ServerHost: Codable, CustomStringConvertible, Hashable {
 	
 	public static let localHost: ServerHost = { return ServerHost(name: "Local Server", host: "localhost", port: 8088, user: "local", secure: false) }()
 	///user-friendly name for the host
@@ -30,24 +30,15 @@ public struct ServerHost: JSONDecodable, JSONEncodable, CustomStringConvertible,
 		self.secure = secure
 	}
 	
-	/// convenience initializer that return nil if an error was thrown by the JSON initializer
-	public init?(from: JSON) {
-		do {
-			try self.init(json: from)
-		} catch {
-		}
-		return nil
-	}
-
-	//documentation inherited from protocol
-	public init(json dict: JSON) throws {
-		self.name = try dict.getString(at: "name")
-		self.host = try dict.getString(at: "host")
-		self.user = try dict.getString(at: "user")
-		self.port = try dict.getInt(at: "port")
-		self.secure = try dict.getBool(at: "secure")
-	}
-
+	//	/// convenience initializer that return nil if an error was thrown by the JSON initializer
+	//	public init?(from: JSON) {
+	//		do {
+	//			try self.init(json: from)
+	//		} catch {
+	//		}
+	//		return nil
+	//	}
+	//
 	/// a URL for this server
 	public var url: URL? {
 		var components = URLComponents()
@@ -58,19 +49,14 @@ public struct ServerHost: JSONDecodable, JSONEncodable, CustomStringConvertible,
 	}
 	
 	//documentation inherited from protocol
-	public func toJSON() -> JSON {
-		return .dictionary(["name": .string(name), "host": .string(host), "user": .string(user), "port": .int(port), "secure": .bool(secure)])
-	}
-
-	//documentation inherited from protocol
 	public var description: String {
 		return "ServerHost \(name) \(user )@(\(host):\(port) \(secure ? "secure" : ""))"
 	}
 	
 	//documentation inherited from protocol
 	public var hashValue: Int { return name.hashValue ^ host.hashValue ^ port.hashValue ^ secure.hashValue }
-}
 
-public func == (left: ServerHost, right: ServerHost) -> Bool {
-	return left.name == right.name && left.host == right.host && left.port == right.port && left.secure == right.secure && left.user == right.user
+	public static func == (left: ServerHost, right: ServerHost) -> Bool {
+		return left.name == right.name && left.host == right.host && left.port == right.port && left.secure == right.secure && left.user == right.user
+	}
 }

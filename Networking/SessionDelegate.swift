@@ -6,12 +6,13 @@
 
 import Foundation
 import ClientCore
+import Model
 
 public protocol SessionDelegate : class {
 	///called when the session is closed. Called when explicity or remotely closed. Not called on application termination
 	func sessionClosed()
 	///called when a server response is received and not handled internally by the session
-	func sessionMessageReceived(_ response: ServerResponse)
+	func sessionMessageReceived(_ response: SessionResponse)
 	///called when the server has returned an error. Delegate needs to associate it with the cause and error.
 	func sessionErrorReceived(_ error: Rc2Error)
 	///called when the initial caching/loading of files is complete

@@ -85,7 +85,7 @@ protocol SessionControllerDelegate: class {
 
 	// MARK: - ServerResponseHandlerDelegate
 	
-	func handleFileUpdate(fileId: Int, file: File?, change: FileChangeType) {
+	func handleFileUpdate(fileId: Int, file: AppFile?, change: FileChangeType) {
 //		os_log("got file update %d v%d", log: .app, type:.info, file.fileId, file.version)
 //		handleFileUpdate(file, change: change)
 	}
@@ -102,7 +102,7 @@ protocol SessionControllerDelegate: class {
 		return MacConsoleAttachment(image: image)
 	}
 	
-	func consoleAttachment(forFile file: File) -> ConsoleAttachment {
+	func consoleAttachment(forFile file: AppFile) -> ConsoleAttachment {
 		return MacConsoleAttachment(file:file)
 	}
 	
@@ -122,7 +122,7 @@ protocol SessionControllerDelegate: class {
 			return
 		}
 		//TODO: need to wait until file exists then load it
-		let handler = { (changes: [CollectionChange<File>]) in
+		let handler = { (changes: [CollectionChange<AppFile>]) in
 			for aChange in changes where aChange.object?.fileId == fileId {
 				//our file was inserted, we can show it
 				DispatchQueue.main.async {
@@ -149,7 +149,9 @@ extension SessionController {
 		//save data related to this session
 		var dict = [String: JSON]()
 		dict["outputController"] = outputHandler.saveSessionState()
-		dict["imageCache"] = session.imageCache.toJSON()
+		if let imgData = try? session.imageCache.persistentData() {
+			dict["imageCache"] = imgData
+		}
 		dict["delegate"] = delegate?.saveState()
 		do {
 			let data = try JSON.dictionary(dict).serialize()

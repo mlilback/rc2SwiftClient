@@ -23,7 +23,7 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 		return try MacConsoleAttachment(json: json)
 	}
 	
-	public init(file inFile: File) {
+	public init(file inFile: AppFile) {
 		type = .file
 		image = nil
 		fileId = inFile.fileId

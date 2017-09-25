@@ -26,8 +26,8 @@ private extension Selector {
 
 class FileRowData: Equatable {
 	var sectionName: String?
-	var file: File?
-	init(name: String?, file: File?) {
+	var file: AppFile?
+	init(name: String?, file: AppFile?) {
 		self.sectionName = name
 		self.file = file
 	}
@@ -39,7 +39,7 @@ class FileRowData: Equatable {
 }
 
 protocol FileViewControllerDelegate: class {
-	func fileSelectionChanged(_ file: File?, forEditing: Bool)
+	func fileSelectionChanged(_ file: AppFile?, forEditing: Bool)
 }
 
 let FileDragTypes = [NSPasteboard.PasteboardType(kUTTypeFileURL as String)]
@@ -63,11 +63,12 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	lazy var importPrompter: MacFileImportSetup? = { MacFileImportSetup() }()
 	var fileImporter: FileImporter?
 	private var fileChangeDisposable: Disposable?
+	/// used to disable interface when window is busy
 	private var busyDisposable: Disposable?
 	fileprivate var selectionChangeInProgress = false
 	fileprivate var formatMenu: NSMenu?
 	
-	var selectedFile: File? { didSet { fileSelectionChanged() } }
+	var selectedFile: AppFile? { didSet { fileSelectionChanged() } }
 
 	deinit {
 		NotificationCenter.default.removeObserver(self)
@@ -127,7 +128,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	func loadData() {
-		var sectionedFiles = [[File](), [File](), [File]()]
+		var sectionedFiles = [[AppFile](), [AppFile](), [AppFile]()]
 		for aFile in session.workspace.files {
 			if aFile.fileType.isSourceFile {
 				sectionedFiles[0].append(aFile)
@@ -290,7 +291,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			logMessage("renameFile: failed to get tableViewCell")
 			return
 		}
-		guard let file = cellView.objectValue as? File else {
+		guard let file = cellView.objectValue as? AppFile else {
 			logMessage("renameFile: no file for file cell view", type: .error)
 			return
 		}
@@ -401,7 +402,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		tableView.selectRowIndexes(IndexSet(integer: fidx), byExtendingSelection: false)
 	}
 
-	fileprivate func actuallyPerformDelete(file: File) {
+	fileprivate func actuallyPerformDelete(file: AppFile) {
 		self.session.remove(file: file)
 			.updateProgress(status: self.appStatus!, actionName: "Delete \(file.name)")
 			.startWithResult { result in
@@ -440,7 +441,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 	
-	private func validateRename(file: File, newName: String?) -> Bool {
+	private func validateRename(file: AppFile, newName: String?) -> Bool {
 		guard var name = newName else { return true } //empty is allowable
 		if !name.hasSuffix(".\(file.fileType.fileExtension)") {
 			name += ".\(file.fileType.fileExtension)"
@@ -549,7 +550,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 
 // MARK: - FileHandler implementation
 extension SidebarFileController: FileHandler {
-	func filesRefreshed(_ changes: [CollectionChange<File>]?) {
+	func filesRefreshed(_ changes: [CollectionChange<AppFile>]?) {
 		//TODO: ideally should figure out what file was changed and animate the tableview update instead of refreshing all rows
 		//TODO: updated file always shows last, which is wrong
 		loadData()

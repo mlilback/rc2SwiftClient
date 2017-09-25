@@ -29,7 +29,7 @@ class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
 	}
 	
 	func continueAction(_ callback: @escaping (_ value: Any?, _ error: Rc2Error?) -> Void) {
-		if let wspace = projectOutline?.item(atRow: projectOutline!.selectedRow) as? Workspace,
+		if let wspace = projectOutline?.item(atRow: projectOutline!.selectedRow) as? AppWorkspace,
 			let project = connectInfo!.project(withId: wspace.projectId)
 		{
 			let pw = ProjectAndWorkspace(project: project.name, workspace: wspace.name)
@@ -49,18 +49,18 @@ extension ProjectManagerViewController: NSOutlineViewDataSource {
 	public func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
 		if nil == item {
 			return connectInfo!.projects.count
-		} else if let proj = item as? Project {
+		} else if let proj = item as? AppProject {
 			return proj.workspaces.count
 		}
 		return 0
 	}
 	
 	public func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
-		return item is Project
+		return item is AppProject
 	}
 	
 	public func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
-		if let proj = item as? Project {
+		if let proj = item as? AppProject {
 			return proj.workspaces[index]
 		}
 		return connectInfo!.projects[index]
@@ -71,9 +71,9 @@ extension ProjectManagerViewController: NSOutlineViewDelegate {
 	public func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView?
 	{
 		var val = ""
-		if let proj = item as? Project {
+		if let proj = item as? AppProject {
 			val = proj.name
-		} else if let wspace = item as? Workspace {
+		} else if let wspace = item as? AppWorkspace {
 			val = wspace.name
 		}
 		let view = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "string"), owner: nil) as? NSTableCellView
@@ -82,7 +82,7 @@ extension ProjectManagerViewController: NSOutlineViewDelegate {
 	}
 	
 	public func outlineView(_ outlineView: NSOutlineView, shouldSelectItem item: Any) -> Bool {
-		return item is Workspace
+		return item is AppWorkspace
 	}
 	
 	public func outlineViewSelectionDidChange(_ notification: Notification) {

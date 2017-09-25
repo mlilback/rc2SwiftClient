@@ -6,9 +6,9 @@
 
 import ClientCore
 import Foundation
-import Freddy
 import os
 import ReactiveSwift
+import Model
 
 fileprivate let maxRetries = 4
 
@@ -22,8 +22,6 @@ public final class LoginFactory: NSObject {
 	fileprivate var requestData: Data!
 	fileprivate var loginResponse: URLResponse?
 	fileprivate var responseData: Data
-	fileprivate var signalObserver: Signal<ConnectionInfo, Rc2Error>.Observer?
-	fileprivate var signalLifetime: Lifetime?
 	fileprivate var host: ServerHost?
 	fileprivate var task: URLSessionDataTask?
 	fileprivate var retryCount: Int = 0
@@ -37,7 +35,7 @@ public final class LoginFactory: NSObject {
 		self.sessionConfig = config
 		responseData = Data()
 		super.init()
-		urlSession = URLSession(configuration: sessionConfig, delegate: self, delegateQueue: nil)
+		urlSession = URLSession(configuration: sessionConfig)
 	}
 	
 	/// returns a SignalProducer to start the login process
@@ -51,100 +49,76 @@ public final class LoginFactory: NSObject {
 	{
 		assert(urlSession != nil, "login can only be called once")
 		host = destHost
-		guard let reqdata = try? JSONSerialization.data(withJSONObject: ["login": login, "password": password], options: []) else
-		{
+		var reqdata: Data!
+		do {
+			reqdata = try JSONEncoder().encode(LoginData(login: login, password: password))
+		} catch {
 			os_log("json serialization of login info failed", log: .network, type: .error)
 			fatalError()
 		}
-		requestData = reqdata
 		requestUrl = URL(string: "login", relativeTo: destHost.url!)!
-		return SignalProducer<ConnectionInfo, Rc2Error> { [weak self] observer, lifetime in
-			self?.signalObserver = observer
-			self?.signalLifetime = lifetime
-			self?.attemptLogin()
+		return urlSession!.getData(request: loginRequest(requestUrl: requestUrl, data: reqdata))
+			.retry(upTo: maxRetries, interval: 3.0, on: QueueScheduler.main)
+			.map { data -> LoginResponse? in
+				guard let rsp = try? JSONDecoder().decode(LoginResponse.self, from: data) else {
+					os_log("invalid json data from login", log: .network, type: .error)
+					return nil
+				}
+				return rsp
+			}
+			.flatMap(.concat, getUserInfo)
+			.on(terminated: { self.urlSession = nil })
+	}
+	
+	private func getUserInfo(loginInfo: LoginResponse?) -> SignalProducer<ConnectionInfo, Rc2Error> {
+		assert(urlSession != nil, "login can only be called once")
+		guard let loginInfo = loginInfo else {
+			return SignalProducer<ConnectionInfo, Rc2Error>(error: Rc2Error(type: .network, explanation: "failed to get login info."))
+		}
+		var request = URLRequest(url: URL(string: "info", relativeTo: host!.url!)!)
+		request.addValue("application/json", forHTTPHeaderField: "Accept")
+		request.addValue("Bearer \(loginInfo.token)", forHTTPHeaderField: "Authorization")
+		return urlSession!.getData(request: request)
+			.map({ data -> (Data, String) in return (data, loginInfo.token) })
+			.flatMap(.concat, createConnectionInfo)
+	}
+	
+	private func createConnectionInfo(data: Data, token: String) -> SignalProducer<ConnectionInfo, Rc2Error> {
+		return SignalProducer<ConnectionInfo, Rc2Error> { observer, _ in
+			do {
+				let cinfo = try ConnectionInfo(host: self.host!, bulkInfoData: data, authToken: token)
+				observer.send(value: cinfo)
+				observer.sendCompleted()
+			} catch {
+				observer.send(error: Rc2Error(type: .invalidJson, explanation: ("failed to create connection info")))
+			}
 		}
 	}
 	
-	/// Cancels the outstanding login request
-	public func cancel() {
-		urlSession?.invalidateAndCancel()
-		urlSession = nil
-		task = nil
-		signalObserver?.sendInterrupted()
-		signalLifetime = nil
+	private func decodeJson<T: Decodable>(data: Data) -> SignalProducer<T, Rc2Error> {
+		do {
+			let obj = try JSONDecoder().decode(T.self, from: data)
+			return SignalProducer<T, Rc2Error>(value: obj)
+		} catch {
+			return SignalProducer<T, Rc2Error>(error: Rc2Error(type: .invalidJson, nested: error))
+		}
 	}
 	
-	func attemptLogin() {
-		var request = URLRequest(url: self.requestUrl!)
+	private func loginRequest(requestUrl: URL, data: Data) -> URLRequest {
+		var request = URLRequest(url: requestUrl)
 		request.httpMethod = "POST"
 		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 		request.addValue("application/json", forHTTPHeaderField: "Accept")
-		request.httpBody = self.requestData
-		self.task = self.urlSession?.dataTask(with: request)
-		self.task?.resume()
+		request.httpBody = data
+		return request
 	}
 	
-	func loginSuccessful(data: Data) {
-		do {
-			let info = try ConnectionInfo(host: host!, json: try JSON(data: data))
-			signalObserver?.send(value: info)
-			signalObserver?.sendCompleted()
-		} catch {
-			os_log("error parsing login info: %{public}@", log: .network, type: .default, error.localizedDescription)
-			signalObserver?.send(error: Rc2Error(type: .invalidJson, nested: error))
-		}
+	private struct LoginData: Encodable {
+		var login: String
+		var password: String
 	}
 	
-	func loginFailed(response: HTTPURLResponse, data: Data) {
-		let explain = localizedNetworkString("Login Error")
-		signalObserver?.send(error: Rc2Error(type: .network, nested: NetworkingError.errorFor(response: response, data: data), explanation: explain))
-	}
-}
-
-// MARK: - URLSessionDataDelegate implementation
-extension LoginFactory: URLSessionDataDelegate {
-	
-	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)
-	{
-		loginResponse = response
-		if response.httpResponse?.statusCode == 401 {
-			completionHandler(.cancel)
-			let err = Rc2Error(type: .network, nested: NetworkingError.unauthorized, explanation: "Invalid login information")
-			signalObserver?.send(error: err)
-			return
-		}
-		completionHandler(.allow)
-	}
-	
-	public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
-	{
-		responseData.append(data)
-	}
-	
-	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
-	{
-		//if "network connection was lost", retry in a second
-		if let nserr = error as NSError?, nserr.domain == NSURLErrorDomain && nserr.code == NSURLErrorNetworkConnectionLost && retryCount < maxRetries
-		{
-			os_log("login connection lost, retrying", log: .network)
-			retryCount += 1
-			DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
-				self.attemptLogin()
-			}
-			return
-		}
-
-		defer { self.task = nil; session.invalidateAndCancel(); self.urlSession = nil }
-		guard error == nil else {
-			os_log("login error: %{public}@", log: .network, type: .default, error!.localizedDescription)
-			signalObserver?.send(error: Rc2Error(type: .network, nested: error, severity: .warning, explanation: "Unknown login error"))
-			return
-		}
-		switch task.response!.httpResponse!.statusCode {
-			case 200:
-				loginSuccessful(data: responseData)
-			default:
-				loginFailed(response: task.response!.httpResponse!, data: responseData)
-		}
+	private struct LoginResponse: Decodable {
+		var token: String
 	}
 }
