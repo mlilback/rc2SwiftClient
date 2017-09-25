@@ -10,6 +10,7 @@ import ReactiveSwift
 import SwiftyUserDefaults
 import ClientCore
 import Networking
+import Model
 
 /** Handles importing via a save panel or drag and drop. */
 class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {

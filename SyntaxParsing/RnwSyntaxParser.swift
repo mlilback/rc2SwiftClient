@@ -10,6 +10,7 @@ import Networking
 #if os(OSX)
 	import AppKit
 #endif
+import Model
 
 open class RnwSyntaxParser: SyntaxParser {
 	fileprivate let startExpression: NSRegularExpression

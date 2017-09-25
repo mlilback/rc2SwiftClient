@@ -13,6 +13,7 @@ import SwiftyUserDefaults
 import Docker
 import Networking
 import SBInjector
+import Model
 
 // swiftlint:disable file_length
 
@@ -208,9 +209,11 @@ extension MacAppDelegate {
 			os_log("already opening %{public}@", log: .app, ident.description)
 			return
 		}
-		guard let conInfo = connectionManager.localConnection, let wspace = conInfo.project(withId: ident.projectId)?.workspace(withId: ident.wspaceId) else
-		{
-			os_log("failed to find workspace %d that we're suppoesd to open", log: .app)
+		guard let conInfo = connectionManager.localConnection,
+			let optWspace = try? conInfo.project(withId: ident.projectId).workspace(withId: ident.wspaceId),
+			let wspace = optWspace
+		else {
+			os_log("failed to find workspace %d that we're supposed to open", log: .app)
 			return
 		}
 		workspacesBeingOpened.insert(ident)
@@ -263,7 +266,7 @@ extension MacAppDelegate {
 		menu.removeAllItems()
 		for aWorkspace in project.workspaces.sorted(by: { $0.name < $1.name }) {
 			let wspaceItem = NSMenuItem(title: aWorkspace.name, action: Actions.showWorkspace, keyEquivalent: "")
-			wspaceItem.representedObject = WorkspaceIdentifier(aWorkspace)
+			wspaceItem.representedObject = aWorkspace.identifier
 			wspaceItem.tag = aWorkspace.wspaceId
 			menu.addItem(wspaceItem)
 		}
@@ -381,9 +384,9 @@ extension MacAppDelegate: NSWindowRestoration {
 	{
 		guard identifier.rawValue == "session",
 			let me = NSApp.delegate as? MacAppDelegate,
-			let bmarkData = state.decodeObject(forKey: "bookmark") as? Data,
-			let bmark = try? Bookmark(json: JSON(data: bmarkData)) else
-		{
+			let coder = state as? NSKeyedUnarchiver,
+			let bmark: Bookmark = coder.decodeDecodable(Bookmark.self, forKey: "bookmark")
+		else {
 			completionHandler(nil, Rc2Error(type: .unknown, nested: nil, explanation: "Unsupported window identifier"))
 			return
 		}

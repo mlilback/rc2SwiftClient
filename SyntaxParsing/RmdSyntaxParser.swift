@@ -9,7 +9,7 @@ import Foundation
 	import AppKit
 #endif
 import ClientCore
-import Networking
+import Model
 
 open class RmdSyntaxParser: SyntaxParser {
 	let latexHighlighter: LatexCodeHighlighter

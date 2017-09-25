@@ -12,6 +12,7 @@ import SwiftyUserDefaults
 import NotifyingCollection
 import ClientCore
 import Networking
+import Model
 
 // swiftlint:disable file_length type_body_length
 
@@ -130,7 +131,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	func loadData() {
 		var sectionedFiles = [[AppFile](), [AppFile](), [AppFile]()]
 		for aFile in session.workspace.files {
-			if aFile.fileType.isSourceFile {
+			if aFile.fileType.isSource {
 				sectionedFiles[0].append(aFile)
 			} else if aFile.fileType.isImage {
 				sectionedFiles[1].append(aFile)

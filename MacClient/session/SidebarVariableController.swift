@@ -8,6 +8,7 @@ import Cocoa
 import Networking
 import os
 import SwiftyUserDefaults
+import Model
 
 class SidebarVariableController: AbstractSessionViewController {
 	// MARK: properties
@@ -54,22 +55,26 @@ class SidebarVariableController: AbstractSessionViewController {
 	@IBAction func delete(_ sender: Any?) {
 		guard let selRow = varTableView?.selectedRow,
 			selRow >= 0,
-			selRow < rootVariables.count,
-			let varName = rootVariables[selRow].name else
-		{
+			selRow < rootVariables.count
+		else {
 			os_log("attempt to delete incorrect variable", log: .app, type: .error)
 			return
 		}
-		session.deleteVariable(name: varName)
+		session.deleteVariable(name: rootVariables[selRow].name)
 	}
 	
 	@IBAction func copy(_ sender: AnyObject?) {
 		guard let row = varTableView?.selectedRow, row >= 0 else { return }
 		let pasteboard = NSPasteboard.general
 		pasteboard.clearContents()
-		// swiftlint:disable:next force_try
-		pasteboard.setString(try! rootVariables[row].toJSON().serializeString(), forType: .variable)
-		pasteboard.setString(rootVariables[row].description, forType: .string)
+		do {
+			let jsonStr = String(data: try session.conInfo.encode(rootVariables[row]), encoding: .utf8)
+			// swiftlint:disable:next force_try
+			pasteboard.setString(jsonStr!, forType: .variable)
+			pasteboard.setString(rootVariables[row].description, forType: .string)
+		} catch {
+			os_log("error copying varable to window: %{public}@", log: .app, error as NSError)
+		}
 	}
 	
 	@IBAction func clearWorkspace(_ sender: Any?) {
@@ -150,9 +155,15 @@ extension SidebarVariableController: NSTableViewDataSource {
 		guard let row = rowIndexes.first else { return false }
 		pboard.clearContents()
 		pboard.declareTypes([.variable, .string], owner: nil)
-		// swiftlint:disable:next force_try
-		pboard.setString(try! rootVariables[row].toJSON().serializeString(), forType: .variable)
-		pboard.setString(rootVariables[row].description, forType: .string)
+		do {
+			let jsonStr = String(data: try session.conInfo.encode(rootVariables[row]), encoding: .utf8)
+			// swiftlint:disable:next force_try
+			pboard.setString(jsonStr!, forType: .variable)
+			pboard.setString(rootVariables[row].description, forType: .string)
+		} catch {
+			os_log("error converting variable to json: %{public}@", log: .app, error as NSError)
+			return false
+		}
 		return true
 	}
 }
@@ -166,7 +177,7 @@ extension SidebarVariableController: NSTableViewDelegate {
 		// swiftlint:disable:next force_cast
 		let view: NSTableCellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: cellIdent), owner: self) as! NSTableCellView
 		let variable = rootVariables[row]
-		view.textField?.stringValue = isValue ? variable.description : variable.name ?? ""
+		view.textField?.stringValue = isValue ? variable.description : variable.name
 		if changedIndexes.contains(row) {
 			view.textField?.backgroundColor = VariableUpdatedBackgroundColor
 			view.textField?.drawsBackground = true

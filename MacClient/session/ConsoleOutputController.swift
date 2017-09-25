@@ -9,6 +9,7 @@ import Cocoa
 import Freddy
 import Networking
 import os
+import Model
 
 enum SessionStateKey: String {
 	case History = "history"
@@ -183,7 +184,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		guard let attach = try? MacConsoleAttachment.from(data: attachment.fileWrapper!.regularFileContents!) else { return nil }
 		assert(attach.type == .file)
 		let fileType = FileType.fileType(withExtension: attach.fileExtension!)
-		let img = fileType?.image()
+		let img = NSImage(named: NSImage.Name(fileType?.iconName ?? "file-plain"))
 		img?.size = ConsoleAttachmentImageSize
 		return NSTextAttachmentCell(imageCell: img)
 	}

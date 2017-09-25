@@ -9,6 +9,7 @@ import Foundation
 import Freddy
 import Networking
 import os
+import Model
 
 public final class MacConsoleAttachment: ConsoleAttachment {
 	let type: ConsoleAttachmentType
@@ -19,8 +20,7 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 	let fileExtension: String?
 	
 	public class func from(data: Data) throws -> MacConsoleAttachment {
-		let json = try JSON(data: data)
-		return try MacConsoleAttachment(json: json)
+		return try JSONDecoder().decode(MacConsoleAttachment.self, from: data)
 	}
 	
 	public init(file inFile: AppFile) {
@@ -41,36 +41,36 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 		fileVersion = 0
 	}
 
-	public init(json: JSON) throws {
-		type = ConsoleAttachmentType(rawValue: try json.getInt(at: "type"))!
-		image = try json.decode(at: "image", alongPath: .missingKeyBecomesNil, type: SessionImage.self)
-		fileId = try json.getInt(at: "fileId")
-		fileVersion = try json.getInt(at: "fileVersion")
-		fileName = json.getOptionalString(at: "fileName")
-		fileExtension = json.getOptionalString(at: "fileExtension")
-		if type == .file && fileExtension == nil && nil == FileType.fileType(withExtension: fileExtension!) {
-			throw Rc2Error(type: .invalidJson, explanation: "file attachment had invalid file extension")
-		}
-	}
-
-	public func toJSON() -> JSON {
-		var props: [String: JSON] = [
-			"type": .int(type.rawValue),
-			"fileId": .int(fileId),
-			"fileVersion": .int(fileVersion)
-		]
-		switch type {
-		case .image:
-			props["image"] = image!.toJSON()
-		case .file:
-			props["fileName"] = .string(fileName!)
-			props["fileExtension"] = .string(fileExtension!)
-		}
-		return .dictionary(props)
-	}
+//	public init(json: JSON) throws {
+//		type = ConsoleAttachmentType(rawValue: try json.getInt(at: "type"))!
+//		image = try json.decode(at: "image", alongPath: .missingKeyBecomesNil, type: SessionImage.self)
+//		fileId = try json.getInt(at: "fileId")
+//		fileVersion = try json.getInt(at: "fileVersion")
+//		fileName = json.getOptionalString(at: "fileName")
+//		fileExtension = json.getOptionalString(at: "fileExtension")
+//		if type == .file && fileExtension == nil && nil == FileType.fileType(withExtension: fileExtension!) {
+//			throw Rc2Error(type: .invalidJson, explanation: "file attachment had invalid file extension")
+//		}
+//	}
+//
+//	public func toJSON() -> JSON {
+//		var props: [String: JSON] = [
+//			"type": .int(type.rawValue),
+//			"fileId": .int(fileId),
+//			"fileVersion": .int(fileVersion)
+//		]
+//		switch type {
+//		case .image:
+//			props["image"] = image!.toJSON()
+//		case .file:
+//			props["fileName"] = .string(fileName!)
+//			props["fileExtension"] = .string(fileExtension!)
+//		}
+//		return .dictionary(props)
+//	}
 	
 	fileprivate func attachmentData(name: String, image: NSImage?) -> (FileWrapper, NSImage?)? {
-		guard let data = try? toJSON().serialize() else {
+		guard let data = try? JSONEncoder().encode(self) else {
 			os_log("invalid json data in file attachment", log: .app)
 			return nil
 		}
@@ -81,7 +81,9 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 	}
 	
 	fileprivate func fileAttachmentData() -> (FileWrapper, NSImage?)? {
-		return attachmentData(name: fileName ?? "untitled", image: FileType.fileType(withExtension: fileExtension!)?.image())
+		let ftype = FileType.fileType(withExtension: fileExtension ?? "bin")
+		let imgName = NSImage.Name(ftype?.iconName ?? "file-plain")
+		return attachmentData(name: fileName ?? "untitled", image: NSImage(named: imgName))
 	}
 	
 	fileprivate func imageAttachmentData() -> (FileWrapper, NSImage?)? {

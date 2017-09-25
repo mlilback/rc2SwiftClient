@@ -10,6 +10,7 @@ import CoreServices
 import os
 import ReactiveSwift
 import Networking
+import Model
 
 //class DisplayableImage: NSObject {
 //	let imageId: Int
@@ -198,7 +199,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 				imagePopup?.menu?.addItem(NSMenuItem.separator())
 				currentBatch = anImage.batchId
 			}
-			let item = NSMenuItem(title: anImage.displayName, action: #selector(selectImage(_:)), keyEquivalent: "")
+			let item = NSMenuItem(title: anImage.name, action: #selector(selectImage(_:)), keyEquivalent: "")
 			item.tag = anImage.id
 			item.target = self
 			item.toolTip = anImage.name

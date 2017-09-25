@@ -30,7 +30,7 @@ class ProjectManagerViewController: NSViewController, EmbeddedDialogController {
 	
 	func continueAction(_ callback: @escaping (_ value: Any?, _ error: Rc2Error?) -> Void) {
 		if let wspace = projectOutline?.item(atRow: projectOutline!.selectedRow) as? AppWorkspace,
-			let project = connectInfo!.project(withId: wspace.projectId)
+			let project = try? connectInfo!.project(withId: wspace.projectId)
 		{
 			let pw = ProjectAndWorkspace(project: project.name, workspace: wspace.name)
 			callback(pw, nil)

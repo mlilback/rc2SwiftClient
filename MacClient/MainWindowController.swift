@@ -7,6 +7,7 @@
 import Cocoa
 import  ClientCore
 import Networking
+import os
 
 class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegatingOwner, NSToolbarDelegate {
 	///Object that lets us monitor the status of the application. Nededed to pass on to the statusView once setup is finished
@@ -47,9 +48,13 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 
 	func window(_ window: NSWindow, willEncodeRestorableState state: NSCoder) {
 		guard let session = session else { return }
-		let bmark = Bookmark(connectionInfo: session.conInfo, workspace: session.workspace, lastUsed: NSDate.timeIntervalSinceReferenceDate)
-		// swiftlint:disable:next force_try
-		state.encode(try! bmark.toJSON().serialize(), forKey: "bookmark")
+		guard let coder = state as? NSKeyedArchiver else { fatalError("restoring state from non keyed encoder") }
+		let bmark = Bookmark(connectionInfo: session.conInfo, workspace: session.workspace.model, lastUsed: NSDate.timeIntervalSinceReferenceDate)
+		do {
+			try coder.encodeEncodable(try session.conInfo.encode(bmark), forKey: "bookmark")
+		} catch {
+			os_log("error encoding bookmark in window: %{public}@", log: .app, error as NSError)
+		}
 	}
 	
 	//When the first toolbar item is loaded, queue a closure to call assignHandlers from the ToolbarDelegatingOwner protocol(default implementation) that assigns each toolbar item to the appropriate ToolbarItemHandler (normally a view controller)

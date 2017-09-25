@@ -395,7 +395,7 @@ fileprivate extension SessionEditorController {
 				return
 			}
 			os_log("executeQuery saved file, now executing", log: .app, type: .info)
-			self.session.executeScriptFile(file.fileId, type: type)
+			self.session.execute(file: file, type: type)
 		}
 	}
 	

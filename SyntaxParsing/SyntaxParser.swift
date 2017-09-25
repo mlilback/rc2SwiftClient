@@ -10,7 +10,7 @@ import Foundation
 #endif
 import os
 import ClientCore
-import Networking
+import Model
 import ReactiveSwift
 
 extension OSLog {
@@ -24,7 +24,7 @@ open class SyntaxParser: NSObject {
 	{
 		var parser: SyntaxParser?
 		var highlighter: CodeHighlighter?
-		if fileType.isSweave {
+		if fileType.fileExtension == "Rnw" {
 			parser = RnwSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
 		} else if fileType.fileExtension == "Rmd" {
 			parser = RmdSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)

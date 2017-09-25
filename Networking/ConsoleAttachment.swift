@@ -5,12 +5,11 @@
 //
 
 import Foundation
-import Freddy
 
-public enum ConsoleAttachmentType: Int {
+public enum ConsoleAttachmentType: Int, Codable {
 	case image, file
 }
 
-public protocol ConsoleAttachment: JSONDecodable, JSONEncodable {
+public protocol ConsoleAttachment: Codable {
 	func asAttributedString() -> NSAttributedString
 }

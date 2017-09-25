@@ -11,6 +11,7 @@ import ClientCore
 import Networking
 import Freddy
 import ReactiveSwift
+import Model
 
 class OnboardingViewController: NSViewController {
 	@IBOutlet var openButton: NSButton!
@@ -44,10 +45,12 @@ class OnboardingViewController: NSViewController {
 	}
 	
 	func updateWorkspaces() {
-		guard let project = project,
-			let jsonStr = try? project.workspaces.sorted(by: { $0.name < $1.name }).toJSON().serialize().base64EncodedString()
+		guard
+			let workspaces = project?.workspaces.map( { $0.model }).sorted(by: { (lhs, rhs) -> Bool in return lhs.name < rhs.name }),
+			let rawData = try? conInfo?.encode(workspaces),
+			let jsonData = rawData
 		 else { os_log("onboarding loaded w/o project"); return }
-		webView.evaluateJavaScript("setWorkspaces('\(jsonStr)')")
+		webView.evaluateJavaScript("setWorkspaces('\(jsonData.base64EncodedString())')")
 	}
 }
 

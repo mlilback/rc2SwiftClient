@@ -9,6 +9,7 @@ import Freddy
 import os
 import ReactiveSwift
 import Networking
+import Model
 
 extension Selector {
 	static let promptToImport = #selector(RootViewController.promptToImportFiles(_:))
@@ -134,7 +135,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	/// selects the first file imported if it is a source file
 	@objc func receivedImportNotification(_ note: Notification) {
 		guard let importer = note.object as? FileImporter else { return }
-		guard let file = importer.importedFiles.first, file.fileType.isSourceFile else { return }
+		guard let file = importer.importedFiles.first, file.fileType.isSource else { return }
 		os_log("selecting imported file", log: .app, type: .info)
 		fileHandler?.selectedFile = importer.importedFiles.first
 	}
@@ -337,7 +338,7 @@ extension RootViewController: FileViewControllerDelegate {
 		if nil == file {
 			self.editor?.fileSelectionChanged(nil)
 			self.outputHandler?.showFile(nil)
-		} else if file!.fileType.isSourceFile || (forEditing && file!.fileSize <= MaxEditableFileSize) {
+		} else if file!.fileType.isSource || (forEditing && file!.fileSize <= MaxEditableFileSize) {
 			self.editor?.fileSelectionChanged(file)
 		} else {
 			outputHandler?.showFile(file)
