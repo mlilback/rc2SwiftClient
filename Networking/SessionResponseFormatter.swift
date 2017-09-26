@@ -1,5 +1,5 @@
 //
-//  ServerResponseHandler.swift
+//  SessionResponseFormatter.swift
 //
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
@@ -29,7 +29,7 @@ public protocol SessionResponseFormatter {
 	var formatterDelegate: SessionResponseFormatterDelegate? { get }
 	var outputTheme: OutputTheme { get }
 	
-	func format(response: SessionResponse, command: SessionCommand) -> ResponseString?
+	func format(response: SessionResponse) -> ResponseString?
 	func formatResults(data: SessionResponse.ResultsData) -> ResponseString?
 	func formatOutput(data: SessionResponse.ShowOutputData) -> ResponseString?
 	func formatExecComplete(data: SessionResponse.ExecCompleteData) -> ResponseString?
@@ -40,7 +40,7 @@ public protocol SessionResponseFormatter {
 }
 
 extension SessionResponseFormatter {
-	public func format(response: SessionResponse, command: SessionCommand) -> ResponseString? {
+	public func format(response: SessionResponse) -> ResponseString? {
 		switch response {
 		case .echoExecute(let data):
 			return formatEcho(data: data)
