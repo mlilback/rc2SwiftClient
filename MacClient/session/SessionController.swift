@@ -14,6 +14,7 @@ import ReactiveCocoa
 import Result
 import ClientCore
 import NotifyingCollection
+import Model
 
 protocol SessionControllerDelegate: class {
 	func filesRefreshed()
@@ -23,10 +24,10 @@ protocol SessionControllerDelegate: class {
 }
 
 /// manages a Session object
-@objc class SessionController: NSObject, ServerResponseHandlerDelegate {
+@objc class SessionController: NSObject {
 	fileprivate weak var delegate: SessionControllerDelegate?
 
-	var responseHandler: ServerResponseHandler?
+	var responseFormatter: SessionResponseFormatter?
 	let outputHandler: OutputHandler
 	let varHandler: VariableHandler
 	let session: Session
@@ -43,7 +44,8 @@ protocol SessionControllerDelegate: class {
 		self.session = session
 		super.init()
 		session.delegate = self
-		self.responseHandler = ServerResponseHandler(delegate: self)
+		self.responseFormatter = DefaultResponseFormatter(delegate: self)
+//		self.responseHandler = ServerResponseHandler(delegate: self)
 		let nc = NotificationCenter.default
 		nc.addObserver(self, selector: #selector(SessionController.appWillTerminate), name: NSApplication.willTerminateNotification, object: nil)
 		nc.addObserver(self, selector:  #selector(SessionController.saveSessionState), name: NSWorkspace.willSleepNotification, object:nil)
@@ -79,8 +81,8 @@ protocol SessionControllerDelegate: class {
 		session.imageCache.clearCache()
 	}
 	
-	func format(errorString: String) -> ResponseString {
-		return responseHandler!.formatError(errorString)
+	func format(errorString: String) -> ResponseString? {
+		return responseFormatter!.formatError(string: errorString)
 	}
 
 	// MARK: - ServerResponseHandlerDelegate
@@ -98,20 +100,6 @@ protocol SessionControllerDelegate: class {
 		varHandler.handleVariableDeltaMessage(assigned, removed: removed)
 	}
 
-	func consoleAttachment(forImage image: SessionImage) -> ConsoleAttachment {
-		return MacConsoleAttachment(image: image)
-	}
-	
-	func consoleAttachment(forFile file: AppFile) -> ConsoleAttachment {
-		return MacConsoleAttachment(file:file)
-	}
-	
-	func attributedStringForInputFile(_ fileId: Int) -> NSAttributedString {
-		let file = session.workspace.file(withId: fileId)!
-		let str = "[\(file.name)]"
-		return NSAttributedString(string: str)
-	}
-	
 	//the file might not be in session yet. if not, wait until it has been added
 	func showFile(_ fileId: Int) {
 		fileLoadDisposable?.dispose()
@@ -150,7 +138,7 @@ extension SessionController {
 		var dict = [String: JSON]()
 		dict["outputController"] = outputHandler.saveSessionState()
 		if let imgData = try? session.imageCache.persistentData() {
-			dict["imageCache"] = imgData
+			dict["imageCache"] = .string(imgData.base64EncodedString())
 		}
 		dict["delegate"] = delegate?.saveState()
 		do {
@@ -180,8 +168,8 @@ extension SessionController {
 				if let editState = jsonDict["delegate"] {
 					delegate?.restoreState(editState)
 				}
-				if let imageState = jsonDict["imageCache"] {
-					try session.imageCache.load(from: imageState)
+				if let imageState = json.getOptionalString(at: "imageCache"), let imageData = Data(base64Encoded: imageState) {
+					try session.imageCache.load(from: imageData)
 				}
 				savedStateHash = (data as NSData).sha256()
 			}
@@ -209,7 +197,7 @@ extension SessionController: SessionDelegate {
 		outputHandler.showHelp(HelpController.shared.topicsWithName(helpTopic))
 	}
 	
-	func sessionMessageReceived(_ response: ServerResponse) {
+	func sessionMessageReceived(_ response: SessionResponse) {
 		guard Thread.isMainThread else {
 			DispatchQueue.main.async { self.sessionMessageReceived(response) }
 			return
@@ -263,5 +251,21 @@ extension SessionController {
 				self.outputHandler.append(responseString: astr)
 			}
 		}
+	}
+}
+
+extension SessionController: SessionResponseFormatterDelegate {
+	func consoleAttachment(forImage image: SessionImage) -> ConsoleAttachment {
+		return MacConsoleAttachment(image: image)
+	}
+	
+	func consoleAttachment(forFile file: AppFile) -> ConsoleAttachment {
+		return MacConsoleAttachment(file:file)
+	}
+	
+	func attributedStringForInputFile(_ fileId: Int) -> NSAttributedString {
+		let file = session.workspace.file(withId: fileId)!
+		let str = "[\(file.name)]"
+		return NSAttributedString(string: str)
 	}
 }
