@@ -259,8 +259,8 @@ extension SessionController: SessionResponseFormatterDelegate {
 		return MacConsoleAttachment(image: image)
 	}
 	
-	func consoleAttachment(forFile file: AppFile) -> ConsoleAttachment {
-		return MacConsoleAttachment(file:file)
+	func consoleAttachment(forFile file: File) -> ConsoleAttachment {
+		return MacConsoleAttachment(file: file)
 	}
 	
 	func attributedStringForInputFile(_ fileId: Int) -> NSAttributedString {

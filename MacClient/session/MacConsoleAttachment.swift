@@ -23,13 +23,13 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 		return try JSONDecoder().decode(MacConsoleAttachment.self, from: data)
 	}
 	
-	public init(file inFile: AppFile) {
+	public init(file inFile: File) {
 		type = .file
 		image = nil
-		fileId = inFile.fileId
+		fileId = inFile.id
 		fileVersion = inFile.version
 		fileName = inFile.name
-		fileExtension = inFile.fileType.fileExtension
+		fileExtension = FileType.fileType(forFileName: inFile.name)?.fileExtension
 	}
 	
 	public init(image inImage: SessionImage) {
