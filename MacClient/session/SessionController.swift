@@ -203,24 +203,10 @@ extension SessionController: SessionDelegate {
 			return
 		}
 		//if not a showoutput message, actually handle the response
-		guard case ServerResponse.showOutput( _, let updatedFile) = response else {
+		if case SessionResponse.showOutput(let outputData) = response {
+			handleShowOutput(response: response, data: outputData)
+		} else {
 			handle(response: response)
-			return
-		}
-		//if the file doesn't exist, wait until it does and then handle the response
-		guard let oldFile = session.workspace.file(withId: updatedFile.fileId) else {
-			listenForInsert(fileId: updatedFile.fileId) { _ in
-				self.handle(response: response)
-			}
-			return
-		}
-		//need to refetch file from server, then show it
-		session.fileCache.update(file: oldFile, withData: nil).startWithResult { result in
-			guard nil == result.error else {
-				os_log("error updating file cache: %{public}@", log: .session, result.error!.errorDescription ?? "??")
-				return
-			}
-			self.handle(response: response)
 		}
 	}
 	
@@ -245,11 +231,30 @@ extension SessionController {
 	}
 	
 	/// actually handle the response by formatting it and sending it to the output handler
-	fileprivate func handle(response: ServerResponse) {
-		if let astr = responseHandler?.handleResponse(response) {
+	fileprivate func handle(response: SessionResponse) {
+		if let astr = responseFormatter?.format(response: response) {
 			DispatchQueue.main.async {
 				self.outputHandler.append(responseString: astr)
 			}
+		}
+	}
+
+	/// load the file to show, then handle it
+	func handleShowOutput(response: SessionResponse, data: SessionResponse.ShowOutputData) {
+		//if the file doesn't exist, wait until it does and then handle the response
+		guard let oldFile = session.workspace.file(withId: data.file.id) else {
+			listenForInsert(fileId: data.file.id) { _ in
+				self.handleShowOutput(response: response, data: data)
+			}
+			return
+		}
+		//need to refetch file from server, then show it
+		session.fileCache.recache(file: oldFile).startWithResult { result in
+			guard nil == result.error else {
+				os_log("error updating file cache: %{public}@", log: .session, result.error!.errorDescription ?? "??")
+				return
+			}
+			self.handle(response: response)
 		}
 	}
 }
