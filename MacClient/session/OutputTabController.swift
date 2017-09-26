@@ -100,8 +100,9 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	func showHelp(_ topics: [HelpTopic]) {
 		guard topics.count > 0 else {
-			let rstr = sessionController!.format(errorString: NSLocalizedString("No Help Found", comment: ""))
-			consoleController?.append(responseString: rstr)
+			if let rstr = sessionController?.format(errorString: NSLocalizedString("No Help Found", comment: "")) {
+				consoleController?.append(responseString: rstr)
+			}
 			return
 		}
 		if topics.count == 1 {
