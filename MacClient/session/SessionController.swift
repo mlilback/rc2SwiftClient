@@ -105,7 +105,7 @@ protocol SessionControllerDelegate: class {
 		fileLoadDisposable?.dispose()
 		if let existingFile = session.workspace.file(withId: fileId) {
 			DispatchQueue.main.async {
-				self.outputHandler.showFile(existingFile)
+				self.outputHandler.show(file: existingFile)
 			}
 			return
 		}
@@ -114,7 +114,7 @@ protocol SessionControllerDelegate: class {
 			for aChange in changes where aChange.object?.fileId == fileId {
 				//our file was inserted, we can show it
 				DispatchQueue.main.async {
-					self.outputHandler.showFile(self.session.workspace.file(withId: fileId))
+					self.outputHandler.show(file: self.session.workspace.file(withId: fileId))
 //						self.showFile(fileId)
 				}
 				break

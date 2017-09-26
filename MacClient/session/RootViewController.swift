@@ -337,11 +337,11 @@ extension RootViewController: FileViewControllerDelegate {
 	func fileSelectionChanged(_ file: AppFile?, forEditing: Bool) {
 		if nil == file {
 			self.editor?.fileSelectionChanged(nil)
-			self.outputHandler?.showFile(nil)
+			self.outputHandler?.show(file: nil)
 		} else if file!.fileType.isSource || (forEditing && file!.fileSize <= MaxEditableFileSize) {
 			self.editor?.fileSelectionChanged(file)
 		} else {
-			outputHandler?.showFile(file)
+			outputHandler?.show(file: file)
 //			if let editingFile = editor?.currentDocument?.file {
 //				fileHandler?.selectedFile = editingFile
 //			}

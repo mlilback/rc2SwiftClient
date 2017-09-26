@@ -41,8 +41,7 @@ protocol OutputHandler: class, SearchResponder {
 	func restoreSessionState(_ state: JSON)
 	func handleSearch(action: NSTextFinder.Action)
 	func initialFirstResponder() -> NSResponder
-	//can't use File as parameter class because it isn't available in ObjC. We let the bridge pass the object around using AnyObject and the destination will have to cast it to a File object.
-	func showFile(_ file: AnyObject?)
+	func show(file: AppFile?)
 	func showHelp(_ topics: [HelpTopic])
 	//action event forwarding
 	func clearConsole(_ sender: AnyObject?)

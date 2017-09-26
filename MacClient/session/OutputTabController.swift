@@ -151,9 +151,9 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		}
 	}
 	
-	func showFile(_ fileObject: AnyObject?) {
+	func show(file: AppFile?) {
 		//strip optional
-		guard let file = fileObject as? AppFile else {
+		guard let file = file else {
 			webController?.clearContents()
 			selectedOutputTab.value = .console
 			displayedFile = nil
@@ -163,7 +163,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		guard url.fileSize() > 0 else {
 			//caching/download bug. not sure what causes it. recache the file and then call again
 			sessionController?.session.fileCache.recache(file: file).observe(on: UIScheduler()).startWithCompleted {
-				self.showFile(file)
+				self.show(file: file)
 			}
 			return
 		}
