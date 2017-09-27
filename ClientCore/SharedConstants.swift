@@ -18,3 +18,5 @@ public extension OSLog {
 	static let core: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "core")
 	static let cache: OSLog = OSLog(subsystem: AppInfo.bundleIdentifier, category: "cache")
 }
+
+public let defaultAppServerPort = 3145

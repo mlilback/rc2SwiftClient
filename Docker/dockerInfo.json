@@ -26,7 +26,7 @@
 			"HostConfig": {
 				"NetworkMode": "rc2server",
 				"Tmpfs": { "/tmp": "rw,noexec,nosuid,size=64M" },
-				"PortBindings": { "8088/tcp": [{ "HostPort": "8088" }] },
+				"PortBindings": { "8088/tcp": [{ "HostPort": "3145" }] },
 				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "500k" } }
 			},
 			"NetworkingConfig": {

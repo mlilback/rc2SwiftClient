@@ -7,11 +7,11 @@
 
 import Foundation
 import Freddy
+import ClientCore
 
 ///Represents a remote host
 public struct ServerHost: Codable, CustomStringConvertible, Hashable {
-	
-	public static let localHost: ServerHost = { return ServerHost(name: "Local Server", host: "localhost", port: 8088, user: "local", secure: false) }()
+	public static let localHost: ServerHost = { return ServerHost(name: "Local Server", host: "localhost", port: defaultAppServerPort, user: "local", secure: false) }()
 	///user-friendly name for the host
 	public let name: String
 	public let host: String
@@ -22,7 +22,7 @@ public struct ServerHost: Codable, CustomStringConvertible, Hashable {
 	/// the string used to store the password for this host in the keychain
 	public var keychainKey: String { return "\(self.user)@\(self.host)" }
 	
-	public init(name: String, host: String, port: Int = 8088, user: String="local", secure: Bool = false) {
+	public init(name: String, host: String, port: Int = defaultAppServerPort, user: String="local", secure: Bool = false) {
 		self.name = name
 		self.host = host
 		self.user = user

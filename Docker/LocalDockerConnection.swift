@@ -7,6 +7,7 @@
 import Foundation
 import Darwin
 import os
+import ClientCore
 
 enum LocalDockerMessage: Equatable {
 	case headers(HttpHeaders), data(Data), complete, error(DockerError)
@@ -164,7 +165,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 		guard let newUrl = components.url else { fatalError("failed to generate new url") }
 		var req = request
 		req.url = newUrl
-		req.addValue("localhost:8088", forHTTPHeaderField: "Host")
+		req.addValue("localhost:\(defaultAppServerPort)", forHTTPHeaderField: "Host")
 		if !hijack {
 			req.addValue("close", forHTTPHeaderField: "Connection")
 		}
