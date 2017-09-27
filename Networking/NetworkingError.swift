@@ -41,6 +41,8 @@ public enum NetworkingError: LocalizedError, Rc2DomainError {
 				return localizedNetworkString("unsupportedFileType")
 			case .restError(_, let message):
 				return message
+			case .invalidHttpStatusCode(let rsp):
+				return localizedNetworkString("server returned \(rsp.statusCode)")
 			default:
 				return localizedNetworkString("unknown")
 		}

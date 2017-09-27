@@ -364,8 +364,9 @@ public class Session {
 		components.scheme = conInfo.host.secure ? "wss" : "ws"
 		components.queryItems = [URLQueryItem(name: "client", value: client),
 		                         URLQueryItem(name: "build", value: "\(AppInfo.buildNumber)")]
-		let ws = WebSocket(url: components.url!)
-		ws.headers["Rc2-Auth"] = conInfo.authToken
+		var request = URLRequest(url: components.url!)
+		request.setValue("Bearer \(conInfo.authToken)", forHTTPHeaderField: "Authorization")
+		let ws = WebSocket(request: request)
 		return ws
 	}
 }
@@ -595,7 +596,7 @@ private extension Session {
 	}
 	
 	func setupWebSocketHandlers() {
-		wsSource.onConnect = { [unowned self] (Void) in
+		wsSource.onConnect = { [unowned self] in
 			DispatchQueue.global().async {
 				self.websocketOpened()
 			}
