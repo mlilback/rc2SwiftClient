@@ -55,7 +55,6 @@ public class Session {
 	
 	fileprivate var openObserver: Signal<Double, Rc2Error>.Observer?
 	public fileprivate(set) var connectionOpen: Bool = false
-	fileprivate lazy var keepAliveTimer: DispatchSourceTimer = { DispatchSource.makeTimerSource(flags: DispatchSource.TimerFlags(rawValue: UInt(0)), queue: self.queue) }()
 	
 	///if we are getting variable updates from the server
 	fileprivate var watchingVariables: Bool = false
@@ -118,15 +117,6 @@ public class Session {
 		ic.workspace = workspace
 		self.delegate = delegate
 		setupWebSocketHandlers()
-
-		// TODO: Should no longer be necessary. remove
-//		//setup a timer to send keep alive messages every 2 minutes
-//		let start = DispatchTime.now() + DispatchTimeInterval.seconds(120)
-//		keepAliveTimer.schedule(deadline: start, repeating: .seconds(120), leeway: .milliseconds(100))
-//		keepAliveTimer.setEventHandler { [unowned self] in
-//			_ = self.sendMessage(json: .dictionary(["msg": .string("keepAlive")]))
-//		}
-//		keepAliveTimer.resume()
 	}
 	
 	///opens the websocket with the specified request
@@ -144,7 +134,6 @@ public class Session {
 	
 	///closes the websocket, which can not be reopened
 	public func close() {
-		keepAliveTimer.cancel()
 		wsSource.disconnect()
 		fileCache.close()
 	}
@@ -551,6 +540,8 @@ private extension Session {
 		case .variableValue(_):
 			return nil
 		case .variables(_):
+			return nil
+		case .info(_):
 			return nil
 		}
 	}
