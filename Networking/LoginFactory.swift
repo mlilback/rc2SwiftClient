@@ -10,7 +10,7 @@ import os
 import ReactiveSwift
 import Model
 
-fileprivate let maxRetries = 4
+fileprivate let maxRetries = 2
 
 /// Factory class used to login and return a ConnectionInfo for that connection
 // must subclass NSObject to be a delegate to URLSession api
@@ -38,7 +38,7 @@ public final class LoginFactory: NSObject {
 		urlSession = URLSession(configuration: sessionConfig)
 	}
 	
-	/// returns a SignalProducer to start the login process
+	/// returns a SignalProducer to start the login process. Will attempt multiple times unless a 401 error
 	///
 	/// - Parameters:
 	///   - destHost: the host to connect to
@@ -57,8 +57,7 @@ public final class LoginFactory: NSObject {
 			fatalError()
 		}
 		requestUrl = URL(string: "login", relativeTo: destHost.url!)!
-		return urlSession!.getData(request: loginRequest(requestUrl: requestUrl, data: reqdata))
-			.retry(upTo: maxRetries, interval: 3.0, on: QueueScheduler.main)
+		return attemptLogin(request: loginRequest(requestUrl: requestUrl, data: reqdata))
 			.map { data -> LoginResponse? in
 				guard let rsp = try? JSONDecoder().decode(LoginResponse.self, from: data) else {
 					os_log("invalid json data from login", log: .network, type: .error)
@@ -68,6 +67,43 @@ public final class LoginFactory: NSObject {
 			}
 			.flatMap(.concat, getUserInfo)
 			.on(terminated: { self.urlSession = nil })
+	}
+	
+	private func attemptLogin(request: URLRequest) -> SignalProducer<Data, Rc2Error> {
+		return SignalProducer<Data, Rc2Error> { observer, _ in
+			self.handleLoginResponse(request: request, observer: observer)
+		}
+	}
+
+	private func handleLoginResponse(request: URLRequest, observer: Signal<Data, Rc2Error>.Observer)
+	{
+		let task = self.urlSession!.dataTask(with: request, completionHandler: { (data, response, error) in
+			if let error = error {
+				observer.send(error: Rc2Error(type: .cocoa, nested: error))
+				return
+			}
+			guard let data = data, let code = response?.httpResponse?.statusCode else {
+				observer.send(error: Rc2Error(type: .network, explanation: "server returned no data"))
+				return
+			}
+			switch code {
+			case 200...299:
+				observer.send(value: data)
+				observer.sendCompleted()
+			case 400...499:
+				let httpError = NetworkingError.errorFor(response: response!.httpResponse!, data: data)
+				observer.send(error: Rc2Error(type: .network, nested: httpError))
+			case 500...599: //try again in a few seconds
+				guard self.retryCount < maxRetries else { fallthrough }
+				self.retryCount -= 1
+				DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(3)) {
+					self.handleLoginResponse(request: request, observer: observer)
+				}
+			default:
+				observer.send(error: Rc2Error(type: .network, explanation: "server returned \(code)"))
+			}
+		})
+		task.resume()
 	}
 	
 	private func getUserInfo(loginInfo: LoginResponse?) -> SignalProducer<ConnectionInfo, Rc2Error> {

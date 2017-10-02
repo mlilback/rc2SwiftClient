@@ -159,6 +159,12 @@
             ReferencedContainer = "container:SwiftClient.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "--disableDocker"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "CFNETWORK_DIAGNOSTICS"
@@ -189,16 +195,6 @@
             key = "CA_DEBUG_TRANSACTIONS"
             value = "1"
             isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "DockerHostSharePath"
-            value = "/home/mlilback/pgdata"
-            isEnabled = "NO">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "DockerHostUrl"
-            value = "http://10.0.1.9:2375/"
-            isEnabled = "NO">
          </EnvironmentVariable>
       </EnvironmentVariables>
       <AdditionalOptions>

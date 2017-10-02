@@ -129,7 +129,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 //			selectedServer = boxedServer.unbox
 //			server = selectedServer
 //		} else if selectedServerIndex + 1 == serverMenu?.menu?.items.count {
-//			selectedServer = ServerHost(name: serverName, host: hostName, port: 8088, user: login, secure: false)
+//			selectedServer = ServerHost(name: serverName, host: hostName, port: defaultAppServerPort, user: login, secure: false)
 //			server = selectedServer
 //		} else {
 //			server = ServerHost.localHost

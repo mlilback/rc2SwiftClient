@@ -33,6 +33,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 	var sessionWindowControllers = Set<MainWindowController>()
 	var bookmarkWindowController: NSWindowController?
 	let bookmarkManager = BookmarkManager()
+	private var dockerEnabled = true
 	@objc dynamic var dockerManager: DockerManager?
 	fileprivate var backupManager: DockerBackupManager?
 	var startupWindowController: StartupWindowController?
@@ -62,8 +63,9 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 		#endif
 		mainStoryboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
 		precondition(mainStoryboard != nil)
-		//only init dockerManager if not running unit tests
-		if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+		//only init dockerManager if not running unit tests or not expressly disabled
+		dockerEnabled = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil && !ProcessInfo.processInfo.arguments.contains("--disableDocker")
+		if dockerEnabled {
 			let dm = DockerManager()
 			dockerManager = dm
 			backupManager = DockerBackupManager(manager: dm)
@@ -340,6 +342,7 @@ extension MacAppDelegate {
 	}
 	
 	@IBAction func showDockerControl(_ sender: Any?) {
+		if dockerManager == nil { os_log("docker disabled"); return }
 		if nil == dockerWindowController {
 			let icontext = InjectorContext()
 			icontext.register(DockerTabViewController.self) { controller in
@@ -400,7 +403,7 @@ extension MacAppDelegate {
 	/// load the setup window and start setup process
 	fileprivate func beginStartup() {
 		precondition(startupController == nil)
-		if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+		if dockerEnabled {
 			precondition(dockerManager != nil)
 		}
 		
@@ -414,7 +417,7 @@ extension MacAppDelegate {
 		assert(wc.contentViewController?.view.window == wc.window)
 		
 		//skip docker stage if performing unit tests
-		if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+		if !dockerEnabled {
 			startupController!.stage = .docker
 		}
 		//move to the next stage
@@ -463,13 +466,27 @@ extension MacAppDelegate {
 		NSApp.terminate(self)
 	}
 	
+	private func handleLoginError(_ error: Rc2Error) {
+		guard let nestederror = error.nestedError as? NetworkingError,
+			case NetworkingError.invalidHttpStatusCode(let rsp) = nestederror
+		else { handleStartupError(error); return }
+		switch rsp.statusCode {
+		case 401: // unauthorized, login failed
+			// TODO: provide better error notification
+			os_log("login unauthorized")
+			handleStartupError(error)
+		default:
+			handleStartupError(error)
+		}
+	}
+	
 	private func startupLocalLogin() {
 		let loginFactory = LoginFactory()
 		let host = ServerHost.localHost
 		let pass = NetworkConstants.localServerPassword
 		loginFactory.login(to: host, as: host.user, password: pass).observe(on: UIScheduler()).startWithResult { (result) in
 			guard let conInfo = result.value else {
-				self.handleStartupError(result.error!)
+				self.handleLoginError(result.error!)
 				return
 			}
 			self.connectionManager.localConnection = conInfo
