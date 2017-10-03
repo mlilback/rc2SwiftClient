@@ -82,8 +82,9 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 	
 	fileprivate func fileAttachmentData() -> (FileWrapper, NSImage?)? {
 		let ftype = FileType.fileType(withExtension: fileExtension ?? "bin")
-		let imgName = NSImage.Name(ftype?.iconName ?? "file-plain")
-		return attachmentData(name: fileName ?? "untitled", image: NSImage(named: imgName))
+		let imgName = NSImage.Name(ftype?.iconName ?? "plaindoc")
+		let image = NSImage(named: imgName)
+		return attachmentData(name: fileName ?? "untitled", image: image)
 	}
 	
 	fileprivate func imageAttachmentData() -> (FileWrapper, NSImage?)? {

@@ -11,6 +11,7 @@
 		080314231D2412ED006D668F /* SelectServerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080314221D2412ED006D668F /* SelectServerViewController.swift */; };
 		0803F1871EFD9C46006B15A7 /* ToolbarItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F01EC11EFD8DCA0047F397 /* ToolbarItemHandler.swift */; };
 		0803FCBE1C84C47400F17E4A /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
+		0807F1611F83DE830018EF61 /* Rc2.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0807F1601F83DE830018EF61 /* Rc2.xcassets */; };
 		080AB8DC1E92D9D7005452C7 /* MultiImageWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB8DB1E92D9D7005452C7 /* MultiImageWindowController.swift */; };
 		080AB8DE1E92DA10005452C7 /* MultiImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB8DD1E92DA10005452C7 /* MultiImageViewController.swift */; };
 		080AB8E21E92DAE9005452C7 /* MultiImageWindowController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 080AB8E11E92DAE9005452C7 /* MultiImageWindowController.storyboard */; };
@@ -679,6 +680,7 @@
 		080314221D2412ED006D668F /* SelectServerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectServerViewController.swift; sourceTree = "<group>"; };
 		08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = EmbeddedFrameworkDebug.xcconfig; path = config/EmbeddedFrameworkDebug.xcconfig; sourceTree = "<group>"; };
 		08037C211D7B74A100006E9E /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = App.xcconfig; path = config/App.xcconfig; sourceTree = "<group>"; };
+		0807F1601F83DE830018EF61 /* Rc2.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Rc2.xcassets; sourceTree = "<group>"; };
 		080AB8DB1E92D9D7005452C7 /* MultiImageWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiImageWindowController.swift; sourceTree = "<group>"; };
 		080AB8DD1E92DA10005452C7 /* MultiImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiImageViewController.swift; sourceTree = "<group>"; };
 		080AB8E11E92DAE9005452C7 /* MultiImageWindowController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MultiImageWindowController.storyboard; sourceTree = "<group>"; };
@@ -1628,6 +1630,7 @@
 		088CE6941C4B605D00153414 /* shared */ = {
 			isa = PBXGroup;
 			children = (
+				0807F1601F83DE830018EF61 /* Rc2.xcassets */,
 				088CE6B51C4B71F300153414 /* Constants.swift */,
 				084FEA7F1D3044E700060A7D /* ObjcConstants.h */,
 				084FEA801D3045D800060A7D /* ObjcConstants.m */,
@@ -2407,6 +2410,7 @@
 				08F189A81D0A0E7200866A05 /* static_html in Resources */,
 				086A40D71E7B1E8600AE476B /* ThemeEditorController.xib in Resources */,
 				083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */,
+				0807F1611F83DE830018EF61 /* Rc2.xcassets in Resources */,
 				083A566F1D246D85009D3091 /* ProjectManagement.storyboard in Resources */,
 				086A40DB1E7B4B2300AE476B /* syntaxThemes.json in Resources */,
 				08F5746D1E4D04A70000956B /* Preferences.storyboard in Resources */,
