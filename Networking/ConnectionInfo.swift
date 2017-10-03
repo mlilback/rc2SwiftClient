@@ -49,7 +49,7 @@ public class ConnectionInfo: CustomStringConvertible {
 		
 		self.host = host
 		self.authToken = authToken
-		config.httpAdditionalHeaders = ["Rc2-Auth": authToken]
+		config.httpAdditionalHeaders = ["Authorization": "Bearer \(authToken)"]
 		self.urlSessionConfig = config
 		self.bulkInfo = try decoder.decode(BulkUserInfo.self, from: bulkInfoData)
 		for rawProject in bulkInfo.projects {
