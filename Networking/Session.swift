@@ -467,6 +467,30 @@ private extension Session {
 		}
 	}
 	
+	func handleShowOutput(response: SessionResponse, data: SessionResponse.ShowOutputData) {
+		if let ofile = workspace.file(withId: data.file.id) {
+			do {
+				try ofile.update(to: data.file) //update file metadata
+				guard let fileData = data.fileData else {
+					// the file was too large to send via websocket. need to recache and then call delegate
+					fileCache.recache(file: ofile).startWithCompleted {
+						self.delegate?.sessionMessageReceived(response)
+					}
+					return
+				}
+				fileCache.cache(file: ofile, withData: fileData).startWithCompleted {
+					self.delegate?.sessionMessageReceived(response)
+				}
+			} catch {
+				os_log("error showing output file: %{public}@", log: .session, error as NSError)
+				delegate?.sessionMessageReceived(response)
+			}
+		} else {
+			os_log("got show output without file downloaded", log: .session)
+			delegate?.sessionMessageReceived(response)
+		}
+	}
+	
 	func handleReceivedMessage(_ messageData: Data) {
 		let response: SessionResponse
 		do {
@@ -484,21 +508,7 @@ private extension Session {
 		case .save(let saveData):
 			handleSave(response: response, data: saveData)
 		case .showOutput(let outputData):
-			delegate?.sessionMessageReceived(response)
-			if let ofile = workspace.file(withId: outputData.file.id) {
-				do {
-					try ofile.update(to: outputData.file)
-					if let fileData = outputData.fileData {
-						// TODO: does something need to happen once the file is recached by this call?
-						fileCache.update(file: ofile, withData: fileData).start()
-					}
-				} catch {
-					os_log("error showing output file: %{public}@", log: .session, error as NSError)
-				}
-			} else {
-				os_log("got show output without file downloaded", log: .session)
-			}
-			break
+			handleShowOutput(response: response, data: outputData)
 		case .execComplete(let execData):
 			imageCache.cacheImagesFromServer(execData.images)
 			fallthrough

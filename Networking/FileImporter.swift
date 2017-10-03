@@ -172,7 +172,7 @@ extension FileImporter: URLSessionDataDelegate {
 			let newFile = try workspace.imported(file: rawFile)
 			let fileData = try Data(contentsOf: importData.srcFile)
 			//is this really the best way to handle this error? oberver might have been set to nil
-			fileCache.update(file: newFile, withData: fileData).startWithFailed { updateError in
+			fileCache.cache(file: newFile, withData: fileData).startWithFailed { updateError in
 				self.progressObserver?.send(error: updateError)
 			}
 			importedFiles.append(newFile)

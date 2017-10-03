@@ -64,6 +64,7 @@ protocol SessionControllerDelegate: class {
 	
 	func close() {
 		fileLoadDisposable?.dispose()
+		fileLoadDisposable = nil
 		saveSessionState()
 		session.close()
 		properlyClosed = true
@@ -202,12 +203,7 @@ extension SessionController: SessionDelegate {
 			DispatchQueue.main.async { self.sessionMessageReceived(response) }
 			return
 		}
-		//if not a showoutput message, actually handle the response
-		if case SessionResponse.showOutput(let outputData) = response {
-			handleShowOutput(response: response, data: outputData)
-		} else {
-			handle(response: response)
-		}
+		handle(response: response)
 	}
 	
 	//TODO: impelment sessionErrorReceived
@@ -236,25 +232,6 @@ extension SessionController {
 			DispatchQueue.main.async {
 				self.outputHandler.append(responseString: astr)
 			}
-		}
-	}
-
-	/// load the file to show, then handle it
-	func handleShowOutput(response: SessionResponse, data: SessionResponse.ShowOutputData) {
-		//if the file doesn't exist, wait until it does and then handle the response
-		guard let oldFile = session.workspace.file(withId: data.file.id) else {
-			listenForInsert(fileId: data.file.id) { _ in
-				self.handleShowOutput(response: response, data: data)
-			}
-			return
-		}
-		//need to refetch file from server, then show it
-		session.fileCache.recache(file: oldFile).startWithResult { result in
-			guard nil == result.error else {
-				os_log("error updating file cache: %{public}@", log: .session, result.error!.errorDescription ?? "??")
-				return
-			}
-			self.handle(response: response)
 		}
 	}
 }
