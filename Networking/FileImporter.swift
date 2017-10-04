@@ -78,7 +78,7 @@ public class FileImporter: NSObject {
 				os_log("failed to create link for upload: %{public}@", log: .importer, type:.error, error.localizedDescription)
 				return ProgressSignalProducer(error: Rc2Error(type: .file, nested: error, explanation: ""))
 			}
-			let destUrl = URL(string: "/workspaces/\(workspace.wspaceId)/files/upload", relativeTo:baseUrl)!
+			let destUrl = URL(string: "/file/create/\(workspace.wspaceId)", relativeTo:baseUrl)!
 			let request = NSMutableURLRequest(url: destUrl)
 			request.httpMethod = "POST"
 			request.setValue(aFileToImport.uniqueFileName, forHTTPHeaderField: "Rc2-Filename")
