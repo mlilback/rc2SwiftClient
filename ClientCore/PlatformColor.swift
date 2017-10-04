@@ -32,7 +32,7 @@ public extension PlatformColor {
 		}
 		guard hcode.characters.count == 6, hcode.trimmingCharacters(in: CharacterSet.hexadecimal) == "" else { return nil }
 		
-		let redHex = String(hexString[...hexString.characters.index(hexString.startIndex, offsetBy: 2)])
+		let redHex = String(hexString[..<hexString.characters.index(hexString.startIndex, offsetBy: 2)])
 		let greenHex = String(hexString[hexString.characters.index(hexString.startIndex, offsetBy: 2) ..< hexString.characters.index(hexString.startIndex, offsetBy: 4)])
 		let blueHex = String(hexString[hexString.characters.index(hexString.startIndex, offsetBy: 4) ..< hexString.characters.index(hexString.startIndex, offsetBy: 6)])
 		var redInt: CUnsignedInt = 0
