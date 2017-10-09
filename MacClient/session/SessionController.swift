@@ -13,7 +13,6 @@ import ReactiveSwift
 import ReactiveCocoa
 import Result
 import ClientCore
-import NotifyingCollection
 import Model
 
 protocol SessionControllerDelegate: class {
@@ -111,8 +110,8 @@ protocol SessionControllerDelegate: class {
 			return
 		}
 		//TODO: need to wait until file exists then load it
-		let handler = { (changes: [CollectionChange<AppFile>]) in
-			for aChange in changes where aChange.object?.fileId == fileId {
+		let handler = { (changes: [AppWorkspace.FileChange]) in
+			for aChange in changes where aChange.file.fileId == fileId {
 				//our file was inserted, we can show it
 				DispatchQueue.main.async {
 					self.outputHandler.show(file: self.session.workspace.file(withId: fileId))
@@ -218,7 +217,7 @@ extension SessionController {
 	fileprivate func listenForInsert(fileId: Int, handler: @escaping (Int) -> Void) {
 		fileLoadDisposable = session.workspace.fileChangeSignal.observeValues { values in
 			values.forEach { change in
-				if change.changeType == .insert && change.object?.fileId == fileId {
+				if change.type == .add && change.file.fileId == fileId {
 					self.fileLoadDisposable?.dispose()
 					handler(fileId)
 				}

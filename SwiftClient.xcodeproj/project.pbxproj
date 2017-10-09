@@ -54,7 +54,6 @@
 		08127CDF1DAD5BA9002E0D01 /* ReactiveSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */; };
 		081559701DDA763A0047B3CE /* ClientCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		081559731DDB82970047B3CE /* NotifyingCollection.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		081559771DDB854F0047B3CE /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0815597F1DDBAEB30047B3CE /* SessionResponseFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815597E1DDBAEB30047B3CE /* SessionResponseFormatter.swift */; };
 		081559811DDBAF030047B3CE /* ConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559801DDBAF030047B3CE /* ConsoleAttachment.swift */; };
@@ -374,9 +373,6 @@
 		08F678361F793A2A00EC3AC9 /* Workspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE1711F5B36B3006CE0B7 /* Workspace.swift */; };
 		08F678381F79416800EC3AC9 /* RestInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F678371F79416800EC3AC9 /* RestInfo.swift */; };
 		08F6783A1F79422400EC3AC9 /* URLSession+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F678391F79422400EC3AC9 /* URLSession+Rc2.swift */; };
-		08F6ADA51DD63C5800AF0722 /* NotifyingCollection.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */; };
-		08F6ADA61DD63C6600AF0722 /* NotifyingCollection.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		08F6ADA71DD63C7100AF0722 /* NotifyingCollection.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */; };
 		08F6ADA91DD643C900AF0722 /* Copyable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADA81DD643C900AF0722 /* Copyable.swift */; };
 		08F6ADAA1DD643C900AF0722 /* Copyable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADA81DD643C900AF0722 /* Copyable.swift */; };
 		08F6ADAC1DD6502000AF0722 /* ModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADAB1DD6502000AF0722 /* ModelSpec.swift */; };
@@ -585,7 +581,6 @@
 				088E38071EF4025700136CFA /* ReactiveCocoa.framework in CopyFiles */,
 				088E38061EF4024100136CFA /* ZipArchive.framework in CopyFiles */,
 				0865087D1E49360A0067C8CA /* Starscream.framework in CopyFiles */,
-				081559731DDB82970047B3CE /* NotifyingCollection.framework in CopyFiles */,
 				081559701DDA763A0047B3CE /* ClientCore.framework in CopyFiles */,
 				0881B5111DCFAFB000679DB3 /* Mockingjay.framework in CopyFiles */,
 				0881B5131DCFAFFB00679DB3 /* URITemplate.framework in CopyFiles */,
@@ -633,7 +628,6 @@
 				08C2D5E61E719DE20007A02D /* SBInjector.framework in Embed Frameworks */,
 				08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */,
 				082BE15E1F5B3682006CE0B7 /* Model.framework in Embed Frameworks */,
-				08F6ADA61DD63C6600AF0722 /* NotifyingCollection.framework in Embed Frameworks */,
 				08F6ADD81DD9169400AF0722 /* Docker.framework in Embed Frameworks */,
 				08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */,
 				080E82D71DCBE31D0048F36C /* Networking.framework in Embed Frameworks */,
@@ -1005,7 +999,6 @@
 		08F673D11D0214C700B87049 /* AppKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppKitExtensions.swift; path = ../AppKitExtensions.swift; sourceTree = "<group>"; };
 		08F678371F79416800EC3AC9 /* RestInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestInfo.swift; sourceTree = "<group>"; };
 		08F678391F79422400EC3AC9 /* URLSession+Rc2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Rc2.swift"; sourceTree = "<group>"; };
-		08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NotifyingCollection.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08F6ADA81DD643C900AF0722 /* Copyable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Copyable.swift; sourceTree = "<group>"; };
 		08F6ADAB1DD6502000AF0722 /* ModelSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelSpec.swift; sourceTree = "<group>"; };
 		08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = modelChanges.json; sourceTree = "<group>"; };
@@ -1047,7 +1040,6 @@
 				08367BD41E3FCEA800FAFC8A /* Starscream.framework in Frameworks */,
 				080E82DE1DCBE3590048F36C /* Freddy.framework in Frameworks */,
 				08B184D71E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */,
-				08F6ADA71DD63C7100AF0722 /* NotifyingCollection.framework in Frameworks */,
 				08CFE8D61E76D7A6002A35C1 /* ReactiveCocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1115,7 +1107,6 @@
 				0833A8221D2D7E770033654B /* HockeySDK.framework in Frameworks */,
 				080E82D61DCBE31D0048F36C /* Networking.framework in Frameworks */,
 				082BE15D1F5B3682006CE0B7 /* Model.framework in Frameworks */,
-				08F6ADA51DD63C5800AF0722 /* NotifyingCollection.framework in Frameworks */,
 				082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */,
 				08F6ADD71DD9169400AF0722 /* Docker.framework in Frameworks */,
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
@@ -1607,7 +1598,6 @@
 				08C2D5E41E719DE20007A02D /* SBInjector.framework */,
 				08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */,
 				08367BD21E3FCEA800FAFC8A /* Starscream.framework */,
-				08F6ADA41DD63C5800AF0722 /* NotifyingCollection.framework */,
 				0826108D1DB02FC300C03422 /* Nimble.framework */,
 				0826108E1DB02FC300C03422 /* Quick.framework */,
 				08A01FCD1CC80189001EDFAA /* libsqlite3.tbd */,

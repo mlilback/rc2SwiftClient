@@ -48,9 +48,9 @@ extension ProjectManagerViewController: NSOutlineViewDataSource {
 	
 	public func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
 		if nil == item {
-			return connectInfo!.projects.count
+			return connectInfo!.projects.value.count
 		} else if let proj = item as? AppProject {
-			return proj.workspaces.count
+			return proj.workspaces.value.count
 		}
 		return 0
 	}
@@ -61,9 +61,9 @@ extension ProjectManagerViewController: NSOutlineViewDataSource {
 	
 	public func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
 		if let proj = item as? AppProject {
-			return proj.workspaces[index]
+			return proj.workspaces.value[index]
 		}
-		return connectInfo!.projects[index]
+		return connectInfo!.projects.value[index]
 	}
 }
 

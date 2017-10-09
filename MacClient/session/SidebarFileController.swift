@@ -9,7 +9,6 @@ import os
 import ReactiveSwift
 import Result
 import SwiftyUserDefaults
-import NotifyingCollection
 import ClientCore
 import Networking
 import Model
@@ -130,7 +129,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	func loadData() {
 		var sectionedFiles = [[AppFile](), [AppFile](), [AppFile]()]
-		for aFile in session.workspace.files {
+		for aFile in session.workspace.files.sorted(by: { $1.name > $0.name }) {
 			if aFile.fileType.isSource {
 				sectionedFiles[0].append(aFile)
 			} else if aFile.fileType.isImage {
@@ -138,10 +137,6 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			} else {
 				sectionedFiles[2].append(aFile)
 			}
-		}
-		//sort each one
-		for var fa in sectionedFiles {
-			fa.sort(by: { $0.name > $1.name })
 		}
 		rowData.removeAll()
 		for i in 0..<sectionNames.count where sectionedFiles[i].count > 0 {
@@ -232,12 +227,12 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				self.formatMenu?.popUp(positioning: nil, at: NSPoint.zero, in: self.messageButtons)
 			default: break
 			}
-			//			NSAnimationContext.runAnimationGroup({ (context) in
-			//				context.allowsImplicitAnimation = true
+			//            NSAnimationContext.runAnimationGroup({ (context) in
+			//                context.allowsImplicitAnimation = true
 			self.messageView?.animator().isHidden = true
-			//			}, completionHandler: nil)
+			//            }, completionHandler: nil)
 		}
-		//		messageView?.isHidden = true
+		//        messageView?.isHidden = true
 	}
 	
 	@IBAction func deleteFile(_ sender: AnyObject?) {
@@ -251,10 +246,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			return
 		}
 		confirmAction(message: NSLocalizedString(LocalStrings.deleteFileWarning, comment: ""),
-		              infoText: String(format: NSLocalizedString(LocalStrings.deleteFileWarningInfo, comment: ""), file.name),
-		              buttonTitle: NSLocalizedString("Delete", comment: ""),
-		              defaultToCancel: true,
-		              suppressionKey: .suppressDeleteFileWarnings)
+					  infoText: String(format: NSLocalizedString(LocalStrings.deleteFileWarningInfo, comment: ""), file.name),
+					  buttonTitle: NSLocalizedString("Delete", comment: ""),
+					  defaultToCancel: true,
+					  suppressionKey: .suppressDeleteFileWarnings)
 		{ (confirmed) in
 			guard confirmed else { return }
 			self.actuallyPerformDelete(file: file)
@@ -551,7 +546,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 
 // MARK: - FileHandler implementation
 extension SidebarFileController: FileHandler {
-	func filesRefreshed(_ changes: [CollectionChange<AppFile>]?) {
+	func filesRefreshed(_ changes: [AppWorkspace.FileChange]) {
 		//TODO: ideally should figure out what file was changed and animate the tableview update instead of refreshing all rows
 		//TODO: updated file always shows last, which is wrong
 		loadData()

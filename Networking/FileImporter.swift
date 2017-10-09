@@ -24,7 +24,7 @@ public class FileImporter: NSObject {
 	public let fileCache: FileCache
 	public var workspace: AppWorkspace { return fileCache.workspace }
 	/// array of files that were imported. Only available after the import is completed
-	public fileprivate(set) var importedFiles: [AppFile]
+	public fileprivate(set) var importedFileIds: [Int]
 	fileprivate let files: [FileToImport]
 	fileprivate var uploadSession: URLSession!
 	fileprivate var tasks: [Int: ImportData] = [:]
@@ -52,7 +52,7 @@ public class FileImporter: NSObject {
 		self.conInfo = connectInfo
 		self.queue = queue
 		self.fileManager = fileManager
-		self.importedFiles = []
+		self.importedFileIds = []
 		totalSize = files.reduce(0) { (size, fileInfo) -> Int in
 			return size + Int(fileInfo.fileUrl.fileSize())
 		}
@@ -169,13 +169,12 @@ extension FileImporter: URLSessionDataDelegate {
 		}
 		do {
 			let rawFile: File = try conInfo.decode(data: importData.data)
-			let newFile = try workspace.imported(file: rawFile)
 			let fileData = try Data(contentsOf: importData.srcFile)
 			//is this really the best way to handle this error? oberver might have been set to nil
-			fileCache.cache(file: newFile, withData: fileData).startWithFailed { updateError in
+			fileCache.cache(file: rawFile, withData: fileData).startWithFailed { updateError in
 				self.progressObserver?.send(error: updateError)
 			}
-			importedFiles.append(newFile)
+			importedFileIds.append(rawFile.id)
 		} catch let err as Rc2Error {
 			progressObserver?.send(error: err)
 		} catch {

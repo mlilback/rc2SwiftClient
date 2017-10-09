@@ -7,7 +7,6 @@
 import Cocoa
 import Freddy
 import Model
-import NotifyingCollection
 import Networking
 
 ///These protocols exist to decouple various view controllers
@@ -54,7 +53,7 @@ protocol FileHandler: class {
 	/// Updates data for file changes
 	///
 	/// - Parameter changes: the file changes
-	func filesRefreshed(_ changes: [CollectionChange<AppFile>]?)
+	func filesRefreshed(_ changes: [AppWorkspace.FileChange])
 
 	/// prompts the user to import file(s)
 	///

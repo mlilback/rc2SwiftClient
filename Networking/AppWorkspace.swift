@@ -7,16 +7,25 @@
 import Foundation
 import ReactiveSwift
 import Result
-import NotifyingCollection
 import ClientCore
 import os
 import Model
 
-public final class AppWorkspace: Copyable, UpdateInPlace, CustomStringConvertible, Hashable
+// removed UpdateInPlace, Copyable since that behavior is indefined with new model
+public final class AppWorkspace: CustomStringConvertible, Hashable
 {
 //	public typealias UElement = AppWorkspace
 
-	typealias FileChange = CollectionChange<AppFile>
+	public enum FileChangeType: String {
+		case add, modify, remove
+		
+	}
+	public struct FileChange {
+		public let type: FileChangeType
+		public let file: AppFile
+	}
+	
+//	typealias FileChange = CollectionChange<AppFile>
 
 	public var identifier: WorkspaceIdentifier { return WorkspaceIdentifier(projectId: model.projectId, wspaceId: model.id) }
 	
@@ -27,24 +36,20 @@ public final class AppWorkspace: Copyable, UpdateInPlace, CustomStringConvertibl
 	public var uniqueId: String { return model.uniqueId }
 	public var name: String { return model.name }
 	public var version: Int { return model.version }
-	fileprivate let _files = CollectionNotifier<AppFile>()
 	
-	public var files: [AppFile] { return _files.values }
-	public var fileChangeSignal: Signal<[CollectionChange<AppFile>], NoError> { return _files.changeSignal }
+	fileprivate let _files = MutableProperty<[AppFile]>([])
+	/// changes to should be monitored via fileChangeSignal. order is undefined and can change when signal is fired
+	public var files: [AppFile] { return _files.value }
+
+	public let fileChangeSignal: Signal<[FileChange], NoError> // { return _files.changeSignal }
+	private let fileChangeObserver: Signal<[FileChange], NoError>.Observer
 	
 	public init(model: Workspace, files rawFiles: [AppFile]) throws {
 		self.model = model
-		try _files.append(contentsOf: rawFiles)
+		_files.value = rawFiles
+		(fileChangeSignal, fileChangeObserver) = Signal<[FileChange], NoError>.pipe()
 	}
 
-	//documentation inherited from protocol
-	public init(instance other: AppWorkspace) {
-		model = other.model
-		// can force because they must be valid since they come from another workspace
-		// swiftlint:disable:next force_try
-		try! _files.append(contentsOf: other.files)
-	}
-	
 	//documentation inherited from protocol
 	public var hashValue: Int { return ObjectIdentifier(self).hashValue }
 	
@@ -53,10 +58,10 @@ public final class AppWorkspace: Copyable, UpdateInPlace, CustomStringConvertibl
 	/// - Parameter withId: the id of the file to find
 	/// - Returns: the file with the specified id, or nil
 	public func file(withId: Int) -> AppFile? {
-		guard let idx = _files.index(where: { $0.fileId == withId }) else {
+		guard let idx = _files.value.index(where: { $0.fileId == withId }) else {
 			return nil
 		}
-		return _files[idx]
+		return _files.value[idx]
 	}
 	
 	/// Get a file with a specific name
@@ -64,60 +69,86 @@ public final class AppWorkspace: Copyable, UpdateInPlace, CustomStringConvertibl
 	/// - Parameter withName: the name of the file to find
 	/// - Returns: the matching file or nil
 	public func file(withName: String) -> AppFile? {
-		guard let idx = _files.index(where: { $0.name.caseInsensitiveCompare(withName) == .orderedSame }) else {
-			return nil
-		}
-		return _files[idx]
+		guard let idx = _files.value.index(where: { $0.name.caseInsensitiveCompare(withName) == .orderedSame }) else { return nil }
+		return _files.value[idx]
 	}
 	
 	public var description: String {
 		return "<Workspace: \(name) (\(wspaceId))"
 	}
 
-	/// removes a file
+	/// Returns a signal producer that will wait until an AppFile exists in this workspace with a timeout
 	///
-	/// - Parameter file: file to remove
-	/// - Throws: Rc2Error.updateFailed with a CollectionNotifierError
-	public func remove(file: AppFile) throws {
-		do {
-			try _files.remove(file)
-		} catch {
-			throw Rc2Error(type: .updateFailed, nested: error)
+	/// - Parameter fileId: the id of the file to look for
+	/// - Parameter timeout: how long to wait for the file to appear
+	/// - Returns: a producer that will return the requested file or an error if timeout elapses
+	public func whenFileExists(fileId: Int, within timeout: TimeInterval) -> SignalProducer<AppFile, Rc2Error>
+	{
+		if let file = file(withId: fileId) {
+			return SignalProducer<AppFile, Rc2Error>(value: file)
 		}
+		let sig = fileChangeSignal
+			.promoteError(Rc2Error.self)
+			.filterMap({ changes in changes.first(where: { $0.type == .add && $0.file.fileId == fileId }) })
+			.map( { $0.file })
+			.timeout(after: timeout, raising: Rc2Error(type: .timeout), on: QueueScheduler.main)
+		return SignalProducer<AppFile, Rc2Error>(sig)
 	}
-	
+
+	/// Returns a signal producer that will wait until an AppFile exists in this workspace with a timeout
+	///
+	/// - Parameter fileIds: the ids of the files to look for
+	/// - Parameter timeout: how long to wait for the files to appear
+	/// - Returns: a producer that will return the requested files or an error if timeout elapses
+	public func whenFilesExist(withIds fileIds: [Int], within timeout: TimeInterval) -> SignalProducer<[AppFile], Rc2Error>
+	{
+		// should make 1 global timeout for all of them, but shouldn't really make a difference
+		let matchingFiles = _files.value.filter({ fileIds.contains($0.fileId) })
+		if matchingFiles.count == fileIds.count {
+			return SignalProducer<[AppFile], Rc2Error>(value: matchingFiles)
+		}
+		let producers = fileIds.map { whenFileExists(fileId: $0, within: timeout) }
+		return SignalProducer< SignalProducer<AppFile, Rc2Error>, Rc2Error >(producers)
+			.flatten(.concat)
+			.collect()
+	}
+
 	/// Updates the workspace and files
 	///
 	/// - Parameter to: workspace to copy all updateable data from
 	/// - Throws: Rc2Error.updateFailed
-	@available(*, deprecated)
-	public func update(to other: AppWorkspace) throws {
-		// MODEL: this no longer works.
-		assert(wspaceId == other.wspaceId)
-		model = other.model
-		_files.startGroupingChanges()
-		defer { _files.stopGroupingChanges() }
-		var filesToRemove = Set<AppFile>(_files.values)
-		var filesToAdd = [AppFile]()
-		do {
-			try other.files.forEach { (aFile) in
-				guard let file = file(withId: aFile.fileId) else {
-					//a new file to add
-					filesToAdd.append(aFile.copy())
-					return
-				}
-				//a file to update
-				//force is ok because we know it is there since we just found it via workspace(withId:)
-				let idx = _files.index(of: file)!
-				try _files.update(at: idx, to: aFile.model)
-				filesToRemove.remove(file)
+	internal func update(with info: SessionResponse.InfoData) throws {
+		assert(model.id == info.workspace.id)
+		model = info.workspace
+		var changes = [FileChange]()
+		defer { if changes.count > 0 { fileChangeObserver.send(value: changes) } }
+		var myFiles = Set<AppFile>(_files.value)
+		var filesToRemove = myFiles
+		var filesToAdd = [File]()
+		// split myFiles into fileToRemove, filesToAdd, or updates AppFile in myFiles
+		for rawFile in info.files {
+			guard let existingFile = myFiles.first(where: { $0.model.id == rawFile.id }) else {
+				filesToAdd.append(rawFile) //rawFile is new
+				continue
 			}
-			try _files.append(contentsOf: filesToAdd)
-			//all files have been inserted or updated, just need to remove remaining
-			try filesToRemove.forEach { (aFile) in try _files.remove(aFile) }
-		} catch {
-			throw Rc2Error(type: .updateFailed, nested: error)
+			try existingFile.update(to: rawFile)
+			filesToRemove.remove(existingFile)
+			changes.append(FileChange(type: .modify, file: existingFile))
 		}
+		// remove from myFiles any AppFiles that weren't in info.files
+		filesToRemove.forEach {
+			changes.append(FileChange(type: .remove, file: $0))
+			myFiles.remove($0)
+		}
+		// add to myFiles any new Files that were in info.files
+		try filesToAdd.forEach {
+			let newFile = try AppFile(model: $0)
+			changes.append(FileChange(type: .add, file: newFile))
+			myFiles.insert(newFile)
+		}
+		// atomically apply files changes (from set as order doesn't matter)
+		_files.value = [AppFile](myFiles)
+		fileChangeObserver.send(value: changes)
 	}
 	
 	/// Adds file to the workspace
@@ -125,55 +156,46 @@ public final class AppWorkspace: Copyable, UpdateInPlace, CustomStringConvertibl
 	/// - Parameter file: a file sent from the server in response to an upload
 	/// - Returns: the file that was copied and inserted into the file array
 	/// - Throws: Rc2Error.updateFailed
-	@discardableResult
-	public func imported(file: File) throws -> AppFile {
-		guard self.file(withId: file.id) == nil, let newFile = try? AppFile(model: file) else {
-			throw Rc2Error(type: .updateFailed, explanation: "attempt to import existing file \(file.name) to workspace \(name)")
-		}
-		do {
-			try _files.append(newFile)
-		} catch {
-			throw Rc2Error(type: .updateFailed, nested: error)
-		}
-		return newFile
-	}
+//	@discardableResult
+//	public func imported(file: File) throws -> AppFile {
+//		guard self.file(withId: file.id) == nil, let newFile = try? AppFile(model: file) else {
+//			throw Rc2Error(type: .updateFailed, explanation: "attempt to import existing file \(file.name) to workspace \(name)")
+//		}
+//		do {
+//			try _files.append(newFile)
+//		} catch {
+//			throw Rc2Error(type: .updateFailed, nested: error)
+//		}
+//		return newFile
+//	}
 	
-	/// Updates a specific file, sending a change notification
+	/// Updates a specific file based on the server change struct
 	///
 	/// - Parameters:
-	///   - fileId: the id of the file to update
-	///   - other: the version to update to
-	/// - Throws: Rc2Error.noSuchElement if not an element of the file collection, .updatFailed
+	///   - change: the change info from the server
+	/// - Throws: .noSuchElement or nested error from calling .update on the AppFile
 	public func update(change: SessionResponse.FileChangedData) throws {
 		os_log("update file %d to other called", log: .model, type: .debug, change.fileId)
-		guard let ourFile = file(withId: change.fileId), let fileIdx = _files.index(of: ourFile),
-			let updatedFile = change.file
-		else {
-			throw Rc2Error(type: .noSuchElement)
-		}
-		do {
+		switch change.changeType {
+		case .insert:
+			guard let modelFile = change.file else { fatalError("insert should always have a file") }
+			let newFile = try AppFile(model: modelFile)
+			_files.value.append(newFile)
+			fileChangeObserver.send(value: [FileChange(type: .add, file: newFile)])
+		case .update:
+			guard let ourFile = file(withId: change.fileId),
+				let updatedFile = change.file
+				else { throw Rc2Error(type: .noSuchElement) }
 			try ourFile.update(to: updatedFile)
-			try _files.update(at: fileIdx, to: updatedFile)
-		} catch {
-			throw Rc2Error(type: .updateFailed, nested: error)
-		}
-	}
-
-	/// Updates a specific file, sending a change notification
-	///
-	/// - Parameters:
-	///   - file: the file to update
-	///   - other: the version to update to
-	/// - Throws: .noSuchElement or .updateFailed
-	public func update(file: AppFile, to other: File) throws {
-		os_log("update file to other called %d", log: .model, type: .debug, file.fileId)
-		guard let fileIdx = _files.index(of: file) else {
-			throw Rc2Error(type: .noSuchElement)
-		}
-		do {
-			try _files.update(at: fileIdx, to: other)
-		} catch {
-			throw Rc2Error(type: .updateFailed, nested: error)
+		case .delete:
+			//need to remove from _files and send change notification
+			guard let ourFile = file(withId: change.fileId) else {
+				os_log("delete change for non-existant file %d", log: .model, change.fileId)
+				throw Rc2Error(type: .updateFailed)
+			}
+			//can force because guard above says it must exist
+			_files.value.remove(at: _files.value.index(of: ourFile)!)
+			fileChangeObserver.send(value: [FileChange(type: .remove, file: ourFile)])
 		}
 		
 	}

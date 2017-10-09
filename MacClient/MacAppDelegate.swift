@@ -243,7 +243,7 @@ extension MacAppDelegate {
 	/// - Parameter menu: menu to update
 	fileprivate func updateOpen(menu: NSMenu) {
 		menu.removeAllItems()
-		guard let projects = connectionManager.localConnection?.projects, projects.count > 0 else {
+		guard let projects = connectionManager.localConnection?.projects.value, projects.count > 0 else {
 			return
 		}
 		guard projects.count > 1 else {
@@ -266,7 +266,7 @@ extension MacAppDelegate {
 	fileprivate func update(menu: NSMenu, for project: AppProject) {
 		menu.title = project.name
 		menu.removeAllItems()
-		for aWorkspace in project.workspaces.sorted(by: { $0.name < $1.name }) {
+		for aWorkspace in project.workspaces.value.sorted(by: { $0.name < $1.name }) {
 			let wspaceItem = NSMenuItem(title: aWorkspace.name, action: Actions.showWorkspace, keyEquivalent: "")
 			wspaceItem.representedObject = aWorkspace.identifier
 			wspaceItem.tag = aWorkspace.wspaceId
@@ -280,7 +280,7 @@ extension MacAppDelegate {
 	@IBAction func newWorkspace(_ sender: Any) {
 		guard let conInfo = connectionManager.localConnection, let project = conInfo.defaultProject else { fatalError() }
 		DispatchQueue.main.async {
-			let existingNames = project.workspaces.map { $0.name.lowercased() }
+			let existingNames = project.workspaces.value.map { $0.name.lowercased() }
 			let prompter = InputPrompter(prompt: "Workspace name:", defaultValue: "new workspace")
 			prompter.validator = { proposedName in
 				return !existingNames.contains(proposedName.lowercased())

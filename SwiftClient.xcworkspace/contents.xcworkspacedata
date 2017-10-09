@@ -7,7 +7,4 @@
    <FileRef
       location = "group:vendor/SBInjector/SBInjector.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:vendor/CollectionNotifier/NotifyingCollection.xcodeproj">
-   </FileRef>
 </Workspace>

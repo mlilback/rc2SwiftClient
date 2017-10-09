@@ -9,7 +9,6 @@ import Quick
 import Nimble
 import ReactiveSwift
 import Freddy
-import NotifyingCollection
 @testable import Networking
 
 class ModelSpec: NetworkingBaseSpec {

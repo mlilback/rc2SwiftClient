@@ -10,7 +10,6 @@ import Freddy
 import ReactiveSwift
 import ClientCore
 import Networking
-import NotifyingCollection
 import SyntaxParsing
 
 ///selectors used in this file, aliased with shorter, descriptive names
@@ -200,14 +199,14 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	}
 	
 	//called when a file in the workspace file array has changed
-	func process(changes: [CollectionChange<AppFile>]) {
+	func process(changes: [AppWorkspace.FileChange]) {
 		//if it was a file change (content or metadata)
-		guard let change = changes.first(where: { $0.object?.fileId == currentDocument?.file.fileId }), let file = change.object else { return }
-		if change.changeType == .update {
-			guard currentDocument?.file.fileId == file.fileId else { return }
-			self.currentDocument?.updateFile(file)
-			self.adjustCurrentDocumentForFile(file)
-		} else if change.changeType == .remove {
+		guard let change = changes.first(where: { $0.file.fileId == currentDocument?.file.fileId }) else { return }
+		if change.type == .modify {
+			guard currentDocument?.file.fileId == change.file.fileId else { return }
+			self.currentDocument?.updateFile(change.file)
+			self.adjustCurrentDocumentForFile(change.file)
+		} else if change.type == .remove {
 			//document being editied was removed
 			fileSelectionChanged(nil)
 		}

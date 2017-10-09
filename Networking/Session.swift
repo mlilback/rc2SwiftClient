@@ -11,7 +11,6 @@ import ClientCore
 import Foundation
 import Freddy
 import MessagePackSwift
-import NotifyingCollection
 import os
 import ReactiveSwift
 import Result
@@ -220,21 +219,19 @@ public class Session {
 				completionHandler?(Result<Int, Rc2Error>(error: result.error!))
 				return
 			}
-			//write empty file to cache
-			do {
-				let appFile = try AppFile(model: file)
-				let destUrl = self.fileCache.cachedUrl(file: appFile)
-				if let srcUrl = contentUrl, srcUrl.fileExists() {
-					try self.fileCache.fileManager.copyItem(at: contentUrl!, to: srcUrl)
-				} else {
-					try Data().write(to: destUrl)
+			//file is on the server, but not necessarily local yet. Pre-cache the data for it
+			let sp: SignalProducer<Void, Rc2Error>
+			if let srcUrl = contentUrl, srcUrl.fileExists() {
+				sp = self.fileCache.cache(file: file, srcFile: srcUrl)
+			} else {
+				sp = self.fileCache.cache(file: file, withData: Data())
+			}
+			sp.startWithResult { result in
+				guard let err = result.error else {
+					completionHandler?(Result<Int, Rc2Error>(value: file.id))
+					return
 				}
-				let updatedFile = try self.workspace.imported(file: file)
-				completionHandler?(Result<Int, Rc2Error>(value: updatedFile.fileId))
-			} catch let rc2Err as Rc2Error {
-				completionHandler?(Result<Int, Rc2Error>(error: rc2Err))
-			} catch {
-				completionHandler?(Result<Int, Rc2Error>(error: Rc2Error(type: .cocoa, nested: error)))
+				completionHandler?(Result<Int, Rc2Error>(error: err))
 			}
 		}
 	}
@@ -303,8 +300,17 @@ public class Session {
 					observer.send(error: Rc2Error(type: .session, nested: err))
 					return
 				}
-				observer.send(value: opData.file!.id)
-				observer.sendCompleted()
+				// if it was a rename or delete, we're done
+				guard let newFile = opData.file else {
+					observer.send(value: opData.fileId)
+					observer.sendCompleted()
+					return
+				}
+				// for a duplicate, we need to duplcate the file data in the cache for the new file so it doesn't have to be loaded over the network
+				self.fileCache.cache(file: newFile, srcFile: self.fileCache.cachedUrl(file: file)).startWithCompleted {
+					observer.send(value: opData.fileId)
+					observer.sendCompleted()
+				}
 			}
 		}
 	}
@@ -347,7 +353,7 @@ public class Session {
 			let client = "ios"
 		#endif
 		var components = URLComponents()
-		components.host = conInfo.host.host
+		components.host = "127.0.0.1" //conInfo.host.host
 		components.port = conInfo.host.port
 		components.path = "/ws/\(workspace.wspaceId)"
 		components.scheme = conInfo.host.secure ? "wss" : "ws"
@@ -432,9 +438,9 @@ private extension Session {
 		
 		do {
 			fileCache.recache(file: existingFile).start()
-			try workspace.update(file: existingFile, to: rawFile)
-		} catch let updateErr as CollectionNotifierError {
-			os_log("update to file failed: %{public}@", log: .session, updateErr.localizedDescription)
+			try existingFile.update(to: rawFile)
+//		} catch let updateErr as CollectionNotifierError {
+//			os_log("update to file failed: %{public}@", log: .session, updateErr.localizedDescription)
 		} catch let err as NSError {
 			os_log("error parsing binary message: %{public}@", log: .session, type:.error, err)
 		}
@@ -478,7 +484,7 @@ private extension Session {
 					}
 					return
 				}
-				fileCache.cache(file: ofile, withData: fileData).startWithCompleted {
+				fileCache.cache(file: ofile.model, withData: fileData).startWithCompleted {
 					self.delegate?.sessionMessageReceived(response)
 				}
 			} catch {
@@ -509,6 +515,8 @@ private extension Session {
 			handleSave(response: response, data: saveData)
 		case .showOutput(let outputData):
 			handleShowOutput(response: response, data: outputData)
+		case .info(let infoData):
+			conInfo.update(sessionInfo: infoData)
 		case .execComplete(let execData):
 			imageCache.cacheImagesFromServer(execData.images)
 			fallthrough

@@ -5,10 +5,9 @@
 //
 
 import Foundation
-import NotifyingCollection
 import Model
 
-public final class AppFile: Copyable, CustomStringConvertible, Hashable, UpdateInPlace
+public final class AppFile: CustomStringConvertible, Hashable
 {
 	public private(set) var model: File
 	public var fileId: Int { return model.id }
@@ -53,8 +52,8 @@ public final class AppFile: Copyable, CustomStringConvertible, Hashable, UpdateI
 	/// Updates the file to match the current information
 	///
 	/// - Parameter to: latest information from the server
-	/// - Throws: any json parsing errors
-	public func update(to model: File) throws {
+	/// - Throws: if unsupported file type
+	internal func update(to model: File) throws {
 		assert(fileId == model.id)
 		guard let ft = FileType.fileType(forFileName: model.name) else {
 			throw NetworkingError.unsupportedFileType

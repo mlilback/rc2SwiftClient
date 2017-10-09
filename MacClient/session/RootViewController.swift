@@ -135,9 +135,13 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	/// selects the first file imported if it is a source file
 	@objc func receivedImportNotification(_ note: Notification) {
 		guard let importer = note.object as? FileImporter else { return }
-		guard let file = importer.importedFiles.first, file.fileType.isSource else { return }
-		os_log("selecting imported file", log: .app, type: .info)
-		fileHandler?.selectedFile = importer.importedFiles.first
+		session.workspace.whenFilesExist(withIds: importer.importedFileIds, within: 1.0)
+			.startWithResult { result in
+			guard let files = result.value else { return }
+			guard let file = files.first(where: { $0.fileType.isSource }) else { return }
+			os_log("selecting imported file", log: .app, type: .info)
+			self.fileHandler?.selectedFile = file
+		}
 	}
 	
 	private func adjustDimmingView(hide: Bool) {
@@ -312,7 +316,7 @@ extension RootViewController: SessionControllerDelegate {
 	}
 	
 	func filesRefreshed() {
-		fileHandler?.filesRefreshed(nil)
+		fileHandler?.filesRefreshed([])
 	}
 
 	func saveState() -> JSON {

@@ -1,9 +1,6 @@
 [submodule "vendor/fmdb"]
 	path = vendor/fmdb
 	url = https://github.com/ccgus/fmdb
-[submodule "vendoer/CollectionNotifier"]
-	path = vendor/CollectionNotifier
-	url = https://github.com/mlilback/NotifyingCollection.git
 [submodule "vendor/SBInjector"]
 	path = vendor/SBInjector
 	url = https://github.com/mlilback/SBInjector.git

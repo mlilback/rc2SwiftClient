@@ -28,20 +28,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0881B5231DD2361700679DB3"
-               BuildableName = "NotifyingCollection.framework"
-               BlueprintName = "NotifyingCollection"
-               ReferencedContainer = "container:vendor/CollectionNotifier/NotifyingCollection.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "086525DE1E6C52DB00D75B25"
                BuildableName = "SBInjector.framework"
                BlueprintName = "SBInjector (macOS)"

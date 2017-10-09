@@ -6,7 +6,6 @@
 
 import ClientCore
 import Foundation
-import NotifyingCollection
 import os
 import ReactiveSwift
 import Result
@@ -20,7 +19,7 @@ public enum FileCacheError: Error, Rc2DomainError {
 	case downloadAlreadyInProgress
 	case downloadError(urlError: Error)
 	case fileError(FileError)
-	case fileUpdateFailed(CollectionNotifierError)
+	case fileUpdateFailed(Error)
 	case unknownError(Error)
 }
 
@@ -39,8 +38,10 @@ public protocol FileCache {
 	func flushCache(files: [AppFile]) -> SignalProducer<Double, Rc2Error>
 	///caches all the files in the workspace that aren't already cached with the current version of the file
 	func cacheAllFiles() -> SignalProducer<Double, Rc2Error>
-	///returns the file system url where the file is/will be stored
+	/// returns the file system url where the file is/will be stored
 	func cachedUrl(file: AppFile) -> URL
+	// returns the file url where the specified file is/will be stored
+	func cachedUrl(file: File) throws -> URL
 	///calls cachedUrl, but downloads the file if correct version is not cached on disk
 	/// - Parameter file: the file whose url is desired
 	/// - Returns: signal producer that returns the URL to the cached contents of file
@@ -59,8 +60,16 @@ public protocol FileCache {
 	///   - file: the file whose contents changed
 	///   - data: the data with the contents of the file
 	/// - Returns: signal producer that signals completed or error
-	func cache(file: AppFile, withData data: Data) -> SignalProducer<Void, Rc2Error>
+	func cache(file: File, withData data: Data) -> SignalProducer<Void, Rc2Error>
 	
+	/// "caches" a file with contents of a specified file
+	///
+	/// - Parameters:
+	///   - file: the file whose contents changed
+	///   - srcFile: the file whose contents should be used for file
+	/// - Returns: signal producer that signals completed or error
+	func cache(file: File, srcFile: URL) -> SignalProducer<Void, Rc2Error>
+
 	/// saves file contents (does not update file object)
 	///
 	/// - Parameters:
@@ -329,7 +338,14 @@ public final class DefaultFileCache: NSObject, FileCache {
 		let fileUrl = URL(fileURLWithPath: "\(file.fileId).\(file.fileType.fileExtension)", relativeTo: fileCacheUrl).absoluteURL
 		return fileUrl
 	}
-	
+
+	///returns the file system url where the file is/will be stored
+	public func cachedUrl(file: File) throws -> URL {
+		guard let ftype = FileType.fileType(forFileName: file.name) else { throw NetworkingError.unsupportedFileType }
+		let fileUrl = URL(fileURLWithPath: "\(file.id).\(ftype.fileExtension)", relativeTo: fileCacheUrl).absoluteURL
+		return fileUrl
+	}
+
 	fileprivate func downloadTaskWithFileId(_ fileId: Int) -> DownloadTask? {
 		for aTask in tasks where aTask.1.file.fileId == fileId {
 			return aTask.1
@@ -449,18 +465,38 @@ extension DefaultFileCache {
 		//TODO: implement
 	}
 	
-	/// combines "caches" a file with provided data
+	/// "caches" a file with provided data
 	///
 	/// - Parameters:
 	///   - file: the file whose contents changed
 	///   - data: the data with the contents of the file
 	/// - Returns: signal producer that signals completed or error
-	public func cache(file: AppFile, withData data: Data) -> SignalProducer<Void, Rc2Error>
+	public func cache(file: File, withData data: Data) -> SignalProducer<Void, Rc2Error>
 	{
 		return SignalProducer<Void, Rc2Error> { observer, _ in
-			let url = self.cachedUrl(file: file)
 			do {
+				let url = try self.cachedUrl(file: file)
 				try data.write(to: url)
+				observer.sendCompleted()
+			} catch {
+				observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "failed to save \(file.name) to file cache"))
+			}
+			}.observe(on: QueueScheduler(targeting: self.mainQueue))
+	}
+	
+	/// "caches" a file with contents of a specified file
+	///
+	/// - Parameters:
+	///   - file: the file whose contents changed
+	///   - srcFile: the file whose contents should be used for file
+	/// - Returns: signal producer that signals completed or error
+	public func cache(file: File, srcFile: URL) -> SignalProducer<Void, Rc2Error>
+	{
+		precondition(srcFile.fileExists())
+		return SignalProducer<Void, Rc2Error> { observer, _ in
+			do {
+				let url = try self.cachedUrl(file: file)
+				try self.fileManager.copyItem(at: srcFile, to: url)
 				observer.sendCompleted()
 			} catch {
 				observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "failed to save \(file.name) to file cache"))
