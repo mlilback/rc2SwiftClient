@@ -23,6 +23,8 @@ public struct Rc2Error: LocalizedError, CustomStringConvertible, CustomDebugStri
 		case invalidJson
 		/// an invalid argument was passed (or parsed from json)
 		case invalidArgument
+		/// something timed out
+		case timeout
 		/// a SessionError from the app server
 		case session
 		/// nestedError will be the NSError
