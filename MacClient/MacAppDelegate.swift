@@ -548,7 +548,7 @@ extension MacAppDelegate {
 			.observe(on: UIScheduler())
 			.on( //inject side-effect to update the progress bar
 				starting: {
-					self.startupController?.statusMesssage = "Pulling Images…"
+					self.startupController?.updateStatus(message: "Pulling Images…")
 					self.startupController?.stage = .downloading
 			}, completed: {
 				self.startupController?.stage = .docker

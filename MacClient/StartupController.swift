@@ -31,6 +31,14 @@ public class StartupController: NSViewController {
 		set { statusText.stringValue = newValue }
 	}
 	
+	public func updateStatus(message: String) {
+		guard Thread.isMainThread else {
+			DispatchQueue.main.async { self.stateChanged() }
+			return
+		}
+		statusText.stringValue = message
+	}
+	
 	override public func viewDidLoad() {
 		super.viewDidLoad()
 		progressBar.usesThreadedAnimation = true
