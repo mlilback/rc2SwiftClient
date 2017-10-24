@@ -410,22 +410,19 @@ private extension Session {
 	//we've got a dictionary of the save response. keys should be transId, success, file, error
 	func handleSave(response: SessionResponse, data: SessionResponse.SaveData) {
 		os_log("handleSaveResponse called", log: .session, type: .info)
-		
-		//TODO: can this return an error? If so, need to handle it
-		
 		// we want to circumvent the default pending handler, as we need to run it first
 		os_log("sendSaveFileMessage calling pending transaction", log: .session, type: .debug)
 		if let pending = pendingTransactions[data.transactionId] {
 			pending.handler(pending, response)
 			pendingTransactions.removeValue(forKey: data.transactionId)
 		}
-
+		// handle error
 		if let error = data.error {
 			//TODO: inform user
 			os_log("got save response error: %{public}@", log: .session, type: .error, error.localizedDescription)
+			delegate?.sessionErrorReceived(Rc2Error(type: .session, nested: error))
 			return
 		}
-		
 		// both these could be asserts because they should never happen
 		guard let rawFile = data.file else {
 			os_log("got save response w/o file", log: .session, type: .error)
@@ -435,14 +432,14 @@ private extension Session {
 			os_log("got save response for non-existing file", log: .session, type: .error)
 			return
 		}
-		
+		// update file to new version
 		do {
-			fileCache.recache(file: existingFile).start()
 			try existingFile.update(to: rawFile)
-//		} catch let updateErr as CollectionNotifierError {
-//			os_log("update to file failed: %{public}@", log: .session, updateErr.localizedDescription)
-		} catch let err as NSError {
-			os_log("error parsing binary message: %{public}@", log: .session, type:.error, err)
+		} catch let netError as NetworkingError {
+			os_log("error updating saved file: %{public}@", log: .session, type:.error, netError.localizedDescription)
+			delegate?.sessionErrorReceived(Rc2Error(type: .network, nested: netError))
+		} catch {
+			delegate?.sessionErrorReceived(Rc2Error(type: .updateFailed, nested: error))
 		}
 	}
 	
