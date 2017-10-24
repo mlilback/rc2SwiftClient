@@ -26,15 +26,16 @@ public enum ContainerError: Error {
 // MARK: -
 /// An enumeration of the container names used to provide services via Docker
 public enum ContainerType: String {
-	case dbserver, appserver, compute
+	//case dbserver, appserver, compute
+	case combined
 
 	// swiftlint:disable:next force_try
-	static private let imageRegex: NSRegularExpression = try! NSRegularExpression(pattern: "rc2server/(appserver|dbserver|compute)", options: [])
+	static private let imageRegex: NSRegularExpression = try! NSRegularExpression(pattern: "rc2server/(combined)", options: [])
 	// swiftlint:disable:next force_try
-	static private let containerRegex: NSRegularExpression = try! NSRegularExpression(pattern: "rc2_(appserver|dbserver|compute)", options: [])
+	static private let containerRegex: NSRegularExpression = try! NSRegularExpression(pattern: "rc2_(combined)", options: [])
 
 	/// convience array with all possible values
-	static let all: [ContainerType] = [.dbserver, .appserver, .compute]
+	static let all: [ContainerType] = [.combined]
 
 	/// Convience initializer from an image name
 	///

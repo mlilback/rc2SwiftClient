@@ -9,15 +9,13 @@ import Docker
 import ClientCore
 
 enum LogType: Int {
-	case appServer = 0, computeServer, databaseServer
+	case combined = 0
 	
-	static var allValues: [LogType] = [.appServer, .computeServer, .databaseServer]
+	static var allValues: [LogType] = [.combined]
 	
 	var containerType: ContainerType {
 		switch self {
-			case .appServer: return .appserver
-			case .computeServer: return .compute
-			case .databaseServer: return .dbserver
+			case .combined: return .combined
 		}
 	}
 }
@@ -26,7 +24,7 @@ public class DockerLogController: DockerManagerInjectable {
 	@IBOutlet private var logView: NSTextView!
 	@IBOutlet private var logPopup: NSPopUpButton!
 	private var logs: [NSMutableAttributedString] = []
-	private var selectedLog: LogType = .appServer
+	private var selectedLog: LogType = .combined
 	
 	public override func viewDidLoad() {
 		super.viewDidLoad()

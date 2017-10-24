@@ -1,60 +1,15 @@
 {
 	"containers": [
 		{
-			"Image": "rc2server/dbserver",
-			"Hostname": "dbserver",
-			"Labels": { "rc2.live": "" },
-			"HostConfig": {
-				"Binds": ["rc2_dbdata:/rc2"],
-				"NetworkMode": "rc2server",
-				"Tmpfs": { "/tmp": "rw,noexec,nosuid,size=128M" },
-				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "500k" } }
-			},
-			"NetworkingConfig": {
-				"EndpointsConfig": {
-					"rc2server": {
-						"Aliases": [ "dbserver" ]
-					}
-				}
-			}
-		},
-		{
-			"Image": "rc2server/appserver",
-			"Hostname": "appserver",
+			"Image": "rc2server/combined",
+			"Hostname": "combined",
 			"ExposedPorts": { "8088/tcp": {} },
 			"Labels": { "rc2.live": "" },
 			"HostConfig": {
-				"NetworkMode": "rc2server",
+			   "Binds": ["rc2_dbdata:/rc2"],
 				"Tmpfs": { "/tmp": "rw,noexec,nosuid,size=64M" },
 				"PortBindings": { "8088/tcp": [{ "HostPort": "3145" }] },
 				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "500k" } }
-			},
-			"NetworkingConfig": {
-				"EndpointsConfig": {
-					"rc2server": {
-						"Aliases": [ "appserver" ]
-					}
-				}
-			}
-		},
-		{
-			"Image": "rc2server/compute",
-			"Hostname": "compute",
-			"ExposedPorts": { "7714/tcp": {} },
-			"Labels": { "rc2.live": "" },
-			"HostConfig": {
-				"Binds": ["rc2_userlib:/rc2compute/userlib"],
-				"NetworkMode": "rc2server",
-				"Tmpfs": { "/tmp": "rw,noexec,nosuid,size=64M" },
-				"PortBindings": { "7714/tcp": [{ "HostPort": "7714" }] },
-				"LogConfig": { "Type": "json-file", "Config": { "max-file": "2", "max-size": "500k" } }
-			},
-			"NetworkingConfig": {
-				"EndpointsConfig": {
-					"rc2server": {
-						"Aliases": [ "compute" ]
-					}
-				}
 			}
 		}
 	]

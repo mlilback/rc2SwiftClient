@@ -194,7 +194,7 @@ public final class DockerManager: NSObject {
 					os_log("failed to open event monitor: %{public}@", log: .docker, type: .error, err.localizedDescription)
 				}
 			}
-			.flatMap(.concat, { _ in self.validateNetwork() })
+//			.flatMap(.concat, { _ in self.validateNetwork() })
 			.flatMap(.concat, { _ in self.validateVolumes() })
 			.flatMap(.concat, { _ in self.loadInitialContainerInfo() })
 			.flatMap(.concat, { _ in self.api.loadImages().mapError { Rc2Error(type: .docker, nested: $0) } })
@@ -212,7 +212,7 @@ public final class DockerManager: NSObject {
 	public func pullImages() -> SignalProducer<PullProgress, DockerError>
 	{
 		precondition(imageInfo != nil)
-		precondition(imageInfo!.dbserver.size > 0)
+		precondition(imageInfo!.combined.size > 0)
 		os_log("dm.pullImages called", log: .docker, type: .debug)
 		var fullSize = 0 //imageInfo!.reduce(0) { val, info in val + info.size }
 		let producers = imageInfo!.flatMap { img -> SignalProducer<PullProgress, DockerError>? in
@@ -271,29 +271,29 @@ public final class DockerManager: NSObject {
 		precondition(state >= .initialized)
 		os_log("dm.checkForImageUpdate", log: .docker, type: .debug)
 		//short circuit if we don't need to check and have valid data
-		guard imageInfo == nil || shouldCheckForUpdate || forceRefresh else {
+//		guard imageInfo == nil || shouldCheckForUpdate || forceRefresh else {
 			os_log("skipping imageInfo fetch", log:.docker, type:.info)
 			return SignalProducer<Bool, Rc2Error>(value: true)
-		}
-		return api.fetchJson(url: URL(string:"\(baseInfoUrl)imageInfo.json")!).map { json in
-			self.defaults[.lastImageInfoCheck] = Date.timeIntervalSinceReferenceDate
-			do {
-				let newInfo = try RequiredImageInfo(json: json)
-				guard newInfo.newerThan(self.imageInfo) else {
-					os_log("dm.checkForImageUpdate: newInfo not newer", log: .docker, type: .debug)
-					return false
-				}
-				self.imageInfo = newInfo
-				self.defaults[.cachedImageInfo] = json
-			} catch {
-				os_log("got imageInfo error: %{public}@", log: .docker, error.localizedDescription)
-				return false
-			}
-			return true
-		}.flatMapError  { err in
-			os_log("dm.checkForImageUpdate error %{public}@", log: .docker, type: .debug, err as NSError)
-			return SignalProducer<Bool, Rc2Error>(value: false)
-		}
+//		}
+//		return api.fetchJson(url: URL(string:"\(baseInfoUrl)imageInfo.json")!).map { json in
+//			self.defaults[.lastImageInfoCheck] = Date.timeIntervalSinceReferenceDate
+//			do {
+//				let newInfo = try RequiredImageInfo(json: json)
+//				guard newInfo.newerThan(self.imageInfo) else {
+//					os_log("dm.checkForImageUpdate: newInfo not newer", log: .docker, type: .debug)
+//					return false
+//				}
+//				self.imageInfo = newInfo
+//				self.defaults[.cachedImageInfo] = json
+//			} catch {
+//				os_log("got imageInfo error: %{public}@", log: .docker, error.localizedDescription)
+//				return false
+//			}
+//			return true
+//		}.flatMapError  { err in
+//			os_log("dm.checkForImageUpdate error %{public}@", log: .docker, type: .debug, err as NSError)
+//			return SignalProducer<Bool, Rc2Error>(value: false)
+//		}
 	}
 
 	/// compares installedImages with imageInfo to see if a pull is necessary
@@ -304,7 +304,7 @@ public final class DockerManager: NSObject {
 	public func pullIsNecessary() -> Bool
 	{
 		//TODO: we need tag/version info as part of the images
-		for aTag in [imageInfo!.dbserver.tag, imageInfo!.appserver.tag, imageInfo!.computeserver.tag] {
+		for aTag in [imageInfo!.combined.tag] {
 			if installedImages.filter({ img in img.isNamed(aTag) }).count < 1 {
 				return true
 			}
@@ -383,7 +383,7 @@ public final class DockerManager: NSObject {
 		}
 		os_log("checkdatabase attempt %{public}d", log: .docker, type: .debug, attempts)
 		let command = ["psql", "-Urc2", "-c", "select * from metadata", "rc2"]
-		let exec = api.execute(command: command, container: self.containers[.dbserver]!).optionalLog("checkdb \(attempts)")
+		let exec = api.execute(command: command, container: self.containers[.combined]!).optionalLog("checkdb \(attempts)")
 		var sendComplete = true
 		exec.start { (event) in
 			switch event {
@@ -417,7 +417,7 @@ public final class DockerManager: NSObject {
 	public func backupDatabase(to url: URL) -> SignalProducer<(), Rc2Error>
 	{
 		let command = ["/usr/bin/pg_dump", "rc2"]
-		return api.executeSync(command: command, container: containers[.dbserver]!)
+		return api.executeSync(command: command, container: containers[.combined]!)
 			.mapError { Rc2Error(type: .docker, nested: $0) }
 		.flatMap(.concat) { data -> SignalProducer<(), Rc2Error> in
 			do {

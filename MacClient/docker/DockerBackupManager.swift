@@ -70,7 +70,7 @@ class DockerBackupManager {
 	/// - Parameter backup: backup to restore
 	/// - Returns: signal producer to restore the backup
 	func restore(backup: DockerBackup) -> SignalProducer<(), Rc2Error> {
-		guard let container = dockerManager.containers[.dbserver] else { fatalError("no db container") }
+		guard let container = dockerManager.containers[.combined] else { fatalError("no db container") }
 		let containerPath = "/rc2/"
 		return dockerManager.api.upload(url: backup.url, path: containerPath, filename: "backup.sql", containerName: container.name)
 			.mapError { return Rc2Error(type: .docker, nested: $0, explanation: "failed to restore from backup") }

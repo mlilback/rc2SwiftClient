@@ -49,9 +49,7 @@ public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
 	
 	let version: Int
 	let timestamp: Date
-	let dbserver: DockerImageInfo
-	let appserver: DockerImageInfo
-	let computeserver: DockerImageInfo
+	let combined: DockerImageInfo
 
 	static let timestampFormatter: ISO8601DateFormatter = {
 		var df = ISO8601DateFormatter()
@@ -80,12 +78,10 @@ public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
 		}
 		timestamp = ts
 		let imageDict = try json.decodedDictionary(at: "images", type: DockerImageInfo.self)
-		guard let db = imageDict["dbserver"], let app = imageDict["appserver"], let comp = imageDict["compute"] else {
+		guard let comp = imageDict["combined"] else {
 			throw DockerError.invalidJson(nil) //FIXME: report nested error
 		}
-		dbserver = db
-		appserver = app
-		computeserver = comp
+		combined = comp
 	}
 
 	/// Is this version newer than other
@@ -101,20 +97,15 @@ public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
 	public var endIndex: Int { return 3 }
 
 	public subscript(index: Int) -> DockerImageInfo {
-		switch index {
-			case 0: return dbserver
-			case 1: return appserver
-			case 2: return computeserver
-			default: fatalError("index out of bounds")
-		}
+		return combined
+//		switch index {
+//			case 0: return combined
+//			default: fatalError("index out of bounds")
+//		}
 	}
 
 	public subscript(type: ContainerType) -> DockerImageInfo {
-		switch type {
-			case .dbserver: return dbserver
-			case .appserver: return appserver
-			case .compute: return computeserver
-		}
+		return combined
 	}
 
 	public func index(after i: Int) -> Int {
@@ -123,6 +114,6 @@ public struct RequiredImageInfo: Collection, JSONDecodable, JSONEncodable {
 	}
 
 	public func toJSON() -> JSON {
-		return .dictionary(["version": .int(version), "timestamp": .string(timestampString), "images": ["dbserver": dbserver, "appserver": appserver, "compute": computeserver].toJSON()])
+		return .dictionary(["version": .int(version), "timestamp": .string(timestampString), "images": ["combined": combined].toJSON()])
 	}
 }
