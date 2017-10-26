@@ -1,4 +1,4 @@
-github "daltoniam/Starscream" ~> 3.0
+github "daltoniam/Starscream" ~> 3.0.2
 github "mlilback/pegkit"
 github "mlilback/MessagePackSwift"  "swift3.0"
 #github "krzyzanowskim/CryptoSwift" "develop"
