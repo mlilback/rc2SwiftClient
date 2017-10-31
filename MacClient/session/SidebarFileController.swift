@@ -361,14 +361,14 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				let bmark = try (savePanel.directoryURL as NSURL?)?.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
 				defaults[.lastExportDirectory] = bmark
 			} catch let err as NSError {
-				os_log("why did we get error creating export bookmark: %{public}@", log: .app, type:.error, err)
+				os_log("why did we get error creating export bookmark: %{public}@", log: .app, type: .error, err)
 			}
 			savePanel.close()
 			if result == .OK && savePanel.url != nil {
 				do {
 					try Foundation.FileManager.default.copyItem(at: self.session.fileCache.cachedUrl(file:self.selectedFile!), to: savePanel.url!)
 				} catch let error as NSError {
-					os_log("failed to copy file for export: %{public}@", log: .app, type:.error, error)
+					os_log("failed to copy file for export: %{public}@", log: .app, type: .error, error)
 					let alert = NSAlert(error:error)
 					alert.beginSheetModal(for: self.view.window!, completionHandler: { (_) -> Void in
 						//do nothing
@@ -423,7 +423,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	{
 		let fileExtension = ".\(type.fileExtension)"
 		let prompter = InputPrompter(prompt: prompt, defaultValue: baseName + fileExtension, suffix: fileExtension)
-		prompter.minimumStringLength = type.fileExtension.characters.count + 1
+		prompter.minimumStringLength = type.fileExtension.count + 1
 		let fileNames = session.workspace.files.map { return $0.name }
 		prompter.validator = { (proposedName) in
 			return fileNames.filter({ $0.caseInsensitiveCompare(proposedName) == .orderedSame }).count == 0
@@ -442,7 +442,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		if !name.hasSuffix(".\(file.fileType.fileExtension)") {
 			name += ".\(file.fileType.fileExtension)"
 		}
-		guard name.characters.count > 3 else { return false }
+		guard name.count > 3 else { return false }
 		//if same name, is valid
 		guard name.caseInsensitiveCompare(file.name) != .orderedSame else { return true }
 		//no duplicate names
@@ -456,7 +456,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			return ProgressUpdate(.value, message: iprogress.status, value: iprogress.percentComplete)
 		}
 		do {
-			fileImporter = try FileImporter(files, fileCache:self.session.fileCache, connectInfo: session.conInfo)
+			fileImporter = try FileImporter(files, fileCache: self.session.fileCache, connectInfo: session.conInfo)
 		} catch {
 			let myError = Rc2Error(type: .file, nested: error)
 			appStatus?.presentError(myError, session: session)
@@ -469,7 +469,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			{ [weak self] event in
 				switch event {
 				case .failed(let error):
-					os_log("got import error %{public}@", log: .app, type:.error, error.localizedDescription)
+					os_log("got import error %{public}@", log: .app, type: .error, error.localizedDescription)
 					self?.fileImporter = nil //free up importer
 				case .completed:
 					NotificationCenter.default.post(name: .FilesImported, object: self?.fileImporter!)

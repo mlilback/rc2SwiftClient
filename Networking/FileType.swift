@@ -119,7 +119,7 @@ extension FileType {
 		if let img = UIImage(named: "console/\(self.fileExtension)-file") {
 			return img
 		}
-		return UIImage(named:"console/plain-file") //swiftlint:disable:this object_literal
+		return UIImage(named: "console/plain-file") //swiftlint:disable:this object_literal
 	}
 	func fileImage() -> UIImage? {
 		return image()

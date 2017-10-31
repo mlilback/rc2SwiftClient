@@ -8,7 +8,7 @@ import Foundation
 import ClientCore
 import Model
 
-public protocol SessionDelegate : class {
+public protocol SessionDelegate: class {
 	///called when the session is closed. Called when explicity or remotely closed. Not called on application termination
 	func sessionClosed()
 	///called when a server response is received and not handled internally by the session

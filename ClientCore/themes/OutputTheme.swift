@@ -19,21 +19,21 @@ public enum OutputThemeProperty: String, ThemeProperty {
 
 public final class OutputTheme: NSObject, InternalTheme, JSONDecodable, JSONEncodable {
 	public static let AttributeName = NSAttributedStringKey("rc2.OutputTheme")
-	
+
 	public var name: String
 	var colors = [OutputThemeProperty: PlatformColor]()
 	public var isBuiltin: Bool = false
 	public var fileUrl: URL?
 	var dirty: Bool = false
-	
+
 	public var propertyCount: Int { return colors.count }
 	override public var description: String { return "OutputTheme \(name)" }
-	
+
 	init(name: String) {
 		self.name = name
 		super.init()
 	}
-	
+
 	public init(json: JSON) throws {
 		name = try json.getString(at: "ThemeName")
 		super.init()
@@ -41,7 +41,7 @@ public final class OutputTheme: NSObject, InternalTheme, JSONDecodable, JSONEnco
 			colors[property] = PlatformColor(hexString: try json.getString(at: property.rawValue))
 		}
 	}
-	
+
 	public func color(for property: OutputThemeProperty) -> PlatformColor {
 		return colors[property] ?? PlatformColor.black
 	}
@@ -57,7 +57,7 @@ public final class OutputTheme: NSObject, InternalTheme, JSONDecodable, JSONEnco
 			colors[key] = newValue
 		}
 	}
-	
+
 	public func toJSON() -> JSON {
 		var props = [String: JSON]()
 		props["ThemeName"] = .string(name)
@@ -66,7 +66,7 @@ public final class OutputTheme: NSObject, InternalTheme, JSONDecodable, JSONEnco
 		}
 		return .dictionary(props)
 	}
-	
+
 	public static let defaultTheme: OutputTheme = {
 		var theme = OutputTheme(name: "builtin")
 		theme.colors[.text] = PlatformColor.black

@@ -11,9 +11,6 @@ import ReactiveSwift
 import Result
 import Model
 
-// this file is long because it has lots of helpers that need to be fileprivate
-// swiftlint:disable file_length
-
 public enum FileCacheError: Error, Rc2DomainError {
 	case failedToCreateURL(file: AppFile)
 	case downloadAlreadyInProgress
@@ -81,7 +78,7 @@ public protocol FileCache {
 
 // MARK: FileCache implementation
 
-fileprivate class DownloadTask {
+private class DownloadTask {
 	let file: AppFile
 	let task: URLSessionDownloadTask
 	var bytesDownloaded: Int = 0
@@ -100,7 +97,7 @@ fileprivate class DownloadTask {
 	}
 }
 
-fileprivate struct DownloadAll {
+private struct DownloadAll {
 	let signal: Signal<Double, Rc2Error>
 	let observer: Signal<Double, Rc2Error>.Observer
 	let totalSize: Int
@@ -372,12 +369,12 @@ public final class DefaultFileCache: NSObject, FileCache {
 			try self.fileManager.removeItem(at: fileUrl)
 		} catch let error as Rc2Error {
 			guard error.type == .file, let nserr = error.nestedError as NSError?, nserr.domain == NSCocoaErrorDomain && nserr.code == 4 else {
-				os_log("got err removing file in recache: %{public}@", log: .cache, type:.info, error.nestedError!.localizedDescription)
+				os_log("got err removing file in recache: %{public}@", log: .cache, type: .info, error.nestedError!.localizedDescription)
 				return
 			}
 			//don't care if doesn't exist
 		} catch {
-			os_log("got err removing file in recache: %{public}@", log: .cache, type:.info, error.localizedDescription)
+			os_log("got err removing file in recache: %{public}@", log: .cache, type: .info, error.localizedDescription)
 		}
 	}
 
@@ -583,7 +580,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 				fatalError("no DownloadTask for Session Task")
 			}
 
-			let cacheUrl = cachedUrl(file:cacheTask.file)
+			let cacheUrl = cachedUrl(file: cacheTask.file)
 			//TODO: does this make sense? make a unit test
 			if let status = (downloadTask.response?.httpResponse)?.statusCode, status == 304 {
 				cacheTask.bytesDownloaded = cacheTask.file.fileSize

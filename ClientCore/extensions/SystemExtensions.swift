@@ -16,7 +16,7 @@ public func delay(_ delay: Double, _ closure:@escaping () -> Void) {
 public extension NotificationCenter {
 	func postNotificationNameOnMainThread(_ name: NSNotification.Name, object: AnyObject, userInfo: [AnyHashable: Any]?=nil) {
 		if !Thread.isMainThread {
-			postAsyncNotificationNameOnMainThread(name, object: object, userInfo:userInfo)
+			postAsyncNotificationNameOnMainThread(name, object: object, userInfo: userInfo)
 		} else {
 			post(name: name, object: object, userInfo: userInfo)
 		}
@@ -30,13 +30,14 @@ public extension NotificationCenter {
 
 public extension NSRange {
 	public func toStringRange(_ str: String) -> Range<String.Index>? {
-		guard str.characters.count >= length - location && location < str.characters.count else { return nil }
-		let fromIdx = str.characters.index(str.startIndex, offsetBy: self.location)
-		guard let toIdx = str.characters.index(fromIdx, offsetBy: self.length, limitedBy: str.endIndex) else { return nil }
+		guard str.count >= length - location && location < str.count else { return nil }
+		let fromIdx = str.index(str.startIndex, offsetBy: self.location)
+		guard let toIdx = str.index(fromIdx, offsetBy: self.length, limitedBy: str.endIndex) else { return nil }
 		return fromIdx..<toIdx
 	}
 }
 
+//swiftlint:disable:next identifier_name
 public func MaxNSRangeIndex(_ range: NSRange) -> Int {
 	return range.location + range.length - 1
 }

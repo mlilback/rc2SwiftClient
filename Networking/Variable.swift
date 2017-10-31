@@ -125,7 +125,7 @@ public class Variable: Equatable, CustomStringConvertible {
 			default:
 				break
 		}
-		return try Variable(json:json)
+		return try Variable(json: json)
 	}
 	
 	public var name: String? { return jsonData.getOptionalString(at: "name") }

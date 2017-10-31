@@ -27,8 +27,8 @@ public struct DockerImageInfo: JSONDecodable, JSONEncodable {
 
 	public init(json: JSON) throws {
 		size = try json.getInt(at: "size")
-		tag = try json.getString(at: "tag", or:"")
-		name = try json.getString(at:"name")
+		tag = try json.getString(at: "tag", or: "")
+		name = try json.getString(at: "name")
 		id = try json.getString(at: "id")
 		estSize = try json.getInt(at: "estSize")
 	}

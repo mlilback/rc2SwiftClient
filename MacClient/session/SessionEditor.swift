@@ -35,7 +35,7 @@ class SessionEditor: TextViewWithContextualMenu {
 			guard nextLineRange.lowerBound > lastLocation else { break } //end of line
 			lastLocation = nextLineRange.lowerBound
 			let nextStr = string[nextLineRange].trimmingCharacters(in: .whitespacesAndNewlines)
-			if nextStr.characters.count > 0 {
+			if nextStr.count > 0 {
 				//end of string
 				break
 			}
@@ -84,16 +84,16 @@ class SessionEditor: TextViewWithContextualMenu {
 
 	func findMatchingParenthesisNative(_ closeLocation: Int, str: String) -> Int {
 		var stackCount = 0
-		var curLocation = str.characters.index(str.startIndex, offsetBy: closeLocation)
-		while str.characters.distance(from: str.startIndex, to: curLocation) > 0 {
+		var curLocation = str.index(str.startIndex, offsetBy: closeLocation)
+		while str.distance(from: str.startIndex, to: curLocation) > 0 {
 			if str[curLocation] == Character("(") {
-				if stackCount == 0 { return str.characters.distance(from: str.startIndex, to: curLocation) }
+				if stackCount == 0 { return str.distance(from: str.startIndex, to: curLocation) }
 				stackCount -= 1
 			} else if str[curLocation] == Character(")") {
 				stackCount += 1
 				guard stackCount >= 0 else { return NSNotFound }
 			}
-			curLocation = str.characters.index(curLocation, offsetBy: -1)
+			curLocation = str.index(curLocation, offsetBy: -1)
 		}
 		return NSNotFound
 	}

@@ -62,7 +62,7 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 	
 	// MARK: actions
 	@IBAction func search(_ sender: AnyObject) {
-		guard let searchString = searchField?.stringValue, searchString.characters.count > 0 else { resetHelpTopics(); return }
+		guard let searchString = searchField?.stringValue, searchString.count > 0 else { resetHelpTopics(); return }
 		let results = fullContentSearch ? help.searchTopics(searchString) : help.searchTitles(searchString)
 		helpPackages = results.map { TopicWrapper(topic: $0) }
 		outline?.reloadData()
@@ -72,7 +72,7 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 	@IBAction func adjustSearchOption(_ menuItem: NSMenuItem) {
 		fullContentSearch = menuItem.tag == 2
 		UserDefaults.standard[.helpTopicSearchSummaries] = fullContentSearch
-		if !searchField!.stringValue.characters.isEmpty {
+		if !searchField!.stringValue.isEmpty {
 			search(menuItem)
 		}
 	}

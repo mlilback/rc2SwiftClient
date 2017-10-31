@@ -179,10 +179,10 @@ extension SidebarVariableController: NSTableViewDelegate {
 		let variable = rootVariables[row]
 		view.textField?.stringValue = isValue ? variable.description : variable.name
 		if changedIndexes.contains(row) {
-			view.textField?.backgroundColor = VariableUpdatedBackgroundColor
+			view.textField?.backgroundColor = variableUpdatedBackgroundColor
 			view.textField?.drawsBackground = true
 		} else {
-			view.textField?.backgroundColor = VariableNormalBackgroundColor
+			view.textField?.backgroundColor = variableNormalBackgroundColor
 			view.textField?.drawsBackground = false
 		}
 		view.textField?.toolTip = isValue ? variable.summary : ""

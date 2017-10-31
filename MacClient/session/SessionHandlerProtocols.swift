@@ -33,7 +33,7 @@ extension SearchResponder {
 	func performTextFinderAction(_ sender: Any?) {}
 }
 
-protocol OutputHandler: class, SearchResponder {
+protocol OutputHandler: SearchResponder {
 	var sessionController: SessionController? { get set }
 	func append(responseString: ResponseString)
 	func saveSessionState() -> JSON

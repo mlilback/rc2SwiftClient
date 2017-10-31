@@ -4,7 +4,7 @@
 //  Copyright ©2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
-import Foundation
+import Cocoa
 
 typealias Validator = (String) -> Bool
 
@@ -98,10 +98,10 @@ class InputPrompter: NSObject {
 			if !ignoreSuffix && !change.hasSuffix(requiredSuffix!) { return false }
 			if let range = change.range(of: requiredSuffix!) {
 				let woSuffix = change[..<range.lowerBound]
-				guard woSuffix.characters.count >= minimumStringLength else { return false }
+				guard woSuffix.count >= minimumStringLength else { return false }
 			}
 		}
-		guard change.characters.count >= minimumStringLength else { return false }
+		guard change.count >= minimumStringLength else { return false }
 		//if no validator, default to true
 		guard validator?(change) ?? true else { return false }
 		return true

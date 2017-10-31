@@ -238,7 +238,7 @@ fileprivate extension Reachability {
 		let block = isReachable ? whenReachable : whenUnreachable
 		block?(self)
 		
-		self.notificationCenter.post(name: ReachabilityChangedNotification, object:self)
+		self.notificationCenter.post(name: ReachabilityChangedNotification, object: self)
 		
 		previousFlags = flags
 	}

@@ -2,8 +2,10 @@ disabled_rules:
   - opening_brace
   - line_length
   - todo
-  - variable_name #doesn't allow underscores
+#  - variable_name #doesn't allow underscores
   - unused_optional_binding #doesn't allow try? binding
+  - switch_case_alignment
+  - fallthrough
 opt_in_rules:
   - attributes
   - closure_spacing
@@ -15,16 +17,21 @@ opt_in_rules:
   - prohibited_super_call
   - redundant_nil_coalescing
   - object_literal
-  - valid_docs
+#  - valid_docs
     
 excluded:
   - Carthage
   - vendor
-variable_name:
-  excluded:
-    - id
+#variable_name:
+#  excluded:
+#    - id
+#    - db
+#    - at
 file_length:
-  warning: 600
+  warning: 900
+line_length:
+  warning: 300
+  error: 500
 trailing_whitespace:
   ignores_empty_lines: true
   ignores_comments: true

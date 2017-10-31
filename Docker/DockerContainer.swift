@@ -140,7 +140,7 @@ public final class DockerContainer: JSONDecodable {
 			inName = String(nname[nname.index(after: nname.startIndex)...]) //strip off the leading '/'
 		}
 		guard inName != nil else { throw ContainerError.containsNoName }
-		guard let jtype = ContainerType.from(containerName:inName!) else { throw ContainerError.invalidContainerType }
+		guard let jtype = ContainerType.from(containerName: inName!) else { throw ContainerError.invalidContainerType }
 		name = inName!
 		type = jtype
 		//these will be set by update
@@ -148,7 +148,7 @@ public final class DockerContainer: JSONDecodable {
 		id = ""
 		mountPoints = []
 		state = MutableProperty(.notAvailable)
-		try update(json:json)
+		try update(json: json)
 	}
 
 	/// updates the id, imageName, and state properties
@@ -160,7 +160,7 @@ public final class DockerContainer: JSONDecodable {
 			id = try json.getString(at: "Id")
 			imageId = try json.getString(at: "ImageID")
 			let jstateStr = try json.getString(at: "State")
-			guard let jstate = ContainerState(rawValue:jstateStr) else {
+			guard let jstate = ContainerState(rawValue: jstateStr) else {
 				throw DockerError.invalidArgument("unknown container state")
 			}
 			state.value = jstate

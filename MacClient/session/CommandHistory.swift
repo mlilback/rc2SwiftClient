@@ -42,7 +42,7 @@ class CommandHistory {
 		historyMenu.removeAllItems()
 		for aCommand in commands {
 			var menuCommand = aCommand
-			if aCommand.characters.count > 50 {
+			if aCommand.count > 50 {
 				let idx = menuCommand.index(menuCommand.startIndex, offsetBy: 49)
 				menuCommand = menuCommand[..<idx] + "…"
 			}

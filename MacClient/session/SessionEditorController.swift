@@ -120,7 +120,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		guard let action = menuItem.action else { return false }
 		switch action  {
 		case Selector.runQuery, Selector.sourceQuery:
-			return currentDocument?.currentContents.characters.count ?? 0 > 0
+			return currentDocument?.currentContents.count ?? 0 > 0
 		case Selector.executeCurrentChunk:
 			return currentChunk?.isExecutable ?? false
 		case Selector.executePrevousChunks:
@@ -131,7 +131,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 			} else {
 				menuItem.title = NSLocalizedString("Execute Line", comment: "")
 			}
-			return editor?.string.characters.count ?? 0 > 0
+			return editor?.string.count ?? 0 > 0
 		default:
 			return validateUserInterfaceItem(menuItem)
 		}
@@ -228,7 +228,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 extension SessionEditorController {
 	@IBAction func previousChunkAction(_ sender: AnyObject) {
 		guard currentChunkIndex > 0 else {
-			os_log("called with invalid currentChunkIndex", log: .app, type:.error)
+			os_log("called with invalid currentChunkIndex", log: .app, type: .error)
 			assertionFailure() //called for debug builds only
 			return
 		}
@@ -238,7 +238,7 @@ extension SessionEditorController {
 
 	@IBAction func nextChunkAction(_ sender: AnyObject) {
 		guard currentChunkIndex + 1 < parser!.chunks.count else {
-			os_log("called with invalid currentChunkIndex", log: .app, type:.error)
+			os_log("called with invalid currentChunkIndex", log: .app, type: .error)
 			assertionFailure() //called for debug builds only
 			return
 		}
@@ -253,11 +253,11 @@ extension SessionEditorController {
 	}
 	
 	@IBAction func runQuery(_ sender: AnyObject?) {
-		executeQuery(type:.Run)
+		executeQuery(type: .run)
 	}
 	
 	@IBAction func sourceQuery(_ sender: AnyObject?) {
-		executeQuery(type:.Source)
+		executeQuery(type: .source)
 	}
 	
 	/// if there is a selection, executes the selection. Otherwise, executes the current line.
@@ -303,7 +303,7 @@ extension SessionEditorController: UsesAdjustableFont {
 	}
 	
 	func fontChanged(_ menuItem: NSMenuItem) {
-		os_log("font changed: %{public}@", log: .app, type:.info, (menuItem.representedObject as? NSObject)!)
+		os_log("font changed: %{public}@", log: .app, type: .info, (menuItem.representedObject as? NSObject)!)
 		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
 		let newDesc = newNameDesc.withSize(currentFontDescriptor.pointSize)
 		currentFontDescriptor = newDesc
@@ -367,8 +367,8 @@ fileprivate extension SessionEditorController {
 		//only adjust if it includes a non-newline character
 		if let nlcount = str.substring(from: desiredRange)?.unicodeScalars.filter({ CharacterSet.newlines.contains($0) }), nlcount.count != chunkRange.length
 		{
-			let curIdx = str.characters.index(str.startIndex, offsetBy: desiredRange.location)
-			if curIdx != str.endIndex && str.characters[curIdx] == "\n" {
+			let curIdx = str.index(str.startIndex, offsetBy: desiredRange.location)
+			if curIdx != str.endIndex && str[curIdx] == "\n" {
 				desiredRange.location += 1
 			}
 		}
@@ -431,7 +431,7 @@ fileprivate extension SessionEditorController {
 		doc.loadContents().observe(on: UIScheduler()).startWithResult { result in
 			guard let contents = result.value else {
 				//TODO: handle error
-				os_log("error loading document contents %{public}@", log: .app, type:.error, result.error!.localizedDescription)
+				os_log("error loading document contents %{public}@", log: .app, type: .error, result.error!.localizedDescription)
 				return
 			}
 			self.documentContentsLoaded(doc, content: contents)

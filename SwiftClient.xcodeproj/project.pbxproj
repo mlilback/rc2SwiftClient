@@ -2480,7 +2480,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n(cd Networking; swiftlint)\nelse\necho \"Warning: swiftlint not installed\"\nfi\n";
+			shellScript = "if which swiftlint >/dev/null; then\n#(cd Networking; swiftlint)\ntrue\nelse\necho \"Warning: swiftlint not installed\"\nfi\n";
 		};
 		0815C9861E774C360031D69A /* swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2494,7 +2494,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n(cd Docker; swiftlint)\nelse\necho \"Warning: swiftlint not installed\"\nfi\n";
+			shellScript = "if which swiftlint >/dev/null; then\n#(cd Docker; swiftlint)\ntrue\nelse\necho \"Warning: swiftlint not installed\"\nfi\n";
 		};
 		0815C9871E788DF80031D69A /* swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2508,7 +2508,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\nswiftlint lint --path shared\nswiftlint lint --path MacClient\nelse\necho \"Warning: swiftlint not installed\"\nfi\n";
+			shellScript = "if which swiftlint >/dev/null; then\n#(cd shared: swiftlint)\n#(cd MacClient: swiftlint)\ntrue\n#swiftlint lint --path shared\n#swiftlint lint --path MacClient\nelse\necho \"Warning: swiftlint not installed\"\nfi\n";
 		};
 		082610961DB1632200C03422 /* swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2522,7 +2522,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    (cd ClientCore; swiftlint)\nelse\n    echo \"Warning: swiftlint not installed\"\nfi\n";
+			shellScript = "if which swiftlint >/dev/null; then\n#    (cd ClientCore; swiftlint)\n    true\nelse\n    echo \"Warning: swiftlint not installed\"\nfi\n";
 		};
 		085846CC1C7A883600F92EFE /* codesign unit tests for keychain */ = {
 			isa = PBXShellScriptBuildPhase;

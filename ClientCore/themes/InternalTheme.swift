@@ -12,11 +12,11 @@ enum ThemeError: Error {
 
 protocol InternalTheme: Theme {
 	init(name: String)
-	
+
 	var name: String { get set }
 	var colors: [Property: PlatformColor] { get set }
 	var dirty: Bool { get set }
-	
+
 	func duplicate(name: String) -> Self
 }
 
@@ -30,9 +30,8 @@ extension InternalTheme {
 
 	func save() throws {
 		guard !isBuiltin else { throw ThemeError.notEditable }
-		
 	}
-	
+
 	private func savedThemeName() -> String? {
 		guard var fileName = fileUrl?.lastPathComponent,
 			let suffixRange = fileName.range(of: ".json")

@@ -30,11 +30,11 @@ public extension PlatformColor {
 		if hcode.hasPrefix("#") {
 			hcode = String(hcode[hcode.index(hcode.startIndex, offsetBy: 1)...])
 		}
-		guard hcode.characters.count == 6, hcode.trimmingCharacters(in: CharacterSet.hexadecimal) == "" else { return nil }
-		
-		let redHex = String(hexString[..<hexString.characters.index(hexString.startIndex, offsetBy: 2)])
-		let greenHex = String(hexString[hexString.characters.index(hexString.startIndex, offsetBy: 2) ..< hexString.characters.index(hexString.startIndex, offsetBy: 4)])
-		let blueHex = String(hexString[hexString.characters.index(hexString.startIndex, offsetBy: 4) ..< hexString.characters.index(hexString.startIndex, offsetBy: 6)])
+		guard hcode.count == 6, hcode.trimmingCharacters(in: CharacterSet.hexadecimal) == "" else { return nil }
+
+		let redHex = String(hexString[..<hexString.index(hexString.startIndex, offsetBy: 2)])
+		let greenHex = String(hexString[hexString.index(hexString.startIndex, offsetBy: 2) ..< hexString.index(hexString.startIndex, offsetBy: 4)])
+		let blueHex = String(hexString[hexString.index(hexString.startIndex, offsetBy: 4) ..< hexString.index(hexString.startIndex, offsetBy: 6)])
 		var redInt: CUnsignedInt = 0
 		var greenInt: CUnsignedInt = 0
 		var blueInt: CUnsignedInt = 0
@@ -42,10 +42,10 @@ public extension PlatformColor {
 		Scanner(string: greenHex).scanHexInt32(&greenInt)
 		Scanner(string: blueHex).scanHexInt32(&blueInt)
 		let divisor: CGFloat = 255.0
-		
+
 		self.init(red: CGFloat(redInt) / divisor, green: CGFloat(greenInt) / divisor, blue: CGFloat(blueInt) / divisor, alpha: alpha)
 	}
-	
+
 	/// the color as a hex string, without a leading # character
 	public var hexString: String {
 		let red = UInt8(redComponent * 255.0)

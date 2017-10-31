@@ -22,7 +22,7 @@ public class BookmarkManager {
 	///all existing bookmarks
 	public fileprivate(set) var bookmarks: [Bookmark] = []
 	///bookmarks grouped by ServerHost.name
-	public fileprivate(set) var bookmarkGroups: [String:BookmarkGroup] = [:]
+	public fileprivate(set) var bookmarkGroups: [String: BookmarkGroup] = [:]
 	///all known ServerHosts
 	public fileprivate(set) var hosts: [ServerHost] = []
 	

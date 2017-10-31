@@ -7,7 +7,7 @@
 import Foundation
 import os
 
-fileprivate let myBundle = Bundle(for: DockerAPIImplementation.self)
+private let myBundle = Bundle(for: DockerAPIImplementation.self)
 
 public extension OSLog {
 	static let docker: OSLog = OSLog(subsystem: myBundle.bundleIdentifier ?? "unknown.app", category: "docker")
@@ -47,7 +47,6 @@ public enum DockerError: LocalizedError {
 	public var errorDescription: String? { return localizedDescription }
 	
 	public var localizedDescription: String {
-		// swiftlint:disable:next cyclomatic_complexity //how else do we implement this?
 		switch self {
 			case .dockerNotInstalled: return NSLocalizedString("DockerError_DockerNotInstalled", bundle: myBundle, comment: "")
 			case .dockerNotRunning: return NSLocalizedString("DockerError_DockerNotRunning", bundle: myBundle, comment: "")

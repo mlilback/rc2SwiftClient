@@ -41,7 +41,7 @@ public class ImageCache {
 			do {
 				result = try AppInfo.subdirectory(type: .cachesDirectory, named: "\(self.hostIdentifier)/images")
 			} catch let error as NSError {
-				os_log("got error creating image cache direcctory: %{public}@", log: .cache, type:.error, error)
+				os_log("got error creating image cache direcctory: %{public}@", log: .cache, type: .error, error)
 				assertionFailure("failed to create image cache dir")
 			}
 			return result!

@@ -10,8 +10,6 @@ import Freddy
 import Result
 import os
 
-// swiftlint:disable file_length type_body_length
-
 /// Default implementation of DockerAPI protocol
 public final class DockerAPIImplementation: DockerAPI {
 	/// used to hold log data if there wasn't enough for the next chunk
@@ -149,9 +147,9 @@ public final class DockerAPIImplementation: DockerAPI {
 	{
 		// swiftlint:disable:next force_try // we created from static string, serious programmer error if fails
 		let filtersJson = try! JSONSerialization.data(withJSONObject: ["name": [name]], options: [])
-		let filtersStr = String(data:filtersJson, encoding:.utf8)!
+		let filtersStr = String(data: filtersJson, encoding: .utf8)!
 		var urlcomponents = URLComponents(url: self.baseUrl.appendingPathComponent("/volumes"), resolvingAgainstBaseURL: true)!
-		urlcomponents.queryItems = [URLQueryItem(name:"all", value:"1"), URLQueryItem(name:"filters", value:filtersStr)]
+		urlcomponents.queryItems = [URLQueryItem(name: "all", value: "1"), URLQueryItem(name: "filters", value: filtersStr)]
 		let req = URLRequest(url: urlcomponents.url!)
 
 		return makeRequest(request: req)
@@ -246,10 +244,9 @@ public final class DockerAPIImplementation: DockerAPI {
 				observer.send(error: DockerError.invalidJson(nil))
 				return
 			}
-			//swiftlint:disable:next force_try
 //			try! jsonData.write(to: URL(fileURLWithPath: "/tmp/json.\(container.type.rawValue).json"))
-			var comps = URLComponents(url: URL(string:"/containers/create", relativeTo:self.baseUrl)!, resolvingAgainstBaseURL: true)!
-			comps.queryItems = [URLQueryItem(name:"name", value:container.name)]
+			var comps = URLComponents(url: URL(string: "/containers/create", relativeTo: self.baseUrl)!, resolvingAgainstBaseURL: true)!
+			comps.queryItems = [URLQueryItem(name: "name", value: container.name)]
 			var request = URLRequest(url: comps.url!)
 			request.httpMethod = "POST"
 			request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -373,9 +370,9 @@ extension DockerAPIImplementation {
 				let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
 				let verStr = try json.getString(at: "Version")
 				guard let match = regex.firstMatch(in: verStr, options: [], range: verStr.fullNSRange),
-					let primaryVersion = Int((verStr as NSString).substring(with: match.range(at:1))),
-					let secondaryVersion = Int((verStr as NSString).substring(with: match.range(at:2))),
-					let fixVersion = Int((verStr as NSString).substring(with: match.range(at:3))),
+					let primaryVersion = Int((verStr as NSString).substring(with: match.range(at: 1))),
+					let secondaryVersion = Int((verStr as NSString).substring(with: match.range(at: 2))),
+					let fixVersion = Int((verStr as NSString).substring(with: match.range(at: 3))),
 					let apiStr = try? json.getString(at: "ApiVersion"),
 					let apiVersion = Double(apiStr) else
 				{
@@ -395,9 +392,9 @@ extension DockerAPIImplementation {
 	{
 		// swiftlint:disable:next force_try
 		let filtersJson = try! JSONSerialization.data(withJSONObject: ["label": ["rc2.live"]], options: [])
-		let filtersStr = String(data:filtersJson, encoding:.utf8)!
+		let filtersStr = String(data: filtersJson, encoding: .utf8)!
 		var urlcomponents = URLComponents(url: self.baseUrl.appendingPathComponent("/containers/json"), resolvingAgainstBaseURL: true)!
-		urlcomponents.queryItems = [URLQueryItem(name:"all", value:"1"), URLQueryItem(name:"filters", value:filtersStr)]
+		urlcomponents.queryItems = [URLQueryItem(name: "all", value: "1"), URLQueryItem(name: "filters", value: filtersStr)]
 		return URLRequest(url: urlcomponents.url!)
 	}
 
@@ -546,7 +543,7 @@ extension DockerAPIImplementation {
 		var inData = Data()
 		let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request) { (message) in
 			switch message {
-			case .headers(_):
+			case .headers:
 				break
 			case .data(let data):
 				inData.append(data)
@@ -663,7 +660,6 @@ extension DockerAPIImplementation {
 				switch message {
 				case .headers(let headers):
 					print("rsp=\(headers.statusCode)")
-					break
 				case .data(let data):
 					print("got data len \(data.count)")
 				case .complete:
@@ -710,7 +706,7 @@ extension DockerAPIImplementation {
 			var ended = false // have we sent a completed/error event to observer. don't want to send twice
 			let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request) { (message) in
 				switch message {
-				case .headers(_):
+				case .headers:
 					break
 				case .data(let data):
 					do {
@@ -751,7 +747,7 @@ extension DockerAPIImplementation {
 			var inData = Data()
 			let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request) { (message) in
 				switch message {
-				case .headers(_):
+				case .headers:
 					break
 				case .data(let data):
 					inData.append(data)
@@ -782,7 +778,7 @@ extension DockerAPIImplementation {
 			var inData = Data()
 			let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request) { (message) in
 				switch message {
-				case .headers(_):
+				case .headers:
 					break
 				case .data(let data):
 					inData.append(data)
@@ -823,7 +819,7 @@ extension DockerAPIImplementation {
 		let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request)
 		{ (message) in
 			switch message {
-			case .headers(_):
+			case .headers:
 				break
 			case .data(let data):
 				do {

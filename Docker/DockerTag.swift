@@ -27,14 +27,14 @@ public struct DockerTag: JSONDecodable, CustomStringConvertible, Hashable {
 		var repo: String?
 		var name: String
 		var version: String?
-		if match.range(at:5).length > 0 {
+		if match.range(at: 5).length > 0 {
 			version = match.string(index: 5, forString: tag)
 		}
-		if match.range(at:2).length > 0 {
-			repo = match.string(index:2, forString:tag)
+		if match.range(at: 2).length > 0 {
+			repo = match.string(index: 2, forString: tag)
 		}
 		name = match.string(index: 3, forString: tag)!
-		self.init(repo:repo, name:name, version:version)
+		self.init(repo: repo, name: name, version: version)
 	}
 
 	public init(repo: String?, name: String, version: String?) {

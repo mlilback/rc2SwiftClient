@@ -29,7 +29,7 @@ public protocol ThemeProperty: RawRepresentable, Hashable {
 
 extension ThemeProperty {
 	public var localizedDescription: String {
-		let key = "\(String(describing: type(of:self))).\(stringValue)"
+		let key = "\(String(describing: type(of: self))).\(stringValue)"
 		return NSLocalizedString(key, value: stringValue, comment: "")
 	}
 }

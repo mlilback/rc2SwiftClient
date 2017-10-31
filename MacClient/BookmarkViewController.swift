@@ -253,6 +253,6 @@ extension BookmarkViewController: NSTableViewDelegate {
 
 extension BookmarkViewController: NSTextFieldDelegate {
 	public func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
-		return fieldEditor.string.characters.count > 0
+		return fieldEditor.string.count > 0
 	}
 }

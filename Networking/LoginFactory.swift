@@ -10,7 +10,7 @@ import os
 import ReactiveSwift
 import Model
 
-fileprivate let maxRetries = 2
+private let maxRetries = 2
 
 /// Factory class used to login and return a ConnectionInfo for that connection
 // must subclass NSObject to be a delegate to URLSession api

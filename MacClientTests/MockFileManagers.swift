@@ -57,7 +57,7 @@ class MockFileManager: Rc2DefaultFileManager {
 	}
 	
 	func contentsEqual(atPath path1: String, andPath path2: String) -> Bool {
-		os_log("compare files: %{public}@ and %{public}@", type:.info, path1, path2)
+		os_log("compare files: %{public}@ and %{public}@", type: .info, path1, path2)
 		do {
 			let d1 = try Data(contentsOf: URL(fileURLWithPath: path1))
 			let d2 = try Data(contentsOf: URL(fileURLWithPath: path2))

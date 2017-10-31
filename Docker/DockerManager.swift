@@ -15,8 +15,6 @@ import os
 import SwiftyUserDefaults
 import ClientCore
 
-// swiftlint:disable file_length
-
 public enum DockerBackupOption: Int {
 	case hourly = 1
 	case daily = 0
@@ -216,7 +214,7 @@ public final class DockerManager: NSObject {
 		os_log("dm.pullImages called", log: .docker, type: .debug)
 		var fullSize = 0 //imageInfo!.reduce(0) { val, info in val + info.size }
 		let producers = imageInfo!.flatMap { img -> SignalProducer<PullProgress, DockerError>? in
-			os_log("got pull for %{public}@", log:.docker, type:.debug, img.fullName)
+			os_log("got pull for %{public}@", log: .docker, type: .debug, img.fullName)
 			//skip pull if container already using that image
 			if let ctype = ContainerType(rawValue: img.name), img.id == containers[ctype]?.imageId ?? "" {
 				return nil
@@ -272,7 +270,7 @@ public final class DockerManager: NSObject {
 		os_log("dm.checkForImageUpdate", log: .docker, type: .debug)
 		//short circuit if we don't need to check and have valid data
 //		guard imageInfo == nil || shouldCheckForUpdate || forceRefresh else {
-			os_log("skipping imageInfo fetch", log:.docker, type:.info)
+			os_log("skipping imageInfo fetch", log: .docker, type: .info)
 			return SignalProducer<Bool, Rc2Error>(value: true)
 //		}
 //		return api.fetchJson(url: URL(string:"\(baseInfoUrl)imageInfo.json")!).map { json in

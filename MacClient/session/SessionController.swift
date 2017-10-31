@@ -56,7 +56,7 @@ protocol SessionControllerDelegate: class {
 
 	deinit {
 		if !properlyClosed {
-			os_log("not properly closed", log: .app, type:.error)
+			os_log("not properly closed", log: .app, type: .error)
 			close()
 		}
 	}
@@ -174,7 +174,7 @@ extension SessionController {
 				savedStateHash = (data as NSData).sha256()
 			}
 		} catch let err as NSError {
-			os_log("error restoring session state: %{public}@", log: .app, type:.error, err)
+			os_log("error restoring session state: %{public}@", log: .app, type: .error, err)
 		}
 	}
 }

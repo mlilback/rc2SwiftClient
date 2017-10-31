@@ -89,13 +89,13 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 	}
 	
 	func adjustCanContinue() {
-		canContinue = selectedServerIndex == 0 || (serverName.characters.count > 0 && hostName.characters.count > 0 && login.characters.count > 0 && password.characters.count > 0)
+		canContinue = selectedServerIndex == 0 || (serverName.count > 0 && hostName.count > 0 && login.count > 0 && password.count > 0)
 	}
 	
 	func continueAction(_ callback:@escaping (_ value: Any?, _ error: Rc2Error?) -> Void) {
 //		let future = attemptLogin()
 //		future.onSuccess { (loginsession) in
-//			os_log("logged in successfully", log: .app, type:.info)
+//			os_log("logged in successfully", log: .app, type: .info)
 //			if !(self.bookmarkManager!.hosts.contains(self.selectedServer!)) {
 //				self.bookmarkManager?.addHost(self.selectedServer!)
 //				self.bookmarkManager?.save()
@@ -116,7 +116,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		do {
 			try keychain.setString(host.keychainKey, value: self.password)
 		} catch let err as NSError {
-			os_log("error saving password: %{public}@", log: .app, type:.info, err)
+			os_log("error saving password: %{public}@", log: .app, type: .info, err)
 		}
 	}
 	

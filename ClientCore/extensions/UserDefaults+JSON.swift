@@ -26,7 +26,7 @@ public extension UserDefaults {
 			}
 		}
 	}
-	
+
 	//allow storing font descriptors
 	public subscript(key: DefaultsKey<FontDescriptor?>) -> FontDescriptor? {
 		get {

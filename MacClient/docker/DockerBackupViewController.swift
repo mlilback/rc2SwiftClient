@@ -66,7 +66,7 @@ class DockerBackupViewController: DockerManagerInjectable {
 	override func willPresentError(_ error: Error) -> Error {
 		guard let rerror = error as? Rc2Error, let derror = rerror.nestedError as? DockerError else { return error }
 		let reason = derror.localizedDescription
-		let nerror = NSError(domain: Rc2ErrorDomain, code: 0, userInfo: [NSUnderlyingErrorKey: derror, NSLocalizedDescriptionKey: "backup restore failed", NSLocalizedRecoverySuggestionErrorKey: reason, NSLocalizedFailureReasonErrorKey: reason])
+		let nerror = NSError(domain: rc2ErrorDomain, code: 0, userInfo: [NSUnderlyingErrorKey: derror, NSLocalizedDescriptionKey: "backup restore failed", NSLocalizedRecoverySuggestionErrorKey: reason, NSLocalizedFailureReasonErrorKey: reason])
 		return nerror
 	}
 	

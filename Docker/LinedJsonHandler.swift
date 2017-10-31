@@ -57,7 +57,7 @@ class LinedJsonHandler: HijackedResponseHandler {
 		}
 		print("parseJson with \(jsonData.count) bytes and \(lines.count) lines")
 		//trim off empty lines at end (which will be there since chunks end with empty line)
-		while lines.last!.trimmingCharacters(in: .whitespacesAndNewlines).characters.count == 0 {
+		while lines.last!.trimmingCharacters(in: .whitespacesAndNewlines).count == 0 {
 			lines.remove(at: lines.endIndex - 1)
 		}
 		lines.forEach { jsonCallback(.string($0)) }

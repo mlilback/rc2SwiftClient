@@ -212,7 +212,7 @@ public struct ResponseString {
 //
 //	fileprivate func formatShowOutput(_ queryId: Int, file: AppFile) -> ResponseString? {
 //		let str = delegate!.consoleAttachment(forFile:file).asAttributedString()
-//		// swiftlint:disable:next force_cast (should never fail)
+//		// swift lint:disable:next force_cast (should never fail)
 //		let mstr = str.mutableCopy() as! NSMutableAttributedString
 //		mstr.append(NSAttributedString(string: "\n"))
 //		return ResponseString(string: mstr, type: .attachment)

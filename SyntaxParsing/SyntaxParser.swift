@@ -99,7 +99,7 @@ open class SyntaxParser: NSObject {
 				}
 			}
 		}
-		os_log("looking for %{public}@", log: .syntax, type:.debug, NSStringFromRange(range))
+		os_log("looking for %{public}@", log: .syntax, type: .debug, NSStringFromRange(range))
 		var outArray: [DocumentChunk] = []
 		for aChunk in chunks {
 			if NSIntersectionRange(aChunk.parsedRange, range).length > 0
@@ -171,7 +171,7 @@ open class RSyntaxParser: SyntaxParser {
 	internal override func parseRange(_ range: NSRange) {
 		chunks.removeAll()
 		let chunk = DocumentChunk(chunkType: .rCode, chunkNumber: 1)
-		chunk.parsedRange = NSRange(location: 0, length: textStorage.string.characters.count)
+		chunk.parsedRange = NSRange(location: 0, length: textStorage.string.count)
 		chunks.append(chunk)
 	}
 }

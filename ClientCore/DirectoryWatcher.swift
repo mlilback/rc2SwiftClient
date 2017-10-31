@@ -10,7 +10,7 @@ import Foundation
 public final class DirectoryWatcher {
 	/// Closure called when the diretory changes
 	var changeCallback: (DirectoryWatcher) -> Void
-	
+
 	/// initialize a DirectoryWatcher
 	///
 	/// - Parameters:
@@ -20,16 +20,16 @@ public final class DirectoryWatcher {
 		self.url = url
 		changeCallback = callback
 	}
-	
+
 	private var monitorFileDescriptor: CInt = -1
 	private let monitorQueue = DispatchQueue(label: "io.rc2.diretoryWatcher")
 	private var monitorSource: DispatchSourceFileSystemObject?
 	let url: URL
-	
+
 	/// start watching the directory. has no effect if already started
 	public func start() {
 		guard monitorSource == nil else { return }
-		
+
 		monitorFileDescriptor = open(url.path, O_EVTONLY)
 		monitorSource = DispatchSource.makeFileSystemObjectSource(fileDescriptor: monitorFileDescriptor, eventMask: [.write, .delete], queue: monitorQueue)
 		monitorSource?.setEventHandler { [weak self] in
@@ -43,7 +43,7 @@ public final class DirectoryWatcher {
 		}
 		monitorSource?.resume()
 	}
-	
+
 	/// stops/removes the directory watcher
 	public func stop() {
 		monitorSource?.cancel()

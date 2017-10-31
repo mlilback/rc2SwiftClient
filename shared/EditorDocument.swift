@@ -10,7 +10,7 @@ import ReactiveSwift
 import Networking
 import ClientCore
 
-let MinTimeBetweenAutoSaves: TimeInterval = 2
+let minTimeBetweenAutoSaves: TimeInterval = 2
 
 public class EditorDocument: NSObject {
 
@@ -45,7 +45,7 @@ public class EditorDocument: NSObject {
 				savedContents = String(data: try Data(contentsOf: fileUrl), encoding: .utf8)
 				isLoaded = true
 			} catch {
-				os_log("error caching new file %{public}@", log:.session, error as NSError)
+				os_log("error caching new file %{public}@", log: .session, error as NSError)
 			}
 		}
 	}
@@ -70,11 +70,10 @@ public class EditorDocument: NSObject {
 			}
 		}
 	}
-	
+
 	public func willBecomeActive() {
-		
 	}
-	
+
 	public func willBecomeInactive(_ text: String?) {
 		editedContents = text
 	}
@@ -85,7 +84,7 @@ public class EditorDocument: NSObject {
 		self.editedContents = nil
 		self.file = newFile
 	}
-	
+
 	/// save the contents of the document to disk
 	///
 	/// - Parameter autosave: true if this is an autosaves. Defaults to false.
@@ -128,7 +127,7 @@ public class EditorDocument: NSObject {
 			}
 		}
 	}
-	
+
 	///performs the actual save via the fleCache
 	private func performActualSave(observer: Signal<String, Rc2Error>.Observer) {
 		self.lastSaveTime = Date.timeIntervalSinceReferenceDate
@@ -147,10 +146,10 @@ public class EditorDocument: NSObject {
 			observer.sendCompleted()
 		}
 	}
-	
+
 	///has enough time elapsed since the last save for an autosave
 	private func needAutosave() -> Bool {
 		let curTime = Date.timeIntervalSinceReferenceDate
-		return curTime - self.lastSaveTime >= MinTimeBetweenAutoSaves
+		return curTime - self.lastSaveTime >= minTimeBetweenAutoSaves
 	}
 }

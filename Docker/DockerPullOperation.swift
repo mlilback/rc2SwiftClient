@@ -60,7 +60,7 @@ public final class DockerPullOperation {
 		urlparts.scheme = "dockerstream"
 		urlparts.host = "localhost"
 		urlparts.path = "/images/create"
-		urlparts.queryItems = [URLQueryItem(name:"fromImage", value: imageName)]
+		urlparts.queryItems = [URLQueryItem(name: "fromImage", value: imageName)]
 		var request = URLRequest(url: urlparts.url!)
 		request.httpMethod = "POST"
 		pullProgress = PullProgress(name: imageName, size: estimatedSize)
@@ -69,7 +69,7 @@ public final class DockerPullOperation {
 	
 	private func messageHandler(message: LocalDockerMessage) {
 		switch message {
-		case .headers(_):
+		case .headers:
 			break //we don't care
 		case .error(let error):
 			os_log("error in pull operation %{public}@", log: .docker, type: .debug, error as NSError)
@@ -77,14 +77,14 @@ public final class DockerPullOperation {
 		case .data(let data):
 			handle(data: data)
 		case .complete:
-			os_log("pull %{public}@ finished: %d", log: .docker, type:.info, pullProgress.name, totalDownloaded)
+			os_log("pull %{public}@ finished: %d", log: .docker, type: .info, pullProgress.name, totalDownloaded)
 			pullProgress.currentSize = totalDownloaded
 			if pullProgress.currentSize == 0 { pullProgress.currentSize = pullProgress.estSize }
 			pullProgress.complete = true
 			pullObserver?.send(value: pullProgress)
 			pullObserver?.sendCompleted()
 			for aLayer in layers.values {
-				os_log("layer %{public}@ is %d", log: .docker, type:.info, aLayer.id, aLayer.finalSize)
+				os_log("layer %{public}@ is %d", log: .docker, type: .info, aLayer.id, aLayer.finalSize)
 			}
 		}
 	}
@@ -92,7 +92,7 @@ public final class DockerPullOperation {
 	public func pull() -> SignalProducer<PullProgress, DockerError>
 	{
 		return SignalProducer<PullProgress, DockerError> { observer, _ in
-			os_log("starting pull: %{public}@", type:.info, self.imageName)
+			os_log("starting pull: %{public}@", type: .info, self.imageName)
 			self.pullObserver = observer
 			do {
 				try self.connection.openConnection()
@@ -107,10 +107,10 @@ public final class DockerPullOperation {
 	private func handle(data: Data)
 	{
 		let oldTotal = totalDownloaded
-		let str = String(data: data, encoding:String.Encoding.utf8)!
+		let str = String(data: data, encoding: String.Encoding.utf8)!
 		let messages = str.components(separatedBy: "\r\n")
 		for aMessage in messages {
-			guard aMessage.characters.count > 0 else { continue }
+			guard aMessage.count > 0 else { continue }
 			guard let json = try? JSON(jsonString: aMessage) else {
 				os_log("invalid json chunk: %{public}@", type: .info, aMessage)
 				continue
@@ -156,7 +156,7 @@ public final class DockerPullOperation {
 				}
 			case "download complete":
 				if var layer = layers[layerId] {
-					os_log("finished layer %{public}@", log: .docker, type:.info, layer.id)
+					os_log("finished layer %{public}@", log: .docker, type: .info, layer.id)
 					layer.complete = true
 					totalDownloaded += layer.finalSize
 				}

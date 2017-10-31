@@ -10,15 +10,15 @@ import os
 
 class HelpController {
 	static let shared = HelpController()
-	fileprivate let db: FMDatabase
-	
+	private let db: FMDatabase
+
 	let packages: [HelpTopic]
 	let allTopics: Set<HelpTopic>
 	let allTopicNames: Set<String>
 	fileprivate let topicsByName: [String: [HelpTopic]]
 	fileprivate var rootHelpUrl: URL
 	fileprivate(set) var baseHelpUrl: URL
-	
+
 	///loads topics from storage
 	init() {
 		//make sure our help directory exists
@@ -65,7 +65,7 @@ class HelpController {
 			self.allTopicNames = names
 			self.topicsByName = topsByName
 		} catch let error as NSError {
-			os_log("error loading help index: %{public}@", log: .app, type:.error, error)
+			os_log("error loading help index: %{public}@", log: .app, type: .error, error)
 			fatalError("failed to load help index")
 		}
 	}
@@ -131,7 +131,7 @@ class HelpController {
 	
 	/// returns a list of HelpTpics that contain the searchString in their title or summary
 	func searchTopics(_ searchString: String) -> [HelpTopic] {
-		guard searchString.characters.count > 0 else { return packages }
+		guard searchString.count > 0 else { return packages }
 		var results: [HelpTopic] = []
 		do {
 			let rs = try db.executeQuery("select * from helpidx where helpidx match ?", values: [searchString])
@@ -168,7 +168,7 @@ class HelpController {
 	}
 
 	func urlForTopic(_ topic: HelpTopic) -> URL {
-		let str = "\(topic.packageName)\(HelpUrlFuncSeperator)/\(topic.name).html"
+		let str = "\(topic.packageName)\(helpUrlFuncSeperator)/\(topic.name).html"
 		let helpUrl = baseHelpUrl.appendingPathComponent(str)
 		if !helpUrl.fileExists() {
 			os_log("missing help file: %{public}@", log: .app, str)

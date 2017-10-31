@@ -17,14 +17,12 @@ import Result
 import Starscream
 import Model
 
-// swiftlint:disable file_length
-
 public extension Rc2Error {
 	public var isSessionError: Bool { return nestedError is SessionError }
 }
 
 public enum ExecuteType: String {
-	case Run = "run", Source = "source", None = ""
+	case run = "run", source = "source", none = ""
 }
 
 public class Session {
@@ -142,13 +140,13 @@ public class Session {
 	///Sends an execute request to the server
 	/// - parameter srcScript: the script code to send to the server
 	/// - parameter type: whether to run or source the script
-	public func executeScript(_ srcScript: String, type: ExecuteType = .Run) {
+	public func executeScript(_ srcScript: String, type: ExecuteType = .run) {
 		//don't send empty scripts
-		guard !srcScript.characters.isEmpty else { return }
+		guard !srcScript.isEmpty else { return }
 		var script = srcScript
 		let helpCheck = helpRegex.firstMatch(in: script, options: [], range: NSRange(location: 0, length: script.utf16.count))
 		if helpCheck?.numberOfRanges == 3 {
-			let topic = String(script[(helpCheck?.range(at:2).toStringRange(script))!])
+			let topic = String(script[(helpCheck?.range(at: 2).toStringRange(script))!])
 			let adjScript = script.replacingCharacters(in: (helpCheck?.range.toStringRange(script))!, with: "")
 			delegate?.respondToHelp(topic)
 			guard !adjScript.utf16.isEmpty else {
@@ -164,8 +162,8 @@ public class Session {
 	/// sends a request to execute a script file
 	/// - parameter fileId: the id of the file to execute
 	/// - parameter type: whether to run or source the file
-	public func execute(file: AppFile, type: ExecuteType = .Run) {
-		let cmdData = SessionCommand.ExecuteFileParams(file: file.model, transactionId: UUID().uuidString, range: nil, echo: type == .Source)
+	public func execute(file: AppFile, type: ExecuteType = .run) {
+		let cmdData = SessionCommand.ExecuteFileParams(file: file.model, transactionId: UUID().uuidString, range: nil, echo: type == .source)
 		send(command: SessionCommand.executeFile(cmdData))
 	}
 	
@@ -322,7 +320,7 @@ public class Session {
 	///   - contents: the contents to save
 	///   - executeType: should the saved code be executed
 	/// - Returns: a signal producer for success or error. Success always sends a value of true.
-	public func sendSaveFileMessage(file: AppFile, contents: String, executeType: ExecuteType = .None) -> SignalProducer<Bool, Rc2Error>
+	public func sendSaveFileMessage(file: AppFile, contents: String, executeType: ExecuteType = .none) -> SignalProducer<Bool, Rc2Error>
 	{
 		os_log("sendSaveFileMessage called on file %d", log: .session, type: .info, file.fileId)
 		return SignalProducer<Bool, Rc2Error> { observer, _ in
@@ -378,7 +376,7 @@ private extension Session {
 //		do {
 //			parsedValues = try decoder.parse()
 //		} catch let err {
-//			os_log("error parsing binary message:%{public}@", log: .session, type:.error, err as NSError)
+//			os_log("error parsing binary message:%{public}@", log: .session, type: .error, err as NSError)
 //		}
 //		//get the dictionary of messagevalues
 //		guard case MessageValue.DictionaryValue(let msgDict) = parsedValues![0] else {
@@ -390,14 +388,14 @@ private extension Session {
 //			os_log("invalid binary response: message not a string", log: .session, type: .error)
 //			return
 //		}
-//		// swiftlint:disable:next force_cast
+//		// swift lint:disable:next force_cast
 //		switch message {
 //		case "saveResponse":
 //			handleSaveResponse(dict as [String : AnyObject])
 //		case "showOutput":
-//			// swiftlint:disable:next force_cast
+//			// swift lint:disable:next force_cast
 //			let file = AppFile(dict: dict["file"] as! [String:AnyObject])
-//			// swiftlint:disable:next force_cast
+//			// swift lint:disable:next force_cast
 //			let response = ServerResponse.showOutput(queryId: dict["queryId"] as! Int, updatedFile: file)
 //			delegate?.sessionMessageReceived(response)
 //			fileCache.update(file: file, withData: data).start()
@@ -436,7 +434,7 @@ private extension Session {
 		do {
 			try existingFile.update(to: rawFile)
 		} catch let netError as NetworkingError {
-			os_log("error updating saved file: %{public}@", log: .session, type:.error, netError.localizedDescription)
+			os_log("error updating saved file: %{public}@", log: .session, type: .error, netError.localizedDescription)
 			delegate?.sessionErrorReceived(Rc2Error(type: .network, nested: netError))
 		} catch {
 			delegate?.sessionErrorReceived(Rc2Error(type: .updateFailed, nested: error))
@@ -530,7 +528,7 @@ private extension Session {
 	// swiftlint:disable cyclomatic_complexity
 	private func transactionId(for response: SessionResponse) -> String? {
 		switch response {
-		case .connected(_):
+		case .connected:
 			return nil
 		case .echoExecute(let data):
 			return data.transactionId
@@ -540,11 +538,11 @@ private extension Session {
 			return err.transactionId
 		case .execComplete(let data):
 			return data.transactionId
-		case .fileChanged(_):
+		case .fileChanged:
 			return nil
 		case .fileOperation(let data):
 			return data.transactionId
-		case .help(_):
+		case .help:
 			return nil
 		case .results(let data):
 			return data.transactionId
@@ -552,11 +550,11 @@ private extension Session {
 			return data.transactionId
 		case .showOutput(let data):
 			return data.transactionId
-		case .variableValue(_):
+		case .variableValue:
 			return nil
-		case .variables(_):
+		case .variables:
 			return nil
-		case .info(_):
+		case .info:
 			return nil
 		}
 	}
@@ -567,7 +565,7 @@ private extension Session {
 			let data = try conInfo.encode(command)
 			self.wsSource.write(data: data)
 		} catch let err as NSError {
-			os_log("error sending message on websocket: %{public}@", log: .session, type:.error, err)
+			os_log("error sending message on websocket: %{public}@", log: .session, type: .error, err)
 			return false
 		}
 		return true
@@ -582,7 +580,7 @@ private extension Session {
 //			let jsonStr = NSString(data: json, encoding: String.Encoding.utf8.rawValue)
 //			self.wsSource.send(jsonStr as! String)
 //		} catch let err as NSError {
-//			os_log("error sending json message on websocket: %{public}@", log: .session, type:.error, err)
+//			os_log("error sending json message on websocket: %{public}@", log: .session, type: .error, err)
 //			return false
 //		}
 //		return true

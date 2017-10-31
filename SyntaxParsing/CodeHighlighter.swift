@@ -53,7 +53,7 @@ open class CodeHighlighter: NSObject {
 		let eof = PKToken.eof().tokenType
 		var lastToken: PKToken?
 		while let token = tokenizer.nextToken(), token.tokenType != eof {
-			var tokenRange = NSRange(location: range.location + Int(token.offset), length: token.stringValue.characters.count)
+			var tokenRange = NSRange(location: range.location + Int(token.offset), length: token.stringValue.count)
 			var includePrevious: Bool = false
 			if let color = colorForToken(token, lastToken: lastToken, includePreviousCharacter: &includePrevious)
 			{

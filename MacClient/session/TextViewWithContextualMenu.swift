@@ -26,7 +26,7 @@ class TextViewWithContextualMenu: NSTextView {
 		//debugging code to show what items are in the default contextual menu
 		//for anItem in (defaultMenu?.items)! {
 		//	let targetd = (anItem.target as? NSObject)?.description ?? ""
-		//	os_log("context item %{public}@ = %{public}@.%{public}@ (%{public}@)", log: .app, type:.info, anItem.title, targetd, anItem.action?.description ?? "<noaction>", anItem.tag)
+		//	os_log("context item %{public}@ = %{public}@.%{public}@ (%{public}@)", log: .app, type: .info, anItem.title, targetd, anItem.action?.description ?? "<noaction>", anItem.tag)
 		//}
 		//add items for subclass
 		if let otherItems = menuDelegate?.additionalContextMenuItems(), otherItems.count > 0 {

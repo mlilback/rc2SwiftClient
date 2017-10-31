@@ -99,7 +99,7 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 	}
 	
 	open func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-		os_log("failed to navigate: %{public}@", log: .app, type:.error, error as NSError)
+		os_log("failed to navigate: %{public}@", log: .app, type: .error, error as NSError)
 	}
 	
 	open func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
@@ -107,7 +107,7 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 	
 	open func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error)
 	{
-		os_log("failed to provisionally navigate: %{public}@", log: .app, type:.error, error as NSError)
+		os_log("failed to provisionally navigate: %{public}@", log: .app, type: .error, error as NSError)
 	}
 }
 

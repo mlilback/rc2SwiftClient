@@ -11,7 +11,7 @@ public struct DockerImage: JSONDecodable {
 	let id: String
 	let tags: [DockerTag]
 	let size: Int
-	var labels: [String:String] = [:]
+	var labels: [String: String] = [:]
 
 	/// JSONDecodable support. not implemented in an extension because is not a convience initializer
 	public init(json: JSON) throws {
@@ -39,7 +39,7 @@ public struct DockerImage: JSONDecodable {
 
 extension DockerImage: JSONEncodable {
 	public func toJSON() -> JSON {
-		var dict: [String:AnyObject] = [:]
+		var dict: [String: AnyObject] = [:]
 		dict["Id"] = id as AnyObject?
 		dict["Size"] = size as AnyObject?
 		let outTags = tags.map { $0.toJSON() }

@@ -23,7 +23,7 @@ open class LatexCodeHighlighter: CodeHighlighter {
 	override func addAttributes(_ content: NSMutableAttributedString, range: NSRange) {
 		let color = theme.value.color(for: .comment)
 		let sourceStr = content.mutableString.substring(with: range)
-		commentRegex.enumerateMatches(in: sourceStr, options: [], range: NSRange(location: 0, length: sourceStr.characters.count))
+		commentRegex.enumerateMatches(in: sourceStr, options: [], range: NSRange(location: 0, length: sourceStr.count))
 		{ (results, _, _) -> Void in
 			content.addAttribute(.foregroundColor, value: color, range: (results?.range(at:1))!)
 		}
@@ -40,7 +40,7 @@ open class LatexCodeHighlighter: CodeHighlighter {
 		case .symbol:
 			color = theme.value.color(for: .symbol)
 		case .word:
-			if lastToken?.tokenType == .symbol && lastToken?.stringValue.characters.first == "\\"
+			if lastToken?.tokenType == .symbol && lastToken?.stringValue.first == "\\"
 			{
 				usePrevious = true
 				color = theme.value.color(for: .keyword)

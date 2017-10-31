@@ -96,7 +96,7 @@ open class Rc2DefaultFileManager: Rc2FileManager {
 			if let _ = try? toUrl.checkResourceIsReachable() {
 				try self.removeItem(at: toUrl)
 			}
-			try self.moveItem(at:tempFile, to: toUrl)
+			try self.moveItem(at: tempFile, to: toUrl)
 			//if a File, set mod/creation date, ignoring any errors
 			if let fileRef = file {
 				var fileUrl = toUrl
@@ -119,7 +119,7 @@ extension AppFile {
 	///checks to see if file at url is the file we represent
 	public func urlXAttributesMatch(_ url: URL) -> Bool {
 		if let versionData = dataForXAttributeNamed(FileAttrVersion, atURL: url).data,
-			let readString = String(data:versionData, encoding:String.Encoding.utf8),
+			let readString = String(data: versionData, encoding: .utf8),
 			let readVersion = Int(readString),
 			let shaData = dataForXAttributeNamed (FileAttrChecksum, atURL: url).data,
 			let readShaData = dataForXAttributeNamed(FileAttrChecksum, atURL: url).data
@@ -138,7 +138,7 @@ extension AppFile {
 			let shaData = (fileData as NSData).sha1hash()
 			setXAttributeWithName(FileAttrChecksum, data: shaData, atURL: toUrl)
 		} else {
-			os_log("failed to create sha256 checksum for %{public}@", log: .network, type:.error, toUrl.path)
+			os_log("failed to create sha256 checksum for %{public}@", log: .network, type: .error, toUrl.path)
 		}
 	}
 }

@@ -24,7 +24,7 @@ class HelpTopic: Hashable {
 	let subtopics: [HelpTopic]?
 	/// if isPackage is true, the package name. Otherwise, the same as title
 	let packageName: String
-	
+
 	///initializer for a package description
 	init(name: String, subtopics: [HelpTopic]) {
 		self.isPackage = true
@@ -36,7 +36,7 @@ class HelpTopic: Hashable {
 		self.aliases = nil
 		self.subtopics = subtopics
 	}
-	
+
 	///initializer for an actual topic
 	init(id: Int? = nil, name: String, packageName: String, title: String, aliases: String, description: String?) {
 		self.isPackage = false
@@ -48,18 +48,18 @@ class HelpTopic: Hashable {
 		self.subtopics = nil
 		self.aliases = aliases.components(separatedBy: ":")
 	}
-	
+
 	var hashValue: Int { return ObjectIdentifier(self).hashValue }
-	
+
 	static func == (lhs: HelpTopic, rhs: HelpTopic) -> Bool {
 		return ObjectIdentifier(lhs).hashValue == ObjectIdentifier(rhs).hashValue
 	}
-	
+
 	///convience for sorting
 	func compare(_ other: HelpTopic) -> Bool {
 		return self.name.caseInsensitiveCompare(other.name) == .orderedAscending
 	}
-	
+
 	///accesor function to be passed around as a closure
 	static func subtopicsAccessor(_ topic: HelpTopic) -> [HelpTopic]? {
 		return topic.subtopics

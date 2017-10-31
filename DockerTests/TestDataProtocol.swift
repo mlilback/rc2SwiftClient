@@ -33,7 +33,7 @@ open class TestDataProtocol: URLProtocol, URLSessionDelegate {
 		var delay:Double = 0
 		for (index, aData) in TestDataProtocol.responseData.enumerated() {
 			delay = Double(index) * 0.01
-			DispatchQueue.main.asyncAfter(deadline:.now() + delay) {
+			DispatchQueue.main.asyncAfter(deadline: // swiftlint:disable_this fallthrough.now() + delay) {
 				self.client?.urlProtocol(self, didLoad: aData)
 			}
 		}

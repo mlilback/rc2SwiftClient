@@ -25,7 +25,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	@IBOutlet var historyButton: NSSegmentedControl?
 	var outputFont: NSFont = NSFont(name: "Menlo", size: 14)!
 	let cmdHistory: CommandHistory
-	@objc dynamic var consoleInputText = "" { didSet { canExecute = consoleInputText.characters.count > 0 } }
+	@objc dynamic var consoleInputText = "" { didSet { canExecute = consoleInputText.count > 0 } }
 	@objc dynamic var canExecute = false
 	var viewFileOrImage: ((_ fileWrapper: FileWrapper) -> Void)?
 	var currentFontDescriptor: NSFontDescriptor {
@@ -112,7 +112,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	
 	// MARK: actions
 	@IBAction func executeQuery(_ sender: AnyObject?) {
-		guard consoleInputText.characters.count > 0 else { return }
+		guard consoleInputText.count > 0 else { return }
 		session.executeScript(consoleInputText)
 		cmdHistory.addToCommandHistory(consoleInputText)
 		consoleTextField?.stringValue = ""
@@ -161,7 +161,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 				else { return }
 			if fname.hasPrefix("img") {
 				let cell = NSTextAttachmentCell(imageCell: #imageLiteral(resourceName: "graph"))
-				cell.image?.size = ConsoleAttachmentImageSize
+				cell.image?.size = consoleAttachmentImageSize
 				ts.removeAttribute(.attachment, range: range)
 				attach.attachmentCell = cell
 				ts.addAttribute(.attachment, value: attach, range: range)
@@ -185,7 +185,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		assert(attach.type == .file)
 		let fileType = FileType.fileType(withExtension: attach.fileExtension!)
 		let img = NSImage(named: NSImage.Name(fileType?.iconName ?? "file-plain"))
-		img?.size = ConsoleAttachmentImageSize
+		img?.size = consoleAttachmentImageSize
 		return NSTextAttachmentCell(imageCell: img)
 	}
 	
@@ -203,7 +203,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 			return
 		}
 		consoleInputText = historyString
-		canExecute = consoleInputText.characters.count > 0
+		canExecute = consoleInputText.count > 0
 		//the following shouldn't be necessary because they are bound. But sometimes the textfield value does not update
 		consoleTextField?.stringValue = consoleInputText
 		view.window?.makeFirstResponder(consoleTextField)

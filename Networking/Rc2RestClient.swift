@@ -12,7 +12,7 @@ import ReactiveSwift
 import ZipArchive
 import Model
 
-fileprivate let wspaceDirName = "defaultWorkspaceFiles"
+private let wspaceDirName = "defaultWorkspaceFiles"
 
 public final class Rc2RestClient {
 	let conInfo: ConnectionInfo
@@ -31,6 +31,7 @@ public final class Rc2RestClient {
 		}
 		self.sessionConfig.httpAdditionalHeaders!["Accept"] = "application/json"
 		urlSession = URLSession(configuration: sessionConfig)
+		// swiftlint:disable:next discouraged_direct_init
 		networkLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "networking")
 	}
 	
@@ -120,7 +121,7 @@ public final class Rc2RestClient {
 	public func downloadImage(imageId: Int, from wspace: AppWorkspace, destination: URL) -> SignalProducer<URL, Rc2Error>
 	{
 		return SignalProducer<URL, Rc2Error> { observer, _ in
-			var req = self.request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method:"GET")
+			var req = self.request("workspaces/\(wspace.wspaceId)/images/\(imageId)", method: "GET")
 			req.addValue("image/png", forHTTPHeaderField: "Accept")
 			let task = self.urlSession!.downloadTask(with: req) { (dloadUrl, response, error) -> Void in
 				let hresponse = response as? HTTPURLResponse
@@ -131,7 +132,7 @@ public final class Rc2RestClient {
 				}
 				let fileUrl = URL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeTo: destination)
 				do {
-					try self.fileManager.move(tempFile: dloadUrl!, to: fileUrl, file:nil)
+					try self.fileManager.move(tempFile: dloadUrl!, to: fileUrl, file: nil)
 				} catch {
 					observer.send(error: Rc2Error(type: .file, nested: FileError.failedToDownload, severity: .warning, explanation: "image \(imageId)"))
 				}

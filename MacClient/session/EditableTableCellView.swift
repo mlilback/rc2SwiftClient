@@ -28,7 +28,7 @@ public class EditableTableCellView: NSTableCellView {
 
 extension EditableTableCellView: NSTextFieldDelegate {
 	public override func controlTextDidEndEditing(_ obj: Notification) {
-		guard let text = textField?.stringValue, text.characters.count > 0, !canceled else {
+		guard let text = textField?.stringValue, text.count > 0, !canceled else {
 			currentCallback?(nil)
 			return
 		}
