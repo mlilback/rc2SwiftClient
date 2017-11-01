@@ -34,7 +34,7 @@ public protocol SessionResponseFormatter {
 	func formatOutput(data: SessionResponse.ShowOutputData) -> ResponseString?
 	func formatExecComplete(data: SessionResponse.ExecCompleteData) -> ResponseString?
 	func formatError(data: SessionResponse.ErrorData) -> ResponseString?
-	func formatError(string: String) -> ResponseString?
+	func formatError(string: String) -> ResponseString
 	func formatEcho(data: SessionResponse.ExecuteData) -> ResponseString?
 	func formatFileEcho(data: SessionResponse.ExecuteFileData) -> ResponseString?
 }
@@ -88,7 +88,7 @@ extension SessionResponseFormatter {
 		return ResponseString(string: mstr, type: .attachment)
 	}
 	
-	public func formatError(string: String) -> ResponseString? {
+	public func formatError(string: String) -> ResponseString {
 		let str = NSAttributedString(string: "\(string)\n", attributes: outputTheme.stringAttributes(for: .error))
 		return ResponseString(string: str, type: .error)
 	}
@@ -136,6 +136,11 @@ public struct ResponseString {
 	public let string: NSAttributedString
 	/// the purpose of the string
 	public let type: StringType
+	
+	public init(string: NSAttributedString, type: StringType) {
+		self.string = string
+		self.type = type
+	}
 }
 
 // MARK: Old Stuff -

@@ -315,7 +315,7 @@
 		08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
 		08E836681D94240100E26EFE /* SwiftyUserDefaults.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08E836691D94242A00E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
-		08E8366B1D94436D00E26EFE /* UserDefaults+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8366A1D94436D00E26EFE /* UserDefaults+JSON.swift */; };
+		08E8366B1D94436D00E26EFE /* UserDefaults+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */; };
 		08E8366C1D94500900E26EFE /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
@@ -959,7 +959,7 @@
 		08E5D2081EAA58FD00374055 /* TimedEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimedEvent.swift; path = TimedEvents/TimedEvent.swift; sourceTree = SOURCE_ROOT; };
 		08E5D2111EAFD31000374055 /* DockerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerManager.swift; sourceTree = "<group>"; };
 		08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = Carthage/Build/Mac/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
-		08E8366A1D94436D00E26EFE /* UserDefaults+JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+JSON.swift"; sourceTree = "<group>"; };
+		08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Rc2.swift"; sourceTree = "<group>"; };
 		08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetActionBlock.swift; sourceTree = "<group>"; };
 		08ED575E1C724383002B2558 /* MacFileImportSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacFileImportSetup.swift; sourceTree = "<group>"; };
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
@@ -1680,7 +1680,7 @@
 				081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */,
 				089794471D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift */,
 				0897944A1D7B6A8F003339EE /* SystemExtensions.swift */,
-				08E8366A1D94436D00E26EFE /* UserDefaults+JSON.swift */,
+				08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */,
 				081559941DDCCD960047B3CE /* RACSignals+Rc2.swift */,
 				08F03E441DE4BF0A00D02153 /* URLResponse+Rc2.swift */,
 				080AB90C1E991ED4005452C7 /* URLRequest+Rc2.swift */,
@@ -2778,7 +2778,7 @@
 				086A40D31E7B048B00AE476B /* Theme.swift in Sources */,
 				08F01EBB1EFD887A0047F397 /* String+MJL.swift in Sources */,
 				086A40D91E7B3F0C00AE476B /* SyntaxTheme.swift in Sources */,
-				08E8366B1D94436D00E26EFE /* UserDefaults+JSON.swift in Sources */,
+				08E8366B1D94436D00E26EFE /* UserDefaults+Rc2.swift in Sources */,
 				08F01EB71EFD88730047F397 /* ExpiringCache.swift in Sources */,
 				08F01EBF1EFD887A0047F397 /* ShellCommands.swift in Sources */,
 				08525E731E256A8B008A332E /* Reachability.swift in Sources */,

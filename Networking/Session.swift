@@ -58,7 +58,7 @@ public class Session {
 	///queue used for async operations
 	fileprivate let queue: DispatchQueue
 
-	private typealias PendingTransactionHandler = (PendingTransaction, SessionResponse) -> Void
+	private typealias PendingTransactionHandler = (PendingTransaction, SessionResponse, Rc2Error?) -> Void
 
 	private struct PendingTransaction {
 		let transId: String
@@ -245,7 +245,7 @@ public class Session {
 			let command = SessionCommand.fileOperation(reqData)
 			self.send(command: command)
 			self.pendingTransactions[transId] = PendingTransaction(transId: transId, command: command)
-			{ (_, response) in
+			{ (_, response, _) in
 				guard case let SessionResponse.fileOperation(opData) = response else { return }
 				if let err = opData.error {
 					observer.send(error: Rc2Error(type: .session, nested: err))
@@ -268,7 +268,7 @@ public class Session {
 			let command = SessionCommand.fileOperation(reqData)
 			self.send(command: command)
 			self.pendingTransactions[transId] = PendingTransaction(transId: transId, command: command)
-			{ (_, response) in
+			{ (_, response, _) in
 				guard case let SessionResponse.fileOperation(opData) = response else { return }
 				if let err = opData.error {
 					observer.send(error: Rc2Error(type: .session, nested: err))
@@ -292,7 +292,7 @@ public class Session {
 			let command = SessionCommand.fileOperation(reqData)
 			self.send(command: command)
 			self.pendingTransactions[transId] = PendingTransaction(transId: transId, command: command)
-			{ (_, response) in
+			{ (_, response, _) in
 				guard case let SessionResponse.fileOperation(opData) = response else { return }
 				if let err = opData.error {
 					observer.send(error: Rc2Error(type: .session, nested: err))
@@ -328,11 +328,19 @@ public class Session {
 			let commandData = SessionCommand.SaveParams(file: file.model, transactionId: transId, content: contents.data(using: .utf8)!)
 			let command = SessionCommand.save(commandData)
 			self.pendingTransactions[transId] = PendingTransaction(transId: transId, command: command)
-			{ (_, response) in
+			{ (_, response, error) in
 				guard case let SessionResponse.save(saveData) = response else { return }
-				if let err = saveData.error {
-					observer.send(error: Rc2Error(type: .session, nested: err))
+				if let err = error {
+					if let sessionError = err.nestedError as? SessionError {
+						self.delegate?.sessionErrorReceived(sessionError)
+					}
+					observer.send(error: err)
 					return
+				}
+				// need to update AppFile to new model
+				if let file = saveData.file, let afile = self.workspace.file(withId: file.id) {
+					let fchange = SessionResponse.FileChangedData(type: .update, file: file, fileId: afile.fileId)
+					try! self.workspace.update(change: fchange) //only throws if unsupported file type, which should not be possible
 				}
 				observer.send(value: true)
 				observer.sendCompleted()
@@ -410,15 +418,14 @@ private extension Session {
 		os_log("handleSaveResponse called", log: .session, type: .info)
 		// we want to circumvent the default pending handler, as we need to run it first
 		os_log("sendSaveFileMessage calling pending transaction", log: .session, type: .debug)
-		if let pending = pendingTransactions[data.transactionId] {
-			pending.handler(pending, response)
-			pendingTransactions.removeValue(forKey: data.transactionId)
+		guard let pending = pendingTransactions[data.transactionId] else {
+			fatalError("save message received without pending handler")
 		}
+		pendingTransactions.removeValue(forKey: data.transactionId)
 		// handle error
 		if let error = data.error {
-			//TODO: inform user
 			os_log("got save response error: %{public}@", log: .session, type: .error, error.localizedDescription)
-			delegate?.sessionErrorReceived(Rc2Error(type: .session, nested: error))
+			pending.handler(pending, response, Rc2Error(type: .session, nested: error))
 			return
 		}
 		// both these could be asserts because they should never happen
@@ -433,11 +440,12 @@ private extension Session {
 		// update file to new version
 		do {
 			try existingFile.update(to: rawFile)
+			pending.handler(pending, response, nil)
 		} catch let netError as NetworkingError {
 			os_log("error updating saved file: %{public}@", log: .session, type: .error, netError.localizedDescription)
-			delegate?.sessionErrorReceived(Rc2Error(type: .network, nested: netError))
+			pending.handler(pending, response, Rc2Error(type: .network, nested: netError))
 		} catch {
-			delegate?.sessionErrorReceived(Rc2Error(type: .updateFailed, nested: error))
+			pending.handler(pending, response, Rc2Error(type: .updateFailed, nested: error))
 		}
 	}
 	
@@ -512,6 +520,8 @@ private extension Session {
 			handleShowOutput(response: response, data: outputData)
 		case .info(let infoData):
 			conInfo.update(sessionInfo: infoData)
+		case .error(let errorData):
+			delegate?.sessionErrorReceived(errorData.error)
 		case .execComplete(let execData):
 			imageCache.cacheImagesFromServer(execData.images)
 			fallthrough
@@ -519,7 +529,7 @@ private extension Session {
 			queue.async { self.delegate?.sessionMessageReceived(response) }
 		}
 		if let transId = transactionId(for: response), let trans = pendingTransactions[transId] {
-			trans.handler(trans, response)
+			trans.handler(trans, response, nil)
 			pendingTransactions.removeValue(forKey: transId)
 		}
 	}
