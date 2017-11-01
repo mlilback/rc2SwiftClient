@@ -26,7 +26,7 @@ protocol SessionControllerDelegate: class {
 @objc class SessionController: NSObject {
 	fileprivate weak var delegate: SessionControllerDelegate?
 
-	var responseFormatter: SessionResponseFormatter?
+	var responseFormatter: SessionResponseFormatter!
 	let outputHandler: OutputHandler
 	let varHandler: VariableHandler
 	let session: Session
@@ -82,7 +82,7 @@ protocol SessionControllerDelegate: class {
 	}
 	
 	func format(errorString: String) -> ResponseString? {
-		return responseFormatter!.formatError(string: errorString)
+		return responseFormatter.formatError(string: errorString)
 	}
 
 	// MARK: - ServerResponseHandlerDelegate
@@ -205,9 +205,22 @@ extension SessionController: SessionDelegate {
 		handle(response: response)
 	}
 	
-	//TODO: impelment sessionErrorReceived
-	func sessionErrorReceived(_ error: Rc2Error) {
-		
+	//TODO: implement sessionErrorReceived
+	func sessionErrorReceived(_ error: SessionError) {
+		let defaults = UserDefaults.standard
+		switch error {
+		case .compute(_, let details, _):
+			let errorDetails = details ?? "unknown error"
+			let theme = ThemeManager.shared.activeOutputTheme.value
+			var attrs = theme.stringAttributes(for: .error)
+			attrs[NSAttributedStringKey.font] = NSFont.userFixedPitchFont(ofSize: defaults[DefaultsKeys.defaultFontSize])
+			let fstr = NSAttributedString(string: errorDetails, attributes: attrs)
+			let rstring = ResponseString(string: fstr, type: .error)
+			output(responseString: rstring)
+			break
+		default:
+			output(responseString: responseFormatter.formatError(string: error.localizedDescription))
+		}
 	}
 }
 
@@ -227,10 +240,14 @@ extension SessionController {
 	
 	/// actually handle the response by formatting it and sending it to the output handler
 	fileprivate func handle(response: SessionResponse) {
-		if let astr = responseFormatter?.format(response: response) {
-			DispatchQueue.main.async {
-				self.outputHandler.append(responseString: astr)
-			}
+		if let astr = responseFormatter.format(response: response) {
+			output(responseString: astr)
+		}
+	}
+	
+	private func output(responseString: ResponseString) {
+		DispatchQueue.main.async {
+			self.outputHandler.append(responseString: responseString)
 		}
 	}
 }

@@ -43,9 +43,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	///true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
 	private var ignoreTextStorageNotifications = false
 	
-	static let defaultFontSize = CGFloat(14.0)
-	
-	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFont(ofSize: defaultFontSize)!.fontDescriptor {
+	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFont(ofSize: UserDefaults.standard[.defaultFontSize])!.fontDescriptor {
 		didSet {
 			let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
 			editor?.font = font
@@ -95,7 +93,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		super.viewDidLoad()
 		guard editor != nil else { return }
 		//try switching to Menlo instead of default monospaced font
-		let fdesc = NSFontDescriptor(name: "Menlo-Regular", size: SessionEditorController.defaultFontSize)
+		let fdesc = NSFontDescriptor(name: "Menlo-Regular", size: UserDefaults.standard[.defaultFontSize])
 		if let _ = NSFont(descriptor: fdesc, size: fdesc.pointSize)
 		{
 			currentFontDescriptor = fdesc

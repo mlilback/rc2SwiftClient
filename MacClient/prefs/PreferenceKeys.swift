@@ -23,6 +23,7 @@ extension DefaultsKeys {
 
 	static let helpTopicSearchSummaries = DefaultsKey<Bool>("rc2.helpSidebar.searchSummaries")
 	
+	static let defaultFontSize = DefaultsKey<CGFloat>("rc2.defaultFontSize")
 	static let consoleOutputFont = DefaultsKey<FontDescriptor?>("rc2.console.font")
 	static let clearImagesWithConsole = DefaultsKey<Bool>("clearImagesWithConsole")
 	
