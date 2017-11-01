@@ -43,4 +43,13 @@ public extension UserDefaults {
 			set(NSArchiver.archivedData(withRootObject: fdesc), forKey: key._key)
 		}
 	}
+	
+	public subscript(key: DefaultsKey<CGFloat>) -> CGFloat {
+		get {
+			return CGFloat(double(forKey: key._key))
+		}
+		set {
+			set(Double(newValue), forKey: key._key)
+		}
+	}
 }
