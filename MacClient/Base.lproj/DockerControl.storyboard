@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13122.19" systemVersion="16F73" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="saj-26-on4">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13528" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="saj-26-on4">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13122.19"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13528"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
@@ -18,6 +18,9 @@
                         <rect key="contentRect" x="1448" y="756" width="480" height="270"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="2048" height="1129"/>
                         <value key="minSize" type="size" width="480" height="270"/>
+                        <connections>
+                            <outlet property="delegate" destination="saj-26-on4" id="voV-CX-mdZ"/>
+                        </connections>
                     </window>
                     <connections>
                         <segue destination="cdn-UZ-bch" kind="relationship" relationship="window.shadowedContentViewController" id="tSI-iJ-8d4"/>
@@ -41,8 +44,12 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <font key="font" metaFont="message"/>
                         <tabViewItems/>
+                        <connections>
+                            <outlet property="delegate" destination="cdn-UZ-bch" id="FJJ-Oa-U7v"/>
+                        </connections>
                     </tabView>
                     <connections>
+                        <outlet property="tabView" destination="8SE-GK-pjY" id="h2Q-0l-gov"/>
                         <segue destination="0ke-9v-f0c" kind="relationship" relationship="tabItems" id="x4L-u0-jTm"/>
                         <segue destination="tTu-nY-tej" kind="relationship" relationship="tabItems" id="cFj-c6-1fq"/>
                         <segue destination="J3O-iP-sgA" kind="relationship" relationship="tabItems" id="BaK-gq-ZfW"/>

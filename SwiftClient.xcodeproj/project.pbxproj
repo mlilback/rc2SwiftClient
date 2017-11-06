@@ -207,6 +207,7 @@
 		086A40DD1E7B578400AE476B /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40DC1E7B578400AE476B /* ThemeManager.swift */; };
 		086A40DF1E7D956400AE476B /* PlatformTypeAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40DE1E7D956400AE476B /* PlatformTypeAliases.swift */; };
 		086A40E11E7DAEE300AE476B /* InternalTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40E01E7DAEE300AE476B /* InternalTheme.swift */; };
+		086DAEAA1FB0D77A003F0B68 /* StreamedResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086DAEA91FB0D77A003F0B68 /* StreamedResponseHandler.swift */; };
 		0872676D1EE20A37004251C1 /* DockerBackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0872676C1EE20A37004251C1 /* DockerBackupViewController.swift */; };
 		0873F6001F795AE700265934 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559921DDC889D0047B3CE /* ImageCache.swift */; };
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
@@ -865,6 +866,7 @@
 		086A40DC1E7B578400AE476B /* ThemeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		086A40DE1E7D956400AE476B /* PlatformTypeAliases.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlatformTypeAliases.swift; sourceTree = "<group>"; };
 		086A40E01E7DAEE300AE476B /* InternalTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternalTheme.swift; sourceTree = "<group>"; };
+		086DAEA91FB0D77A003F0B68 /* StreamedResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamedResponseHandler.swift; sourceTree = "<group>"; };
 		0872676C1EE20A37004251C1 /* DockerBackupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DockerBackupViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08765C811DC58AB300F75D8E /* DispatchReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchReader.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -1857,6 +1859,7 @@
 				083D11871DED00D200549268 /* LinedJsonHandler.swift */,
 				080AB9061E97E35C005452C7 /* DockerResponseHandler.swift */,
 				081C71B01E9DD02D00A1BD3B /* SingleDataResponseHandler.swift */,
+				086DAEA91FB0D77A003F0B68 /* StreamedResponseHandler.swift */,
 				081C71B21E9DD08B00A1BD3B /* HijackedResponseHandler.swift */,
 				080AB90A1E97F155005452C7 /* ChunkedResponseProxy.swift */,
 				0828FB251EA7FB4A00AECEC5 /* ReactiveSwift+Docker.swift */,
@@ -2207,7 +2210,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0900;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0910;
 				ORGANIZATIONNAME = Rc2;
 				TargetAttributes = {
 					080E82C01DCBE31D0048F36C = {
@@ -2843,6 +2846,7 @@
 				08F6ADEE1DD9172C00AF0722 /* DockerAPI.swift in Sources */,
 				0828FB321EA7FE4200AECEC5 /* Data+Docker.swift in Sources */,
 				0828FB281EA7FC3600AECEC5 /* URLRequest+Docker.swift in Sources */,
+				086DAEAA1FB0D77A003F0B68 /* StreamedResponseHandler.swift in Sources */,
 				08F6ADF11DD9172C00AF0722 /* DockerError.swift in Sources */,
 				081C71B11E9DD02D00A1BD3B /* SingleDataResponseHandler.swift in Sources */,
 				080AB9071E97E35C005452C7 /* DockerResponseHandler.swift in Sources */,
@@ -3218,7 +3222,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -3263,7 +3267,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -3357,7 +3361,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -3396,7 +3400,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
