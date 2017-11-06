@@ -139,7 +139,15 @@ public protocol DockerAPI: class {
 	///   - container: the container to execute in
 	/// - Returns: the returned data
 	func executeSync(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
-	
+
+	/// Executes a command and streams the results returned as Data.
+	///
+	/// - Parameters:
+	///   - command: the command and arguments to send
+	///   - container: the container to execute in
+	/// - Returns: signal handler that sends each chunk of data received from the command
+	func stream(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
+
 	/// Remove a container
 	///
 	/// - parameter container: container to remove

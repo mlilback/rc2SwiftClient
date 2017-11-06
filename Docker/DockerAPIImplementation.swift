@@ -286,6 +286,15 @@ public final class DockerAPIImplementation: DockerAPI {
 	}
 
 	/// documentation in DockerAPI protocol
+	public func stream(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
+	{
+		return prepExecTask(command: command, container: container)
+			.flatMap(.concat, { (taskId) in
+				return self.streamExecTask(taskId: taskId)
+			})
+	}
+	
+	/// documentation in DockerAPI protocol
 	public func executeSync(command: [String], container: DockerContainer) -> SignalProducer<Data, DockerError>
 	{
 		precondition(command.count > 0)
@@ -766,7 +775,34 @@ extension DockerAPIImplementation {
 			connection.writeRequest()
 		}
 	}
-	
+
+	fileprivate func streamExecTask(taskId: String) -> SignalProducer<Data, DockerError> {
+		var request = URLRequest(url: URL(string: "/exec/\(taskId)/start")!)
+		request.httpMethod = "POST"
+		request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+		request.httpBody = "{}".data(using: .utf8)
+		return SignalProducer<Data, DockerError> { observer, _ in
+			let connection = LocalDockerConnectionImpl<StreamedResponseHandler>(request: request) { (message) in
+				switch message {
+				case .headers:
+					break
+				case .data(let data):
+					observer.send(value: data)
+				case .complete:
+					observer.sendCompleted()
+				case .error(let err):
+					observer.send(error: DockerError.networkError(err as NSError?))
+				}
+			}
+			do {
+				try connection.openConnection()
+			} catch {
+				observer.send(error: DockerError.networkError(error as NSError))
+			}
+			connection.writeRequest()
+		}
+	}
+
 	fileprivate func dataForExecTask(taskId: String) -> SignalProducer<Data, DockerError> {
 		var request = URLRequest(url: URL(string: "/exec/\(taskId)/start")!)
 		request.httpMethod = "POST"
