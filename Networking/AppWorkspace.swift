@@ -11,14 +11,15 @@ import ClientCore
 import os
 import Model
 
-// removed UpdateInPlace, Copyable since that behavior is indefined with new model
 public final class AppWorkspace: CustomStringConvertible, Hashable
 {
 //	public typealias UElement = AppWorkspace
 
-	public enum FileChangeType: String {
+	public enum FileChangeType: String, Equatable {
 		case add, modify, remove
-		
+		static public func == (lhs: FileChangeType, rhs: FileChangeType) -> Bool {
+			return lhs.rawValue == rhs.rawValue
+		}
 	}
 	public struct FileChange {
 		public let type: FileChangeType
@@ -89,7 +90,8 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 		}
 		let sig = fileChangeSignal
 			.promoteError(Rc2Error.self)
-			.filterMap({ changes in changes.first(where: { $0.type == .add && $0.file.fileId == fileId }) })
+			// we filter on not-removed because file is added via create call before data is saved. get edit once saved
+			.filterMap({ changes in changes.first(where: { $0.type != .remove && $0.file.fileId == fileId }) })
 			.map( { $0.file })
 			.timeout(after: timeout, raising: Rc2Error(type: .timeout), on: QueueScheduler.main)
 		return SignalProducer<AppFile, Rc2Error>(sig)

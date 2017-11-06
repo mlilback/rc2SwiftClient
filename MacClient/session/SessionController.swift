@@ -205,7 +205,6 @@ extension SessionController: SessionDelegate {
 		handle(response: response)
 	}
 	
-	//TODO: implement sessionErrorReceived
 	func sessionErrorReceived(_ error: SessionError) {
 		let defaults = UserDefaults.standard
 		switch error {

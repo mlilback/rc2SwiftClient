@@ -224,12 +224,17 @@ public class Session {
 			} else {
 				sp = self.fileCache.cache(file: file, withData: Data())
 			}
-			sp.startWithResult { result in
-				guard let err = result.error else {
-					completionHandler?(Result<Int, Rc2Error>(value: file.id))
-					return
+			sp.start { (event) in
+				switch event {
+					case .failed(let err):
+						completionHandler?(Result<Int, Rc2Error>(error: err))
+					case .completed:
+						self.workspace.whenFileExists(fileId: file.id, within: 2.0).startWithCompleted {
+							completionHandler?(Result<Int, Rc2Error>(value: file.id))
+						}
+					default:
+						os_log("invalid event from fileCache call", log: .session)
 				}
-				completionHandler?(Result<Int, Rc2Error>(error: err))
 			}
 		}
 	}
