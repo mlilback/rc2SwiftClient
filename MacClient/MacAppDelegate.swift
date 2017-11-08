@@ -123,6 +123,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 extension MacAppDelegate {
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
+		if startupWindowController?.window?.isVisible ?? false { return false } //disable menu items while docker is loading
 		switch action  {
 		case Actions.backupDatabase:
 			return true
