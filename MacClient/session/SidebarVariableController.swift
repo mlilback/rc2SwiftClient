@@ -113,34 +113,34 @@ extension SidebarVariableController: NSUserInterfaceValidations {
 
 // MARK: - VariableHandler
 extension SidebarVariableController: VariableHandler {
-	func handleVariableMessage(_ single: Bool, variables: [Variable]) {
-		if single {
-			if let curVal = variableNamed(variables[0].name) {
-				rootVariables[rootVariables.index(of: curVal)!] = curVal
-			} else {
-				rootVariables.append(variables.first!)
-			}
+	func variableUpdated(_ variable: Variable) {
+		if let curVal = variableNamed(variable.name) {
+			rootVariables[rootVariables.index(of: curVal)!] = curVal
 		} else {
-			rootVariables = variables
+			rootVariables.append(variable)
+			rootVariables.sort(by: Variable.compareByName)
 		}
-		rootVariables.sort(by: Variable.compareByName)
 		variablesChanged()
 	}
 	
-	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String]) {
-		for variable in assigned {
+	func variablesUpdated(_ update: SessionResponse.ListVariablesData) {
+		defer { variablesChanged() }
+		guard update.delta else {
+			rootVariables = update.variables
+			return
+		}
+		for variable in update.variables {
 			if let curVal = variableNamed(variable.name) {
 				rootVariables[rootVariables.index(of: curVal)!] = variable
 			} else {
 				rootVariables.append(variable)
 			}
 		}
-		removed.forEach { str in
+		update.removed.forEach { str in
 			if let curVal = variableNamed(str) {
 				rootVariables.remove(at: rootVariables.index(of: curVal)!)
 			}
 		}
-		variablesChanged()
 	}
 }
 

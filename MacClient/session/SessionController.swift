@@ -92,13 +92,13 @@ protocol SessionControllerDelegate: class {
 //		handleFileUpdate(file, change: change)
 	}
 	
-	func handleVariableMessage(_ single: Bool, variables: [Variable]) {
-		varHandler.handleVariableMessage(single, variables: variables)
-	}
-	
-	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String]) {
-		varHandler.handleVariableDeltaMessage(assigned, removed: removed)
-	}
+//	func handleVariableMessage(_ single: Bool, variables: [Variable]) {
+//		varHandler.handleVariableMessage(single, variables: variables)
+//	}
+//	
+//	func handleVariableDeltaMessage(_ assigned: [Variable], removed: [String]) {
+//		varHandler.handleVariableDeltaMessage(assigned, removed: removed)
+//	}
 
 	//the file might not be in session yet. if not, wait until it has been added
 	func showFile(_ fileId: Int) {
@@ -239,6 +239,16 @@ extension SessionController {
 	
 	/// actually handle the response by formatting it and sending it to the output handler
 	fileprivate func handle(response: SessionResponse) {
+		switch response {
+		case .variableValue(let aVariable):
+			varHandler.variableUpdated(aVariable)
+			return
+		case .variables(let varData):
+			varHandler.variablesUpdated(varData)
+			return
+		default:
+			break
+		}
 		if let astr = responseFormatter.format(response: response) {
 			output(responseString: astr)
 		}
