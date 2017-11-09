@@ -510,7 +510,7 @@ private extension Session {
 		do {
 			response = try conInfo.decode(data: messageData)
 		} catch {
-			os_log("failed to parse received json", log: .session, type: .info)
+			os_log("failed to parse received json: %{public}@", log: .session, type: .info, String(data: messageData, encoding: .utf8) ?? "<invalid>")
 			return
 		}
 		os_log("got message %{public}@", log: .session, response.description)
