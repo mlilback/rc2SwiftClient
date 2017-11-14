@@ -19,6 +19,8 @@ class SidebarVariableController: AbstractSessionViewController {
 	@IBOutlet var varTableView: NSTableView!
 	@IBOutlet var clearButton: NSButton!
 	@IBOutlet var contextMenu: NSMenu!
+	var detailsPopup: NSPopover?
+	var detailsController: VariableDetailsViewController?
 	
 	// MARK: methods
 	override func viewWillAppear() {
@@ -40,6 +42,7 @@ class SidebarVariableController: AbstractSessionViewController {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		varTableView?.setDraggingSourceOperationMask(.copy, forLocal: false)
+		varTableView?.doubleAction = #selector(SidebarVariableController.doubleClick(_:))
 	}
 	
 	override func sessionChanged() {
@@ -86,6 +89,28 @@ class SidebarVariableController: AbstractSessionViewController {
 			guard confirmed else { return }
 			self.session.clearVariables()
 		}
+	}
+	
+	@IBAction func showDetails(_ sender: Any?) {
+		if variablePopover == nil {
+			let sboard = NSStoryboard(name: .mainController, bundle: nil)
+			detailsController = sboard.instantiateViewController()
+			assert(detailsController != nil)
+			variablePopover = NSPopover()
+			variablePopover?.behavior = .transient
+			variablePopover?.contentViewController = detailsController
+			variablePopover?.contentSize = NSSize(width: 200, height: 300)
+		}
+		print("showDetails from \(sender ?? "nil")")
+		let selRow = varTableView.selectedRow
+		guard selRow != -1 else { os_log("can't show variable details w/o selection", log: .app); return }
+		detailsController?.variable = rootVariables[selRow]
+		variablePopover?.show(relativeTo: varTableView.rect(ofRow: selRow), of: varTableView, preferredEdge: .maxX)
+	}
+	
+	@IBAction func doubleClick(_ sender: Any?) {
+		guard varTableView.clickedColumn == 1 && varTableView.clickedRow != -1 else { return }
+		showDetails(sender)
 	}
 	
 	func variablesChanged() {
