@@ -8,10 +8,11 @@
 import XCTest
 @testable import SyntaxParsing
 import Networking
+import Model
 
 class SyntaxParsingTests: XCTestCase {
 	var storage: NSTextStorage!
-	var parser: SyntaxParser!
+	var parser: BaseSyntaxParser!
 	
 	override func setUp() {
 		super.setUp()
@@ -23,7 +24,7 @@ class SyntaxParsingTests: XCTestCase {
 	}
 	
 	func loadStorageWith(_ filename: String, suffix: String) {
-		parser = SyntaxParser.parserWithTextStorage(storage, fileType: FileType.fileType(withExtension: suffix)!) { _ in return false }
+		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: FileType.fileType(withExtension: suffix)!) { _ in return false }
 		let fileUrl = Bundle(for: type(of: self)).url(forResource: filename, withExtension: suffix, subdirectory: nil)!
 		let contents = try! String(contentsOf: fileUrl, encoding: String.Encoding.utf8)
 		storage.replaceCharacters(in: NSMakeRange(0, storage.string.utf8.count), with: contents)
@@ -36,12 +37,12 @@ class SyntaxParsingTests: XCTestCase {
 		let chunks = [
 			DocumentChunk(chunkType: .equation, chunkNumber: 1),
 			DocumentChunk(chunkType: .documentation, chunkNumber: 2),
-			DocumentChunk(chunkType: .rCode, chunkNumber: 3)
+			DocumentChunk(chunkType: .executable, chunkNumber: 3)
 		]
 		chunks[0].parsedRange = NSMakeRange(0, 10)
 		chunks[1].parsedRange = NSMakeRange(10, 20)
 		chunks[2].parsedRange = NSMakeRange(30, 30)
-		parser = SyntaxParser.parserWithTextStorage(storage, fileType: FileType.fileType(withExtension: "Rmd")!) { _ in return false }
+		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: FileType.fileType(withExtension: "Rmd")!) { _ in return false }
 		parser.chunks = chunks
 		//test empty range which should return first chunk
 		var results = parser.chunksForRange(NSMakeRange(0, 0))
@@ -69,24 +70,24 @@ class SyntaxParsingTests: XCTestCase {
 	
 	func testSweave1() {
 		loadStorageWith("syntax1", suffix:"Rnw")
-		parser.parse()
+		_ = parser.parse()
 		XCTAssertEqual(parser.chunks.count, 5)
 		XCTAssertEqual(parser.chunks[0].type, ChunkType.documentation)
-		XCTAssertEqual(parser.chunks[1].type, ChunkType.rCode)
+		XCTAssertEqual(parser.chunks[1].type, ChunkType.executable)
 		XCTAssertEqual(parser.chunks[2].type, ChunkType.documentation)
-		XCTAssertEqual(parser.chunks[3].type, ChunkType.rCode)
+		XCTAssertEqual(parser.chunks[3].type, ChunkType.executable)
 		XCTAssertEqual(parser.chunks[3].name, "fig=TRUE,echo=FALSE")
 		XCTAssertEqual(parser.chunks[4].type, ChunkType.documentation)
 	}
 	
 	func testMarkdown1() {
 		loadStorageWith("syntax2", suffix:"Rmd")
-		parser.parse()
+		_ = parser.parse()
 		XCTAssertEqual(parser.chunks.count, 7)
 		XCTAssertEqual(parser.chunks[0].type, ChunkType.documentation)
 		XCTAssertEqual(parser.chunks[1].type, ChunkType.equation)
 		XCTAssertEqual(parser.chunks[2].type, ChunkType.documentation)
-		XCTAssertEqual(parser.chunks[3].type, ChunkType.rCode)
+		XCTAssertEqual(parser.chunks[3].type, ChunkType.executable)
 		XCTAssertEqual(parser.chunks[4].type, ChunkType.documentation)
 		XCTAssertEqual(parser.chunks[5].type, ChunkType.equation)
 		XCTAssertEqual(parser.chunks[4].type, ChunkType.documentation)

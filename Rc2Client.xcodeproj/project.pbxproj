@@ -112,7 +112,7 @@
 		082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; };
 		082BE09F1F59D549006CE0B7 /* SyntaxParsing.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082BE0AE1F59D5BB006CE0B7 /* LatexCodeHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0A71F59D5BB006CE0B7 /* LatexCodeHighlighter.swift */; };
-		082BE0AF1F59D5BB006CE0B7 /* SyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0A81F59D5BB006CE0B7 /* SyntaxParser.swift */; };
+		082BE0AF1F59D5BB006CE0B7 /* BaseSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0A81F59D5BB006CE0B7 /* BaseSyntaxParser.swift */; };
 		082BE0B01F59D5BB006CE0B7 /* DocumentChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */; };
 		082BE0B11F59D5BB006CE0B7 /* RmdSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0AA1F59D5BB006CE0B7 /* RmdSyntaxParser.swift */; };
 		082BE0B21F59D5BB006CE0B7 /* CodeHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0AB1F59D5BB006CE0B7 /* CodeHighlighter.swift */; };
@@ -318,6 +318,7 @@
 		08E836691D94242A00E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
 		08E8366B1D94436D00E26EFE /* UserDefaults+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */; };
 		08E8366C1D94500900E26EFE /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08EB36C91FBB63310078229A /* SyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36C81FBB63310078229A /* SyntaxParser.swift */; };
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08F01E961EFC74690047F397 /* NSData+Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F01E941EFC74690047F397 /* NSData+Hash.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -765,7 +766,7 @@
 		082BE09A1F59D549006CE0B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		082BE0A61F59D5BB006CE0B7 /* RKeywords.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = RKeywords.txt; sourceTree = "<group>"; };
 		082BE0A71F59D5BB006CE0B7 /* LatexCodeHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatexCodeHighlighter.swift; sourceTree = "<group>"; };
-		082BE0A81F59D5BB006CE0B7 /* SyntaxParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxParser.swift; sourceTree = "<group>"; };
+		082BE0A81F59D5BB006CE0B7 /* BaseSyntaxParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSyntaxParser.swift; sourceTree = "<group>"; };
 		082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentChunk.swift; sourceTree = "<group>"; };
 		082BE0AA1F59D5BB006CE0B7 /* RmdSyntaxParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RmdSyntaxParser.swift; sourceTree = "<group>"; };
 		082BE0AB1F59D5BB006CE0B7 /* CodeHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeHighlighter.swift; sourceTree = "<group>"; };
@@ -962,6 +963,7 @@
 		08E5D2111EAFD31000374055 /* DockerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerManager.swift; sourceTree = "<group>"; };
 		08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = Carthage/Build/Mac/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
 		08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Rc2.swift"; sourceTree = "<group>"; };
+		08EB36C81FBB63310078229A /* SyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxParser.swift; sourceTree = "<group>"; };
 		08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetActionBlock.swift; sourceTree = "<group>"; };
 		08ED575E1C724383002B2558 /* MacFileImportSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacFileImportSetup.swift; sourceTree = "<group>"; };
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
@@ -1335,14 +1337,15 @@
 		082BE08A1F59D549006CE0B7 /* SyntaxParsing */ = {
 			isa = PBXGroup;
 			children = (
-				082BE0AB1F59D5BB006CE0B7 /* CodeHighlighter.swift */,
 				082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */,
+				08EB36C81FBB63310078229A /* SyntaxParser.swift */,
+				082BE0A81F59D5BB006CE0B7 /* BaseSyntaxParser.swift */,
+				082BE0AA1F59D5BB006CE0B7 /* RmdSyntaxParser.swift */,
+				082BE0AC1F59D5BB006CE0B7 /* RnwSyntaxParser.swift */,
+				082BE0AB1F59D5BB006CE0B7 /* CodeHighlighter.swift */,
 				082BE0A71F59D5BB006CE0B7 /* LatexCodeHighlighter.swift */,
 				082BE0AD1F59D5BB006CE0B7 /* RCodeHighlighter.swift */,
 				082BE0A61F59D5BB006CE0B7 /* RKeywords.txt */,
-				082BE0AA1F59D5BB006CE0B7 /* RmdSyntaxParser.swift */,
-				082BE0AC1F59D5BB006CE0B7 /* RnwSyntaxParser.swift */,
-				082BE0A81F59D5BB006CE0B7 /* SyntaxParser.swift */,
 				082BE08B1F59D549006CE0B7 /* SyntaxParsing.h */,
 				082BE08C1F59D549006CE0B7 /* Info.plist */,
 			);
@@ -2619,9 +2622,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				082BE0AE1F59D5BB006CE0B7 /* LatexCodeHighlighter.swift in Sources */,
+				08EB36C91FBB63310078229A /* SyntaxParser.swift in Sources */,
 				082BE0B31F59D5BB006CE0B7 /* RnwSyntaxParser.swift in Sources */,
 				082BE0B21F59D5BB006CE0B7 /* CodeHighlighter.swift in Sources */,
-				082BE0AF1F59D5BB006CE0B7 /* SyntaxParser.swift in Sources */,
+				082BE0AF1F59D5BB006CE0B7 /* BaseSyntaxParser.swift in Sources */,
 				082BE0B41F59D5BB006CE0B7 /* RCodeHighlighter.swift in Sources */,
 				082BE0B01F59D5BB006CE0B7 /* DocumentChunk.swift in Sources */,
 				082BE0B11F59D5BB006CE0B7 /* RmdSyntaxParser.swift in Sources */,

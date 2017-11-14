@@ -11,7 +11,7 @@ import Foundation
 import ClientCore
 import Model
 
-open class RmdSyntaxParser: SyntaxParser {
+class RmdSyntaxParser: BaseSyntaxParser {
 	let latexHighlighter: LatexCodeHighlighter
 	let rChunkRegex: NSRegularExpression
 	let blockEqRegex: NSRegularExpression
@@ -48,7 +48,7 @@ open class RmdSyntaxParser: SyntaxParser {
 			if let subRange = result.range(at: 2).toStringRange(str) {
 				cname = String(str[subRange])
 			}
-			let codeChunk = DocumentChunk(chunkType: .rCode, chunkNumber: nextChunkIndex, name: cname)
+			let codeChunk = DocumentChunk(chunkType: .executable, chunkNumber: nextChunkIndex, name: cname)
 			nextChunkIndex += 1
 			let mrng = result.range //rangeAtIndex(0)
 			//skip the initial newline
@@ -59,7 +59,7 @@ open class RmdSyntaxParser: SyntaxParser {
 		blockEqRegex.enumerateMatches(in: str, options: [], range: range)
 		{ (results, _, _) -> Void in
 			let newChunk = DocumentChunk(chunkType: .equation, chunkNumber: nextChunkIndex)
-			newChunk.equationType = .Display
+			newChunk.equationType = .display
 			nextChunkIndex += 1
 			newChunk.parsedRange = results!.range
 			newChunks.append(newChunk)
@@ -69,7 +69,7 @@ open class RmdSyntaxParser: SyntaxParser {
 		{ (results, _, _) -> Void in
 			if let subRange = results?.range(at:4).toStringRange(str), str[subRange] == "block" {
 				let newChunk = DocumentChunk(chunkType: .equation, chunkNumber: 1)
-				newChunk.equationType = .MathML
+				newChunk.equationType = .mathML
 				newChunk.parsedRange = results!.range
 				newChunks.append(newChunk)
 			} else {
@@ -123,7 +123,7 @@ open class RmdSyntaxParser: SyntaxParser {
 			self.textStorage.addAttribute(.backgroundColor, value: color, range: aRange)
 		}
 		//highlight latex code in display equation blocks
-		for aChunk in chunks where aChunk.type == .rCode {
+		for aChunk in chunks where aChunk.type == .executable {
 			self.latexHighlighter.highlightText(self.textStorage, range: aChunk.parsedRange)
 		}
 	}

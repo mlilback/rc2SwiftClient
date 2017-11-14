@@ -12,7 +12,7 @@ import Networking
 #endif
 import Model
 
-open class RnwSyntaxParser: SyntaxParser {
+class RnwSyntaxParser: BaseSyntaxParser {
 	fileprivate let startExpression: NSRegularExpression
 	
 	override init(storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HighlighterHasHelpCallback)
@@ -49,11 +49,11 @@ open class RnwSyntaxParser: SyntaxParser {
 				if let subRange = result.range(at: 2).toStringRange(str) {
 					cname = String(str[subRange])
 				}
-				newChunk = DocumentChunk(chunkType: .rCode, chunkNumber: curChunkNum, name: cname)
+				newChunk = DocumentChunk(chunkType: .executable, chunkNumber: curChunkNum, name: cname)
 			}
 			if let chunkToAdd = newChunk {
 				chunkToAdd.parsedRange = result.range
-				chunkToAdd.contentOffset = result.range.length + 1
+//				chunkToAdd.contentOffset = result.range.length + 1
 				self.chunks.append(chunkToAdd)
 				curChunkNum += 1
 			}

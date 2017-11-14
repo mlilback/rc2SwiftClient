@@ -325,7 +325,7 @@ extension SessionEditorController: NSTextStorageDelegate {
 			//only color chunks in the edited range
 			parser!.colorChunks(parser!.chunksForRange(editedRange))
 		}
-		currentChunkIndex = parser!.indexOfChunkForRange(range: editedRange)
+		currentChunkIndex = parser!.indexOfChunk(range: editedRange)
 		if currentDocument?.editedContents != textStorage.string {
 			currentDocument?.editedContents = textStorage.string
 		}
@@ -341,7 +341,7 @@ extension SessionEditorController: NSTextViewDelegate {
 	
 	func textViewDidChangeSelection(_ notification: Notification) {
 		guard let parser = parser else { return }
-		currentChunkIndex = parser.indexOfChunkForRange(range: editor!.selectedRange())
+		currentChunkIndex = parser.indexOfChunk(range: editor!.selectedRange())
 	}
 	
 	func textView(_ textView: NSTextView, clickedOnLink link: Any, at charIndex: Int) -> Bool {
@@ -443,7 +443,7 @@ fileprivate extension SessionEditorController {
 		let storage = editor.textStorage!
 		self.ignoreTextStorageNotifications = true
 		storage.deleteCharacters(in: editor.rangeOfAllText)
-		self.parser = SyntaxParser.parserWithTextStorage(storage, fileType: doc.file.fileType) { (topic) in
+		self.parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: doc.file.fileType) { (topic) in
 			return HelpController.shared.hasTopic(topic)
 		}
 		self.ignoreTextStorageNotifications = false

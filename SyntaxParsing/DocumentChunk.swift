@@ -6,30 +6,48 @@
 
 import Foundation
 
+/// Possible types of chunks
+///
+/// - documentation: normal text (that might be interpreted as a markup language such as markdown)
+/// - rCode: executable code
+/// - equation: a mathmatical equation
 public enum ChunkType {
-	case documentation, rCode, equation
+	case documentation, executable, equation
 }
 
+/// The possible types of equations
+///
+/// - invalid: An invalid equation
+/// - inline: An inline TeX equation
+/// - display: A TeX equation
+/// - mathML: An equation specified in MathML
 public enum EquationType: String {
-	case NotAnEquation = "invalid", Inline = "inline", Display = "display", MathML = "MathML"
+	case invalid, inline, display, mathML = "MathML"
 }
 
-///Represents a "chunk" of data. An R document has 1 chunk.
+/// Represents a "chunk" of data. An R document has 1 chunk.
 /// Rmd and Rnw documents can have multiple chunks of different types.
-open class DocumentChunk: NSObject {
-	///A unique, serial number for each chunk.
+public class DocumentChunk {
+	/// A unique, serial number for each chunk.
 	public let chunkNumber: Int
+	/// An optional name for the chunk (normally only for code chunks)
 	public let name: String?
-	///One of Documentation, RCode, or Equation
+	/// the type of chunk
 	public let type: ChunkType
-	
-	var equationType: EquationType = .NotAnEquation
-	var contentOffset: Int = 0
-	//should only be used by the parser/highlighter
+
+	/// if the type is .equation, the type of the equation
+	var equationType: EquationType = .invalid
+
+	// var contentOffset: Int = 0
+
+	// The range of text this chunk contains
 	public internal(set) var parsedRange: NSRange = NSRange(location: 0, length: 0)
 	
 	/// is this chunk one of the types that are executable
-	public var isExecutable: Bool { return type == .rCode }
+	public var isExecutable: Bool { return type == .executable }
+	
+	/// TODO: the updated parser implementation should store this propery instead of using the executableCode() function
+	/// public var executableRange: NSRange?
 	
 	/// Returns the substring between the first and last newlines if this chunk is executable
 	///
@@ -53,7 +71,6 @@ open class DocumentChunk: NSObject {
 		self.chunkNumber = chunkNumber
 		self.type = chunkType
 		self.name = name
-		super.init()
 	}
 	
 	convenience init(equationType: EquationType, chunkNumber: Int) {
@@ -61,35 +78,35 @@ open class DocumentChunk: NSObject {
 		self.equationType = equationType
 	}
 	
-	//duplicates a chunk that differs only in chunkNumber
+	/// returns a chunk that differs only in chunkNumber
 	func duplicateWithChunkNumber(_ newNum: Int) -> DocumentChunk {
 		let dup = DocumentChunk(chunkType: type, chunkNumber: newNum, name: name)
 		dup.parsedRange = parsedRange
-		dup.contentOffset = contentOffset
 		dup.equationType = equationType
 		return dup
 	}
-	
-	open override func isEqual(_ object: Any?) -> Bool {
-		if let other = object as? DocumentChunk {
-			return other.chunkNumber == chunkNumber && other.type == type && other.name == name && NSEqualRanges(parsedRange, other.parsedRange)
-		}
-		return false
+}
+
+extension DocumentChunk: Equatable {
+	public static func ==(lhs: DocumentChunk, rhs: DocumentChunk) -> Bool {
+		return lhs.chunkNumber == rhs.chunkNumber && lhs.type == rhs.type && lhs.name == rhs.name && NSEqualRanges(lhs.parsedRange, rhs.parsedRange)
 	}
-	
-	open override var hash: Int {
-		return chunkNumber.hashValue + type.hashValue + (name == nil ? 0 : name!.hashValue)
-	}
-	
-	open override var description: String {
+}
+
+extension DocumentChunk: Hashable {
+	public var hashValue: Int { return ObjectIdentifier(self).hashValue }
+}
+
+extension DocumentChunk: CustomStringConvertible {
+	public var description: String {
 		let range = NSStringFromRange(parsedRange)
 		switch self.type {
-			case .rCode:
-				return "R chunk \(chunkNumber) \"\((name == nil ? "" : name!))\" (\(range))"
-			case .documentation:
-				return "documentation chunk \(chunkNumber) (\(range))"
-			case .equation:
-				return "\(equationType.rawValue) equation chunk \(chunkNumber) (\(range))"
+		case .executable:
+			return "R chunk \(chunkNumber) \"\(name ?? "")\" (\(range))"
+		case .documentation:
+			return "documentation chunk \(chunkNumber) (\(range))"
+		case .equation:
+			return "\(equationType.rawValue) equation chunk \(chunkNumber) (\(range))"
 		}
 	}
 }
