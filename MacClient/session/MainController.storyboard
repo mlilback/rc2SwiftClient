@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13122.19" systemVersion="16F73" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13528" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13122.19"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13528"/>
         <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
@@ -51,8 +51,12 @@
                     <splitView key="splitView" dividerStyle="thin" vertical="YES" id="o6q-cZ-nGO" customClass="SessionSplitView" customModule="MacClient" customModuleProvider="target">
                         <rect key="frame" x="-223" y="0.0" width="948" height="524"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <outlet property="delegate" destination="tyw-Uw-ocM" id="Ttu-6b-aJh"/>
+                        </connections>
                     </splitView>
                     <connections>
+                        <outlet property="splitView" destination="o6q-cZ-nGO" id="SDi-aW-Paf"/>
                         <segue destination="IeT-2r-pnl" kind="relationship" relationship="splitItems" id="mZq-jk-6o6"/>
                         <segue destination="thj-QN-rY1" kind="relationship" relationship="splitItems" id="jbk-9g-Vac"/>
                         <segue destination="qFx-32-GX3" kind="relationship" relationship="splitItems" id="1KI-oz-Rfx"/>
@@ -77,8 +81,12 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <font key="font" metaFont="message"/>
                         <tabViewItems/>
+                        <connections>
+                            <outlet property="delegate" destination="qFx-32-GX3" id="Ghq-0Y-AC2"/>
+                        </connections>
                     </tabView>
                     <connections>
+                        <outlet property="tabView" destination="yzp-ro-Qov" id="jRF-JJ-3jl"/>
                         <segue destination="cmA-J2-3x3" kind="relationship" relationship="tabItems" id="ZGF-RH-jDc"/>
                         <segue destination="cag-VX-0j2" kind="relationship" relationship="tabItems" id="hwK-qM-BN7"/>
                         <segue destination="q5U-HH-oqN" kind="relationship" relationship="tabItems" id="DYt-ys-YDI"/>
@@ -260,8 +268,12 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <font key="font" metaFont="message"/>
                         <tabViewItems/>
+                        <connections>
+                            <outlet property="delegate" destination="IeT-2r-pnl" id="tPC-qT-1nv"/>
+                        </connections>
                     </tabView>
                     <connections>
+                        <outlet property="tabView" destination="ue0-Rt-KyC" id="lRr-FT-2tW"/>
                         <segue destination="XJm-U6-51C" kind="relationship" relationship="tabItems" id="28Q-XG-YZX"/>
                         <segue destination="1Ce-Bb-cCN" kind="relationship" relationship="tabItems" id="z4s-C3-CTU"/>
                         <segue destination="lJM-BU-ZVt" kind="relationship" relationship="tabItems" id="kIQ-gG-GLe"/>
