@@ -67,24 +67,6 @@ open class SyntaxParser: NSObject {
 		return chunkIndex
 	}
 	
-	public func chunkForRange(_ inRange: NSRange) -> DocumentChunk? {
-		var range = inRange
-		if range.location == NSNotFound { return nil }
-		if range.location == 0 && range.length == 0 {
-			if textStorage.length < 1 { return nil; }
-			range = NSRange(location: 0, length: 1)
-		}
-		if range.location == textStorage.length && range.length == 0 {
-			range.location -= 1
-		}
-		for aChunk in chunks {
-			if NSIntersectionRange(range, aChunk.parsedRange).length > 0 {
-				return aChunk
-			}
-		}
-		return nil
-	}
-	
 	public func chunksForRange(_ range: NSRange) -> [DocumentChunk] {
 		//if full range of textstorage, just return all chunks
 		if NSEqualRanges(range, NSRange(location: 0, length: textStorage.length)) {
@@ -127,10 +109,6 @@ open class SyntaxParser: NSObject {
 	
 	internal func parseRange(_ range: NSRange) {
 		preconditionFailure("subclass must implement")
-	}
-	
-	func syntaxHighlightChunksInRange(_ range: NSRange) {
-		colorChunks(chunksForRange(range))
 	}
 
 	///should be called when the textstorage contents have changed, ideally by the NSTextStorageDelegate call textStorage:didProcessEditing:range:changeInLength:
