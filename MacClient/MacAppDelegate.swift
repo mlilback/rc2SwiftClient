@@ -26,6 +26,11 @@ fileprivate struct Actions {
 	static let backupDatabase = #selector(MacAppDelegate.backupDatabase(_:))
 }
 
+extension NSStoryboard.Name {
+	static let mainBoard = NSStoryboard.Name(rawValue: "Main")
+	static let mainController = NSStoryboard.Name(rawValue: "MainController")
+}
+
 @NSApplicationMain
 class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 	// MARK: - properties
@@ -61,7 +66,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 				BITHockeyManager.shared().start()
 			}
 		#endif
-		mainStoryboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
+		mainStoryboard = NSStoryboard(name: .mainBoard, bundle: nil)
 		precondition(mainStoryboard != nil)
 		//only init dockerManager if not running unit tests or not expressly disabled
 		dockerEnabled = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil && !ProcessInfo.processInfo.arguments.contains("--disableDocker")
