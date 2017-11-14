@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "089794191D7B68F0003339EE"
-               BuildableName = "ClientCore.framework"
-               BlueprintName = "ClientCore"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
+               BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
+               BuildableName = "createHelpIndex"
+               BlueprintName = "createHelpIndex"
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -29,24 +29,14 @@
       language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "089794211D7B68F0003339EE"
-               BuildableName = "ClientCoreTests.xctest"
-               BlueprintName = "ClientCoreTests"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "089794191D7B68F0003339EE"
-            BuildableName = "ClientCore.framework"
-            BlueprintName = "ClientCore"
-            ReferencedContainer = "container:SwiftClient.xcodeproj">
+            BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
+            BuildableName = "createHelpIndex"
+            BlueprintName = "createHelpIndex"
+            ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -63,32 +53,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "089794191D7B68F0003339EE"
-            BuildableName = "ClientCore.framework"
-            BlueprintName = "ClientCore"
-            ReferencedContainer = "container:SwiftClient.xcodeproj">
+            BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
+            BuildableName = "createHelpIndex"
+            BlueprintName = "createHelpIndex"
+            ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "DockerHostUrl"
-            value = "http://10.0.1.9:2375/"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "CFNETWORK_DIAGNOSTICS"
-            value = "1"
-            isEnabled = "NO">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "DockerHostSharePath"
-            value = "/home/mlilback/pgdata"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
+      </BuildableProductRunnable>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -98,15 +72,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "089794191D7B68F0003339EE"
-            BuildableName = "ClientCore.framework"
-            BlueprintName = "ClientCore"
-            ReferencedContainer = "container:SwiftClient.xcodeproj">
+            BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
+            BuildableName = "createHelpIndex"
+            BlueprintName = "createHelpIndex"
+            ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

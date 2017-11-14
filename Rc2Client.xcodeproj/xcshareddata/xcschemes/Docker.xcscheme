@@ -17,7 +17,7 @@
                BlueprintIdentifier = "08F6ADC11DD9169300AF0722"
                BuildableName = "Docker.framework"
                BlueprintName = "Docker"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -36,7 +36,7 @@
                BlueprintIdentifier = "08F6ADC91DD9169300AF0722"
                BuildableName = "DockerTests.xctest"
                BlueprintName = "DockerTests"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -46,7 +46,7 @@
             BlueprintIdentifier = "08F6ADC11DD9169300AF0722"
             BuildableName = "Docker.framework"
             BlueprintName = "Docker"
-            ReferencedContainer = "container:SwiftClient.xcodeproj">
+            ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -69,7 +69,7 @@
             BlueprintIdentifier = "08F6ADC11DD9169300AF0722"
             BuildableName = "Docker.framework"
             BlueprintName = "Docker"
-            ReferencedContainer = "container:SwiftClient.xcodeproj">
+            ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -87,7 +87,7 @@
             BlueprintIdentifier = "08F6ADC11DD9169300AF0722"
             BuildableName = "Docker.framework"
             BlueprintName = "Docker"
-            ReferencedContainer = "container:SwiftClient.xcodeproj">
+            ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

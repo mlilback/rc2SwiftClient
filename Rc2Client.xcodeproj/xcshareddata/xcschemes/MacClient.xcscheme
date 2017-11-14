@@ -17,7 +17,7 @@
                BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
                BuildableName = "createHelpIndex"
                BlueprintName = "createHelpIndex"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -45,7 +45,7 @@
                BlueprintIdentifier = "088CE6681C4B0AF400153414"
                BuildableName = "Rc&#xb2;.app"
                BlueprintName = "MacClient"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -59,7 +59,7 @@
                BlueprintIdentifier = "088CE6791C4B0AF500153414"
                BuildableName = "MacClientTests.xctest"
                BlueprintName = "MacClientTests"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -78,7 +78,7 @@
                BlueprintIdentifier = "089794211D7B68F0003339EE"
                BuildableName = "ClientCoreTests.xctest"
                BlueprintName = "ClientCoreTests"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -88,7 +88,7 @@
                BlueprintIdentifier = "080E82C81DCBE31D0048F36C"
                BuildableName = "NetworkingTests.xctest"
                BlueprintName = "NetworkingTests"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -98,7 +98,7 @@
                BlueprintIdentifier = "088CE6791C4B0AF500153414"
                BuildableName = "MacClientTests.xctest"
                BlueprintName = "MacClientTests"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -108,7 +108,7 @@
                BlueprintIdentifier = "082BE0901F59D549006CE0B7"
                BuildableName = "SyntaxParsingTests.xctest"
                BlueprintName = "SyntaxParsingTests"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -118,7 +118,7 @@
             BlueprintIdentifier = "088CE6681C4B0AF400153414"
             BuildableName = "Rc&#xb2;.app"
             BlueprintName = "MacClient"
-            ReferencedContainer = "container:SwiftClient.xcodeproj">
+            ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -142,7 +142,7 @@
             BlueprintIdentifier = "088CE6681C4B0AF400153414"
             BuildableName = "Rc&#xb2;.app"
             BlueprintName = "MacClient"
-            ReferencedContainer = "container:SwiftClient.xcodeproj">
+            ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -199,7 +199,7 @@
             BlueprintIdentifier = "088CE6681C4B0AF400153414"
             BuildableName = "Rc&#xb2;.app"
             BlueprintName = "MacClient"
-            ReferencedContainer = "container:SwiftClient.xcodeproj">
+            ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

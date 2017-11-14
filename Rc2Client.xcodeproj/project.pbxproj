@@ -2292,7 +2292,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 088CE6641C4B0AF400153414 /* Build configuration list for PBXProject "SwiftClient" */;
+			buildConfigurationList = 088CE6641C4B0AF400153414 /* Build configuration list for PBXProject "Rc2Client" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -3954,7 +3954,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		088CE6641C4B0AF400153414 /* Build configuration list for PBXProject "SwiftClient" */ = {
+		088CE6641C4B0AF400153414 /* Build configuration list for PBXProject "Rc2Client" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				088CE6811C4B0AF500153414 /* Debug */,

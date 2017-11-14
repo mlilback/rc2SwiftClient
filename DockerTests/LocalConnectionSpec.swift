@@ -1,6 +1,6 @@
 //
 //  LocalConnectionSpec.swift
-//  SwiftClient
+//  Rc2Client
 //
 //  Created by Mark Lilback on 4/13/17.
 //  Copyright © 2017 Rc2. All rights reserved.

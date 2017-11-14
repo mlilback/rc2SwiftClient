@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "082BE0881F59D549006CE0B7"
-               BuildableName = "SyntaxParsing.framework"
-               BlueprintName = "SyntaxParsing"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
+               BlueprintIdentifier = "089794191D7B68F0003339EE"
+               BuildableName = "ClientCore.framework"
+               BlueprintName = "ClientCore"
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,20 +33,20 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "082BE0901F59D549006CE0B7"
-               BuildableName = "SyntaxParsingTests.xctest"
-               BlueprintName = "SyntaxParsingTests"
-               ReferencedContainer = "container:SwiftClient.xcodeproj">
+               BlueprintIdentifier = "089794211D7B68F0003339EE"
+               BuildableName = "ClientCoreTests.xctest"
+               BlueprintName = "ClientCoreTests"
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "082BE0881F59D549006CE0B7"
-            BuildableName = "SyntaxParsing.framework"
-            BlueprintName = "SyntaxParsing"
-            ReferencedContainer = "container:SwiftClient.xcodeproj">
+            BlueprintIdentifier = "089794191D7B68F0003339EE"
+            BuildableName = "ClientCore.framework"
+            BlueprintName = "ClientCore"
+            ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -66,12 +66,29 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "082BE0881F59D549006CE0B7"
-            BuildableName = "SyntaxParsing.framework"
-            BlueprintName = "SyntaxParsing"
-            ReferencedContainer = "container:SwiftClient.xcodeproj">
+            BlueprintIdentifier = "089794191D7B68F0003339EE"
+            BuildableName = "ClientCore.framework"
+            BlueprintName = "ClientCore"
+            ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "DockerHostUrl"
+            value = "http://10.0.1.9:2375/"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "CFNETWORK_DIAGNOSTICS"
+            value = "1"
+            isEnabled = "NO">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "DockerHostSharePath"
+            value = "/home/mlilback/pgdata"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -84,10 +101,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "082BE0881F59D549006CE0B7"
-            BuildableName = "SyntaxParsing.framework"
-            BlueprintName = "SyntaxParsing"
-            ReferencedContainer = "container:SwiftClient.xcodeproj">
+            BlueprintIdentifier = "089794191D7B68F0003339EE"
+            BuildableName = "ClientCore.framework"
+            BlueprintName = "ClientCore"
+            ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

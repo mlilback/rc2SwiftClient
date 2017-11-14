@@ -1,6 +1,6 @@
 //
 //  DockerImageTest.swift
-//  SwiftClient
+//  Rc2Client
 //
 //  Created by Mark Lilback on 9/2/16.
 //  Copyright © 2016 Rc2. All rights reserved.
