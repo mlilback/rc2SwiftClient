@@ -874,7 +874,6 @@
 		0872676C1EE20A37004251C1 /* DockerBackupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DockerBackupViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08765C811DC58AB300F75D8E /* DispatchReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchReader.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
-		0881B5031DCD23FD00679DB3 /* Variable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
 		0881B5051DCD329300679DB3 /* VariableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableSpec.swift; sourceTree = "<group>"; };
 		0881B5071DCD336500679DB3 /* variables.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = variables.json; sourceTree = "<group>"; };
 		0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionInfo.swift; sourceTree = "<group>"; };
@@ -1463,7 +1462,6 @@
 				080E82E01DCBEE590048F36C /* User.swift */,
 				080E82E21DCBEF830048F36C /* AppProject.swift */,
 				08F6ADB81DD911D500AF0722 /* AppWorkspace.swift */,
-				0881B5031DCD23FD00679DB3 /* Variable.swift */,
 				080E82E61DCBF8840048F36C /* FileTypes.json */,
 			);
 			name = model;
