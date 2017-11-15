@@ -8,25 +8,59 @@ import Foundation
 import Model
 
 fileprivate extension NSUserInterfaceItemIdentifier {
-	static let valueCell = NSUserInterfaceItemIdentifier("variableValue")
+	static let simpleList = NSUserInterfaceItemIdentifier(rawValue: "simpleList")
+	static let textDetails = NSUserInterfaceItemIdentifier(rawValue: "textDetails")
 }
 
 class VariableDetailsViewController: NSViewController {
-	@IBOutlet var valuesTableView: NSTableView!
-	var variable: Variable? { didSet { valuesTableView?.reloadData() }}
-}
-
-extension VariableDetailsViewController: NSTableViewDataSource {
-	func numberOfRows(in tableView: NSTableView) -> Int {
-		return variable?.length ?? 0
+	private var variable: Variable?
+	@IBOutlet var nameField: NSTextField!
+	@IBOutlet var detailsField: NSTextField!
+	var tabController: VariableDetailsTabViewController?
+	var tabView: NSTabView?
+	var simpleListController: ValuesVariableDetailController?
+	var textDetailsController: TextVariableDetailController?
+	var identifiers = [NSUserInterfaceItemIdentifier: NSTabViewItem]()
+	
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		nameField.stringValue = ""
+		detailsField.stringValue = ""
+	}
+	
+	func display(variable: Variable) {
+		guard nameField != nil else { fatalError("display(variable:) called before view loaded") }
+		self.variable = variable
+		nameField.stringValue = variable.name
+		detailsField.stringValue = variable.description
+		if variable.isPrimitive {
+			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.simpleList)
+			simpleListController?.variable = variable
+		} else {
+			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.textDetails)
+			textDetailsController?.textView.string = variable.summary
+		}
+	}
+	
+	override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
+		guard let tabController = segue.destinationController as? NSTabViewController else { return }
+		self.tabController = tabController as? VariableDetailsTabViewController
+		tabView = tabController.tabView
+		for item in tabController.tabViewItems {
+			if let simpleController = item.viewController as? ValuesVariableDetailController {
+				simpleListController = simpleController
+				simpleController.identifier = .simpleList
+				identifiers[.simpleList] = item
+			} else if let textController = item.viewController as? TextVariableDetailController {
+				textDetailsController = textController
+				textController.identifier = .textDetails
+				identifiers[.textDetails] = item
+			}
+		}
 	}
 }
 
-extension VariableDetailsViewController: NSTableViewDelegate {
-	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-		guard let cellView = tableView.makeView(withIdentifier: .valueCell, owner: nil) as? NSTableCellView else { fatalError("failed to load table cell view") }
-		cellView.textField?.stringValue = "some value"
-		return cellView
-	}
+
+class VariableDetailsTabViewController: NSTabViewController {
 }
 

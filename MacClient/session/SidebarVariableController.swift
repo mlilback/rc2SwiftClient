@@ -93,6 +93,7 @@ class SidebarVariableController: AbstractSessionViewController {
 	
 	@IBAction func showDetails(_ sender: Any?) {
 		if variablePopover == nil {
+			// setup the popup and view controller
 			let sboard = NSStoryboard(name: .mainController, bundle: nil)
 			detailsController = sboard.instantiateViewController()
 			assert(detailsController != nil)
@@ -101,11 +102,19 @@ class SidebarVariableController: AbstractSessionViewController {
 			variablePopover?.contentViewController = detailsController
 			variablePopover?.contentSize = NSSize(width: 200, height: 300)
 		}
-		print("showDetails from \(sender ?? "nil")")
 		let selRow = varTableView.selectedRow
 		guard selRow != -1 else { os_log("can't show variable details w/o selection", log: .app); return }
-		detailsController?.variable = rootVariables[selRow]
-		variablePopover?.show(relativeTo: varTableView.rect(ofRow: selRow), of: varTableView, preferredEdge: .maxX)
+		// if the view isn't loaded, we need to display the view first, then tell it what variable to show
+		guard detailsController!.isViewLoaded else {
+			variablePopover?.show(relativeTo: varTableView.rect(ofRow: selRow), of: varTableView, preferredEdge: .maxX)
+			detailsController?.display(variable: rootVariables[selRow])
+			return
+		}
+		// we need to delay showing the popover because NSTabViewController wants to animate this, we don't want it animated
+		detailsController?.display(variable: rootVariables[selRow])
+		DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
+			self.variablePopover?.show(relativeTo: self.varTableView.rect(ofRow: selRow), of: self.varTableView, preferredEdge: .maxX)
+		}
 	}
 	
 	@IBAction func doubleClick(_ sender: Any?) {
@@ -232,3 +241,4 @@ extension SidebarVariableController: NSTableViewDelegate {
 		}
 	}
 }
+

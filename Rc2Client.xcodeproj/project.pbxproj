@@ -320,6 +320,8 @@
 		08E8366C1D94500900E26EFE /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08EB36C91FBB63310078229A /* SyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36C81FBB63310078229A /* SyntaxParser.swift */; };
 		08EB36CE1FBB7CF90078229A /* VariableDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36CD1FBB7CF90078229A /* VariableDetailsViewController.swift */; };
+		08EB36D01FBB9E480078229A /* ValuesVariableDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36CF1FBB9E480078229A /* ValuesVariableDetailController.swift */; };
+		08EB36D21FBBA1640078229A /* TextVariableDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36D11FBBA1640078229A /* TextVariableDetailController.swift */; };
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08F01E961EFC74690047F397 /* NSData+Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F01E941EFC74690047F397 /* NSData+Hash.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -966,6 +968,8 @@
 		08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Rc2.swift"; sourceTree = "<group>"; };
 		08EB36C81FBB63310078229A /* SyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxParser.swift; sourceTree = "<group>"; };
 		08EB36CD1FBB7CF90078229A /* VariableDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableDetailsViewController.swift; sourceTree = "<group>"; };
+		08EB36CF1FBB9E480078229A /* ValuesVariableDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValuesVariableDetailController.swift; sourceTree = "<group>"; };
+		08EB36D11FBBA1640078229A /* TextVariableDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextVariableDetailController.swift; sourceTree = "<group>"; };
 		08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetActionBlock.swift; sourceTree = "<group>"; };
 		08ED575E1C724383002B2558 /* MacFileImportSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacFileImportSetup.swift; sourceTree = "<group>"; };
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
@@ -1303,6 +1307,8 @@
 				083305E31C517FC000E27F66 /* SidebarVariableController.swift */,
 				083305E51C517FE300E27F66 /* SidebarHelpController.swift */,
 				08EB36CD1FBB7CF90078229A /* VariableDetailsViewController.swift */,
+				08EB36CF1FBB9E480078229A /* ValuesVariableDetailController.swift */,
+				08EB36D11FBBA1640078229A /* TextVariableDetailController.swift */,
 			);
 			name = sidebar;
 			sourceTree = "<group>";
@@ -2731,9 +2737,11 @@
 				08A01FC41CC7FCA3001EDFAA /* FMDatabaseAdditions.m in Sources */,
 				089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,
+				08EB36D01FBB9E480078229A /* ValuesVariableDetailController.swift in Sources */,
 				086A40D51E7B04F400AE476B /* ThemeEditorController.swift in Sources */,
 				08A01FD61CC95C58001EDFAA /* HelpController.swift in Sources */,
 				083174101C57B2E200071408 /* CommandHistory.swift in Sources */,
+				08EB36D21FBBA1640078229A /* TextVariableDetailController.swift in Sources */,
 				089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */,
 				08CCED4B1EE1DDFC004B5ADE /* DockerLogController.swift in Sources */,
 				0872676D1EE20A37004251C1 /* DockerBackupViewController.swift in Sources */,
