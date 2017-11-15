@@ -13,13 +13,19 @@ fileprivate extension NSUserInterfaceItemIdentifier {
 
 class ValuesVariableDetailController: NSViewController {
 	@IBOutlet var valuesTableView: NSTableView!
-	var variable: Variable? { didSet { valuesTableView?.reloadData() }}
-
+	private(set) var variable: Variable?
+	private(set) var valueContent: [String] = []
+	
+	func set(variable: Variable, values: [String]) {
+		self.variable = variable
+		self.valueContent = values
+		valuesTableView?.reloadData()
+	}
 }
 
 extension ValuesVariableDetailController: NSTableViewDataSource {
 	func numberOfRows(in tableView: NSTableView) -> Int {
-		return variable?.length ?? 0
+		return valueContent.count
 	}
 }
 
@@ -27,7 +33,7 @@ extension ValuesVariableDetailController: NSTableViewDelegate {
 	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 		guard let cellView = tableView.makeView(withIdentifier: .valueCell, owner: nil) as? NSTableCellView
 			else { fatalError("failed to load table cell view") }
-		cellView.textField?.stringValue = "some value"
+		cellView.textField?.stringValue = valueContent[row]
 		return cellView
 	}
 }

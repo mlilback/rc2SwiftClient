@@ -21,11 +21,19 @@ class VariableDetailsViewController: NSViewController {
 	var simpleListController: ValuesVariableDetailController?
 	var textDetailsController: TextVariableDetailController?
 	var identifiers = [NSUserInterfaceItemIdentifier: NSTabViewItem]()
+	var formatter: VariableFormatter?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		nameField.stringValue = ""
 		detailsField.stringValue = ""
+		let doubleFmt = NumberFormatter()
+		doubleFmt.numberStyle = .decimal
+		doubleFmt.minimumIntegerDigits = 1
+		let dateFmt = DateFormatter()
+		dateFmt.locale = Locale(identifier: "en_US_POSIX")
+		dateFmt.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+		formatter = VariableFormatter(doubleFormatter: doubleFmt, dateFormatter: dateFmt)
 	}
 	
 	func display(variable: Variable) {
@@ -33,10 +41,11 @@ class VariableDetailsViewController: NSViewController {
 		self.variable = variable
 		nameField.stringValue = variable.name
 		detailsField.stringValue = variable.description
-		if variable.isPrimitive {
+		if let values = formatter?.values(for: variable) {
 			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.simpleList)
-			simpleListController?.variable = variable
+			simpleListController?.set(variable: variable, values: values)
 		} else {
+			// if nothing else, show description in text view
 			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.textDetails)
 			textDetailsController?.textView.string = variable.summary
 		}
