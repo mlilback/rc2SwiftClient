@@ -3033,7 +3033,6 @@
 				0866599A1CA1F3E5007AC555 /* Base */,
 			);
 			name = MainWindow.xib;
-			path = ../shared/networking;
 			sourceTree = "<group>";
 		};
 		088CE6721C4B0AF400153414 /* Main.storyboard */ = {
