@@ -10,6 +10,7 @@ import Model
 fileprivate extension NSUserInterfaceItemIdentifier {
 	static let simpleList = NSUserInterfaceItemIdentifier(rawValue: "simpleList")
 	static let textDetails = NSUserInterfaceItemIdentifier(rawValue: "textDetails")
+	static let spreadSheet = NSUserInterfaceItemIdentifier(rawValue: "spreadsheet")
 }
 
 class VariableDetailsViewController: NSViewController {
@@ -20,6 +21,7 @@ class VariableDetailsViewController: NSViewController {
 	var tabView: NSTabView?
 	var simpleListController: ValuesVariableDetailController?
 	var textDetailsController: TextVariableDetailController?
+	var ssheetController: SpreadsheetVariableDetailController?
 	var identifiers = [NSUserInterfaceItemIdentifier: NSTabViewItem]()
 	var formatter: VariableFormatter?
 	
@@ -41,9 +43,13 @@ class VariableDetailsViewController: NSViewController {
 		self.variable = variable
 		nameField.stringValue = variable.name
 		detailsField.stringValue = variable.description
-		if let values = formatter?.values(for: variable) {
+		if let values = formatter?.formatValues(for: variable) {
 			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.simpleList)
 			simpleListController?.set(variable: variable, values: values)
+		} else if let matrixData = variable.matrixData, let values = formatter?.formatValues(for: matrixData.value) {
+			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.spreadSheet)
+			let ssource = MatrixDataSource(variable: variable, data: matrixData, values: values)
+			ssheetController?.set(variable: variable, source: ssource)
 		} else {
 			// if nothing else, show description in text view
 			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.textDetails)
@@ -64,6 +70,10 @@ class VariableDetailsViewController: NSViewController {
 				textDetailsController = textController
 				textController.identifier = .textDetails
 				identifiers[.textDetails] = item
+			} else if let sheetController = item.viewController as? SpreadsheetVariableDetailController {
+				ssheetController = sheetController
+				sheetController.identifier = .spreadSheet
+				identifiers[.spreadSheet] = item
 			}
 		}
 	}

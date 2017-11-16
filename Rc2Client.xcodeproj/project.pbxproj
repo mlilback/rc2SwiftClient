@@ -12,6 +12,9 @@
 		0803F1871EFD9C46006B15A7 /* ToolbarItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F01EC11EFD8DCA0047F397 /* ToolbarItemHandler.swift */; };
 		0803FCBE1C84C47400F17E4A /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		08055E301FBBC210007419C6 /* VariableFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08055E2F1FBBC210007419C6 /* VariableFormatter.swift */; };
+		08055E321FBC810D007419C6 /* SpreadsheetDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08055E311FBC810D007419C6 /* SpreadsheetDataSource.swift */; };
+		08055E341FBDF22F007419C6 /* MatrixDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08055E331FBDF22F007419C6 /* MatrixDataSource.swift */; };
+		08055E361FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08055E351FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift */; };
 		0807F1611F83DE830018EF61 /* Rc2.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0807F1601F83DE830018EF61 /* Rc2.xcassets */; };
 		080AB8DC1E92D9D7005452C7 /* MultiImageWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB8DB1E92D9D7005452C7 /* MultiImageWindowController.swift */; };
 		080AB8DE1E92DA10005452C7 /* MultiImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB8DD1E92DA10005452C7 /* MultiImageViewController.swift */; };
@@ -681,6 +684,9 @@
 		08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = EmbeddedFrameworkDebug.xcconfig; path = config/EmbeddedFrameworkDebug.xcconfig; sourceTree = "<group>"; };
 		08037C211D7B74A100006E9E /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = App.xcconfig; path = config/App.xcconfig; sourceTree = "<group>"; };
 		08055E2F1FBBC210007419C6 /* VariableFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableFormatter.swift; sourceTree = "<group>"; };
+		08055E311FBC810D007419C6 /* SpreadsheetDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetDataSource.swift; sourceTree = "<group>"; };
+		08055E331FBDF22F007419C6 /* MatrixDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixDataSource.swift; sourceTree = "<group>"; };
+		08055E351FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetVariableDetailController.swift; sourceTree = "<group>"; };
 		0807F1601F83DE830018EF61 /* Rc2.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Rc2.xcassets; sourceTree = "<group>"; };
 		080AB8DB1E92D9D7005452C7 /* MultiImageWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiImageWindowController.swift; sourceTree = "<group>"; };
 		080AB8DD1E92DA10005452C7 /* MultiImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiImageViewController.swift; sourceTree = "<group>"; };
@@ -1311,6 +1317,7 @@
 				08EB36CD1FBB7CF90078229A /* VariableDetailsViewController.swift */,
 				08EB36CF1FBB9E480078229A /* ValuesVariableDetailController.swift */,
 				08EB36D11FBBA1640078229A /* TextVariableDetailController.swift */,
+				08055E351FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift */,
 			);
 			name = sidebar;
 			sourceTree = "<group>";
@@ -1647,6 +1654,8 @@
 				08F189A71D0A0E7200866A05 /* static_html */,
 				08A01FB51CC7FCA3001EDFAA /* fmdb */,
 				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
+				08055E311FBC810D007419C6 /* SpreadsheetDataSource.swift */,
+				08055E331FBDF22F007419C6 /* MatrixDataSource.swift */,
 				08A01FD51CC95C58001EDFAA /* HelpController.swift */,
 				080AB8E31E9564BA005452C7 /* HelpTopic.swift */,
 				08CB553D1C5A0FB8002CB7EE /* MonoFontManager.swift */,
@@ -2682,6 +2691,7 @@
 				08F189AA1D109A4F00866A05 /* TextViewWithContextualMenu.swift in Sources */,
 				08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */,
 				08A01FCA1CC7FCA3001EDFAA /* FMResultSet.m in Sources */,
+				08055E341FBDF22F007419C6 /* MatrixDataSource.swift in Sources */,
 				08F189A61D09EE4000866A05 /* NSViewController+Rc2.swift in Sources */,
 				083305E41C517FC000E27F66 /* SidebarVariableController.swift in Sources */,
 				08A01FDC1CCA8B2F001EDFAA /* WebViewController.swift in Sources */,
@@ -2711,6 +2721,7 @@
 				084199261D903F7A0089A1AC /* StartupController.swift in Sources */,
 				08CB55521C5C06B2002CB7EE /* OutputTabController.swift in Sources */,
 				0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */,
+				08055E361FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift in Sources */,
 				08EB36CE1FBB7CF90078229A /* VariableDetailsViewController.swift in Sources */,
 				080AB8E41E9564BA005452C7 /* HelpTopic.swift in Sources */,
 				0890650B1D26F59300C7CA5D /* MacAppStatus.swift in Sources */,
@@ -2730,6 +2741,7 @@
 				08F189A21D09AA0300866A05 /* SessionController.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
 				08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */,
+				08055E321FBC810D007419C6 /* SpreadsheetDataSource.swift in Sources */,
 				08A01FC81CC7FCA3001EDFAA /* FMDatabaseQueue.m in Sources */,
 				08DAF2F31E4D07EF005A251E /* PreferencesViewController.swift in Sources */,
 				080AB8DC1E92D9D7005452C7 /* MultiImageWindowController.swift in Sources */,

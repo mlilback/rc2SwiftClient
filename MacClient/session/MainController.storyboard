@@ -1438,7 +1438,7 @@
                 </viewController>
                 <customObject id="AgB-Ab-yqJ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-352" y="1484"/>
+            <point key="canvasLocation" x="-352" y="1462"/>
         </scene>
         <!--VariableDetails Tab View Controller-->
         <scene sceneID="MUB-F6-Umu">
@@ -1447,6 +1447,7 @@
                     <tabViewItems>
                         <tabViewItem identifier="simpleList" id="xsR-pd-fKQ"/>
                         <tabViewItem identifier="textDetails" id="pqm-kh-LFe"/>
+                        <tabViewItem identifier="spreadsheet" id="9tv-jq-3ec"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="JSr-nX-NuU">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
@@ -1460,11 +1461,12 @@
                     <connections>
                         <segue destination="aMg-oy-m5L" kind="relationship" relationship="tabItems" id="H9S-Oz-3XS"/>
                         <segue destination="jDB-i3-wcq" kind="relationship" relationship="tabItems" id="ymT-hH-bgB"/>
+                        <segue destination="tdW-bb-Nic" kind="relationship" relationship="tabItems" id="a5J-iM-3gQ"/>
                     </connections>
                 </tabViewController>
                 <customObject id="i4j-UB-akp" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="248" y="1484"/>
+            <point key="canvasLocation" x="229" y="1462"/>
         </scene>
         <!--simpleList-->
         <scene sceneID="Zfm-jF-6wh">
@@ -1602,6 +1604,97 @@
                 <customObject id="7NS-ju-90T" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="865" y="1635"/>
+        </scene>
+        <!--spreadsheet-->
+        <scene sceneID="kmP-27-Wpv">
+            <objects>
+                <viewController title="spreadsheet" id="tdW-bb-Nic" userLabel="spreadsheet" customClass="SpreadsheetVariableDetailController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="Y6i-bE-eqp">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VNX-8z-qFh">
+                                <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                                <clipView key="contentView" id="MfB-ZU-eDZ">
+                                    <rect key="frame" x="1" y="0.0" width="448" height="299"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="UJl-SD-BTg" viewBased="YES" id="NQe-JC-YGe">
+                                            <rect key="frame" x="0.0" y="0.0" width="448" height="276"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <size key="intercellSpacing" width="3" height="2"/>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                            <tableColumns>
+                                                <tableColumn width="116" minWidth="40" maxWidth="1000" id="bYo-zt-k3V">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                    </tableHeaderCell>
+                                                    <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" title="Text Cell" id="ZBi-9G-PEb">
+                                                        <font key="font" metaFont="system"/>
+                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                    <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                    <prototypeCellViews>
+                                                        <tableCellView identifier="ssheetValue" id="0zy-yP-ghl">
+                                                            <rect key="frame" x="1" y="1" width="116" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uZo-1i-wdf">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="116" height="17"/>
+                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="1nA-CI-n5d">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                            </subviews>
+                                                            <connections>
+                                                                <outlet property="textField" destination="uZo-1i-wdf" id="yrQ-5K-Rn9"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                    </prototypeCellViews>
+                                                </tableColumn>
+                                            </tableColumns>
+                                            <connections>
+                                                <outlet property="dataSource" destination="tdW-bb-Nic" id="ksd-Ok-fyT"/>
+                                                <outlet property="delegate" destination="tdW-bb-Nic" id="6Ei-3J-54t"/>
+                                            </connections>
+                                        </tableView>
+                                    </subviews>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="6wb-gt-Pex">
+                                    <rect key="frame" x="1" y="119" width="223" height="15"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="Q6b-mf-1P5">
+                                    <rect key="frame" x="224" y="17" width="15" height="102"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <tableHeaderView key="headerView" id="UJl-SD-BTg">
+                                    <rect key="frame" x="0.0" y="0.0" width="448" height="23"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableHeaderView>
+                            </scrollView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="VNX-8z-qFh" secondAttribute="trailing" id="EMw-yR-haO"/>
+                            <constraint firstItem="VNX-8z-qFh" firstAttribute="top" secondItem="Y6i-bE-eqp" secondAttribute="top" id="R9u-if-3CW"/>
+                            <constraint firstAttribute="bottom" secondItem="VNX-8z-qFh" secondAttribute="bottom" id="a9F-yr-bmZ"/>
+                            <constraint firstItem="VNX-8z-qFh" firstAttribute="leading" secondItem="Y6i-bE-eqp" secondAttribute="leading" id="wqx-Dg-fRn"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="ssheetTable" destination="NQe-JC-YGe" id="8FT-U2-BM2"/>
+                    </connections>
+                </viewController>
+                <customObject id="Vn5-RG-z5u" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="865" y="2074"/>
         </scene>
     </scenes>
     <resources>

@@ -23,10 +23,10 @@ class VariableFormatter {
 	///
 	/// - Parameter variable: the variable to get the values of
 	/// - Returns: the values as Strings, or nil if formatting not supported
-	public func values(for variable: Variable) -> [String]? {
+	public func formatValues(for variable: Variable) -> [String]? {
 		switch variable.type {
 		case .primitive(let pval):
-			return values(primitive: pval)
+			return formatValues(for: pval)
 		case .date(let dval):
 			return [dateFormatter.string(from: dval)]
 		case .dateTime(let dval):
@@ -36,7 +36,11 @@ class VariableFormatter {
 		}
 	}
 	
-	private func values(primitive: PrimitiveValue) -> [String] {
+	/// Returns values as an array of strings
+	///
+	/// - Parameter primitive: the primitive value to retrieve values from
+	/// - Returns: the value array as an array of formatted strings
+	public func formatValues(for primitive: PrimitiveValue) -> [String] {
 		switch primitive {
 		case .boolean(let boolVals):
 			return boolVals.map { $0.description }
