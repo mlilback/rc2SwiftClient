@@ -49,9 +49,9 @@ class VariableFormatter {
 		case .double(let doubleVals):
 			return doubleVals.map { doubleFormatter.string(from: NSNumber(value: $0)) ?? "-" }
 		case .string(let strVals):
-			return strVals
+			return strVals.map { if $0 == nil { return "<NA>" }; return $0! }
 		case .complex(let complexVals):
-			return complexVals
+			return complexVals.map  { if $0 == nil { return "<NA>" }; return $0! }
 		case .raw:
 			return ["<RAW>"]
 		case .null:
