@@ -160,11 +160,11 @@ extension SidebarVariableController: VariableHandler {
 	func variablesUpdated(_ update: SessionResponse.ListVariablesData) {
 		defer { variablesChanged() }
 		guard update.delta else {
-			rootVariables = update.variables
+			rootVariables = Array(update.variables.values)
 			return
 		}
-		for variable in update.variables {
-			if let curVal = variableNamed(variable.name) {
+		for (name, variable) in update.variables {
+			if let curVal = variableNamed(name) {
 				rootVariables[rootVariables.index(of: curVal)!] = variable
 			} else {
 				rootVariables.append(variable)
