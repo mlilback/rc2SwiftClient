@@ -10,4 +10,4 @@ github "ReactiveCocoa/ReactiveCocoa" ~> 6.0.1
 github "bignerdranch/Freddy" ~> 3.0
 github "ZipArchive/ZipArchive"
 github "vapor/bcrypt"
-
+github "evgenyneu/SigmaSwiftStatistics" ~> 7.0

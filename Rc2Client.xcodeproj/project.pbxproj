@@ -96,6 +96,8 @@
 		081C71B11E9DD02D00A1BD3B /* SingleDataResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081C71B01E9DD02D00A1BD3B /* SingleDataResponseHandler.swift */; };
 		081C71B31E9DD08B00A1BD3B /* HijackedResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081C71B21E9DD08B00A1BD3B /* HijackedResponseHandler.swift */; };
 		081C71B51E9EB92000A1BD3B /* LocalDockerConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081C71B41E9EB92000A1BD3B /* LocalDockerConnection.swift */; };
+		0821BDCA1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */; };
+		0821BDCB1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0823F2331EE742B100A8F8C6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0823F2321EE742B100A8F8C6 /* libz.tbd */; };
 		0826108F1DB02FC300C03422 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082610901DB02FC300C03422 /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -647,6 +649,7 @@
 				08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */,
 				082BE15E1F5B3682006CE0B7 /* Model.framework in Embed Frameworks */,
 				08F6ADD81DD9169400AF0722 /* Docker.framework in Embed Frameworks */,
+				0821BDCB1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Embed Frameworks */,
 				08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */,
 				08F5CDE11FCB1F0A009665AD /* LoggerAPI.framework in Embed Frameworks */,
 				080E82D71DCBE31D0048F36C /* Networking.framework in Embed Frameworks */,
@@ -769,6 +772,7 @@
 		081C71B01E9DD02D00A1BD3B /* SingleDataResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleDataResponseHandler.swift; sourceTree = "<group>"; };
 		081C71B21E9DD08B00A1BD3B /* HijackedResponseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HijackedResponseHandler.swift; sourceTree = "<group>"; };
 		081C71B41E9EB92000A1BD3B /* LocalDockerConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDockerConnection.swift; sourceTree = "<group>"; };
+		0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SigmaSwiftStatistics.framework; path = Carthage/Build/Mac/SigmaSwiftStatistics.framework; sourceTree = "<group>"; };
 		0823F2321EE742B100A8F8C6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		0826108D1DB02FC300C03422 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/Mac/Nimble.framework; sourceTree = "<group>"; };
 		0826108E1DB02FC300C03422 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/Mac/Quick.framework; sourceTree = "<group>"; };
@@ -1133,6 +1137,7 @@
 				08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */,
 				08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */,
+				0821BDCA1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Frameworks */,
 				08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */,
 				08678C971DCA78CE00F9F283 /* Freddy.framework in Frameworks */,
 				080E82B51DCBB3DD0048F36C /* PEGKit.framework in Frameworks */,
@@ -1330,8 +1335,8 @@
 			children = (
 				08F448F61C4E244500C64706 /* SidebarTabController.swift */,
 				083305E11C517F8900E27F66 /* SidebarFileController.swift */,
-				083305E31C517FC000E27F66 /* SidebarVariableController.swift */,
 				083305E51C517FE300E27F66 /* SidebarHelpController.swift */,
+				083305E31C517FC000E27F66 /* SidebarVariableController.swift */,
 				08EB36CD1FBB7CF90078229A /* VariableDetailsViewController.swift */,
 				08EB36CF1FBB9E480078229A /* ValuesVariableDetailController.swift */,
 				08EB36D11FBBA1640078229A /* TextVariableDetailController.swift */,
@@ -1547,6 +1552,7 @@
 		088CE6601C4B0AF400153414 = {
 			isa = PBXGroup;
 			children = (
+				0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */,
 				084199331D9179C60089A1AC /* xcconfig */,
 				088CE66B1C4B0AF400153414 /* MacClient */,
 				088CE6941C4B605D00153414 /* shared */,
