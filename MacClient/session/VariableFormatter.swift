@@ -43,11 +43,11 @@ class VariableFormatter {
 	public func formatValues(for primitive: PrimitiveValue) -> [String] {
 		switch primitive {
 		case .boolean(let boolVals):
-			return boolVals.map { $0.description }
+			return boolVals.map { if $0 == nil { return "<NA>" }; return $0!.description }
 		case .integer(let intVals):
-			return intVals.map { $0.description }
+			return intVals.map  { if $0 == nil { return "<NA>" }; return $0!.description }
 		case .double(let doubleVals):
-			return doubleVals.map { doubleFormatter.string(from: NSNumber(value: $0)) ?? "-" }
+			return doubleVals.map { if $0 == nil { return "<NA>" }; return doubleFormatter.string(from: NSNumber(value: $0!)) ?? "-" }
 		case .string(let strVals):
 			return strVals.map { if $0 == nil { return "<NA>" }; return $0! }
 		case .complex(let complexVals):

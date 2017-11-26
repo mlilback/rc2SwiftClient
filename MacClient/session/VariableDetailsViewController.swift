@@ -50,6 +50,10 @@ class VariableDetailsViewController: NSViewController {
 			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.spreadSheet)
 			let ssource = MatrixDataSource(variable: variable, data: matrixData, values: values)
 			ssheetController?.set(variable: variable, source: ssource)
+		} else if let dataframeData = variable.dataFrameData, let formatter = formatter {
+			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.spreadSheet)
+			let ssource = DataFrameDataSource(variable: variable, data: dataframeData, formatter: formatter)
+			ssheetController?.set(variable: variable, source: ssource)
 		} else {
 			// if nothing else, show description in text view
 			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.textDetails)
