@@ -5,6 +5,9 @@
       location = "group:Rc2Client.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:vendor/HeliumLogger/HeliumLogger.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:vendor/SBInjector/SBInjector.xcodeproj">
    </FileRef>
 </Workspace>

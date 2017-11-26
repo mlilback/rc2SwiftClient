@@ -10,7 +10,7 @@ The wiki contains more details on specific topics.
 
 ## Dependencies
 
-The macOS client requires 10.12 Sierra. Development is being done with Xcode 8.
+The macOS client requires 10.12 Sierra. Development is being done with Xcode 9.1, swift version 4.0.2.
 
 The following 3rd party frameworks are used (via Carthage or in the vendor directory). Aside from HockeyApp, I'm willing/capable of maintaining a fork if necessary (or replacing them). Using them allows much faster development (or I wrote them myself).
 
@@ -49,6 +49,14 @@ The following 3rd party frameworks are used (via Carthage or in the vendor direc
 1. `carthage bootstrap --no-use-binaries --platform Mac`
 
 2. `git submodule update --init`
+
+3. Setup HeliumLogger
+
+	1. `cd vendor/HeliumLogger`
+	2. If you are using swiftenv, `export SWIFT_VERSION=4.0.2`
+	3. `swift package generate-xcodeproj`
+
+Step 2 is necessary because HeliumLogger includes a .swift-version file that sets it to 3.1.1. That needs to be overridden when generating the xcode project.
 
 # Help support
 

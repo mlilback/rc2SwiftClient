@@ -14,6 +14,8 @@ import Docker
 import Networking
 import SBInjector
 import Model
+import HeliumLogger
+import LoggerAPI
 
 // swiftlint:disable file_length
 
@@ -66,6 +68,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 				BITHockeyManager.shared().start()
 			}
 		#endif
+		initializeLogging()
 		mainStoryboard = NSStoryboard(name: .mainBoard, bundle: nil)
 		precondition(mainStoryboard != nil)
 		//only init dockerManager if not running unit tests or not expressly disabled
@@ -577,3 +580,21 @@ extension MacAppDelegate {
 //	}
 //
 //}
+
+// MARK: - logging
+
+extension MacAppDelegate {
+	private func initializeLogging() {
+		let logger = HeliumStreamLogger(.verbose, outputStream: Rc2LogStream())
+		Log.logger = logger
+		Log.info("logging enabled")
+		Log.warning("test warning")
+	}
+}
+
+class Rc2LogStream: TextOutputStream {
+	func write(_ string: String) {
+		print(string, terminator: "")
+	}
+}
+

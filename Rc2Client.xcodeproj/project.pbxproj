@@ -362,6 +362,13 @@
 		08F448FD1C4E244500C64706 /* MainController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08F448F81C4E244500C64706 /* MainController.storyboard */; };
 		08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448FF1C4EBEF100C64706 /* MacSplitter.swift */; };
 		08F5746D1E4D04A70000956B /* Preferences.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08F5746B1E4D04A70000956B /* Preferences.storyboard */; };
+		08F5CDD31FCAE257009665AD /* ComparisonHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F5CDD21FCAE257009665AD /* ComparisonHelpers.swift */; };
+		08F5CDDA1FCB1EDF009665AD /* HeliumLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F5CDDC1FCB1EDF009665AD /* HeliumLogger.framework */; };
+		08F5CDDB1FCB1EDF009665AD /* LoggerAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F5CDDD1FCB1EDF009665AD /* LoggerAPI.framework */; };
+		08F5CDDE1FCB1F0A009665AD /* HeliumLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F5CDDC1FCB1EDF009665AD /* HeliumLogger.framework */; };
+		08F5CDDF1FCB1F0A009665AD /* HeliumLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08F5CDDC1FCB1EDF009665AD /* HeliumLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08F5CDE01FCB1F0A009665AD /* LoggerAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F5CDDD1FCB1EDF009665AD /* LoggerAPI.framework */; };
+		08F5CDE11FCB1F0A009665AD /* LoggerAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08F5CDDD1FCB1EDF009665AD /* LoggerAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08F673D01D020B2700B87049 /* FontManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F673CF1D020B2700B87049 /* FontManagement.swift */; };
 		08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F673D11D0214C700B87049 /* AppKitExtensions.swift */; };
 		08F675401F6ADA9C00EC3AC9 /* (null) in Sources */ = {isa = PBXBuildFile; };
@@ -628,6 +635,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				08698FEB1E41051900890092 /* Starscream.framework in Embed Frameworks */,
+				08F5CDDF1FCB1F0A009665AD /* HeliumLogger.framework in Embed Frameworks */,
 				0815599F1DDF9E4F0047B3CE /* Freddy.framework in Embed Frameworks */,
 				0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */,
 				0833A8231D2D7EAD0033654B /* HockeySDK.framework in Embed Frameworks */,
@@ -639,6 +647,7 @@
 				082BE15E1F5B3682006CE0B7 /* Model.framework in Embed Frameworks */,
 				08F6ADD81DD9169400AF0722 /* Docker.framework in Embed Frameworks */,
 				08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */,
+				08F5CDE11FCB1F0A009665AD /* LoggerAPI.framework in Embed Frameworks */,
 				080E82D71DCBE31D0048F36C /* Networking.framework in Embed Frameworks */,
 				082FF1CE1C7F321B00CCC27F /* Result.framework in Embed Frameworks */,
 				08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */,
@@ -1012,6 +1021,9 @@
 		08F448F81C4E244500C64706 /* MainController.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainController.storyboard; sourceTree = "<group>"; };
 		08F448FF1C4EBEF100C64706 /* MacSplitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacSplitter.swift; sourceTree = "<group>"; };
 		08F5746C1E4D04A70000956B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Preferences.storyboard; sourceTree = "<group>"; };
+		08F5CDD21FCAE257009665AD /* ComparisonHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComparisonHelpers.swift; sourceTree = "<group>"; };
+		08F5CDDC1FCB1EDF009665AD /* HeliumLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HeliumLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		08F5CDDD1FCB1EDF009665AD /* LoggerAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = LoggerAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08F673CF1D020B2700B87049 /* FontManagement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FontManagement.swift; path = MacClient/FontManagement.swift; sourceTree = SOURCE_ROOT; };
 		08F673D11D0214C700B87049 /* AppKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppKitExtensions.swift; path = ../AppKitExtensions.swift; sourceTree = "<group>"; };
 		08F678371F79416800EC3AC9 /* RestInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestInfo.swift; sourceTree = "<group>"; };
@@ -1103,6 +1115,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08F5CDDA1FCB1EDF009665AD /* HeliumLogger.framework in Frameworks */,
+				08F5CDDB1FCB1EDF009665AD /* LoggerAPI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1111,6 +1125,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				08A01FD01CC81315001EDFAA /* libsqlite3.tbd in Frameworks */,
+				08F5CDE01FCB1F0A009665AD /* LoggerAPI.framework in Frameworks */,
 				08367BD31E3FCEA800FAFC8A /* Starscream.framework in Frameworks */,
 				08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
 				08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
@@ -1129,6 +1144,7 @@
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				0897942F1D7B68F0003339EE /* ClientCore.framework in Frameworks */,
+				08F5CDDE1FCB1F0A009665AD /* HeliumLogger.framework in Frameworks */,
 				0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1395,6 +1411,7 @@
 			isa = PBXGroup;
 			children = (
 				082BE1631F5B36B3006CE0B7 /* BulkUserInfo.swift */,
+				08F5CDD21FCAE257009665AD /* ComparisonHelpers.swift */,
 				082BE1641F5B36B3006CE0B7 /* CountableClosedRange+Codable.swift */,
 				082BE1651F5B36B3006CE0B7 /* File.swift */,
 				082BE1661F5B36B3006CE0B7 /* FileOperation.swift */,
@@ -1616,6 +1633,8 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				08F5CDDC1FCB1EDF009665AD /* HeliumLogger.framework */,
+				08F5CDDD1FCB1EDF009665AD /* LoggerAPI.framework */,
 				0823F2321EE742B100A8F8C6 /* libz.tbd */,
 				08C2D5E41E719DE20007A02D /* SBInjector.framework */,
 				08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */,
@@ -2669,6 +2688,7 @@
 				08F678381F79416800EC3AC9 /* RestInfo.swift in Sources */,
 				08F678351F793A2A00EC3AC9 /* VariableType.swift in Sources */,
 				08F678311F793A2A00EC3AC9 /* SessionImage.swift in Sources */,
+				08F5CDD31FCAE257009665AD /* ComparisonHelpers.swift in Sources */,
 				08F6782F1F793A2A00EC3AC9 /* SessionCommand.swift in Sources */,
 				08F6782B1F793A2A00EC3AC9 /* File.swift in Sources */,
 				08F678281F793A2200EC3AC9 /* FileType.swift in Sources */,
