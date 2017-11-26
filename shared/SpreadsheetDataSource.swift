@@ -24,4 +24,10 @@ public protocol SpreadsheetDataSource {
 	///   - column: the desired column index
 	/// - Returns: the string to display for this cell
 	func value(atRow: Int, column: Int) -> String
+	
+	/// Returns the values for a specific column
+	///
+	/// - Parameter forColumn: the desired column index
+	/// - Returns: the strings to display for that column
+	func values(forColumn: Int) -> [String]
 }

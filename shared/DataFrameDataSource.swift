@@ -34,5 +34,7 @@ public class DataFrameDataSource: SpreadsheetDataSource {
 		return values[column][row]
 	}
 	
-	
+	public 	func values(forColumn: Int) -> [String] {
+		return values[forColumn]
+	}
 }
