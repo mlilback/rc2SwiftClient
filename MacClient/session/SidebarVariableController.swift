@@ -97,21 +97,15 @@ class SidebarVariableController: AbstractSessionViewController {
 			let sboard = NSStoryboard(name: .mainController, bundle: nil)
 			detailsController = sboard.instantiateViewController()
 			assert(detailsController != nil)
+			detailsController?.view.isHidden = false // force the view to load along with all child controllers
 			variablePopover = NSPopover()
 			variablePopover?.behavior = .transient
 			variablePopover?.contentViewController = detailsController
-			variablePopover?.contentSize = NSSize(width: 200, height: 300)
 		}
 		let selRow = varTableView.selectedRow
 		guard selRow != -1 else { os_log("can't show variable details w/o selection", log: .app); return }
-		// if the view isn't loaded, we need to display the view first, then tell it what variable to show
-		guard detailsController!.isViewLoaded else {
-			variablePopover?.show(relativeTo: varTableView.rect(ofRow: selRow), of: varTableView, preferredEdge: .maxX)
-			detailsController?.display(variable: rootVariables[selRow])
-			return
-		}
 		// we need to delay showing the popover because NSTabViewController wants to animate this, we don't want it animated
-		detailsController?.display(variable: rootVariables[selRow])
+		variablePopover!.contentSize = detailsController!.display(variable: rootVariables[selRow])
 		DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
 			self.variablePopover?.show(relativeTo: self.varTableView.rect(ofRow: selRow), of: self.varTableView, preferredEdge: .maxX)
 		}

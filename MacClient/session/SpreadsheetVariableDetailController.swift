@@ -6,6 +6,7 @@
 
 import Foundation
 import Model
+import SigmaSwiftStatistics
 
 fileprivate extension NSUserInterfaceItemIdentifier {
 	static let ssheetHead = NSUserInterfaceItemIdentifier("ssheetHead")
@@ -20,10 +21,13 @@ class SpreadsheetVariableDetailController: NSViewController {
 	private var columnIndexes = [NSTableColumn: Int]()
 	private var colOffset = 1
 	
-	func set(variable: Variable, source: SpreadsheetDataSource) {
+	func set(variable: Variable, source: SpreadsheetDataSource) -> NSSize {
 		self.variable = variable
 		self.ssheetSource = source
 		ssheetTable.tableColumns.forEach { ssheetTable.removeTableColumn($0) }
+		var estWidth: CGFloat = 0
+		let font = NSFont.userFont(ofSize: 14.0)
+		let fontAttrs: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: font as Any]
 		// create row header column
 		if source.columnNames != nil {
 			let headColumn = NSTableColumn(identifier: .rowHeaderColumn)
@@ -32,16 +36,28 @@ class SpreadsheetVariableDetailController: NSViewController {
 			ssheetTable.addTableColumn(headColumn)
 			columnIndexes[headColumn] = 0
 			colOffset = 0
+			estWidth += headColumn.width
 		}
 		// create data columns
-		for idx in 0..<source.columnCount {
-			let aColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier(rawValue: String(idx + colOffset)))
-			if let colName = source.columnNames?[idx] {
+		for colIdx in 0..<source.columnCount {
+			//var colWidth: CGFloat = 40.0
+			let widths = source.values(forColumn: colIdx).map { Double(($0 as NSString).size(withAttributes: fontAttrs).width) }
+			let aColumn = NSTableColumn(identifier: NSUserInterfaceItemIdentifier(rawValue: String(colIdx + colOffset)))
+			var headerWidth: Double = 0
+			if let colName = source.columnNames?[colIdx] {
 				aColumn.title = colName
+			//	colWidth = max(colWidth, (colName as NSString).size(withAttributes: fontAttrs).width)
+				headerWidth = Double((colName as NSString).size(withAttributes: fontAttrs).width)
 			}
-			aColumn.width = 40.0
+			
+			let avgWidth = Sigma.average(widths) ?? 20 // if average return nil (which it will if there are no widths) use 20
+			let maxWidth = max(headerWidth, Sigma.max(widths)!)
+			let stdDev = Sigma.standardDeviationPopulation(widths) ?? 0 // if stdDev returns nil, use 0 as the value
+			let desiredWidth = min(maxWidth,  avgWidth + (2.0 * stdDev))
+			aColumn.width = CGFloat(min(desiredWidth.rounded(), 40)) + 16 //16 is std offset (8) for each side of label
 			ssheetTable.addTableColumn(aColumn)
-			columnIndexes[aColumn] = idx + colOffset
+			columnIndexes[aColumn] = colIdx + colOffset
+			estWidth += aColumn.width
 		}
 		if source.columnNames == nil {
 			ssheetTable.headerView = nil
@@ -49,6 +65,10 @@ class SpreadsheetVariableDetailController: NSViewController {
 			ssheetTable.headerView = NSTableHeaderView()
 		}
 		ssheetTable.reloadData()
+		let idealHeight = CGFloat(80 + (source.rowCount * 32))
+		let sz = NSSize(width: min(max(estWidth, 400), 300), height: min(max(idealHeight, 600), 240))
+		print("df \(estWidth) x \(idealHeight), actual = \(sz)")
+		return sz
 	}
 }
 
