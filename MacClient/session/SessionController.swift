@@ -246,6 +246,9 @@ extension SessionController {
 		case .variables(let varData):
 			varHandler.variablesUpdated(varData)
 			return
+		case .showOutput(let outputData):
+			guard UserDefaults.standard[.openGeneratedFiles] else { break }
+			showFile(outputData.file.id)
 		default:
 			break
 		}
