@@ -10,24 +10,42 @@ import Model
 public class DataFrameDataSource: SpreadsheetDataSource {
 	
 	let variable: Variable
-	let dataFrameData: DataFrameData
 	let formatter: VariableFormatter
 	let values: [[String]]
 	
-	public var rowCount: Int { return dataFrameData.rowCount }
+	public let rowCount: Int
+	public let columnCount: Int
+	public let rowNames: [String]?
 	
-	public var columnCount: Int { return dataFrameData.columns.count }
+	public let columnNames: [String]? // { return dataFrameData.columns.map { $0.name } }
 	
-	public var rowNames: [String]? { return dataFrameData.rowNames }
-	
-	public var columnNames: [String]? { return dataFrameData.columns.map { $0.name } }
-	
-	init(variable: Variable, data: DataFrameData, formatter: VariableFormatter) {
+	init(variable: Variable, formatter: VariableFormatter) {
 		self.variable = variable
-		self.dataFrameData = data
+		if let matrixData = variable.matrixData {
+			// values is rows x columns
+			var vals: [[String]] = []
+			let strVals = formatter.formatValues(for: matrixData.value)
+			for colIdx in 0..<matrixData.colCount {
+				let start = colIdx * matrixData.rowCount
+				let end   = start + matrixData.rowCount
+				vals.append(Array(strVals[start..<end]))
+			}
+			self.values = vals
+			rowCount = matrixData.rowCount
+			rowNames = matrixData.rowNames
+			columnCount = matrixData.colCount
+			columnNames = matrixData.colNames
+		} else if let dataFrameData = variable.dataFrameData {
+			rowCount = dataFrameData.rowCount
+			rowNames = dataFrameData.rowNames
+			columnCount = dataFrameData.columns.count
+			columnNames = dataFrameData.columns.map{ $0.name }
+			values = dataFrameData.columns.map { formatter.formatValues(for: $0.value) }
+		} else {
+			fatalError("unsupported variable type")
+		}
 		self.formatter = formatter
 		// values is rows x columns
-		self.values = data.columns.map { formatter.formatValues(for: $0.value) }
 	}
 	
 	public func value(atRow row: Int, column: Int) -> String {

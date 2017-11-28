@@ -52,18 +52,9 @@ class VariableDetailsViewController: NSViewController {
 			simpleListController?.set(variable: variable, values: values)
 			print("simple list")
 			return NSSize(width: 100, height: 200)
-		} else if let matrixData = variable.matrixData, let values = formatter?.formatValues(for: matrixData.value) {
+		} else if variable.matrixData != nil || variable.dataFrameData != nil {
 			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.spreadSheet)
-			let ssource = MatrixDataSource(variable: variable, data: matrixData, values: values)
-			_ = ssheetController!.set(variable: variable, source: ssource)
-			let idealWidth = 40 + (matrixData.colCount * 50)
-			let idealHeight = 80 + (matrixData.rowCount * 32)
-			let sz = NSSize(width: min(max(idealWidth, 400), 200), height: min(max(idealHeight, 400), 200))
-			print("matrix \(idealWidth) x \(idealHeight), actual = \(sz)")
-			return sz
-		} else if let dataframeData = variable.dataFrameData, let formatter = formatter {
-			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.spreadSheet)
-			let ssource = DataFrameDataSource(variable: variable, data: dataframeData, formatter: formatter)
+			let ssource = DataFrameDataSource(variable: variable, formatter: formatter!)
 			let sz = ssheetController!.set(variable: variable, source: ssource)
 			return sz
 		} else {
