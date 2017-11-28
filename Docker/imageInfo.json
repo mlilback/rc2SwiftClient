@@ -1,15 +1,16 @@
 {
-	"version" : 2,
+	"timestamp" : "2017-11-28T18:48:27Z",
 	"lastCompatibleVersion" : 2,
+	"version" : 2,
 	"images" : {
 		"combined" : {
-			"size" : 3121053491,
+			"id" : "sha256:b806f89ddf6b3e0ae48873bba5780914beca730b53a1d6ff3e4ee0d884b7a4e9",
+			"name" : "combined",
+			"estSize" : 3121032127,
+			"size" : 3121032127,
 			"tag" : "rc2server/combined:0.5.5",
-			"id" : "sha256:8e9528b66fbaa304149730288e8bc886bf7458be63114eb46260a84274cc12d1",
-			"version" : "0.5.5",
-			"estSize" : 3121053491,
-			"name" : "combined"
+			"version" : "0.5.5"
 		}
-	},
-	"timestamp" : "2017-11-27T17:22:11Z"
+	}
 }
+
