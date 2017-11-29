@@ -473,6 +473,7 @@ extension DefaultFileCache {
 		return SignalProducer<Void, Rc2Error> { observer, _ in
 			do {
 				let url = try self.cachedUrl(file: file)
+				os_log("writing data to file %{public}@", log: .cache, type: .info, file.id)
 				try data.write(to: url)
 				observer.sendCompleted()
 			} catch {
@@ -493,6 +494,7 @@ extension DefaultFileCache {
 		return SignalProducer<Void, Rc2Error> { observer, _ in
 			do {
 				let url = try self.cachedUrl(file: file)
+				os_log("copying to file %{public}@", log: .cache, type: .info, file.id)
 				try self.fileManager.copyItem(at: srcFile, to: url)
 				observer.sendCompleted()
 			} catch {
@@ -511,6 +513,7 @@ extension DefaultFileCache {
 		return SignalProducer<Void, Rc2Error> { observer, _ in
 			let url = self.cachedUrl(file: file)
 			do {
+				os_log("writing contents to file %{public}@", log: .cache, type: .info, file.model.id)
 				try contents.write(to: url, atomically: true, encoding: .utf8)
 				observer.sendCompleted()
 			} catch {
