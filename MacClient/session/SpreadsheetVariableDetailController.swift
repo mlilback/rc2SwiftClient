@@ -29,7 +29,7 @@ class SpreadsheetVariableDetailController: NSViewController {
 		let font = NSFont.userFont(ofSize: 14.0)
 		let fontAttrs: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: font as Any]
 		// create row header column
-		if source.columnNames != nil {
+		if source.rowNames != nil {
 			let headColumn = NSTableColumn(identifier: .rowHeaderColumn)
 			headColumn.width = 40.0
 			headColumn.title = ""
@@ -66,7 +66,7 @@ class SpreadsheetVariableDetailController: NSViewController {
 		}
 		ssheetTable.reloadData()
 		let idealHeight = CGFloat(80 + (source.rowCount * 32))
-		let sz = NSSize(width: min(max(estWidth, 400), 300), height: min(max(idealHeight, 600), 240))
+		let sz = NSSize(width: min(max(estWidth, 200), 500), height: min(max(idealHeight, 240), 600))
 		print("df \(estWidth) x \(idealHeight), actual = \(sz)")
 		return sz
 	}
