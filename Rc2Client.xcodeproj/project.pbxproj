@@ -1550,7 +1550,6 @@
 		088CE6601C4B0AF400153414 = {
 			isa = PBXGroup;
 			children = (
-				0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */,
 				084199331D9179C60089A1AC /* xcconfig */,
 				088CE66B1C4B0AF400153414 /* MacClient */,
 				088CE6941C4B605D00153414 /* shared */,
@@ -1639,6 +1638,7 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */,
 				08F5CDDC1FCB1EDF009665AD /* HeliumLogger.framework */,
 				08F5CDDD1FCB1EDF009665AD /* LoggerAPI.framework */,
 				0823F2321EE742B100A8F8C6 /* libz.tbd */,
