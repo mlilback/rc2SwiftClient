@@ -278,6 +278,7 @@
 		08A01FDC1CCA8B2F001EDFAA /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */; };
 		08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */; };
 		08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 08AA5F071E5350AA00389089 /* SearchBarField.m */; };
+		08AD13361FCF18D000CFD516 /* FileInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AD13351FCF18D000CFD516 /* FileInfoController.swift */; };
 		08B184D21E5F36E800F4A6D6 /* defaultWorkspaceFiles in Resources */ = {isa = PBXBuildFile; fileRef = 08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */; };
 		08B184D41E5F384800F4A6D6 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B184D31E5F384800F4A6D6 /* AppInfo.swift */; };
 		08B184D71E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
@@ -646,6 +647,7 @@
 				082BE09F1F59D549006CE0B7 /* SyntaxParsing.framework in Embed Frameworks */,
 				08C2D5E61E719DE20007A02D /* SBInjector.framework in Embed Frameworks */,
 				08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */,
+				08ACDA391FD1F5B90017770B /* MJLLogger.framework in Embed Frameworks */,
 				082BE15E1F5B3682006CE0B7 /* Model.framework in Embed Frameworks */,
 				08F6ADD81DD9169400AF0722 /* Docker.framework in Embed Frameworks */,
 				0821BDCB1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Embed Frameworks */,
@@ -952,6 +954,7 @@
 		08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpOutputController.swift; sourceTree = "<group>"; };
 		08AA5F061E5350AA00389089 /* SearchBarField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchBarField.h; sourceTree = "<group>"; };
 		08AA5F071E5350AA00389089 /* SearchBarField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchBarField.m; sourceTree = "<group>"; };
+		08AD13351FCF18D000CFD516 /* FileInfoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInfoController.swift; sourceTree = "<group>"; };
 		08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; name = defaultWorkspaceFiles; path = shared/resources/defaultWorkspaceFiles; sourceTree = SOURCE_ROOT; };
 		08B184D31E5F384800F4A6D6 /* AppInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZipArchive.framework; path = Carthage/Build/Mac/ZipArchive.framework; sourceTree = "<group>"; };
@@ -1339,6 +1342,7 @@
 				08EB36CF1FBB9E480078229A /* ValuesVariableDetailController.swift */,
 				08EB36D11FBBA1640078229A /* TextVariableDetailController.swift */,
 				08055E351FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift */,
+				08AD13351FCF18D000CFD516 /* FileInfoController.swift */,
 			);
 			name = sidebar;
 			sourceTree = "<group>";
@@ -2792,6 +2796,7 @@
 				08CCED4D1EE1DF6E004B5ADE /* DockerTabViewController.swift in Sources */,
 				080314231D2412ED006D668F /* SelectServerViewController.swift in Sources */,
 				083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */,
+				08AD13361FCF18D000CFD516 /* FileInfoController.swift in Sources */,
 				08A01FC61CC7FCA3001EDFAA /* FMDatabasePool.m in Sources */,
 				083A56711D24722C009D3091 /* ProjectManagerViewController.swift in Sources */,
 				086508771E43F27C0067C8CA /* SingleInputViewController.swift in Sources */,

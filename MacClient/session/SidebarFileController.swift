@@ -58,6 +58,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	@IBOutlet var messageLabel: NSTextField?
 	@IBOutlet var messageButtons: NSStackView?
 	
+	private var getInfoPopover: NSPopover?
+	private var fileInfoController: FileInfoController?
+	
 	var rowData: [FileRowData] = [FileRowData]()
 	weak var delegate: FileViewControllerDelegate?
 	lazy var importPrompter: MacFileImportSetup? = { MacFileImportSetup() }()
@@ -318,6 +321,29 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		delegate?.fileSelectionChanged(selectedFile, forEditing: true)
 	}
 	
+	@IBAction func inforForFile(_ sender: Any) {
+		if getInfoPopover == nil {
+			// setup the popup and view controller
+			let sboard = NSStoryboard(name: .mainController, bundle: nil)
+			fileInfoController = sboard.instantiateViewController()
+			assert(fileInfoController != nil)
+			fileInfoController?.view.isHidden = false // force the view to load along with all child controllers
+			getInfoPopover = NSPopover()
+			getInfoPopover?.behavior = .transient
+			getInfoPopover?.contentViewController = fileInfoController
+		}
+//		getInfoPopover!.contentSize = fileInfoController!.view.frame.size
+		var rowIdx = -1
+		if let button = sender as? NSButton {
+			rowIdx = button.tag
+		} else {
+			rowIdx = tableView.selectedRow
+		}
+		guard rowIdx >= 0 && rowIdx < rowData.count else { os_log("invalid file for info"); return }
+		fileInfoController?.file = rowData[rowIdx].file
+		self.getInfoPopover?.show(relativeTo: tableView.rect(ofRow: rowIdx), of: tableView, preferredEdge: .maxX)
+	}
+	
 	// never gets called, but file type menu items must have an action or addFileMenuAction never gets called
 	@IBAction func addDocumentOfType(_ menuItem: NSMenuItem) {
 	}
@@ -500,6 +526,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			let fview = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "file"), owner: nil) as! EditableTableCellView
 			fview.objectValue = data.file
 			fview.textField?.stringValue = data.file!.name
+			fview.infoButton?.tag = row
 			return fview
 		}
 	}

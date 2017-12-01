@@ -13,6 +13,7 @@ public class EditableTableCellView: NSTableCellView {
 	fileprivate var canceled: Bool = false
 	
 	public override var textField: NSTextField? { didSet { textField?.delegate = self } }
+	@IBOutlet var infoButton: NSButton?
 	
 	/// Starts an edit on the textField, calling closure when finished
 	///
