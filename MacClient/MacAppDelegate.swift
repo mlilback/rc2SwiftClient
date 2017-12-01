@@ -168,9 +168,12 @@ extension MacAppDelegate {
 	}
 	
 	/// returns the window for the specified session
-	func window(for session: Session?) -> NSWindow {
+	func window(for session: Session?) -> NSWindow? {
 		//TODO: make return value optional and remove force casts
-		return windowControllerForSession(session!)!.window!
+		if let window = windowControllerForSession(session!)?.window {
+			return window
+		}
+		return nil
 	}
 	
 	func openSessionWindow(_ session: Session) {

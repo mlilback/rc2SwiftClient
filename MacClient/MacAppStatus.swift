@@ -71,7 +71,7 @@ class MacAppStatus {
 		return result
 	}
 	
-	init(windowAccessor: @escaping (Session?) -> NSWindow) {
+	init(windowAccessor: @escaping (Session?) -> NSWindow?) {
 		getWindow = windowAccessor
 		(progressSignal, progressObserver) = Signal<ProgressUpdate, NoError>.pipe()
 		(busySignal, busyObserver) = Signal<Bool, NoError>.pipe()
@@ -83,6 +83,7 @@ class MacAppStatus {
 	///   - name: the name of the action being started
 	///   - disposable: the disposable for the action that is starting
 	fileprivate func actionStarting(name: String, disposable: Disposable, determinate: Bool) {
+		os_log("starting action %{public}@", log: .app, type: .info, name)
 		_statusQueue.sync {
 			assert(nil == _currentDisposable)
 			currentActionName = name
