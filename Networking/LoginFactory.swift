@@ -6,7 +6,7 @@
 
 import ClientCore
 import Foundation
-import os
+import MJLLogger
 import ReactiveSwift
 import Model
 
@@ -53,14 +53,14 @@ public final class LoginFactory: NSObject {
 		do {
 			reqdata = try JSONEncoder().encode(LoginData(login: login, password: password))
 		} catch {
-			os_log("json serialization of login info failed", log: .network, type: .error)
+			Log.error("json serialization of login info failed", .network)
 			fatalError()
 		}
 		requestUrl = URL(string: "login", relativeTo: destHost.url!)!
 		return attemptLogin(request: loginRequest(requestUrl: requestUrl, data: reqdata))
 			.map { data -> LoginResponse? in
 				guard let rsp = try? JSONDecoder().decode(LoginResponse.self, from: data) else {
-					os_log("invalid json data from login", log: .network, type: .error)
+					Log.error("invalid json data from login", .network)
 					return nil
 				}
 				return rsp

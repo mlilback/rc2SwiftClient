@@ -6,7 +6,7 @@
 
 import Foundation
 import Darwin
-import os
+import MJLLogger
 import Freddy
 
 ///DockerUrlProtocol is a subclass of NSURLProtocol for dealing with "unix" and "dockerstream" URLs
@@ -19,7 +19,7 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	private var connection: LocalDockerConnection?
 
 	override open class func canInit(with request: URLRequest) -> Bool {
-		os_log("DUP queried about %{public}@", log: .docker, type: .debug, request.url!.absoluteString)
+		Log.debug("DUP queried about \(request.url!.absoluteString)", .docker)
 		return request.url!.scheme == scheme || request.url!.scheme == streamScheme
 	}
 
@@ -69,7 +69,7 @@ public class DockerUrlProtocol: URLProtocol, URLSessionDelegate {
 	}
 	
 	fileprivate func generateResponse(headers: HttpHeaders) -> HTTPURLResponse? {
-		os_log("docker returned %d", log: .docker, type: .debug, headers.statusCode)
+		Log.debug("docker returned \(headers.statusCode)", .docker)
 		guard let response = HTTPURLResponse(url: request.url!, statusCode: headers.statusCode, httpVersion: headers.httpVersion, headerFields: headers.headers) else
 		{ return nil }
 		return response

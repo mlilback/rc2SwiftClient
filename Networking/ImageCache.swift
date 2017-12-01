@@ -7,7 +7,7 @@
 import ClientCore
 import Dispatch
 import Freddy
-import os
+import MJLLogger
 import ReactiveSwift
 import Model
 
@@ -41,7 +41,7 @@ public class ImageCache {
 			do {
 				result = try AppInfo.subdirectory(type: .cachesDirectory, named: "\(self.hostIdentifier)/images")
 			} catch let error as NSError {
-				os_log("got error creating image cache direcctory: %{public}@", log: .cache, type: .error, error)
+				Log.error("got error creating image cache direcctory: \(error)", .cache)
 				assertionFailure("failed to create image cache dir")
 			}
 			return result!
@@ -98,7 +98,7 @@ public class ImageCache {
 	///caches to disk and in memory
 	private func cacheImageFromServer(_ img: SessionImage) {
 		//cache to disk
-		os_log("caching image %d", log: .cache, type: .info, img.id)
+		Log.info("caching image \(img.id)", .cache)
 		let destUrl = URL(fileURLWithPath: "\(img.id).png", isDirectory: false, relativeTo: cacheUrl)
 		try? img.imageData.write(to: destUrl, options: [.atomic])
 		//cache in memory
@@ -115,7 +115,7 @@ public class ImageCache {
 	}
 	
 	public func sessionImages(forBatch batchId: Int) -> [SessionImage] {
-		os_log("look for batch %d", log: .cache, type: .debug, batchId)
+		Log.debug("look for batch \(batchId)", .cache)
 		return metaCache.values.filter({ $0.batchId == batchId }).sorted(by: { $0.id < $1.id })
 	}
 	

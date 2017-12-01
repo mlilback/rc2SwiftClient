@@ -6,7 +6,7 @@
 
 import Foundation
 import Darwin
-import os
+import MJLLogger
 import ClientCore
 
 enum LocalDockerMessage: Equatable {
@@ -115,7 +115,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 		}
 		guard code >= 0 else {
 			let savedErrno = errno
-			os_log("bad response %d, %d", type: .error, code, savedErrno)
+			Log.error("bad response \(code), \(savedErrno)", .docker)
 			if savedErrno == 2 { //file not found, i.e. docker not running
 				handler(.error(.dockerNotRunning))
 				throw DockerError.dockerNotRunning
@@ -124,7 +124,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 			handler(.error(.networkError(rootError)))
 			throw DockerError.networkError(rootError)
 		}
-		os_log("connection open to docker %{public}@", log: .docker, type: .debug, request.url!.absoluteString)
+		Log.debug("connection open to docker \(request.url!.absoluteString)", .docker)
 		channel = DispatchIO(type: .stream, fileDescriptor: fileDescriptor, queue: DispatchQueue.global())
 		{ [weak self] (errCode) in
 			guard let me = self else { return }
@@ -141,7 +141,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 	/// closes the connection to the docker daemon. handler will no longer receive any messages
 	func closeConnection() {
 		guard fileDescriptor > 0, responseHandler != nil else {
-			os_log("closeConnection called when closed", log: .app)
+			Log.warn("closeConnection called when closed", .docker)
 			return
 		}
 //		precondition(fileDescriptor > 0)

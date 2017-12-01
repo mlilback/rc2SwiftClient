@@ -6,7 +6,7 @@
 
 import ClientCore
 import Foundation
-import os
+import MJLLogger
 import ReactiveSwift
 
 let FileAttrVersion = "io.rc2.FileAttr.Version"
@@ -109,7 +109,7 @@ open class Rc2DefaultFileManager: Rc2FileManager {
 				fileRef.writeXAttributes(fileUrl)
 			}
 		} catch {
-			os_log("got error downloading file %{public}@: %{public}@", log: .network, tempFile.lastPathComponent, error.localizedDescription)
+			Log.warn("got error downloading file \(tempFile.lastPathComponent): \(error.localizedDescription)", .network)
 			throw Rc2Error(type: .cocoa, nested: error, explanation: tempFile.lastPathComponent)
 		}
 	}
@@ -138,7 +138,7 @@ extension AppFile {
 			let shaData = (fileData as NSData).sha1hash()
 			setXAttributeWithName(FileAttrChecksum, data: shaData, atURL: toUrl)
 		} else {
-			os_log("failed to create sha256 checksum for %{public}@", log: .network, type: .error, toUrl.path)
+			Log.error("failed to create sha256 checksum for \(toUrl.path)", .network)
 		}
 	}
 }

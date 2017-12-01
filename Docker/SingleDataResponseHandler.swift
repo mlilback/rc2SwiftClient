@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import os
+import MJLLogger
 
 class SingleDataResponseHandler: DockerResponseHandler {
 	let maxReadDataSize: Int = 1024 * 1024 * 4 // 4 MB
@@ -126,17 +126,17 @@ class SingleDataResponseHandler: DockerResponseHandler {
 	func parseSingleChunk() -> Data? {
 		guard dataBuffer.count > 0 else { return nil }
 		guard let lineEnd = dataBuffer.range(of: crnl) else {
-			os_log("failed to find CRNL in chunk", log: .docker)
+			Log.warn("failed to find CRNL in chunk", .docker)
 			return nil
 		}
 		let sizeData = dataBuffer.subdata(in: 0..<lineEnd.lowerBound)
 		guard let dataStr = String(data: sizeData, encoding: .utf8),
 			let chunkLength = Int(dataStr, radix: 16)
 			else {
-				os_log("failed to find a chunk header in hijacked data", log: .docker)
+				Log.warn("failed to find a chunk header in hijacked data", .docker)
 				return nil
 		}
-		os_log("got hijacked chunk length %d", log: .docker, type: .debug, chunkLength)
+		Log.debug("got hijacked chunk length \(chunkLength)", .docker)
 		let chunkEnd = chunkLength + sizeData.count + crnl.count
 		guard chunkEnd < dataBuffer.count else {
 			return nil

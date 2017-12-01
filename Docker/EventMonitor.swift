@@ -6,7 +6,7 @@
 
 import Foundation
 import Freddy
-import os
+import MJLLogger
 
 protocol EventMonitorDelegate: class {
 	func handleEvent(_ event: Event)
@@ -41,10 +41,10 @@ final class EventMonitorImpl<ConnectionType: LocalDockerConnection>: EventMonito
 		case .data(let data):
 			handleData(data: data)
 		case .complete:
-			os_log("docker event monitor connection ended", log: .docker, type: .info)
+			Log.info("docker event monitor connection ended", .dockerEvt)
 			delegate?.eventMonitorClosed(error: nil)
 		case .error(let error):
-			os_log("error from docker event connection: %{public}@", log: .docker, error.errorDescription ?? "unknown")
+			Log.warn("error from docker event connection: \(error.errorDescription ?? "unknown")", .dockerEvt)
 			delegate?.eventMonitorClosed(error: error)
 		}
 	}
@@ -53,12 +53,12 @@ final class EventMonitorImpl<ConnectionType: LocalDockerConnection>: EventMonito
 		do {
 			let json = try JSON(data: data)
 			guard let parsedEvent = try? Event.parse(json: json), let event = parsedEvent else {
-				os_log("got invalid event from docker: %{public}@", log: .docker, type: .debug, String(data: data, encoding: .utf8)!)
+				Log.debug("got invalid event from docker: \(String(data: data, encoding: .utf8)!)", .dockerEvt)
 				return
 			}
 			delegate?.handleEvent(event)
 		} catch {
-			os_log("error parsing docker event: %{public}@", log: .docker, error.localizedDescription)
+			Log.warn("error parsing docker event: \(error)", .docker)
 		}
 	}
 }

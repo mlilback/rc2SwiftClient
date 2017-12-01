@@ -7,7 +7,7 @@
 import ClientCore
 import Foundation
 import Freddy
-import os
+import MJLLogger
 import ReactiveSwift
 import ZipArchive
 import Model
@@ -18,7 +18,6 @@ public final class Rc2RestClient {
 	let conInfo: ConnectionInfo
 	let sessionConfig: URLSessionConfiguration
 	fileprivate var urlSession: URLSession?
-	fileprivate var networkLog: OSLog! // we will create before init is complete
 	let fileManager: Rc2FileManager
 	
 	public init(_ conInfo: ConnectionInfo, fileManager: Rc2FileManager = Rc2DefaultFileManager())
@@ -31,8 +30,6 @@ public final class Rc2RestClient {
 		}
 		self.sessionConfig.httpAdditionalHeaders!["Accept"] = "application/json"
 		urlSession = URLSession(configuration: sessionConfig)
-		// swiftlint:disable:next discouraged_direct_init
-		networkLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "networking")
 	}
 	
 	fileprivate func request(_ path: String, method: String) -> URLRequest
@@ -70,12 +67,12 @@ public final class Rc2RestClient {
 					observer.send(value: wspace)
 					observer.sendCompleted()
 				} catch let nferror as ConnectionInfo.Errors {
-					os_log("created workspace not found", log: .network)
+					Log.warn("created workspace not found", .network)
 					observer.send(error: Rc2Error(type: .network, nested: nferror, explanation: "created workspace not found"))
 				} catch let rc2error as Rc2Error {
 					observer.send(error: rc2error)
 				} catch {
-					os_log("error parsing create workspace response %{public}@", log: .network, error.localizedDescription)
+					Log.warn("error parsing create workspace response \(error)", .network)
 					observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "unknown error parsing create workspace response"))
 				}
 			}
@@ -106,7 +103,7 @@ public final class Rc2RestClient {
 				} catch let err as Rc2Error {
 					observer.send(error: err)
 				} catch {
-				os_log("error parsing create workspace response %{public}@", log: .network, error.localizedDescription)
+				Log.warn("error parsing create workspace response \(error)", .network)
 				observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "unknown error parsing create workspace response"))
 				}
 			}
@@ -158,12 +155,12 @@ public final class Rc2RestClient {
 			let destUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("\(UUID().uuidString).zip")
 			guard SSZipArchive.createZipFile(atPath: destUrl.path, withContentsOfDirectory: defaultDirectoryUrl.path, keepParentDirectory: false) else
 			{
-				os_log("failed to create zip file to upload", log: .network)
+				Log.warn("failed to create zip file to upload", .network)
 				return nil
 			}
 			return destUrl
 		} catch {
-			os_log("error loading default workspace files: %{public}@", log: .network, error as NSError)
+			Log.warn("error loading default workspace files: \(error)", .network)
 		}
 		return nil
 	}

@@ -6,7 +6,7 @@
 
 import ClientCore
 import Foundation
-import os
+import MJLLogger
 import ReactiveSwift
 import Result
 import Model
@@ -124,7 +124,7 @@ private struct DownloadAll {
 	mutating func adjust(completedTask: DownloadTask, error: Rc2Error? = nil) {
 		guard completedTask.partOfDownloadAll else { return }
 		guard filesRemaining > 0 else {
-			os_log("adjust called too many times", log: .cache, type: .error)
+			Log.error("adjust called too many times", .cache)
 			fatalError()
 		}
 		filesRemaining -= 1
@@ -158,7 +158,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 		do {
 			return try AppInfo.subdirectory(type: .cachesDirectory, named: self.workspace.uniqueId)
 		} catch {
-			os_log("failed to create file cache: %{public}@", log: .cache, type: .error, error as NSError)
+			Log.error("failed to create file cache: \(error)", .cache)
 		}
 		fatalError("failed to create file cache")
 	}()
@@ -208,18 +208,18 @@ public final class DefaultFileCache: NSObject, FileCache {
 			if let mtime = self.lastModTimes[file.fileId] {
 				let timediff = Date.timeIntervalSinceReferenceDate - mtime
 				if timediff < 0.5 {
-					os_log("skipping flush because too recent", log: .cache, type: .info)
+					Log.info("skipping flush because too recent", .cache)
 					return
 				}
 			}
-			os_log("flushing file %d", log: .cache, type: .info, file.fileId)
+			Log.info("flushing file \(file.fileId)", .cache)
 			self.removeFile(fileUrl: self.cachedUrl(file: file))
 		}
 	}
 	
 	///recaches the specified file if it has changed
 	public func recache(file: AppFile) -> SignalProducer<Double, Rc2Error> {
-		os_log("recache of %d started", log: .cache, type: .debug, file.fileId)
+		Log.debug("recache of \(file.fileId) started", .cache)
 		var producer: SignalProducer<Double, Rc2Error>?
 		self.taskLockQueue.sync {
 			if let fileTask = self.downloadTaskWithFileId(file.fileId) {
@@ -359,7 +359,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 			request.addValue("\"\(file.eTag)\"", forHTTPHeaderField: "If-None-Match")
 		}
 		let dtask = urlSession!.downloadTask(with: request)
-		os_log("creating download task for %d", log: .cache, type: .info, file.fileId)
+		Log.info("creating download task for \(file.fileId)", .cache)
 		return DownloadTask(file: file, task: dtask, forAll: partOfDownloadAll)
 	}
 	
@@ -369,12 +369,12 @@ public final class DefaultFileCache: NSObject, FileCache {
 			try self.fileManager.removeItem(at: fileUrl)
 		} catch let error as Rc2Error {
 			guard error.type == .file, let nserr = error.nestedError as NSError?, nserr.domain == NSCocoaErrorDomain && nserr.code == 4 else {
-				os_log("got err removing file in recache: %{public}@", log: .cache, type: .info, error.nestedError!.localizedDescription)
+				Log.info("got err removing file in recache: \(error.nestedError!.localizedDescription)", .cache)
 				return
 			}
 			//don't care if doesn't exist
 		} catch {
-			os_log("got err removing file in recache: %{public}@", log: .cache, type: .info, error.localizedDescription)
+			Log.info("got err removing file in recache: \(error)", .cache)
 		}
 	}
 
@@ -473,7 +473,7 @@ extension DefaultFileCache {
 		return SignalProducer<Void, Rc2Error> { observer, _ in
 			do {
 				let url = try self.cachedUrl(file: file)
-				os_log("writing data to file %{public}@", log: .cache, type: .info, file.id)
+				Log.info("writing data to file \(file.id)", .cache)
 				try data.write(to: url)
 				observer.sendCompleted()
 			} catch {
@@ -494,7 +494,7 @@ extension DefaultFileCache {
 		return SignalProducer<Void, Rc2Error> { observer, _ in
 			do {
 				let url = try self.cachedUrl(file: file)
-				os_log("copying to file %{public}@", log: .cache, type: .info, file.id)
+				Log.info("copying to file \(file.id)", .cache)
 				try self.fileManager.copyItem(at: srcFile, to: url)
 				observer.sendCompleted()
 			} catch {
@@ -513,7 +513,7 @@ extension DefaultFileCache {
 		return SignalProducer<Void, Rc2Error> { observer, _ in
 			let url = self.cachedUrl(file: file)
 			do {
-				os_log("writing contents to file %{public}@", log: .cache, type: .info, file.model.id)
+				Log.info("writing contents to file \(file.model.id)", .cache)
 				try contents.write(to: url, atomically: true, encoding: .utf8)
 				observer.sendCompleted()
 			} catch {
@@ -539,7 +539,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 	{
 		taskLockQueue.sync {
 			guard let dloadTask = tasks[urlTask.taskIdentifier] else {
-				os_log("unknown url task did complete", log: .cache, type: .error)
+				Log.error("unknown url task did complete", .cache)
 				return
 			}
 			var generatedError: Rc2Error?
@@ -552,7 +552,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 				self.lastModTimes[dloadTask.file.fileId] = Date.timeIntervalSinceReferenceDate
 				self.tasks.removeValue(forKey: urlTask.taskIdentifier)
 				if generatedError != nil {
-					os_log("failure downloading file %d: %{public}@", log: .network, type: .error, dloadTask.file.fileId, generatedError!.errorDescription ?? "unknown")
+				Log.error("failure downloading file \(dloadTask.file.fileId): \(error?.localizedDescription ?? "unknown")", .network)
 					self.mainQueue.async { dloadTask.observer.send(error: generatedError!) }
 				}
 			}
@@ -570,7 +570,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 			DispatchQueue.main.async {
 				dloadTask.observer.send(value: 1.0)
 				dloadTask.observer.sendCompleted()
-				os_log("successfully downloaded file %d", log: .cache, type: .info, dloadTask.file.fileId)
+				Log.info("successfully downloaded file \(dloadTask.file.fileId)", .cache)
 			}
 		}
 	}
@@ -590,7 +590,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 			}
 			///move the file to the appropriate local cache url
 			guard let _ = try? fileManager.move(tempFile: location, to: cacheUrl, file: cacheTask.file) else {
-				os_log("error moving downloaded file to final location %{public}@", log: .cache, cacheUrl.absoluteString)
+				Log.warn("error moving downloaded file to final location \(cacheUrl.absoluteString)", .cache)
 				return
 			}
 		}

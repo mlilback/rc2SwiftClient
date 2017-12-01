@@ -8,7 +8,7 @@ import Foundation
 import ReactiveSwift
 import Result
 import ClientCore
-import os
+import MJLLogger
 import Model
 
 public final class AppWorkspace: CustomStringConvertible, Hashable
@@ -177,7 +177,7 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 	///   - change: the change info from the server
 	/// - Throws: .noSuchElement or nested error from calling .update on the AppFile
 	public func update(change: SessionResponse.FileChangedData) throws {
-		os_log("update file %d to other called", log: .model, type: .debug, change.fileId)
+		Log.debug("update file \(change.fileId) to other called", .model)
 		switch change.changeType {
 		case .insert:
 			guard let modelFile = change.file else { fatalError("insert should always have a file") }
@@ -192,7 +192,7 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 		case .delete:
 			//need to remove from _files and send change notification
 			guard let ourFile = file(withId: change.fileId) else {
-				os_log("delete change for non-existant file %d", log: .model, change.fileId)
+				Log.warn("delete change for non-existant file \(change.fileId)", .model)
 				throw Rc2Error(type: .updateFailed)
 			}
 			//can force because guard above says it must exist
@@ -201,37 +201,6 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 		}
 		
 	}
-	
-//	/// called to update with a change from the network
-//	///
-//	/// - Parameters:
-//	///   - file: the file sent from the server
-//	///   - change: the type of change it represents
-//	internal func update(file: AppFile, change: FileChangeType) {
-//		os_log("update change to %d", log: .model, type: .debug, file.fileId)
-//		let ourFile = self.file(withId: file.fileId)
-//		switch change {
-//		case .Update:
-//			guard let ofile = ourFile else {
-//				os_log("got file change update w/o a known file", log: .session)
-//				return
-//			}
-//			guard let _ = try? update(file: ofile, to: file) else {
-//				os_log("file change update failed", log: .session); return
-//			}
-//		case .Insert:
-//			if ourFile == file { //already inserted, likely via import
-//				return
-//			}
-//			guard let _ = try? _files.append(file) else {
-//				os_log("file change insert failed", log: .session); return
-//			}
-//		case .Delete:
-//			guard let _ = try? _files.remove(ourFile!) else {
-//				os_log("file change delete failed", log: .session); return
-//			}
-//		}
-//	}
 	
 	public static func == (lhs: AppWorkspace, rhs: AppWorkspace) -> Bool {
 		return lhs.wspaceId == rhs.wspaceId && lhs.version == rhs.version && lhs.hashValue == rhs.hashValue

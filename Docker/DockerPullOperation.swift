@@ -7,7 +7,7 @@
 import Foundation
 import ReactiveSwift
 import Freddy
-import os
+import MJLLogger
 
 ///progress information on the pull
 public struct PullProgress {
@@ -72,19 +72,19 @@ public final class DockerPullOperation {
 		case .headers:
 			break //we don't care
 		case .error(let error):
-			os_log("error in pull operation %{public}@", log: .docker, type: .debug, error as NSError)
+			Log.debug("error in pull operation \(error)", .docker)
 			pullObserver?.send(error: error)
 		case .data(let data):
 			handle(data: data)
 		case .complete:
-			os_log("pull %{public}@ finished: %d", log: .docker, type: .info, pullProgress.name, totalDownloaded)
+			Log.info("pull \(pullProgress.name) finished: \(totalDownloaded)", .docker)
 			pullProgress.currentSize = totalDownloaded
 			if pullProgress.currentSize == 0 { pullProgress.currentSize = pullProgress.estSize }
 			pullProgress.complete = true
 			pullObserver?.send(value: pullProgress)
 			pullObserver?.sendCompleted()
 			for aLayer in layers.values {
-				os_log("layer %{public}@ is %d", log: .docker, type: .info, aLayer.id, aLayer.finalSize)
+				Log.info("layer \(aLayer.id) is \(aLayer.finalSize)", .docker)
 			}
 		}
 	}
@@ -92,7 +92,7 @@ public final class DockerPullOperation {
 	public func pull() -> SignalProducer<PullProgress, DockerError>
 	{
 		return SignalProducer<PullProgress, DockerError> { observer, _ in
-			os_log("starting pull: %{public}@", type: .info, self.imageName)
+			Log.info("starting pull: \(self.imageName)", .docker)
 			self.pullObserver = observer
 			do {
 				try self.connection.openConnection()
@@ -112,11 +112,11 @@ public final class DockerPullOperation {
 		for aMessage in messages {
 			guard aMessage.count > 0 else { continue }
 			guard let json = try? JSON(jsonString: aMessage) else {
-				os_log("invalid json chunk: %{public}@", type: .info, aMessage)
+				Log.warn("invalid json chunk: \(aMessage)", .docker)
 				continue
 			}
 			guard let status = try? json.getString(at: "status") else {
-				os_log("invalid json chunk from pull %{public}@", type: .info, aMessage)
+				Log.warn("invalid json chunk from pull \(aMessage)", .docker)
 				continue
 			}
 			statuses.insert(status)
@@ -156,7 +156,7 @@ public final class DockerPullOperation {
 				}
 			case "download complete":
 				if var layer = layers[layerId] {
-					os_log("finished layer %{public}@", log: .docker, type: .info, layer.id)
+					Log.info("finished layer \(layer.id)", .docker)
 					layer.complete = true
 					totalDownloaded += layer.finalSize
 				}

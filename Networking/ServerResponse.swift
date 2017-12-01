@@ -6,7 +6,7 @@
 
 import Foundation
 import Freddy
-import os
+import MJLLogger
 import SwiftyUserDefaults
 import Result
 import ClientCore
@@ -43,7 +43,7 @@ public enum ServerResponse: Equatable {
 	// swiftlint:disable:next function_body_length
 	static func parseResponse(_ jsonObj: JSON) -> ServerResponse? {
 		guard let msg = try? jsonObj.getString(at: "msg") else {
-			os_log("failed to parse 'msg' from server response", log: .session)
+			Log.warn("failed to parse 'msg' from server response", .session)
 			return nil
 		}
 		let queryId = jsonObj.getOptionalInt(at: "queryId") ?? 0
@@ -60,7 +60,7 @@ public enum ServerResponse: Equatable {
 				return ServerResponse.execComplete(queryId: queryId, batchId: jsonObj.getOptionalInt(at: "imageBatchId", or: -1), images: images)
 			case "showOutput":
 				guard let sfile: AppFile = try? jsonObj.decode(at: "file") else {
-					os_log("failed to decode file parameter to showOutput response", log: .session)
+					Log.warn("failed to decode file parameter to showOutput response", .session)
 					return nil
 				}
 				return ServerResponse.showOutput(queryId: queryId, updatedFile: sfile)
@@ -69,14 +69,14 @@ public enum ServerResponse: Equatable {
 			case "echo":
 				guard let fileId = try? jsonObj.getInt(at: "fileId"), let query = try? jsonObj.getString(at: "query") else
 				{
-					os_log("failed to parse echo response", log: .session)
+					Log.warn("failed to parse echo response", .session)
 					return nil
 				}
 				return ServerResponse.echoQuery(queryId: queryId, fileId: fileId, query: query)
 			case "filechanged":
 				guard let ftype = try? jsonObj.getString(at: "type"), let fileId = try? jsonObj.getInt(at: "fileId") else
 				{
-					os_log("failed to parse filechanged response", log: .session)
+					Log.warn("failed to parse filechanged response", .session)
 					return nil
 				}
 				let file: AppFile? = try? jsonObj.decode(at: "file")
@@ -91,7 +91,7 @@ public enum ServerResponse: Equatable {
 			case "fileOpResponse":
 				return parseFileOpResponse(jsonObj: jsonObj)
 			default:
-				os_log("unknown message from server:%{public}@", log: .session, msg)
+				Log.warn("unknown message from server:\(msg)", .session)
 				return nil
 		}
 	}
@@ -120,7 +120,7 @@ public enum ServerResponse: Equatable {
 			let message = try? jdict["errorMessage"]?.getString() ,
 			let errorMessage = message else
 		{
-			os_log("server error didn't include code and/or message", log: .network, type: .default)
+			Log.warn("server error didn't include code and/or message", .network)
 			return Rc2Error(type: .websocket, explanation: "invalid server response")
 		}
 		let nestedError = WebSocketError(code: errorCode, message: errorMessage)
@@ -138,7 +138,7 @@ public enum ServerResponse: Equatable {
 			let removed: [String] = try jsonObj.decodedArray(at: "variables", "removed")
 			return ServerResponse.variablesDelta(assigned: assigned, removed: removed)
 		} catch {
-			os_log("error parsing variable message: %{public}@", log: .session, type: .error, error.localizedDescription)
+			Log.error("error parsing variable message: \(error)", .session)
 		}
 		return nil
 	}

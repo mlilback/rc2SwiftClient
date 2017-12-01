@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import os
+import MJLLogger
 
 class ChunkedResponseProxy: NSObject, URLSessionDataDelegate {
 	private let handler: (String?, Bool) -> Void
@@ -87,7 +87,7 @@ class ChunkedResponseProxy: NSObject, URLSessionDataDelegate {
 	}
 	
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-		os_log("why did our session end?: %{public}@", log: .docker, error as NSError? ?? "unknown")
+		Log.warn("why did our session end?: \(error?.localizedDescription ?? "unknown")", .docker)
 		handler(nil, false)
 	}
 }

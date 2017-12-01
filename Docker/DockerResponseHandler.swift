@@ -6,7 +6,7 @@
 
 import Foundation
 import Freddy
-import os
+import MJLLogger
 
 protocol DockerResponseHandler: class {
 	init(channel: DispatchIO, queue: DispatchQueue, handler: @escaping DockerMessageHandler)
@@ -24,7 +24,7 @@ extension DockerResponseHandler {
 				let parsedHeaders = try? HttpStringUtils.extractHeaders(headString)
 				else
 			{
-				os_log("failed to parse headers", log: .docker)
+				Log.warn("failed to parse headers", .docker)
 				throw DockerError.internalError("failed to parse headers")
 			}
 			guard parsedHeaders.statusCode >= 200, parsedHeaders.statusCode <= 299 else {
@@ -33,7 +33,7 @@ extension DockerResponseHandler {
 			headers = parsedHeaders
 			return remainingData
 		} catch {
-			os_log("error parsing data %{public}@", log: .docker, error as NSError)
+			Log.warn("error parsing data \(error)", .docker)
 			throw error
 		}
 	}

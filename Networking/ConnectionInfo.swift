@@ -9,7 +9,7 @@ import Freddy
 import ReactiveSwift
 import Result
 import Model
-import os
+import MJLLogger
 
 /// Encapsulates the host and properties returned from a login request
 public class ConnectionInfo: CustomStringConvertible {
@@ -138,7 +138,7 @@ public class ConnectionInfo: CustomStringConvertible {
 		do {
 			try existingWspace.update(with: sessionInfo)
 		} catch {
-			os_log("error updating workspace: %{public}@", log: .app, type: .error, error.localizedDescription)
+			Log.error("error updating workspace: \(error)", .app)
 		}
 	}
 	

@@ -6,7 +6,7 @@
 
 import Foundation
 import Freddy
-import os
+import MJLLogger
 
 public struct SessionImage: JSONDecodable, JSONEncodable, Equatable {
 	public let id: Int
@@ -52,7 +52,7 @@ public struct SessionImage: JSONDecodable, JSONEncodable, Equatable {
 			}
 			self.imageData = imgData
 		} catch {
-			os_log("error decoding SessionImage from json: %{public}@", log: .session, error.localizedDescription)
+			Log.warn("error decoding SessionImage from json: \(error)", .session)
 			throw error
 		}
 	}

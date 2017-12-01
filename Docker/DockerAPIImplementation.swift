@@ -8,7 +8,7 @@ import Foundation
 import ReactiveSwift
 import Freddy
 import Result
-import os
+import MJLLogger
 
 /// Default implementation of DockerAPI protocol
 public final class DockerAPIImplementation: DockerAPI {
@@ -54,7 +54,7 @@ public final class DockerAPIImplementation: DockerAPI {
 	public func loadVersion() -> SignalProducer<DockerVersion, DockerError>
 	{
 		let req = URLRequest(url: baseUrl.appendingPathComponent("/version"))
-		os_log("dm.loadVersion called to %{public}@", log: .docker, type: .debug, req.debugDescription)
+		Log.debug("dm.loadVersion called to \(req.debugDescription)", .docker)
 		return makeRequest(request: req)
 			.optionalLog("loadVersion")
 			.flatMap(.concat, dataToJson)
@@ -213,7 +213,7 @@ public final class DockerAPIImplementation: DockerAPI {
 	// documentation in DockerAPI protocol
 	public func perform(operation: DockerContainerOperation, container: DockerContainer) -> SignalProducer<(), DockerError>
 	{
-		os_log("performing %{public}@ on %{public}@", log: .docker, type: .debug, operation.rawValue as String, container.name)
+		Log.debug("performing \(operation) on \(container.name)", .docker)
 		if operation == .start && container.state.value == .running {
 			//already running, no need to start
 			return SignalProducer<(), DockerError>(result: Result<(), DockerError>(value: ()))
@@ -234,7 +234,7 @@ public final class DockerAPIImplementation: DockerAPI {
 	public func create(container: DockerContainer) -> SignalProducer<DockerContainer, DockerError>
 	{
 		return SignalProducer<DockerContainer, DockerError> { observer, _ in
-			os_log("creating container %{public}@", log: .docker, type: .debug, container.name)
+			Log.debug("creating container \(container.name)", .docker)
 			guard container.state.value == .notAvailable else {
 				observer.send(value: container)
 				observer.sendCompleted()
@@ -266,7 +266,7 @@ public final class DockerAPIImplementation: DockerAPI {
 		var request = URLRequest(url: url)
 		request.httpMethod = "DELETE"
 		return SignalProducer<Void, DockerError> { observer, _ in
-			os_log("removing %{public}@", log: .docker, type: .info, container.name)
+			Log.info("removing \(container.name)", .docker)
 			self.session.dataTask(with: request) { (data, response, error) in
 				self.statusCodeResponseHandler(observer: observer, data: data, response: response, error: error) {}
 			}.resume()
@@ -375,7 +375,7 @@ extension DockerAPIImplementation {
 	{
 		return SignalProducer<DockerVersion, DockerError> { observer, _ in
 			do {
-				os_log("parsing version info: %{public}@", log: .docker, type: .debug, try json.serializeString())
+				Log.debug("parsing version info: \(try json.serializeString())", .docker)
 				let regex = try NSRegularExpression(pattern: "(\\d+)\\.(\\d+)\\.(\\d+)", options: [])
 				let verStr = try json.getString(at: "Version")
 				guard let match = regex.firstMatch(in: verStr, options: [], range: verStr.fullNSRange),
@@ -458,7 +458,7 @@ extension DockerAPIImplementation {
 	func statusCodeResponseHandler<T>(observer: Signal<T, DockerError>.Observer, data: Data?, response: URLResponse?, error: Error?, valueHandler:(() -> Void))
 	{
 		guard let rsp = response as? HTTPURLResponse, error == nil else {
-			os_log("api remote error: %{public}@", log: .docker, type: .default, error! as NSError)
+			Log.warn("api remote error: \(error?.localizedDescription ?? "unknown")", .docker)
 			if let dockerError = error as? DockerError {
 				observer.send(error: dockerError)
 			} else {
@@ -466,7 +466,7 @@ extension DockerAPIImplementation {
 			}
 			return
 		}
-		os_log("api status: %d", log: .docker, type: .debug, rsp.statusCode)
+		Log.debug("api status: \(rsp.statusCode)", .docker)
 		switch rsp.statusCode {
 		case 201, 204, 304: //spec says 204, but should be 201 for created. we'll handle both
 			valueHandler()
@@ -627,7 +627,7 @@ extension DockerAPIImplementation {
 				tar.terminationHandler = { process in
 					guard process.terminationStatus == 0 else {
 						observer.send(error: DockerError.internalError("failed to tar src file"))
-						os_log("tar creation: %d", log: .app, type: .default, process.terminationReason.rawValue)
+						Log.warn("tar creation: \(process.terminationReason)", .docker)
 						return
 					}
 					observer.send(value: workingDir.appendingPathComponent(tarfilename))
@@ -650,7 +650,7 @@ extension DockerAPIImplementation {
 	/// - Returns: signal producer without a return value
 	func tarredUpload(file: URL, path: String, containerName: String, removeFile: Bool = true) -> SignalProducer<(), DockerError>
 	{
-		os_log("uploading %{public}@", log: .docker, type: .info, file.path)
+		Log.info("uploading \(file.path)", .docker)
 		var producer = SignalProducer<(), DockerError> { observer, _ in
 			// build request
 			let url = self.baseUrl.appendingPathComponent("/containers/\(containerName)/archive")

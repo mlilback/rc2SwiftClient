@@ -7,7 +7,7 @@
 import Foundation
 import Freddy
 import SwiftyUserDefaults
-import os
+import MJLLogger
 
 // MARK: Keys for UserDefaults
 extension DefaultsKeys {
@@ -37,7 +37,7 @@ public class BookmarkManager {
 			defaults[.bookmarks] = try encoder.encode(bookmarks)
 			defaults[.hosts] = try encoder.encode(hosts)
 		} catch {
-			os_log("error saving bookmarks: %{public}@", log: .app, error.localizedDescription)
+			Log.warn("error saving bookmarks: \(error.localizedDescription)", .app)
 		}
 	}
 	

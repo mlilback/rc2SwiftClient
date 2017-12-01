@@ -48,16 +48,6 @@ public struct Bookmark: Codable, CustomStringConvertible, CustomDebugStringConve
 		self.projectName = try! connectionInfo.project(withId: workspaceIdent.projectId).name
 	}
 	
-	//	/// convenience initializer that return nil if an error was thrown by the JSON initializer
-	//	public init?(from: JSON) {
-	//		do {
-	//			try self.init(json: from)
-	//		} catch {
-	//			os_log("failed to decode from json: %{public}@", log: .app, error.localizedDescription)
-	//		}
-	//		return nil
-	//	}
-	//
 	public func withChangedName(_ newName: String) -> Bookmark {
 		return Bookmark(name: newName, server: server, workspaceIdent: workspaceIdent, project: projectName, workspace: workspaceName, lastUsed: lastUsed)
 	}

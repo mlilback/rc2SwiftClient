@@ -219,14 +219,14 @@ extension MacAppDelegate {
 			return
 		}
 		guard !workspacesBeingOpened.contains(ident) else {
-			os_log("already opening %{public}@", log: .app, ident.description)
+			Log.warn("already opening \(ident)", .app)
 			return
 		}
 		guard let conInfo = connectionManager.localConnection,
 			let optWspace = try? conInfo.project(withId: ident.projectId).workspace(withId: ident.wspaceId),
 			let wspace = optWspace
 		else {
-			os_log("failed to find workspace %d that we're supposed to open", log: .app)
+			Log.warn("failed to find workspace \(ident) that we're supposed to open", .app)
 			return
 		}
 		workspacesBeingOpened.insert(ident)
@@ -238,7 +238,7 @@ extension MacAppDelegate {
 			case .completed:
 				self?.openSessionWindow(session)
 			case .failed(let err):
-				os_log("failed to open websocket: %{public}@", log: .session, err.localizedDescription)
+				Log.error("failed to open websocket \(err)", .session)
 				fatalError()
 			case .value: //(let _):
 				// do nothing as using indeterminate progress
@@ -353,7 +353,7 @@ extension MacAppDelegate {
 	}
 	
 	@IBAction func showDockerControl(_ sender: Any?) {
-		if dockerManager == nil { os_log("docker disabled"); return }
+		if dockerManager == nil { Log.info("docker disabled", .app); return }
 		if nil == dockerWindowController {
 			let icontext = InjectorContext()
 			icontext.register(DockerTabViewController.self) { controller in
@@ -484,7 +484,7 @@ extension MacAppDelegate {
 		switch rsp.statusCode {
 		case 401: // unauthorized, login failed
 			// TODO: provide better error notification
-			os_log("login unauthorized")
+			Log.warn("login unauthorized", .app)
 			handleStartupError(error)
 		default:
 			handleStartupError(error)
@@ -531,7 +531,7 @@ extension MacAppDelegate {
 			.observe(on: UIScheduler())
 			.startWithResult { [weak self] result in
 				guard result.error == nil else {
-					os_log("fail to start docker: '%{public}@', (%{public}@)", log: .app, type: .error, result.error?.description ?? "-", result.error!.nestedDescription ?? "-")
+					Log.error("failed to start docker: \(result.error?.description ?? "-"), \(result.error?.nestedDescription ?? "0")", .app)
 					self!.appStatus?.presentError(result.error!, session: nil)
 					self!.handleStartupError(result.error!) //should never return
 					return
@@ -549,10 +549,10 @@ extension MacAppDelegate {
 	}
 
 	private func performPullAndPrepareContainers(_ needPull: Bool) -> SignalProducer<(), Rc2Error> {
-		os_log("performPullAndPrepareContainers: %d", log: .app, type: .debug, needPull ? 1 : 0)
+		Log.debug("pulling: \(needPull)", .app)
 		guard let docker = dockerManager else { fatalError() }
 		guard needPull else {
-			os_log("pull not needed, preparing containers", log: .app, type: .debug)
+			Log.debug("pull not needed, preparing containers", .app)
 			return docker.prepareContainers()
 		}
 		return docker.pullImages()
@@ -587,15 +587,30 @@ extension MacAppDelegate {
 
 extension MacAppDelegate {
 	private func initializeLogging() {
-		let config = DefaultLogConfiguration(level: .exit)
-		let logger = StdErrLogger(config: config)
+		let config = Rc2LogConfig()
+		let tformatter = TokenizedLogFormatter(formatString: " (%level) (%category) (%date) [(%function):(%file):(%line)] (%message)", dateFormatter: config.dateFormatter)
+		let logger = StdErrLogger(config: config, formatter: tformatter)
 		Log.enableLogging(logger)
+		config.categoryLevels[.docker] = .warn
+		config.categoryLevels[.dockerEvt] = .warn
+		Log.info("logging enabled")
 	}
 }
 
-class Rc2LogStream: TextOutputStream {
-	func write(_ string: String) {
-		print(string, terminator: "")
+class Rc2LogConfig: LogConfiguration {
+	let dateFormatter: DateFormatterProtocol
+	var categoryLevels = [LogCategory: LogLevel]()
+	var globalLevel: LogLevel = .info
+	
+	init() {
+		let dformatter = DateFormatter()
+		dformatter.locale = Locale(identifier: "en_US_POSIX")
+		dformatter.dateFormat = "HH:mm:ss.SSS"
+		dateFormatter = dformatter
+	}
+	
+	func loggingEnabled(level: LogLevel, category: LogCategory) -> Bool {
+		if let catLevel = categoryLevels[category] { return level <= catLevel }
+		return level <= globalLevel
 	}
 }
-

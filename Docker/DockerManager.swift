@@ -11,9 +11,9 @@ import Freddy
 import ReactiveSwift
 import Result
 import ServiceManagement
-import os
 import SwiftyUserDefaults
 import ClientCore
+import MJLLogger
 
 public enum DockerBackupOption: Int {
 	case hourly = 1
@@ -173,9 +173,9 @@ public final class DockerManager: NSObject {
 			state = .unknown
 			versionInfo = nil
 		}
-		os_log("dm.initialize called", log: .docker, type: .debug)
+		Log.debug("dm initializing", .docker)
 		guard state < .initialized && versionInfo == nil else {
-			os_log("dm.initialize already initialized", log: .docker, type: .debug)
+			Log.debug("dm.initialize already initialized", .docker)
 			return SignalProducer<Bool, Rc2Error>(value: true)
 		}
 		let producer = self.api.loadVersion()
@@ -189,7 +189,7 @@ public final class DockerManager: NSObject {
 				do {
 					self.eventMonitor = try self.eventMonitorClass.init(delegate: self)
 				} catch let err {
-					os_log("failed to open event monitor: %{public}@", log: .docker, type: .error, err.localizedDescription)
+					Log.error("failed to open event monitor: \(err)", .docker)
 				}
 			}
 //			.flatMap(.concat, { _ in self.validateNetwork() })
@@ -211,10 +211,10 @@ public final class DockerManager: NSObject {
 	{
 		precondition(imageInfo != nil)
 		precondition(imageInfo!.combined.size > 0)
-		os_log("dm.pullImages called", log: .docker, type: .debug)
+		Log.enter(.docker); defer { Log.exit(.docker) }
 		var fullSize = 0 //imageInfo!.reduce(0) { val, info in val + info.size }
 		let producers = imageInfo!.flatMap { img -> SignalProducer<PullProgress, DockerError>? in
-			os_log("got pull for %{public}@", log: .docker, type: .debug, img.fullName)
+			Log.debug("pulling \(img.fullName)", .docker)
 			//skip pull if container already using that image
 			if let ctype = ContainerType(rawValue: img.name), img.id == containers[ctype]?.imageId ?? "" {
 				return nil
@@ -235,7 +235,7 @@ public final class DockerManager: NSObject {
 	/// - returns: a signal producer with no values
 	public func prepareContainers() -> SignalProducer<(), Rc2Error>
 	{
-		os_log("dm.prepareContainers called", log: .docker, type: .debug)
+		Log.enter(.docker); defer { Log.exit(.docker) }
 		return self.api.refreshContainers()
 			.mapError { Rc2Error(type: .docker, nested: $0) }
 			.on(value: { newContainers in
@@ -267,10 +267,10 @@ public final class DockerManager: NSObject {
 	public func checkForImageUpdate(forceRefresh: Bool = false) -> SignalProducer<Bool, Rc2Error>
 	{
 		precondition(state >= .initialized)
-		os_log("dm.checkForImageUpdate", log: .docker, type: .debug)
+		Log.enter(.docker); defer { Log.exit(.docker) }
 		//short circuit if we don't need to check and have valid data
 //		guard imageInfo == nil || shouldCheckForUpdate || forceRefresh else {
-			os_log("skipping imageInfo fetch", log: .docker, type: .info)
+			Log.info("skipping imageInfo fetch", .docker)
 			return SignalProducer<Bool, Rc2Error>(value: true)
 //		}
 //		return api.fetchJson(url: URL(string:"\(baseInfoUrl)imageInfo.json")!).map { json in
@@ -307,7 +307,7 @@ public final class DockerManager: NSObject {
 				return true
 			}
 		}
-		os_log("no pull necessary", log: .docker, type: .info)
+		Log.info("no pull necessary", .docker)
 		return false
 	}
 
@@ -345,7 +345,7 @@ public final class DockerManager: NSObject {
 	/// - Returns: signal producer completed when all containers are running
 	public func waitUntilRunning() -> SignalProducer<(), Rc2Error>
 	{
-		os_log("dm.waitUntilRunning called", log: .docker, type: .debug)
+		Log.enter(.docker); defer { Log.exit(.docker) }
 		let notRunningContainers = self.containers.filter({ $0.state.value != .running })
 		guard notRunningContainers.count > 0 else {
 			//short circuit if they all are running
@@ -379,7 +379,7 @@ public final class DockerManager: NSObject {
 			observer.send(error: Rc2Error(type: .docker, nested: DockerError.conflict, explanation: "database didn't start"))
 			return
 		}
-		os_log("checkdatabase attempt %{public}d", log: .docker, type: .debug, attempts)
+		Log.debug("checkdatabase attempt \(attempts)", .docker)
 		let command = ["psql", "-Urc2", "-c", "select * from metadata", "rc2"]
 		let exec = api.execute(command: command, container: self.containers[.combined]!).optionalLog("checkdb \(attempts)")
 		var sendComplete = true
@@ -390,7 +390,7 @@ public final class DockerManager: NSObject {
 				self.checkDatabase(attempts: attempts - 1, observer: observer)
 			case .value(let exitCode, let data):
 				let str = String(data: data, encoding: .utf8)
-				print("exec returned: \(String(describing: str))")
+				Log.debug("exec returned: \(String(describing: str))", .docker)
 				if exitCode == 0 {
 					observer.send(value: ())
 					return
@@ -439,24 +439,24 @@ extension DockerManager: EventMonitorDelegate {
 	// note that the only events that external observers should care about (as currently implemented) are related to specific containers, which will update their observable state property. Probably need a way to inform application if some serious problem ocurred
 	func handleEvent(_ event: Event)
 	{
-		print("got event \(event)")
+		Log.debug("got event \(event)", .docker)
 		//only care if it is one of our containers
 		switch event {
 		case .container(let containerEvent):
 			handleContainerEvent(containerEvent)
 		default:
-			os_log("unsupported event")
+			Log.info("unsupported event", .dockerEvt)
 		}
 	}
 	
 	func handleImageEvent(_ event: ImageEvent) {
 		switch event.action {
 		case .delete:
-			os_log("one of our images was deleted", log: .docker, type: .error)
+			Log.error("one of our images was deleted", .docker)
 			//TODO: need to handle image being deleted
 		default:
 			//TODO: implement handling image events
-			os_log("unhandled image event", log: .docker)
+			Log.info("unsupported image event", .dockerEvt)
 		}
 	}
 
@@ -465,13 +465,13 @@ extension DockerManager: EventMonitorDelegate {
 			let container = self.containers[ctype] else { return }
 		switch event.action {
 			case .die:
-				os_log("warning: container died: %{public}@", log: .docker, event.from)
+				Log.warn("container died: \(event.from)", .docker)
 				if let exitStatusStr = event.attributes?["exitCode"],
 					let exitStatus = Int(exitStatusStr), exitStatus != 0
 				{
 					//abnormally died
 					//TODO: handle abnormal death of container
-					os_log("warning: container %{public}@ died with non-normal exit code", log: .docker, ctype.rawValue as String)
+					Log.warn("warning: container \(ctype.rawValue) died with non-normal exit code", .docker)
 				}
 				container.update(state: .exited)
 			case .start:
@@ -481,7 +481,7 @@ extension DockerManager: EventMonitorDelegate {
 			case .unpause:
 				container.update(state: .running)
 			case .destroy:
-				os_log("one of our containers was destroyed", log: .docker, type: .error)
+				Log.error("one of our containers was destroyed", .docker)
 				//TODO: need to handle container being destroyed
 			default:
 				break
@@ -492,7 +492,7 @@ extension DockerManager: EventMonitorDelegate {
 	{
 		eventMonitor = nil
 		//TODO: actually handle by reseting everything related to docker
-		os_log("event monitor closed. should really do something", log: .docker)
+		Log.warn("event monitor closed. should really do something", .docker)
 	}
 }
 
@@ -507,13 +507,13 @@ extension DockerManager {
 	{
 		return SignalProducer<DockerVersion, Rc2Error> { observer, _ in
 			//force cast because only should be called if versionInfo was set
-			os_log("dm.verifyValidVersion: %{public}@", log: .docker, type: .debug, version.description)
+			Log.debug("validating \(version)", .docker)
 			if version.apiVersion >= self.requiredApiVersion {
 				self.versionInfo = version
 				observer.send(value: version)
 				observer.sendCompleted()
 			} else {
-				os_log("dm unsupported docker version", log: .docker, type: .default)
+				Log.warn("dm unsupported docker version", .docker)
 				observer.send(error: Rc2Error(type: .docker, nested: DockerError.unsupportedDockerVersion))
 			}
 		}
@@ -583,7 +583,7 @@ extension DockerManager {
 	/// - returns: the containers unchanged
 	fileprivate func createUnavailable(containers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error>
 	{
-		os_log("dm.createUnavailable called", log: .docker, type: .debug)
+		Log.enter(.docker); defer { Log.exit(.docker) }
 		for aType in ContainerType.all {
 			// swiftlint:disable:next force_try
 			try! containers[aType]?.injectIntoCreate(imageTag: self.imageInfo![aType].fullName)
@@ -600,12 +600,12 @@ extension DockerManager {
 	/// - Returns: a merged array of signal producers that returns the input containers with their state updated
 	func removeOutdatedContainers(containers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error>
 	{
-		os_log("dm.removeOutdatedContainers called", log: .docker, type: .debug)
+		Log.enter(.docker); defer { Log.exit(.docker) }
 		var containersToRemove = [DockerContainer]()
 		for aContainer in containers {
 			let image = imageInfo![aContainer.type]
 			if image.id != aContainer.imageId && aContainer.state.value != .notAvailable {
-				os_log("outdated image for %{public}@", log: .docker, type: .info, aContainer.type.rawValue as String)
+				Log.info("outdated image for \(aContainer.type.rawValue)", .docker)
 				containersToRemove.append(aContainer)
 			}
 		}
@@ -637,7 +637,7 @@ extension DockerManager {
 	func mergeContainers(newContainers: [DockerContainer], oldContainers: [DockerContainer]) -> SignalProducer<[DockerContainer], Rc2Error>
 	{
 		return SignalProducer<[DockerContainer], Rc2Error> { observer, _ in
-			os_log("dm.mergeContainers called", log: .docker, type: .debug)
+			Log.enter(.docker); defer { Log.exit(.docker) }
 			oldContainers.forEach { aContainer in
 				if let c2 = newContainers[aContainer.type] {
 					aContainer.update(from: c2)
@@ -653,7 +653,7 @@ extension DockerManager {
 	//for now maps promise/future pull operation to a signal producer
 	func pullSingleImage(pull: DockerPullOperation) -> SignalProducer<PullProgress, DockerError>
 	{
-		os_log("dm.pullSingleImage called for %{public}@", log: .docker, type: .debug, pull.pullProgress.name)
+		Log.debug("pulling \(pull.pullProgress.name)", .docker)
 		pullProgress?.extracting = false
  		var lastValue: Int = 0
 		return pull.pull().map { pp in
