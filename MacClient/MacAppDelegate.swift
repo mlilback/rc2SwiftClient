@@ -14,8 +14,7 @@ import Docker
 import Networking
 import SBInjector
 import Model
-import HeliumLogger
-import LoggerAPI
+import MJLLogger
 
 // swiftlint:disable file_length
 
@@ -588,10 +587,9 @@ extension MacAppDelegate {
 
 extension MacAppDelegate {
 	private func initializeLogging() {
-		let logger = HeliumStreamLogger(.verbose, outputStream: Rc2LogStream())
-		Log.logger = logger
-		Log.info("logging enabled")
-		Log.warning("test warning")
+		let config = DefaultLogConfiguration(level: .exit)
+		let logger = StdErrLogger(config: config)
+		Log.enableLogging(logger)
 	}
 }
 

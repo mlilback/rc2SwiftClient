@@ -278,6 +278,11 @@
 		08A01FDC1CCA8B2F001EDFAA /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */; };
 		08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */; };
 		08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 08AA5F071E5350AA00389089 /* SearchBarField.m */; };
+		08ACDA381FD1F5B90017770B /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
+		08ACDA391FD1F5B90017770B /* MJLLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08ACDA3A1FD1F64F0017770B /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
+		08ACDA3B1FD1F6D90017770B /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
+		08ACDA3C1FD1F6E40017770B /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
 		08AD13361FCF18D000CFD516 /* FileInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AD13351FCF18D000CFD516 /* FileInfoController.swift */; };
 		08B184D21E5F36E800F4A6D6 /* defaultWorkspaceFiles in Resources */ = {isa = PBXBuildFile; fileRef = 08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */; };
 		08B184D41E5F384800F4A6D6 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B184D31E5F384800F4A6D6 /* AppInfo.swift */; };
@@ -366,12 +371,6 @@
 		08F5746D1E4D04A70000956B /* Preferences.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08F5746B1E4D04A70000956B /* Preferences.storyboard */; };
 		08F5CDD31FCAE257009665AD /* ComparisonHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F5CDD21FCAE257009665AD /* ComparisonHelpers.swift */; };
 		08F5CDD51FCAE3F7009665AD /* DataFrameDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F5CDD41FCAE3F7009665AD /* DataFrameDataSource.swift */; };
-		08F5CDDA1FCB1EDF009665AD /* HeliumLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F5CDDC1FCB1EDF009665AD /* HeliumLogger.framework */; };
-		08F5CDDB1FCB1EDF009665AD /* LoggerAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F5CDDD1FCB1EDF009665AD /* LoggerAPI.framework */; };
-		08F5CDDE1FCB1F0A009665AD /* HeliumLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F5CDDC1FCB1EDF009665AD /* HeliumLogger.framework */; };
-		08F5CDDF1FCB1F0A009665AD /* HeliumLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08F5CDDC1FCB1EDF009665AD /* HeliumLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		08F5CDE01FCB1F0A009665AD /* LoggerAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08F5CDDD1FCB1EDF009665AD /* LoggerAPI.framework */; };
-		08F5CDE11FCB1F0A009665AD /* LoggerAPI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08F5CDDD1FCB1EDF009665AD /* LoggerAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08F673D01D020B2700B87049 /* FontManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F673CF1D020B2700B87049 /* FontManagement.swift */; };
 		08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F673D11D0214C700B87049 /* AppKitExtensions.swift */; };
 		08F675401F6ADA9C00EC3AC9 /* (null) in Sources */ = {isa = PBXBuildFile; };
@@ -638,7 +637,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				08698FEB1E41051900890092 /* Starscream.framework in Embed Frameworks */,
-				08F5CDDF1FCB1F0A009665AD /* HeliumLogger.framework in Embed Frameworks */,
 				0815599F1DDF9E4F0047B3CE /* Freddy.framework in Embed Frameworks */,
 				0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */,
 				0833A8231D2D7EAD0033654B /* HockeySDK.framework in Embed Frameworks */,
@@ -652,7 +650,6 @@
 				08F6ADD81DD9169400AF0722 /* Docker.framework in Embed Frameworks */,
 				0821BDCB1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Embed Frameworks */,
 				08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */,
-				08F5CDE11FCB1F0A009665AD /* LoggerAPI.framework in Embed Frameworks */,
 				080E82D71DCBE31D0048F36C /* Networking.framework in Embed Frameworks */,
 				082FF1CE1C7F321B00CCC27F /* Result.framework in Embed Frameworks */,
 				08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */,
@@ -954,6 +951,7 @@
 		08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpOutputController.swift; sourceTree = "<group>"; };
 		08AA5F061E5350AA00389089 /* SearchBarField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchBarField.h; sourceTree = "<group>"; };
 		08AA5F071E5350AA00389089 /* SearchBarField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchBarField.m; sourceTree = "<group>"; };
+		08ACDA371FD1F5B90017770B /* MJLLogger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MJLLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08AD13351FCF18D000CFD516 /* FileInfoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInfoController.swift; sourceTree = "<group>"; };
 		08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; name = defaultWorkspaceFiles; path = shared/resources/defaultWorkspaceFiles; sourceTree = SOURCE_ROOT; };
 		08B184D31E5F384800F4A6D6 /* AppInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
@@ -1029,8 +1027,6 @@
 		08F5746C1E4D04A70000956B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Preferences.storyboard; sourceTree = "<group>"; };
 		08F5CDD21FCAE257009665AD /* ComparisonHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComparisonHelpers.swift; sourceTree = "<group>"; };
 		08F5CDD41FCAE3F7009665AD /* DataFrameDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFrameDataSource.swift; sourceTree = "<group>"; };
-		08F5CDDC1FCB1EDF009665AD /* HeliumLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HeliumLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		08F5CDDD1FCB1EDF009665AD /* LoggerAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = LoggerAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08F673CF1D020B2700B87049 /* FontManagement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FontManagement.swift; path = MacClient/FontManagement.swift; sourceTree = SOURCE_ROOT; };
 		08F673D11D0214C700B87049 /* AppKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppKitExtensions.swift; path = ../AppKitExtensions.swift; sourceTree = "<group>"; };
 		08F678371F79416800EC3AC9 /* RestInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestInfo.swift; sourceTree = "<group>"; };
@@ -1072,6 +1068,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08ACDA3B1FD1F6D90017770B /* MJLLogger.framework in Frameworks */,
 				08F6ADBC1DD914F800AF0722 /* ClientCore.framework in Frameworks */,
 				08367BD41E3FCEA800FAFC8A /* Starscream.framework in Frameworks */,
 				080E82DE1DCBE3590048F36C /* Freddy.framework in Frameworks */,
@@ -1122,8 +1119,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08F5CDDA1FCB1EDF009665AD /* HeliumLogger.framework in Frameworks */,
-				08F5CDDB1FCB1EDF009665AD /* LoggerAPI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1132,7 +1127,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				08A01FD01CC81315001EDFAA /* libsqlite3.tbd in Frameworks */,
-				08F5CDE01FCB1F0A009665AD /* LoggerAPI.framework in Frameworks */,
 				08367BD31E3FCEA800FAFC8A /* Starscream.framework in Frameworks */,
 				08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
 				08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
@@ -1149,10 +1143,10 @@
 				082BE15D1F5B3682006CE0B7 /* Model.framework in Frameworks */,
 				082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */,
 				08F6ADD71DD9169400AF0722 /* Docker.framework in Frameworks */,
+				08ACDA381FD1F5B90017770B /* MJLLogger.framework in Frameworks */,
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				0897942F1D7B68F0003339EE /* ClientCore.framework in Frameworks */,
-				08F5CDDE1FCB1F0A009665AD /* HeliumLogger.framework in Frameworks */,
 				0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1170,6 +1164,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08ACDA3A1FD1F64F0017770B /* MJLLogger.framework in Frameworks */,
 				08678C981DCA78CE00F9F283 /* Freddy.framework in Frameworks */,
 				0841993B1D91B2770089A1AC /* URITemplate.framework in Frameworks */,
 				08E836661D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
@@ -1206,6 +1201,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08ACDA3C1FD1F6E40017770B /* MJLLogger.framework in Frameworks */,
 				0823F2331EE742B100A8F8C6 /* libz.tbd in Frameworks */,
 				08F6ADFD1DD9178A00AF0722 /* Freddy.framework in Frameworks */,
 				0828FB331EA7FEEA00AECEC5 /* ReactiveSwift.framework in Frameworks */,
@@ -1642,9 +1638,8 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				08ACDA371FD1F5B90017770B /* MJLLogger.framework */,
 				0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */,
-				08F5CDDC1FCB1EDF009665AD /* HeliumLogger.framework */,
-				08F5CDDD1FCB1EDF009665AD /* LoggerAPI.framework */,
 				0823F2321EE742B100A8F8C6 /* libz.tbd */,
 				08C2D5E41E719DE20007A02D /* SBInjector.framework */,
 				08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */,
