@@ -11,7 +11,7 @@
 #endif
 import Foundation
 import Freddy
-import os
+import MJLLogger
 
 /// enum for the different properties supported by a theme
 public protocol ThemeProperty: RawRepresentable, Hashable {
@@ -79,7 +79,7 @@ public extension Theme {
 		do {
 			urls = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
 		} catch {
-			os_log("error getting user themes")
+			Log.warn("error getting user themes: \(error)", .core)
 			return themes
 		}
 		urls.forEach { aFile in
@@ -92,7 +92,7 @@ public extension Theme {
 				theme.fileUrl = aFile
 				themes.append(theme)
 			} catch {
-				os_log("error reading theme from %{public}@: %{public}@", log: .app, aFile.lastPathComponent, error.localizedDescription)
+				Log.warn("error reading theme from \(aFile.lastPathComponent): \(error)", .app)
 			}
 		}
 		return themes

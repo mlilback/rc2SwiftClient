@@ -50,7 +50,6 @@ class VariableDetailsViewController: NSViewController {
 		if let values = formatter?.formatValues(for: variable) {
 			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.simpleList)
 			simpleListController?.set(variable: variable, values: values)
-			print("simple list")
 			return NSSize(width: 100, height: 200)
 		} else if variable.matrixData != nil || variable.dataFrameData != nil {
 			tabView?.selectTabViewItem(withIdentifier: NSUserInterfaceItemIdentifier.spreadSheet)

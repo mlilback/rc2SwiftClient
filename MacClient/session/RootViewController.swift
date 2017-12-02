@@ -6,7 +6,7 @@
 
 import Cocoa
 import Freddy
-import os
+import MJLLogger
 import ReactiveSwift
 import Networking
 import Model
@@ -139,7 +139,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 			.startWithResult { result in
 			guard let files = result.value else { return }
 			guard let file = files.first(where: { $0.fileType.isSource }) else { return }
-			os_log("selecting imported file", log: .app, type: .info)
+			Log.info("selecting imported file", .app)
 			self.fileHandler?.selectedFile = file
 		}
 	}

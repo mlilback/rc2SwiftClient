@@ -5,7 +5,7 @@
 //
 
 import Cocoa
-import os
+import MJLLogger
 import ReactiveSwift
 import SwiftyUserDefaults
 import ClientCore
@@ -55,7 +55,7 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 				defaults[.lastImportDirectory] = urlbmark
 				defaults[.replaceFiles] = accessoryView.state == .on
 			} catch let err as NSError {
-				os_log("why did we get error creating import bookmark: %{public}@", log: .app, err)
+				Log.warn("why did we get error creating import bookmark: \(err)", .app)
 			}
 			panel.close()
 			if result == .OK && panel.urls.count > 0 {

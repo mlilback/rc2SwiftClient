@@ -8,7 +8,7 @@
 import Cocoa
 import Freddy
 import WebKit
-import os
+import MJLLogger
 import ClientCore
 import Networking
 import ReactiveSwift
@@ -71,7 +71,7 @@ class WebKitOutputController: WebViewController {
 		loadDisposable?.dispose()
 		loadDisposable = producer.startWithResult { result in
 			guard let url = result.value else {
-				os_log("failed to load file for viewing: %{public}@", log: .app, result.error!.localizedDescription)
+				Log.warn("failed to load file for viewing: \(result.error!)", .app)
 				return
 			}
 			self.loadLocalFile(url)

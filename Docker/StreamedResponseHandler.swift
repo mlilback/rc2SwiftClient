@@ -5,7 +5,6 @@
 //
 
 import Foundation
-import os
 
 class StreamedResponseHandler: DockerResponseHandler {
 	let maxReadDataSize: Int = 1024 * 1024 * 4 // 4 MB

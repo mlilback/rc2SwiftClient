@@ -6,7 +6,6 @@
 
 import Foundation
 import Freddy
-import os
 
 public struct DockerImageInfo: JSONDecodable, JSONEncodable {
 	let size: Int

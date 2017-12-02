@@ -5,7 +5,7 @@
 //
 
 import Cocoa
-import os
+import MJLLogger
 import Networking
 import Freddy
 import SwiftyUserDefaults
@@ -56,7 +56,7 @@ protocol SessionControllerDelegate: class {
 
 	deinit {
 		if !properlyClosed {
-			os_log("not properly closed", log: .app, type: .error)
+			Log.error("not properly closed", .app)
 			close()
 		}
 	}
@@ -151,7 +151,7 @@ extension SessionController {
 				savedStateHash = hash
 			}
 		} catch let err as NSError {
-			os_log("Error saving session state: %{public}@", log: .app, err)
+			Log.warn("Error saving session state: \(err)", .app)
 		}
 	}
 	
@@ -174,7 +174,7 @@ extension SessionController {
 				savedStateHash = (data as NSData).sha256()
 			}
 		} catch let err as NSError {
-			os_log("error restoring session state: %{public}@", log: .app, type: .error, err)
+			Log.error("error restoring session state: \(err)", .app)
 		}
 	}
 }

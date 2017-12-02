@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import os
+import MJLLogger
 import ReactiveSwift
 import Networking
 import ClientCore
@@ -45,7 +45,7 @@ public class EditorDocument: NSObject {
 				savedContents = String(data: try Data(contentsOf: fileUrl), encoding: .utf8)
 				isLoaded = true
 			} catch {
-				os_log("error caching new file %{public}@", log: .session, error as NSError)
+				Log.warn("error caching new file \(error)", .session)
 			}
 		}
 	}
@@ -59,7 +59,7 @@ public class EditorDocument: NSObject {
 			}
 			self.fileCache.contents(of: self.file).startWithResult { result in
 				guard let data = result.value else {
-					os_log("failed to load contents of %{public}@: %{public}@", log: .app, self.file.name, result.error!.localizedDescription)
+					Log.warn("failed to load contents of \(self.file.name): \(result.error!)", .app)
 					observer.send(error: result.error!)
 					return
 				}
@@ -91,20 +91,20 @@ public class EditorDocument: NSObject {
 	/// - Returns: signal producer that will complete with the contents that were saved
 	public func saveContents(isAutoSave autosave: Bool = false) -> SignalProducer<String, Rc2Error> {
 		guard isLoaded else {
-			os_log("saveContents called when not loaded)")
+			Log.warn("saveContents called when not loaded)", .app)
 			return SignalProducer<String, Rc2Error>.empty
 		}
 		if saveInProgress.value { return SignalProducer<String, Rc2Error>(error: Rc2Error(type: .alreadyInProgress)) }
 		return SignalProducer<String, Rc2Error> { observer, _ in
-			os_log("EditorDocument.saveContents called", log: .app, type: .info)
+			Log.info("EditorDocument.saveContents called", .app)
 			if self.saveInProgress.value || (autosave && !self.needAutosave()) {
-				os_log("EditorDocument unnecessary autosave", log: .app, type: .info)
+				Log.info("EditorDocument unnecessary autosave", .app)
 				observer.send(value: self.currentContents)
 				observer.sendCompleted()
 				return
 			}
 			self.lastSaveTime = Date.timeIntervalSinceReferenceDate
-			os_log("saving contents of file %d", log: .app, type: .info, self.file.fileId)
+			Log.info("saving contents of file \(self.file.fileId)", .app)
 			self.saveInProgress.value = true
 			self.fileCache.save(file: self.file, contents: self.editedContents!).start { event in
 				switch event {
@@ -113,7 +113,7 @@ public class EditorDocument: NSObject {
 					self.savedContents = self.editedContents
 					self.editedContents = nil
 					self.lastSaveTime = Date.timeIntervalSinceReferenceDate
-					os_log("local save complete", log: .app, type: .info)
+					Log.info("local save complete", .app)
 					observer.send(value: self.savedContents!)
 					observer.sendCompleted()
 				case .failed(let err):
@@ -131,7 +131,7 @@ public class EditorDocument: NSObject {
 	///performs the actual save via the fleCache
 	private func performActualSave(observer: Signal<String, Rc2Error>.Observer) {
 		self.lastSaveTime = Date.timeIntervalSinceReferenceDate
-		os_log("saving contents of file %d", log: .app, type: .info, self.file.fileId)
+		Log.info("saving contents of file \(self.file.fileId)", .app)
 		self.fileCache.save(file: self.file, contents: self.editedContents!).startWithResult { result in
 			self.saveInProgress.value = true
 			defer { self.saveInProgress.value = false }
@@ -142,7 +142,7 @@ public class EditorDocument: NSObject {
 			self.savedContents = self.editedContents
 			self.editedContents = nil
 			self.lastSaveTime = Date.timeIntervalSinceReferenceDate
-			os_log("save complete", log: .app, type: .info)
+			Log.info("save complete", .app)
 			observer.sendCompleted()
 		}
 	}

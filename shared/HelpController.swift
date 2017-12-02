@@ -6,7 +6,7 @@
 
 import ClientCore
 import Foundation
-import os
+import MJLLogger
 
 class HelpController {
 	static let shared = HelpController()
@@ -65,7 +65,7 @@ class HelpController {
 			self.allTopicNames = names
 			self.topicsByName = topsByName
 		} catch let error as NSError {
-			os_log("error loading help index: %{public}@", log: .app, type: .error, error)
+			Log.error("error loading help index: \(error)", .app)
 			fatalError("failed to load help index")
 		}
 	}
@@ -86,7 +86,7 @@ class HelpController {
 		tar.launchPath = "/usr/bin/tar"
 		tar.terminationHandler = { process in
 			if process.terminationStatus != 0 {
-				os_log("help extraction failed: %d", log: .app, type: .default, process.terminationReason.rawValue)
+				Log.warn("help extraction failed: \(process.terminationReason.rawValue)", .app)
 			}
 		}
 		tar.launch()
@@ -137,7 +137,7 @@ class HelpController {
 			let rs = try db.executeQuery("select * from helpidx where helpidx match ?", values: [searchString])
 			results = try parseResultSet(rs)
 		} catch let error as NSError {
-			os_log("error searching help: %{public}@", log: .app, error)
+			Log.warn("error searching help: \(error)", .app)
 		}
 		return results
 	}
@@ -171,7 +171,7 @@ class HelpController {
 		let str = "\(topic.packageName)\(helpUrlFuncSeperator)/\(topic.name).html"
 		let helpUrl = baseHelpUrl.appendingPathComponent(str)
 		if !helpUrl.fileExists() {
-			os_log("missing help file: %{public}@", log: .app, str)
+			Log.warn("missing help file: \(str)", .app)
 		}
 		return helpUrl
 	}

@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import os
+import MJLLogger
 
 /// An immutable event to be handled at a scheduled time
 public class TimedEvent {
@@ -171,14 +171,6 @@ public protocol TimedEventDelegate {
 	/// - Parameter data: the data to save
 	/// - Throws: any error that occurs while saving. Throwing an error will possibly result in data loss.
 	func save(eventData: Data) throws
-
-	/// Used to allow application to filter log statements
-	///
-	/// - Parameters:
-	///   - message: message to log
-	///   - event: the event the log message is about
-	///   - level: the level of the message
-	func logEvent(_ message: String, event: TimedEvent?, error: Error?, level: OSLogType)
 }
 
 public class TimedEventManager
@@ -239,18 +231,18 @@ public class TimedEventManager
 	
 	private func loadEvents() {
 		guard let data = delegate?.loadEventData() else {
-			delegate?.logEvent("failed to load data from delegate", event: nil, error: nil, level: .error)
+			Log.error("failed to load data from delegate", .core)
 			return
 		}
 		do {
 			guard let eventData = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else {
-				delegate?.logEvent("failed to load serialized data", event: nil, error: nil, level: .error)
+				Log.error("failed to load serialized data", .core)
 				return
 			}
 			allEvents.removeAll()
 			try eventData.forEach { allEvents.insert(try TimedEvent($0)) }
 		} catch {
-			delegate?.logEvent("error loading events", event: nil, error: error, level: .error)
+			Log.error("error loading events", .core)
 		}
 	}
 	
@@ -260,7 +252,7 @@ public class TimedEventManager
 			let data = try JSONSerialization.data(withJSONObject: events, options: [])
 			try delegate?.save(eventData: data)
 		} catch {
-			delegate?.logEvent("error saving events", event: nil, error: error, level: .error)
+			Log.error("error saving events", .core)
 		}
 	}
 }

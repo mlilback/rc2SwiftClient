@@ -5,13 +5,8 @@
 //
 
 import Foundation
-import os
 
 private let myBundle = Bundle(for: DockerAPIImplementation.self)
-
-public extension OSLog {
-	static let docker: OSLog = OSLog(subsystem: myBundle.bundleIdentifier ?? "unknown.app", category: "docker")
-}
 
 /// Possible errors from Docker-related types
 ///

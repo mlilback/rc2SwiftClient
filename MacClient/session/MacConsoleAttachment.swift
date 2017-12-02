@@ -8,7 +8,7 @@ import ClientCore
 import Foundation
 import Freddy
 import Networking
-import os
+import MJLLogger
 import Model
 
 public final class MacConsoleAttachment: ConsoleAttachment {
@@ -71,7 +71,7 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 	
 	fileprivate func attachmentData(name: String, image: NSImage?) -> (FileWrapper, NSImage?)? {
 		guard let data = try? JSONEncoder().encode(self) else {
-			os_log("invalid json data in file attachment", log: .app)
+			Log.warn("invalid json data in file attachment", .app)
 			return nil
 		}
 		let file = FileWrapper(regularFileWithContents: data)

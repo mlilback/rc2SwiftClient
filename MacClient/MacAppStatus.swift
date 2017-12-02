@@ -9,7 +9,7 @@ import Networking
 import ReactiveSwift
 import Result
 import ClientCore
-import os
+import MJLLogger
 
 ///used to update the progress display for an operation
 struct ProgressUpdate {
@@ -83,7 +83,7 @@ class MacAppStatus {
 	///   - name: the name of the action being started
 	///   - disposable: the disposable for the action that is starting
 	fileprivate func actionStarting(name: String, disposable: Disposable, determinate: Bool) {
-		os_log("starting action %{public}@", log: .app, type: .info, name)
+		Log.info("starting action \(name)", .app)
 		_statusQueue.sync {
 			assert(nil == _currentDisposable)
 			currentActionName = name

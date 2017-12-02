@@ -7,7 +7,6 @@
 import Cocoa
 import Freddy
 import ClientCore
-import os
 import SwiftyUserDefaults
 import Networking
 

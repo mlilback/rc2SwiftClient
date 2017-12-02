@@ -5,7 +5,6 @@
 //
 
 import AppKit
-import os
 
 @objc protocol TextViewMenuDelegate: NSObjectProtocol {
 	func additionalContextMenuItems() -> [NSMenuItem]?

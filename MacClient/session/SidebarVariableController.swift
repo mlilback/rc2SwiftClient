@@ -6,7 +6,7 @@
 
 import Cocoa
 import Networking
-import os
+import MJLLogger
 import SwiftyUserDefaults
 import Model
 
@@ -60,7 +60,7 @@ class SidebarVariableController: AbstractSessionViewController {
 			selRow >= 0,
 			selRow < rootVariables.count
 		else {
-			os_log("attempt to delete incorrect variable", log: .app, type: .error)
+			Log.error("attempt to delete incorrect variable", .app)
 			return
 		}
 		session.deleteVariable(name: rootVariables[selRow].name)
@@ -76,7 +76,7 @@ class SidebarVariableController: AbstractSessionViewController {
 			pasteboard.setString(jsonStr!, forType: .variable)
 			pasteboard.setString(rootVariables[row].description, forType: .string)
 		} catch {
-			os_log("error copying varable to window: %{public}@", log: .app, error as NSError)
+			Log.error("error copying varable to window: \(error)", .app)
 		}
 	}
 	
@@ -103,7 +103,7 @@ class SidebarVariableController: AbstractSessionViewController {
 			variablePopover?.contentViewController = detailsController
 		}
 		let selRow = varTableView.selectedRow
-		guard selRow != -1 else { os_log("can't show variable details w/o selection", log: .app); return }
+		guard selRow != -1 else { Log.warn("can't show variable details w/o selection", .app); return }
 		// we need to delay showing the popover because NSTabViewController wants to animate this, we don't want it animated
 		variablePopover!.contentSize = detailsController!.display(variable: rootVariables[selRow])
 		DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
@@ -189,7 +189,7 @@ extension SidebarVariableController: NSTableViewDataSource {
 			pboard.setString(jsonStr!, forType: .variable)
 			pboard.setString(rootVariables[row].description, forType: .string)
 		} catch {
-			os_log("error converting variable to json: %{public}@", log: .app, error as NSError)
+			Log.warn("error converting variable to json: \(error)", .app)
 			return false
 		}
 		return true

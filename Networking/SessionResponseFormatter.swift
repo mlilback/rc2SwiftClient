@@ -12,7 +12,6 @@
 #endif
 import ClientCore
 import Freddy
-import os
 import ReactiveSwift
 import Result
 import Model

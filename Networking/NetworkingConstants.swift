@@ -6,15 +6,10 @@
 
 import ClientCore
 import Foundation
-import os
 import Model
 
 /// insert, update, delete
 public typealias FileChangeType = SessionResponse.FileChangedData.FileChangeType
-
-//extension OSLog {
-//	static let network: OSLog = OSLog(subsystem: Bundle().bundleIdentifier ?? "io.rc2.client", category: "network")
-//}
 
 func localizedNetworkString(_ key: String) -> String {
 	return NSLocalizedString(key, tableName: "Networking", bundle: Bundle(for: Rc2DefaultFileManager.self), comment: "")

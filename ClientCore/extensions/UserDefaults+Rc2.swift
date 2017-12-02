@@ -7,7 +7,7 @@
 import Foundation
 import Freddy
 import SwiftyUserDefaults
-import os
+import MJLLogger
 
 public extension UserDefaults {
 	///allow storing JSON objects via SwiftyUserDefaults (serialized as Data)
@@ -22,7 +22,7 @@ public extension UserDefaults {
 			do {
 				set(try newValue?.serialize(), forKey: key._key)
 			} catch let err {
-				os_log("error saving a JSON object to UserDefaults:%{public}@", log: .core, err as NSError)
+				Log.warn("error saving a JSON object to UserDefaults: \(err)", .core)
 			}
 		}
 	}

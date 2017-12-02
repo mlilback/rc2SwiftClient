@@ -6,7 +6,7 @@
 
 import Foundation
 import WebKit
-import os
+import MJLLogger
 import Freddy
 
 class WebViewController: AbstractSessionViewController, OutputController, WKNavigationDelegate {
@@ -99,7 +99,7 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 	}
 	
 	open func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-		os_log("failed to navigate: %{public}@", log: .app, type: .error, error as NSError)
+		Log.error("failed to navigate: \(error)", .app)
 	}
 	
 	open func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
@@ -107,7 +107,7 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 	
 	open func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error)
 	{
-		os_log("failed to provisionally navigate: %{public}@", log: .app, type: .error, error as NSError)
+		Log.error("failed to provisionally navigate: \(error)", .app)
 	}
 }
 
@@ -138,13 +138,13 @@ extension WebViewController: SearchBarViewDelegate {
 			let script = "doSearch('\(encoded)')"
 			webView?.evaluateJavaScript(script) { (value, _) in
 				guard let matchCount = value as? Int, matchCount >= 0 else {
-					os_log("invalid value returned from javascript search", log: .app)
+					Log.warn("invalid value returned from javascript search", .app)
 					return
 				}
 				searchBar.matchCount = matchCount
 			}
 		} catch {
-			os_log("error encoding java script search: %{public}@", log: .app, error.localizedDescription)
+			Log.warn("error encoding java script search: \(error)", .app)
 		}
 	}
 	

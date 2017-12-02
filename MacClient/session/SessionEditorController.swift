@@ -5,7 +5,7 @@
 //
 
 import Cocoa
-import os
+import MJLLogger
 import Freddy
 import ReactiveSwift
 import ClientCore
@@ -214,7 +214,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		guard currentDocument?.dirty ?? false else { return }
 		saveWithProgress(isAutoSave: true).startWithResult { result in
 			guard result.error == nil else {
-				os_log("autosave failed: %{public}@", log: .session, result.error!.localizedDescription)
+				Log.warn("autosave failed: \(result.error!)", .session)
 				return
 			}
 			//need to do anything when successful?
@@ -226,7 +226,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 extension SessionEditorController {
 	@IBAction func previousChunkAction(_ sender: AnyObject) {
 		guard currentChunkIndex > 0 else {
-			os_log("called with invalid currentChunkIndex", log: .app, type: .error)
+			Log.error("called with invalid currentChunkIndex", .app)
 			assertionFailure() //called for debug builds only
 			return
 		}
@@ -236,7 +236,7 @@ extension SessionEditorController {
 
 	@IBAction func nextChunkAction(_ sender: AnyObject) {
 		guard currentChunkIndex + 1 < parser!.chunks.count else {
-			os_log("called with invalid currentChunkIndex", log: .app, type: .error)
+			Log.error("called with invalid currentChunkIndex", .app)
 			assertionFailure() //called for debug builds only
 			return
 		}
@@ -301,7 +301,7 @@ extension SessionEditorController: UsesAdjustableFont {
 	}
 	
 	func fontChanged(_ menuItem: NSMenuItem) {
-		os_log("font changed: %{public}@", log: .app, type: .info, (menuItem.representedObject as? NSObject)!)
+		Log.info("font changed: \((menuItem.representedObject as? NSObject)!)", .app)
 		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
 		let newDesc = newNameDesc.withSize(currentFontDescriptor.pointSize)
 		currentFontDescriptor = newDesc
@@ -381,17 +381,17 @@ fileprivate extension SessionEditorController {
 		}
 		let file = currentDocument.file
 		guard currentDocument.dirty else {
-			os_log("executeQuery executing without save", log: .app, type: .debug)
+			Log.debug("executeQuery executing without save", .app)
 			session.execute(file: file, type: type)
 			return
 		}
 		saveWithProgress().startWithResult { result in
 			guard nil == result.error else {
 				//TODO: display error or updateProgress should
-				os_log("save for execute returned an error: %{public}@", log: .app, type: .info, result.error! as NSError)
+				Log.info("save for execute returned an error: \(result.error!)", .app)
 				return
 			}
-			os_log("executeQuery saved file, now executing", log: .app, type: .info)
+			Log.info("executeQuery saved file, now executing", .app)
 			self.session.execute(file: file, type: type)
 		}
 	}
@@ -429,7 +429,7 @@ fileprivate extension SessionEditorController {
 		doc.loadContents().observe(on: UIScheduler()).startWithResult { result in
 			guard let contents = result.value else {
 				//TODO: handle error
-				os_log("error loading document contents %{public}@", log: .app, type: .error, result.error!.localizedDescription)
+				Log.error("error loading document contents \(result.error!)", .app)
 				return
 			}
 			self.documentContentsLoaded(doc, content: contents)
@@ -473,7 +473,7 @@ fileprivate extension SessionEditorController {
 			saveWithProgress().startWithResult { result in
 				guard nil == result.error else {
 					//TODO: handle error
-					os_log("editor save returned an error: %{public}@", log: .app, result.error! as NSError)
+					Log.warn("editor save returned an error: \(result.error!)", .app)
 					return
 				}
 			}

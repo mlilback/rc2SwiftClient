@@ -5,14 +5,8 @@
 //
 
 import Foundation
-import os
 import ClientCore
 import Model
-
-extension OSLog {
-	/// Log to use for syntax parsing messages
-	static let syntax = OSLog(subsystem: AppInfo.bundleIdentifier, category: "parser")
-}
 
 /// Protocol for an object that parses the contents of an NSTextStorage into an array of DocumentChunk objects
 public protocol SyntaxParser: class {

@@ -8,7 +8,6 @@
 
 import Foundation
 @testable import Docker
-import os
 import ClientCore
 import Darwin
 import Nimble

@@ -8,7 +8,7 @@ import ClientCore
 import Cocoa
 import Freddy
 import Networking
-import os
+import MJLLogger
 import Model
 
 enum SessionStateKey: String {
@@ -199,7 +199,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 
 	@IBAction func displayHistoryItem(_ sender: AnyObject?) {
 		guard let mi = sender as? NSMenuItem, let historyString = mi.representedObject as? String else {
-			os_log("displayHistoryItem only support from menu item", log: .app)
+			Log.warn("displayHistoryItem only supported from menu item", .app)
 			return
 		}
 		consoleInputText = historyString

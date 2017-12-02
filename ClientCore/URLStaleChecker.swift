@@ -6,7 +6,7 @@
 
 import Foundation
 import ReactiveSwift
-import os
+import MJLLogger
 
 /// allows checking to see if a url resource has changed
 public class URLStateChecker: NSObject {
@@ -36,7 +36,7 @@ public class URLStateChecker: NSObject {
 		let req = request(url: url, lastModified: lastModified, etag: etag)
 		session.dataTask(with: req) { (_, response, error) in
 			if let err = error {
-				os_log("error checking http request: %{public}@", log: .network, type: .default, err as NSError)
+				Log.warn("error checking http request: \(err)", .network)
 				handler(false)
 				return
 			}

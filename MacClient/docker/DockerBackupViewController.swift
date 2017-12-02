@@ -6,7 +6,7 @@
 
 import Cocoa
 import ReactiveSwift
-import os
+import MJLLogger
 import Docker
 import ClientCore
 
@@ -77,7 +77,7 @@ class DockerBackupViewController: DockerManagerInjectable {
 		do {
 			try FileManager.default.removeItem(at: targetBackup.url)
 		} catch {
-			os_log("error removing backup: %{public}@", log: .app, error.localizedDescription)
+			Log.warn("error removing backup: \(error)", .app)
 			return
 		}
 		backups.remove(at: selRow)

@@ -6,7 +6,7 @@
 //
 
 import Cocoa
-import os
+import MJLLogger
 import Networking
 import ReactiveSwift
 import Result
@@ -34,7 +34,7 @@ open class BookmarkViewController: NSViewController {
 
 	func windowAccessor(session: Session?) -> NSWindow {
 		guard let win = self.view.window else {
-			os_log("bookmark appstatus has no window", log: .app, type: .error)
+			Log.error("bookmark appstatus has no window", .app)
 			fatalError()
 		}
 		return win

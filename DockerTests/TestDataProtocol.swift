@@ -6,7 +6,6 @@
 
 import Foundation
 import Darwin
-import os
 
 ///TestDataProtocol is a subclass of NSURLProtocol for returning data for testing purposes
 

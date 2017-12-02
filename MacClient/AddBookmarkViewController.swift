@@ -5,7 +5,7 @@
 //
 
 import Cocoa
-import os
+import MJLLogger
 import Networking
 
 class AddBookmarkViewController: NSViewController {
@@ -62,7 +62,7 @@ class AddBookmarkViewController: NSViewController {
 	}
 
 	func displayError(_ error: NSError) {
-		os_log("error: %{public}@", log: .app, type: .error, error)
+		Log.error("error: \(error)", .app)
 	}
 	
 //	func switchToProjectManager(_ serverInfo:SelectServerResponse) {

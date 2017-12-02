@@ -6,7 +6,7 @@
 
 import Cocoa
 import ClientCore
-import os
+import MJLLogger
 import Freddy
 import Networking
 import ReactiveSwift
@@ -129,9 +129,9 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	}
 	
 	func displayAttachment(_ fileWrapper: FileWrapper) {
-		os_log("told to display file %{public}@", log: .app, type: .info, fileWrapper.filename!)
+		Log.info("told to display file \(fileWrapper.filename!)", .app)
 		guard let attachment = try? MacConsoleAttachment.from(data: fileWrapper.regularFileContents!) else {
-			os_log("asked to display invalid attachment", log: .app)
+			Log.warn("asked to display invalid attachment", .app)
 			return
 		}
 		switch attachment.type {
@@ -141,7 +141,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 				selectedOutputTab.value = .webKit
 			} else {
 				//TODO: report error
-				os_log("error getting file attachment to display: %d", log: .app, attachment.fileId)
+				Log.warn("error getting file attachment to display: \(attachment.fileId)", .app)
 			}
 		case .image:
 			if let image = attachment.image {

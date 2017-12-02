@@ -7,7 +7,7 @@
 import ClientCore
 import Cocoa
 import Freddy
-import os
+import MJLLogger
 import ReactiveSwift
 import SwiftyUserDefaults
 
@@ -180,7 +180,7 @@ class ThemeEditorController<T: Theme>: NSViewController, NSTableViewDataSource, 
 		}
 		entries.append(contentsOf: wrapper.builtinThemes.sorted(by: { $0.name < $1.name }).map { ThemeEntry(theme: $0) })
 		if entries.count < 1 {
-			os_log("no themes!", log: .app, type: .error)
+			Log.error("no themes!", .app)
 		}
 	}
 	

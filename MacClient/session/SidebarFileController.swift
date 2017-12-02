@@ -5,7 +5,7 @@
 //
 
 import Cocoa
-import os
+import MJLLogger
 import ReactiveSwift
 import Result
 import SwiftyUserDefaults
@@ -210,7 +210,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				self.session.create(fileName: newName, contentUrl: nil) { result in
 					// the id of the file that was created
 					guard let fid = result.value else {
-						self.logMessage("error creating empty file: %{public}@", result.error!.localizedDescription)
+						Log.error("error creating empty file: \(result.error!)", .app)
 						self.appStatus?.presentError(result.error!, session: self.session)
 						return
 					}
@@ -240,7 +240,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	@IBAction func deleteFile(_ sender: AnyObject?) {
 		guard let file = selectedFile else {
-			logMessage("deleteFile should never be called without selected file")
+			Log.error("deleteFile should never be called without selected file", .app)
 			return
 		}
 		let defaults = UserDefaults.standard
@@ -261,7 +261,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	@IBAction func duplicateFile(_ sender: AnyObject?) {
 		guard let file = selectedFile else {
-			logMessage("duplicateFile should never be called without selected file")
+			Log.error("duplicateFile should never be called without selected file", .app)
 			return
 		}
 		let prompt = NSLocalizedString("Filename:", comment: "")
@@ -274,7 +274,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 					.startWithResult { result in
 					// the id of the file that was created
 					guard let fid = result.value else {
-						self.logMessage("error duplicating file: %{public}@", result.error!.localizedDescription)
+						Log.error("error duplicating file: \(result.error!)", .app)
 						self.appStatus?.presentError(result.error!, session: self.session)
 						return
 					}
@@ -287,11 +287,11 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	@IBAction func renameFile(_ sender: AnyObject?) {
 		guard let cellView = tableView.view(atColumn: 0, row: tableView.selectedRow, makeIfNecessary: false) as? EditableTableCellView else
 		{
-			logMessage("renameFile: failed to get tableViewCell")
+			Log.warn("renameFile: failed to get tableViewCell", .app)
 			return
 		}
 		guard let file = cellView.objectValue as? AppFile else {
-			logMessage("renameFile: no file for file cell view", type: .error)
+			Log.error("renameFile: no file for file cell view", .app)
 			return
 		}
 		cellView.validator = { self.validateRename(file: file, newName: $0) }
@@ -311,7 +311,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 					self.select(fileId: file.fileId)
 					return
 				}
-				self.logMessage("error duplicating file: %{public}@", error.localizedDescription)
+				Log.error("error duplicating file: \(error)",.app)
 				self.appStatus?.presentError(error, session: self.session)
 			}
 		}
@@ -339,7 +339,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		} else {
 			rowIdx = tableView.selectedRow
 		}
-		guard rowIdx >= 0 && rowIdx < rowData.count else { os_log("invalid file for info"); return }
+		guard rowIdx >= 0 && rowIdx < rowData.count else { Log.warn("invalid file for info", .app); return }
 		fileInfoController?.file = rowData[rowIdx].file
 		self.getInfoPopover?.show(relativeTo: tableView.rect(ofRow: rowIdx), of: tableView, preferredEdge: .maxX)
 	}
@@ -387,14 +387,14 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				let bmark = try (savePanel.directoryURL as NSURL?)?.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
 				defaults[.lastExportDirectory] = bmark
 			} catch let err as NSError {
-				os_log("why did we get error creating export bookmark: %{public}@", log: .app, type: .error, err)
+				Log.error("why did we get error creating export bookmark: \(err)", .app)
 			}
 			savePanel.close()
 			if result == .OK && savePanel.url != nil {
 				do {
 					try Foundation.FileManager.default.copyItem(at: self.session.fileCache.cachedUrl(file:self.selectedFile!), to: savePanel.url!)
 				} catch let error as NSError {
-					os_log("failed to copy file for export: %{public}@", log: .app, type: .error, error)
+					Log.error("failed to copy file for export: \(error)", .app)
 					let alert = NSAlert(error:error)
 					alert.beginSheetModal(for: self.view.window!, completionHandler: { (_) -> Void in
 						//do nothing
@@ -410,15 +410,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	// MARK: - private methods
 
-	/// wrapper around os_log
-	fileprivate func logMessage(_ message: StaticString, type: OSLogType = .default, _ args: CVarArg...) {
-		os_log(message, log: .app, type: type, args)
-	}
-	
 	fileprivate func select(fileId: Int) {
 		// the id of the file that was created
 		guard let fidx = self.fileDataIndex(fileId: fileId) else {
-			logMessage("selecting unknown file %d", fileId)
+			Log.warn("selecting unknown file \(fileId)", .app)
 			return
 		}
 		tableView.selectRowIndexes(IndexSet(integer: fidx), byExtendingSelection: false)
@@ -495,13 +490,13 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			{ [weak self] event in
 				switch event {
 				case .failed(let error):
-					os_log("got import error %{public}@", log: .app, type: .error, error.localizedDescription)
+					Log.error("got import error \(error)", .app)
 					self?.fileImporter = nil //free up importer
 				case .completed:
 					NotificationCenter.default.post(name: .FilesImported, object: self?.fileImporter!)
 					self?.fileImporter = nil //free up importer
 				case .interrupted:
-					os_log("import canceled", log: .app)
+					Log.info("import canceled", .app)
 					self?.fileImporter = nil //free up importer
 				default:
 					break
@@ -596,7 +591,7 @@ extension SidebarFileController: FileHandler {
 			return
 		}
 		guard let idx = fileDataIndex(fileId: file.fileId) else {
-			os_log("failed to find file to select", log: .app, type: .info)
+			Log.info("failed to find file to select", .app)
 			return
 		}
 		DispatchQueue.main.async {

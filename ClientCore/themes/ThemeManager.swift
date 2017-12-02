@@ -6,7 +6,6 @@
 
 import Foundation
 import Freddy
-import os
 import ReactiveSwift
 import SwiftyUserDefaults
 

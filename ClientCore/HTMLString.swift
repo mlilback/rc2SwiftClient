@@ -5,7 +5,7 @@
 //
 
 import Cocoa
-import os
+import MJLLogger
 
 ///Class that takes a string of basic html and converts it to an NSAttributedString
 /// support tags are: b, i, color(hex="XXXXXX")
@@ -60,7 +60,7 @@ open class HTMLString {
 					let attrs = self.parseColorAttrs(srcString, attrString: srcString.substring(with: (result?.range(at: 2))!) as NSString)
 					destStr = NSAttributedString(string: content, attributes: attrs)
 				default:
-					os_log("unsupported tag: '%{public}@'", log: .core, tagName)
+					Log.warn("unsupported tag: '\(tagName)'", .core)
 					destStr = NSAttributedString(string: srcString.substring(with: (result?.range(at: 0))!))
 			}
 			outString.append(destStr!)
@@ -79,12 +79,12 @@ open class HTMLString {
 			switch attrName {
 				case "hex":
 					guard let color = PlatformColor(hexString: attrValue) else {
-						os_log("Invalid color attribute: %{public}@", log: .core, srcString.substring(with: (result?.range)!))
+						Log.warn("Invalid color attribute: \(srcString.substring(with: (result?.range)!))", .core)
 						return
 					}
 					dict[NSAttributedStringKey.foregroundColor] = color
 				default:
-					os_log("unsupport color attribute '%{public}@'", log: .core, attrName)
+					Log.warn("unsupport color attribute '\(attrName)'", .core)
 			}
 		}
 		return dict

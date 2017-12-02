@@ -11,7 +11,7 @@ import ClientCore
 import Foundation
 import Freddy
 import MessagePackSwift
-import os
+import MJLLogger
 import ReactiveSwift
 import Result
 import Starscream
@@ -233,7 +233,7 @@ public class Session {
 							completionHandler?(Result<Int, Rc2Error>(value: file.id))
 						}
 					default:
-						os_log("invalid event from fileCache call", log: .session)
+						Log.warn("invalid event from fileCache call", .session)
 				}
 			}
 		}
@@ -327,7 +327,7 @@ public class Session {
 	/// - Returns: a signal producer for success or error. Success always sends a value of true.
 	public func sendSaveFileMessage(file: AppFile, contents: String, executeType: ExecuteType = .none) -> SignalProducer<Bool, Rc2Error>
 	{
-		os_log("sendSaveFileMessage called on file %d", log: .session, type: .info, file.fileId)
+		Log.info("sendSaveFileMessage called on file \(file.fileId)", .session)
 		return SignalProducer<Bool, Rc2Error> { observer, _ in
 			let transId = UUID().uuidString
 			let commandData = SessionCommand.SaveParams(file: file.model, transactionId: transId, content: contents.data(using: .utf8)!)
@@ -379,67 +379,28 @@ public class Session {
 
 // MARK: private methods
 private extension Session {
-
-//	///processes a binary response from the WebSocket
-//	/// - parameter data: The MessagePack data
-//	// TODO: fix force casts
-//	func processBinaryResponse(_ data: Data) {
-//		var parsedValues: [MessageValue]? = nil
-//		let decoder = MessagePackDecoder(data: data)
-//		do {
-//			parsedValues = try decoder.parse()
-//		} catch let err {
-//			os_log("error parsing binary message:%{public}@", log: .session, type: .error, err as NSError)
-//		}
-//		//get the dictionary of messagevalues
-//		guard case MessageValue.DictionaryValue(let msgDict) = parsedValues![0] else {
-//			os_log("received invalid binary response from server", log: .session)
-//			return
-//		}
-//		let dict = msgDict.nativeValue()
-//		guard let message = dict["msg"] as? String else {
-//			os_log("invalid binary response: message not a string", log: .session, type: .error)
-//			return
-//		}
-//		// swift lint:disable:next force_cast
-//		switch message {
-//		case "saveResponse":
-//			handleSaveResponse(dict as [String : AnyObject])
-//		case "showOutput":
-//			// swift lint:disable:next force_cast
-//			let file = AppFile(dict: dict["file"] as! [String:AnyObject])
-//			// swift lint:disable:next force_cast
-//			let response = ServerResponse.showOutput(queryId: dict["queryId"] as! Int, updatedFile: file)
-//			delegate?.sessionMessageReceived(response)
-//			fileCache.update(file: file, withData: data).start()
-//		default:
-//			os_log("received unknown binary message: %{public}@", log: .session, message)
-//			return
-//		}
-//	}
-//
 	//we've got a dictionary of the save response. keys should be transId, success, file, error
 	func handleSave(response: SessionResponse, data: SessionResponse.SaveData) {
-		os_log("handleSaveResponse called", log: .session, type: .info)
+		Log.info("handleSaveResponse called", .session)
 		// we want to circumvent the default pending handler, as we need to run it first
-		os_log("sendSaveFileMessage calling pending transaction", log: .session, type: .debug)
+		Log.debug("calling pending transaction", .session)
 		guard let pending = pendingTransactions[data.transactionId] else {
 			fatalError("save message received without pending handler")
 		}
 		pendingTransactions.removeValue(forKey: data.transactionId)
 		// handle error
 		if let error = data.error {
-			os_log("got save response error: %{public}@", log: .session, type: .error, error.localizedDescription)
+			Log.error("got save response error: \(error)", .session)
 			pending.handler(pending, response, Rc2Error(type: .session, nested: error))
 			return
 		}
 		// both these could be asserts because they should never happen
 		guard let rawFile = data.file else {
-			os_log("got save response w/o file", log: .session, type: .error)
+			Log.error("got save response w/o file", .session)
 			return
 		}
 		guard let existingFile = workspace.file(withId: rawFile.id) else {
-			os_log("got save response for non-existing file", log: .session, type: .error)
+			Log.error("got save response for non-existing file", .session)
 			return
 		}
 		// update file to new version
@@ -447,7 +408,7 @@ private extension Session {
 			try existingFile.update(to: rawFile)
 			pending.handler(pending, response, nil)
 		} catch let netError as NetworkingError {
-			os_log("error updating saved file: %{public}@", log: .session, type: .error, netError.localizedDescription)
+			Log.error("error updating saved file: \(netError)", .session)
 			pending.handler(pending, response, Rc2Error(type: .network, nested: netError))
 		} catch {
 			pending.handler(pending, response, Rc2Error(type: .updateFailed, nested: error))
@@ -477,7 +438,7 @@ private extension Session {
 			try fileCache.handle(change: response)
 			try workspace.update(change: response)
 		} catch {
-			os_log("error handing file change: %{public}@", log: .session, error.localizedDescription)
+			Log.warn("error handing file change: \(error)", .session)
 		}
 	}
 	
@@ -496,11 +457,11 @@ private extension Session {
 					self.delegate?.sessionMessageReceived(response)
 				}
 			} catch {
-				os_log("error showing output file: %{public}@", log: .session, error as NSError)
+				Log.warn("error showing output file: \(error)", .session)
 				delegate?.sessionMessageReceived(response)
 			}
 		} else {
-			os_log("got show output without file downloaded", log: .session)
+			Log.warn("got show output without file downloaded", .session)
 			delegate?.sessionMessageReceived(response)
 		}
 	}
@@ -510,10 +471,10 @@ private extension Session {
 		do {
 			response = try conInfo.decode(data: messageData)
 		} catch {
-			os_log("failed to parse received json: %{public}@", log: .session, type: .info, String(data: messageData, encoding: .utf8) ?? "<invalid>")
+			Log.info("failed to parse received json: \(String(data: messageData, encoding: .utf8) ?? "<invalid>")", .session)
 			return
 		}
-		os_log("got message %{public}@", log: .session, response.description)
+		Log.info("got message \(response)", .session)
 		switch response {
 		case .fileOperation(let opData):
 			handleFileOperation(response: opData)
@@ -580,26 +541,11 @@ private extension Session {
 			let data = try conInfo.encode(command)
 			self.wsSource.write(data: data)
 		} catch let err as NSError {
-			os_log("error sending message on websocket: %{public}@", log: .session, type: .error, err)
+			Log.error("error sending message on websocket: \(err)", .session)
 			return false
 		}
 		return true
 	}
-	
-//	@discardableResult func sendMessage(_ message: Dictionary<String, AnyObject>) -> Bool {
-//		guard JSONSerialization.isValidJSONObject(message) else {
-//			return false
-//		}
-//		do {
-//			let json = try JSONSerialization.data(withJSONObject: message, options: [])
-//			let jsonStr = NSString(data: json, encoding: String.Encoding.utf8.rawValue)
-//			self.wsSource.send(jsonStr as! String)
-//		} catch let err as NSError {
-//			os_log("error sending json message on websocket: %{public}@", log: .session, type: .error, err)
-//			return false
-//		}
-//		return true
-//	}
 	
 	/// starts file caching and forwards responses to observer from open() call
 	private func websocketOpened() {
@@ -621,14 +567,14 @@ private extension Session {
 			}
 		}
 		wsSource.onDisconnect = { [weak self] (error) in
-			os_log("websocket closed: %{public}@", log: .session, error?.localizedDescription ?? "unknown")
+			Log.info("websocket closed: \(error?.localizedDescription ?? "unknown")", .session)
 			self?.connectionOpen = false
 			self?.delegate?.sessionClosed()
 		}
 		wsSource.onText = { [weak self] message in
-			os_log("websocket message: %{public}@", log: .session, type: .debug, message)
+			Log.debug("websocket message: \(message)", .session)
 			guard let data = message.data(using: .utf8) else {
-				os_log("failed to convert ws text to data", log: .session)
+				Log.warn("failed to convert ws text to data", .session)
 				return
 			}
 			self?.queue.async {
@@ -636,19 +582,10 @@ private extension Session {
 			}
 		}
 		wsSource.onData = { [weak self] message in
-			os_log("websocket message: <binary>", log: .session, type: .debug)
+			Log.debug("websocket message: <binary>", .session)
 			self?.queue.async {
 				self?.handleReceivedMessage(message)
 			}
 		}
-//		wsSource.event.error = { [weak self] error in
-//			os_log("error from websocket: %{public}@", log: .session, type: .error, error as NSError)
-//			guard nil == self?.openObserver else {
-//				self?.openObserver?.send(error: Rc2Error(type: .websocket, nested: error))
-//				self?.openObserver = nil
-//				return
-//			}
-//			self?.delegate?.sessionErrorReceived(Rc2Error(type: .websocket, nested: error))
-//		}
 	}
 }

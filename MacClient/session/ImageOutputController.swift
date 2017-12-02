@@ -7,7 +7,7 @@
 import Cocoa
 import ClientCore
 import CoreServices
-import os
+import MJLLogger
 import ReactiveSwift
 import Networking
 import Model
@@ -131,7 +131,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	fileprivate func loadSelectedImage() {
 		guard let allImages = allImages else { fatalError("invalid call to loadSelectedImages") }
 		guard let image = selectedImage, let index = allImages.value.index(of: image) else {
-			os_log("asked to display image when none are in cache")
+			Log.warn("asked to display image when none are in cache", .app)
 			displayEmptyView()
 			return
 		}
@@ -177,7 +177,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 						let fm = Rc2DefaultFileManager()
 						try urlToUse = fm.copyURLToTemporaryLocation(imgUrl!)
 					} catch let err as NSError {
-						os_log("error copying to tmp: %{public}@", log: .app, type: .error, err)
+						Log.error("error copying to tmp: \(err)", .app)
 					}
 					wspace.openFile(urlToUse.path, withApplication: appUrl.path)
 				}))
@@ -220,7 +220,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	
 	func pageController(_ pageController: NSPageController, didTransitionTo object: Any) {
 		guard let img = object as? SessionImage, let allImages = allImages else {
-			os_log("page controller switched to non-existant image")
+			Log.warn("page controller switched to non-existant image", .app)
 			displayEmptyView()
 			return
 		}
@@ -291,7 +291,7 @@ class ImageViewController: NSViewController {
 		imageLoadDisposable?.dispose() //dispose of any currently loading image
 		producer.startWithResult { result in
 			guard let newImage = result.value else {
-				os_log("failed to load image: %{public}@", log: .app, result.error!.localizedDescription)
+				Log.warn("failed to load image: \(result.error!)", .app)
 				return
 			}
 			self.imageLoadDisposable = nil

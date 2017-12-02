@@ -5,7 +5,6 @@
 //
 
 import Cocoa
-import os
 import ClientCore
 import Docker
 

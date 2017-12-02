@@ -6,7 +6,7 @@
 
 import Cocoa
 import ClientCore
-import os
+import MJLLogger
 import Networking
 import ReactiveSwift
 
@@ -116,7 +116,7 @@ class SelectServerViewController: NSViewController, EmbeddedDialogController {
 		do {
 			try keychain.setString(host.keychainKey, value: self.password)
 		} catch let err as NSError {
-			os_log("error saving password: %{public}@", log: .app, type: .info, err)
+			Log.info("error saving password: \(err)", .app)
 		}
 	}
 	

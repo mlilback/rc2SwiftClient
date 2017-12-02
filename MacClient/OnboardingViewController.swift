@@ -6,7 +6,7 @@
 
 import Cocoa
 import WebKit
-import os
+import MJLLogger
 import ClientCore
 import Networking
 import Freddy
@@ -49,7 +49,7 @@ class OnboardingViewController: NSViewController {
 			let workspaces = project?.workspaces.value.map( { $0.model }).sorted(by: { (lhs, rhs) -> Bool in return lhs.name < rhs.name }),
 			let rawData = try? conInfo?.encode(workspaces),
 			let jsonData = rawData
-		 else { os_log("onboarding loaded w/o project"); return }
+		 else { Log.warn("onboarding loaded w/o project", .app); return }
 		webView.evaluateJavaScript("setWorkspaces('\(jsonData.base64EncodedString())')")
 	}
 }
@@ -83,12 +83,12 @@ extension OnboardingViewController: WKScriptMessageHandler {
 			break
 		case "open":
 			guard let projId = project?.projectId, let wspaceId = args["wspaceId"] as? Double else {
-				os_log("invalid params to open a session", log: .app, type: .error)
+				Log.error("invalid params to open a session", .app)
 				return
 			}
 			openLocalWorkspace?(WorkspaceIdentifier(projectId: projId, wspaceId: Int(wspaceId)))
 		default:
-			os_log("unhandled action: %{public}@", log: .app, action)
+			Log.info("unhandled action: \(action)", .app)
 		}
 	}
 }

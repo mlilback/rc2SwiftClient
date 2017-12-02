@@ -8,7 +8,6 @@ import Foundation
 #if os(OSX)
 	import AppKit
 #endif
-import os
 import ClientCore
 import Model
 import ReactiveSwift
@@ -77,7 +76,6 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 				}
 			}
 		}
-		os_log("looking for %{public}@", log: .syntax, type: .debug, NSStringFromRange(range))
 		var outArray: [DocumentChunk] = []
 		for aChunk in chunks {
 			if NSIntersectionRange(aChunk.parsedRange, range).length > 0

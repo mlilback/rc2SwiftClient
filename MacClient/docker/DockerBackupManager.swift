@@ -8,7 +8,6 @@ import Foundation
 import Docker
 import ReactiveSwift
 import ClientCore
-import os
 import Result
 
 struct DockerBackup {

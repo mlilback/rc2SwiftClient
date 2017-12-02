@@ -7,7 +7,7 @@
 import Cocoa
 import  ClientCore
 import Networking
-import os
+import MJLLogger
 
 class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegatingOwner, NSToolbarDelegate {
 	///Object that lets us monitor the status of the application. Nededed to pass on to the statusView once setup is finished
@@ -53,7 +53,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 		do {
 			try coder.encodeEncodable(try session.conInfo.encode(bmark), forKey: "bookmark")
 		} catch {
-			os_log("error encoding bookmark in window: %{public}@", log: .app, error as NSError)
+			Log.info("error encoding bookmark in window: \(error)", .app)
 		}
 	}
 	
