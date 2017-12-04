@@ -29,10 +29,10 @@ extension OutputController {
 class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandler {
 	// MARK: properties
 	var currentOutputController: OutputController!
-	var consoleController: ConsoleOutputController?
-	var imageController: ImageOutputController?
-	var webController: WebKitOutputController?
-	var helpController: HelpOutputController?
+	weak var consoleController: ConsoleOutputController?
+	weak var imageController: ImageOutputController?
+	weak var webController: WebKitOutputController?
+	weak var helpController: HelpOutputController?
 	var imageCache: ImageCache? { return sessionController?.session.imageCache }
 	weak var sessionController: SessionController? { didSet { sessionControllerUpdated() } }
 	weak var displayedFile: AppFile?
@@ -56,7 +56,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		super.viewWillAppear()
 		guard consoleController == nil else { return }
 		consoleController = firstChildViewController(self)
-		consoleController?.viewFileOrImage = displayAttachment
+		consoleController?.viewFileOrImage = { [weak self] (fw) in self?.displayAttachment(fw) }
 		imageController = firstChildViewController(self)
 		imageController?.imageCache = imageCache
 		webController = firstChildViewController(self)
@@ -259,6 +259,7 @@ class OutputTopView: NSTabView {
 		if self.window != nil {
 			windowSetCall?()
 		}
+		windowSetCall = nil
 	}
 }
 
