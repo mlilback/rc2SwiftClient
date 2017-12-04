@@ -60,4 +60,5 @@ LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/../Frameworks @loader_pa
 //
 // If enabled, don't install built products even if deployment locations are active.
 
-SKIP_INSTALL = YES
+//SKIP_INSTALL = YES
+

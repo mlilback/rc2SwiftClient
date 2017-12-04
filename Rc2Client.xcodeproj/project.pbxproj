@@ -283,6 +283,7 @@
 		08ACDA3A1FD1F64F0017770B /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
 		08ACDA3B1FD1F6D90017770B /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
 		08ACDA3C1FD1F6E40017770B /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
+		08ACDAE11FD5FE3E0017770B /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
 		08AD13361FCF18D000CFD516 /* FileInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AD13351FCF18D000CFD516 /* FileInfoController.swift */; };
 		08B184D21E5F36E800F4A6D6 /* defaultWorkspaceFiles in Resources */ = {isa = PBXBuildFile; fileRef = 08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */; };
 		08B184D41E5F384800F4A6D6 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B184D31E5F384800F4A6D6 /* AppInfo.swift */; };
@@ -1119,6 +1120,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08ACDAE11FD5FE3E0017770B /* MJLLogger.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3815,6 +3817,7 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -3825,6 +3828,7 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

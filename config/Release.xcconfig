@@ -6,3 +6,6 @@
 //
 
 #include "Shared.xcconfig"
+
+SKIP_INSTALL = NO
+
