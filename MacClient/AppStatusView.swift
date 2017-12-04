@@ -32,7 +32,7 @@ class AppStatusView: NSView {
 	private var clearTimer: TimerAction?
 
 	weak var appStatus: MacAppStatus? { didSet {
-		progressDisposable?.dispose()
+		clearStatus()
 		progressDisposable = appStatus?.progressSignal.observe(on: UIScheduler()).observeValues(observe)
 	} }
 	
@@ -43,8 +43,9 @@ class AppStatusView: NSView {
 		clearStatus()
 	}
 	
-	fileprivate func clearStatus() {
+	private func clearStatus() {
 		DispatchQueue.main.async {
+			self.progressDisposable?.dispose()
 			self.progressDisposable = nil
 			self.clearTimer = nil
 			self.cancelButton?.isEnabled = false

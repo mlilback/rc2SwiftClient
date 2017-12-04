@@ -32,6 +32,11 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 //		window!.titleVisibility = .hidden
 	}
 	
+	func windowWillClose(_ notification: Notification) {
+		statusView?.appStatus = nil
+		statusView = nil
+	}
+
 	func setupChildren() {
 		statusView?.appStatus = appStatus
 		let rootVC = contentViewController as! RootViewController // swiftlint:disable:this force_cast
@@ -40,6 +45,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 				self?.window?.close()
 			}
 		}
+		// recursively find every instance of AbstractSessionViewController and inject the session
 		let viewControllers = recursiveFlatMap(rootVC, children: { $0.childViewControllers }, transform: { $0 as? AbstractSessionViewController })
 		for aController in viewControllers {
 			aController.sessionOptional = session
