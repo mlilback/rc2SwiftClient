@@ -230,12 +230,13 @@ extension MacAppDelegate {
 		}
 		workspacesBeingOpened.insert(ident)
 		let session = Session(connectionInfo: conInfo, workspace: wspace)
-		session.open().observe(on: UIScheduler()).on(starting: {
-		}, terminated: {
-		}).start { [weak self] event in
+		session.open().observe(on: UIScheduler()).take(during: session.lifetime).start
+		{ [weak self] event in
 			switch event {
 			case .completed:
-				self?.openSessionWindow(session)
+				DispatchQueue.main.async {
+					self?.openSessionWindow(session)
+				}
 			case .failed(let err):
 				Log.error("failed to open websocket \(err)", .session)
 				fatalError()

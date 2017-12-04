@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import ReactiveSwift
 
 let LastSelectedSessionTabIndex = "LastSelectedSessionTabIndex"
 let SidebarFixedWidth: CGFloat = 209
@@ -16,6 +17,7 @@ enum SidebarTab: Int {
 class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	var sidebarSegmentControl: NSSegmentedControl?
 	var outputSegmentControl: NSSegmentedControl?
+	private let (lifetime, token) = Lifetime.make()
 
 	override func awakeFromNib() {
 		super.awakeFromNib()
@@ -48,7 +50,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		outputTabController().selectedOutputTab.signal.observeValues { value in
+		outputTabController().selectedOutputTab.signal.take(during: lifetime).observeValues { value in
 			self.outputSegmentControl?.selectSegment(withTag: value.rawValue)
 		}
 	}

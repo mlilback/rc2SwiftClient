@@ -105,8 +105,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	override func sessionChanged() {
+		Log.enter(.app)
 		fileChangeDisposable?.dispose()
-		fileChangeDisposable = session.workspace.fileChangeSignal.observeValues(filesRefreshed)
+		fileChangeDisposable = session.workspace.fileChangeSignal.take(during: session.lifetime).observeValues(filesRefreshed)
 		loadData()
 		tableView.reloadData()
 		if selectedFile != nil {
@@ -120,7 +121,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	override func appStatusChanged() {
-		busyDisposable = appStatus?.busySignal.observe(on: UIScheduler()).observeValues { [weak self] isBusy in
+		// don't observe if session not set yet
+		guard let session = sessionOptional else { return }
+		busyDisposable = appStatus?.busySignal.observe(on: UIScheduler()).take(during: session.lifetime).observeValues { [weak self] isBusy in
 			guard let tv = self?.tableView else { return }
 			if isBusy {
 				tv.unregisterDraggedTypes()
