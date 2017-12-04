@@ -590,17 +590,16 @@ extension MacAppDelegate {
 		let config = Rc2LogConfig()
 		let tformatter = TokenizedLogFormatter(formatString: " (%level) (%category) (%date) [(%function):(%file):(%line)] (%message)", dateFormatter: config.dateFormatter)
 		let logger = StdErrLogger(config: config, formatter: tformatter)
+		config.categoryLevels[.session] = .debug
+		config.categoryLevels[.app] = .debug
 		Log.enableLogging(logger)
-		config.categoryLevels[.docker] = .warn
-		config.categoryLevels[.dockerEvt] = .warn
-		Log.info("logging enabled")
 	}
 }
 
 class Rc2LogConfig: LogConfiguration {
 	let dateFormatter: DateFormatterProtocol
 	var categoryLevels = [LogCategory: LogLevel]()
-	var globalLevel: LogLevel = .info
+	var globalLevel: LogLevel = .warn
 	
 	init() {
 		let dformatter = DateFormatter()
