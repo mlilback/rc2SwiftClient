@@ -57,7 +57,9 @@ public class Session {
 	fileprivate var watchingVariables: Bool = false
 	///queue used for async operations
 	fileprivate let queue: DispatchQueue
-
+	private let (sessionLifetime, sessionToken) = Lifetime.make()
+	public var lifetime: Lifetime { return sessionLifetime }
+	
 	private typealias PendingTransactionHandler = (PendingTransaction, SessionResponse, Rc2Error?) -> Void
 
 	private struct PendingTransaction {
@@ -126,7 +128,7 @@ public class Session {
 			}
 			self.openObserver = observer
 			self.wsSource.connect()
-		}
+		}.take(during: sessionLifetime)
 	}
 	
 	///closes the websocket, which can not be reopened
