@@ -324,6 +324,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		delegate?.fileSelectionChanged(selectedFile, forEditing: true)
 	}
 	
+	/// called to display info about a specific file
 	@IBAction func inforForFile(_ sender: Any) {
 		if getInfoPopover == nil {
 			// setup the popup and view controller
@@ -337,10 +338,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 //		getInfoPopover!.contentSize = fileInfoController!.view.frame.size
 		var rowIdx = -1
-		if let button = sender as? NSButton {
+		if let button = sender as? NSButton { // if the sender is a button, it's tag was set to the row index
 			rowIdx = button.tag
 		} else {
-			rowIdx = tableView.selectedRow
+			rowIdx = tableView.selectedRow // otherwise, use selected row
 		}
 		guard rowIdx >= 0 && rowIdx < rowData.count else { Log.warn("invalid file for info", .app); return }
 		fileInfoController?.file = rowData[rowIdx].file

@@ -9,6 +9,7 @@ import Cocoa
 public class EditableTableCellView: NSTableCellView {
 	/// a validation function called before editing is ended
 	public var validator: ((String?) -> Bool)?
+	/// callback to call when editing is complete
 	fileprivate var currentCallback: ((String?) -> Void)?
 	fileprivate var canceled: Bool = false
 	
