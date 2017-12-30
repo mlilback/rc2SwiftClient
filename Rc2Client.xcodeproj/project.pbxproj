@@ -207,7 +207,6 @@
 		086A40D51E7B04F400AE476B /* ThemeEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D41E7B04F400AE476B /* ThemeEditorController.swift */; };
 		086A40D71E7B1E8600AE476B /* ThemeEditorController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086A40D61E7B1E8600AE476B /* ThemeEditorController.xib */; };
 		086A40D91E7B3F0C00AE476B /* SyntaxTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D81E7B3F0C00AE476B /* SyntaxTheme.swift */; };
-		086A40DB1E7B4B2300AE476B /* syntaxThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 086A40DA1E7B4B2300AE476B /* syntaxThemes.json */; };
 		086A40DD1E7B578400AE476B /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40DC1E7B578400AE476B /* ThemeManager.swift */; };
 		086A40DF1E7D956400AE476B /* PlatformTypeAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40DE1E7D956400AE476B /* PlatformTypeAliases.swift */; };
 		086A40E11E7DAEE300AE476B /* InternalTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40E01E7DAEE300AE476B /* InternalTheme.swift */; };
@@ -243,7 +242,6 @@
 		088F591A1E732EC40009A0B1 /* MockDockerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F59191E732EC40009A0B1 /* MockDockerAPI.swift */; };
 		088F591C1E74BCEA0009A0B1 /* ThemePrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */; };
 		088F59221E74C4D10009A0B1 /* PlatformColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F59211E74C4D10009A0B1 /* PlatformColor.swift */; };
-		088F59241E7578B80009A0B1 /* outputThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 088F59231E7578B80009A0B1 /* outputThemes.json */; };
 		089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BE1D21938F00866A05 /* BookmarkViewController.swift */; };
 		0890650B1D26F59300C7CA5D /* MacAppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0890650A1D26F59300C7CA5D /* MacAppStatus.swift */; };
 		089346041C7F661400100CF6 /* PEGKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -423,6 +421,8 @@
 		08FDE5431EA10E3500F14FAA /* busybox1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 08FDE5401EA10E3500F14FAA /* busybox1.txt */; };
 		08FDE5441EA10E3500F14FAA /* busybox2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 08FDE5411EA10E3500F14FAA /* busybox2.txt */; };
 		08FDE5451EA10E3500F14FAA /* busybox3.txt in Resources */ = {isa = PBXBuildFile; fileRef = 08FDE5421EA10E3500F14FAA /* busybox3.txt */; };
+		FA2664C31FF81841003E5460 /* syntaxThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 086A40DA1E7B4B2300AE476B /* syntaxThemes.json */; };
+		FA2664C41FF81870003E5460 /* outputThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 088F59231E7578B80009A0B1 /* outputThemes.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2442,14 +2442,12 @@
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
 				08A01FD21CC81479001EDFAA /* helpindex.db in Resources */,
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
-				088F59241E7578B80009A0B1 /* outputThemes.json in Resources */,
 				0816FD1F1E5226760006FF26 /* SearchBarView.xib in Resources */,
 				08F189A81D0A0E7200866A05 /* static_html in Resources */,
 				086A40D71E7B1E8600AE476B /* ThemeEditorController.xib in Resources */,
 				083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */,
 				0807F1611F83DE830018EF61 /* Rc2.xcassets in Resources */,
 				083A566F1D246D85009D3091 /* ProjectManagement.storyboard in Resources */,
-				086A40DB1E7B4B2300AE476B /* syntaxThemes.json in Resources */,
 				08F5746D1E4D04A70000956B /* Preferences.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2471,6 +2469,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA2664C41FF81870003E5460 /* outputThemes.json in Resources */,
+				FA2664C31FF81841003E5460 /* syntaxThemes.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
