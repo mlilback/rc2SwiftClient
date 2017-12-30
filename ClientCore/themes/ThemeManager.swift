@@ -116,7 +116,7 @@ public class ThemeManager {
 	
 	private static func loadSyntaxThemes() -> [SyntaxTheme] {
 		var themes = [SyntaxTheme]()
-		let systemUrl = Bundle.main.url(forResource: "syntaxThemes", withExtension: "json")!
+		let systemUrl = Bundle(for: ThemeManager.self).url(forResource: "syntaxThemes", withExtension: "json")!
 		// swiftlint:disable:next force_try
 		let userUrl = try! AppInfo.subdirectory(type: .applicationSupportDirectory, named: "SyntaxThemes")
 		themes.append(contentsOf: SyntaxTheme.loadThemes(from: systemUrl, builtin: true))
@@ -126,7 +126,7 @@ public class ThemeManager {
 
 	private static func loadOutputThemes() -> [OutputTheme] {
 		var output = [OutputTheme]()
-		let systemUrl = Bundle.main.url(forResource: "outputThemes", withExtension: "json")!
+		let systemUrl = Bundle(for: ThemeManager.self).url(forResource: "outputThemes", withExtension: "json")!
 		// swiftlint:disable:next force_try
 		let userUrl = try! AppInfo.subdirectory(type: .applicationSupportDirectory, named: "OutputThemes")
 		output.append(contentsOf: OutputTheme.loadThemes(from: systemUrl, builtin: true))
