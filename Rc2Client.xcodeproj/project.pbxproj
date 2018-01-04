@@ -712,11 +712,9 @@
 		080E82C41DCBE31D0048F36C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		080E82C91DCBE31D0048F36C /* NetworkingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		080E82D21DCBE31D0048F36C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		080E82E01DCBEE590048F36C /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		080E82E21DCBEF830048F36C /* AppProject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppProject.swift; sourceTree = "<group>"; };
 		080E82E41DCBF4520048F36C /* xattr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = xattr.swift; sourceTree = "<group>"; };
 		080E82EB1DCC001E0048F36C /* FileTypeSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTypeSpec.swift; sourceTree = "<group>"; };
-		080E82ED1DCC00850048F36C /* FileType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileType.swift; sourceTree = "<group>"; };
 		080E82F71DCCD4620048F36C /* AppFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppFile.swift; sourceTree = "<group>"; };
 		080E82F91DCCD4E90048F36C /* FileSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileSpec.swift; sourceTree = "<group>"; };
 		080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingBaseSpec.swift; sourceTree = "<group>"; };
@@ -739,7 +737,6 @@
 		081559841DDBB3760047B3CE /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
 		081559861DDBB4310047B3CE /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Session.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Freddy+Rc2.swift"; path = "ClientCore/Freddy+Rc2.swift"; sourceTree = SOURCE_ROOT; };
-		081559901DDC84850047B3CE /* SessionImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionImage.swift; sourceTree = "<group>"; };
 		081559921DDC889D0047B3CE /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		081559941DDCCD960047B3CE /* RACSignals+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RACSignals+Rc2.swift"; sourceTree = "<group>"; };
 		081559961DDCFEB00047B3CE /* FileCacheSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCacheSpec.swift; sourceTree = "<group>"; };
@@ -1492,8 +1489,6 @@
 			isa = PBXGroup;
 			children = (
 				080E82F71DCCD4620048F36C /* AppFile.swift */,
-				080E82ED1DCC00850048F36C /* FileType.swift */,
-				080E82E01DCBEE590048F36C /* User.swift */,
 				080E82E21DCBEF830048F36C /* AppProject.swift */,
 				08F6ADB81DD911D500AF0722 /* AppWorkspace.swift */,
 			);
@@ -1513,7 +1508,6 @@
 				0815597E1DDBAEB30047B3CE /* SessionResponseFormatter.swift */,
 				081559861DDBB4310047B3CE /* Session.swift */,
 				081559841DDBB3760047B3CE /* SessionDelegate.swift */,
-				081559901DDC84850047B3CE /* SessionImage.swift */,
 				08A2A2971FFE97B700D9807B /* SessionState.swift */,
 				08C6055D1E574355007F83C4 /* ConnectionManager.swift */,
 			);
