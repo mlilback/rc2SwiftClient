@@ -5,8 +5,8 @@
 //
 
 import Foundation
-import Freddy
 import WebKit
+import Networking
 
 class HelpOutputController: WebViewController {
 	private var currentTopic: HelpTopic?
@@ -18,15 +18,14 @@ class HelpOutputController: WebViewController {
 		}
 	}
 	
-	func saveSessionState() -> JSON {
+	func save(state: inout SessionState.WebViewState) {
 		if let topic = currentTopic, let tid = topic.topicId {
-			return .dictionary(["topicId": .int(tid)])
+			state.contentsId = tid
 		}
-		return .dictionary([String: JSON]())
 	}
 	
-	func restoreSessionState(_ state: JSON) {
-		guard let topicId = try? state.getInt(at: "topicId") else { return }
+	func restore(state: SessionState.WebViewState) {
+		guard let topicId = state.contentsId else { return }
 		currentTopic = HelpController.shared.topic(withId: topicId)
 		if let topic = currentTopic {
 			loadHelpTopic(topic)

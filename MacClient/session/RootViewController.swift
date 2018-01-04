@@ -5,7 +5,6 @@
 //
 
 import Cocoa
-import Freddy
 import MJLLogger
 import ReactiveSwift
 import Networking
@@ -319,18 +318,16 @@ extension RootViewController: SessionControllerDelegate {
 		fileHandler?.filesRefreshed([])
 	}
 
-	func saveState() -> JSON {
-		var dict = [String: JSON]()
-		dict["editor"] = editor!.saveState()
-		dict["selFile"] = .int(fileHandler?.selectedFile?.fileId ?? -1)
-		return .dictionary(dict)
+	func save(state: inout SessionState) {
+		state.editorState.lastSelectedFileId = fileHandler?.selectedFile?.fileId ?? -1
+		editor?.save(state: &state.editorState)
 	}
 	
-	func restoreState(_ state: JSON) {
-		if let editorState = state["editor"] {
-			editor?.restoreState(editorState)
-		}
-		if let fileId = try? state.getInt(at: "selFile"), fileId > 0, let file = session.workspace.file(withId: fileId) {
+	func restore(state: SessionState) {
+		editor?.restore(state: state.editorState)
+		if state.editorState.lastSelectedFileId > 0,
+			let file = session.workspace.file(withId: state.editorState.lastSelectedFileId)
+		{
 			fileHandler?.selectedFile = file
 		}
 	}

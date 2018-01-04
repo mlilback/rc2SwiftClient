@@ -62,21 +62,21 @@ public class ImageCache {
 	
 	/// loads cached data from json serialized by previous call to toJSON()
 	///
-	/// - Parameter json: the input json
-	/// - Throws: json decoding errors
-	public func load(from data: Data) throws {
-		let sdata: SaveData = try restClient.conInfo.decode(data: data)
-		self.hostIdentifier = sdata.hostIdentifier
-		sdata.images.forEach { metaCache[$0.id] = $0 }
+	/// - Parameter sate: the state data to restore from
+	/// - Throws: decoding errors
+	public func restore(state: SessionState.ImageCacheState) throws {
+		self.hostIdentifier = state.hostIdentifier
+		state.images.forEach { metaCache[$0.id] = $0 }
 		adjustImageArray()
 	}
 	
-	/// serializes to Data that can be restored via load()
+	/// serializes cache state
 	///
-	/// - Returns: data to save
-	public func persistentData() throws -> Data {
-		let sdata = SaveData(hostIdentifier: hostIdentifier, images: Array(metaCache.values))
-		return try restClient.conInfo.encode(sdata)
+	/// - Parameter state: where to save the state to
+	public func save(state: inout SessionState.ImageCacheState) throws
+	{
+		state.hostIdentifier = hostIdentifier
+		state.images = Array(metaCache.values)
 	}
 	
 	func image(withId imageId: Int) -> PlatformImage? {
@@ -160,10 +160,5 @@ public class ImageCache {
 			//using id because we know they are in proper order, might be created too close together to use dateCreated
 			return img1.id < img2.id
 		}
-	}
-	
-	private struct SaveData: Codable {
-		let hostIdentifier: String
-		let images: [SessionImage]
 	}
 }

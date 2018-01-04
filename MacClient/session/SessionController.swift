@@ -7,7 +7,6 @@
 import Cocoa
 import MJLLogger
 import Networking
-import Freddy
 import SwiftyUserDefaults
 import ReactiveSwift
 import ReactiveCocoa
@@ -18,8 +17,8 @@ import Model
 protocol SessionControllerDelegate: class {
 	func filesRefreshed()
 	func sessionClosed()
-	func saveState() -> JSON
-	func restoreState(_ state: JSON)
+	func save(state: inout SessionState)
+	func restore(state: SessionState)
 }
 
 /// manages a Session object
@@ -134,47 +133,37 @@ extension SessionController {
 	}
 	
 	@objc func saveSessionState() {
-		//save data related to this session
-		var dict = [String: JSON]()
-		dict["outputController"] = outputHandler.saveSessionState()
-		if let imgData = try? session.imageCache.persistentData() {
-			dict["imageCache"] = .string(imgData.base64EncodedString())
-		}
-		dict["delegate"] = delegate?.saveState()
+		var state = SessionState()
+		outputHandler.save(state: &state.outputState)
+		delegate?.save(state: &state)
 		do {
-			let data = try JSON.dictionary(dict).serialize()
-			//only write to disk if has changed
+			try session.imageCache.save(state: &state.imageCacheState)
+			let data = try state.serialize()
 			let hash = (data as NSData).sha256()
-			if hash != savedStateHash {
-				let furl = try stateFileUrl()
-				try? data.write(to: furl, options: [.atomic])
+			if hash != savedStateHash, let furl = try? stateFileUrl() {
+				try? data.write(to: furl)
 				savedStateHash = hash
 			}
-		} catch let err as NSError {
-			Log.warn("Error saving session state: \(err)", .app)
+		} catch {
+			Log.error("failed to save sesison state: \(error)", .session)
 		}
 	}
 	
-	fileprivate func restoreSessionState() {
+	private func restoreSessionState() {
 		do {
 			let furl = try stateFileUrl()
-			if (furl as NSURL).checkResourceIsReachableAndReturnError(nil),
-				let data = try? Data(contentsOf: furl)
+			if try furl.checkResourceIsReachable(),
+				let data = try? Data(contentsOf: furl),
+				data.count > 0
 			{
-				guard let json = try? JSON(data: data), let jsonDict = try? json.getDictionary() else { return }
-				if let outputState = jsonDict["outputController"] {
-					outputHandler.restoreSessionState(outputState)
-				}
-				if let editState = jsonDict["delegate"] {
-					delegate?.restoreState(editState)
-				}
-				if let imageState = json.getOptionalString(at: "imageCache"), let imageData = Data(base64Encoded: imageState) {
-					try session.imageCache.load(from: imageData)
-				}
+				let state = try SessionState(from: data)
+				outputHandler.restore(state: state.outputState)
+				delegate?.restore(state: state)
+				try session.imageCache.restore(state: state.imageCacheState)
 				savedStateHash = (data as NSData).sha256()
 			}
-		} catch let err as NSError {
-			Log.error("error restoring session state: \(err)", .app)
+		} catch {
+			Log.error("error restoring session state: \(error)", .session)
 		}
 	}
 }

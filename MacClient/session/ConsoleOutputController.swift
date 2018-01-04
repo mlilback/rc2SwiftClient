@@ -6,7 +6,6 @@
 
 import ClientCore
 import Cocoa
-import Freddy
 import Networking
 import MJLLogger
 import Model
@@ -84,28 +83,6 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		resultsView?.backgroundColor = theme.color(for: .background)
 	}
 	
-	//stores all custom attributes in the results view for later restoration
-	func serializeCustomAttributes() -> JSON {
-		var attributes: [JSON] = []
-		let astr = resultsView!.textStorage!
-		astr.enumerateAttributes(in: astr.string.fullNSRange, options: []) { (attrs, range, _) in
-			if let aThemeAttr = attrs[OutputTheme.AttributeName] as? OutputThemeProperty {
-				attributes.append(SavedOutputThemeAttribute(aThemeAttr, range: range).toJSON())
-			}
-		}
-		// swiftlint:disable:next force_try (we created it and know it will work)
-		return .array(attributes)
-	}
-	
-	//deserializes custom attributes and applies to results view
-	func applyCustomAttributes(json: JSON) {
-		let ts = resultsView!.textStorage!
-		guard let attrs: [SavedOutputThemeAttribute] = try? json.decodedArray() else { return }
-		for anAttribute in attrs {
-			ts.addAttribute(OutputTheme.AttributeName, value: anAttribute.property, range: anAttribute.range)
-		}
-	}
-	
 	fileprivate func actuallyClearConsole() {
 		resultsView?.textStorage?.deleteCharacters(in: NSRange(location: 0, length: (resultsView?.textStorage?.length)!))
 	}
@@ -127,33 +104,28 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		resultsView!.scrollToEndOfDocument(nil)
 	}
 	
-	func saveSessionState() -> JSON {
-		var dict = [String: JSON]()
-		dict[SessionStateKey.History.rawValue] = cmdHistory.commands.toJSON()
+	func save(state: inout SessionState.OutputControllerState) {
+		state.commandHistory = cmdHistory.commands
 		let fullRange = resultsView!.textStorage!.string.fullNSRange
-		if let rtfd = resultsView?.textStorage?.rtfd(from: fullRange, documentAttributes: [NSAttributedString.DocumentAttributeKey.documentType: NSAttributedString.DocumentType.rtfd])
+		if let rtfd = resultsView?.textStorage?.rtfd(from: fullRange, documentAttributes: [.documentType: NSAttributedString.DocumentType.rtfd])
 		{
+			#if DEBUG
 			_ = try? rtfd.write(to: URL(fileURLWithPath: "/tmp/lastSession.rtfd"))
-			dict[SessionStateKey.Results.rawValue] = .string(rtfd.base64EncodedString())
+			#endif
+			state.resultsContent = rtfd
 		}
-		dict["attrs"] = serializeCustomAttributes()
-		return .dictionary(dict)
 	}
 
-	func restoreSessionState(_ state: JSON) {
-		if let commands: [String] = try? state.decodedArray(at: SessionStateKey.History.rawValue) {
-			cmdHistory.commands = commands
-		}
-		guard let dataStr = try? state.getString(at: SessionStateKey.Results.rawValue), let data = Data(base64Encoded: dataStr) else { return }
-		let ts = resultsView!.textStorage!
+	func restore(state: SessionState.OutputControllerState) {
+		cmdHistory.commands = state.commandHistory
+		guard let rtfdData = state.resultsContent else { return }
+		let resultsView = self.resultsView!
+		let ts = resultsView.textStorage!
 		//for some reason, NSLayoutManager is initially making the line with an attachment 32 tall, even though image is 48. On window resize, it corrects itself. so we are going to keep an array of attachment indexes so we can fix this later
 		var fileIndexes: [Int] = []
-		resultsView!.replaceCharacters(in: NSRange(location: 0, length: ts.length), withRTFD:data)
-		if let attrs = state["attrs"] {
-			applyCustomAttributes(json: attrs)
-			themeChanged()
-		}
-		resultsView!.textStorage?.enumerateAttribute(.attachment, in: ts.string.fullNSRange, options: [], using:
+		resultsView.replaceCharacters(in: NSRange(location: 0, length: ts.length), withRTFD: rtfdData)
+		themeChanged() //trigger setting attributes
+		ts.enumerateAttribute(.attachment, in: ts.string.fullNSRange, options: [], using:
 		{ (value, range, _) -> Void in
 			guard let attach = value as? NSTextAttachment,
 				let fw = attach.fileWrapper,
@@ -177,7 +149,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		}
 		ThemeManager.shared.activeOutputTheme.value.update(attributedString: ts)
 		//scroll to bottom
-		resultsView?.moveToEndOfDocument(self)
+		resultsView.moveToEndOfDocument(self)
 	}
 	
 	func attachmentCellForAttachment(_ attachment: NSTextAttachment) -> NSTextAttachmentCell? {
@@ -270,24 +242,3 @@ extension ConsoleOutputController: UsesAdjustableFont {
 	}
 }
 
-struct SavedOutputThemeAttribute: JSONDecodable, JSONEncodable {
-	let property: OutputThemeProperty
-	let range: NSRange
-	
-	init(_ property: OutputThemeProperty, range: NSRange) {
-		self.property = property
-		self.range = range
-	}
-	
-	init(json: JSON) throws {
-		guard let prop = OutputThemeProperty(rawValue: try json.getString(at: "prop")) else {
-			throw Rc2Error(type: .invalidJson, explanation: "bad data for SavedOutputThemeAttribute")
-		}
-		self.property = prop
-		self.range = NSRangeFromString(try json.getString(at: "range"))
-	}
-	
-	func toJSON() -> JSON {
-		return .dictionary(["range": .string(NSStringFromRange(self.range)), "prop": .string(property.rawValue)])
-	}
-}

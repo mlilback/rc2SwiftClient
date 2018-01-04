@@ -7,7 +7,6 @@
 import Cocoa
 import ClientCore
 import MJLLogger
-import Freddy
 import Networking
 import ReactiveSwift
 import ReactiveCocoa
@@ -41,7 +40,8 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		set { currentOutputController.performFind(action: newValue ? .showFindInterface : .hideFindInterface) }
 	}
 	let selectedOutputTab = MutableProperty<OutputTab>(.console)
-	fileprivate var restoredState: JSON?
+	/// temp storage for state to restore because asked to restore before session is set
+	private var restoredState: SessionState.OutputControllerState?
 
 	// MARK: methods
 	override func viewDidLoad() {
@@ -191,38 +191,31 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		currentOutputController.performFind(action: action)
 	}
 	
-	func saveSessionState() -> JSON {
-		var dict = [String: JSON]()
-		dict["console"] = consoleController?.saveSessionState()
-		dict["selTab"] = .int(selectedOutputTab.value.rawValue)
-		dict["webkit"] = webController?.saveSessionState()
-		dict["selImage"] = .int(imageController?.selectedImageId ?? 0)
-		dict["help"] = helpController?.saveSessionState()
-		return .dictionary(dict)
+	func save(state: inout SessionState.OutputControllerState) {
+		state.selectedTabId = selectedOutputTab.value.rawValue
+		state.selectedImageId = imageController?.selectedImageId ?? 0
+		consoleController?.save(state: &state)
+		webController?.save(state: &state.webViewState)
+		helpController?.save(state: &state.helpViewState)
 	}
 	
-	func restoreSessionState(_ state: JSON) {
+	func restore(state: SessionState.OutputControllerState) {
 		restoredState = state
 	}
 	
 	/// actually loads the state from instance variable
 	func loadSavedState() {
 		guard let savedState = restoredState else { return }
-		if let consoleState = savedState["console"] {
-			consoleController?.restoreSessionState(consoleState)
-		}
-		if let rawValue = try? savedState.getInt(at: "selTab"), let selTab = OutputTab(rawValue: rawValue)
+		consoleController?.restore(state: savedState)
+		if let selTab = OutputTab(rawValue: savedState.selectedTabId)
 		{
 			self.selectedOutputTab.value = selTab
 		}
-		let imgId = savedState.getOptionalInt(at: "selImage") ?? 0
+		let imgId = savedState.selectedImageId
 		self.imageController?.display(imageId: imgId)
-		if let webState = savedState["webkit"] {
-			webController?.restoreSessionState(webState)
-		}
-		if let helpState = savedState["help"] {
-			helpController?.restoreSessionState(helpState)
-		}
+		webController?.restore(state: savedState.webViewState)
+		helpController?.restore(state: savedState.helpViewState)
+		restoredState = nil
 	}
 }
 

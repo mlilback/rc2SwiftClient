@@ -21,15 +21,14 @@ class WebKitOutputController: WebViewController {
 	
 	override var pageTitle: String { return file?.name ?? "" }
 
-	func saveSessionState() -> JSON {
+	func save(state: inout SessionState.WebViewState) {
 		if let file = file {
-			return .dictionary(["fileId": .int(file.fileId)])
+			state.contentsId = file.fileId
 		}
-		return .dictionary([String: JSON]())
 	}
 	
-	func restoreSessionState(_ state: JSON) {
-		guard let fileId = try? state.getInt(at: "fileId") else { return }
+	func restore(state: SessionState.WebViewState) {
+		guard let fileId = state.contentsId else { return }
 		restoredFileId = fileId
 		restoreLastFile()
 	}

@@ -165,14 +165,12 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		return items
 	}
 	
-	func saveState() -> JSON {
-		var dict = [String: JSON]()
-		dict["font"] = .string(NSKeyedArchiver.archivedData(withRootObject: currentFontDescriptor).base64EncodedString())
-		return .dictionary(dict)
+	func save(state: inout SessionState.EditorState) {
+		state.editorFontDescriptor = NSKeyedArchiver.archivedData(withRootObject: currentFontDescriptor)
 	}
 	
-	func restoreState(_ state: JSON) {
-		if let fontStr = try? state.getString(at: "font"), let fontData = Data(base64Encoded: fontStr),
+	func restore(state: SessionState.EditorState) {
+		if let fontData = state.editorFontDescriptor,
 			let fontDesc = NSKeyedUnarchiver.unarchiveObject(with: fontData) as? NSFontDescriptor
 		{
 			currentFontDescriptor = fontDesc

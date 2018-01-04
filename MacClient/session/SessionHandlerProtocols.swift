@@ -32,8 +32,8 @@ extension SearchResponder {
 protocol OutputHandler: SearchResponder {
 	var sessionController: SessionController? { get set }
 	func append(responseString: ResponseString)
-	func saveSessionState() -> JSON
-	func restoreSessionState(_ state: JSON)
+	func save(state: inout SessionState.OutputControllerState)
+	func restore(state: SessionState.OutputControllerState)
 	func handleSearch(action: NSTextFinder.Action)
 	func initialFirstResponder() -> NSResponder
 	func show(file: AppFile?)
