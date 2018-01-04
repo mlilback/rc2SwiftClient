@@ -24,9 +24,9 @@ The following 3rd party frameworks are used (via Carthage or in the vendor direc
 
 * [MessagePackSwift](https://github.com/mlilback/MessagePackSwift.git) a Swift implementation of [MessagePack](http://msgpack.org/)
 
-* [Mockingjay](https://github.com/kylef/Mockingjay) for network unit tests
+* [MJLLogger](https://github.com/mlilback/MJLLogger.git) a logging framework that works cross-framework, allows only the application to enable logging, and allows enabling logging per LogCategory.
 
-* [NotifyingCollection](https://github.com/mlilback/NotifyingCollection) allows monitoring changes in nested arrays (one callback for any nested change in array of Projects that has an array of Workspaces with an array of Files).
+* [Mockingjay](https://github.com/kylef/Mockingjay) for network unit tests
 
 * [PEGKit](https://github.com/itod/pegkit.git) a parsing expression grammar used for syntax highlighting
 
@@ -49,14 +49,6 @@ The following 3rd party frameworks are used (via Carthage or in the vendor direc
 1. `carthage bootstrap --no-use-binaries --platform Mac`
 
 2. `git submodule update --init`
-
-3. Setup HeliumLogger
-
-	1. `cd vendor/HeliumLogger`
-	2. If you are using swiftenv, `export SWIFT_VERSION=4.0.2`
-	3. `swift package generate-xcodeproj`
-
-Step 2 is necessary because HeliumLogger includes a .swift-version file that sets it to 3.1.1. That needs to be overridden when generating the xcode project.
 
 # Help support
 
@@ -91,7 +83,23 @@ OTHER_SWIFT_FLAGS = $(inherited) -DHOCKEYAPP_ENABLED
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) HOCKEYAPP_ENABLED=1 HOCKEY_IDENTIFIER='@"7574682489924a239272b421546d00f8"'
 ```
 
+# Process arguments
+
+* `--disableDocker` disables all docker checks. App server should be listening on correct port.
+
+* `--resetSupportData` forces removal of Caches and ApplicationSupport directories and all contents
+
+# Environment Variables
+
+* `DisableHockeyApp` disables HockeyApp loading
+
+* `XCTestConfigurationFilePath` is set by Xcode when running unit tests. If set, disables docker and skips startup actions. Will fatalError if running unit tests and all docker calls aren't mocked.
+
+* `DMSkipUpdateCache` will disable checks for updated DockerInfo.json from website
+
+* `DockerHostUrl` if set, will connect to this host instead of the local Docker daemon.
+
 # Logging
 
-Logging is done via os_log. To enable debug logging, use `sudo log config --mode "level:debug" --subsystem io.rc2.MacClient`. To stream in the console, use `sudo log stream --level=debug --predicate 'subsystem contains "io.rc2"'`.
+Logging is done via MJLLogger using a configuration class of Rc2LogConfig. Allows setting log level per LogCategory (e.g. enable debug logging for networking only)
 
