@@ -17,6 +17,9 @@ import MJLLogger
 
 // swiftlint:disable file_length
 
+/// incremented when data in ~/Library needs to be cleared (such has when the format has changed)
+let currentSupportDataVersion: Int = 2
+
 fileprivate struct Actions {
 	static let showPreferences = #selector(MacAppDelegate.showPreferencesWindow(_:))
 	static let showBookmarks = #selector(MacAppDelegate.showBookmarkWindow(_:))
@@ -29,6 +32,10 @@ fileprivate struct Actions {
 extension NSStoryboard.Name {
 	static let mainBoard = NSStoryboard.Name(rawValue: "Main")
 	static let mainController = NSStoryboard.Name(rawValue: "MainController")
+}
+
+private extension DefaultsKeys {
+	static let supportDataVersion = DefaultsKey<Int>("currentSupportDataVersion")
 }
 
 @NSApplicationMain
@@ -67,6 +74,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 			}
 		#endif
 		initializeLogging()
+		resetOutdatedCaches()
 		mainStoryboard = NSStoryboard(name: .mainBoard, bundle: nil)
 		precondition(mainStoryboard != nil)
 		//only init dockerManager if not running unit tests or not expressly disabled
@@ -406,6 +414,27 @@ extension MacAppDelegate: NSWindowRestoration {
 		}
 		completionHandler(nil, nil)
 		me.sessionsBeingRestored[bmark.workspaceIdent] = completionHandler
+	}
+}
+
+// MARK: - private
+extension MacAppDelegate {
+	func resetOutdatedCaches() {
+		let defaults = UserDefaults.standard
+		guard defaults[.supportDataVersion] >= currentSupportDataVersion,
+			!ProcessInfo.processInfo.arguments.contains("--resetSupportData")
+			else { return }
+		// need to remove files from ~/Library
+		defer { defaults[.supportDataVersion] = currentSupportDataVersion }
+		let fm = FileManager()
+		if let cacheDir = try? fm.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+		{
+			try? fm.removeItem(at: cacheDir)
+		}
+		if let supportDir = try? fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+		{
+			try? fm.removeItem(at: supportDir)
+		}
 	}
 }
 
