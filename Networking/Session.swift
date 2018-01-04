@@ -10,7 +10,6 @@
 import ClientCore
 import Foundation
 import Freddy
-import MessagePackSwift
 import MJLLogger
 import ReactiveSwift
 import Result

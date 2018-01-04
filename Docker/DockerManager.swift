@@ -142,10 +142,6 @@ public final class DockerManager: NSObject {
 		if nil == host, let envHost = ProcessInfo.processInfo.environment["DockerHostUrl"] {
 			//remove any trailing slash as docker doesn't like double slashes in a url
 			baseUrl = URL(string: envHost.truncate(string: "/"))
-			guard let spath = ProcessInfo.processInfo.environment["DockerHostSharePath"] else {
-				fatalError("remote url provided without share path")
-			}
-			remoteLocalSharePath = spath
 		}
 		assert(baseUrl != nil, "hostUrl not specified as argument or environment variable")
 		//load static docker info we'll use throughout this class
