@@ -11,11 +11,6 @@
 
 #import <Foundation/Foundation.h>
 
-#ifdef HOCKEYAPP_ENABLED
 extern NSString* const kHockeyAppIdentifier;
-#else
-extern NSString* const kHockeyAppIdentifier;
-#endif
-
 
 #endif /* ObjcConstants_h */
