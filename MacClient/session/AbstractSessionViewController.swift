@@ -12,7 +12,10 @@ import SwiftyUserDefaults
 class AbstractSessionViewController: NSViewController {
 	weak var sessionOptional: Session? { didSet { sessionChanged() } }
 	///convience accessor so don't have to constantly unwrap optional
-	var session: Session { return sessionOptional! }
+	var session: Session {
+		assert(sessionOptional != nil, "session accessed when doesn't exist")
+		return sessionOptional!
+	}
 	//injected on load
 	weak var appStatus: MacAppStatus? { didSet {
 		appStatusChanged()
