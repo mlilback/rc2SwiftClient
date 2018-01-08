@@ -104,10 +104,12 @@ class MacAppStatus {
 			progressObserver.send(value: value)
 			ended = false
 		case .failed(let error):
+			Log.error("progress action \(currentActionName ?? "unknown") failed: \(error)", .app)
 			progressObserver.send(value: ProgressUpdate(.failed, message: currentActionName, error: error))
 		case .interrupted:
 			progressObserver.send(value: ProgressUpdate(.completed, message: "\(currentActionName ?? "operation") canceled"))
 		case .completed:
+			Log.info("progress action \(currentActionName ?? "unknown") completed", .app)
 			progressObserver.send(value: ProgressUpdate(.completed, message: "\(currentActionName ?? "operation") completed"))
 		}
 		if ended {
