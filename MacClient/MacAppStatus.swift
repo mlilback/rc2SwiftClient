@@ -46,7 +46,7 @@ class MacAppStatus {
 	/// callback to get the window for a particular session
 	public let getWindow: (Session?) -> NSWindow?
 	/// queue used for changes to the current operation
-	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
+	private let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 	/// tracks if an operation is in progress, and to eventually support canceling
 //	private var currentDisposable: Disposable? {
 //		get {

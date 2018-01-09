@@ -27,7 +27,7 @@ class AppStatusView: NSView {
 	@IBOutlet var determinateProgress: NSProgressIndicator?
 	@IBOutlet var cancelButton: NSButton?
 
-	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.appStatusQueue", qos: .userInitiated)
+	private let _statusQueue = DispatchQueue(label: "io.rc2.appStatusQueue", qos: .userInitiated)
 	private var clearTimer: TimerAction?
 	private let (progressLifetime, progressToken) = Lifetime.make()
 
@@ -55,7 +55,7 @@ class AppStatusView: NSView {
 	}
 	
 	/// called when a progress update received
-	fileprivate func observe(update: ProgressUpdate) {
+	private func observe(update: ProgressUpdate) {
 		switch update.stage {
 		case .start:
 			handleStart(update)
@@ -66,7 +66,7 @@ class AppStatusView: NSView {
 		}
 	}
 	
-	fileprivate func handleStart(_ update: ProgressUpdate) {
+	private func handleStart(_ update: ProgressUpdate) {
 		_statusQueue.sync {
 			if update.value == -1 {
 				progress?.isHidden = false
@@ -81,7 +81,7 @@ class AppStatusView: NSView {
 		}
 	}
 	
-	fileprivate func handleCompleted(_ update: ProgressUpdate) {
+	private func handleCompleted(_ update: ProgressUpdate) {
 		_statusQueue.sync {
 			clearStatus()
 			textField?.stringValue = update.message ?? ""
@@ -91,7 +91,7 @@ class AppStatusView: NSView {
 		}
 	}
 
-	fileprivate func handleValue(_ update: ProgressUpdate) {
+	private func handleValue(_ update: ProgressUpdate) {
 		_statusQueue.sync {
 			if update.value >= 0 {
 				determinateProgress?.doubleValue = update.value
