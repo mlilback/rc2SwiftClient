@@ -134,6 +134,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	func loadData() {
+		guard let session = sessionOptional else { Log.warn("loadData called without a session", .app); return }
 		var sectionedFiles = [[AppFile](), [AppFile](), [AppFile]()]
 		for aFile in session.workspace.files.sorted(by: { $1.name > $0.name }) {
 			if aFile.fileType.isSource {
