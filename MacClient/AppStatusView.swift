@@ -27,13 +27,13 @@ class AppStatusView: NSView {
 	@IBOutlet var determinateProgress: NSProgressIndicator?
 	@IBOutlet var cancelButton: NSButton?
 
-	fileprivate var progressDisposable: Disposable?
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.appStatusQueue", qos: .userInitiated)
 	private var clearTimer: TimerAction?
+	private let (progressLifetime, progressToken) = Lifetime.make()
 
 	weak var appStatus: MacAppStatus? { didSet {
 		clearStatus()
-		progressDisposable = appStatus?.progressSignal.observe(on: UIScheduler()).observeValues(observe)
+		appStatus?.progressSignal.take(during: progressLifetime).logEvents(identifier: "progressView").observe(on: UIScheduler()).observeValues(observe)
 	} }
 	
 	override var intrinsicContentSize: NSSize { return NSSize(width:220, height:22) }
@@ -45,8 +45,6 @@ class AppStatusView: NSView {
 	
 	private func clearStatus() {
 		DispatchQueue.main.async {
-			self.progressDisposable?.dispose()
-			self.progressDisposable = nil
 			self.clearTimer = nil
 			self.cancelButton?.isEnabled = false
 			self.cancelButton?.isHidden = true
