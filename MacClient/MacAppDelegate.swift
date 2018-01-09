@@ -39,7 +39,7 @@ private extension DefaultsKeys {
 }
 
 @NSApplicationMain
-class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
+class MacAppDelegate: NSObject, NSApplicationDelegate {
 	// MARK: - properties
 	var mainStoryboard: NSStoryboard!
 	var sessionWindowControllers = Set<MainWindowController>()
@@ -58,8 +58,10 @@ class MacAppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 	fileprivate let connectionManager = ConnectionManager()
 	fileprivate var dockMenu: NSMenu?
 	fileprivate var dockOpenMenu: NSMenu?
+	@IBOutlet weak var globalLogLevelMenu: NSMenu?
 	fileprivate var sessionsBeingRestored: [WorkspaceIdentifier: (NSWindow?, Error?) -> Void] = [:]
 	fileprivate var workspacesBeingOpened = Set<WorkspaceIdentifier>()
+	private var logConfig: Rc2LogConfig?
 
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 
@@ -157,11 +159,6 @@ extension MacAppDelegate {
 		}
 	}
 	
-	func menuWillOpen(_ menu: NSMenu) {
-		guard menu == workspaceMenu else { return }
-		updateOpen(menu: menu)
-	}
-	
 	/// returns the session associated with window if it is a session window
 	func session(for window: NSWindow?) -> Session? {
 		guard let wc = NSApp.mainWindow?.windowController as? MainWindowController else { return nil }
@@ -256,7 +253,45 @@ extension MacAppDelegate {
 			}
 		}
 	}
+}
+
+// MARK: - menus
+extension MacAppDelegate: NSMenuDelegate {
+	func menuWillOpen(_ menu: NSMenu) {
+		guard menu == workspaceMenu else { return }
+		updateOpen(menu: menu)
+	}
 	
+	func menuNeedsUpdate(_ menu: NSMenu) {
+		print("updating needed for \(menu.title) menu")
+		if menu == globalLogLevelMenu {
+			guard let config = logConfig else { return }
+			for anItem in globalLogLevelMenu!.items {
+				guard let itemLevel = LogLevel(rawValue: anItem.tag) else { continue }
+				anItem.state = config.globalLevel == itemLevel ? .on : .off
+				anItem.target = self
+				anItem.action = #selector(MacAppDelegate.adjustGlobalLogLevel(_:))
+				anItem.isEnabled = itemLevel != config.globalLevel
+			}
+		}
+	}
+
+	/// Adds menu items for workspaces in project
+	///
+	/// - Parameters:
+	///   - menu: menu to add workspaces to
+	///   - project: project whose workspaces will be added to menu
+	private func update(menu: NSMenu, for project: AppProject) {
+		menu.title = project.name
+		menu.removeAllItems()
+		for aWorkspace in project.workspaces.value.sorted(by: { $0.name < $1.name }) {
+			let wspaceItem = NSMenuItem(title: aWorkspace.name, action: Actions.showWorkspace, keyEquivalent: "")
+			wspaceItem.representedObject = aWorkspace.identifier
+			wspaceItem.tag = aWorkspace.wspaceId
+			menu.addItem(wspaceItem)
+		}
+	}
+
 	/// Sets menu's items to either be all workspaces in project (if only 1), or submenu items for each project containing its workspaces
 	///
 	/// - Parameter menu: menu to update
@@ -274,22 +309,6 @@ extension MacAppDelegate {
 			update(menu: pmenu, for: aProject)
 			let pmi = NSMenuItem(title: aProject.name, action: nil, keyEquivalent: "")
 			menu.addItem(pmi)
-		}
-	}
-	
-	/// Adds menu items for workspaces in project
-	///
-	/// - Parameters:
-	///   - menu: menu to add workspaces to
-	///   - project: project whose workspaces will be added to menu
-	fileprivate func update(menu: NSMenu, for project: AppProject) {
-		menu.title = project.name
-		menu.removeAllItems()
-		for aWorkspace in project.workspaces.value.sorted(by: { $0.name < $1.name }) {
-			let wspaceItem = NSMenuItem(title: aWorkspace.name, action: Actions.showWorkspace, keyEquivalent: "")
-			wspaceItem.representedObject = aWorkspace.identifier
-			wspaceItem.tag = aWorkspace.wspaceId
-			menu.addItem(wspaceItem)
 		}
 	}
 }
@@ -378,6 +397,15 @@ extension MacAppDelegate {
 			dockerWindowController = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("DockerWindowController")) as? NSWindowController
 		}
 		dockerWindowController?.window?.makeKeyAndOrderFront(self)
+	}
+	
+	@IBAction func adjustGlobalLogLevel(_ sender: Any?) {
+		guard let item = sender as? NSMenuItem, item.parent?.submenu == globalLogLevelMenu
+			else { Log.warn("action only callable from debug menu", .app); return }
+		guard let newLevel = LogLevel(rawValue: item.tag)
+			else { Log.warn("tag not convertable to log level", .app); return }
+		Log.info("changing log level to \(newLevel)", .app)
+		logConfig?.globalLevel = newLevel
 	}
 	
 	@objc func windowWillClose(_ note: Notification) {
@@ -617,6 +645,7 @@ extension MacAppDelegate {
 extension MacAppDelegate {
 	private func initializeLogging() {
 		let config = Rc2LogConfig()
+		logConfig = config
 		let tformatter = TokenizedLogFormatter(formatString: " (%level) (%category) (%date) [(%function):(%file):(%line)] (%message)", dateFormatter: config.dateFormatter)
 		let logger = StdErrLogger(config: config, formatter: tformatter)
 		config.categoryLevels[.session] = .debug
@@ -642,3 +671,4 @@ class Rc2LogConfig: LogConfiguration {
 		return level <= globalLevel
 	}
 }
+
