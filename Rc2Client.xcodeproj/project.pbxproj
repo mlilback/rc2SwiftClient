@@ -275,6 +275,7 @@
 		08A01FDC1CCA8B2F001EDFAA /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */; };
 		08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */; };
 		08A2A29B1FFEA29700D9807B /* SessionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2971FFE97B700D9807B /* SessionState.swift */; };
+		08A2A29F2009602700D9807B /* HTMLStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A29E2009602700D9807B /* HTMLStringTests.swift */; };
 		08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 08AA5F071E5350AA00389089 /* SearchBarField.m */; };
 		08ACDA381FD1F5B90017770B /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
 		08ACDA391FD1F5B90017770B /* MJLLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -947,6 +948,7 @@
 		08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpOutputController.swift; sourceTree = "<group>"; };
 		08A2A2971FFE97B700D9807B /* SessionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionState.swift; sourceTree = "<group>"; };
+		08A2A29E2009602700D9807B /* HTMLStringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLStringTests.swift; sourceTree = "<group>"; };
 		08AA5F061E5350AA00389089 /* SearchBarField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchBarField.h; sourceTree = "<group>"; };
 		08AA5F071E5350AA00389089 /* SearchBarField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchBarField.m; sourceTree = "<group>"; };
 		08ACDA371FD1F5B90017770B /* MJLLogger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MJLLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1714,6 +1716,7 @@
 			children = (
 				0897942B1D7B68F0003339EE /* Info.plist */,
 				083D11931DEE0DF300549268 /* DataRc2Spec.swift */,
+				08A2A29E2009602700D9807B /* HTMLStringTests.swift */,
 			);
 			path = ClientCoreTests;
 			sourceTree = SOURCE_ROOT;
@@ -2858,6 +2861,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */,
+				08A2A29F2009602700D9807B /* HTMLStringTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
