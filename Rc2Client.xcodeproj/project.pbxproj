@@ -276,6 +276,8 @@
 		08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */; };
 		08A2A29B1FFEA29700D9807B /* SessionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2971FFE97B700D9807B /* SessionState.swift */; };
 		08A2A29F2009602700D9807B /* HTMLStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A29E2009602700D9807B /* HTMLStringTests.swift */; };
+		08A2A2A4200ABFF800D9807B /* GenericError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2A3200ABFF800D9807B /* GenericError.swift */; };
+		08A2A2A7200AD28500D9807B /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F01EB41EFD87B80047F397 /* RecursiveFlatMap.swift */; };
 		08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 08AA5F071E5350AA00389089 /* SearchBarField.m */; };
 		08ACDA381FD1F5B90017770B /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
 		08ACDA391FD1F5B90017770B /* MJLLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -949,6 +951,7 @@
 		08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpOutputController.swift; sourceTree = "<group>"; };
 		08A2A2971FFE97B700D9807B /* SessionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionState.swift; sourceTree = "<group>"; };
 		08A2A29E2009602700D9807B /* HTMLStringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLStringTests.swift; sourceTree = "<group>"; };
+		08A2A2A3200ABFF800D9807B /* GenericError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericError.swift; sourceTree = "<group>"; };
 		08AA5F061E5350AA00389089 /* SearchBarField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchBarField.h; sourceTree = "<group>"; };
 		08AA5F071E5350AA00389089 /* SearchBarField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchBarField.m; sourceTree = "<group>"; };
 		08ACDA371FD1F5B90017770B /* MJLLogger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MJLLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1840,6 +1843,7 @@
 			children = (
 				08F01EC11EFD8DCA0047F397 /* ToolbarItemHandler.swift */,
 				08F01EAC1EFD87B80047F397 /* ExpiringCache.swift */,
+				08A2A2A3200ABFF800D9807B /* GenericError.swift */,
 				08F01EAD1EFD87B80047F397 /* extensions */,
 				08F01EB31EFD87B80047F397 /* Keychain.swift */,
 				08F01EB41EFD87B80047F397 /* RecursiveFlatMap.swift */,
@@ -2771,6 +2775,7 @@
 				080AB8DC1E92D9D7005452C7 /* MultiImageWindowController.swift in Sources */,
 				083174141C5828B400071408 /* ResultsView.swift in Sources */,
 				08A01FC21CC7FCA3001EDFAA /* FMDatabase.m in Sources */,
+				08A2A2A7200AD28500D9807B /* RecursiveFlatMap.swift in Sources */,
 				080AB8DE1E92DA10005452C7 /* MultiImageViewController.swift in Sources */,
 				08A01FC41CC7FCA3001EDFAA /* FMDatabaseAdditions.m in Sources */,
 				089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */,
@@ -2838,6 +2843,7 @@
 				086A40D91E7B3F0C00AE476B /* SyntaxTheme.swift in Sources */,
 				08E8366B1D94436D00E26EFE /* UserDefaults+Rc2.swift in Sources */,
 				08F01EB71EFD88730047F397 /* ExpiringCache.swift in Sources */,
+				08A2A2A4200ABFF800D9807B /* GenericError.swift in Sources */,
 				08F01EBF1EFD887A0047F397 /* ShellCommands.swift in Sources */,
 				08525E731E256A8B008A332E /* Reachability.swift in Sources */,
 				086A40E11E7DAEE300AE476B /* InternalTheme.swift in Sources */,
