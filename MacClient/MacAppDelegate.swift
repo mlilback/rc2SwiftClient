@@ -47,20 +47,20 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	let bookmarkManager = BookmarkManager()
 	private var dockerEnabled = true
 	@objc dynamic var dockerManager: DockerManager?
-	fileprivate var backupManager: DockerBackupManager?
+	private var backupManager: DockerBackupManager?
 	var startupWindowController: StartupWindowController?
 	var startupController: StartupController?
-	fileprivate var onboardingController: OnboardingWindowController?
-	fileprivate var dockerWindowController: NSWindowController?
-	fileprivate var preferencesWindowController: NSWindowController?
-	fileprivate var appStatus: MacAppStatus?
+	private var onboardingController: OnboardingWindowController?
+	private var dockerWindowController: NSWindowController?
+	private var preferencesWindowController: NSWindowController?
+	private var appStatus: MacAppStatus?
 	@IBOutlet weak var workspaceMenu: NSMenu!
-	fileprivate let connectionManager = ConnectionManager()
-	fileprivate var dockMenu: NSMenu?
-	fileprivate var dockOpenMenu: NSMenu?
+	private let connectionManager = ConnectionManager()
+	private var dockMenu: NSMenu?
+	private var dockOpenMenu: NSMenu?
 	@IBOutlet weak var globalLogLevelMenu: NSMenu?
-	fileprivate var sessionsBeingRestored: [WorkspaceIdentifier: (NSWindow?, Error?) -> Void] = [:]
-	fileprivate var workspacesBeingOpened = Set<WorkspaceIdentifier>()
+	private var sessionsBeingRestored: [WorkspaceIdentifier: (NSWindow?, Error?) -> Void] = [:]
+	private var workspacesBeingOpened = Set<WorkspaceIdentifier>()
 	private var logConfig: Rc2LogConfig?
 
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
