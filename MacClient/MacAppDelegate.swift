@@ -13,6 +13,7 @@ import Docker
 import Networking
 import SBInjector
 import Model
+import os
 import MJLLogger
 
 // swiftlint:disable file_length
@@ -27,6 +28,7 @@ fileprivate struct Actions {
 	static let newWorkspace = #selector(MacAppDelegate.newWorkspace(_:))
 	static let showWorkspace = #selector(MacAppDelegate.showWorkspace(_:))
 	static let backupDatabase = #selector(MacAppDelegate.backupDatabase(_:))
+	static let showLog = #selector(MacAppDelegate.showLogWindow(_:))
 }
 
 extension NSStoryboard.Name {
@@ -53,6 +55,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	private var onboardingController: OnboardingWindowController?
 	private var dockerWindowController: NSWindowController?
 	private var preferencesWindowController: NSWindowController?
+	private var logWindowController: NSWindowController?
 	private var appStatus: MacAppStatus?
 	@IBOutlet weak var workspaceMenu: NSMenu!
 	private let connectionManager = ConnectionManager()
@@ -155,6 +158,8 @@ extension MacAppDelegate {
 		case Actions.showWorkspace:
 			guard let wspaceIdent = menuItem.representedObject as? WorkspaceIdentifier else { return false }
 			return windowController(for: wspaceIdent)?.window?.isMainWindow ?? true
+		case Actions.showLog:
+			return true
 		default:
 			return false
 		}
@@ -264,7 +269,6 @@ extension MacAppDelegate: NSMenuDelegate {
 	}
 	
 	func menuNeedsUpdate(_ menu: NSMenu) {
-		print("updating needed for \(menu.title) menu")
 		if menu == globalLogLevelMenu {
 			guard let config = logConfig else { return }
 			for anItem in globalLogLevelMenu!.items {
@@ -398,6 +402,21 @@ extension MacAppDelegate {
 			dockerWindowController = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("DockerWindowController")) as? NSWindowController
 		}
 		dockerWindowController?.window?.makeKeyAndOrderFront(self)
+	}
+	
+	@IBAction func showLogWindow(_ sender: Any?) {
+		if nil == logWindowController {
+			if #available(OSX 10.13, *) {
+				logWindowController = NSStoryboard.main?.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("LogWindowController")) as? NSWindowController
+			} else {
+				// Fallback on earlier versions
+				let sboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
+				logWindowController = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("LogWindowController")) as? NSWindowController
+			}
+			guard let logController = logWindowController?.contentViewController as? LogViewController else { fatalError() }
+			logController.logTextView.layoutManager?.replaceTextStorage(logBuffer)
+		}
+		logWindowController?.window?.makeKeyAndOrderFront(sender)
 	}
 	
 	@IBAction func adjustGlobalLogLevel(_ sender: Any?) {
@@ -647,13 +666,31 @@ extension MacAppDelegate {
 	private func initializeLogging() {
 		let config = Rc2LogConfig()
 		logConfig = config
-		let fmtString = HTMLString(text: "<b>(%level)</b> <color hex=\"#ff0000\">(%category)</color> (%date) [(%function):(%filename):(%line)] (%message)")
-		let tformatter = TokenizedLogFormatter(config: config, formatString: fmtString.attributedString(), dateFormatter: config.dateFormatter)
+		let fmtString = HTMLString(text: "(%level) <color hex=\"006600FF\">[(%category)]</color> [(%date)] [(%function):(%filename):(%line)] (%message)")
+		#if DEBUG
+			let attrFmtString = HTMLString(text: "(%level) <color hex=\"006600FF\">[(%category)]</color> [(%date)] <color hex=\"AF2638FF\">[(%function):(%filename):(%line)]</color> (%message)")
+		#else
+			let attrFmtString = HTMLString(text: "(%level) <color hex=\"006600FF\">[(%category)]</color> [(%date)] (%message)")
+		#endif
+		let attrFormatter = TokenizedLogFormatter(config: config, formatString: attrFmtString.attributedString(), dateFormatter: config.dateFormatter)
+		let plainFormatter = TokenizedLogFormatter(config: config, formatString: fmtString.attributedString(), dateFormatter: config.dateFormatter)
 		let logger = Logger(config: config)
-		logger.append(handler: StdErrHandler(config: config, formatter: tformatter))
-		logger.append(handler: AttributedStringLogHandler(formatter: tformatter, output: logBuffer))
+		logger.append(handler: StdErrHandler(config: config, formatter: plainFormatter))
+		logger.append(handler: AttributedStringLogHandler(formatter: attrFormatter, output: logBuffer))
 		config.categoryLevels[.session] = .debug
 		config.categoryLevels[.app] = .debug
+		// add on a file logger
+		do {
+			let logUrl = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("Logs", isDirectory: true).appendingPathComponent("\(AppInfo.bundleIdentifier).log")
+			if !FileManager.default.fileExists(atPath: logUrl.path) {
+				try "".write(to: logUrl, atomically: true, encoding: .utf8)
+			}
+			guard let fh = try? FileHandle(forWritingTo: logUrl) else { throw GenericError("failed to create log file") }
+			fh.seekToEndOfFile()
+			logger.append(handler: FileHandleLogHandler(config: config, fileHandle: fh, formatter: plainFormatter))
+		} catch {
+			os_log("error opening log file: %{public}@", error.localizedDescription)
+		}
 		Log.enableLogging(logger)
 	}
 }
@@ -668,7 +705,14 @@ class Rc2LogConfig: LogConfiguration {
 		dformatter.locale = Locale(identifier: "en_US_POSIX")
 		dformatter.dateFormat = "HH:mm:ss.SSS"
 		dateFormatter = dformatter
-		levelDescriptions = [.debug: NSAttributedString(string: "🐞")]
+		levelDescriptions = [
+			.debug: NSAttributedString(string: "🐞"),
+			.error: NSAttributedString(string: "🛑"),
+			.warn: NSAttributedString(string: "⚠️"),
+			.info: NSAttributedString(string: "ℹ️"),
+			.enter: NSAttributedString(string: "→"),
+			.exit: NSAttributedString(string: "←")
+		]
 	}
 	
 	func loggingEnabled(level: LogLevel, category: LogCategory) -> Bool {

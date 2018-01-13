@@ -654,6 +654,12 @@ DQ
                                                 <action selector="showDockerControl" target="Voe-Tx-rLC" id="jLB-MC-ceg"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Log" id="Ps8-2u-AXs">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="showLogWindow:" target="Voe-Tx-rLC" id="IE4-GI-1MV"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="eu3-7i-yIM"/>
                                         <menuItem title="Bring All to Front" id="LE2-aR-0XJ">
                                             <modifierMask key="keyEquivalentModifierMask"/>
@@ -950,6 +956,81 @@ DQ
                 <customObject id="x1u-yY-eNN" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1018" y="455"/>
+        </scene>
+        <!--Log Window Controller-->
+        <scene sceneID="fWL-wA-aK7">
+            <objects>
+                <windowController storyboardIdentifier="LogWindowController" id="mfK-Ka-tvq" userLabel="Log Window Controller" sceneMemberID="viewController">
+                    <window key="window" title="Log" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="logwindow" animationBehavior="default" id="lO6-gI-eiy">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES" fullScreenDisallowsTiling="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
+                        <rect key="contentRect" x="100" y="780" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2048" height="1129"/>
+                        <connections>
+                            <outlet property="delegate" destination="mfK-Ka-tvq" id="hc6-3J-987"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="g4P-v8-Q4S" kind="relationship" relationship="window.shadowedContentViewController" id="dh2-pZ-41l"/>
+                    </connections>
+                </windowController>
+                <customObject id="UeD-0A-Qwn" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-409" y="-925"/>
+        </scene>
+        <!--Log View Controller-->
+        <scene sceneID="Y6f-pU-att">
+            <objects>
+                <viewController storyboardIdentifier="LogViewController" id="g4P-v8-Q4S" customClass="LogViewController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="Z2q-NN-1hk">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gny-gK-EMh">
+                                <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                                <clipView key="contentView" id="NT1-OS-hI8">
+                                    <rect key="frame" x="1" y="1" width="478" height="268"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" incrementalSearchingEnabled="YES" allowsCharacterPickerTouchBarItem="NO" textCompletion="NO" id="9gx-ZU-lu3">
+                                            <rect key="frame" x="0.0" y="0.0" width="478" height="268"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <size key="minSize" width="478" height="268"/>
+                                            <size key="maxSize" width="480" height="10000000"/>
+                                            <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <connections>
+                                                <outlet property="delegate" destination="g4P-v8-Q4S" id="R4M-a5-tM1"/>
+                                            </connections>
+                                        </textView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="k7z-Pp-hSH">
+                                    <rect key="frame" x="-100" y="-100" width="87" height="18"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="8CG-sh-oED">
+                                    <rect key="frame" x="463" y="1" width="16" height="268"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="Gny-gK-EMh" secondAttribute="bottom" id="UA0-2v-LaO"/>
+                            <constraint firstAttribute="trailing" secondItem="Gny-gK-EMh" secondAttribute="trailing" id="YCL-yq-bBZ"/>
+                            <constraint firstItem="Gny-gK-EMh" firstAttribute="leading" secondItem="Z2q-NN-1hk" secondAttribute="leading" id="cBY-Vm-jX5"/>
+                            <constraint firstItem="Gny-gK-EMh" firstAttribute="top" secondItem="Z2q-NN-1hk" secondAttribute="top" id="fmq-kL-9BK"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="logTextView" destination="9gx-ZU-lu3" id="iY7-XD-Bq9"/>
+                    </connections>
+                </viewController>
+                <customObject id="ovB-pg-ruZ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="179" y="-932"/>
         </scene>
     </scenes>
 </document>

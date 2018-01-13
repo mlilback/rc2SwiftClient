@@ -276,6 +276,7 @@
 		08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */; };
 		08A2A29B1FFEA29700D9807B /* SessionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2971FFE97B700D9807B /* SessionState.swift */; };
 		08A2A29F2009602700D9807B /* HTMLStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A29E2009602700D9807B /* HTMLStringTests.swift */; };
+		08A2A2A2200A9B0E00D9807B /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2A1200A9B0E00D9807B /* LogViewController.swift */; };
 		08A2A2A4200ABFF800D9807B /* GenericError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2A3200ABFF800D9807B /* GenericError.swift */; };
 		08A2A2A7200AD28500D9807B /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F01EB41EFD87B80047F397 /* RecursiveFlatMap.swift */; };
 		08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 08AA5F071E5350AA00389089 /* SearchBarField.m */; };
@@ -951,6 +952,7 @@
 		08A01FDD1CCA8BD0001EDFAA /* HelpOutputController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpOutputController.swift; sourceTree = "<group>"; };
 		08A2A2971FFE97B700D9807B /* SessionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionState.swift; sourceTree = "<group>"; };
 		08A2A29E2009602700D9807B /* HTMLStringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLStringTests.swift; sourceTree = "<group>"; };
+		08A2A2A1200A9B0E00D9807B /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
 		08A2A2A3200ABFF800D9807B /* GenericError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericError.swift; sourceTree = "<group>"; };
 		08AA5F061E5350AA00389089 /* SearchBarField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchBarField.h; sourceTree = "<group>"; };
 		08AA5F071E5350AA00389089 /* SearchBarField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchBarField.m; sourceTree = "<group>"; };
@@ -1604,6 +1606,7 @@
 				0835A07D1E57823500123820 /* OnboardingViewController.swift */,
 				086508761E43F27C0067C8CA /* SingleInputViewController.swift */,
 				083382F01C64341C00D40EEB /* AppStatusView.swift */,
+				08A2A2A1200A9B0E00D9807B /* LogViewController.swift */,
 				08F448F31C4E244500C64706 /* session */,
 				08DAF2F11E4D0726005A251E /* preferences */,
 				088935811DFF30EA00C94B19 /* docker */,
@@ -2717,6 +2720,7 @@
 				08C2D5EC1E71BB290007A02D /* DockerPrefsController.swift in Sources */,
 				08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */,
 				08F189AA1D109A4F00866A05 /* TextViewWithContextualMenu.swift in Sources */,
+				08A2A2A2200A9B0E00D9807B /* LogViewController.swift in Sources */,
 				08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */,
 				08A01FCA1CC7FCA3001EDFAA /* FMResultSet.m in Sources */,
 				08F189A61D09EE4000866A05 /* NSViewController+Rc2.swift in Sources */,
