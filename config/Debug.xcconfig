@@ -6,9 +6,12 @@
 //
 
 #include "Shared.xcconfig"
+#include "App.xcconfig"
 
 ONLY_ACTIVE_ARCH = YES
 
 SWIFT_OPTIMIZATION_LEVEL = -Owholemodule
 
 OTHER_SWIFT_FLAGS = $(inherited) -Onone
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG
+
