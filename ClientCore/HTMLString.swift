@@ -13,7 +13,7 @@ import MJLLogger
 open class HTMLString {
 	fileprivate static var basicRegex: NSRegularExpression {
 		// swiftlint:disable:next force_try
-		return try! NSRegularExpression(pattern: "(?:<)(b|color|i)(?:\\s*)([^>]*)(?:>)(.*)(?:</)\\1(?:>)", options: [.caseInsensitive])
+		return try! NSRegularExpression(pattern: "(?:<)(b|color|i)(?:\\s*)([^>]*?)(?:>)(.*?)(?:</)\\1(?:>)", options: [.caseInsensitive])
 	}
 	fileprivate static var argumentRegex: NSRegularExpression {
 		// swiftlint:disable:next force_try
@@ -60,7 +60,6 @@ open class HTMLString {
 						(destStr as? NSMutableAttributedString)?.applyFontTraits(traits, range: NSRange(location: 0, length: valueString.count))
 					}
 				case "color":
-//					let content = srcString.substring(with: result.range(at: 2))
 					let attrs = self.parseColorAttrs(srcString.substring(with: result.range(at: 2)) as NSString)
 					destStr = NSAttributedString(string: valueString, attributes: attrs)
 				default:
@@ -94,7 +93,9 @@ open class HTMLString {
 			let attrValue = attrString.substring(with: result.range(at: 2))
 			switch attrName {
 				case "hex":
-					guard let color = PlatformColor(hexString: attrValue) else {
+					var colorHex = attrValue
+					if colorHex.count == 6 { colorHex += "FF" }
+					guard let color = PlatformColor(rgbaHexString: attrValue) else {
 						Log.warn("Invalid color attribute: \(attrString.substring(with: result.range))", .core)
 						return
 					}
