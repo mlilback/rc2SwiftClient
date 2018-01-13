@@ -62,6 +62,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	private var sessionsBeingRestored: [WorkspaceIdentifier: (NSWindow?, Error?) -> Void] = [:]
 	private var workspacesBeingOpened = Set<WorkspaceIdentifier>()
 	private var logConfig: Rc2LogConfig?
+	private var logBuffer = NSTextStorage()
 
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 
@@ -646,8 +647,11 @@ extension MacAppDelegate {
 	private func initializeLogging() {
 		let config = Rc2LogConfig()
 		logConfig = config
-		let tformatter = TokenizedLogFormatter(formatString: " (%level) (%category) (%date) [(%function):(%file):(%line)] (%message)", dateFormatter: config.dateFormatter)
-		let logger = StdErrLogger(config: config, formatter: tformatter)
+		let fmtString = HTMLString(text: "<b>(%level)</b> <color hex=\"#ff0000\">(%category)</color> (%date) [(%function):(%filename):(%line)] (%message)")
+		let tformatter = TokenizedLogFormatter(config: config, formatString: fmtString.attributedString(), dateFormatter: config.dateFormatter)
+		let logger = Logger(config: config)
+		logger.append(handler: StdErrHandler(config: config, formatter: tformatter))
+		logger.append(handler: AttributedStringLogHandler(formatter: tformatter, output: logBuffer))
 		config.categoryLevels[.session] = .debug
 		config.categoryLevels[.app] = .debug
 		Log.enableLogging(logger)
@@ -658,17 +662,24 @@ class Rc2LogConfig: LogConfiguration {
 	let dateFormatter: DateFormatterProtocol
 	var categoryLevels = [LogCategory: LogLevel]()
 	var globalLevel: LogLevel = .warn
-	
+	let levelDescriptions: [LogLevel: NSAttributedString]
 	init() {
 		let dformatter = DateFormatter()
 		dformatter.locale = Locale(identifier: "en_US_POSIX")
 		dformatter.dateFormat = "HH:mm:ss.SSS"
 		dateFormatter = dformatter
+		levelDescriptions = [.debug: NSAttributedString(string: "🐞")]
 	}
 	
 	func loggingEnabled(level: LogLevel, category: LogCategory) -> Bool {
 		if let catLevel = categoryLevels[category] { return level <= catLevel }
 		return level <= globalLevel
 	}
+
+	func description(logLevel: LogLevel) -> NSAttributedString {
+		if let desc = levelDescriptions[logLevel] { return desc }
+		return NSAttributedString(string: logLevel.description)
+	}
+	
 }
 
