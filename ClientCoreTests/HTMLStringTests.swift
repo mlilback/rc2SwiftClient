@@ -25,14 +25,15 @@ class HTMLStringTests: XCTestCase {
 	}
 
 	func testColor() {
-		let html = "1. <color hex=\"ff000f\">foo</color>."
+		let hexColor = "FF000F"
+		let html = "1. <color hex=\"\(hexColor)\">foo</color>."
 		let htmlStr = HTMLString(text: html)
 		let attrStr = htmlStr.attributedString()
 		XCTAssertEqual("1. foo.", attrStr.string)
 		var range = NSRange()
 		let color = attrStr.attribute(.foregroundColor, at: 5, effectiveRange: &range) as? NSColor
 		XCTAssertNotNil(color)
-		XCTAssertEqual("ff000f", color?.hexString)
+		XCTAssertEqual(hexColor, color?.hexString)
 	}
 
 	func testInvalidColorAttrName() {

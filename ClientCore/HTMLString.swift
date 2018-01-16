@@ -93,9 +93,8 @@ open class HTMLString {
 			let attrValue = attrString.substring(with: result.range(at: 2))
 			switch attrName {
 				case "hex":
-					var colorHex = attrValue
-					if colorHex.count == 6 { colorHex += "FF" }
-					guard let color = PlatformColor(rgbaHexString: attrValue) else {
+					guard attrValue.count == 6 || attrValue.count == 8 else { return }
+					guard let color = PlatformColor(hexString: attrValue) else {
 						Log.warn("Invalid color attribute: \(attrString.substring(with: result.range))", .core)
 						return
 					}
