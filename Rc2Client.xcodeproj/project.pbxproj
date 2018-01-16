@@ -213,6 +213,7 @@
 		0868068D200D892000C986A9 /* ShellCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08680681200D892000C986A9 /* ShellCommands.swift */; };
 		0868068F200D892600C986A9 /* ToolbarItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08680682200D892000C986A9 /* ToolbarItemHandler.swift */; };
 		08680690200D892B00C986A9 /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08680680200D892000C986A9 /* RecursiveFlatMap.swift */; };
+		08680692200E415600C986A9 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08680691200E415600C986A9 /* AppLogger.swift */; };
 		08698FEB1E41051900890092 /* Starscream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		086A40D11E7AEC5000AE476B /* OutputTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D01E7AEC5000AE476B /* OutputTheme.swift */; };
 		086A40D31E7B048B00AE476B /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D21E7B048B00AE476B /* Theme.swift */; };
@@ -893,6 +894,7 @@
 		08680680200D892000C986A9 /* RecursiveFlatMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecursiveFlatMap.swift; sourceTree = "<group>"; };
 		08680681200D892000C986A9 /* ShellCommands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShellCommands.swift; sourceTree = "<group>"; };
 		08680682200D892000C986A9 /* ToolbarItemHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarItemHandler.swift; sourceTree = "<group>"; };
+		08680691200E415600C986A9 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		086A40D01E7AEC5000AE476B /* OutputTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputTheme.swift; sourceTree = "<group>"; };
 		086A40D21E7B048B00AE476B /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Theme.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		086A40D41E7B04F400AE476B /* ThemeEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThemeEditorController.swift; path = prefs/ThemeEditorController.swift; sourceTree = "<group>"; };
@@ -1626,6 +1628,7 @@
 			isa = PBXGroup;
 			children = (
 				088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */,
+				08680691200E415600C986A9 /* AppLogger.swift */,
 				088CE6721C4B0AF400153414 /* Main.storyboard */,
 				0890650A1D26F59300C7CA5D /* MacAppStatus.swift */,
 				084199251D903F7A0089A1AC /* StartupController.swift */,
@@ -2768,6 +2771,7 @@
 				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,
 				08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */,
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
+				08680692200E415600C986A9 /* AppLogger.swift in Sources */,
 				083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */,
 				08F673D01D020B2700B87049 /* FontManagement.swift in Sources */,
 				084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */,

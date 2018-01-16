@@ -43,6 +43,7 @@ private extension DefaultsKeys {
 @NSApplicationMain
 class MacAppDelegate: NSObject, NSApplicationDelegate {
 	// MARK: - properties
+	let logger = AppLogger()
 	var mainStoryboard: NSStoryboard!
 	var sessionWindowControllers = Set<MainWindowController>()
 	var bookmarkWindowController: NSWindowController?
@@ -55,7 +56,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	private var onboardingController: OnboardingWindowController?
 	private var dockerWindowController: NSWindowController?
 	private var preferencesWindowController: NSWindowController?
-	private var logWindowController: NSWindowController?
 	private var appStatus: MacAppStatus?
 	@IBOutlet weak var workspaceMenu: NSMenu!
 	private let connectionManager = ConnectionManager()
@@ -64,8 +64,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	@IBOutlet weak var globalLogLevelMenu: NSMenu?
 	private var sessionsBeingRestored: [WorkspaceIdentifier: (NSWindow?, Error?) -> Void] = [:]
 	private var workspacesBeingOpened = Set<WorkspaceIdentifier>()
-	private var logConfig: Rc2LogConfig?
-	private var logBuffer = NSTextStorage()
 
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 
@@ -79,7 +77,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 				BITHockeyManager.shared().start()
 			}
 		#endif
-		initializeLogging()
+		logger.start(globalLevelMenu: globalLogLevelMenu)
 		resetOutdatedCaches()
 		mainStoryboard = NSStoryboard(name: .mainBoard, bundle: nil)
 		precondition(mainStoryboard != nil)
@@ -267,19 +265,6 @@ extension MacAppDelegate: NSMenuDelegate {
 		guard menu == workspaceMenu else { return }
 		updateOpen(menu: menu)
 	}
-	
-	func menuNeedsUpdate(_ menu: NSMenu) {
-		if menu == globalLogLevelMenu {
-			guard let config = logConfig else { return }
-			for anItem in globalLogLevelMenu!.items {
-				guard let itemLevel = LogLevel(rawValue: anItem.tag) else { continue }
-				anItem.state = config.globalLevel == itemLevel ? .on : .off
-				anItem.target = self
-				anItem.action = #selector(MacAppDelegate.adjustGlobalLogLevel(_:))
-				anItem.isEnabled = itemLevel != config.globalLevel
-			}
-		}
-	}
 
 	/// Adds menu items for workspaces in project
 	///
@@ -405,27 +390,11 @@ extension MacAppDelegate {
 	}
 	
 	@IBAction func showLogWindow(_ sender: Any?) {
-		if nil == logWindowController {
-			if #available(OSX 10.13, *) {
-				logWindowController = NSStoryboard.main?.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("LogWindowController")) as? NSWindowController
-			} else {
-				// Fallback on earlier versions
-				let sboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
-				logWindowController = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("LogWindowController")) as? NSWindowController
-			}
-			guard let logController = logWindowController?.contentViewController as? LogViewController else { fatalError() }
-			logController.logTextView.layoutManager?.replaceTextStorage(logBuffer)
-		}
-		logWindowController?.window?.makeKeyAndOrderFront(sender)
+		logger.showLogWindow(sender)
 	}
 	
 	@IBAction func adjustGlobalLogLevel(_ sender: Any?) {
-		guard let item = sender as? NSMenuItem, item.parent?.submenu == globalLogLevelMenu
-			else { Log.warn("action only callable from debug menu", .app); return }
-		guard let newLevel = LogLevel(rawValue: item.tag)
-			else { Log.warn("tag not convertable to log level", .app); return }
-		Log.info("changing log level to \(newLevel)", .app)
-		logConfig?.globalLevel = newLevel
+		logger.adjustGlobalLogLevel(sender)
 	}
 	
 	@objc func windowWillClose(_ note: Notification) {
@@ -659,71 +628,3 @@ extension MacAppDelegate {
 //	}
 //
 //}
-
-// MARK: - logging
-
-extension MacAppDelegate {
-	private func initializeLogging() {
-		let config = Rc2LogConfig()
-		logConfig = config
-		let fmtString = HTMLString(text: "(%level) <color hex=\"006600FF\">[(%category)]</color> [(%date)] [(%function):(%filename):(%line)] (%message)")
-		#if DEBUG
-			let attrFmtString = HTMLString(text: "(%level) <color hex=\"006600FF\">[(%category)]</color> [(%date)] <color hex=\"AF2638FF\">[(%function):(%filename):(%line)]</color> (%message)")
-		#else
-			let attrFmtString = HTMLString(text: "(%level) <color hex=\"006600FF\">[(%category)]</color> [(%date)] (%message)")
-		#endif
-		let attrFormatter = TokenizedLogFormatter(config: config, formatString: attrFmtString.attributedString(), dateFormatter: config.dateFormatter)
-		let plainFormatter = TokenizedLogFormatter(config: config, formatString: fmtString.attributedString(), dateFormatter: config.dateFormatter)
-		let logger = Logger(config: config)
-		logger.append(handler: StdErrHandler(config: config, formatter: plainFormatter))
-		logger.append(handler: AttributedStringLogHandler(formatter: attrFormatter, output: logBuffer))
-		config.categoryLevels[.session] = .debug
-		config.categoryLevels[.app] = .debug
-		// add on a file logger
-		do {
-			let logUrl = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("Logs", isDirectory: true).appendingPathComponent("\(AppInfo.bundleIdentifier).log")
-			if !FileManager.default.fileExists(atPath: logUrl.path) {
-				try "".write(to: logUrl, atomically: true, encoding: .utf8)
-			}
-			guard let fh = try? FileHandle(forWritingTo: logUrl) else { throw GenericError("failed to create log file") }
-			fh.seekToEndOfFile()
-			logger.append(handler: FileHandleLogHandler(config: config, fileHandle: fh, formatter: plainFormatter))
-		} catch {
-			os_log("error opening log file: %{public}@", error.localizedDescription)
-		}
-		Log.enableLogging(logger)
-	}
-}
-
-class Rc2LogConfig: LogConfiguration {
-	let dateFormatter: DateFormatterProtocol
-	var categoryLevels = [LogCategory: LogLevel]()
-	var globalLevel: LogLevel = .warn
-	let levelDescriptions: [LogLevel: NSAttributedString]
-	init() {
-		let dformatter = DateFormatter()
-		dformatter.locale = Locale(identifier: "en_US_POSIX")
-		dformatter.dateFormat = "HH:mm:ss.SSS"
-		dateFormatter = dformatter
-		levelDescriptions = [
-			.debug: NSAttributedString(string: "🐞"),
-			.error: NSAttributedString(string: "🛑"),
-			.warn: NSAttributedString(string: "⚠️"),
-			.info: NSAttributedString(string: "ℹ️"),
-			.enter: NSAttributedString(string: "→"),
-			.exit: NSAttributedString(string: "←")
-		]
-	}
-	
-	func loggingEnabled(level: LogLevel, category: LogCategory) -> Bool {
-		if let catLevel = categoryLevels[category] { return level <= catLevel }
-		return level <= globalLevel
-	}
-
-	func description(logLevel: LogLevel) -> NSAttributedString {
-		if let desc = levelDescriptions[logLevel] { return desc }
-		return NSAttributedString(string: logLevel.description)
-	}
-	
-}
-
