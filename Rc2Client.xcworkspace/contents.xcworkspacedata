@@ -5,7 +5,7 @@
       location = "group:Rc2Client.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:../MJLLogger/MJLLogger.xcodeproj">
+      location = "group:vendor/MJLLogger/MJLLogger.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:vendor/SBInjector/SBInjector.xcodeproj">

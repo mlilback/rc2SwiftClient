@@ -10,7 +10,7 @@ The wiki contains more details on specific topics.
 
 ## Dependencies
 
-The macOS client requires 10.12 Sierra. Development is being done with Xcode 9.1, swift version 4.0.2.
+The macOS client requires 10.12 Sierra. Development is being done with Xcode 9.2, swift version 4.0.3.
 
 The following 3rd party frameworks are used (via Carthage or in the vendor directory). Aside from HockeyApp, I'm willing/capable of maintaining a fork if necessary (or replacing them). Using them allows much faster development (or I wrote them myself).
 
@@ -49,6 +49,10 @@ The following 3rd party frameworks are used (via Carthage or in the vendor direc
 1. `carthage bootstrap --no-use-binaries --platform Mac`
 
 2. `git submodule update --init`
+
+3. `(cd vendor/MJLLogger; swift package generate-xcodeproj --xcconfig-overrides Mac.xcconfig)`
+
+4. `(cd ..; git clone https://github.com/rc2server/appmodelSwift.git appModelSwift; cd appModelSwift; swift package generate-xcodeproj --xcconfig-overrides Mac.xcconfig)`. This will eventually be handled by carthage, but I don't want to have to keep making releases while under active development.
 
 # Help support
 
