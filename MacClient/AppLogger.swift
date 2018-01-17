@@ -30,7 +30,7 @@ private enum OtherLogLevel: Int {
 		return .default
 	}
 
-	var menuTitle: NSAttributedString {
+	func setTitle(menuItem: NSMenuItem) {
 		switch self {
 		case .default:
 			let baseFont = NSFont.menuFont(ofSize: 0)
@@ -38,29 +38,38 @@ private enum OtherLogLevel: Int {
 				.fontDescriptor
 				.withSymbolicTraits(.italic)
 			let font = NSFont(descriptor: fontDesc, size: baseFont.pointSize)!
-			return NSAttributedString(string: "default", attributes: [NSAttributedStringKey.font: font])
-		case .error: return NSAttributedString(string: "error")
-		case .warn: return NSAttributedString(string: "warn")
-		case .info: return NSAttributedString(string: "info")
-		case .debug: return NSAttributedString(string: "debug")
+			menuItem.attributedTitle =  NSAttributedString(string: "default", attributes: [NSAttributedStringKey.font: font])
+		case .error:
+			menuItem.title = "error"
+		case .warn:
+			menuItem.title = "warn"
+		case .info:
+			menuItem.title = "info"
+		case .debug:
+			menuItem.title = "debug"
 		}
 	}
 	
 	var logLevel: LogLevel? { return LogLevel(rawValue: rawValue) }
 }
 
+// MARK: -
 class AppLogger: NSObject {
 	let logBuffer = NSTextStorage()
 	let config = Rc2LogConfig()
 	private(set) var globalLevelMenu: NSMenu
+	private var categoryMenuItem: NSMenuItem
 	private var logWindowController: NSWindowController?
 	private var menu2Category: [NSMenu: LogCategory] = [:]
 	
 	override init() {
 		let menu = NSMenu(title: "Global Log Level")
 		globalLevelMenu = menu
+		categoryMenuItem = NSMenuItem(title: "Log Categories", action: nil, keyEquivalent: "")
+		categoryMenuItem.submenu = NSMenu(title: "Log Categories")
 		super.init()
 		globalLevelMenu.delegate = self
+		categoryMenuItem.submenu?.delegate = self
 		for aLevel in [LogLevel.error, .warn, .info, .debug] {
 			let mitem = menuItem(for: OtherLogLevel.from(aLevel))
 			mitem.action = #selector(AppLogger.adjustGlobalLogLevel(_:))
@@ -70,7 +79,7 @@ class AppLogger: NSObject {
 	
 	/// creates a menu item for category with an item for each possible OtherLogLevel
 	private func menuItem(for category: LogCategory) -> NSMenuItem {
-		let item = NSMenuItem(title: "\(category.rawValue) Log Level", action: nil, keyEquivalent: "")
+		let item = NSMenuItem(title: category.rawValue, action: nil, keyEquivalent: "")
 		let menu = NSMenu(title: category.rawValue)
 		item.submenu = menu
 		for aLevel in OtherLogLevel.allCases {
@@ -85,7 +94,7 @@ class AppLogger: NSObject {
 	/// creates a menu item for a particular OtherLogLevel
 	private func menuItem(for level: OtherLogLevel) -> NSMenuItem {
 		let item = NSMenuItem(title: "", action: #selector(AppLogger.adjustLogLevel(_:)), keyEquivalent: "")
-		item.attributedTitle = level.menuTitle
+		level.setTitle(menuItem: item)
 		item.tag = level.rawValue
 		item.target = self
 		item.action = #selector(AppLogger.adjustLogLevel(_:))
@@ -122,13 +131,14 @@ class AppLogger: NSObject {
 			let globalItem = NSMenuItem(title: "Global Log Level", action: nil, keyEquivalent: "")
 			globalItem.submenu = globalLevelMenu
 			parentMenu.addItem(globalItem)
+			parentMenu.addItem(categoryMenuItem)
 			let resetItem = NSMenuItem(title: "Reset All Categories", action: #selector(AppLogger.resetAllCategoriesToDefault(_:)), keyEquivalent: "")
 			resetItem.target = self
 			parentMenu.addItem(resetItem)
 			for aCategory in LogCategory.allRc2Categories {
 				let catMenu = menuItem(for: aCategory)
 				menu2Category[catMenu.submenu!] = aCategory
-				parentMenu.addItem(catMenu)
+				categoryMenuItem.submenu?.addItem(catMenu)
 			}
 		}
 	}
@@ -186,6 +196,8 @@ extension AppLogger: NSMenuDelegate {
 				anItem.state = config.globalLevel == itemLevel ? .on : .off
 				anItem.isEnabled = itemLevel != config.globalLevel
 			}
+			return
+		} else if menu == categoryMenuItem.submenu {
 			return
 		} else {
 			//figure out what category we're dealing  with, and its current value
