@@ -601,28 +601,6 @@ DQ
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="XYr-ap-ltZ"/>
-                                        <menuItem title="Global Log Level" id="fcV-1P-HqI">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="Global Log Level" autoenablesItems="NO" id="dY0-2W-k37">
-                                                <items>
-                                                    <menuItem title="error" tag="1" id="teZ-JF-zZq">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                    </menuItem>
-                                                    <menuItem title="warn " tag="2" id="acq-GM-GT3">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                    </menuItem>
-                                                    <menuItem title="info" tag="3" id="uSv-Zt-u9W">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                    </menuItem>
-                                                    <menuItem title="debug" tag="4" id="BWo-B7-qB0">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                    </menuItem>
-                                                </items>
-                                                <connections>
-                                                    <outlet property="delegate" destination="Voe-Tx-rLC" id="dX6-PV-8wU"/>
-                                                </connections>
-                                            </menu>
-                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -686,7 +664,7 @@ DQ
                 </application>
                 <customObject id="Voe-Tx-rLC" customClass="MacAppDelegate" customModule="MacClient" customModuleProvider="target">
                     <connections>
-                        <outlet property="globalLogLevelMenu" destination="dY0-2W-k37" id="ae2-tF-abH"/>
+                        <outlet property="logLevelMenuSeperator" destination="XYr-ap-ltZ" id="OEa-ev-VEV"/>
                         <outlet property="workspaceMenu" destination="nUd-e1-yMd" id="X7B-5H-zZj"/>
                     </connections>
                 </customObject>

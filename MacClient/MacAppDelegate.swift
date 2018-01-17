@@ -61,7 +61,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	private let connectionManager = ConnectionManager()
 	private var dockMenu: NSMenu?
 	private var dockOpenMenu: NSMenu?
-	@IBOutlet weak var globalLogLevelMenu: NSMenu?
+	@IBOutlet weak var logLevelMenuSeperator: NSMenuItem?
 	private var sessionsBeingRestored: [WorkspaceIdentifier: (NSWindow?, Error?) -> Void] = [:]
 	private var workspacesBeingOpened = Set<WorkspaceIdentifier>()
 
@@ -77,7 +77,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 				BITHockeyManager.shared().start()
 			}
 		#endif
-		logger.start(globalLevelMenu: globalLogLevelMenu)
+		logger.start(addMenusAfter: logLevelMenuSeperator)
 		resetOutdatedCaches()
 		mainStoryboard = NSStoryboard(name: .mainBoard, bundle: nil)
 		precondition(mainStoryboard != nil)
