@@ -103,7 +103,7 @@ class AppLogger: NSObject {
 		let attrFormatter = TokenizedLogFormatter(config: config, formatString: attrFmtString.attributedString(), dateFormatter: config.dateFormatter)
 		logger.append(handler: AttributedStringLogHandler(formatter: attrFormatter, output: logBuffer))
 
-		addFileLogger(logger: logger)
+		addFileLogger(logger: logger, formatter: plainFormatter)
 
 		Log.enableLogging(logger)
 	}
@@ -203,7 +203,7 @@ extension AppLogger {
 	}
 	
 	/// sets logger to save logs to a file in ~/Library/Logs/
-	func addFileLogger(logger: Logger) {
+	func addFileLogger(logger: Logger, formatter: LogFormatter) {
 		do {
 			let logUrl = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("Logs", isDirectory: true).appendingPathComponent("\(AppInfo.bundleIdentifier).log")
 			if !FileManager.default.fileExists(atPath: logUrl.path) {
@@ -211,7 +211,7 @@ extension AppLogger {
 			}
 			guard let fh = try? FileHandle(forWritingTo: logUrl) else { throw GenericError("failed to create log file") }
 			fh.seekToEndOfFile()
-			logger.append(handler: FileHandleLogHandler(config: config, fileHandle: fh, formatter: plainFormatter))
+			logger.append(handler: FileHandleLogHandler(config: config, fileHandle: fh, formatter: formatter))
 		} catch {
 			os_log("error opening log file: %{public}@", error.localizedDescription)
 		}
