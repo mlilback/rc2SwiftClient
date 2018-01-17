@@ -94,6 +94,7 @@ class AppLogger: NSObject {
 	
 	/// starts/configures logging
 	func start() {
+		guard Log.logger == nil else { fatalError("logging already enabled") }
 		let logger = Logger(config: config)
 
 		let plainFormatter = TokenizedLogFormatter(config: config, formatString: fmtString.attributedString(), dateFormatter: config.dateFormatter)
@@ -101,20 +102,9 @@ class AppLogger: NSObject {
 	
 		let attrFormatter = TokenizedLogFormatter(config: config, formatString: attrFmtString.attributedString(), dateFormatter: config.dateFormatter)
 		logger.append(handler: AttributedStringLogHandler(formatter: attrFormatter, output: logBuffer))
-		
-		// add on a file logger
-		do {
-			let logUrl = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("Logs", isDirectory: true).appendingPathComponent("\(AppInfo.bundleIdentifier).log")
-			if !FileManager.default.fileExists(atPath: logUrl.path) {
-				try "".write(to: logUrl, atomically: true, encoding: .utf8)
-			}
-			guard let fh = try? FileHandle(forWritingTo: logUrl) else { throw GenericError("failed to create log file") }
-			fh.seekToEndOfFile()
-			logger.append(handler: FileHandleLogHandler(config: config, fileHandle: fh, formatter: plainFormatter))
-		} catch {
-			os_log("error opening log file: %{public}@", error.localizedDescription)
-		}
-		// enable logging
+
+		addFileLogger(logger: logger)
+
 		Log.enableLogging(logger)
 	}
 	
@@ -210,6 +200,21 @@ extension AppLogger {
 		item.target = self
 		item.action = #selector(AppLogger.adjustLogLevel(_:))
 		return item
+	}
+	
+	/// sets logger to save logs to a file in ~/Library/Logs/
+	func addFileLogger(logger: Logger) {
+		do {
+			let logUrl = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("Logs", isDirectory: true).appendingPathComponent("\(AppInfo.bundleIdentifier).log")
+			if !FileManager.default.fileExists(atPath: logUrl.path) {
+				try "".write(to: logUrl, atomically: true, encoding: .utf8)
+			}
+			guard let fh = try? FileHandle(forWritingTo: logUrl) else { throw GenericError("failed to create log file") }
+			fh.seekToEndOfFile()
+			logger.append(handler: FileHandleLogHandler(config: config, fileHandle: fh, formatter: plainFormatter))
+		} catch {
+			os_log("error opening log file: %{public}@", error.localizedDescription)
+		}
 	}
 }
 
