@@ -77,7 +77,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 				BITHockeyManager.shared().start()
 			}
 		#endif
-		logger.start(addMenusAfter: logLevelMenuSeperator)
+		logger.start()
+		logger.installLoggingUI(addMenusAfter: logLevelMenuSeperator)
 		resetOutdatedCaches()
 		mainStoryboard = NSStoryboard(name: .mainBoard, bundle: nil)
 		precondition(mainStoryboard != nil)

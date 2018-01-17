@@ -15,6 +15,8 @@ fileprivate extension DefaultsKeys {
 	static let logCategoryLevels = DefaultsKey<Dictionary<String, Any>>("logLevels")
 }
 
+// MARK: -
+/// internal enum mapped to LogLevel for the limited set of options we offer in UI. Also allows default value.
 private enum OtherLogLevel: Int {
 	case `default` = 0
 	case error
@@ -24,12 +26,14 @@ private enum OtherLogLevel: Int {
 	
 	static let allCases: [OtherLogLevel] = [.default, .error, .warn, .info, .debug]
 	
+	/// return appropriate OtherLogLevel for a LogLevel
 	static func from(_ level: LogLevel) -> OtherLogLevel {
 		if let llevel = OtherLogLevel(rawValue: level.rawValue) { return llevel }
 		if level == .exit || level == .enter { return .debug }
 		return .default
 	}
 
+	/// sets a menu title for this OtherLogLevel with appropriate formatting
 	func setTitle(menuItem: NSMenuItem) {
 		switch self {
 		case .default:
@@ -50,18 +54,29 @@ private enum OtherLogLevel: Int {
 		}
 	}
 	
+	/// returns the represented LogLevel, or nil for default
 	var logLevel: LogLevel? { return LogLevel(rawValue: rawValue) }
 }
 
 // MARK: -
 class AppLogger: NSObject {
+	// MARK: constants
+	let fmtString = HTMLString(text: "(%level) <color hex=\"006600FF\">[(%category)]</color> [(%date)] [(%function):(%filename):(%line)] (%message)")
+	#if DEBUG
+	let attrFmtString = HTMLString(text: "(%level) <color hex=\"006600FF\">[(%category)]</color> [(%date)] <color hex=\"AF2638FF\">[(%function):(%filename):(%line)]</color> (%message)")
+	#else
+	let attrFmtString = HTMLString(text: "(%level) <color hex=\"006600FF\">[(%category)]</color> [(%date)] (%message)")
+	#endif
+
+	// MARK: properties
 	let logBuffer = NSTextStorage()
 	let config = Rc2LogConfig()
-	private(set) var globalLevelMenu: NSMenu
+	private var globalLevelMenu: NSMenu
 	private var categoryMenuItem: NSMenuItem
 	private var logWindowController: NSWindowController?
 	private var menu2Category: [NSMenu: LogCategory] = [:]
 	
+	// MARK: methods
 	override init() {
 		let menu = NSMenu(title: "Global Log Level")
 		globalLevelMenu = menu
@@ -77,42 +92,16 @@ class AppLogger: NSObject {
 		}
 	}
 	
-	/// creates a menu item for category with an item for each possible OtherLogLevel
-	private func menuItem(for category: LogCategory) -> NSMenuItem {
-		let item = NSMenuItem(title: category.rawValue, action: nil, keyEquivalent: "")
-		let menu = NSMenu(title: category.rawValue)
-		item.submenu = menu
-		for aLevel in OtherLogLevel.allCases {
-			menu.addItem(menuItem(for: aLevel))
-		}
-		menu.delegate = self
-		menu.autoenablesItems = false
-		item.representedObject = category
-		return item
-	}
-	
-	/// creates a menu item for a particular OtherLogLevel
-	private func menuItem(for level: OtherLogLevel) -> NSMenuItem {
-		let item = NSMenuItem(title: "", action: #selector(AppLogger.adjustLogLevel(_:)), keyEquivalent: "")
-		level.setTitle(menuItem: item)
-		item.tag = level.rawValue
-		item.target = self
-		item.action = #selector(AppLogger.adjustLogLevel(_:))
-		return item
-	}
-	
-	func start(addMenusAfter: NSMenuItem? ) {
-		let fmtString = HTMLString(text: "(%level) <color hex=\"006600FF\">[(%category)]</color> [(%date)] [(%function):(%filename):(%line)] (%message)")
-		#if DEBUG
-			let attrFmtString = HTMLString(text: "(%level) <color hex=\"006600FF\">[(%category)]</color> [(%date)] <color hex=\"AF2638FF\">[(%function):(%filename):(%line)]</color> (%message)")
-		#else
-			let attrFmtString = HTMLString(text: "(%level) <color hex=\"006600FF\">[(%category)]</color> [(%date)] (%message)")
-		#endif
-		let attrFormatter = TokenizedLogFormatter(config: config, formatString: attrFmtString.attributedString(), dateFormatter: config.dateFormatter)
-		let plainFormatter = TokenizedLogFormatter(config: config, formatString: fmtString.attributedString(), dateFormatter: config.dateFormatter)
+	/// starts/configures logging
+	func start() {
 		let logger = Logger(config: config)
+
+		let plainFormatter = TokenizedLogFormatter(config: config, formatString: fmtString.attributedString(), dateFormatter: config.dateFormatter)
 		logger.append(handler: StdErrHandler(config: config, formatter: plainFormatter))
+	
+		let attrFormatter = TokenizedLogFormatter(config: config, formatString: attrFmtString.attributedString(), dateFormatter: config.dateFormatter)
 		logger.append(handler: AttributedStringLogHandler(formatter: attrFormatter, output: logBuffer))
+		
 		// add on a file logger
 		do {
 			let logUrl = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("Logs", isDirectory: true).appendingPathComponent("\(AppInfo.bundleIdentifier).log")
@@ -125,25 +114,33 @@ class AppLogger: NSObject {
 		} catch {
 			os_log("error opening log file: %{public}@", error.localizedDescription)
 		}
+		// enable logging
 		Log.enableLogging(logger)
-		
-		if let baseItem = addMenusAfter, let parentMenu = baseItem.menu {
-			let globalItem = NSMenuItem(title: "Global Log Level", action: nil, keyEquivalent: "")
-			globalItem.submenu = globalLevelMenu
-			parentMenu.addItem(globalItem)
-			parentMenu.addItem(categoryMenuItem)
-			let resetItem = NSMenuItem(title: "Reset All Categories", action: #selector(AppLogger.resetAllCategoriesToDefault(_:)), keyEquivalent: "")
-			resetItem.target = self
-			parentMenu.addItem(resetItem)
-			for aCategory in LogCategory.allRc2Categories {
-				let catMenu = menuItem(for: aCategory)
-				menu2Category[catMenu.submenu!] = aCategory
-				categoryMenuItem.submenu?.addItem(catMenu)
-			}
-		}
 	}
 	
-	func showLogWindow(_ sender: Any? = nil) {
+	/// installs UI in menu after specified menu item
+	func installLoggingUI(addMenusAfter: NSMenuItem?) {
+		// add UI for logging options
+		guard let baseItem = addMenusAfter, let parentMenu = baseItem.menu else { return }
+		let globalItem = NSMenuItem(title: "Global Log Level", action: nil, keyEquivalent: "")
+		globalItem.submenu = globalLevelMenu
+		parentMenu.addItem(globalItem)
+		parentMenu.addItem(categoryMenuItem)
+		let resetItem = NSMenuItem(title: "Reset All Categories", action: #selector(AppLogger.resetAllCategoriesToDefault(_:)), keyEquivalent: "")
+		resetItem.target = self
+		parentMenu.addItem(resetItem)
+		for aCategory in LogCategory.allRc2Categories {
+			let catMenu = menuItem(for: aCategory)
+			menu2Category[catMenu.submenu!] = aCategory
+			categoryMenuItem.submenu?.addItem(catMenu)
+		}
+	}
+}
+
+// MARK: - actions
+extension AppLogger {
+	/// displays (if not loaded) the log window and makes it key and front
+	@objc func showLogWindow(_ sender: Any? = nil) {
 		if nil == logWindowController {
 			if #available(OSX 10.13, *) {
 				logWindowController = NSStoryboard.main?.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("LogWindowController")) as? NSWindowController
@@ -183,11 +180,40 @@ class AppLogger: NSObject {
 		config.globalLevel = newLevel
 	}
 	
+	/// removes all category log level overrides
 	@objc func resetAllCategoriesToDefault(_ sender: Any?) {
 		config.resetCategoryLevels()
 	}
 }
 
+// MARK: - private methods
+extension AppLogger {
+	/// creates a menu item for category with an item for each possible OtherLogLevel
+	private func menuItem(for category: LogCategory) -> NSMenuItem {
+		let item = NSMenuItem(title: category.rawValue, action: nil, keyEquivalent: "")
+		let menu = NSMenu(title: category.rawValue)
+		item.submenu = menu
+		for aLevel in OtherLogLevel.allCases {
+			menu.addItem(menuItem(for: aLevel))
+		}
+		menu.delegate = self
+		menu.autoenablesItems = false
+		item.representedObject = category
+		return item
+	}
+	
+	/// creates a menu item for a particular OtherLogLevel
+	private func menuItem(for level: OtherLogLevel) -> NSMenuItem {
+		let item = NSMenuItem(title: "", action: #selector(AppLogger.adjustLogLevel(_:)), keyEquivalent: "")
+		level.setTitle(menuItem: item)
+		item.tag = level.rawValue
+		item.target = self
+		item.action = #selector(AppLogger.adjustLogLevel(_:))
+		return item
+	}
+}
+
+// MARK: - menu handling
 extension AppLogger: NSMenuDelegate {
 	func menuNeedsUpdate(_ menu: NSMenu) {
 		if menu == globalLevelMenu {
