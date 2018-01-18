@@ -75,9 +75,17 @@ class AppLogger: NSObject {
 	private var categoryMenuItem: NSMenuItem
 	private var logWindowController: NSWindowController?
 	private var menu2Category: [NSMenu: LogCategory] = [:]
-	
+	private var jsonOutputHandler: FileHandleLogHandler?
+	private var attrOutputHandler: AttributedStringLogHandler?
+	private let jsonOutputURL: URL?
 	// MARK: methods
 	override init() {
+		do {
+			jsonOutputURL = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("Logs", isDirectory: true).appendingPathComponent("\(AppInfo.bundleIdentifier).log")
+		} catch {
+			os_log("Failed to resolve URL for jsonLog: %{public}@", error.localizedDescription)
+			jsonOutputURL = nil
+		}
 		let menu = NSMenu(title: "Global Log Level")
 		globalLevelMenu = menu
 		categoryMenuItem = NSMenuItem(title: "Log Categories", action: nil, keyEquivalent: "")
@@ -101,11 +109,13 @@ class AppLogger: NSObject {
 		logger.append(handler: StdErrHandler(config: config, formatter: plainFormatter))
 	
 		let attrFormatter = TokenizedLogFormatter(config: config, formatString: attrFmtString.attributedString(), dateFormatter: config.dateFormatter)
-		logger.append(handler: AttributedStringLogHandler(formatter: attrFormatter, output: logBuffer))
+		attrOutputHandler = AttributedStringLogHandler(formatter: attrFormatter, output: logBuffer)
+		logger.append(handler: attrOutputHandler!)
 
-		addFileLogger(logger: logger, formatter: plainFormatter)
+		addJsonLogger(logger: logger)
 
 		Log.enableLogging(logger)
+		logger.logApplicationStart()
 	}
 	
 	/// installs UI in menu after specified menu item
@@ -124,6 +134,25 @@ class AppLogger: NSObject {
 			menu2Category[catMenu.submenu!] = aCategory
 			categoryMenuItem.submenu?.addItem(catMenu)
 		}
+	}
+	
+	/// resets all log destinations
+	func resetLogs() {
+		logBuffer.replaceCharacters(in: logBuffer.string.fullNSRange, with: "")
+		guard let logger = Log.logger else { return }
+		if let jsonH = jsonOutputHandler {
+			logger.remove(handler: jsonH)
+		}
+		if let logUrl = jsonOutputURL {
+			do {
+				if FileManager.default.fileExists(atPath: logUrl.path) {
+					try FileManager.default.removeItem(at: logUrl)
+				}
+			} catch {
+				os_log("failed to remove old jsonLog: %{public}@", error.localizedDescription)
+			}
+		}
+		addJsonLogger(logger: logger)
 	}
 }
 
@@ -203,15 +232,16 @@ extension AppLogger {
 	}
 	
 	/// sets logger to save logs to a file in ~/Library/Logs/
-	func addFileLogger(logger: Logger, formatter: LogFormatter) {
+	func addJsonLogger(logger: Logger) {
+		guard let logUrl = jsonOutputURL else { return }
 		do {
-			let logUrl = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("Logs", isDirectory: true).appendingPathComponent("\(AppInfo.bundleIdentifier).log")
 			if !FileManager.default.fileExists(atPath: logUrl.path) {
 				try "".write(to: logUrl, atomically: true, encoding: .utf8)
 			}
 			guard let fh = try? FileHandle(forWritingTo: logUrl) else { throw GenericError("failed to create log file") }
 			fh.seekToEndOfFile()
-			logger.append(handler: FileHandleLogHandler(config: config, fileHandle: fh, formatter: formatter))
+			jsonOutputHandler = FileHandleLogHandler(config: config, fileHandle: fh, formatter: JSONLogFormatter(config: config))
+			logger.append(handler: jsonOutputHandler!)
 		} catch {
 			os_log("error opening log file: %{public}@", error.localizedDescription)
 		}

@@ -29,6 +29,7 @@ fileprivate struct Actions {
 	static let showWorkspace = #selector(MacAppDelegate.showWorkspace(_:))
 	static let backupDatabase = #selector(MacAppDelegate.backupDatabase(_:))
 	static let showLog = #selector(MacAppDelegate.showLogWindow(_:))
+	static let resetLogs = #selector(MacAppDelegate.resetLogs(_:))
 }
 
 extension NSStoryboard.Name {
@@ -151,6 +152,8 @@ extension MacAppDelegate {
 		case Actions.newWorkspace:
 			return true
 		case Actions.showDockerControls:
+			return true
+		case Actions.resetLogs:
 			return true
 		case Actions.showPreferences:
 			return !(preferencesWindowController?.window?.isMainWindow ?? false)
@@ -306,7 +309,11 @@ extension MacAppDelegate: NSMenuDelegate {
 
 // MARK: - actions
 extension MacAppDelegate {
-	@IBAction func newWorkspace(_ sender: Any) {
+	@IBAction func resetLogs(_ sender: Any?) {
+		logger.resetLogs()
+	}
+	
+	@IBAction func newWorkspace(_ sender: Any?) {
 		guard let conInfo = connectionManager.localConnection, let project = conInfo.defaultProject else { fatalError() }
 		DispatchQueue.main.async {
 			let existingNames = project.workspaces.value.map { $0.name.lowercased() }
