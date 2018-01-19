@@ -446,18 +446,24 @@ extension MacAppDelegate: NSWindowRestoration {
 extension MacAppDelegate {
 	func resetOutdatedCaches() {
 		let defaults = UserDefaults.standard
-		guard defaults[.supportDataVersion] >= currentSupportDataVersion,
-			!ProcessInfo.processInfo.arguments.contains("--resetSupportData")
+		let lastVersion = defaults[.supportDataVersion]
+		let forceReset = ProcessInfo.processInfo.arguments.contains("--resetSupportData")
+		guard lastVersion < currentSupportDataVersion,
+			!forceReset
 			else { return }
 		// need to remove files from ~/Library
-		defer { defaults[.supportDataVersion] = currentSupportDataVersion }
+		defer {
+			defaults[.supportDataVersion] = currentSupportDataVersion
+		}
 		let fm = FileManager()
-		if let cacheDir = try? fm.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+		if let cacheDir = (try? fm.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent(AppInfo.bundleIdentifier, isDirectory: true))
 		{
+			Log.info("removing \(cacheDir.path)", .app)
 			try? fm.removeItem(at: cacheDir)
 		}
-		if let supportDir = try? fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+		if let supportDir = try? fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false).appendingPathComponent(AppInfo.bundleIdentifier, isDirectory: true)
 		{
+			Log.info("removing \(supportDir.path)", .app)
 			try? fm.removeItem(at: supportDir)
 		}
 	}
