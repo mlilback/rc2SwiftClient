@@ -152,7 +152,7 @@ extension SessionController {
 	private func restoreSessionState() {
 		do {
 			let furl = try stateFileUrl()
-			if try furl.checkResourceIsReachable(),
+			if FileManager.default.fileExists(atPath: furl.path),
 				let data = try? Data(contentsOf: furl),
 				data.count > 0
 			{
