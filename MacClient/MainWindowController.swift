@@ -54,10 +54,12 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 
 	func window(_ window: NSWindow, willEncodeRestorableState state: NSCoder) {
 		guard let session = session else { return }
-		guard let coder = state as? NSKeyedArchiver else { fatalError("restoring state from non keyed encoder") }
+		guard state.allowsKeyedCoding else { fatalError("restoring state from non keyed encoder") }
 		let bmark = Bookmark(connectionInfo: session.conInfo, workspace: session.workspace.model, lastUsed: NSDate.timeIntervalSinceReferenceDate)
 		do {
-			try coder.encodeEncodable(try session.conInfo.encode(bmark), forKey: "bookmark")
+			let bmarkData = try session.conInfo.encode(bmark)
+			try state.encode(bmarkData as NSData, forKey: "bookmark")
+//			state.Encodable(try session.conInfo.encode(bmark), forKey: "bookmark")
 		} catch {
 			Log.info("error encoding bookmark in window: \(error)", .app)
 		}

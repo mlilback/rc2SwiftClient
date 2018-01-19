@@ -431,8 +431,8 @@ extension MacAppDelegate: NSWindowRestoration {
 	{
 		guard identifier.rawValue == "session",
 			let me = NSApp.delegate as? MacAppDelegate,
-			let coder = state as? NSKeyedUnarchiver,
-			let bmark: Bookmark = coder.decodeDecodable(Bookmark.self, forKey: "bookmark")
+			let bmarkData = state.decodeObject(forKey: "bookmark") as? Data,
+			let bmark: Bookmark = try? JSONDecoder().decode(Bookmark.self, from: bmarkData)
 		else {
 			completionHandler(nil, Rc2Error(type: .unknown, nested: nil, explanation: "Unsupported window identifier"))
 			return
