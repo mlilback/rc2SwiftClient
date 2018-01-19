@@ -470,6 +470,10 @@ private extension Session {
 	func handleReceivedMessage(_ messageData: Data) {
 		let response: SessionResponse
 		do {
+			if Log.isLogging(.debug, category: .session) {
+				let dmsg = "incoming: " + String(data: messageData, encoding: .utf8)!
+				Log.debug(dmsg, .session)
+			}
 			response = try conInfo.decode(data: messageData)
 		} catch {
 			Log.info("failed to parse received json: \(String(data: messageData, encoding: .utf8) ?? "<invalid>")", .session)

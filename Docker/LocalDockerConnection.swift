@@ -68,6 +68,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 			request.httpBodyStream = nil
 		}
 		guard var requestData = request.CFHTTPMessage.serialized else {
+			Log.warn("error serializing request data", .docker)
 			handler(.error(.internalError("failed to serialize docker request")))
 			return false
 		}
@@ -80,6 +81,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 		channel?.write(offset: 0, data: outData, queue: DispatchQueue.global())
 		{ (done, _, errCode) in
 			guard errCode == 0 else {
+				Log.warn("connection error \(errCode)", .docker)
 				self.handler(.error(.networkError(NSError(domain: NSPOSIXErrorDomain, code: Int(errCode), userInfo: nil))))
 				return
 			}
@@ -96,6 +98,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 		guard fileDescriptor >= 0 else {
 			let rootError = NSError(domain: NSPOSIXErrorDomain, code: Int(Darwin.errno), userInfo: nil)
 			handler(.error(.cocoaError(rootError)))
+			Log.warn("error opening docker connection", .docker)
 			throw DockerError.cocoaError(rootError)
 		}
 		let pathLen = socketPath.utf8CString.count
@@ -132,6 +135,7 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 				let nserr = NSError(domain: NSPOSIXErrorDomain, code: Int(errCode), userInfo: nil)
 				me.handler(.error(.networkError(nserr)))
 				close(me.fileDescriptor)
+				Log.warn("error dispatching io \(nserr.code)", .docker)
 				return
 			}
 		}
