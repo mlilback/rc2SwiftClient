@@ -33,7 +33,7 @@ class AppStatusView: NSView {
 
 	weak var appStatus: MacAppStatus? { didSet {
 		clearStatus()
-		appStatus?.progressSignal.take(during: progressLifetime).logEvents(identifier: "progressView").observe(on: UIScheduler()).observeValues(observe)
+		appStatus?.progressSignal.take(during: progressLifetime).observe(on: UIScheduler()).observeValues(observe)
 	} }
 	
 	override var intrinsicContentSize: NSSize { return NSSize(width:220, height:22) }
