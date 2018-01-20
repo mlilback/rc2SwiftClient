@@ -58,7 +58,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 		let bmark = Bookmark(connectionInfo: session.conInfo, workspace: session.workspace.model, lastUsed: NSDate.timeIntervalSinceReferenceDate)
 		do {
 			let bmarkData = try session.conInfo.encode(bmark)
-			try state.encode(bmarkData as NSData, forKey: "bookmark")
+			state.encode(bmarkData as NSData, forKey: "bookmark")
 //			state.Encodable(try session.conInfo.encode(bmark), forKey: "bookmark")
 		} catch {
 			Log.info("error encoding bookmark in window: \(error)", .app)
