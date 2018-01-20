@@ -75,6 +75,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 				BITHockeyManager.shared().configure(withIdentifier: kHockeyAppIdentifier)
 				//BITHockeyManager.sharedHockeyManager().debugLogEnabled = true
 				// Do some additional configuration if needed here
+				BITHockeyManager.shared().delegate = self
 				BITHockeyManager.shared().start()
 			}
 		#endif
@@ -466,6 +467,14 @@ extension MacAppDelegate {
 			Log.info("removing \(supportDir.path)", .app)
 			try? fm.removeItem(at: supportDir)
 		}
+	}
+}
+
+// MARK: - HockeyApp
+
+extension MacAppDelegate: BITHockeyManagerDelegate {
+	func applicationLog(for crashManager: BITCrashManager!) -> String! {
+		return logger.jsonLogFromLastLaunch()
 	}
 }
 
