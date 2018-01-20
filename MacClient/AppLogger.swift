@@ -255,6 +255,28 @@ extension AppLogger {
 			os_log("error opening log file: %{public}@", error.localizedDescription)
 		}
 	}
+	
+	/// returns the json log lines from the last time the app was launched
+	func jsonLogFromLastLaunch() -> String? {
+		guard let url = jsonOutputURL, let contents = try? String(contentsOf: url, encoding: .utf8) else {
+			Log.warn("Failed to read json log contents")
+			return nil
+		}
+		let lines = contents.components(separatedBy: "\n")
+		var startLineNum: Int?
+		var endLineNum: Int?
+		for lineNum in (0..<lines.count).reversed() {
+			guard lines[lineNum].contains("\"type\":\"start\"") else { continue }
+			if nil == endLineNum {
+				endLineNum = lineNum
+			} else {
+				startLineNum = lineNum
+				break
+			}
+		}
+		guard let start = startLineNum, let end = endLineNum else { return nil }
+		return lines[start..<end].joined(separator: "\n")
+	}
 }
 
 // MARK: - menu handling

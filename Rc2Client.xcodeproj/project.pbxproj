@@ -150,7 +150,6 @@
 		083305FA1C519B8500E27F66 /* loginResults.json in Resources */ = {isa = PBXBuildFile; fileRef = 083305F41C519B8500E27F66 /* loginResults.json */; };
 		083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 083306061C51A0B200E27F66 /* CommonDefaults.plist */; };
 		083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F01C64341C00D40EEB /* AppStatusView.swift */; };
-		083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F91C68F2A900D40EEB /* BaseTest.swift */; };
 		0833A8221D2D7E770033654B /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8211D2D7E770033654B /* HockeySDK.framework */; };
 		0833A8231D2D7EAD0033654B /* HockeySDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8211D2D7E770033654B /* HockeySDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; };
@@ -177,7 +176,6 @@
 		0841993C1D91B2830089A1AC /* URITemplate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; };
 		0841993D1D91B2B80089A1AC /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0841993E1D91B2C80089A1AC /* URITemplate.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		0845CB1E1C616E060090267C /* MockFileManagers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0845CB1D1C616E060090267C /* MockFileManagers.swift */; };
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08525E501E204672008A332E /* URLStaleChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E4F1E204672008A332E /* URLStaleChecker.swift */; };
 		08525E731E256A8B008A332E /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E721E256A8B008A332E /* Reachability.swift */; };
@@ -185,6 +183,9 @@
 		08525E781E3143C3008A332E /* InputPrompter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E771E3143C3008A332E /* InputPrompter.swift */; };
 		08525E7A1E314558008A332E /* InputPrompter.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08525E791E314558008A332E /* InputPrompter.xib */; };
 		08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08604A4D1D9C0C0500DE2A79 /* Named.swift */; };
+		086413C82013614500116153 /* AppLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086413C620135E1C00116153 /* AppLoggerTests.swift */; };
+		086413CA201392C600116153 /* sampleLog.json in Resources */ = {isa = PBXBuildFile; fileRef = 086413C9201392C600116153 /* sampleLog.json */; };
+		086413CB201394B100116153 /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
 		0864DA641DA2BDC1003F3F57 /* DockerControl.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0864DA621DA2BDC1003F3F57 /* DockerControl.storyboard */; };
 		0864DA681DA2C8D1003F3F57 /* DockerContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0864DA671DA2C8D1003F3F57 /* DockerContainerController.swift */; };
 		086508771E43F27C0067C8CA /* SingleInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086508761E43F27C0067C8CA /* SingleInputViewController.swift */; };
@@ -194,7 +195,6 @@
 		086508811E4A431C0067C8CA /* FileImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086508801E4A431C0067C8CA /* FileImporterTests.swift */; };
 		086526291E6E1B0100D75B25 /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086526281E6E1B0100D75B25 /* PreferenceKeys.swift */; };
 		0865262B1E6E1BE900D75B25 /* GeneralPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */; };
-		086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */; };
 		0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086659991CA1F3E5007AC555 /* MainWindow.xib */; };
 		08678C971DCA78CE00F9F283 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
 		08678C981DCA78CE00F9F283 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
@@ -366,7 +366,6 @@
 		08F189A61D09EE4000866A05 /* NSViewController+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189A51D09EE4000866A05 /* NSViewController+Rc2.swift */; };
 		08F189A81D0A0E7200866A05 /* static_html in Resources */ = {isa = PBXBuildFile; fileRef = 08F189A71D0A0E7200866A05 /* static_html */; };
 		08F189AA1D109A4F00866A05 /* TextViewWithContextualMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189A91D109A4F00866A05 /* TextViewWithContextualMenu.swift */; };
-		08F42FA21D33F47000A1EE8D /* MockSessionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F42FA11D33F47000A1EE8D /* MockSessionHelpers.swift */; };
 		08F448FA1C4E244500C64706 /* SessionEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* SessionEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* SidebarTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* SidebarTabController.swift */; };
 		08F448FC1C4E244500C64706 /* ConsoleOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F71C4E244500C64706 /* ConsoleOutputController.swift */; };
@@ -871,6 +870,8 @@
 		08525E771E3143C3008A332E /* InputPrompter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputPrompter.swift; path = MacClient/InputPrompter.swift; sourceTree = SOURCE_ROOT; };
 		08525E791E314558008A332E /* InputPrompter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputPrompter.xib; sourceTree = "<group>"; };
 		08604A4D1D9C0C0500DE2A79 /* Named.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Named.swift; sourceTree = "<group>"; };
+		086413C620135E1C00116153 /* AppLoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggerTests.swift; sourceTree = "<group>"; };
+		086413C9201392C600116153 /* sampleLog.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sampleLog.json; sourceTree = "<group>"; };
 		0864DA631DA2BDC1003F3F57 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/DockerControl.storyboard; sourceTree = "<group>"; };
 		0864DA671DA2C8D1003F3F57 /* DockerContainerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerContainerController.swift; sourceTree = "<group>"; };
 		086508761E43F27C0067C8CA /* SingleInputViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleInputViewController.swift; sourceTree = "<group>"; };
@@ -1164,6 +1165,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				086413CB201394B100116153 /* MJLLogger.framework in Frameworks */,
 				083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */,
 				083A4B041C7F347E0007AC46 /* Result.framework in Frameworks */,
 			);
@@ -1463,6 +1465,7 @@
 				083305F31C519B8500E27F66 /* createWorkspace.json */,
 				08FDB19A1C5917C3006FCD1A /* graph.png */,
 				083305EE1C519B4B00E27F66 /* resultsWithImages.json */,
+				086413C9201392C600116153 /* sampleLog.json */,
 				083305F41C519B8500E27F66 /* loginResults.json */,
 				083305F51C519B8500E27F66 /* lognormal.R */,
 				08D6106E1CD2C53100258D8E /* listvars.json */,
@@ -1668,6 +1671,7 @@
 				083305F81C519B8500E27F66 /* RestServerTest.swift */,
 				086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */,
 				08A01FD71CC965F8001EDFAA /* HelpControllerTests.swift */,
+				086413C620135E1C00116153 /* AppLoggerTests.swift */,
 			);
 			path = MacClientTests;
 			sourceTree = "<group>";
@@ -2315,6 +2319,7 @@
 					};
 					088CE6791C4B0AF500153414 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = V97NV337TR;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 088CE6681C4B0AF400153414;
@@ -2471,6 +2476,7 @@
 				080214891C6A923D008B55D3 /* lognormal.R in Resources */,
 				083305F11C519B4B00E27F66 /* resultsWithImages.json in Resources */,
 				083305FA1C519B8500E27F66 /* loginResults.json in Resources */,
+				086413CA201392C600116153 /* sampleLog.json in Resources */,
 				08D6106F1CD2C53100258D8E /* listvars.json in Resources */,
 				08FDB19B1C5917C3006FCD1A /* graph.png in Resources */,
 				083305F91C519B8500E27F66 /* createWorkspace.json in Resources */,
@@ -2820,11 +2826,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				08A01FD81CC965F8001EDFAA /* HelpControllerTests.swift in Sources */,
-				08F42FA21D33F47000A1EE8D /* MockSessionHelpers.swift in Sources */,
 				08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */,
-				0845CB1E1C616E060090267C /* MockFileManagers.swift in Sources */,
-				086659981CA1DF8D007AC555 /* SystemExtensionsTests.swift in Sources */,
-				083382FA1C68F2A900D40EEB /* BaseTest.swift in Sources */,
+				086413C82013614500116153 /* AppLoggerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3641,7 +3644,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = V97NV337TR;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
@@ -3667,7 +3670,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = V97NV337TR;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",

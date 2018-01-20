@@ -1,0 +1,9 @@
+{"message":"","level":3,"type":"start","category":"general","date":"2018-01-17T13:29:57Z"}
+{"message":"","level":3,"type":"start","category":"general","date":"2018-01-18T19:15:06Z"}
+{"category":"app","function":"resetOutdatedCaches()","fileName":"\/Users\/mlilback\/working\/rc2\/client\/MacClient\/MacAppDelegate.swift","level":3,"message":"comparing 3 to 2","date":"2018-01-19T19:15:06Z","line":451,"type":"entry"}
+{"category":"docker","function":"checkForImageUpdate(forceRefresh:)","fileName":"\/Users\/mlilback\/working\/rc2\/client\/Docker\/DockerManager.swift","level":3,"message":"skipping imageInfo fetch","date":"2018-01-19T19:15:16Z","line":269,"type":"entry"}
+{"category":"docker","function":"pullIsNecessary()","fileName":"\/Users\/mlilback\/working\/rc2\/client\/Docker\/DockerManager.swift","level":3,"message":"no pull necessary","date":"2018-01-19T19:15:16Z","line":306,"type":"entry"}
+{"message":"","level":3,"type":"start","category":"general","date":"2018-01-19T12:28:50Z"}
+{"category":"docker","function":"checkForImageUpdate(forceRefresh:)","fileName":"\/Users\/mlilback\/working\/rc2\/client\/Docker\/DockerManager.swift","level":3,"message":"skipping imageInfo fetch","date":"2018-01-19T19:29:13Z","line":269,"type":"entry"}
+{"category":"docker","function":"pullIsNecessary()","fileName":"\/Users\/mlilback\/working\/rc2\/client\/Docker\/DockerManager.swift","level":3,"message":"no pull necessary","date":"2018-01-19T19:29:13Z","line":306,"type":"entry"}
+{"message":"","level":3,"type":"start","category":"general","date":"2018-01-19T19:07:58Z"}
