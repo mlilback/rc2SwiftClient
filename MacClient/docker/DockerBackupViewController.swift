@@ -44,7 +44,10 @@ class DockerBackupViewController: DockerManagerInjectable {
 	}
 	
 	@IBAction func performBackup(_ sender: AnyObject?) {
-		backupManager?.performBackup().start()
+		backupManager?.performBackup().observe(on: UIScheduler()).startWithResult() { result in
+			guard let err = result.error else { return } //worked
+			self.presentError(err)
+		}
 	}
 	
 	@IBAction func performRestore(_ sender: AnyObject?) {
