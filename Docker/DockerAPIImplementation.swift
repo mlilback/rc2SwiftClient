@@ -122,9 +122,22 @@ public final class DockerAPIImplementation: DockerAPI {
 	// documentation in DockerAPI protocol
 	public func upload(url source: URL, path: String, filename: String, containerName: String) -> SignalProducer<(), DockerError>
 	{
-		return tarballFile(source: source, filename: filename)
+		// create a tmp directory
+		let tmpDir: URL
+		do {
+			tmpDir = try fileManager.createTemporaryDirectory()
+		} catch {
+			return SignalProducer<(), DockerError>(error: DockerError.cocoaError(error as NSError))
+		}
+		// tar the file in it
+		return tarballFile(source: source, tmpDirectory: tmpDir, filename: filename)
 			.flatMap(.concat, {
+				// upload the tarball
 				self.tarredUpload(file: $0, path: path, containerName: containerName, removeFile: true)
+			})
+			// when upload process is complete, remove the tmpDir
+			.on(terminated: {
+				try? self.fileManager.removeItem(at: tmpDir) // ignore error
 			})
 	}
 	
@@ -599,29 +612,35 @@ extension DockerAPIImplementation {
 	///
 	/// - Parameters:
 	///   - source: file to tar
+	///   - tmpDirectory: A directory to use for writing the tarball to. Any existing file might be deleted.
 	///   - filename: name to encoded in tar file
 	/// - Returns: signal producer to return tarred file URL
-	func tarballFile(source: URL, filename: String = "data.sql") -> SignalProducer<URL, DockerError>
+	func tarballFile(source: URL, tmpDirectory: URL, filename: String = "data.sql") -> SignalProducer<URL, DockerError>
 	{
 		precondition(source.isFileURL && source.fileExists())
+		precondition(tmpDirectory.directoryExists())
 		let tarfilename = "data.tar"
 		let fm = fileManager //so no ref to self in closure
 		return SignalProducer<URL, DockerError> { observer, _ in
 			// create a working directory
-			let workingDir = fm.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-			print("working with \(workingDir.path)")
-			let tmpFile = workingDir.appendingPathComponent(filename)
+			print("working with \(tmpDirectory.path)")
+			let tmpFile = tmpDirectory.appendingPathComponent(filename)
 			do {
-				precondition(!workingDir.directoryExists())
-				try fm.createDirectory(at: workingDir, withIntermediateDirectories: true, attributes: nil)
+				// remove existing file if leftover from previous attempt
+				if fm.fileExists(atPath: tmpFile.path) {
+					try fm.removeItem(at: tmpFile)
+				}
 				// try linking file (faster)
-				if ((try? fm.linkItem(at: source, to: tmpFile)) != nil) {
+				do {
+					try fm.linkItem(at: source, to: tmpFile)
+				} catch {
+					Log.info("failed to link to source: \(error)")
 					//failed to link, copy it
 					try fm.copyItem(at: source, to: tmpFile)
 				}
 				//tar the file
 				let tar = Process()
-				tar.currentDirectoryPath = workingDir.path
+				tar.currentDirectoryPath = tmpDirectory.path
 				tar.arguments = ["cf", tarfilename, filename]
 				tar.launchPath = "/usr/bin/tar"
 				tar.terminationHandler = { process in
@@ -630,7 +649,7 @@ extension DockerAPIImplementation {
 						Log.warn("tar creation: \(process.terminationReason)", .docker)
 						return
 					}
-					observer.send(value: workingDir.appendingPathComponent(tarfilename))
+					observer.send(value: tmpDirectory.appendingPathComponent(tarfilename))
 					observer.sendCompleted()
 				}
 				tar.launch()
@@ -650,7 +669,7 @@ extension DockerAPIImplementation {
 	/// - Returns: signal producer without a return value
 	func tarredUpload(file: URL, path: String, containerName: String, removeFile: Bool = true) -> SignalProducer<(), DockerError>
 	{
-		Log.info("uploading \(file.path)", .docker)
+		Log.info("uploading \(file.path) to \(path)", .docker)
 		var producer = SignalProducer<(), DockerError> { observer, _ in
 			// build request
 			let url = self.baseUrl.appendingPathComponent("/containers/\(containerName)/archive")
@@ -668,9 +687,10 @@ extension DockerAPIImplementation {
 			{ [weak connection] (message) in
 				switch message {
 				case .headers(let headers):
-					print("rsp=\(headers.statusCode)")
+					Log.debug("upload status \(headers.statusCode)", .docker)
 				case .data(let data):
-					print("got data len \(data.count)")
+					Log.debug("upload got data len \(data.count)", .docker)
+					observer.send(value: ())
 				case .complete:
 					observer.sendCompleted()
 					connection?.closeConnection()
@@ -813,6 +833,7 @@ extension DockerAPIImplementation {
 		return SignalProducer<Data, DockerError> { observer, _ in
 			var inData = Data()
 			let connection = LocalDockerConnectionImpl<SingleDataResponseHandler>(request: request) { (message) in
+				Log.debug("exec msg \(message); data size=\(inData.count)", .docker)
 				switch message {
 				case .headers:
 					break
