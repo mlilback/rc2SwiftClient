@@ -70,8 +70,17 @@ class DockerBackupManager {
 	/// - Returns: signal producer to restore the backup
 	func restore(backup: DockerBackup) -> SignalProducer<(), Rc2Error> {
 		guard let container = dockerManager.containers[.combined] else { fatalError("no db container") }
+		// TODO: use a UUID for filename and remove it when complete
 		let containerPath = "/rc2/"
 		return dockerManager.api.upload(url: backup.url, path: containerPath, filename: "backup.sql", containerName: container.name)
-			.mapError { return Rc2Error(type: .docker, nested: $0, explanation: "failed to restore from backup") }
+			.mapError {
+				return Rc2Error(type: .docker, nested: $0, explanation: "failed to restore from backup")
+			}
+			.flatMap(.concat, restoreNotImplemented)
+		// TODO: execute the restore on the server (at least temporarily report an error)
+	}
+	
+	private func restoreNotImplemented() -> SignalProducer<(), Rc2Error> {
+		return SignalProducer<(), Rc2Error>(error: Rc2Error(type: .logic, explanation: "actual restore not implemented"))
 	}
 }

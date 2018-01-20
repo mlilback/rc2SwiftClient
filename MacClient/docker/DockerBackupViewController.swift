@@ -55,14 +55,15 @@ class DockerBackupViewController: DockerManagerInjectable {
 		guard selRow >= 0 else { return }
 		let targetBackup = backups[selRow]
 		isRestoring = true
-		DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-		self.backupManager?.restore(backup: targetBackup).observe(on: UIScheduler()).startWithResult { result in
-			self.isRestoring = false
-			guard result.error == nil else {
-				self.presentError(result.error!, modalFor: self.view.window!, delegate: nil, didPresent: nil, contextInfo: nil)
-				return
+		DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+			self.backupManager?.restore(backup: targetBackup).observe(on: UIScheduler()).startWithResult { result in
+				self.isRestoring = false
+				guard result.error == nil else {
+					self.presentError(result.error!, modalFor: self.view.window!, delegate: nil, didPresent: nil, contextInfo: nil)
+					return
+				}
+				// TODO: acknowledge the restore worked
 			}
-		}
 		}
 	}
 	
