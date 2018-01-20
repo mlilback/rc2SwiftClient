@@ -71,33 +71,30 @@ class AppLogger: NSObject {
 	// MARK: properties
 	let logBuffer = NSTextStorage()
 	let config = Rc2LogConfig()
-	private var globalLevelMenu: NSMenu
-	private var categoryMenuItem: NSMenuItem
+	private var globalLevelMenu: NSMenu?
+	private var categoryMenuItem: NSMenuItem?
 	private var logWindowController: NSWindowController?
 	private var menu2Category: [NSMenu: LogCategory] = [:]
 	private var jsonOutputHandler: FileHandleLogHandler?
 	private var attrOutputHandler: AttributedStringLogHandler?
 	private let jsonOutputURL: URL?
 	// MARK: methods
-	override init() {
+	
+	/// Creates an AppLogger
+	///
+	/// - Parameter jsonLogFileURL: The log file to use. For dependency injection. Defaults to ~/Library/Logs/BundleIdentifier.log
+	init(jsonLogFileURL: URL? = nil) {
 		do {
-			jsonOutputURL = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("Logs", isDirectory: true).appendingPathComponent("\(AppInfo.bundleIdentifier).log")
+			if let jsonURL = jsonLogFileURL {
+				jsonOutputURL = jsonURL
+			} else {
+				jsonOutputURL = try FileManager.default.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("Logs", isDirectory: true).appendingPathComponent("\(AppInfo.bundleIdentifier).log")
+			}
 		} catch {
 			os_log("Failed to resolve URL for jsonLog: %{public}@", error.localizedDescription)
 			jsonOutputURL = nil
 		}
-		let menu = NSMenu(title: "Global Log Level")
-		globalLevelMenu = menu
-		categoryMenuItem = NSMenuItem(title: "Log Categories", action: nil, keyEquivalent: "")
-		categoryMenuItem.submenu = NSMenu(title: "Log Categories")
 		super.init()
-		globalLevelMenu.delegate = self
-		categoryMenuItem.submenu?.delegate = self
-		for aLevel in [LogLevel.error, .warn, .info, .debug] {
-			let mitem = menuItem(for: OtherLogLevel.from(aLevel))
-			mitem.action = #selector(AppLogger.adjustGlobalLogLevel(_:))
-			menu.addItem(mitem)
-		}
 	}
 	
 	/// starts/configures logging
@@ -120,19 +117,31 @@ class AppLogger: NSObject {
 	
 	/// installs UI in menu after specified menu item
 	func installLoggingUI(addMenusAfter: NSMenuItem?) {
+		// create menu infrastructure
+		let menu = NSMenu(title: "Global Log Level")
+		globalLevelMenu = menu
+		categoryMenuItem = NSMenuItem(title: "Log Categories", action: nil, keyEquivalent: "")
+		categoryMenuItem?.submenu = NSMenu(title: "Log Categories")
+		globalLevelMenu?.delegate = self
+		categoryMenuItem?.submenu?.delegate = self
+		for aLevel in [LogLevel.error, .warn, .info, .debug] {
+			let mitem = menuItem(for: OtherLogLevel.from(aLevel))
+			mitem.action = #selector(AppLogger.adjustGlobalLogLevel(_:))
+			menu.addItem(mitem)
+		}
 		// add UI for logging options
 		guard let baseItem = addMenusAfter, let parentMenu = baseItem.menu else { return }
 		let globalItem = NSMenuItem(title: "Global Log Level", action: nil, keyEquivalent: "")
 		globalItem.submenu = globalLevelMenu
 		parentMenu.addItem(globalItem)
-		parentMenu.addItem(categoryMenuItem)
+		parentMenu.addItem(categoryMenuItem!)
 		let resetItem = NSMenuItem(title: "Reset All Categories", action: #selector(AppLogger.resetAllCategoriesToDefault(_:)), keyEquivalent: "")
 		resetItem.target = self
 		parentMenu.addItem(resetItem)
 		for aCategory in LogCategory.allRc2Categories {
 			let catMenu = menuItem(for: aCategory)
 			menu2Category[catMenu.submenu!] = aCategory
-			categoryMenuItem.submenu?.addItem(catMenu)
+			categoryMenuItem?.submenu?.addItem(catMenu)
 		}
 	}
 	
@@ -258,7 +267,7 @@ extension AppLogger: NSMenuDelegate {
 				anItem.isEnabled = itemLevel != config.globalLevel
 			}
 			return
-		} else if menu == categoryMenuItem.submenu {
+		} else if menu == categoryMenuItem?.submenu {
 			return
 		} else {
 			//figure out what category we're dealing  with, and its current value
