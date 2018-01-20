@@ -410,12 +410,15 @@ public final class DockerManager: NSObject {
 	/// - Returns: a signal producer with an empty value, or an error
 	public func backupDatabase(to url: URL) -> SignalProducer<(), Rc2Error>
 	{
-		let command = ["/usr/bin/pg_dump", "rc2"]
+		let command = ["/usr/bin/pg_dump", "-U", "rc2", "rc2"]
 		return api.executeSync(command: command, container: containers[.combined]!)
 			.mapError { Rc2Error(type: .docker, nested: $0) }
 		.flatMap(.concat) { data -> SignalProducer<(), Rc2Error> in
 			do {
 				var data = data
+				guard data.count > 8 else {
+					return SignalProducer<(), Rc2Error>(error: Rc2Error(type: .file, explanation: "backup command returned no data"))
+				}
 				//trim of the 8 bytes from the begining if they start with x1x0x0x0
 				if data[0] == 0x01 && data[1] == 0x0 && data[2] == 0x0 && data[3] == 0x0 {
 					data.removeSubrange(0..<8)
