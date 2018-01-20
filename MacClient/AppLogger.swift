@@ -249,7 +249,7 @@ extension AppLogger {
 			}
 			guard let fh = try? FileHandle(forWritingTo: logUrl) else { throw GenericError("failed to create log file") }
 			fh.seekToEndOfFile()
-			jsonOutputHandler = FileHandleLogHandler(config: config, fileHandle: fh, formatter: JSONLogFormatter(config: config))
+			jsonOutputHandler = FileHandleLogHandler(config: config, fileHandle: fh, formatter: JSONLogFormatter(config: config), logEverything: true)
 			logger.append(handler: jsonOutputHandler!)
 		} catch {
 			os_log("error opening log file: %{public}@", error.localizedDescription)
