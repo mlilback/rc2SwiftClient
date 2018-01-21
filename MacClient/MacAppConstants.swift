@@ -18,5 +18,6 @@ extension NSStoryboard.SceneIdentifier {
 extension NSUserInterfaceItemIdentifier {
 	static let sessionWindow = NSUserInterfaceItemIdentifier(rawValue: "session")
 	static let logWindow = NSUserInterfaceItemIdentifier(rawValue: "logWindow")
+	static let dockerWindow = NSUserInterfaceItemIdentifier(rawValue: "dockerWindow")
 }
 

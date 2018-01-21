@@ -375,22 +375,7 @@ extension MacAppDelegate {
 	
 	@IBAction func showDockerControl(_ sender: Any?) {
 		if dockerManager == nil { Log.info("docker disabled", .app); return }
-		if nil == dockerWindowController {
-			let icontext = InjectorContext()
-			icontext.register(DockerTabViewController.self) { controller in
-				controller.manager = self.dockerManager
-			}
-			icontext.register(DockerManagerInjectable.self) { controller in
-				controller.manager = self.dockerManager
-			}
-			icontext.register(DockerBackupViewController.self) { controller in
-				controller.backupManager = self.backupManager
-			}
-			let sboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "DockerControl"), bundle: nil)
-			sboard.injectionContext = icontext
-			dockerWindowController = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("DockerWindowController")) as? NSWindowController
-		}
-		dockerWindowController?.window?.makeKeyAndOrderFront(self)
+		dockerWindow().makeKeyAndOrderFront(self)
 	}
 	
 	@IBAction func showLogWindow(_ sender: Any?) {
@@ -438,6 +423,8 @@ extension MacAppDelegate: NSWindowRestoration {
 			me.sessionsBeingRestored[bmark.workspaceIdent] = completionHandler
 		case .logWindow:
 			completionHandler(me.logger.logWindow(show: false), nil)
+		case .dockerWindow:
+			completionHandler(me.dockerWindow(), nil)
 		default:
 			completionHandler(nil, Rc2Error(type: .unknown, nested: nil, explanation: "Unsupported window identifier"))
 		}
@@ -446,6 +433,28 @@ extension MacAppDelegate: NSWindowRestoration {
 
 // MARK: - private
 extension MacAppDelegate {
+	func dockerWindow() -> NSWindow {
+		if let window = dockerWindowController?.window { return window }
+		let icontext = InjectorContext()
+		icontext.register(DockerTabViewController.self) { controller in
+			controller.manager = self.dockerManager
+		}
+		icontext.register(DockerManagerInjectable.self) { controller in
+			controller.manager = self.dockerManager
+		}
+		icontext.register(DockerBackupViewController.self) { controller in
+			controller.backupManager = self.backupManager
+		}
+		let sboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "DockerControl"), bundle: nil)
+		sboard.injectionContext = icontext
+		dockerWindowController = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("DockerWindowController")) as? NSWindowController
+		guard let window = dockerWindowController?.window else { fatalError("failed to load docker window") }
+		window.identifier = .dockerWindow
+		window.isRestorable = true
+		window.restorationClass = MacAppDelegate.self
+		return window
+	}
+
 	func resetOutdatedCaches() {
 		let defaults = UserDefaults.standard
 		let lastVersion = defaults[.supportDataVersion]
