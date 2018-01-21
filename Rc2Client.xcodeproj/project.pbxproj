@@ -774,6 +774,7 @@
 		0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SigmaSwiftStatistics.framework; path = Carthage/Build/Mac/SigmaSwiftStatistics.framework; sourceTree = "<group>"; };
 		0823F2321EE742B100A8F8C6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		082564F220150B4000526957 /* MacAppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppConstants.swift; sourceTree = "<group>"; };
+		082564F4201511F300526957 /* ReleaseNotes.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ReleaseNotes.md; sourceTree = "<group>"; };
 		0826108D1DB02FC300C03422 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/Mac/Nimble.framework; sourceTree = "<group>"; };
 		0826108E1DB02FC300C03422 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/Mac/Quick.framework; sourceTree = "<group>"; };
 		0828FB1D1EA51D3100AECEC5 /* EventTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTypes.swift; sourceTree = "<group>"; };
@@ -1590,6 +1591,7 @@
 			isa = PBXGroup;
 			children = (
 				087DC36A200F5140001F9560 /* README.md */,
+				082564F4201511F300526957 /* ReleaseNotes.md */,
 				084199331D9179C60089A1AC /* xcconfig */,
 				088CE66B1C4B0AF400153414 /* MacClient */,
 				088CE6941C4B605D00153414 /* shared */,
