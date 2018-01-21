@@ -96,6 +96,7 @@
 		0821BDCA1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */; };
 		0821BDCB1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0823F2331EE742B100A8F8C6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0823F2321EE742B100A8F8C6 /* libz.tbd */; };
+		082564F320150B4000526957 /* MacAppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082564F220150B4000526957 /* MacAppConstants.swift */; };
 		0826108F1DB02FC300C03422 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082610901DB02FC300C03422 /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082610911DB02FEE00C03422 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; };
@@ -772,6 +773,7 @@
 		081C71B41E9EB92000A1BD3B /* LocalDockerConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDockerConnection.swift; sourceTree = "<group>"; };
 		0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SigmaSwiftStatistics.framework; path = Carthage/Build/Mac/SigmaSwiftStatistics.framework; sourceTree = "<group>"; };
 		0823F2321EE742B100A8F8C6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		082564F220150B4000526957 /* MacAppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppConstants.swift; sourceTree = "<group>"; };
 		0826108D1DB02FC300C03422 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/Mac/Nimble.framework; sourceTree = "<group>"; };
 		0826108E1DB02FC300C03422 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/Mac/Quick.framework; sourceTree = "<group>"; };
 		0828FB1D1EA51D3100AECEC5 /* EventTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTypes.swift; sourceTree = "<group>"; };
@@ -1632,6 +1634,7 @@
 		088CE66B1C4B0AF400153414 /* MacClient */ = {
 			isa = PBXGroup;
 			children = (
+				082564F220150B4000526957 /* MacAppConstants.swift */,
 				088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */,
 				08680691200E415600C986A9 /* AppLogger.swift */,
 				088CE6721C4B0AF400153414 /* Main.storyboard */,
@@ -2785,6 +2788,7 @@
 				084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */,
 				08F189A21D09AA0300866A05 /* SessionController.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
+				082564F320150B4000526957 /* MacAppConstants.swift in Sources */,
 				08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */,
 				08055E321FBC810D007419C6 /* SpreadsheetDataSource.swift in Sources */,
 				08A01FC81CC7FCA3001EDFAA /* FMDatabaseQueue.m in Sources */,

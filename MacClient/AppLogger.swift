@@ -169,18 +169,7 @@ class AppLogger: NSObject {
 extension AppLogger {
 	/// displays (if not loaded) the log window and makes it key and front
 	@objc func showLogWindow(_ sender: Any? = nil) {
-		if nil == logWindowController {
-			if #available(OSX 10.13, *) {
-				logWindowController = NSStoryboard.main?.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("LogWindowController")) as? NSWindowController
-			} else {
-				// Fallback on earlier versions
-				let sboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
-				logWindowController = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("LogWindowController")) as? NSWindowController
-			}
-			guard let logController = logWindowController?.contentViewController as? LogViewController else { fatalError() }
-			logController.logTextView.layoutManager?.replaceTextStorage(logBuffer)
-		}
-		logWindowController?.window?.makeKeyAndOrderFront(sender)
+		logWindow(show: true).makeKeyAndOrderFront(sender)
 	}
 	
 	/// action for a log category's log level
@@ -216,6 +205,28 @@ extension AppLogger {
 
 // MARK: - private methods
 extension AppLogger {
+	/// creates the log window if necessary and returns it
+	func logWindow(show: Bool = true) -> NSWindow {
+		if nil == logWindowController {
+			if #available(OSX 10.13, *) {
+				logWindowController = NSStoryboard.main?.instantiateController(withIdentifier: .logWindowController) as? NSWindowController
+			} else {
+				// Fallback on earlier versions
+				let sboard = NSStoryboard(name: .mainBoard, bundle: nil)
+				logWindowController = sboard.instantiateController(withIdentifier: .logWindowController) as? NSWindowController
+			}
+			guard let logController = logWindowController?.contentViewController as? LogViewController else { fatalError() }
+			logController.logTextView.layoutManager?.replaceTextStorage(logBuffer)
+			logController.logTextView.scrollToEndOfDocument(self)
+			if let window = logWindowController?.window {
+				window.isRestorable = true
+				window.restorationClass = MacAppDelegate.self
+				window.identifier = .logWindow
+			}
+		}
+		return logWindowController!.window!
+	}
+
 	/// creates a menu item for category with an item for each possible OtherLogLevel
 	private func menuItem(for category: LogCategory) -> NSMenuItem {
 		let item = NSMenuItem(title: category.rawValue, action: nil, keyEquivalent: "")

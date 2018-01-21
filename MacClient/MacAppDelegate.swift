@@ -32,11 +32,6 @@ fileprivate struct Actions {
 	static let resetLogs = #selector(MacAppDelegate.resetLogs(_:))
 }
 
-extension NSStoryboard.Name {
-	static let mainBoard = NSStoryboard.Name(rawValue: "Main")
-	static let mainController = NSStoryboard.Name(rawValue: "MainController")
-}
-
 private extension DefaultsKeys {
 	static let supportDataVersion = DefaultsKey<Int>("currentSupportDataVersion")
 }
@@ -430,16 +425,22 @@ extension MacAppDelegate {
 extension MacAppDelegate: NSWindowRestoration {
 	class func restoreWindow(withIdentifier identifier: NSUserInterfaceItemIdentifier, state: NSCoder, completionHandler: @escaping (NSWindow?, Error?) -> Void)
 	{
-		guard identifier.rawValue == "session",
-			let me = NSApp.delegate as? MacAppDelegate,
-			let bmarkData = state.decodeObject(forKey: "bookmark") as? Data,
-			let bmark: Bookmark = try? JSONDecoder().decode(Bookmark.self, from: bmarkData)
-		else {
+		guard let me = NSApp.delegate as? MacAppDelegate else { fatalError("incorrect delegate??") }
+		switch identifier {
+		case .sessionWindow:
+			guard let bmarkData = state.decodeObject(forKey: "bookmark") as? Data,
+				let bmark: Bookmark = try? JSONDecoder().decode(Bookmark.self, from: bmarkData)
+				else {
+					completionHandler(nil, Rc2Error(type: .unknown, nested: nil, explanation: "Unsupported window identifier"))
+					return
+				}
+			completionHandler(nil, nil)
+			me.sessionsBeingRestored[bmark.workspaceIdent] = completionHandler
+		case .logWindow:
+			completionHandler(me.logger.logWindow(show: false), nil)
+		default:
 			completionHandler(nil, Rc2Error(type: .unknown, nested: nil, explanation: "Unsupported window identifier"))
-			return
 		}
-		completionHandler(nil, nil)
-		me.sessionsBeingRestored[bmark.workspaceIdent] = completionHandler
 	}
 }
 
