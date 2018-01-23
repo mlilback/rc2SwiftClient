@@ -210,8 +210,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		DispatchQueue.main.async {
 			self.promptForFilename(prompt: prompt, baseName: baseName, type: fileType) { (name) in
 				guard let newName = name else { return }
-				//TODO: implement new file templates
-				self.session.create(fileName: newName, contentUrl: nil) { result in
+				self.session.create(fileName: newName, contentUrl: self.fileTemplate(forType: fileType)) { result in
 					// the id of the file that was created
 					guard let fid = result.value else {
 						Log.error("error creating empty file: \(result.error!)", .app)
@@ -507,6 +506,20 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 					break
 				}
 			}
+	}
+	
+	/// returns URL to template for the passed in file type
+	func fileTemplate(forType fileType: FileType) -> URL? {
+		do {
+			let templateDir = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: Resources.fileTemplateDirName)
+			let userFile = templateDir.appendingPathComponent("default.\(fileType.fileExtension)")
+			if FileManager.default.fileExists(atPath: userFile.path) {
+				return userFile
+			}
+		} catch {
+			// ignore error, just use builtin template
+		}
+		return Bundle(for: type(of: self)).url(forResource: "default", withExtension: fileType.fileExtension, subdirectory: Resources.fileTemplateDirName)
 	}
 
 	// MARK: - TableView datasource/delegate implementation
