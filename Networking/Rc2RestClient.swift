@@ -12,7 +12,7 @@ import ReactiveSwift
 import ZipArchive
 import Model
 
-private static let wspaceDirName = "defaultWorkspaceFiles"
+private let wspaceDirName = "defaultWorkspaceFiles"
 
 public final class Rc2RestClient {
 	let conInfo: ConnectionInfo
