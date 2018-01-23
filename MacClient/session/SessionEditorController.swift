@@ -384,9 +384,10 @@ fileprivate extension SessionEditorController {
 			return
 		}
 		saveWithProgress().startWithResult { result in
-			guard nil == result.error else {
-				//TODO: display error or updateProgress should
+			if let innerError = result.error {
+				let appError = AppError(.saveFailed, nestedError: innerError)
 				Log.info("save for execute returned an error: \(result.error!)", .app)
+				self.appStatus?.presentError(appError.rc2Error, session: self.session)
 				return
 			}
 			Log.info("executeQuery saved file, now executing", .app)

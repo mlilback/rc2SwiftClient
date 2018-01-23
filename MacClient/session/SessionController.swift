@@ -108,7 +108,7 @@ protocol SessionControllerDelegate: class {
 			}
 			return
 		}
-		//TODO: need to wait until file exists then load it
+		// wait for file to be updated if necessary
 		let handler = { (changes: [AppWorkspace.FileChange]) in
 			for aChange in changes where aChange.file.fileId == fileId {
 				//our file was inserted, we can show it
