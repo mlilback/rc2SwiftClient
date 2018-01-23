@@ -11,13 +11,14 @@ enum AppErrorType: String {
 	case saveFailed
 	case invalidLogin
 	case failedToLoadDocument
+	case fileNoLongerExists
 }
 
 struct AppError: LocalizedError, Rc2DomainError {
 	let type: AppErrorType
 	let nestedError: Error?
 	
-	init(_ error: AppErrorType, nestedError: Error?) {
+	init(_ error: AppErrorType, nestedError: Error? = nil) {
 		self.type = error
 		self.nestedError = nestedError
 	}

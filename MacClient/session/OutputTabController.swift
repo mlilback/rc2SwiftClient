@@ -140,8 +140,9 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 				webController?.load(file: file)
 				selectedOutputTab.value = .webKit
 			} else {
-				//TODO: report error
 				Log.warn("error getting file attachment to display: \(attachment.fileId)", .app)
+				let err = AppError(.fileNoLongerExists)
+				presentError(err, modalFor: view.window!, delegate: nil, didPresent: nil, contextInfo: nil)
 			}
 		case .image:
 			if let image = attachment.image {
@@ -169,7 +170,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			return
 		}
 		displayedFile = file
-		//TODO: need to specially handle images
+		// use webkit to handle images the user selected since the imageView only works with images in the cache
 		self.selectedOutputTab.value = .webKit
 		self.webController?.load(file: file)
 	}

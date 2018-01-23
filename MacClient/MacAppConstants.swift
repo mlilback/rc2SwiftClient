@@ -21,3 +21,6 @@ extension NSUserInterfaceItemIdentifier {
 	static let dockerWindow = NSUserInterfaceItemIdentifier(rawValue: "dockerWindow")
 }
 
+struct Resources {
+	static let fileTemplateDirName = "FileTemplates"
+}

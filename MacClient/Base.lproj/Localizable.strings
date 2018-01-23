@@ -30,3 +30,5 @@
 "saveFailedErrorExplanation" = "An error ocurred while saving the file to the server";
 "unauthorizedLoginErrorExplanation" = "Invalid userid or password";
 "failedToLoadDocumentErrorExplanation" = "An unkown error ocurred while loading a document";
+"fileNoLongerExistsErrorExplanation" = "The selected file no longer exists or was unreadable";
+
