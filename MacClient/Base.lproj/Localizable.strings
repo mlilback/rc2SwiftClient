@@ -28,3 +28,5 @@
 "NoFileMessageImportAction" = "Import";
 
 "saveFailedErrorExplanation" = "An error ocurred while saving the file to the server";
+"unauthorizedLoginErrorExplanation" = "Invalid userid or password";
+"failedToLoadDocumentErrorExplanation" = "An unkown error ocurred while loading a document";

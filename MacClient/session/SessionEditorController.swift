@@ -427,7 +427,8 @@ fileprivate extension SessionEditorController {
 		let doc = currentDocument!
 		doc.loadContents().observe(on: UIScheduler()).startWithResult { result in
 			guard let contents = result.value else {
-				//TODO: handle error
+				let appError = AppError(.failedToLoadDocument, nestedError: result.error!)
+				self.appStatus?.presentError(appError.rc2Error, session: self.session)
 				Log.error("error loading document contents \(result.error!)", .app)
 				return
 			}
@@ -471,8 +472,9 @@ fileprivate extension SessionEditorController {
 		if doc.dirty {
 			saveWithProgress().startWithResult { result in
 				guard nil == result.error else {
-					//TODO: handle error
+					let appError = AppError(.saveFailed, nestedError: result.error!)
 					Log.warn("editor save returned an error: \(result.error!)", .app)
+					self.appStatus?.presentError(appError.rc2Error, session: self.session)
 					return
 				}
 			}

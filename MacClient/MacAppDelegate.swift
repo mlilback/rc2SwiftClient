@@ -576,9 +576,8 @@ extension MacAppDelegate {
 		else { handleStartupError(error); return }
 		switch rsp.statusCode {
 		case 401: // unauthorized, login failed
-			// TODO: provide better error notification
 			Log.warn("login unauthorized", .app)
-			handleStartupError(error)
+			handleStartupError(AppError(.invalidLogin, nestedError: error).rc2Error)
 		default:
 			handleStartupError(error)
 		}

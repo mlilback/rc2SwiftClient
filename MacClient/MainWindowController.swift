@@ -13,7 +13,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 	///Object that lets us monitor the status of the application. Nededed to pass on to the statusView once setup is finished
 	weak var appStatus: MacAppStatus?
 	
-	//TODO: this needs to eventually include  host and project name
+	//TODO: window title needs to eventually include  host and project name
 	weak var session: Session? { didSet { window?.title = session?.workspace.name ?? "remote connection" } }
 	
 	///Custom view that shows the status of the application: progress, message, cancel button

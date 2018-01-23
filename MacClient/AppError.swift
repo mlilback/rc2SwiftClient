@@ -9,6 +9,8 @@ import ClientCore
 
 enum AppErrorType: String {
 	case saveFailed
+	case invalidLogin
+	case failedToLoadDocument
 }
 
 struct AppError: LocalizedError, Rc2DomainError {
