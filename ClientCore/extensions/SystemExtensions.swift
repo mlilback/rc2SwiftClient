@@ -12,7 +12,6 @@ public func delay(_ delay: Double, _ closure:@escaping () -> Void) {
 		deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: closure)
 }
 
-// TODO: possibily get rid of NotificationCenter
 public extension NotificationCenter {
 	func postNotificationNameOnMainThread(_ name: NSNotification.Name, object: AnyObject, userInfo: [AnyHashable: Any]?=nil) {
 		if !Thread.isMainThread {
