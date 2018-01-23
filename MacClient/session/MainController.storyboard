@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
@@ -452,7 +452,7 @@
                                 <rect key="frame" x="0.0" y="8" width="209" height="725"/>
                                 <subviews>
                                     <customView verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="32P-Xy-RTq">
-                                        <rect key="frame" x="41.5" y="677" width="126" height="48"/>
+                                        <rect key="frame" x="42" y="677" width="126" height="48"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="URg-nY-c1o">
                                                 <rect key="frame" x="6" y="26" width="114" height="14"/>
@@ -640,7 +640,7 @@
                                                 <rect key="frame" x="158" y="-1" width="35" height="23"/>
                                                 <popUpButtonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" selectedItem="tg4-ie-6Et" id="zUd-0F-7El">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                    <font key="font" metaFont="system"/>
+                                                    <font key="font" metaFont="menu"/>
                                                     <menu key="menu" title="OtherViews" autoenablesItems="NO" id="FqJ-7k-WFf">
                                                         <items>
                                                             <menuItem state="on" image="NSActionTemplate" hidden="YES" id="VB5-fG-XHD"/>
@@ -944,7 +944,7 @@
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn width="200" minWidth="180" maxWidth="200" id="EEe-Mq-QDL">
+                                                <tableColumn identifier="" width="200" minWidth="180" maxWidth="200" id="EEe-Mq-QDL">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1663,7 +1663,7 @@
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn width="445" minWidth="40" maxWidth="1000" id="Ju8-mT-SLA">
+                                                <tableColumn identifier="" width="445" minWidth="40" maxWidth="1000" id="Ju8-mT-SLA">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1800,7 +1800,7 @@
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn width="116" minWidth="40" maxWidth="1000" id="bYo-zt-k3V">
+                                                <tableColumn identifier="" width="116" minWidth="40" maxWidth="1000" id="bYo-zt-k3V">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
