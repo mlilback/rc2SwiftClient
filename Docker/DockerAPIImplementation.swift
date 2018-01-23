@@ -110,6 +110,7 @@ public final class DockerAPIImplementation: DockerAPI {
 		do {
 			try connection.openConnection()
 		} catch {
+			Log.warn("failed to open connection for docker log streaming", .docker)
 			//TODO: better error handling
 			dataHandler(nil, true)
 			return
