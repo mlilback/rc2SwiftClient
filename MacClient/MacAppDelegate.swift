@@ -176,7 +176,6 @@ extension MacAppDelegate {
 	
 	/// returns the window for the specified session
 	func window(for session: Session?) -> NSWindow? {
-		//TODO: make return value optional and remove force casts
 		if let window = windowControllerForSession(session!)?.window {
 			return window
 		}
@@ -221,6 +220,40 @@ extension MacAppDelegate {
 		}
 	}
 	
+	/// opens a session for workspace. If already open, brings that session window to the front
+	func openSession(workspace: AppWorkspace) {
+		guard !workspacesBeingOpened.contains(workspace.identifier) else {
+			Log.warn("already opening session to \(workspace.name)", .app)
+			return
+		}
+		// if already open, bring to front
+		if let controller = windowController(for: workspace.identifier) {
+			controller.window?.orderFront(self)
+			return
+		}
+		guard let conInfo = connectionManager.localConnection
+			else { Log.warn("asked to open session without connection info"); return }
+		let session = Session(connectionInfo: conInfo, workspace: workspace)
+		session.open().observe(on: UIScheduler()).take(during: session.lifetime).start
+			{ [weak self] event in
+				switch event {
+				case .completed:
+					DispatchQueue.main.async {
+						self?.openSessionWindow(session)
+					}
+				case .failed(let err):
+					Log.error("failed to open websocket \(err)", .session)
+					fatalError()
+				case .value: //(let _):
+					// do nothing as using indeterminate progress
+					break
+				case .interrupted:
+					break //should never happen
+				}
+		}
+	}
+	
+	/// convience method that looks up a workspace based on an identifier, then calls openSession(workspace:)
 	func openLocalSession(for wspaceIdentifier: WorkspaceIdentifier?) {
 		guard let ident = wspaceIdentifier else {
 			newWorkspace(self)
@@ -231,31 +264,13 @@ extension MacAppDelegate {
 			return
 		}
 		guard let conInfo = connectionManager.localConnection,
-			let optWspace = try? conInfo.project(withId: ident.projectId).workspace(withId: ident.wspaceId),
-			let wspace = optWspace
+			let wspace = conInfo.workspace(withIdentifier: ident)
 		else {
 			Log.warn("failed to find workspace \(ident) that we're supposed to open", .app)
 			return
 		}
 		workspacesBeingOpened.insert(ident)
-		let session = Session(connectionInfo: conInfo, workspace: wspace)
-		session.open().observe(on: UIScheduler()).take(during: session.lifetime).start
-		{ [weak self] event in
-			switch event {
-			case .completed:
-				DispatchQueue.main.async {
-					self?.openSessionWindow(session)
-				}
-			case .failed(let err):
-				Log.error("failed to open websocket \(err)", .session)
-				fatalError()
-			case .value: //(let _):
-				// do nothing as using indeterminate progress
-				break
-			case .interrupted:
-				break //should never happen
-			}
-		}
+		openSession(workspace: wspace)
 	}
 }
 
@@ -324,7 +339,6 @@ extension MacAppDelegate {
 					.observe(on: UIScheduler())
 					.startWithFailed { error in
 						//this should never happen unless serious server error
-						//TODO: this does not actually present an error
 						self.appStatus?.presentError(error, session: nil)
 					}
 			}
@@ -584,12 +598,22 @@ extension MacAppDelegate {
 		}
 	}
 	
-	fileprivate func showOnboarding() {
+	private func showOnboarding() {
 		if nil == onboardingController {
 			// swiftlint:disable:next force_cast
 			onboardingController = (mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "OnboardingWindowController")) as! OnboardingWindowController)
 			onboardingController?.viewController.conInfo = connectionManager.localConnection
-			onboardingController?.viewController.openLocalWorkspace = openLocalSession
+			onboardingController?.viewController.actionHandler = { message in
+				switch message {
+				case .add:
+					self.newWorkspace(nil)
+				case .open(let wspace):
+					self.openSession(workspace: wspace)
+				case .remove:
+					// TODO: implement removing workspace
+					NSSound.beep()
+				}
+			}
 		}
 		onboardingController!.window?.makeKeyAndOrderFront(self)
 	}

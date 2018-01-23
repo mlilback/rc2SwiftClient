@@ -5,7 +5,6 @@
 //
 
 import Cocoa
-import WebKit
 import MJLLogger
 import ClientCore
 import Networking
@@ -14,9 +13,23 @@ import ReactiveSwift
 import Model
 
 class OnboardingViewController: NSViewController {
-	@IBOutlet var openButton: NSButton!
-	@IBOutlet var newButton: NSButton!
-	@IBOutlet var webView: WKWebView!
+	/// Actions that can be passed to the actionHandler
+	///
+	/// - open: open the associated workspace
+	/// - add: add a new workspace
+	/// - remove: remove the associated workspace
+	enum UserAction {
+		case open(AppWorkspace)
+		case add
+		case remove(AppWorkspace)
+	}
+	
+	@IBOutlet var textView: NSTextView!
+	@IBOutlet var closeButton: NSButton!
+	@IBOutlet var addButton: NSButton!
+	@IBOutlet var removeButton: NSButton!
+	@IBOutlet var wspaceTableView: NSTableView!
+	
 	var conInfo: ConnectionInfo? { didSet {
 		workspaceToken?.dispose()
 		project = conInfo?.defaultProject
@@ -24,75 +37,82 @@ class OnboardingViewController: NSViewController {
 			self?.updateWorkspaces()
 		}
 	} }
-	fileprivate var workspaceToken: Disposable?
-	fileprivate var project: AppProject?
-	fileprivate var didFirstInit: Bool = false
-	var openLocalWorkspace: ((WorkspaceIdentifier?) -> Void)?
+	private var workspaceToken: Disposable?
+	private var project: AppProject?
+	private var didFirstInit: Bool = false
+	var actionHandler: ((UserAction) -> Void)?
 	
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		guard let contentFile = Bundle(for: type(of: self)).url(forResource: "OnboardingContent", withExtension: "rtfd")
+			else { fatalError("failed to load welcome content") }
+		do {
+			let str = try NSAttributedString(url: contentFile, options: [:], documentAttributes: nil)
+			textView.textStorage?.append(str)
+		} catch {
+			Log.error("failed to load welcome content: \(error)", .app)
+		}
+	}
 	override func viewWillAppear() {
 		super.viewWillAppear()
-		if !didFirstInit {
-			didFirstInit = true
-			self.view.layer?.backgroundColor = NSColor.white.cgColor
-			webView.configuration.userContentController.add(self, name: "buttonClicked")
-		}
-		guard let welcomeUrl = Bundle.main.url(forResource: "welcome", withExtension: "html", subdirectory: "static_html") else
-		{
-			fatalError("failed to find welcome page")
-		}
-		webView.loadFileURL(welcomeUrl, allowingReadAccessTo: welcomeUrl.deletingLastPathComponent())
-		view.window?.makeFirstResponder(webView)
+		wspaceTableView.reloadData()
 	}
 	
 	func updateWorkspaces() {
-		guard
-			let workspaces = project?.workspaces.value.map( { $0.model }).sorted(by: { (lhs, rhs) -> Bool in return lhs.name < rhs.name }),
-			let rawData = try? conInfo?.encode(workspaces),
-			let jsonData = rawData
-		 else { Log.warn("onboarding loaded w/o project", .app); return }
-		webView.evaluateJavaScript("setWorkspaces('\(jsonData.base64EncodedString())')")
-	}
-}
-
-extension OnboardingViewController: WKNavigationDelegate {
-	func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void)
-	{
-		if navigationAction.request.url?.isFileURL ?? false {
-			decisionHandler(.allow)
-		} else {
-			decisionHandler(.cancel)
-		}
+		wspaceTableView.reloadData()
+//		guard
+//			let workspaces = project?.workspaces.value.map( { $0.model }).sorted(by: { (lhs, rhs) -> Bool in return lhs.name < rhs.name }),
 	}
 	
-	func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-		updateWorkspaces()
+	@IBAction func closeWindow(_ sender: Any?) {
+		view.window?.orderOut(sender)
 	}
-}
+	
+	@IBAction func addWorkspace(_ sender: Any?) {
+		actionHandler?(.add)
+	}
 
-extension OnboardingViewController: WKScriptMessageHandler {
-	func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage)
-	{
-		guard let args = message.body as? [String: Any], let action = args["action"] as? String else {
+	@IBAction func removeWorkspace(_ sender: Any?) {
+		guard let wspace = project?.workspaces.value[wspaceTableView.selectedRow] else {
+			Log.warn("remove workspace called without a selected workspace", .app)
 			return
 		}
-		switch action {
-		case "close":
-			view.window?.orderOut(self)
-		case "new":
-			openLocalWorkspace?(nil)
-			break
-		case "open":
-			guard let projId = project?.projectId, let wspaceId = args["wspaceId"] as? Double else {
-				Log.error("invalid params to open a session", .app)
-				return
-			}
-			openLocalWorkspace?(WorkspaceIdentifier(projectId: projId, wspaceId: Int(wspaceId)))
-		default:
-			Log.info("unhandled action: \(action)", .app)
-		}
+		actionHandler?(.remove(wspace))
+	}
+	
+	@IBAction func openWorkspace(_ sender: Any?) {
+		guard let wspace = project?.workspaces.value[wspaceTableView.clickedRow] else { return } //should never happend
+		actionHandler?(.open(wspace))
 	}
 }
 
+extension OnboardingViewController: NSTableViewDataSource {
+	func numberOfRows(in tableView: NSTableView) -> Int {
+		return project?.workspaces.value.count ?? 0
+	}
+}
+
+extension OnboardingViewController: NSTableViewDelegate {
+	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+		let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "wspaceEntry"), owner: self) as? OnboardingCell
+		cell?.textField?.stringValue = project?.workspaces.value[row].name ?? "error"
+		cell?.lastAccessField?.objectValue = project?.workspaces.value[row].model.lastAccess ?? nil
+		return cell
+	}
+	
+	func tableViewSelectionDidChange(_ notification: Notification) {
+		removeButton.isEnabled = wspaceTableView.selectedRow >= 0
+	}
+}
+
+// MARK: -
+
+class OnboardingCell: NSTableCellView {
+	@IBOutlet var lastAccessField: NSTextField!
+	@IBOutlet var dateCreatedField: NSTextField!
+}
+
+// MARK: -
 class OnboardingWindowController: NSWindowController {
 	// swiftlint:disable:next force_cast
 	var viewController: OnboardingViewController { return contentViewController as! OnboardingViewController }

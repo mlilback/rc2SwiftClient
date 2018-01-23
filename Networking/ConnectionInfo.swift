@@ -123,6 +123,17 @@ public class ConnectionInfo: CustomStringConvertible {
 		return wspace
 	}
 	
+	/// returns a workspace for the specified identifier, or nil if no such workspace exists
+	///
+	/// - Parameter identifier: the workspace identifier to lookup
+	/// - Returns: the matching workspace, or nil if no such workspace exists
+	public func workspace(withIdentifier identifier: WorkspaceIdentifier) -> AppWorkspace? {
+		guard let optWspace = try? project(withId: identifier.projectId).workspace(withId: identifier.wspaceId),
+			let wspace = optWspace
+			else { return nil }
+		return wspace
+	}
+	
 	/// called by other module objects (like RestClient) when the bulkInfo needs to be updated
 	///
 	/// - Parameter bulkInfo: the updated information
