@@ -15,15 +15,18 @@ public struct AppInfo {
 	/// application build number (for error reports/about box)
 	public static var buildNumber: String { return bundleInfo?["CFBundleVersion"] as? String ?? "??" }
 
-	/// Returns the URL to a subdirectory of app's application support directory (created if doesn't already exist)
+	/// Returns the URL to a subdirectory of app's specified directory (created if doesn't already exist)
 	///
-	/// - Parameter name: the name of the subdirectory
+	/// - Parameter type: the type of containing folder
+	/// - Parameter named: the name of the subdirectory
+	/// - Parameter create: if true, directory will be created if it doesn't exist. Defaults to true
 	/// - Returns: the url to that directory
 	/// - Throws: any error thrown by FileManager calls
-	public static func subdirectory(type: FileManager.SearchPathDirectory, named: String) throws -> URL {
+	public static func subdirectory(type: FileManager.SearchPathDirectory, named: String, create: Bool = true) throws -> URL
+	{
 		let fm = FileManager()
 		let rootDir = try fm.url(for: type, in: .userDomainMask, appropriateFor: nil, create: false)
-		let subdir = rootDir.appendingPathComponent(AppInfo.bundleIdentifier, isDirectory: true).appendingPathComponent(named, isDirectory: true)
+		let subdir = rootDir.appendingPathComponent(AppInfo.bundleIdentifier, isDirectory: true).appendingPathComponent(named, isDirectory: create)
 		if !fm.directoryExists(at: subdir) {
 			try fm.createDirectory(at: subdir, withIntermediateDirectories: true, attributes: nil)
 		}
