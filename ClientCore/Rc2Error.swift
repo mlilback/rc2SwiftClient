@@ -27,6 +27,8 @@ public struct Rc2Error: LocalizedError, CustomStringConvertible, CustomDebugStri
 		case timeout
 		/// a SessionError from the app server
 		case session
+		/// an UI-level error
+		case application
 		/// nestedError will be the NSError
 		case cocoa
 		/// nested error is related to the file system
