@@ -12,7 +12,7 @@ import ReactiveSwift
 import ZipArchive
 import Model
 
-private let wspaceDirName = "defaultWorkspaceFiles"
+private static let wspaceDirName = "defaultWorkspaceFiles"
 
 public final class Rc2RestClient {
 	let conInfo: ConnectionInfo
@@ -144,9 +144,10 @@ public final class Rc2RestClient {
 		let fm = FileManager()
 		do {
 			let defaultDirectoryUrl = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: wspaceDirName)
-			if try fm.contentsOfDirectory(atPath: defaultDirectoryUrl.path).isEmpty {
-				//copy all template files to user-editable directory
-				let templateDir = (Bundle(for: type(of: self)).resourceURL?.appendingPathComponent(wspaceDirName, isDirectory: true))!
+			if try fm.contentsOfDirectory(atPath: defaultDirectoryUrl.path).isEmpty,
+				let templateDir = (Bundle(for: type(of: self)).resourceURL?.appendingPathComponent(wspaceDirName, isDirectory: true))
+			{
+				// copy all template files to user-editable directory
 				for aUrl in try fm.contentsOfDirectory(at: templateDir, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
 				{
 					try fm.copyItem(at: aUrl, to: defaultDirectoryUrl.appendingPathComponent(aUrl.lastPathComponent))
