@@ -14,6 +14,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "MJLLogger::MJLLogger"
+               BuildableName = "MJLLogger.framework"
+               BlueprintName = "MJLLogger"
+               ReferencedContainer = "container:vendor/MJLLogger/MJLLogger.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "089794191D7B68F0003339EE"
                BuildableName = "ClientCore.framework"
                BlueprintName = "ClientCore"
