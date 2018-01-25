@@ -352,6 +352,7 @@
 		08EB36D21FBBA1640078229A /* TextVariableDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36D11FBBA1640078229A /* TextVariableDetailController.swift */; };
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
+		08EDB9D02019527D000663EF /* Set+MJL+update.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EDB9CF2019527D000663EF /* Set+MJL+update.swift */; };
 		08F01E961EFC74690047F397 /* NSData+Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F01E941EFC74690047F397 /* NSData+Hash.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		08F01E971EFC74690047F397 /* NSData+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F01E951EFC74690047F397 /* NSData+Hash.m */; };
 		08F01EA11EFD59120047F397 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 08F01EA01EFD59120047F397 /* Localizable.strings */; };
@@ -1020,6 +1021,7 @@
 		08EB36D11FBBA1640078229A /* TextVariableDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextVariableDetailController.swift; sourceTree = "<group>"; };
 		08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetActionBlock.swift; sourceTree = "<group>"; };
 		08ED575E1C724383002B2558 /* MacFileImportSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacFileImportSetup.swift; sourceTree = "<group>"; };
+		08EDB9CF2019527D000663EF /* Set+MJL+update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+MJL+update.swift"; sourceTree = "<group>"; };
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
 		08F01E941EFC74690047F397 /* NSData+Hash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Hash.h"; sourceTree = "<group>"; };
 		08F01E951EFC74690047F397 /* NSData+Hash.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+Hash.m"; sourceTree = "<group>"; };
@@ -1519,6 +1521,7 @@
 				0868067A200D892000C986A9 /* Process+MJL.swift */,
 				0868067B200D892000C986A9 /* String+MJL.swift */,
 				0868067C200D892000C986A9 /* URL+MJL.swift */,
+				08EDB9CF2019527D000663EF /* Set+MJL+update.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -2876,6 +2879,7 @@
 				08E8366B1D94436D00E26EFE /* UserDefaults+Rc2.swift in Sources */,
 				0868068C200D892000C986A9 /* RecursiveFlatMap.swift in Sources */,
 				08525E731E256A8B008A332E /* Reachability.swift in Sources */,
+				08EDB9D02019527D000663EF /* Set+MJL+update.swift in Sources */,
 				086A40E11E7DAEE300AE476B /* InternalTheme.swift in Sources */,
 				08680683200D892000C986A9 /* ExpiringCache.swift in Sources */,
 				08B184D41E5F384800F4A6D6 /* AppInfo.swift in Sources */,
