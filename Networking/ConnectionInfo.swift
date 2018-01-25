@@ -18,9 +18,9 @@ public class ConnectionInfo: CustomStringConvertible {
 	public var user: Model.User { return bulkInfo.user }
 	public let authToken: String
 	/// It is only possible to monitor the entire array. No signals are sent if an individual project is changed, therefore references to projects are fragile. They might become invalid and not know it. Always lookup the project, do not store it.
-	public let projects: Property<[AppProject]>
+	public let projects: Property<Set<AppProject>>
 	// private editable version that projects monitors
-	private let _projects: MutableProperty<[AppProject]>
+	private let _projects: MutableProperty<Set<AppProject>>
 	private let encoder: JSONEncoder
 	private let decoder: JSONDecoder
 	
@@ -50,8 +50,8 @@ public class ConnectionInfo: CustomStringConvertible {
 		decoder.dateDecodingStrategy = .secondsSince1970
 		decoder.nonConformingFloatDecodingStrategy = .convertFromString(positiveInfinity: "Inf", negativeInfinity: "-Inf", nan: "NaN")
 		
-		_projects = MutableProperty<[AppProject]>([])
-		projects = Property<[AppProject]>(_projects)
+		_projects = MutableProperty< Set<AppProject> >([])
+		projects = Property< Set<AppProject> >(_projects)
 		
 		self.host = host
 		self.authToken = authToken
@@ -139,6 +139,11 @@ public class ConnectionInfo: CustomStringConvertible {
 	/// - Parameter bulkInfo: the updated information
 	internal func update(bulkInfo: BulkUserInfo) {
 		// TODO: implement
+		
+	}
+	
+	private func updateProjects(bulkInfo: BulkUserInfo) {
+		
 	}
 	
 	/// updates the AppWorkspace with the update
@@ -156,7 +161,7 @@ public class ConnectionInfo: CustomStringConvertible {
 	// load the bulk info
 	private func load(bulkInfo: BulkUserInfo) throws {
 		assert(_projects.value.count == 0) //FIXME: Need to update instead of create if already exists
-		var tmpProjects = [AppProject]()
+		var tmpProjects = Set<AppProject>()
 		for rawProject in bulkInfo.projects {
 			var wspaces = [AppWorkspace]()
 			for rawWspace in (bulkInfo.workspaces[rawProject.id] ?? []) {
@@ -166,7 +171,7 @@ public class ConnectionInfo: CustomStringConvertible {
 				}
 				wspaces.append(try AppWorkspace(model: rawWspace, files: files))
 			}
-			tmpProjects.append(try AppProject(model: rawProject, workspaces: wspaces))
+			tmpProjects.insert(try AppProject(model: rawProject, workspaces: wspaces))
 		}
 		_projects.value = tmpProjects
 	}

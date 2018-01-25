@@ -309,7 +309,7 @@ extension MacAppDelegate: NSMenuDelegate {
 			update(menu: menu, for: projects.first!)
 			return
 		}
-		for aProject in projects {
+		for aProject in projects.sorted(by: { $0.name < $1.name }) {
 			let pmenu = NSMenu(title: aProject.name)
 			update(menu: pmenu, for: aProject)
 			let pmi = NSMenuItem(title: aProject.name, action: nil, keyEquivalent: "")

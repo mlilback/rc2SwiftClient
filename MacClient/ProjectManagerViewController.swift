@@ -63,7 +63,9 @@ extension ProjectManagerViewController: NSOutlineViewDataSource {
 		if let proj = item as? AppProject {
 			return proj.workspaces.value[index]
 		}
-		return connectInfo!.projects.value[index]
+		// gross hack. needs to set set instead of array as data source
+		return connectInfo!.projects.value.first!
+//		return connectInfo!.projects.value[index]
 	}
 }
 
