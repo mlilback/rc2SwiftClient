@@ -45,7 +45,7 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 	public let fileChangeSignal: Signal<[FileChange], NoError> // { return _files.changeSignal }
 	private let fileChangeObserver: Signal<[FileChange], NoError>.Observer
 	
-	public init(model: Workspace, files rawFiles: [AppFile]) throws {
+	public init(model: Workspace, files rawFiles: [AppFile]) {
 		self.model = model
 		_files.value = rawFiles
 		(fileChangeSignal, fileChangeObserver) = Signal<[FileChange], NoError>.pipe()

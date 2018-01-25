@@ -20,7 +20,7 @@ public final class AppProject: CustomStringConvertible, Hashable
 	public let workspaces: Property<[AppWorkspace]>
 	private let _workspaces: MutableProperty<[AppWorkspace]>
 
-	public init(model: Project, workspaces rawWorkspaces: [AppWorkspace]) throws {
+	public init(model: Project, workspaces rawWorkspaces: [AppWorkspace]) {
 		self.model = model
 		self._workspaces = MutableProperty<[AppWorkspace]>(rawWorkspaces)
 		self.workspaces = Property<[AppWorkspace]>(_workspaces)
