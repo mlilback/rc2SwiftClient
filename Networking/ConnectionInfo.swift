@@ -163,16 +163,25 @@ public class ConnectionInfo: CustomStringConvertible {
 		assert(_projects.value.count == 0) //FIXME: Need to update instead of create if already exists
 		var tmpProjects = Set<AppProject>()
 		for rawProject in bulkInfo.projects {
-			var wspaces = [AppWorkspace]()
-			for rawWspace in (bulkInfo.workspaces[rawProject.id] ?? []) {
-				var files = [AppFile]()
-				for rawFile in (bulkInfo.files[rawWspace.id] ?? []) {
-					files.append(try AppFile(model: rawFile))
-				}
-				wspaces.append(try AppWorkspace(model: rawWspace, files: files))
-			}
-			tmpProjects.insert(try AppProject(model: rawProject, workspaces: wspaces))
+			let wspaces = (bulkInfo.workspaces[rawProject.id] ?? []).map { create(workspace: $0, bulkInfo: bulkInfo) }
+			tmpProjects.insert(AppProject(model: rawProject, workspaces: wspaces))
 		}
 		_projects.value = tmpProjects
 	}
+
+	/// creates AppFiles based on Files in bulkInfo, then creates the AppWorkspace
+	private func create(workspace: Workspace, bulkInfo: BulkUserInfo) -> AppWorkspace {
+		let rawFiles = bulkInfo.files[workspace.id] ?? []
+		//only error is if unsupported filetype. that should never happen. if it does, just ignore that file
+		let files: [AppFile] = rawFiles.flatMap {
+			do {
+				return try AppFile(model: $0)
+			} catch {
+				Log.warn("failed to create appfile \($0.id). skipping", .model)
+				return nil
+			}
+		}
+		return AppWorkspace(model: workspace, files: files)
+	}
+	
 }
