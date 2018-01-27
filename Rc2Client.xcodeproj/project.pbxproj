@@ -179,6 +179,7 @@
 		0846D3E120175DF100795376 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0846D3E020175DF100795376 /* AppError.swift */; };
 		0846D3E32017C03900795376 /* FileTemplates in Resources */ = {isa = PBXBuildFile; fileRef = 0846D3E22017C03900795376 /* FileTemplates */; };
 		084E93A9201A313900FF50EA /* FakeFileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935871E00AA5700C94B19 /* FakeFileCache.swift */; };
+		084E93AC201A352200FF50EA /* ConnectionInfoSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */; };
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08525E501E204672008A332E /* URLStaleChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E4F1E204672008A332E /* URLStaleChecker.swift */; };
 		08525E731E256A8B008A332E /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E721E256A8B008A332E /* Reachability.swift */; };
@@ -863,6 +864,7 @@
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		0846D3E020175DF100795376 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		0846D3E22017C03900795376 /* FileTemplates */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FileTemplates; path = shared/resources/FileTemplates; sourceTree = SOURCE_ROOT; };
+		084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfoSpec.swift; sourceTree = "<group>"; };
 		084FEA7F1D3044E700060A7D /* ObjcConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcConstants.h; sourceTree = "<group>"; };
 		084FEA801D3045D800060A7D /* ObjcConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjcConstants.m; sourceTree = "<group>"; };
 		08525E4F1E204672008A332E /* URLStaleChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = URLStaleChecker.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -1289,6 +1291,7 @@
 				08F6ADAB1DD6502000AF0722 /* ModelSpec.swift */,
 				080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */,
 				088935831E004FF500C94B19 /* SessionSpec.swift */,
+				084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */,
 				088935871E00AA5700C94B19 /* FakeFileCache.swift */,
 				088935851E00530C00C94B19 /* TestingWebSocket.swift */,
 				0881B5051DCD329300679DB3 /* VariableSpec.swift */,
@@ -2666,6 +2669,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				088935861E00530C00C94B19 /* TestingWebSocket.swift in Sources */,
+				084E93AC201A352200FF50EA /* ConnectionInfoSpec.swift in Sources */,
 				084E93A9201A313900FF50EA /* FakeFileCache.swift in Sources */,
 				080E82FC1DCCD56F0048F36C /* NetworkingBaseSpec.swift in Sources */,
 				0865087F1E4940E20067C8CA /* xattrTests.swift in Sources */,

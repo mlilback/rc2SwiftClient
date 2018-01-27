@@ -10,10 +10,11 @@ import ReactiveSwift
 import Result
 import Model
 import MJLLogger
+import ClientCore
 
 /// Encapsulates the host and properties returned from a login request
 public class ConnectionInfo: CustomStringConvertible {
-	private var bulkInfo: BulkUserInfo!
+	internal private(set) var bulkInfo: BulkUserInfo!
 	public let host: ServerHost
 	public var user: Model.User { return bulkInfo.user }
 	public let authToken: String
@@ -138,24 +139,49 @@ public class ConnectionInfo: CustomStringConvertible {
 	///
 	/// - Parameter bulkInfo: the updated information
 	internal func update(bulkInfo: BulkUserInfo) {
-		// TODO: implement
-		
+		var (keep, added, _) = _projects.value.filterForUpdate(newValues: bulkInfo.projects, valueKeyPath: \AppProject.model, uniqueKeyPath: \Project.id, performUpdate: true)
+		// update each project's workspaces
+		for project in keep {
+			guard let rawWspaces = bulkInfo.workspaces[project.projectId] else { continue }
+			updateWorkspaces(project: project, rawWorkspaces: rawWspaces, bulkInfo: bulkInfo)
+		}
+		// create new projects and add to keep
+		for aProj in added {
+			let rawWspaces = bulkInfo.workspaces[aProj.id] ?? []
+			let wspaces = rawWspaces.map { create(workspace: $0, bulkInfo: bulkInfo) }
+			keep.insert(AppProject(model: aProj, workspaces: wspaces))
+		}
+		_projects.value = keep
 	}
 	
-	private func updateProjects(bulkInfo: BulkUserInfo) {
-		
+	/// update the model data for all workspaces, adding new, removing old, and updating files
+	private func updateWorkspaces(project: AppProject, rawWorkspaces: [Workspace], bulkInfo: BulkUserInfo)
+	{
+		let wspaceSet = Set(project.workspaces.value)
+		// filter doesn't perform update because call to AppWorkspace will do it
+		let (keep, added, _) = wspaceSet.filterForUpdate(newValues: rawWorkspaces, valueKeyPath: \AppWorkspace.model, uniqueKeyPath: \Workspace.id, performUpdate: false)
+		// update any that are being kept
+		for workspace in keep {
+			guard let wspaceData = rawWorkspaces.first(where: { $0.id == workspace.wspaceId })
+				else { fatalError("filter returned a match when there was no data") }
+			let rawFiles = bulkInfo.files[workspace.wspaceId] ?? []
+			let infoData = SessionResponse.InfoData(workspace: wspaceData, files: rawFiles)
+			workspace.update(with: infoData)
+		}
+		// add new ones
+		for rawWspace in added {
+			let rawFiles = bulkInfo.files[rawWspace.id] ?? []
+			let wspace = AppWorkspace(model: rawWspace, files: rawFiles.map { AppFile(model: $0) })
+			project.added(workspace: wspace)
+		}
 	}
 	
-	/// updates the AppWorkspace with the update
+	/// updates the AppWorkspace with the session update
 	internal func update(sessionInfo: SessionResponse.InfoData) {
 		guard let project = try? project(withId: sessionInfo.workspace.projectId),
 			let existingWspace = try? workspace(withId: sessionInfo.workspace.id, in: project)
 		else { return }
-		do {
-			try existingWspace.update(with: sessionInfo)
-		} catch {
-			Log.error("error updating workspace: \(error)", .app)
-		}
+		existingWspace.update(with: sessionInfo)
 	}
 	
 	// load the bulk info
@@ -174,12 +200,7 @@ public class ConnectionInfo: CustomStringConvertible {
 		let rawFiles = bulkInfo.files[workspace.id] ?? []
 		//only error is if unsupported filetype. that should never happen. if it does, just ignore that file
 		let files: [AppFile] = rawFiles.flatMap {
-			do {
-				return try AppFile(model: $0)
-			} catch {
-				Log.warn("failed to create appfile \($0.id). skipping", .model)
-				return nil
-			}
+			return AppFile(model: $0)
 		}
 		return AppWorkspace(model: workspace, files: files)
 	}
