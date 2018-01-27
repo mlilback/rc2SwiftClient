@@ -25,10 +25,10 @@ public final class AppFile: CustomStringConvertible, Hashable
 		return df
 	}()
 	
-	public init(model: File) throws {
+	public init(model: File) {
 		self.model = model
 		guard let ft = FileType.fileType(forFileName: model.name) else {
-			throw NetworkingError.unsupportedFileType
+			fatalError("asked to create model for unsupported file type \(model.name)")
 		}
 		fileType = ft
 	}
@@ -52,11 +52,10 @@ public final class AppFile: CustomStringConvertible, Hashable
 	/// Updates the file to match the current information
 	///
 	/// - Parameter to: latest information from the server
-	/// - Throws: if unsupported file type
-	internal func update(to model: File) throws {
+	internal func update(to model: File) {
 		assert(fileId == model.id)
 		guard let ft = FileType.fileType(forFileName: model.name) else {
-			throw NetworkingError.unsupportedFileType
+			fatalError("asked to update unsupported file type \(model.name)")
 		}
 		self.model = model
 		fileType = ft

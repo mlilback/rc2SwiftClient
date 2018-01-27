@@ -118,8 +118,7 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 	/// Updates the workspace and files
 	///
 	/// - Parameter to: workspace to copy all updateable data from
-	/// - Throws: Rc2Error.updateFailed
-	internal func update(with info: SessionResponse.InfoData) throws {
+	internal func update(with info: SessionResponse.InfoData) {
 		assert(model.id == info.workspace.id)
 		model = info.workspace
 		var changes = [FileChange]()
@@ -133,7 +132,7 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 				filesToAdd.append(rawFile) //rawFile is new
 				continue
 			}
-			try existingFile.update(to: rawFile)
+			existingFile.update(to: rawFile)
 			filesToRemove.remove(existingFile)
 			changes.append(FileChange(type: .modify, file: existingFile))
 		}
@@ -143,8 +142,8 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 			myFiles.remove($0)
 		}
 		// add to myFiles any new Files that were in info.files
-		try filesToAdd.forEach {
-			let newFile = try AppFile(model: $0)
+		filesToAdd.forEach {
+			let newFile = AppFile(model: $0)
 			changes.append(FileChange(type: .add, file: newFile))
 			myFiles.insert(newFile)
 		}
@@ -175,20 +174,20 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 	///
 	/// - Parameters:
 	///   - change: the change info from the server
-	/// - Throws: .noSuchElement or nested error from calling .update on the AppFile
+	/// - Throws: .noSuchElement
 	public func update(change: SessionResponse.FileChangedData) throws {
 		Log.debug("update file \(change.fileId) to other called", .model)
 		switch change.changeType {
 		case .insert:
 			guard let modelFile = change.file else { fatalError("insert should always have a file") }
-			let newFile = try AppFile(model: modelFile)
+			let newFile = AppFile(model: modelFile)
 			_files.value.append(newFile)
 			fileChangeObserver.send(value: [FileChange(type: .add, file: newFile)])
 		case .update:
 			guard let ourFile = file(withId: change.fileId),
 				let updatedFile = change.file
 				else { throw Rc2Error(type: .noSuchElement) }
-			try ourFile.update(to: updatedFile)
+			ourFile.update(to: updatedFile)
 		case .delete:
 			//need to remove from _files and send change notification
 			guard let ourFile = file(withId: change.fileId) else {

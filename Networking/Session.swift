@@ -405,15 +405,8 @@ private extension Session {
 			return
 		}
 		// update file to new version
-		do {
-			try existingFile.update(to: rawFile)
-			pending.handler(pending, response, nil)
-		} catch let netError as NetworkingError {
-			Log.error("error updating saved file: \(netError)", .session)
-			pending.handler(pending, response, Rc2Error(type: .network, nested: netError))
-		} catch {
-			pending.handler(pending, response, Rc2Error(type: .updateFailed, nested: error))
-		}
+		existingFile.update(to: rawFile)
+		pending.handler(pending, response, nil)
 	}
 	
 	func handleFileOperation(response: SessionResponse.FileOperationData) {
@@ -445,21 +438,16 @@ private extension Session {
 	
 	func handleShowOutput(response: SessionResponse, data: SessionResponse.ShowOutputData) {
 		if let ofile = workspace.file(withId: data.file.id) {
-			do {
-				try ofile.update(to: data.file) //update file metadata
-				guard let fileData = data.fileData else {
-					// the file was too large to send via websocket. need to recache and then call delegate
-					fileCache.recache(file: ofile).startWithCompleted {
-						self.delegate?.sessionMessageReceived(response)
-					}
-					return
-				}
-				fileCache.cache(file: ofile.model, withData: fileData).startWithCompleted {
+			ofile.update(to: data.file) //update file metadata
+			guard let fileData = data.fileData else {
+				// the file was too large to send via websocket. need to recache and then call delegate
+				fileCache.recache(file: ofile).startWithCompleted {
 					self.delegate?.sessionMessageReceived(response)
 				}
-			} catch {
-				Log.warn("error showing output file: \(error)", .session)
-				delegate?.sessionMessageReceived(response)
+				return
+			}
+			fileCache.cache(file: ofile.model, withData: fileData).startWithCompleted {
+				self.delegate?.sessionMessageReceived(response)
 			}
 		} else {
 			Log.warn("got show output without file downloaded", .session)
