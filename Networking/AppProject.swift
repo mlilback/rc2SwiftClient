@@ -87,14 +87,13 @@ public final class AppProject: CustomStringConvertible, Hashable
 //		try wspacesToRemove.forEach { (aWspace) in try _workspaces.remove(aWspace) }
 //	}
 	
-//	/// adds a workspace to the array of workspaces
-//	///
-//	/// - Parameter workspace: workspace that was added
-//	/// - Throws: Rc2Error
-//	internal func added(workspace: AppWorkspace) throws {
-//		try _workspaces.append(workspace)
-//	}
-//
+	/// adds a workspace to the array of workspaces
+	///
+	/// - Parameter workspace: workspace that was added
+	internal func added(workspace: AppWorkspace) {
+		_workspaces.value.append(workspace)
+	}
+
 //	public func addWorkspaceObserver(identifier: String, observer: @escaping (AppWorkspace) -> Disposable?) {
 //		_workspaces.observe(identifier: identifier, observer: observer)
 //	}
