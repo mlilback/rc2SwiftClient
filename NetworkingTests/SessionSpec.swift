@@ -43,6 +43,7 @@ class SessionSpec: NetworkingBaseSpec {
 		var session: Session!
 		let dummyBaseUrl = URL(string: "http://dev.rc2/")!
 		var tmpDirectory: URL!
+		let authToken = "foobarauth"
 		
 		beforeSuite {
 			tmpDirectory = URL(string: UUID().uuidString, relativeTo: FileManager.default.temporaryDirectory)
@@ -55,11 +56,11 @@ class SessionSpec: NetworkingBaseSpec {
 		
 		beforeEach {
 			json = self.loadTestJson("loginResults")
-			conInfo = try! ConnectionInfo(host: ServerHost.localHost, json: json)
+			conInfo = try! ConnectionInfo(host: ServerHost.localHost, json: json, authToken: authToken)
 			if !(conInfo.urlSessionConfig.protocolClasses?.contains(where: {$0 == MockingjayProtocol.self}) ?? false) {
 				conInfo.urlSessionConfig.protocolClasses = [MockingjayProtocol.self] as [AnyClass] + conInfo.urlSessionConfig.protocolClasses!
 			}
-			wspace = conInfo.project(withId: 100)!.workspace(withId: 100)!
+			wspace = conInfo.project(withId: 100).workspace(withId: 100)!
 			fakeDelegate = FakeSessionDelegate()
 			fakeSocket = TestingWebSocket(url: URL(string: "ws://foo.com")!, protocols: [])
 			fakeCache = FakeFileCache(workspace: wspace, baseUrl: dummyBaseUrl)

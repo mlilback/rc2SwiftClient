@@ -11,6 +11,7 @@ import ReactiveSwift
 import Mockingjay
 import URITemplate
 import Result
+import Model
 import ClientCore
 @testable import Networking
 
@@ -21,8 +22,8 @@ class FileCacheSpec: NetworkingBaseSpec {
 	func stub(file: File, template: URITemplate) {
 		let data = Data(bytes: Array<UInt8>(repeating: 1, count: file.fileSize))
 		self.stub({ request in
-			return template.extract(url: request.url!.absoluteString)!["fileId"] == String(file.fileId)
-		}, builder: http(200, headers: ["Content-Length": String(file.fileId)], download: .content(data)))
+			return template.extract(url: request.url!.absoluteString)!["fileId"] == String(file.id)
+		}, builder: http(200, headers: ["Content-Length": String(file.id)], download: .content(data)))
 	}
 	
 	override func spec() {

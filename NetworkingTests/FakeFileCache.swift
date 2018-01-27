@@ -8,6 +8,7 @@ import Foundation
 import Result
 import ClientCore
 import ReactiveSwift
+import Model
 @testable import Networking
 
 ///used by the FakeFileCache to know how to respond to a request
@@ -19,6 +20,24 @@ struct FakeFileInfo {
 }
 
 class FakeFileCache: FileCache {
+	func cachedUrl(file: File) throws -> URL {
+		if let furl = fileInfo[file.id]?.url {
+			return furl
+		}
+		return URL(string: "workspaces/\(workspace.wspaceId)/files/\(file.id)", relativeTo: baseUrl)!
+	}
+	
+	func handle(change: SessionResponse.FileChangedData) throws {
+	}
+	
+	func cache(file: File, withData data: Data) -> SignalProducer<Void, Rc2Error> {
+		fatalError()
+	}
+	
+	func cache(file: File, srcFile: URL) -> SignalProducer<Void, Rc2Error> {
+		fatalError()
+	}
+	
 	func close() {
 	}
 	

@@ -1,0 +1,85 @@
+{
+	"files": {
+		"100": [
+				{
+				"dateCreated": 1516376745.59756,
+				"fileSize": 362,
+				"id": 100,
+				"lastModified": 1516376745.59756,
+				"name": "lognormal.R",
+				"version": 0,
+				"wspaceId": 100
+				},
+				{
+				"dateCreated": 1516735948.93428,
+				"fileSize": 23,
+				"id": 115,
+				"lastModified": 1516735948.93428,
+				"name": "thirdcharm.R",
+				"version": 0,
+				"wspaceId": 100
+				},
+				{
+				"dateCreated": 1516735974.61448,
+				"fileSize": 21,
+				"id": 116,
+				"lastModified": 1516735974.61448,
+				"name": "foobar.Rmd",
+				"version": 0,
+				"wspaceId": 100
+				}
+				],
+		"101": [
+				{
+				"dateCreated": 1516662941.53089,
+				"fileSize": 21,
+				"id": 105,
+				"lastModified": 1516662941.53089,
+				"name": "firstScript.R",
+				"version": 0,
+				"wspaceId": 101
+				}
+				]
+	},
+	"projects": [
+				 {
+				 "id": 100,
+				 "name": "default",
+				 "userId": 100,
+				 "version": 1
+				 }
+				 ],
+	"user": {
+		"email": "singlesignin@rc2.io",
+		"id": 100,
+		"isAdmin": false,
+		"isEnabled": true,
+		"login": "local",
+		"version": 1
+	},
+	"workspaces": {
+		"100": [
+				{
+				"dateCreated": 1512833423.81401,
+				"id": 100,
+				"lastAccess": 1512833423.81401,
+				"name": "default",
+				"projectId": 100,
+				"uniqueId": "c72a3b4c-9e51-4a72-99a4-6fd56dfe8dbf",
+				"userId": 100,
+				"version": 1
+				},
+				{
+				"dateCreated": 1516662941.53089,
+				"id": 101,
+				"lastAccess": 1516662941.53089,
+				"name": "sample1",
+				"projectId": 100,
+				"uniqueId": "e950693c-026d-41fc-a7ab-3f6db7facab2",
+				"userId": 100,
+				"version": 1
+				}
+				]
+	}
+}
+
