@@ -180,6 +180,14 @@
 		0846D3E32017C03900795376 /* FileTemplates in Resources */ = {isa = PBXBuildFile; fileRef = 0846D3E22017C03900795376 /* FileTemplates */; };
 		084E93A9201A313900FF50EA /* FakeFileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935871E00AA5700C94B19 /* FakeFileCache.swift */; };
 		084E93AC201A352200FF50EA /* ConnectionInfoSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */; };
+		084E93B7201E874900FF50EA /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; };
+		084E93BD201E877800FF50EA /* FileTypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82EB1DCC001E0048F36C /* FileTypeSpec.swift */; };
+		084E93BE201E87DC00FF50EA /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; };
+		084E93BF201E87E000FF50EA /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; };
+		084E93C0201E88AB00FF50EA /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
+		084E93C2201E898E00FF50EA /* MJLLogger.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		084E93C3201E899100FF50EA /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		084E93C4201E899300FF50EA /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08525E501E204672008A332E /* URLStaleChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E4F1E204672008A332E /* URLStaleChecker.swift */; };
 		08525E731E256A8B008A332E /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E721E256A8B008A332E /* Reachability.swift */; };
@@ -500,6 +508,13 @@
 			remoteGlobalIDString = 082BE1551F5B3682006CE0B7;
 			remoteInfo = Model;
 		};
+		084E93B8201E874900FF50EA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 082BE1551F5B3682006CE0B7;
+			remoteInfo = Model;
+		};
 		088CE67B1C4B0AF500153414 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
@@ -681,6 +696,18 @@
 			files = (
 			);
 			name = "Embed XPC Services";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		084E93C1201E898400FF50EA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				084E93C2201E898E00FF50EA /* MJLLogger.framework in CopyFiles */,
+				084E93C3201E899100FF50EA /* Quick.framework in CopyFiles */,
+				084E93C4201E899300FF50EA /* Nimble.framework in CopyFiles */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		08A01FAC1CC7FA28001EDFAA /* CopyFiles */ = {
@@ -865,6 +892,8 @@
 		0846D3E020175DF100795376 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		0846D3E22017C03900795376 /* FileTemplates */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FileTemplates; path = shared/resources/FileTemplates; sourceTree = SOURCE_ROOT; };
 		084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfoSpec.swift; sourceTree = "<group>"; };
+		084E93B2201E874900FF50EA /* ModelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ModelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		084E93B6201E874900FF50EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		084FEA7F1D3044E700060A7D /* ObjcConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcConstants.h; sourceTree = "<group>"; };
 		084FEA801D3045D800060A7D /* ObjcConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjcConstants.m; sourceTree = "<group>"; };
 		08525E4F1E204672008A332E /* URLStaleChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = URLStaleChecker.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -1137,6 +1166,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		084E93AF201E874900FF50EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				084E93B7201E874900FF50EA /* Model.framework in Frameworks */,
+				084E93C0201E88AB00FF50EA /* MJLLogger.framework in Frameworks */,
+				084E93BE201E87DC00FF50EA /* Quick.framework in Frameworks */,
+				084E93BF201E87E000FF50EA /* Nimble.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		088CE6661C4B0AF400153414 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1286,7 +1326,6 @@
 				0881B5071DCD336500679DB3 /* variables.json */,
 				086508801E4A431C0067C8CA /* FileImporterTests.swift */,
 				081559961DDCFEB00047B3CE /* FileCacheSpec.swift */,
-				080E82EB1DCC001E0048F36C /* FileTypeSpec.swift */,
 				0881B50F1DCFA99A00679DB3 /* LoginSpec.swift */,
 				08F6ADAB1DD6502000AF0722 /* ModelSpec.swift */,
 				080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */,
@@ -1491,6 +1530,15 @@
 			name = xcconfig;
 			sourceTree = "<group>";
 		};
+		084E93B3201E874900FF50EA /* ModelTests */ = {
+			isa = PBXGroup;
+			children = (
+				080E82EB1DCC001E0048F36C /* FileTypeSpec.swift */,
+				084E93B6201E874900FF50EA /* Info.plist */,
+			);
+			path = ModelTests;
+			sourceTree = "<group>";
+		};
 		08680675200D892000C986A9 /* MJLCommon */ = {
 			isa = PBXGroup;
 			children = (
@@ -1604,6 +1652,7 @@
 				08127CD31DAD2434002E0D01 /* ClientCoreIntegrationTests */,
 				08A01FAF1CC7FA28001EDFAA /* createHelpIndex */,
 				082BE1571F5B3682006CE0B7 /* Model */,
+				084E93B3201E874900FF50EA /* ModelTests */,
 				080E82C21DCBE31D0048F36C /* Networking */,
 				080E82CF1DCBE31D0048F36C /* NetworkingTests */,
 				08F6ADC31DD9169300AF0722 /* Docker */,
@@ -1632,6 +1681,7 @@
 				082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */,
 				082BE0911F59D549006CE0B7 /* SyntaxParsingTests.xctest */,
 				082BE1561F5B3682006CE0B7 /* Model.framework */,
+				084E93B2201E874900FF50EA /* ModelTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2133,6 +2183,25 @@
 			productReference = 082BE1561F5B3682006CE0B7 /* Model.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		084E93B1201E874900FF50EA /* ModelTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 084E93BA201E874900FF50EA /* Build configuration list for PBXNativeTarget "ModelTests" */;
+			buildPhases = (
+				084E93AE201E874900FF50EA /* Sources */,
+				084E93AF201E874900FF50EA /* Frameworks */,
+				084E93B0201E874900FF50EA /* Resources */,
+				084E93C1201E898400FF50EA /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				084E93B9201E874900FF50EA /* PBXTargetDependency */,
+			);
+			name = ModelTests;
+			productName = ModelTests;
+			productReference = 084E93B2201E874900FF50EA /* ModelTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		088CE6681C4B0AF400153414 /* MacClient */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 088CE6831C4B0AF500153414 /* Build configuration list for PBXNativeTarget "MacClient" */;
@@ -2281,7 +2350,7 @@
 		088CE6611C4B0AF400153414 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0900;
+				LastSwiftUpdateCheck = 0920;
 				LastUpgradeCheck = 0910;
 				ORGANIZATIONNAME = Rc2;
 				TargetAttributes = {
@@ -2316,6 +2385,10 @@
 					082BE1551F5B3682006CE0B7 = {
 						CreatedOnToolsVersion = 9.0;
 						DevelopmentTeam = V97NV337TR;
+						ProvisioningStyle = Automatic;
+					};
+					084E93B1201E874900FF50EA = {
+						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
 					088CE6681C4B0AF400153414 = {
@@ -2390,6 +2463,7 @@
 				089794211D7B68F0003339EE /* ClientCoreTests */,
 				08127CD11DAD2434002E0D01 /* ClientCoreIntegrationTests */,
 				082BE1551F5B3682006CE0B7 /* Model */,
+				084E93B1201E874900FF50EA /* ModelTests */,
 				080E82C01DCBE31D0048F36C /* Networking */,
 				080E82C81DCBE31D0048F36C /* NetworkingTests */,
 				08A01FAD1CC7FA28001EDFAA /* createHelpIndex */,
@@ -2448,6 +2522,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		082BE1541F5B3682006CE0B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		084E93B0201E874900FF50EA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2728,6 +2809,14 @@
 				08F678361F793A2A00EC3AC9 /* Workspace.swift in Sources */,
 				08F6782E1F793A2A00EC3AC9 /* Project.swift in Sources */,
 				08F6782C1F793A2A00EC3AC9 /* FileOperation.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		084E93AE201E874900FF50EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				084E93BD201E877800FF50EA /* FileTypeSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3012,6 +3101,11 @@
 			isa = PBXTargetDependency;
 			target = 082BE1551F5B3682006CE0B7 /* Model */;
 			targetProxy = 082BE15B1F5B3682006CE0B7 /* PBXContainerItemProxy */;
+		};
+		084E93B9201E874900FF50EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 082BE1551F5B3682006CE0B7 /* Model */;
+			targetProxy = 084E93B8201E874900FF50EA /* PBXContainerItemProxy */;
 		};
 		088CE67C1C4B0AF500153414 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3513,6 +3607,61 @@
 				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		084E93BB201E874900FF50EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ModelTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lilback.MacClient.ModelTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		084E93BC201E874900FF50EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = ModelTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lilback.MacClient.ModelTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -4044,6 +4193,15 @@
 			buildConfigurations = (
 				082BE15F1F5B3682006CE0B7 /* Debug */,
 				082BE1601F5B3682006CE0B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		084E93BA201E874900FF50EA /* Build configuration list for PBXNativeTarget "ModelTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				084E93BB201E874900FF50EA /* Debug */,
+				084E93BC201E874900FF50EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
