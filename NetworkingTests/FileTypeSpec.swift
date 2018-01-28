@@ -7,7 +7,7 @@
 import Foundation
 import Quick
 import Nimble
-@testable import Networking
+@testable import Model
 
 class FileTypeSpec: QuickSpec {
 	override func spec() {
@@ -22,14 +22,11 @@ class FileTypeSpec: QuickSpec {
 			expect(rawRmd).toNot(beNil())
 			let rmd = rawRmd!
 			expect(rmd.name).to(equal("R markdown"))
-			expect(rmd.isTextFile).to(beTrue())
-			expect(rmd.isRMarkdown).to(beTrue())
 			expect(rmd.isExecutable).to(beTrue())
 			expect(rmd.isCreatable).to(beTrue())
 			expect(rmd.isImage).to(beFalse())
 			expect(rmd.isImportable).to(beTrue())
-			expect(rmd.isSourceFile).to(beTrue())
-			expect(rmd.isSweave).to(beFalse())
+			expect(rmd.isSource).to(beTrue())
 			expect(rmd.mimeType).to(equal("text/plain"))
 			expect(rmd.uti).to(equal("org.r-project.Rmd"))
 		}
@@ -39,14 +36,11 @@ class FileTypeSpec: QuickSpec {
 			expect(rawType).toNot(beNil())
 			let type = rawType!
 			expect(type.name).to(equal("PNG image"))
-			expect(type.isTextFile).to(beFalse())
-			expect(type.isRMarkdown).to(beFalse())
 			expect(type.isExecutable).to(beFalse())
 			expect(type.isCreatable).to(beFalse())
 			expect(type.isImage).to(beTrue())
 			expect(type.isImportable).to(beFalse())
-			expect(type.isSourceFile).to(beFalse())
-			expect(type.isSweave).to(beFalse())
+			expect(type.isSource).to(beFalse())
 			expect(type.mimeType).to(equal("image/png"))
 			expect(type.uti).to(equal(kUTTypePNG as String))
 		}
