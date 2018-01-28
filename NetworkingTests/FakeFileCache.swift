@@ -31,7 +31,7 @@ class FakeFileCache: FileCache {
 	}
 	
 	func cache(file: File, withData data: Data) -> SignalProducer<Void, Rc2Error> {
-		fatalError()
+		return SignalProducer.empty
 	}
 	
 	func cache(file: File, srcFile: URL) -> SignalProducer<Void, Rc2Error> {

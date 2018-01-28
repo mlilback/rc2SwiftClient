@@ -188,6 +188,7 @@
 		084E93C2201E898E00FF50EA /* MJLLogger.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		084E93C3201E899100FF50EA /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		084E93C4201E899300FF50EA /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		084E93C5201E8A7200FF50EA /* SessionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935831E004FF500C94B19 /* SessionSpec.swift */; };
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08525E501E204672008A332E /* URLStaleChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E4F1E204672008A332E /* URLStaleChecker.swift */; };
 		08525E731E256A8B008A332E /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E721E256A8B008A332E /* Reachability.swift */; };
@@ -1324,17 +1325,17 @@
 				080E82FD1DCCD77D0048F36C /* bulkInfo.json */,
 				08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */,
 				0881B5071DCD336500679DB3 /* variables.json */,
+				084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */,
+				088935831E004FF500C94B19 /* SessionSpec.swift */,
+				0865087E1E4940E20067C8CA /* xattrTests.swift */,
+				080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */,
+				088935851E00530C00C94B19 /* TestingWebSocket.swift */,
 				086508801E4A431C0067C8CA /* FileImporterTests.swift */,
 				081559961DDCFEB00047B3CE /* FileCacheSpec.swift */,
 				0881B50F1DCFA99A00679DB3 /* LoginSpec.swift */,
 				08F6ADAB1DD6502000AF0722 /* ModelSpec.swift */,
-				080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */,
-				088935831E004FF500C94B19 /* SessionSpec.swift */,
-				084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */,
 				088935871E00AA5700C94B19 /* FakeFileCache.swift */,
-				088935851E00530C00C94B19 /* TestingWebSocket.swift */,
 				0881B5051DCD329300679DB3 /* VariableSpec.swift */,
-				0865087E1E4940E20067C8CA /* xattrTests.swift */,
 			);
 			path = NetworkingTests;
 			sourceTree = "<group>";
@@ -2752,6 +2753,7 @@
 				088935861E00530C00C94B19 /* TestingWebSocket.swift in Sources */,
 				084E93AC201A352200FF50EA /* ConnectionInfoSpec.swift in Sources */,
 				084E93A9201A313900FF50EA /* FakeFileCache.swift in Sources */,
+				084E93C5201E8A7200FF50EA /* SessionSpec.swift in Sources */,
 				080E82FC1DCCD56F0048F36C /* NetworkingBaseSpec.swift in Sources */,
 				0865087F1E4940E20067C8CA /* xattrTests.swift in Sources */,
 			);
