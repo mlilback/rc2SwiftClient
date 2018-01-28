@@ -53,6 +53,10 @@ class ConnectionInfoSpec: NetworkingBaseSpec {
 				// TODO: implement
 			}
 
+			it("fail to remove last workspace") {
+				// TODO: implement
+			}
+			
 			it("remove file") {
 				// TODO: implement
 			}
@@ -65,7 +69,11 @@ class ConnectionInfoSpec: NetworkingBaseSpec {
 				// TODO: implement
 			}
 			
-			it ("remove project") {
+			it("remove project") {
+				// TODO: implement
+			}
+			
+			it("fail to remove last project") {
 				// TODO: implement
 			}
 		}

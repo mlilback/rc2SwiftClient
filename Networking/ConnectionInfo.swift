@@ -159,7 +159,7 @@ public class ConnectionInfo: CustomStringConvertible {
 	{
 		let wspaceSet = Set(project.workspaces.value)
 		// filter doesn't perform update because call to AppWorkspace will do it
-		let (keep, added, _) = wspaceSet.filterForUpdate(newValues: rawWorkspaces, valueKeyPath: \AppWorkspace.model, uniqueKeyPath: \Workspace.id, performUpdate: false)
+		let (keep, added, removed) = wspaceSet.filterForUpdate(newValues: rawWorkspaces, valueKeyPath: \AppWorkspace.model, uniqueKeyPath: \Workspace.id, performUpdate: false)
 		// update any that are being kept
 		for workspace in keep {
 			guard let wspaceData = rawWorkspaces.first(where: { $0.id == workspace.wspaceId })
@@ -168,6 +168,7 @@ public class ConnectionInfo: CustomStringConvertible {
 			let infoData = SessionResponse.InfoData(workspace: wspaceData, files: rawFiles)
 			workspace.update(with: infoData)
 		}
+		removed.forEach { project.removed(workspace: $0) }
 		// add new ones
 		for rawWspace in added {
 			let rawFiles = bulkInfo.files[rawWspace.id] ?? []

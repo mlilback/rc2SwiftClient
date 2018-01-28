@@ -8,6 +8,7 @@ import Foundation
 import ReactiveSwift
 import Result
 import Model
+import MJLLogger
 
 public final class AppProject: CustomStringConvertible, Hashable
 {
@@ -94,6 +95,13 @@ public final class AppProject: CustomStringConvertible, Hashable
 		_workspaces.value.append(workspace)
 	}
 
+	/// removes a workspace from the project. should be called when the server has reported a workspace deleted
+	///
+	/// - Parameter workspace: workspace that was deleted
+	internal func removed(workspace: AppWorkspace) {
+		guard let index = _workspaces.value.index(of: workspace) else { Log.warn("removed workspace didn't exist \(workspace.wspaceId)", .model); return }
+		_workspaces.value.remove(at: index)
+	}
 //	public func addWorkspaceObserver(identifier: String, observer: @escaping (AppWorkspace) -> Disposable?) {
 //		_workspaces.observe(identifier: identifier, observer: observer)
 //	}
