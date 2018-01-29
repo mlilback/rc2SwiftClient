@@ -192,6 +192,7 @@
 		084E93C6201F635F00FF50EA /* FileCacheSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559961DDCFEB00047B3CE /* FileCacheSpec.swift */; };
 		084E93C9201F6A7000FF50EA /* variables.json in Resources */ = {isa = PBXBuildFile; fileRef = 084E93C7201F6A6F00FF50EA /* variables.json */; };
 		084E93CB201F6B5400FF50EA /* LoginSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50F1DCFA99A00679DB3 /* LoginSpec.swift */; };
+		084E93CC201F6DFB00FF50EA /* FileImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086508801E4A431C0067C8CA /* FileImporterTests.swift */; };
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08525E501E204672008A332E /* URLStaleChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E4F1E204672008A332E /* URLStaleChecker.swift */; };
 		08525E731E256A8B008A332E /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E721E256A8B008A332E /* Reachability.swift */; };
@@ -331,8 +332,6 @@
 		08CCED491EE1DB64004B5ADE /* DockerManagerInjectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CCED481EE1DB64004B5ADE /* DockerManagerInjectable.swift */; };
 		08CCED4B1EE1DDFC004B5ADE /* DockerLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CCED4A1EE1DDFC004B5ADE /* DockerLogController.swift */; };
 		08CCED4D1EE1DF6E004B5ADE /* DockerTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CCED4C1EE1DF6E004B5ADE /* DockerTabViewController.swift */; };
-		08CE0E8E1E32669600DC567A /* createfile.json in Resources */ = {isa = PBXBuildFile; fileRef = 08CE0E8D1E32669600DC567A /* createfile.json */; };
-		08CE0E901E326A4C00DC567A /* createdUpdate.json in Resources */ = {isa = PBXBuildFile; fileRef = 08CE0E8F1E326A4C00DC567A /* createdUpdate.json */; };
 		08CFE8CF1E75BA42002A35C1 /* DirectoryWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CFE8CE1E75BA42002A35C1 /* DirectoryWatcher.swift */; };
 		08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
 		08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -407,7 +406,6 @@
 		08F6783A1F79422400EC3AC9 /* URLSession+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F678391F79422400EC3AC9 /* URLSession+Rc2.swift */; };
 		08F6ADA91DD643C900AF0722 /* Copyable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADA81DD643C900AF0722 /* Copyable.swift */; };
 		08F6ADAA1DD643C900AF0722 /* Copyable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADA81DD643C900AF0722 /* Copyable.swift */; };
-		08F6ADAE1DD66CAB00AF0722 /* modelChanges.json in Resources */ = {isa = PBXBuildFile; fileRef = 08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */; };
 		08F6ADB01DD8F60200AF0722 /* Rc2RestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */; };
 		08F6ADB21DD90E3600AF0722 /* Rc2FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADB11DD90E3600AF0722 /* Rc2FileManager.swift */; };
 		08F6ADB91DD911D500AF0722 /* AppWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADB81DD911D500AF0722 /* AppWorkspace.swift */; };
@@ -1027,8 +1025,6 @@
 		08CCED481EE1DB64004B5ADE /* DockerManagerInjectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerManagerInjectable.swift; sourceTree = "<group>"; };
 		08CCED4A1EE1DDFC004B5ADE /* DockerLogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerLogController.swift; sourceTree = "<group>"; };
 		08CCED4C1EE1DF6E004B5ADE /* DockerTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerTabViewController.swift; sourceTree = "<group>"; };
-		08CE0E8D1E32669600DC567A /* createfile.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = createfile.json; sourceTree = "<group>"; };
-		08CE0E8F1E326A4C00DC567A /* createdUpdate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = createdUpdate.json; sourceTree = "<group>"; };
 		08CFE8CE1E75BA42002A35C1 /* DirectoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectoryWatcher.swift; sourceTree = "<group>"; };
 		08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/Mac/ReactiveCocoa.framework; sourceTree = "<group>"; };
 		08D6106E1CD2C53100258D8E /* listvars.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = listvars.json; sourceTree = "<group>"; };
@@ -1078,7 +1074,6 @@
 		08F678371F79416800EC3AC9 /* RestInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestInfo.swift; sourceTree = "<group>"; };
 		08F678391F79422400EC3AC9 /* URLSession+Rc2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Rc2.swift"; sourceTree = "<group>"; };
 		08F6ADA81DD643C900AF0722 /* Copyable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Copyable.swift; sourceTree = "<group>"; };
-		08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = modelChanges.json; sourceTree = "<group>"; };
 		08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Rc2RestClient.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F6ADB11DD90E3600AF0722 /* Rc2FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2FileManager.swift; sourceTree = "<group>"; };
 		08F6ADB81DD911D500AF0722 /* AppWorkspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppWorkspace.swift; sourceTree = "<group>"; };
@@ -1321,18 +1316,15 @@
 			isa = PBXGroup;
 			children = (
 				080E82D21DCBE31D0048F36C /* Info.plist */,
-				08CE0E8D1E32669600DC567A /* createfile.json */,
-				08CE0E8F1E326A4C00DC567A /* createdUpdate.json */,
 				080E82FD1DCCD77D0048F36C /* bulkInfo.json */,
-				08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */,
 				084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */,
 				081559961DDCFEB00047B3CE /* FileCacheSpec.swift */,
+				086508801E4A431C0067C8CA /* FileImporterTests.swift */,
 				0881B50F1DCFA99A00679DB3 /* LoginSpec.swift */,
 				088935831E004FF500C94B19 /* SessionSpec.swift */,
 				0865087E1E4940E20067C8CA /* xattrTests.swift */,
 				080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */,
 				088935851E00530C00C94B19 /* TestingWebSocket.swift */,
-				086508801E4A431C0067C8CA /* FileImporterTests.swift */,
 				088935871E00AA5700C94B19 /* FakeFileCache.swift */,
 			);
 			path = NetworkingTests;
@@ -2490,10 +2482,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08CE0E901E326A4C00DC567A /* createdUpdate.json in Resources */,
 				080E82FE1DCCD77D0048F36C /* bulkInfo.json in Resources */,
-				08F6ADAE1DD66CAB00AF0722 /* modelChanges.json in Resources */,
-				08CE0E8E1E32669600DC567A /* createfile.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2751,6 +2740,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				088935861E00530C00C94B19 /* TestingWebSocket.swift in Sources */,
+				084E93CC201F6DFB00FF50EA /* FileImporterTests.swift in Sources */,
 				084E93C6201F635F00FF50EA /* FileCacheSpec.swift in Sources */,
 				084E93AC201A352200FF50EA /* ConnectionInfoSpec.swift in Sources */,
 				084E93A9201A313900FF50EA /* FakeFileCache.swift in Sources */,

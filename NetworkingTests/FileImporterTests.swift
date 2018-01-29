@@ -8,6 +8,7 @@
 import XCTest
 import Quick
 import Freddy
+import Model
 @testable import Networking
 import Mockingjay
 import ClientCore
@@ -20,7 +21,7 @@ class FileImporterTests: NetworkingBaseSpec, URLSessionDataDelegate {
 		return 1
 	}()
 	func fileUrlsForTesting() -> [URL] {
-		let imgUrl = URL(fileURLWithPath: "/Library/Desktop Pictures/Art")
+		let imgUrl = URL(fileURLWithPath: "/Library/Desktop Pictures/")
 		let files = try! FileManager.default.contentsOfDirectory(at: imgUrl, includingPropertiesForKeys: [URLResourceKey.fileSizeKey], options: [.skipsHiddenFiles])
 		return files
 	}
@@ -32,26 +33,23 @@ class FileImporterTests: NetworkingBaseSpec, URLSessionDataDelegate {
 	}
 
 	override func spec() {
-		var json: JSON!
 		var conInfo: ConnectionInfo!
-//		var wspace: Workspace!
-//		var fakeCache: FakeFileCache!
+		var wspace: AppWorkspace!
+		var fakeCache: FakeFileCache!
 		let dummyBaseUrl = URL(string: "http://dev.rc2/")!
 		var tmpDirectory: URL!
-//		var filesToImport: [FileImporter.FileToImport] = []
-//		var expectedFiles: [String] = []
+		var filesToImport: [FileImporter.FileToImport] = []
+		var expectedFiles: [File] = []
 
 		beforeSuite {
 			tmpDirectory = URL(string: UUID().uuidString, relativeTo: FileManager.default.temporaryDirectory)
 			try! FileManager.default.createDirectory(at: tmpDirectory, withIntermediateDirectories: true, attributes: nil)
-//			filesToImport = self.fileUrlsForTesting().map() { return FileImporter.FileToImport(url: $0, uniqueName: nil) }
-//			expectedFiles = filesToImport.enumerated().map() { (index, file) in
-//				let jsonString = "{\"id\" : \(index),\"wspaceId\" : 1, " +
-//					"\"name\" : \"\(file.fileUrl.lastPathComponent)\", \"version\" : 0," +
-//					"\"dateCreated\" : 1439407405827, \"lastModified\" : 1439407405827," +
-//					"\"fileSize\" : \(file.fileUrl.fileSize()),\"etag\" : \"f/1/0\" }"
-//				return jsonString
-//			}
+			filesToImport = self.fileUrlsForTesting().map() { return FileImporter.FileToImport(url: $0, uniqueName: nil) }
+			let aDate = Date(timeIntervalSince1970: 1439407405827)
+			expectedFiles = filesToImport.enumerated().map { (arg) -> File in
+				let (index, file) = arg
+				return File(id: 1000 + index, wspaceId: 100, name: file.fileUrl.lastPathComponent, version: 1, dateCreated: aDate, lastModified: aDate, fileSize: Int(file.fileUrl.fileSize()))
+			}
 		}
 		
 		afterSuite {
@@ -59,13 +57,13 @@ class FileImporterTests: NetworkingBaseSpec, URLSessionDataDelegate {
 		}
 
 		beforeEach {
-			json = self.loadTestJson("loginResults")
-			conInfo = try! ConnectionInfo(host: ServerHost.localHost, json: json)
+			let data = self.loadFileData("bulkInfo", fileExtension: "json")!
+			conInfo = try! ConnectionInfo(host: .localHost, bulkInfoData: data, authToken: "dfsdgsgdsg")
 			if !(conInfo.urlSessionConfig.protocolClasses?.contains(where: {$0 == MockingjayProtocol.self}) ?? false) {
 				conInfo.urlSessionConfig.protocolClasses = [MockingjayProtocol.self] as [AnyClass] + conInfo.urlSessionConfig.protocolClasses!
 			}
-//			wspace = conInfo.project(withId: 100)!.workspace(withId: 100)!
-//			fakeCache = FakeFileCache(workspace: wspace, baseUrl: dummyBaseUrl)
+			wspace = try! conInfo.workspace(withId: 100, in: try! conInfo.project(withId: 100))
+			fakeCache = FakeFileCache(workspace: wspace, baseUrl: dummyBaseUrl)
 			//TODO: stub REST urls
 			self.stub({ (request) -> (Bool) in
 				return request.url?.absoluteString.hasPrefix(dummyBaseUrl.absoluteString) ?? false
@@ -106,7 +104,7 @@ extension URLSession: URLSessionProtocol {
 }
 
 class FileImporterSession: NSObject, URLSessionProtocol {
-	var realSession:URLSession
+	var realSession: URLSession
 	
 	init(configuration: URLSessionConfiguration, delegate sessionDelegate: URLSessionDelegate?, delegateQueue queue: OperationQueue?)
 	{
