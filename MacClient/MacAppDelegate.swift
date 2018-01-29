@@ -222,10 +222,6 @@ extension MacAppDelegate {
 	
 	/// opens a session for workspace. If already open, brings that session window to the front
 	func openSession(workspace: AppWorkspace) {
-		guard !workspacesBeingOpened.contains(workspace.identifier) else {
-			Log.warn("already opening session to \(workspace.name)", .app)
-			return
-		}
 		// if already open, bring to front
 		if let controller = windowController(for: workspace.identifier) {
 			controller.window?.orderFront(self)
@@ -607,7 +603,7 @@ extension MacAppDelegate {
 				case .add:
 					self.newWorkspace(nil)
 				case .open(let wspace):
-					self.openSession(workspace: wspace)
+					self.openLocalSession(for: wspace.identifier)
 				case .remove(let wspace):
 					let client = Rc2RestClient(self.connectionManager.localConnection!)
 					client.remove(workspace: wspace).observe(on: UIScheduler()).startWithResult { result in
