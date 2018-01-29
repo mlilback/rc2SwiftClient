@@ -181,8 +181,16 @@ extension SignalProducer where Error == Rc2Error {
 	///   - actionName: a name for the action taking place, displayed to the user along with " completed" or " canceled"
 	///   - converter: a closure that converts an event stream value to a ProgressUpdate?. Defaults to returning nil which will ignore any value events
 	/// - Returns: self with status attached as an observer
-	func updateProgress(status: MacAppStatus, actionName: String, determinate: Bool = false, converter: @escaping ((Value) -> ProgressUpdate?) = { _ in return nil }) -> SignalProducer<Value, Error>
+	func updateProgress(status: MacAppStatus, actionName: String, determinate: Bool = false, converter: ((Value) -> ProgressUpdate?)? = nil) -> SignalProducer<Value, Error>
 	{
+		var actualConverter = converter
+		// if no converter is supplied, and the value type is a progress update, just pass it along if it is a value event
+		if nil == actualConverter, Value.self == ProgressUpdate.self {
+			actualConverter = { (prog) -> ProgressUpdate? in
+				guard let pv = prog as? ProgressUpdate, pv.stage == .value else { return nil }
+				return pv
+			}
+		}
 		return SignalProducer<Value, Error> { observer, compositeDisposable in
 			self.startWithSignal { signal, disposable in
 				status.actionStarting(name: actionName, disposable: disposable, determinate: determinate)
@@ -197,7 +205,7 @@ extension SignalProducer where Error == Rc2Error {
 						case .failed(let err):
 							status.process(Signal<ProgressUpdate, Rc2Error>.Event.failed(err))
 						case .value(let val):
-							if let convertedValue = converter(val) {
+							if let convertedValue = actualConverter?(val) {
 								status.process(Signal<ProgressUpdate, Rc2Error>.Event.value(convertedValue))
 							}
 						}
