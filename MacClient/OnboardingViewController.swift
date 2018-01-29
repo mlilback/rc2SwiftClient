@@ -59,7 +59,9 @@ class OnboardingViewController: NSViewController {
 	}
 	
 	func updateWorkspaces() {
-		wspaceTableView.reloadData()
+		DispatchQueue.main.async {
+			self.wspaceTableView.reloadData()
+		}
 //		guard
 //			let workspaces = project?.workspaces.value.map( { $0.model }).sorted(by: { (lhs, rhs) -> Bool in return lhs.name < rhs.name }),
 	}
