@@ -567,11 +567,9 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 					return
 				}
 			}
-			DispatchQueue.main.async {
 				dloadTask.observer.send(value: 1.0)
 				dloadTask.observer.sendCompleted()
 				Log.info("successfully downloaded file \(dloadTask.file.fileId)", .cache)
-			}
 		}
 	}
 	
