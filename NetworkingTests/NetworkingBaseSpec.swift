@@ -11,6 +11,7 @@ import Freddy
 import Result
 import ReactiveSwift
 import ClientCore
+import Networking
 
 class NetworkingBaseSpec: QuickSpec {
 	/// Load Data from a resource file
@@ -43,6 +44,14 @@ class NetworkingBaseSpec: QuickSpec {
 			fatalError("failed to load \(fileName).json")
 		}
 		return json
+	}
+
+	/// Returns a ConnectionInfo object created with bulkInfo.json
+	///
+	/// - Returns: ConnectionInfo for use
+	func genericConnectionInfo() -> ConnectionInfo {
+		let bulkData = self.loadFileData("bulkInfo", fileExtension: "json")!
+		return try! ConnectionInfo(host: ServerHost.localHost, bulkInfoData: bulkData, authToken: "dsfrsfsdfsdfsf")
 	}
 
 	/// Executes a producer returning the last value
