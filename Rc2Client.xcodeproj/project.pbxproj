@@ -1078,7 +1078,6 @@
 		08F678371F79416800EC3AC9 /* RestInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestInfo.swift; sourceTree = "<group>"; };
 		08F678391F79422400EC3AC9 /* URLSession+Rc2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Rc2.swift"; sourceTree = "<group>"; };
 		08F6ADA81DD643C900AF0722 /* Copyable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Copyable.swift; sourceTree = "<group>"; };
-		08F6ADAB1DD6502000AF0722 /* ModelSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelSpec.swift; sourceTree = "<group>"; };
 		08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = modelChanges.json; sourceTree = "<group>"; };
 		08F6ADAF1DD8F60200AF0722 /* Rc2RestClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Rc2RestClient.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F6ADB11DD90E3600AF0722 /* Rc2FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2FileManager.swift; sourceTree = "<group>"; };
@@ -1334,7 +1333,6 @@
 				080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */,
 				088935851E00530C00C94B19 /* TestingWebSocket.swift */,
 				086508801E4A431C0067C8CA /* FileImporterTests.swift */,
-				08F6ADAB1DD6502000AF0722 /* ModelSpec.swift */,
 				088935871E00AA5700C94B19 /* FakeFileCache.swift */,
 			);
 			path = NetworkingTests;
