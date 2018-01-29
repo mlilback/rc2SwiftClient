@@ -8,10 +8,10 @@ import Foundation
 import Quick
 import Nimble
 import ReactiveSwift
-@testable import Networking
+@testable import Model
 
 // TODO: add test for POSIXlt
-class VariableSpec: NetworkingBaseSpec {
+class VariableSpec: QuickSpec {
 	override func spec() {
 		let json = loadTestJson("variables")
 

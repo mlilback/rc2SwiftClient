@@ -190,6 +190,7 @@
 		084E93C4201E899300FF50EA /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		084E93C5201E8A7200FF50EA /* SessionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935831E004FF500C94B19 /* SessionSpec.swift */; };
 		084E93C6201F635F00FF50EA /* FileCacheSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559961DDCFEB00047B3CE /* FileCacheSpec.swift */; };
+		084E93C9201F6A7000FF50EA /* variables.json in Resources */ = {isa = PBXBuildFile; fileRef = 084E93C7201F6A6F00FF50EA /* variables.json */; };
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08525E501E204672008A332E /* URLStaleChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E4F1E204672008A332E /* URLStaleChecker.swift */; };
 		08525E731E256A8B008A332E /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E721E256A8B008A332E /* Reachability.swift */; };
@@ -240,7 +241,6 @@
 		0872676D1EE20A37004251C1 /* DockerBackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0872676C1EE20A37004251C1 /* DockerBackupViewController.swift */; };
 		0873F6001F795AE700265934 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559921DDC889D0047B3CE /* ImageCache.swift */; };
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
-		0881B5081DCD336500679DB3 /* variables.json in Resources */ = {isa = PBXBuildFile; fileRef = 0881B5071DCD336500679DB3 /* variables.json */; };
 		0881B50B1DCF856B00679DB3 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */; };
 		0881B50C1DCF85B500679DB3 /* ServerHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B01D19B0D500866A05 /* ServerHost.swift */; };
 		0881B50E1DCF896500679DB3 /* LoginFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50D1DCF896500679DB3 /* LoginFactory.swift */; };
@@ -896,6 +896,8 @@
 		084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfoSpec.swift; sourceTree = "<group>"; };
 		084E93B2201E874900FF50EA /* ModelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ModelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		084E93B6201E874900FF50EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		084E93C7201F6A6F00FF50EA /* variables.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = variables.json; sourceTree = "<group>"; };
+		084E93C8201F6A7000FF50EA /* VariableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableSpec.swift; sourceTree = "<group>"; };
 		084FEA7F1D3044E700060A7D /* ObjcConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcConstants.h; sourceTree = "<group>"; };
 		084FEA801D3045D800060A7D /* ObjcConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjcConstants.m; sourceTree = "<group>"; };
 		08525E4F1E204672008A332E /* URLStaleChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = URLStaleChecker.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -945,8 +947,6 @@
 		08765C811DC58AB300F75D8E /* DispatchReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchReader.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		087DC36A200F5140001F9560 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		0881B5051DCD329300679DB3 /* VariableSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableSpec.swift; sourceTree = "<group>"; };
-		0881B5071DCD336500679DB3 /* variables.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = variables.json; sourceTree = "<group>"; };
 		0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionInfo.swift; sourceTree = "<group>"; };
 		0881B50D1DCF896500679DB3 /* LoginFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LoginFactory.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0881B50F1DCFA99A00679DB3 /* LoginSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginSpec.swift; sourceTree = "<group>"; };
@@ -1325,7 +1325,6 @@
 				08CE0E8F1E326A4C00DC567A /* createdUpdate.json */,
 				080E82FD1DCCD77D0048F36C /* bulkInfo.json */,
 				08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */,
-				0881B5071DCD336500679DB3 /* variables.json */,
 				084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */,
 				081559961DDCFEB00047B3CE /* FileCacheSpec.swift */,
 				088935831E004FF500C94B19 /* SessionSpec.swift */,
@@ -1336,7 +1335,6 @@
 				0881B50F1DCFA99A00679DB3 /* LoginSpec.swift */,
 				08F6ADAB1DD6502000AF0722 /* ModelSpec.swift */,
 				088935871E00AA5700C94B19 /* FakeFileCache.swift */,
-				0881B5051DCD329300679DB3 /* VariableSpec.swift */,
 			);
 			path = NetworkingTests;
 			sourceTree = "<group>";
@@ -1536,6 +1534,8 @@
 			isa = PBXGroup;
 			children = (
 				080E82EB1DCC001E0048F36C /* FileTypeSpec.swift */,
+				084E93C7201F6A6F00FF50EA /* variables.json */,
+				084E93C8201F6A7000FF50EA /* VariableSpec.swift */,
 				084E93B6201E874900FF50EA /* Info.plist */,
 			);
 			path = ModelTests;
@@ -2494,7 +2494,6 @@
 				08CE0E901E326A4C00DC567A /* createdUpdate.json in Resources */,
 				080E82FE1DCCD77D0048F36C /* bulkInfo.json in Resources */,
 				08F6ADAE1DD66CAB00AF0722 /* modelChanges.json in Resources */,
-				0881B5081DCD336500679DB3 /* variables.json in Resources */,
 				08CE0E8E1E32669600DC567A /* createfile.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2534,6 +2533,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				084E93C9201F6A7000FF50EA /* variables.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
