@@ -200,23 +200,29 @@ public final class DefaultFileCache: NSObject, FileCache {
 //	}
 	
 	public func flushCache(file: AppFile) {
+		flushCache(file: file.model)
+	}
+
+	public func flushCache(file: File) {
 		self.taskLockQueue.sync {
-			guard self.downloadTaskWithFileId(file.fileId) == nil else {
+			guard self.downloadTaskWithFileId(file.id) == nil else {
 				//download already in progress. no need to erase
 				return
 			}
-			if let mtime = self.lastModTimes[file.fileId] {
+			if let mtime = self.lastModTimes[file.id] {
 				let timediff = Date.timeIntervalSinceReferenceDate - mtime
 				if timediff < 0.5 {
 					Log.info("skipping flush because too recent", .cache)
 					return
 				}
 			}
-			Log.info("flushing file \(file.fileId)", .cache)
-			self.removeFile(fileUrl: self.cachedUrl(file: file))
+			Log.info("flushing file \(file.id)", .cache)
+			if let fileUrl = try? self.cachedUrl(file: file) {
+				self.removeFile(fileUrl: fileUrl)
+			}
 		}
 	}
-	
+
 	///recaches the specified file if it has changed
 	public func recache(file: AppFile) -> SignalProducer<Double, Rc2Error> {
 		Log.debug("recache of \(file.fileId) started", .cache)
@@ -459,7 +465,17 @@ extension DefaultFileCache {
 	}
 
 	public func handle(change: SessionResponse.FileChangedData) throws {
-		//TODO: implement
+		switch change.changeType {
+		case .delete:
+			guard let file = change.file, let fileUrl = try? cachedUrl(file: file), fileUrl.fileExists() else { return }
+			removeFile(fileUrl: fileUrl)
+		case .insert:
+			return
+		case .update:
+			if let file = change.file {
+				flushCache(file: file)
+			}
+		}
 	}
 	
 	/// "caches" a file with provided data
