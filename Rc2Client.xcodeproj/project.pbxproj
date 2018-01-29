@@ -191,6 +191,7 @@
 		084E93C5201E8A7200FF50EA /* SessionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935831E004FF500C94B19 /* SessionSpec.swift */; };
 		084E93C6201F635F00FF50EA /* FileCacheSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559961DDCFEB00047B3CE /* FileCacheSpec.swift */; };
 		084E93C9201F6A7000FF50EA /* variables.json in Resources */ = {isa = PBXBuildFile; fileRef = 084E93C7201F6A6F00FF50EA /* variables.json */; };
+		084E93CB201F6B5400FF50EA /* LoginSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50F1DCFA99A00679DB3 /* LoginSpec.swift */; };
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08525E501E204672008A332E /* URLStaleChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E4F1E204672008A332E /* URLStaleChecker.swift */; };
 		08525E731E256A8B008A332E /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E721E256A8B008A332E /* Reachability.swift */; };
@@ -1327,12 +1328,12 @@
 				08F6ADAD1DD66CAB00AF0722 /* modelChanges.json */,
 				084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */,
 				081559961DDCFEB00047B3CE /* FileCacheSpec.swift */,
+				0881B50F1DCFA99A00679DB3 /* LoginSpec.swift */,
 				088935831E004FF500C94B19 /* SessionSpec.swift */,
 				0865087E1E4940E20067C8CA /* xattrTests.swift */,
 				080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */,
 				088935851E00530C00C94B19 /* TestingWebSocket.swift */,
 				086508801E4A431C0067C8CA /* FileImporterTests.swift */,
-				0881B50F1DCFA99A00679DB3 /* LoginSpec.swift */,
 				08F6ADAB1DD6502000AF0722 /* ModelSpec.swift */,
 				088935871E00AA5700C94B19 /* FakeFileCache.swift */,
 			);
@@ -2757,6 +2758,7 @@
 				084E93A9201A313900FF50EA /* FakeFileCache.swift in Sources */,
 				084E93C5201E8A7200FF50EA /* SessionSpec.swift in Sources */,
 				080E82FC1DCCD56F0048F36C /* NetworkingBaseSpec.swift in Sources */,
+				084E93CB201F6B5400FF50EA /* LoginSpec.swift in Sources */,
 				0865087F1E4940E20067C8CA /* xattrTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

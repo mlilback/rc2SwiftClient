@@ -154,7 +154,7 @@ public final class LoginFactory: NSObject {
 		var password: String
 	}
 	
-	private struct LoginResponse: Decodable {
+	internal struct LoginResponse: Decodable {
 		var token: String
 	}
 }

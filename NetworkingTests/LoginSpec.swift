@@ -13,6 +13,8 @@ import Result
 import Mockingjay
 
 class LoginSpec: NetworkingBaseSpec {
+	let expectedToken = "dfsdghdfgsffgdsf"
+	
 	override func spec() {
 		describe("validate login function") {
 			let sessionConfig = URLSessionConfiguration.default
@@ -21,8 +23,12 @@ class LoginSpec: NetworkingBaseSpec {
 			let factory = LoginFactory(config: sessionConfig)
 
 			it("login success") {
-				let rawData = self.loadFileData("loginResults", fileExtension: "json")
+				let rawData = "{ \"token\": \"\(self.expectedToken)\" }".data(using: .utf8)
 				self.stub(self.postMatcher(uriPath: "/login"), builder: jsonData(rawData!))
+				let infoMatcher: (URLRequest) -> Bool = { request in
+					return request.url!.path.hasPrefix("/info")
+				}
+				self.stub(infoMatcher, builder: jsonData(self.loadFileData("bulkInfo", fileExtension: "json")!))
 				let producer = factory.login(to: fakeHost, as: "local", password: "local")
 				var conInfo: ConnectionInfo?
 				let group = DispatchGroup()
@@ -30,10 +36,11 @@ class LoginSpec: NetworkingBaseSpec {
 					conInfo = producer.single()?.value
 				}
 				group.wait()
+				expect(conInfo?.authToken).to(equal(self.expectedToken))
 				expect(conInfo).toNot(beNil())
 				expect(conInfo?.user.id).to(equal(100))
 				expect(conInfo?.user.email).to(equal("singlesignin@rc2.io"))
-				expect(conInfo?.projects.value.count).to(equal(2))
+				expect(conInfo?.projects.value.count).to(equal(1))
 				//project testing in ModelSpec.swift
 			}
 		}
