@@ -80,6 +80,32 @@ public final class Rc2RestClient {
 		}
 	}
 	
+	/// remove a workspace from the server
+	///
+	/// - Parameter workspace: the workspace to remove
+	/// - Returns: SignalProducer for the updated bulk info, or an error
+	public func remove(workspace: AppWorkspace) -> SignalProducer<(), Rc2Error>
+	{
+		var request = self.request("/proj/\(workspace.projectId)/wspace/\(workspace.wspaceId)", method: "DELETE")
+		request.addValue("application/json", forHTTPHeaderField: "Accept")
+		return SignalProducer<(), Rc2Error> { observer, _ in
+			let handler = { (data: Data?, response: URLResponse?, error: Error?) in
+				do {
+					let bulkInfo: BulkUserInfo = try self.handleResponse(data: data, response: response, error: error)
+					self.conInfo.update(bulkInfo: bulkInfo)
+					observer.send(value: ())
+					observer.sendCompleted()
+				} catch let rc2error as Rc2Error {
+					observer.send(error: rc2error)
+				} catch {
+					Log.info("error removing workspace: \(error)", .network)
+					observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "unknown error removing workspace"))
+				}
+			}
+			self.urlSession!.dataTask(with: request, completionHandler: handler).resume()
+		}
+	}
+
 	/// creates a file on the server
 	///
 	/// - Parameters:
@@ -178,7 +204,7 @@ public final class Rc2RestClient {
 	{
 		guard nil == error else { throw Rc2Error(type: .cocoa, nested: error) }
 		switch response?.httpResponse?.statusCode ?? 500 {
-		case 201:
+		case 200, 201:
 			do {
 				let object: T = try conInfo.decode(data: data!)
 				return object

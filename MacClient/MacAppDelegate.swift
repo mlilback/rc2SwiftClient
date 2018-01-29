@@ -608,9 +608,15 @@ extension MacAppDelegate {
 					self.newWorkspace(nil)
 				case .open(let wspace):
 					self.openSession(workspace: wspace)
-				case .remove:
-					// TODO: implement removing workspace
-					NSSound.beep()
+				case .remove(let wspace):
+					let client = Rc2RestClient(self.connectionManager.localConnection!)
+					client.remove(workspace: wspace).observe(on: UIScheduler()).startWithResult { result in
+						if let err = result.error {
+							self.appStatus?.presentError(err, session: nil)
+							return
+						}
+						Log.info("workspace \(wspace.wspaceId) removed")
+					}
 				}
 			}
 		}

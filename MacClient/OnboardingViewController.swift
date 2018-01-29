@@ -42,6 +42,7 @@ class OnboardingViewController: NSViewController {
 	private var didFirstInit: Bool = false
 	var actionHandler: ((UserAction) -> Void)?
 	
+	// MARK: - methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		guard let contentFile = Bundle(for: type(of: self)).url(forResource: "OnboardingContent", withExtension: "rtfd")
@@ -103,7 +104,7 @@ extension OnboardingViewController: NSTableViewDelegate {
 	}
 	
 	func tableViewSelectionDidChange(_ notification: Notification) {
-		removeButton.isEnabled = wspaceTableView.selectedRow >= 0
+		removeButton.isEnabled = wspaceTableView.selectedRow >= 0 && (project?.workspaces.value.count ?? 0) > 1
 	}
 }
 
