@@ -409,11 +409,61 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	@IBAction func exportAllFiles(_ sender: AnyObject?) {
-		//TODO: implement
+		let defaults = UserDefaults.standard
+		let panel = NSOpenPanel()
+		panel.allowsMultipleSelection = false
+		panel.canChooseDirectories = true
+		panel.canChooseFiles = false
+		panel.resolvesAliases = true
+		panel.canCreateDirectories = true
+		if let bmarkData = defaults[.lastExportDirectory] {
+			panel.directoryURL = try? (NSURL(resolvingBookmarkData: bmarkData, options: [], relativeTo: nil, bookmarkDataIsStale: nil) as URL)
+		}
+		panel.prompt = NSLocalizedString("Export All Files", comment:"")
+		panel.message = NSLocalizedString("Select File Destination", comment:"")
+		panel.beginSheetModal(for: view.window!) { response in
+			do {
+				let urlbmark = try (panel.directoryURL as NSURL?)?.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
+				defaults[.lastExportDirectory] = urlbmark
+			} catch let err as NSError {
+				Log.warn("why did we get error creating export bookmark: \(err)", .app)
+			}
+			panel.close()
+			guard response == .OK && panel.urls.count > 0, let destination = panel.urls.first else { return }
+			self.exportAll(to: destination)
+		}
 	}
 	
 	// MARK: - private methods
 
+	private func exportAll(to destination: URL) {
+		let fm = FileManager()
+		let urls = self.session.workspace.files.map { (self.session.fileCache.cachedUrl(file: $0), $0.name) }
+		// use a producer to allow updating of progress
+		let producer = SignalProducer<ProgressUpdate, Rc2Error> { observer, _ in
+			var copiedCount: Double = 0
+			do {
+				observer.send(value: ProgressUpdate(.start))
+				for (aUrl, fileName) in urls {
+					observer.send(value: ProgressUpdate(.value, message: "Exporting \(fileName)", value: copiedCount / Double(urls.count), error: nil, disableInput: true))
+					let destUrl = destination.appendingPathComponent(fileName)
+					try? fm.removeItem(at: destUrl)
+					try fm.copyItem(at: aUrl, to: destUrl)
+					copiedCount += 1.0
+				}
+				observer.sendCompleted()
+			} catch let error as NSError {
+				observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "Error exporting file"))
+				Log.error("failed to copy file for export: \(error)", .app)
+			}
+		}
+		DispatchQueue.global(qos: .userInitiated).async {
+			producer
+				.updateProgress(status: self.appStatus!, actionName: NSLocalizedString("Export Files", comment: ""))
+				.start()
+		}
+	}
+	
 	fileprivate func select(fileId: Int) {
 		// the id of the file that was created
 		guard let fidx = self.fileDataIndex(fileId: fileId) else {

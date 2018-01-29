@@ -104,7 +104,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 			return editor?.validateMenuItem(menuItem) ?? false
 		case Selector.switchOutputTab, Selector.switchSidebarTab:
 			return splitController?.validateMenuItem(menuItem) ?? false
-		case Selector.clearConsole, Selector.clearImageCache:
+		case Selector.clearConsole, Selector.clearImageCache, #selector(RootViewController.exportAllFiles(_:)):
 			return true
 		default:
 			return false
@@ -204,6 +204,10 @@ extension RootViewController {
 	
 	@IBAction func promptToImportFiles(_ sender: AnyObject?) {
 		fileHandler?.promptToImportFiles(sender)
+	}
+	
+	@IBAction func exportAllFiles(_ sender: AnyObject?) {
+		fileHandler?.exportAllFiles(sender)
 	}
 	
 	@IBAction func editFile(_ sender: Any) {
