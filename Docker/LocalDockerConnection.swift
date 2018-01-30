@@ -119,11 +119,19 @@ final class LocalDockerConnectionImpl<HandlerClass: DockerResponseHandler>: Loca
 		guard code >= 0 else {
 			let savedErrno = errno
 			Log.error("bad response \(code), \(savedErrno)", .docker)
-			if savedErrno == 2 { //file not found, i.e. docker not running
+			var nestedError: NSError?
+			switch savedErrno {
+			case ENOENT, ECONNREFUSED:
 				handler(.error(.dockerNotRunning))
 				throw DockerError.dockerNotRunning
+			default:
+				nestedError = NSError(domain: NSPOSIXErrorDomain, code: Int(savedErrno), userInfo: nil)
 			}
-			let rootError = NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: [NSURLErrorFailingURLStringErrorKey: request.url!])
+			var userInfo: [String: Any] = [NSURLErrorFailingURLStringErrorKey: request.url!]
+			if let nestedErr = nestedError {
+				userInfo[NSUnderlyingErrorKey] = nestedErr
+			}
+			let rootError = NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: userInfo)
 			handler(.error(.networkError(rootError)))
 			throw DockerError.networkError(rootError)
 		}
