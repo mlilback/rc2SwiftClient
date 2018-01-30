@@ -638,7 +638,6 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 extension SidebarFileController: FileHandler {
 	func filesRefreshed(_ changes: [AppWorkspace.FileChange]) {
 		//TODO: ideally should figure out what file was changed and animate the tableview update instead of refreshing all rows
-		//TODO: updated file always shows last, which is wrong
 		loadData()
 		//preserve selection
 		let selFile = selectedFile
