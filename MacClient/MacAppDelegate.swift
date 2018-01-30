@@ -557,7 +557,7 @@ extension MacAppDelegate {
 	}
 	
 	private func handleStartupError(_ error: Rc2Error) {
-		onboardingController?.window?.orderOut(nil)
+		startupWindowController?.window?.orderOut(nil)
 		let alert = NSAlert()
 		alert.messageText = "Error starting application"
 		alert .informativeText = error.nestedDescription ?? error.localizedDescription
