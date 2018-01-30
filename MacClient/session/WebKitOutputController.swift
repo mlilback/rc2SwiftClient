@@ -20,6 +20,7 @@ class WebKitOutputController: WebViewController {
 	private var restoredFileId: Int?
 	
 	override var pageTitle: String { return file?.name ?? "" }
+	public var onClear: (() -> Void)?
 
 	func save(state: inout SessionState.WebViewState) {
 		if let file = file {
@@ -35,6 +36,12 @@ class WebKitOutputController: WebViewController {
 	
 	override func sessionChanged() {
 		restoreLastFile()
+		session.workspace.fileChangeSignal.take(duringLifetimeOf: self).observeValues { [weak self] changes in
+			// see if it the file we're displaying
+			guard let _ = changes.first(where: { $0.type == .remove && $0.file.fileId == self?.file?.fileId  } ) else { return }
+			// it is, so clear
+			self?.clearContents()
+		}
 	}
 
 	private func restoreLastFile() {
@@ -53,6 +60,7 @@ class WebKitOutputController: WebViewController {
 		_ = webView?.load(URLRequest(url: URL(string: "about:blank")!))
 		file = nil
 		titleLabel?.stringValue = ""
+		onClear?()
 	}
 	
 	/// Loads the specified file, downloading if not cached

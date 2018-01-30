@@ -60,6 +60,9 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		imageController = firstChildViewController(self)
 		imageController?.imageCache = imageCache
 		webController = firstChildViewController(self)
+		webController?.onClear = { [weak self] in
+			self?.selectedOutputTab.value = .console
+		}
 		helpController = firstChildViewController(self)
 		currentOutputController = consoleController
 	}
