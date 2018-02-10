@@ -319,10 +319,8 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	@IBAction func inforForFile(_ sender: Any) {
 		if getInfoPopover == nil {
 			// setup the popup and view controller
-			let sboard = NSStoryboard(name: .mainController, bundle: nil)
-			fileInfoController = sboard.instantiateViewController()
+			fileInfoController = FileInfoController()
 			assert(fileInfoController != nil)
-			fileInfoController?.view.isHidden = false // force the view to load along with all child controllers
 			getInfoPopover = NSPopover()
 			getInfoPopover?.behavior = .transient
 			getInfoPopover?.contentViewController = fileInfoController
