@@ -15,15 +15,6 @@ import Model
 
 // swiftlint:disable file_length type_body_length
 
-///selectors used in this file, aliased with shorter, descriptive names
-private extension Selector {
-	static let editFile = #selector(SidebarFileController.editFile(_:))
-	static let addDocument = #selector(SidebarFileController.addDocumentOfType(_:))
-	static let addFileMenu =  #selector(SidebarFileController.addFileMenuAction(_:))
-	static let exportSelectedFile = #selector(SidebarFileController.exportSelectedFile(_:))
-	static let exportAll = #selector(SidebarFileController.exportAllFiles(_:))
-}
-
 class FileRowData: Equatable {
 	var sectionName: String?
 	var file: AppFile?
@@ -84,13 +75,13 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		if addRemoveButtons != nil {
 			let menu = NSMenu(title: "new document format")
 			for (index, aType) in FileType.creatableFileTypes.enumerated() {
-				let mi = NSMenuItem(title: aType.details ?? "unknown", action: .addDocument, keyEquivalent: "")
+				let mi = NSMenuItem(title: aType.details ?? "unknown", action: #selector(addDocumentOfType(_:)), keyEquivalent: "")
 				mi.representedObject = index
 				menu.addItem(mi)
 			}
 			menu.autoenablesItems = false
 			//NOTE: the action method of the menu item wasn't being called the first time. This works all times.
-			NotificationCenter.default.addObserver(self, selector: .addFileMenu, name: NSMenu.didSendActionNotification, object: menu)
+			NotificationCenter.default.addObserver(self, selector: #selector(addFileMenuAction(_:)), name: NSMenu.didSendActionNotification, object: menu)
 			addRemoveButtons?.setMenu(menu, forSegment: 0)
 			addRemoveButtons?.target = self
 			formatMenu = menu
@@ -161,16 +152,16 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			return super.validateMenuItem(menuItem)
 		}
 		switch action {
-			case Selector.editFile:
+			case #selector(editFile(_:)):
 				let fileName = selectedFile?.name ?? ""
 				menuItem.title = String.localizedStringWithFormat(NSLocalizedString("Edit File", comment: ""), fileName)
 				guard let file = selectedFile, file.fileSize <= MaxEditableFileSize else { return false }
 				return file.fileType.isEditable
-			case Selector.promptToImport:
+		case #selector(promptToImportFiles(_:)):
 				return true
-			case Selector.exportSelectedFile:
+			case #selector(exportSelectedFile(_:)):
 				return selectedFile != nil
-			case Selector.exportAll:
+			case #selector(exportAllFiles(_:)):
 				return true
 			default:
 				return super.validateMenuItem(menuItem)
@@ -182,9 +173,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		menu.items.forEach { item in
 			guard let action = item.action else { return }
 			switch action {
-			case Selector.promptToImport:
+			case #selector(promptToImportFiles(_:)):
 				item.isEnabled = true
-			case Selector.editFile:
+			case #selector(editFile(_:)):
 				item.isEnabled = selectedFile != nil && selectedFile!.fileSize <= MaxEditableFileSize
 			default:
 				item.isEnabled = selectedFile != nil

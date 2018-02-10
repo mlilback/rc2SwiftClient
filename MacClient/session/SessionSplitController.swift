@@ -31,7 +31,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 		if item.itemIdentifier.rawValue == "leftView" {
 			sidebarSegmentControl = item.view as! NSSegmentedControl? // swiftlint:disable:this force_cast
 			sidebarSegmentControl?.target = self
-			sidebarSegmentControl?.action = #selector(SessionSplitController.sidebarSwitcherClicked(_:))
+			sidebarSegmentControl?.action = #selector(sidebarSwitcherClicked(_:))
 			let sidebar = sidebarTabController()
 			let lastSelection = UserDefaults.standard.integer(forKey: LastSelectedSessionTabIndex)
 			sidebarSegmentControl?.selectedSegment = lastSelection
@@ -40,7 +40,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 		} else if item.itemIdentifier.rawValue == "rightView" {
 			outputSegmentControl = item.view as! NSSegmentedControl? // swiftlint:disable:this force_cast
 			outputSegmentControl?.target = self
-			outputSegmentControl?.action = #selector(SessionSplitController.outputSwitcherClicked(_:))
+			outputSegmentControl?.action = #selector(outputSwitcherClicked(_:))
 			outputSegmentControl?.selectedSegment = 0
 			outputTabController().selectedOutputTab.value = .console
 			return true
@@ -58,14 +58,14 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return super.validateMenuItem(menuItem) }
 		switch action {
-		case Selector.switchSidebarTab:
+		case #selector(switchSidebarTab(_:)):
 			if sidebarSplitItem().isCollapsed {
 				menuItem.state = .off
 			} else {
 				menuItem.state = menuItem.tag == sidebarSegmentControl?.selectedSegment ? .on : .off
 			}
 			return true
-		case Selector.switchOutputTab:
+		case #selector(switchSidebarTab(_:)):
 			menuItem.state = menuItem.tag == outputSegmentControl?.selectedSegment ? .on : .off
 			return true
 		default:

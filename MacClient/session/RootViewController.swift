@@ -10,14 +10,6 @@ import ReactiveSwift
 import Networking
 import Model
 
-extension Selector {
-	static let promptToImport = #selector(RootViewController.promptToImportFiles(_:))
-	static let switchSidebarTab = #selector(RootViewController.switchSidebarTab(_:))
-	static let switchOutputTab = #selector(RootViewController.switchOutputTab(_:))
-	static let clearConsole = #selector(RootViewController.clearConsole(_:))
-	static let clearImageCache = #selector(RootViewController.clearImageCache(_:))
-}
-
 let MaxEditableFileSize: Int = 1024 * 1024 // 1 MB
 
 class RootViewController: AbstractSessionViewController, ToolbarItemHandler
@@ -61,14 +53,14 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	override func viewDidAppear() {
 		super.viewDidAppear()
 		self.hookupToToolbarItems(self, window: view.window!)
-		NotificationCenter.default.addObserver(self, selector: #selector(RootViewController.windowWillClose(_:)), name: NSWindow.willCloseNotification, object:view.window!)
-		NotificationCenter.default.addObserver(self, selector: #selector(RootViewController.receivedImportNotification(_:)), name: .FilesImported, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(windowWillClose(_:)), name: NSWindow.willCloseNotification, object:view.window!)
+		NotificationCenter.default.addObserver(self, selector: #selector(receivedImportNotification(_:)), name: .FilesImported, object: nil)
 		//create dimming view
 		dimmingView = DimmingView(frame: view.bounds)
 		view.addSubview(dimmingView!)
 		(view as? RootView)?.dimmingView = dimmingView //required to block clicks to subviews
 		//we have to wait until next time through event loop to set first responder
-		self.performSelector(onMainThread: #selector(RootViewController.setupResponder), with: nil, waitUntilDone: false)
+		self.performSelector(onMainThread: #selector(setupResponder), with: nil, waitUntilDone: false)
 	}
 	
 	@objc func windowWillClose(_ note: Notification) {
@@ -82,7 +74,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action {
-		case Selector.promptToImport, #selector(editFile(_:)):
+		case #selector(promptToImportFiles(_:)), #selector(editFile(_:)):
 			return fileHandler!.validateMenuItem(menuItem)
 		case Selector.showFonts:
 			if let fontHandler = currentFontUser(view.window?.firstResponder) {
@@ -102,9 +94,9 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 			return true
 		case Selector.runQuery, Selector.sourceQuery:
 			return editor?.validateMenuItem(menuItem) ?? false
-		case Selector.switchOutputTab, Selector.switchSidebarTab:
+		case #selector(switchOutputTab(_:)), #selector(switchSidebarTab(_:)):
 			return splitController?.validateMenuItem(menuItem) ?? false
-		case Selector.clearConsole, Selector.clearImageCache, #selector(RootViewController.exportAllFiles(_:)):
+		case #selector(clearConsole(_:)), #selector(clearImageCache(_:)), #selector(exportAllFiles(_:)):
 			return true
 		default:
 			return false
