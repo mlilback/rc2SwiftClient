@@ -359,6 +359,7 @@
 		08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */; };
 		08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08ED575E1C724383002B2558 /* MacFileImportSetup.swift */; };
 		08EDB9D02019527D000663EF /* Set+MJL+update.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EDB9CF2019527D000663EF /* Set+MJL+update.swift */; };
+		08EE26F9202FA4A5008E008F /* DimmingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE26F8202FA4A5008E008F /* DimmingView.swift */; };
 		08F01E961EFC74690047F397 /* NSData+Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F01E941EFC74690047F397 /* NSData+Hash.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		08F01E971EFC74690047F397 /* NSData+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F01E951EFC74690047F397 /* NSData+Hash.m */; };
 		08F01EA11EFD59120047F397 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 08F01EA01EFD59120047F397 /* Localizable.strings */; };
@@ -1046,6 +1047,7 @@
 		08ED575C1C723CC3002B2558 /* TargetActionBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetActionBlock.swift; sourceTree = "<group>"; };
 		08ED575E1C724383002B2558 /* MacFileImportSetup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacFileImportSetup.swift; sourceTree = "<group>"; };
 		08EDB9CF2019527D000663EF /* Set+MJL+update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+MJL+update.swift"; sourceTree = "<group>"; };
+		08EE26F8202FA4A5008E008F /* DimmingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimmingView.swift; sourceTree = "<group>"; };
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
 		08F01E941EFC74690047F397 /* NSData+Hash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Hash.h"; sourceTree = "<group>"; };
 		08F01E951EFC74690047F397 /* NSData+Hash.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+Hash.m"; sourceTree = "<group>"; };
@@ -1345,6 +1347,7 @@
 				08AA5F061E5350AA00389089 /* SearchBarField.h */,
 				08AA5F071E5350AA00389089 /* SearchBarField.m */,
 				085EFE54202F3A4B008C3505 /* MiniToolbar.swift */,
+				08EE26F8202FA4A5008E008F /* DimmingView.swift */,
 			);
 			name = "generic views";
 			path = MacClient/views;
@@ -2891,6 +2894,7 @@
 				080AB8DE1E92DA10005452C7 /* MultiImageViewController.swift in Sources */,
 				08A01FC41CC7FCA3001EDFAA /* FMDatabaseAdditions.m in Sources */,
 				089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */,
+				08EE26F9202FA4A5008E008F /* DimmingView.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,
 				08EB36D01FBB9E480078229A /* ValuesVariableDetailController.swift in Sources */,
 				086A40D51E7B04F400AE476B /* ThemeEditorController.swift in Sources */,
