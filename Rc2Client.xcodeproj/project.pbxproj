@@ -361,6 +361,7 @@
 		08EDB9D02019527D000663EF /* Set+MJL+update.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EDB9CF2019527D000663EF /* Set+MJL+update.swift */; };
 		08EE26F9202FA4A5008E008F /* DimmingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE26F8202FA4A5008E008F /* DimmingView.swift */; };
 		08EE26FC202FA995008E008F /* FileInfoController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08EE26FA202FA995008E008F /* FileInfoController.xib */; };
+		08EE26FF202FAC08008E008F /* VariableDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08EE26FD202FAC08008E008F /* VariableDetails.storyboard */; };
 		08F01E961EFC74690047F397 /* NSData+Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F01E941EFC74690047F397 /* NSData+Hash.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		08F01E971EFC74690047F397 /* NSData+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F01E951EFC74690047F397 /* NSData+Hash.m */; };
 		08F01EA11EFD59120047F397 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 08F01EA01EFD59120047F397 /* Localizable.strings */; };
@@ -1050,6 +1051,7 @@
 		08EDB9CF2019527D000663EF /* Set+MJL+update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+MJL+update.swift"; sourceTree = "<group>"; };
 		08EE26F8202FA4A5008E008F /* DimmingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimmingView.swift; sourceTree = "<group>"; };
 		08EE26FB202FA995008E008F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/FileInfoController.xib; sourceTree = SOURCE_ROOT; };
+		08EE26FE202FAC08008E008F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = MacClient/Base.lproj/VariableDetails.storyboard; sourceTree = SOURCE_ROOT; };
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
 		08F01E941EFC74690047F397 /* NSData+Hash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Hash.h"; sourceTree = "<group>"; };
 		08F01E951EFC74690047F397 /* NSData+Hash.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+Hash.m"; sourceTree = "<group>"; };
@@ -1389,6 +1391,7 @@
 				083305E51C517FE300E27F66 /* SidebarHelpController.swift */,
 				083305E31C517FC000E27F66 /* SidebarVariableController.swift */,
 				08EB36CD1FBB7CF90078229A /* VariableDetailsViewController.swift */,
+				08EE26FD202FAC08008E008F /* VariableDetails.storyboard */,
 				08EB36CF1FBB9E480078229A /* ValuesVariableDetailController.swift */,
 				08EB36D11FBBA1640078229A /* TextVariableDetailController.swift */,
 				08055E351FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift */,
@@ -2543,6 +2546,7 @@
 				0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */,
 				080AB8E21E92DAE9005452C7 /* MultiImageWindowController.storyboard in Resources */,
 				088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */,
+				08EE26FF202FAC08008E008F /* VariableDetails.storyboard in Resources */,
 				083305E01C51571500E27F66 /* Localizable.strings in Resources */,
 				08C484F81C9B159000FE824B /* server.cer in Resources */,
 				08525E761E300185008A332E /* rdocs.tgz in Resources */,
@@ -3224,6 +3228,14 @@
 				08EE26FB202FA995008E008F /* Base */,
 			);
 			name = FileInfoController.xib;
+			sourceTree = "<group>";
+		};
+		08EE26FD202FAC08008E008F /* VariableDetails.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				08EE26FE202FAC08008E008F /* Base */,
+			);
+			name = VariableDetails.storyboard;
 			sourceTree = "<group>";
 		};
 		08F5746B1E4D04A70000956B /* Preferences.storyboard */ = {

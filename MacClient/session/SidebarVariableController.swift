@@ -10,6 +10,9 @@ import MJLLogger
 import SwiftyUserDefaults
 import Model
 
+extension NSStoryboard.Name {
+	static let variableDetails = NSStoryboard.Name("VariableDetails")
+}
 class SidebarVariableController: AbstractSessionViewController {
 	// MARK: properties
 	var rootVariables: [Variable] = []
@@ -94,7 +97,7 @@ class SidebarVariableController: AbstractSessionViewController {
 	@IBAction func showDetails(_ sender: Any?) {
 		if variablePopover == nil {
 			// setup the popup and view controller
-			let sboard = NSStoryboard(name: .mainController, bundle: nil)
+			let sboard = NSStoryboard(name: .variableDetails, bundle: nil)
 			detailsController = sboard.instantiateViewController()
 			assert(detailsController != nil)
 			detailsController?.view.isHidden = false // force the view to load along with all child controllers
