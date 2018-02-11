@@ -44,7 +44,7 @@
             <objects>
                 <splitViewController id="tyw-Uw-ocM" customClass="SessionSplitController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
-                        <splitViewItem canCollapse="YES" holdingPriority="260" behavior="sidebar" id="fFt-4i-BaU"/>
+                        <splitViewItem canCollapse="YES" holdingPriority="260" behavior="sidebar" id="vg9-uE-FeW"/>
                         <splitViewItem id="htB-CP-af2"/>
                         <splitViewItem id="HnO-2u-s4D"/>
                     </splitViewItems>
@@ -57,7 +57,7 @@
                     </splitView>
                     <connections>
                         <outlet property="splitView" destination="o6q-cZ-nGO" id="SDi-aW-Paf"/>
-                        <segue destination="IeT-2r-pnl" kind="relationship" relationship="splitItems" id="mZq-jk-6o6"/>
+                        <segue destination="ccW-di-zqr" kind="relationship" relationship="splitItems" id="FCk-Nr-kRw"/>
                         <segue destination="thj-QN-rY1" kind="relationship" relationship="splitItems" id="jbk-9g-Vac"/>
                         <segue destination="qFx-32-GX3" kind="relationship" relationship="splitItems" id="1KI-oz-Rfx"/>
                     </connections>
@@ -257,7 +257,7 @@
         <!--left tab controller-->
         <scene sceneID="Zy7-r2-fPT">
             <objects>
-                <tabViewController identifier="sidebarTabController" selectedTabViewItemIndex="0" tabStyle="unspecified" id="IeT-2r-pnl" userLabel="left tab controller" customClass="SidebarTabController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <tabViewController identifier="sidebarTabController" storyboardIdentifier="sidebarTabController" selectedTabViewItemIndex="0" tabStyle="unspecified" id="IeT-2r-pnl" userLabel="left tab controller" customClass="SidebarTabController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <tabViewItems>
                         <tabViewItem identifier="fileTab" id="CTV-YU-27t"/>
                         <tabViewItem identifier="variableTab" id="Wcq-lB-PA7"/>
@@ -265,7 +265,7 @@
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="ue0-Rt-KyC">
                         <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <font key="font" metaFont="message"/>
                         <tabViewItems/>
                         <connections>
@@ -281,7 +281,34 @@
                 </tabViewController>
                 <customObject id="emn-ul-p7h" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-479" y="165"/>
+            <point key="canvasLocation" x="-352" y="139"/>
+        </scene>
+        <!--Sidebar Controller-->
+        <scene sceneID="zW4-wN-sIZ">
+            <objects>
+                <viewController identifier="sidebarController" storyboardIdentifier="sidebarController" id="ccW-di-zqr" customClass="SidebarController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="SAA-Nz-2JB">
+                        <rect key="frame" x="0.0" y="0.0" width="209" height="475"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="GkX-xi-bXi">
+                                <rect key="frame" x="0.0" y="0.0" width="209" height="475"/>
+                            </customView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="GkX-xi-bXi" firstAttribute="top" secondItem="SAA-Nz-2JB" secondAttribute="top" id="AhA-zs-4Q0"/>
+                            <constraint firstAttribute="trailing" secondItem="GkX-xi-bXi" secondAttribute="trailing" id="EIh-Wz-CxL"/>
+                            <constraint firstItem="GkX-xi-bXi" firstAttribute="leading" secondItem="SAA-Nz-2JB" secondAttribute="leading" id="OHo-8R-9aj"/>
+                            <constraint firstAttribute="bottom" secondItem="GkX-xi-bXi" secondAttribute="bottom" id="kPT-N3-ojv"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="contentView" destination="GkX-xi-bXi" id="QGo-xg-LLh"/>
+                    </connections>
+                </viewController>
+                <customObject id="xkh-nN-uYT" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="77.5" y="138.5"/>
         </scene>
         <!--file view controller-->
         <scene sceneID="6UQ-Z5-mlY">

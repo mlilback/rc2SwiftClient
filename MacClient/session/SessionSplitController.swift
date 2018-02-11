@@ -14,6 +14,10 @@ enum SidebarTab: Int {
 	case files = 0, variables, helpTopics
 }
 
+fileprivate extension NSUserInterfaceItemIdentifier {
+	static let sidebarController = NSUserInterfaceItemIdentifier(rawValue: "sidebarController")
+}
+
 class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	var sidebarSegmentControl: NSSegmentedControl?
 	var outputSegmentControl: NSSegmentedControl?
@@ -124,12 +128,14 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	}
 
 	func sidebarSplitItem() -> NSSplitViewItem {
-		return self.splitViewItems.first(where: { $0.viewController == sidebarTabController() })!
+		return self.splitViewItems.first(where: { $0.viewController.identifier == .sidebarController })!
 	}
 	
 	func sidebarTabController() -> NSTabViewController {
 		// swiftlint:disable:next force_cast
-		return self.childViewControllers.first(where: { $0.identifier?.rawValue == "sidebarTabController" }) as! NSTabViewController
+		let scontroller = self.childViewControllers.first(where: { $0.identifier == .sidebarController }) as! SidebarController
+		let _ = scontroller.view
+		return scontroller.tabController
 	}
 	
 	func outputTabController() -> OutputTabController {
