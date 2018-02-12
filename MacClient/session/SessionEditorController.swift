@@ -32,6 +32,8 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 	@IBOutlet var runButton: NSButton?
 	@IBOutlet var sourceButton: NSButton?
 	@IBOutlet var fileNameField: NSTextField?
+	@IBOutlet var toolbar: EditorToolbarView!
+	@IBOutlet var currentViewButtons: NSSegmentedControl!
 	@IBOutlet var contextualMenuAdditions: NSMenu?
 	
 	var parser: SyntaxParser?
@@ -112,6 +114,8 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 		if nil == notificationCenter {
 			notificationCenter = NotificationCenter.default
 		}
+		currentViewButtons.selectedSegment = UserDefaults.standard[.inNotebookView] ? 0 : 1
+		toolbar.replacing = false
 	}
 	
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
@@ -222,6 +226,11 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 
 // MARK: Actions
 extension SessionEditorController {
+	@IBAction func changeViewMode(_ sender: Any?) {
+		UserDefaults.standard[.inNotebookView] = currentViewButtons.selectedSegment == 0
+
+	}
+	
 	@IBAction func previousChunkAction(_ sender: AnyObject) {
 		guard currentChunkIndex > 0 else {
 			Log.error("called with invalid currentChunkIndex", .app)
@@ -488,5 +497,7 @@ fileprivate extension SessionEditorController {
 		fileNameField?.stringValue = selected ? currentDocument!.file.name : ""
 		editor?.isEditable = selected
 		editor?.font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
+		currentViewButtons.isEnabled = currentDocument?.file.fileType.fileExtension == "Rmd"
+		currentViewButtons.selectedSegment = 1
 	}
 }

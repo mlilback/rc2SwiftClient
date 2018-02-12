@@ -199,7 +199,7 @@
 		08525E761E300185008A332E /* rdocs.tgz in Resources */ = {isa = PBXBuildFile; fileRef = 08525E751E300185008A332E /* rdocs.tgz */; };
 		08525E781E3143C3008A332E /* InputPrompter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E771E3143C3008A332E /* InputPrompter.swift */; };
 		08525E7A1E314558008A332E /* InputPrompter.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08525E791E314558008A332E /* InputPrompter.xib */; };
-		085EFE55202F3A4B008C3505 /* MiniToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085EFE54202F3A4B008C3505 /* MiniToolbar.swift */; };
+		085EFE55202F3A4B008C3505 /* EditorToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085EFE54202F3A4B008C3505 /* EditorToolbarView.swift */; };
 		08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08604A4D1D9C0C0500DE2A79 /* Named.swift */; };
 		086413C82013614500116153 /* AppLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086413C620135E1C00116153 /* AppLoggerTests.swift */; };
 		086413CA201392C600116153 /* sampleLog.json in Resources */ = {isa = PBXBuildFile; fileRef = 086413C9201392C600116153 /* sampleLog.json */; };
@@ -910,7 +910,7 @@
 		08525E751E300185008A332E /* rdocs.tgz */ = {isa = PBXFileReference; lastKnownFileType = file; name = rdocs.tgz; path = vendor/rdocs.tgz; sourceTree = SOURCE_ROOT; };
 		08525E771E3143C3008A332E /* InputPrompter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputPrompter.swift; path = MacClient/InputPrompter.swift; sourceTree = SOURCE_ROOT; };
 		08525E791E314558008A332E /* InputPrompter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputPrompter.xib; sourceTree = "<group>"; };
-		085EFE54202F3A4B008C3505 /* MiniToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniToolbar.swift; sourceTree = "<group>"; };
+		085EFE54202F3A4B008C3505 /* EditorToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorToolbarView.swift; sourceTree = "<group>"; };
 		08604A4D1D9C0C0500DE2A79 /* Named.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Named.swift; sourceTree = "<group>"; };
 		086413C620135E1C00116153 /* AppLoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggerTests.swift; sourceTree = "<group>"; };
 		086413C9201392C600116153 /* sampleLog.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sampleLog.json; sourceTree = "<group>"; };
@@ -1352,7 +1352,6 @@
 				08D610701CE3CA3C00258D8E /* TAAdaptiveSpaceItem */,
 				08AA5F061E5350AA00389089 /* SearchBarField.h */,
 				08AA5F071E5350AA00389089 /* SearchBarField.m */,
-				085EFE54202F3A4B008C3505 /* MiniToolbar.swift */,
 				08EE26F8202FA4A5008E008F /* DimmingView.swift */,
 			);
 			name = "generic views";
@@ -1367,6 +1366,7 @@
 				0831740D1C577A2500071408 /* ConsoleTextField.swift */,
 				083174131C5828B400071408 /* ResultsView.swift */,
 				08F189A91D109A4F00866A05 /* TextViewWithContextualMenu.swift */,
+				085EFE54202F3A4B008C3505 /* EditorToolbarView.swift */,
 				0819966F1E36A78A0000AA0E /* EditableTableCellView.swift */,
 			);
 			name = "session views";
@@ -2919,7 +2919,7 @@
 				08EE27012030A0BC008E008F /* SidebarController.swift in Sources */,
 				08C2D5E91E71B1FC0007A02D /* Searchable.swift in Sources */,
 				0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */,
-				085EFE55202F3A4B008C3505 /* MiniToolbar.swift in Sources */,
+				085EFE55202F3A4B008C3505 /* EditorToolbarView.swift in Sources */,
 				088F591C1E74BCEA0009A0B1 /* ThemePrefsController.swift in Sources */,
 				08CCED4D1EE1DF6E004B5ADE /* DockerTabViewController.swift in Sources */,
 				080314231D2412ED006D668F /* SelectServerViewController.swift in Sources */,

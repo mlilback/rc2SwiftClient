@@ -32,3 +32,6 @@
 "failedToLoadDocumentErrorExplanation" = "An unkown error ocurred while loading a document";
 "fileNoLongerExistsErrorExplanation" = "The selected file no longer exists or was unreadable";
 
+"SearchNextMatchToolTip" = "Find next occurance of the find text";
+"SearchPreviousMatchToolTip" = "Find previous occurance of the find text";
+

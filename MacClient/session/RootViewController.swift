@@ -166,20 +166,14 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 // MARK: - actions
 extension RootViewController {
 	@IBAction func toggleSearch(_ sender: Any?) {
-		if responderChainContains(editor!)  {
-			editor?.performTextFinderAction(sender)
-		} else if let outputHandler = outputHandler {
+		if let outputHandler = outputHandler {
 			outputHandler.searchBarVisible = !outputHandler.searchBarVisible
 		}
 	}
 	
 	@IBAction override func performTextFinderAction(_ sender: Any?) {
 		guard let item = sender as? NSValidatedUserInterfaceItem, let tag = NSTextFinder.Action(rawValue: item.tag) else { return }
-		if responderChainContains(editor)  {
-			editor?.performTextFinderAction(sender)
-		} else if responderChainContains(outputHandler as? NSResponder) {
-			outputHandler?.handleSearch(action: tag)
-		}
+		outputHandler?.handleSearch(action: tag)
 	}
 	
 	@IBAction func clearFileCache(_ sender: AnyObject?) {
