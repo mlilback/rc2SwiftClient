@@ -93,6 +93,7 @@ class WebKitOutputController: WebViewController {
 			DispatchQueue.main.async { self.loadLocalFile(url) }
 			return
 		}
+		guard url.fileExists() else { return }
 		//it is utterly rediculous that we have to load a new webview every time, but it wasn't loading the second request
 		DispatchQueue.main.async {
 //			self.setupWebView()
