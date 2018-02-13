@@ -19,10 +19,12 @@ fileprivate extension NSUserInterfaceItemIdentifier {
 }
 
 class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
+	// MARK: properties
 	var sidebarSegmentControl: NSSegmentedControl?
 	var outputSegmentControl: NSSegmentedControl?
 	private let (lifetime, token) = Lifetime.make()
 
+	// MARK: methods
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		let splitItem = sidebarSplitItem()
@@ -72,6 +74,9 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 		case #selector(switchSidebarTab(_:)):
 			menuItem.state = menuItem.tag == outputSegmentControl?.selectedSegment ? .on : .off
 			return true
+		case #selector(toggleLeftView(_:)):
+			menuItem.title = sidebarSplitItem().isCollapsed ? "Show Sidebar" : "Hide Sidebar"
+			return true
 		default:
 			return super.validateMenuItem(menuItem)
 		}
@@ -103,6 +108,14 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	@IBAction func switchSidebarTab(_ sender: NSMenuItem?) {
 		guard let tab = SidebarTab(rawValue: sender?.tag ?? -1) else { fatalError() }
 		switchSidebarTo(tab: tab)
+	}
+	
+	@IBAction func toggleLeftView(_ sender: Any?) {
+		let splitItem = sidebarSplitItem()
+		splitItem.isCollapsed = !splitItem.isCollapsed
+		if let sidebar = sidebarSegmentControl {
+			sidebar.animator().setSelected(!splitItem.isCollapsed, forSegment: sidebar.selectedSegment)
+		}
 	}
 	
 	func switchSidebarTo(tab: SidebarTab) {
@@ -149,7 +162,8 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	}
 }
 
-// subclass that resizes views 2/3 on double click on splitter
+// MARK: -
+/// subclass that resizes views 2/3 on double click on splitter
 class SessionSplitView: NSSplitView {
 	override func mouseDown(with event: NSEvent) {
 		guard event.type == .leftMouseDown, event.clickCount == 2 else {
