@@ -11,11 +11,6 @@ fileprivate extension NSStoryboard.SceneIdentifier {
 	static let editorTabController = NSStoryboard.SceneIdentifier("editorTabController")
 }
 
-enum EditorMode: Int {
-	case notebook = 0
-	case source
-}
-
 class EditorController: AbstractSessionViewController, ToolbarItemHandler {
 	
 	@IBOutlet var contentView: NSView!
@@ -100,9 +95,15 @@ class EditorController: AbstractSessionViewController, ToolbarItemHandler {
 	}
 }
 
-extension EditorController: CodeEditor {
+extension EditorController: EditorManager {
 	@objc dynamic var canExecute: Bool { return currentEditor?.canExecute ?? false }
+	@objc dynamic var canSwitchToNotebookMode: Bool { return notebookModeEnabled && currentEditor != notebookEditor }
+	@objc dynamic var canSwitchToSourceMode: Bool { return currentEditor != sourceEditor }
 
+	func switchTo(mode: EditorMode) {
+		switchMode(mode)
+	}
+	
 	func executeSource(type: ExecuteType) {
 		currentEditor?.executeSource(type: type)
 	}

@@ -97,6 +97,10 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 			return splitController?.validateMenuItem(menuItem) ?? false
 		case #selector(clearConsole(_:)), #selector(clearImageCache(_:)), #selector(exportAllFiles(_:)):
 			return true
+		case #selector(switchToNotebookMode(_:)):
+			return sessionController?.codeEditor.canSwitchToNotebookMode ?? false
+		case #selector(switchToSourceMode(_:)):
+			return sessionController?.codeEditor.canSwitchToSourceMode ?? false
 		default:
 			return false
 		}
@@ -213,6 +217,14 @@ extension RootViewController {
 
 	@IBAction func switchOutputTab(_ sender: NSMenuItem?) {
 		splitController?.switchOutputTab(sender)
+	}
+	
+	@IBAction func switchToNotebookMode(_ sender: Any?) {
+		sessionController?.codeEditor.switchTo(mode: .notebook)
+	}
+	
+	@IBAction func switchToSourceMode(_ sender: Any?) {
+		sessionController?.codeEditor.switchTo(mode: .source)
 	}
 }
 

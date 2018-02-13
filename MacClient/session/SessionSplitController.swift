@@ -78,7 +78,8 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 			menuItem.title = sidebarSplitItem().isCollapsed ? "Show Sidebar" : "Hide Sidebar"
 			return true
 		default:
-			return super.validateMenuItem(menuItem)
+			return false
+//			return super.validateMenuItem(menuItem)
 		}
 	}
 	

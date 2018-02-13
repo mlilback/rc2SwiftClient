@@ -28,7 +28,7 @@ protocol SessionControllerDelegate: class {
 	fileprivate weak var delegate: SessionControllerDelegate?
 
 	var responseFormatter: SessionResponseFormatter!
-	let codeEditor: CodeEditor
+	let codeEditor: EditorManager
 	let outputHandler: OutputHandler
 	let varHandler: VariableHandler
 	let session: Session
@@ -39,7 +39,7 @@ protocol SessionControllerDelegate: class {
 	
 	// MARK: methods
 	
-	init(session: Session, delegate: SessionControllerDelegate, editor: CodeEditor, outputHandler output: OutputHandler, variableHandler: VariableHandler)
+	init(session: Session, delegate: SessionControllerDelegate, editor: EditorManager, outputHandler output: OutputHandler, variableHandler: VariableHandler)
 	{
 		self.delegate = delegate
 		self.codeEditor = editor

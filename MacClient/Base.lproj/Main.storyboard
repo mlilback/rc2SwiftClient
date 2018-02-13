@@ -456,6 +456,25 @@
                                                 </items>
                                             </menu>
                                         </menuItem>
+                                        <menuItem title="Editor" id="hL6-vu-2Bc">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <menu key="submenu" title="Editor" id="1qw-tj-PU6">
+                                                <items>
+                                                    <menuItem title="Source Editor" id="lh1-8P-tUt">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="switchToSourceMode:" target="Ady-hI-5gd" id="J6j-Pp-5td"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Notebook Editor" id="97I-Jh-Hrm">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="switchToNotebookMode:" target="Ady-hI-5gd" id="CL0-XT-Ljk"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
+                                        </menuItem>
                                         <menuItem title="Output" id="3dx-7S-GJ1">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <menu key="submenu" title="Output" id="j9M-uM-1j8" userLabel="Output">
