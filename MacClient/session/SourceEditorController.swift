@@ -43,7 +43,10 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 	///true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
 	private var ignoreTextStorageNotifications = false
 	
-	var canExecute: Bool { return currentDocument?.currentContents.count ?? 0 > 0 }
+	@objc dynamic var canExecute: Bool {
+		guard currentDocument?.isLoaded ?? false else { return false }
+		return currentDocument?.currentContents.count ?? 0 > 0
+	}
 
 	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFont(ofSize: UserDefaults.standard[.defaultFontSize])!.fontDescriptor {
 		didSet {
@@ -409,7 +412,7 @@ fileprivate extension SourceEditorController {
 	}
 	
 	func adjustCurrentDocumentForFile(_ file: AppFile?) {
-		let editor = self.editor!
+		guard let editor = self.editor else { Log.error("can't adjust document without editor", .app); return }
 		//save old document
 		if let oldDocument = currentDocument, oldDocument.file.fileId != file?.fileId {
 			saveDocument(oldDocument, contents: editor.textStorage!.string)
@@ -490,5 +493,7 @@ fileprivate extension SourceEditorController {
 		fileNameField?.stringValue = selected ? currentDocument!.file.name : ""
 		editor?.isEditable = selected
 		editor?.font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
+		willChangeValue(forKey: "canExecute")
+		didChangeValue(forKey: "canExecute")
 	}
 }

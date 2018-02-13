@@ -52,7 +52,7 @@
                             <accessibility description="Left View Selector"/>
                         </segmentedControl>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="61E909DB-45F0-4EFC-A379-0EC4FE6FFDB5" explicitItemIdentifier="editorMode" label="" paletteLabel="Right View" id="I8j-5c-hEs" userLabel="Editor Buttons">
+                    <toolbarItem implicitItemIdentifier="61E909DB-45F0-4EFC-A379-0EC4FE6FFDB5" explicitItemIdentifier="editorMode" label="" paletteLabel="Editor Mode" id="I8j-5c-hEs" userLabel="Editor Buttons">
                         <nil key="toolTip"/>
                         <size key="minSize" width="38" height="23"/>
                         <size key="maxSize" width="133" height="28"/>

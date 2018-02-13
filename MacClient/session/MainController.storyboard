@@ -100,7 +100,7 @@
         <!--editor controller-->
         <scene sceneID="kwF-Xt-rNN">
             <objects>
-                <viewController storyboardIdentifier="editorController" id="thj-QN-rY1" userLabel="editor controller" customClass="SourceEditorController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="editorController" id="thj-QN-rY1" userLabel="editor controller" customClass="EditorController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="kb3-PH-361">
                         <rect key="frame" x="0.0" y="0.0" width="400" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -108,35 +108,6 @@
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="iih-RD-RqJ" userLabel="editor view">
                                 <rect key="frame" x="0.0" y="0.0" width="400" height="513"/>
                                 <subviews>
-                                    <scrollView focusRingType="exterior" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTm-hy-NW5">
-                                        <rect key="frame" x="0.0" y="38" width="400" height="475"/>
-                                        <clipView key="contentView" id="l0n-zj-EZh">
-                                            <rect key="frame" x="1" y="1" width="398" height="473"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                            <subviews>
-                                                <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" incrementalSearchingEnabled="YES" allowsUndo="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="avy-g3-Ese" customClass="SessionEditor" customModule="MacClient" customModuleProvider="target">
-                                                    <rect key="frame" x="0.0" y="0.0" width="398" height="473"/>
-                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <size key="minSize" width="398" height="473"/>
-                                                    <size key="maxSize" width="463" height="10000000"/>
-                                                    <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                    <connections>
-                                                        <outlet property="delegate" destination="thj-QN-rY1" id="jb7-bi-bHt"/>
-                                                    </connections>
-                                                </textView>
-                                            </subviews>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </clipView>
-                                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="k5V-Ad-SH0">
-                                            <rect key="frame" x="1" y="438" width="192" height="15"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </scroller>
-                                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="PJd-Po-R6D">
-                                            <rect key="frame" x="383" y="1" width="16" height="419"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </scroller>
-                                    </scrollView>
                                     <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0YT-Nj-o29">
                                         <rect key="frame" x="8" y="9" width="384" height="21"/>
                                         <subviews>
@@ -158,7 +129,8 @@
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <action selector="sourceQuery:" target="thj-QN-rY1" id="r1Z-3t-v78"/>
+                                                    <action selector="sourceQuery:" target="V7c-BG-bfH" id="NFq-DL-PXV"/>
+                                                    <binding destination="thj-QN-rY1" name="enabled" keyPath="canExecute" id="r1u-Pl-0gs"/>
                                                 </connections>
                                             </button>
                                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7nG-Py-cN7">
@@ -171,7 +143,8 @@
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
                                                 <connections>
-                                                    <action selector="runQuery:" target="thj-QN-rY1" id="TMe-dU-o5M"/>
+                                                    <action selector="runQuery:" target="V7c-BG-bfH" id="GmX-gw-1S8"/>
+                                                    <binding destination="thj-QN-rY1" name="enabled" keyPath="canExecute" id="MUf-Ua-857"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -186,16 +159,19 @@
                                             <real value="3.4028234663852886e+38"/>
                                         </customSpacing>
                                     </stackView>
+                                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="gUu-c5-H94">
+                                        <rect key="frame" x="0.0" y="38" width="400" height="475"/>
+                                    </customView>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="802" constant="300" id="61x-8S-FR6"/>
-                                    <constraint firstAttribute="trailing" secondItem="aTm-hy-NW5" secondAttribute="trailing" id="AY2-pb-w5Q"/>
+                                    <constraint firstItem="gUu-c5-H94" firstAttribute="leading" secondItem="iih-RD-RqJ" secondAttribute="leading" id="BVv-ov-Dzd"/>
                                     <constraint firstItem="0YT-Nj-o29" firstAttribute="leading" secondItem="iih-RD-RqJ" secondAttribute="leading" constant="8" id="EZO-nA-dcQ"/>
-                                    <constraint firstItem="0YT-Nj-o29" firstAttribute="top" secondItem="aTm-hy-NW5" secondAttribute="bottom" constant="8" symbolic="YES" id="J63-t1-fCn"/>
-                                    <constraint firstItem="aTm-hy-NW5" firstAttribute="top" secondItem="iih-RD-RqJ" secondAttribute="top" id="Pfh-0I-CU7"/>
+                                    <constraint firstItem="gUu-c5-H94" firstAttribute="top" secondItem="iih-RD-RqJ" secondAttribute="top" id="TMC-X4-wgh"/>
+                                    <constraint firstAttribute="trailing" secondItem="gUu-c5-H94" secondAttribute="trailing" id="Vkm-I9-oM1"/>
                                     <constraint firstAttribute="trailing" secondItem="0YT-Nj-o29" secondAttribute="trailing" constant="8" id="jEI-Vd-P7R"/>
                                     <constraint firstAttribute="bottom" secondItem="0YT-Nj-o29" secondAttribute="bottom" constant="9" id="ltZ-Pb-Xbx"/>
-                                    <constraint firstItem="aTm-hy-NW5" firstAttribute="leading" secondItem="iih-RD-RqJ" secondAttribute="leading" id="pRt-KG-NND"/>
+                                    <constraint firstItem="0YT-Nj-o29" firstAttribute="top" secondItem="gUu-c5-H94" secondAttribute="bottom" constant="8" id="tD0-gp-Zhc"/>
                                 </constraints>
                             </customView>
                         </subviews>
@@ -207,8 +183,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="contextualMenuAdditions" destination="59K-5b-mxI" id="O57-Dt-JcU"/>
-                        <outlet property="editor" destination="avy-g3-Ese" id="vv5-Ia-mp9"/>
+                        <outlet property="contentView" destination="gUu-c5-H94" id="Spo-r6-INp"/>
                         <outlet property="fileNameField" destination="ucc-Ba-B6V" id="hv4-cC-8Ap"/>
                         <outlet property="runButton" destination="7nG-Py-cN7" id="46B-3F-uTd"/>
                         <outlet property="sourceButton" destination="j6K-47-ewR" id="cvQ-3q-zE8"/>
@@ -232,26 +207,156 @@
                         </menuItem>
                         <menuItem title="Execute Current Line" id="Z7p-9C-omQ">
                             <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="executeCurrentLine:" target="thj-QN-rY1" id="Oam-gz-FWw"/>
-                            </connections>
                         </menuItem>
                         <menuItem title="Execute Current Chunk" id="qMh-xh-Bac">
                             <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="executeCurrentChunk:" target="thj-QN-rY1" id="kRh-aH-rKU"/>
-                            </connections>
                         </menuItem>
                         <menuItem title="Execute Previous Chunks" id="2lq-w5-VVj">
                             <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="executePreviousChunks:" target="thj-QN-rY1" id="HhA-88-vF8"/>
-                            </connections>
                         </menuItem>
                     </items>
                 </menu>
             </objects>
             <point key="canvasLocation" x="840" y="345.5"/>
+        </scene>
+        <!--editor tab controller-->
+        <scene sceneID="XiK-D1-ase">
+            <objects>
+                <tabViewController identifier="editorTabController" storyboardIdentifier="editorTabController" selectedTabViewItemIndex="1" tabStyle="unspecified" id="gf1-zi-Iuo" userLabel="editor tab controller" sceneMemberID="viewController">
+                    <tabViewItems>
+                        <tabViewItem identifier="" id="fc9-GN-Xpe"/>
+                        <tabViewItem identifier="" id="ZoW-VJ-qYq"/>
+                    </tabViewItems>
+                    <tabView key="tabView" misplaced="YES" type="noTabsNoBorder" id="MmH-Uz-uzf">
+                        <rect key="frame" x="0.0" y="0.0" width="400" height="513"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <font key="font" metaFont="message"/>
+                        <tabViewItems/>
+                        <connections>
+                            <outlet property="delegate" destination="gf1-zi-Iuo" id="Plq-eV-iOu"/>
+                        </connections>
+                    </tabView>
+                    <connections>
+                        <outlet property="tabView" destination="MmH-Uz-uzf" id="pbP-hq-CKP"/>
+                        <segue destination="1v9-4m-leU" kind="relationship" relationship="tabItems" id="tRb-Df-2wv"/>
+                        <segue destination="PjE-XL-yZ2" kind="relationship" relationship="tabItems" id="2Rh-aa-OqK"/>
+                    </connections>
+                </tabViewController>
+                <customObject id="P0i-pk-oqt" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="596" y="931"/>
+        </scene>
+        <!--source editor controller-->
+        <scene sceneID="0ME-X1-A34">
+            <objects>
+                <viewController id="PjE-XL-yZ2" userLabel="source editor controller" customClass="SourceEditorController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="3hT-E2-uHa">
+                        <rect key="frame" x="0.0" y="0.0" width="400" height="513"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <scrollView focusRingType="exterior" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aTm-hy-NW5">
+                                <rect key="frame" x="0.0" y="0.0" width="400" height="513"/>
+                                <clipView key="contentView" id="l0n-zj-EZh">
+                                    <rect key="frame" x="1" y="1" width="398" height="511"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" incrementalSearchingEnabled="YES" allowsUndo="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="avy-g3-Ese" customClass="SessionEditor" customModule="MacClient" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="0.0" width="398" height="511"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <size key="minSize" width="398" height="511"/>
+                                            <size key="maxSize" width="463" height="10000000"/>
+                                            <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <connections>
+                                                <outlet property="delegate" destination="PjE-XL-yZ2" id="XMg-5C-zIC"/>
+                                            </connections>
+                                        </textView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="k5V-Ad-SH0">
+                                    <rect key="frame" x="1" y="438" width="192" height="15"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="PJd-Po-R6D">
+                                    <rect key="frame" x="383" y="1" width="16" height="419"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="aTm-hy-NW5" firstAttribute="top" secondItem="3hT-E2-uHa" secondAttribute="top" id="KsX-vD-4mV"/>
+                            <constraint firstAttribute="bottom" secondItem="aTm-hy-NW5" secondAttribute="bottom" id="RHn-WG-4Db"/>
+                            <constraint firstAttribute="trailing" secondItem="aTm-hy-NW5" secondAttribute="trailing" id="UGV-nJ-LI6"/>
+                            <constraint firstItem="aTm-hy-NW5" firstAttribute="leading" secondItem="3hT-E2-uHa" secondAttribute="leading" id="VhQ-a9-4eU"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="contextualMenuAdditions" destination="ZHL-1s-yZb" id="1GD-V0-uPS"/>
+                        <outlet property="editor" destination="avy-g3-Ese" id="mPR-s3-ZS8"/>
+                    </connections>
+                </viewController>
+                <customObject id="aXM-1s-MSW" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <menu title="Contextual Menu" id="ZHL-1s-yZb" userLabel="Contextual Menu">
+                    <items>
+                        <menuItem title="Run Query" id="an5-s4-rM4">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="runQuery:" target="aXM-1s-MSW" id="w2T-5y-iMs"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Source Query" id="XZG-pA-j34">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="sourceQuery:" target="aXM-1s-MSW" id="FaO-5j-Vdy"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Execute Current Line" id="BQi-ee-37i">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="executeCurrentLine:" target="PjE-XL-yZ2" id="M4T-Fl-K4H"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Execute Current Chunk" id="4nC-cJ-dBA">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="executeCurrentChunk:" target="PjE-XL-yZ2" id="94S-jt-rCv"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Execute Previous Chunks" id="HJE-Ez-TeX">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="executePreviousChunks:" target="PjE-XL-yZ2" id="Kky-rk-m4r"/>
+                            </connections>
+                        </menuItem>
+                    </items>
+                </menu>
+            </objects>
+            <point key="canvasLocation" x="596" y="1693.5"/>
+        </scene>
+        <!--notebook editor controller-->
+        <scene sceneID="G5P-op-VSN">
+            <objects>
+                <viewController id="1v9-4m-leU" userLabel="notebook editor controller" customClass="NotebookEditorController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="Qaq-zm-Wm6">
+                        <rect key="frame" x="0.0" y="0.0" width="400" height="513"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8tK-OU-OmM">
+                                <rect key="frame" x="47" y="449" width="101" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="notebook editor" id="gwj-Ze-MYb">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                    </view>
+                </viewController>
+                <customObject id="lea-Wf-GhM" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1073" y="1694"/>
         </scene>
         <!--left tab controller-->
         <scene sceneID="Zy7-r2-fPT">

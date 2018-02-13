@@ -34,7 +34,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	
 	override func sessionChanged() {
 		let variableHandler: VariableHandler = firstChildViewController(self)!
-		let editor: SourceEditorController = firstChildViewController(self)!
+		let editor: EditorController = firstChildViewController(self)!
 		sessionController = SessionController(session: session, delegate: self, editor: editor, outputHandler: outputHandler!, variableHandler:variableHandler)
 		outputHandler?.sessionController = sessionController
 	}
