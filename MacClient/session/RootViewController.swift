@@ -23,7 +23,6 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	
 	fileprivate var progressDisposable: Disposable?
 	fileprivate var dimmingView: DimmingView?
-	weak var editor: SourceEditorController?
 	weak var splitController: SessionSplitController?
 	weak var outputHandler: OutputHandler?
 	weak var fileHandler: SidebarFileController?
@@ -35,15 +34,15 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	
 	override func sessionChanged() {
 		let variableHandler: VariableHandler = firstChildViewController(self)!
-		sessionController = SessionController(session: session, delegate: self, outputHandler: outputHandler!, variableHandler:variableHandler)
+		let editor: SourceEditorController = firstChildViewController(self)!
+		sessionController = SessionController(session: session, delegate: self, editor: editor, outputHandler: outputHandler!, variableHandler:variableHandler)
 		outputHandler?.sessionController = sessionController
 	}
 	
 	// MARK: - Lifecycle
 	override func viewWillAppear() {
 		super.viewWillAppear()
-		guard editor == nil else { return } //only run once
-		editor = firstChildViewController(self)
+		guard splitController == nil else { return } //only run once
 		splitController = firstChildViewController(self)
 		outputHandler = firstChildViewController(self)
 		fileHandler = firstChildViewController(self)
@@ -93,7 +92,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 		case Selector.adjustFontSize:
 			return true
 		case Selector.runQuery, Selector.sourceQuery:
-			return editor?.validateMenuItem(menuItem) ?? false
+			return sessionController?.codeEditor.canExecute ?? false
 		case #selector(switchOutputTab(_:)), #selector(switchSidebarTab(_:)):
 			return splitController?.validateMenuItem(menuItem) ?? false
 		case #selector(clearConsole(_:)), #selector(clearImageCache(_:)), #selector(exportAllFiles(_:)):
@@ -201,11 +200,11 @@ extension RootViewController {
 	}
 	
 	@IBAction func runQuery(_ sender: AnyObject?) {
-		editor?.runQuery(sender)
+		sessionController?.codeEditor.executeSource(type: .run)
 	}
 	
 	@IBAction func sourceQuery(_ sender: AnyObject?) {
-		editor?.sourceQuery(sender)
+		sessionController?.codeEditor.executeSource(type: .source)
 	}
 	
 	@IBAction func switchSidebarTab(_ sender: NSMenuItem?) {
@@ -311,11 +310,11 @@ extension RootViewController: SessionControllerDelegate {
 
 	func save(state: inout SessionState) {
 		state.editorState.lastSelectedFileId = fileHandler?.selectedFile?.fileId ?? -1
-		editor?.save(state: &state.editorState)
+		sessionController?.codeEditor.save(state: &state.editorState)
 	}
 	
 	func restore(state: SessionState) {
-		editor?.restore(state: state.editorState)
+		sessionController?.codeEditor.restore(state: state.editorState)
 		if state.editorState.lastSelectedFileId > 0,
 			let file = session.workspace.file(withId: state.editorState.lastSelectedFileId)
 		{
@@ -328,10 +327,10 @@ extension RootViewController: SessionControllerDelegate {
 extension RootViewController: FileViewControllerDelegate {
 	func fileSelectionChanged(_ file: AppFile?, forEditing: Bool) {
 		if nil == file {
-			self.editor?.fileSelectionChanged(nil)
+			sessionController?.codeEditor.fileChanged(file: nil)
 			self.outputHandler?.show(file: nil)
 		} else if file!.fileType.isSource || (forEditing && file!.fileSize <= MaxEditableFileSize) {
-			self.editor?.fileSelectionChanged(file)
+			self.sessionController?.codeEditor.fileChanged(file: file)
 		} else {
 			outputHandler?.show(file: file)
 //			if let editingFile = editor?.currentDocument?.file {

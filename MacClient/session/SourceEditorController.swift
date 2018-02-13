@@ -25,7 +25,7 @@ extension Selector {
 	static let executePrevousChunks = #selector(SourceEditorController.executePreviousChunks(_:))
 }
 
-class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegate
+class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegate, CodeEditor
 {
 	// MARK: properties
 	@IBOutlet var editor: SessionEditor?
@@ -43,6 +43,8 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 	///true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
 	private var ignoreTextStorageNotifications = false
 	
+	var canExecute: Bool { return currentDocument?.currentContents.count ?? 0 > 0 }
+
 	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFont(ofSize: UserDefaults.standard[.defaultFontSize])!.fontDescriptor {
 		didSet {
 			let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
@@ -184,7 +186,7 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 	}
 
 	//called when file has changed in UI
-	func fileSelectionChanged(_ file: AppFile?) {
+	func fileChanged(file: AppFile?) {
 		if let theFile = file {
 			if currentDocument?.file.fileId == theFile.fileId && currentDocument?.file.version == theFile.version { return } //same file
 			self.adjustCurrentDocumentForFile(file)
@@ -204,7 +206,7 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 			self.adjustCurrentDocumentForFile(change.file)
 		} else if change.type == .remove {
 			//document being editied was removed
-			fileSelectionChanged(nil)
+			fileChanged(file: nil)
 		}
 	}
 	
@@ -216,6 +218,29 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 				return
 			}
 			//need to do anything when successful?
+		}
+	}
+
+	///actually implements running a query, saving first if document is dirty
+	func executeSource(type: ExecuteType) {
+		guard let currentDocument = currentDocument else {
+			fatalError("runQuery called with no file selected")
+		}
+		let file = currentDocument.file
+		guard currentDocument.dirty else {
+			Log.debug("executeQuery executing without save", .app)
+			session.execute(file: file, type: type)
+			return
+		}
+		saveWithProgress().startWithResult { result in
+			if let innerError = result.error {
+				let appError = AppError(.saveFailed, nestedError: innerError)
+				Log.info("save for execute returned an error: \(result.error!)", .app)
+				self.appStatus?.presentError(appError.rc2Error, session: self.session)
+				return
+			}
+			Log.info("executeQuery saved file, now executing", .app)
+			self.session.execute(file: file, type: type)
 		}
 	}
 }
@@ -249,11 +274,11 @@ extension SourceEditorController {
 	}
 	
 	@IBAction func runQuery(_ sender: AnyObject?) {
-		executeQuery(type: .run)
+		executeSource(type: .run)
 	}
 	
 	@IBAction func sourceQuery(_ sender: AnyObject?) {
-		executeQuery(type: .source)
+		executeSource(type: .source)
 	}
 	
 	/// if there is a selection, executes the selection. Otherwise, executes the current line.
@@ -370,29 +395,6 @@ fileprivate extension SourceEditorController {
 		}
 		editor!.setSelectedRange(desiredRange)
 		editor!.scrollRangeToVisible(desiredRange)
-	}
-	
-	///actually implements running a query, saving first if document is dirty
-	func executeQuery(type: ExecuteType) {
-		guard let currentDocument = currentDocument else {
-			fatalError("runQuery called with no file selected")
-		}
-		let file = currentDocument.file
-		guard currentDocument.dirty else {
-			Log.debug("executeQuery executing without save", .app)
-			session.execute(file: file, type: type)
-			return
-		}
-		saveWithProgress().startWithResult { result in
-			if let innerError = result.error {
-				let appError = AppError(.saveFailed, nestedError: innerError)
-				Log.info("save for execute returned an error: \(result.error!)", .app)
-				self.appStatus?.presentError(appError.rc2Error, session: self.session)
-				return
-			}
-			Log.info("executeQuery saved file, now executing", .app)
-			self.session.execute(file: file, type: type)
-		}
 	}
 	
 	//should be the only place an actual save is performed

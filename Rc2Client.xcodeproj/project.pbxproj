@@ -362,6 +362,7 @@
 		08EE26FC202FA995008E008F /* FileInfoController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08EE26FA202FA995008E008F /* FileInfoController.xib */; };
 		08EE26FF202FAC08008E008F /* VariableDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08EE26FD202FAC08008E008F /* VariableDetails.storyboard */; };
 		08EE27012030A0BC008E008F /* SidebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE27002030A0BC008E008F /* SidebarController.swift */; };
+		08EE270620334470008E008F /* CodeEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE270520334470008E008F /* CodeEditor.swift */; };
 		08F01E961EFC74690047F397 /* NSData+Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F01E941EFC74690047F397 /* NSData+Hash.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		08F01E971EFC74690047F397 /* NSData+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F01E951EFC74690047F397 /* NSData+Hash.m */; };
 		08F01EA11EFD59120047F397 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 08F01EA01EFD59120047F397 /* Localizable.strings */; };
@@ -1052,6 +1053,7 @@
 		08EE26FB202FA995008E008F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/FileInfoController.xib; sourceTree = SOURCE_ROOT; };
 		08EE26FE202FAC08008E008F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = MacClient/Base.lproj/VariableDetails.storyboard; sourceTree = SOURCE_ROOT; };
 		08EE27002030A0BC008E008F /* SidebarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarController.swift; sourceTree = "<group>"; };
+		08EE270520334470008E008F /* CodeEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditor.swift; sourceTree = "<group>"; };
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
 		08F01E941EFC74690047F397 /* NSData+Hash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Hash.h"; sourceTree = "<group>"; };
 		08F01E951EFC74690047F397 /* NSData+Hash.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+Hash.m"; sourceTree = "<group>"; };
@@ -1953,6 +1955,7 @@
 				083174031C5571D300071408 /* RootViewController.swift */,
 				083174051C56BE7B00071408 /* SessionSplitController.swift */,
 				08F448F51C4E244500C64706 /* SourceEditorController.swift */,
+				08EE270520334470008E008F /* CodeEditor.swift */,
 				080AB8DA1E92D8DF005452C7 /* multi image */,
 				08BCD3F81E69BA1A00B86BB4 /* output */,
 				0812631D1C862B94003E37A5 /* sidebar */,
@@ -2923,6 +2926,7 @@
 				08AD13361FCF18D000CFD516 /* FileInfoController.swift in Sources */,
 				08A01FC61CC7FCA3001EDFAA /* FMDatabasePool.m in Sources */,
 				083A56711D24722C009D3091 /* ProjectManagerViewController.swift in Sources */,
+				08EE270620334470008E008F /* CodeEditor.swift in Sources */,
 				086508771E43F27C0067C8CA /* SingleInputViewController.swift in Sources */,
 				08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */,
 				08525E781E3143C3008A332E /* InputPrompter.swift in Sources */,

@@ -21,11 +21,14 @@ protocol SessionControllerDelegate: class {
 	func restore(state: SessionState)
 }
 
+// MARK: -
 /// manages a Session object
 @objc class SessionController: NSObject {
+	// MARK: properties
 	fileprivate weak var delegate: SessionControllerDelegate?
 
 	var responseFormatter: SessionResponseFormatter!
+	let codeEditor: CodeEditor
 	let outputHandler: OutputHandler
 	let varHandler: VariableHandler
 	let session: Session
@@ -34,9 +37,12 @@ protocol SessionControllerDelegate: class {
 	fileprivate var properlyClosed: Bool = false
 	fileprivate var fileLoadDisposable: Disposable?
 	
-	init(session: Session, delegate: SessionControllerDelegate, outputHandler output: OutputHandler, variableHandler: VariableHandler)
+	// MARK: methods
+	
+	init(session: Session, delegate: SessionControllerDelegate, editor: CodeEditor, outputHandler output: OutputHandler, variableHandler: VariableHandler)
 	{
 		self.delegate = delegate
+		self.codeEditor = editor
 		self.outputHandler = output
 		self.varHandler = variableHandler
 		self.session = session
