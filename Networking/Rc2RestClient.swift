@@ -29,7 +29,7 @@ public final class Rc2RestClient {
 			sessionConfig.httpAdditionalHeaders = [:]
 		}
 		self.sessionConfig.httpAdditionalHeaders!["Accept"] = "application/json"
-		urlSession = URLSession(configuration: sessionConfig)
+		urlSession = URLSession(configuration: sessionConfig, delegate: nil, delegateQueue: OperationQueue.main)
 	}
 	
 	fileprivate func request(_ path: String, method: String) -> URLRequest
