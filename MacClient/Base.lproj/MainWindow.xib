@@ -201,10 +201,19 @@
                         </customView>
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="701F23C2-A60A-4F8E-90C7-635064F66E7A" label="Centering" paletteLabel="Centering Space" tag="-1" id="7AX-AY-0Vz" customClass="TAAdaptiveSpaceItem"/>
+                    <toolbarItem implicitItemIdentifier="A80091C4-0706-4569-A310-373F8EDF0879" explicitItemIdentifier="editorFixedSpace" label="Custom View" paletteLabel="Custom View" tag="-1" id="waI-HT-cRP">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="86" height="24"/>
+                        <size key="maxSize" width="86" height="96"/>
+                        <customView key="view" id="SZ4-3W-DIl">
+                            <rect key="frame" x="0.0" y="14" width="86" height="24"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        </customView>
+                    </toolbarItem>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
                     <toolbarItem reference="DRL-wf-hhl"/>
-                    <toolbarItem reference="KBI-AJ-Jip"/>
+                    <toolbarItem reference="waI-HT-cRP"/>
                     <toolbarItem reference="I8j-5c-hEs"/>
                     <toolbarItem reference="7AX-AY-0Vz"/>
                     <toolbarItem reference="FLu-mf-Dta"/>
@@ -223,7 +232,7 @@
         </window>
     </objects>
     <resources>
-        <image name="NSStopProgressFreestandingTemplate" width="11" height="11"/>
+        <image name="NSStopProgressFreestandingTemplate" width="14" height="14"/>
         <image name="clear" width="16" height="16"/>
         <image name="console-tbar" width="38" height="38"/>
         <image name="content-tbar" width="38" height="38"/>
