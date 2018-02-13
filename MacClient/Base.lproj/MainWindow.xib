@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
@@ -50,6 +50,27 @@
                                 </segments>
                             </segmentedCell>
                             <accessibility description="Left View Selector"/>
+                        </segmentedControl>
+                    </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="61E909DB-45F0-4EFC-A379-0EC4FE6FFDB5" explicitItemIdentifier="editorMode" label="" paletteLabel="Right View" id="I8j-5c-hEs" userLabel="Editor Buttons">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="38" height="23"/>
+                        <size key="maxSize" width="133" height="28"/>
+                        <segmentedControl key="view" focusRingType="none" verticalHuggingPriority="750" id="ehn-Me-OJo">
+                            <rect key="frame" x="0.0" y="14" width="71" height="23"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <segmentedCell key="cell" borderStyle="border" focusRingType="none" alignment="left" style="texturedSquare" trackingMode="selectOne" id="zB4-DM-b3V">
+                                <font key="font" metaFont="system" size="14"/>
+                                <segments>
+                                    <segment toolTip="Console" image="notebook" width="32">
+                                        <nil key="label"/>
+                                    </segment>
+                                    <segment image="prefsEditor" width="32">
+                                        <nil key="label"/>
+                                    </segment>
+                                </segments>
+                            </segmentedCell>
+                            <accessibility description="Right View Selector"/>
                         </segmentedControl>
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="B485D81B-B017-4BC2-9576-633E636B25FC" explicitItemIdentifier="rightView" label="" paletteLabel="Right View" id="rTc-JD-E1f" userLabel="Right View">
@@ -139,7 +160,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Yl9-hW-Ujq">
-                                            <rect key="frame" x="277" y="0.5" width="15" height="15"/>
+                                            <rect key="frame" x="277" y="1" width="15" height="15"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="Yl9-hW-Ujq" secondAttribute="height" multiplier="1:1" id="wm6-wP-g01"/>
                                             </constraints>
@@ -183,6 +204,8 @@
                 </allowedToolbarItems>
                 <defaultToolbarItems>
                     <toolbarItem reference="DRL-wf-hhl"/>
+                    <toolbarItem reference="KBI-AJ-Jip"/>
+                    <toolbarItem reference="I8j-5c-hEs"/>
                     <toolbarItem reference="7AX-AY-0Vz"/>
                     <toolbarItem reference="FLu-mf-Dta"/>
                     <toolbarItem reference="XZ3-bl-7lg"/>
@@ -207,7 +230,9 @@
         <image name="files" width="20" height="20"/>
         <image name="help-tbar" width="38" height="38"/>
         <image name="image-tbar" width="38" height="30"/>
+        <image name="notebook" width="20" height="20"/>
         <image name="package" width="38" height="38"/>
+        <image name="prefsEditor" width="32" height="32"/>
         <image name="search" width="18" height="18"/>
         <image name="variables" width="20" height="20"/>
     </resources>
