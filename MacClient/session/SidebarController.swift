@@ -12,18 +12,13 @@ fileprivate extension NSStoryboard.SceneIdentifier {
 
 class SidebarController: NSViewController {
 	@IBOutlet var contentView: NSView!
-	weak var tabController: SidebarTabController!
+	var tabController: SidebarTabController!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		let sboard = NSStoryboard(name: .mainController, bundle: nil)
-		tabController = sboard.instantiateController(withIdentifier: .sidebarTabController) as! SidebarTabController
-		self.addChildViewController(tabController)
-		contentView.addSubview(tabController.view)
-		tabController.view.translatesAutoresizingMaskIntoConstraints = false
-		tabController.view.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-		tabController.view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
-		tabController.view.leftAnchor.constraint(equalTo: contentView.leftAnchor).isActive = true
-		tabController.view.rightAnchor.constraint(equalTo: contentView.rightAnchor).isActive = true
+		// for some reason won't compile if directly setting tabController
+		let controller: SidebarTabController = embedViewController(storyboard: sboard, identifier: .sidebarTabController, contentView: contentView)
+		tabController = controller
 	}
 }
