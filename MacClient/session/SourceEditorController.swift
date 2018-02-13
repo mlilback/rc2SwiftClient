@@ -14,18 +14,18 @@ import SyntaxParsing
 
 ///selectors used in this file, aliased with shorter, descriptive names
 extension Selector {
-	static let runQuery = #selector(SessionEditorController.runQuery(_:))
-	static let sourceQuery = #selector(SessionEditorController.sourceQuery(_:))
-	static let autoSave = #selector(SessionEditorController.autosaveCurrentDocument)
+	static let runQuery = #selector(SourceEditorController.runQuery(_:))
+	static let sourceQuery = #selector(SourceEditorController.sourceQuery(_:))
+	static let autoSave = #selector(SourceEditorController.autosaveCurrentDocument)
 	static let findPanelAction = #selector(NSTextView.performFindPanelAction(_:))
-	static let previousChunkAction = #selector(SessionEditorController.previousChunkAction(_:))
-	static let nextChunkAction = #selector(SessionEditorController.nextChunkAction(_:))
-	static let executeLine = #selector(SessionEditorController.executeCurrentLine(_:))
-	static let executeCurrentChunk = #selector(SessionEditorController.executeCurrentChunk(_:))
-	static let executePrevousChunks = #selector(SessionEditorController.executePreviousChunks(_:))
+	static let previousChunkAction = #selector(SourceEditorController.previousChunkAction(_:))
+	static let nextChunkAction = #selector(SourceEditorController.nextChunkAction(_:))
+	static let executeLine = #selector(SourceEditorController.executeCurrentLine(_:))
+	static let executeCurrentChunk = #selector(SourceEditorController.executeCurrentChunk(_:))
+	static let executePrevousChunks = #selector(SourceEditorController.executePreviousChunks(_:))
 }
 
-class SessionEditorController: AbstractSessionViewController, TextViewMenuDelegate
+class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegate
 {
 	// MARK: properties
 	@IBOutlet var editor: SessionEditor?
@@ -221,7 +221,7 @@ class SessionEditorController: AbstractSessionViewController, TextViewMenuDelega
 }
 
 // MARK: Actions
-extension SessionEditorController {
+extension SourceEditorController {
 	@IBAction func previousChunkAction(_ sender: AnyObject) {
 		guard currentChunkIndex > 0 else {
 			Log.error("called with invalid currentChunkIndex", .app)
@@ -293,7 +293,7 @@ extension SessionEditorController {
 }
 
 // MARK: UsesAdjustableFont
-extension SessionEditorController: UsesAdjustableFont {
+extension SourceEditorController: UsesAdjustableFont {
 	func fontsEnabled() -> Bool {
 		return true
 	}
@@ -308,7 +308,7 @@ extension SessionEditorController: UsesAdjustableFont {
 }
 
 // MARK: NSTextStorageDelegate
-extension SessionEditorController: NSTextStorageDelegate {
+extension SourceEditorController: NSTextStorageDelegate {
 	//called when text editing has ended
 	func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
 	{
@@ -331,7 +331,7 @@ extension SessionEditorController: NSTextStorageDelegate {
 }
 
 // MARK: NSTextViewDelegate methods
-extension SessionEditorController: NSTextViewDelegate {
+extension SourceEditorController: NSTextViewDelegate {
 	func undoManager(for view: NSTextView) -> UndoManager? {
 		if currentDocument != nil { return currentDocument!.undoManager }
 		return editor?.undoManager
@@ -352,7 +352,7 @@ extension SessionEditorController: NSTextViewDelegate {
 }
 
 // MARK: private methods
-fileprivate extension SessionEditorController {
+fileprivate extension SourceEditorController {
 	///adjusts the UI to mark the current chunk
 	func adjustUIForCurrentChunk() {
 		//for now we will move the cursor and scroll so it is visible

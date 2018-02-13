@@ -23,7 +23,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	
 	fileprivate var progressDisposable: Disposable?
 	fileprivate var dimmingView: DimmingView?
-	weak var editor: SessionEditorController?
+	weak var editor: SourceEditorController?
 	weak var splitController: SessionSplitController?
 	weak var outputHandler: OutputHandler?
 	weak var fileHandler: SidebarFileController?
