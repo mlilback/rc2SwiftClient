@@ -269,6 +269,7 @@
                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                             <connections>
                                                 <outlet property="delegate" destination="PjE-XL-yZ2" id="XMg-5C-zIC"/>
+                                                <outlet property="textFinder" destination="amI-QK-MgZ" id="3t9-It-ODC"/>
                                             </connections>
                                         </textView>
                                     </subviews>
@@ -297,8 +298,21 @@
                     </connections>
                 </viewController>
                 <customObject id="aXM-1s-MSW" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <textFinder id="amI-QK-MgZ">
+                    <connections>
+                        <outlet property="client" destination="avy-g3-Ese" id="4tM-MO-tQV"/>
+                        <outlet property="findBarContainer" destination="aTm-hy-NW5" id="hyy-Fb-RA2"/>
+                    </connections>
+                </textFinder>
                 <menu title="Contextual Menu" id="ZHL-1s-yZb" userLabel="Contextual Menu">
                     <items>
+                        <menuItem title="Find" id="M7s-vr-K1u">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="showFindInterface:" target="PjE-XL-yZ2" id="eHK-Lp-uzf"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem isSeparatorItem="YES" id="GqH-u8-vrK"/>
                         <menuItem title="Run Query" id="an5-s4-rM4">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
@@ -332,7 +346,7 @@
                     </items>
                 </menu>
             </objects>
-            <point key="canvasLocation" x="596" y="1693.5"/>
+            <point key="canvasLocation" x="554" y="1677"/>
         </scene>
         <!--notebook editor controller-->
         <scene sceneID="G5P-op-VSN">

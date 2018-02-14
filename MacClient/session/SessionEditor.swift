@@ -10,6 +10,7 @@ import SwiftyUserDefaults
 
 class SessionEditor: TextViewWithContextualMenu {
 	var wordWrapEnabled: Bool { return textContainer!.widthTracksTextView }
+	@IBOutlet var textFinder: NSTextFinder!
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
@@ -17,7 +18,8 @@ class SessionEditor: TextViewWithContextualMenu {
 		isAutomaticSpellingCorrectionEnabled = false
 		isAutomaticQuoteSubstitutionEnabled = false
 		isAutomaticDashSubstitutionEnabled = false
-		
+		textFinder = NSTextFinder()
+		textFinder.findBarContainer = self.enclosingScrollView
 	}
 	
 	var rangeOfAllText: NSRange {

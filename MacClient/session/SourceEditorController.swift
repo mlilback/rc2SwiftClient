@@ -152,6 +152,8 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 			return true
 		case #selector(UsesAdjustableFont.fontChanged(_:)):
 			return true
+		case #selector(showFindInterface(_:)):
+			return !(editor?.enclosingScrollView?.isFindBarVisible ?? false)
 		default:
 			return false
 		}
@@ -270,6 +272,12 @@ extension SourceEditorController {
 		adjustUIForCurrentChunk()
 	}
 
+	@IBAction func showFindInterface(_ sender: Any?) {
+		let menuItem = NSMenuItem(title: "foo", action: .findPanelAction, keyEquivalent: "")
+		menuItem.tag = Int(NSFindPanelAction.showFindPanel.rawValue)
+		editor?.performFindPanelAction(menuItem)
+	}
+	
 	@IBAction override func performTextFinderAction(_ sender: Any?) {
 		let menuItem = NSMenuItem(title: "foo", action: .findPanelAction, keyEquivalent: "")
 		menuItem.tag = Int(NSFindPanelAction.showFindPanel.rawValue)
@@ -493,6 +501,12 @@ fileprivate extension SourceEditorController {
 		fileNameField?.stringValue = selected ? currentDocument!.file.name : ""
 		editor?.isEditable = selected
 		editor?.font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
+		// editor.textFinder.cancelFindIndicator() is not erasing the find info, so we have to remove the find interface even if loading another file
+		let menuItem = NSMenuItem(title: "foo", action: .findPanelAction, keyEquivalent: "")
+		menuItem.tag = Int(NSTextFinder.Action.hideFindInterface.rawValue)
+		editor?.performTextFinderAction(menuItem)
+		editor?.textFinder.cancelFindIndicator()
+		
 		willChangeValue(forKey: "canExecute")
 		didChangeValue(forKey: "canExecute")
 	}
