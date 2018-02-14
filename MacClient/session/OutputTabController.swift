@@ -18,11 +18,14 @@ enum OutputTab: Int {
 }
 
 protocol OutputController: Searchable {
+	var supportsSearchBar: Bool { get }
 	var searchBarVisible: Bool { get }
 }
 
 extension OutputController {
+	var supportsSearchBar: Bool { return false }
 	var searchBarVisible: Bool { return false }
+	func handleFind(action: NSTextFinder.Action) {}
 }
 
 class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandler {
@@ -32,6 +35,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	weak var imageController: ImageOutputController?
 	weak var webController: WebKitOutputController?
 	weak var helpController: HelpOutputController?
+	weak var searchButton: NSSegmentedControl?
 	var imageCache: ImageCache? { return sessionController?.session.imageCache }
 	weak var sessionController: SessionController? { didSet { sessionControllerUpdated() } }
 	weak var displayedFile: AppFile?
@@ -97,10 +101,21 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 				
 			}
 			return true
+		} else if item.itemIdentifier.rawValue == "search" {
+			searchButton = item.view as? NSSegmentedControl
+			TargetActionBlock { [weak self] sender in
+				self?.toggleSearchBar()
+				}.installInControl(searchButton!)
+			if let myItem = item as? ValidatingToolbarItem {
+				myItem.validationHandler = { [weak self] item in
+					item.isEnabled = self?.currentOutputController.supportsSearchBar ?? false
+				}
+			}
+			return true
 		}
 		return false
 	}
-	
+
 	func showHelp(_ topics: [HelpTopic]) {
 		guard topics.count > 0 else {
 			if let rstr = sessionController?.format(errorString: NSLocalizedString("No Help Found", comment: "")) {
@@ -126,6 +141,11 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		}
 	}
 
+	func toggleSearchBar() {
+		let action: NSTextFinder.Action = currentOutputController.searchBarVisible ? .hideFindInterface : .showFindInterface
+		currentOutputController.performFind(action: action)
+	}
+	
 	@objc func clearConsole(_ sender: AnyObject?) {
 		consoleController?.clearConsole(sender)
 		imageCache?.clearCache()

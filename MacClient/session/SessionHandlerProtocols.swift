@@ -40,6 +40,7 @@ protocol OutputHandler: SearchResponder {
 	func showHelp(_ topics: [HelpTopic])
 	//action event forwarding
 	func clearConsole(_ sender: AnyObject?)
+	func toggleSearchBar()
 }
 
 /// Implemented by objects that need to response to changes related to files

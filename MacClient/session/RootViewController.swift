@@ -12,12 +12,11 @@ import Model
 
 let MaxEditableFileSize: Int = 1024 * 1024 // 1 MB
 
-class RootViewController: AbstractSessionViewController, ToolbarItemHandler
+class RootViewController: AbstractSessionViewController
 {
 	// MARK: - properties
 	var sessionController: SessionController?
 	
-	var searchButton: NSSegmentedControl?
 	var statusTimer: Timer?
 	var sessionClosedHandler: (() -> Void)?
 	
@@ -51,7 +50,6 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	
 	override func viewDidAppear() {
 		super.viewDidAppear()
-		self.hookupToToolbarItems(self, window: view.window!)
 		NotificationCenter.default.addObserver(self, selector: #selector(windowWillClose(_:)), name: NSWindow.willCloseNotification, object:view.window!)
 		NotificationCenter.default.addObserver(self, selector: #selector(receivedImportNotification(_:)), name: .filesImported, object: nil)
 		//create dimming view
@@ -109,23 +107,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 	@objc func setupResponder() {
 		view.window?.makeFirstResponder(outputHandler?.initialFirstResponder())
 	}
-	
-	func handlesToolbarItem(_ item: NSToolbarItem) -> Bool {
-		if item.itemIdentifier.rawValue == "search" {
-			searchButton = item.view as? NSSegmentedControl
-			TargetActionBlock { [weak self] sender in
-				self?.toggleSearch(sender)
-			}.installInControl(searchButton!)
-			if let myItem = item as? ValidatingToolbarItem {
-				myItem.validationHandler = { item in
-					item.isEnabled = self.responderChainContains(self)
-				}
-			}
-			return true
-		}
-		return false
-	}
-	
+		
 	/// selects the first file imported if it is a source file
 	@objc func receivedImportNotification(_ note: Notification) {
 		guard let importer = note.object as? FileImporter else { return }
@@ -168,17 +150,6 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 
 // MARK: - actions
 extension RootViewController {
-	@IBAction func toggleSearch(_ sender: Any?) {
-		if let outputHandler = outputHandler {
-			outputHandler.searchBarVisible = !outputHandler.searchBarVisible
-		}
-	}
-	
-	@IBAction override func performTextFinderAction(_ sender: Any?) {
-		guard let item = sender as? NSValidatedUserInterfaceItem, let tag = NSTextFinder.Action(rawValue: item.tag) else { return }
-		outputHandler?.handleSearch(action: tag)
-	}
-	
 	@IBAction func clearFileCache(_ sender: AnyObject?) {
 		sessionController?.clearFileCache()
 	}

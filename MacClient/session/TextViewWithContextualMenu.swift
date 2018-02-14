@@ -13,9 +13,12 @@ import AppKit
 ///common base class for NSTextView that supports a customized contextual menu. Used for editor and console.
 class TextViewWithContextualMenu: NSTextView {
 	@IBOutlet weak var menuDelegate: TextViewMenuDelegate?
-	
+	@IBOutlet var textFinder: NSTextFinder!
+
 	override func awakeFromNib() {
 		super.awakeFromNib()
+		textFinder = NSTextFinder()
+		textFinder.findBarContainer = self.enclosingScrollView
 		usesFindBar = true
 	}
 

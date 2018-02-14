@@ -35,6 +35,8 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 			}
 		}
 	}
+	var supportsSearchBar: Bool { return true }
+	var searchBarVisible: Bool { return resultsView?.enclosingScrollView?.isFindBarVisible ?? false }
 	
 	required init?(coder: NSCoder) {
 		cmdHistory = CommandHistory(target:nil, selector:#selector(ConsoleOutputController.displayHistoryItem(_:)))
@@ -224,6 +226,9 @@ extension ConsoleOutputController: Searchable {
 		let menuItem = NSMenuItem(title: "foo", action: #selector(NSTextView.performFindPanelAction(_:)), keyEquivalent: "")
 		menuItem.tag = action.rawValue
 		resultsView?.performFindPanelAction(menuItem)
+		if action == .hideFindInterface {
+			resultsView?.enclosingScrollView?.isFindBarVisible = false
+		}
 	}
 }
 

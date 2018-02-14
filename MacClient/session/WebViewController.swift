@@ -19,6 +19,7 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 	@IBOutlet var searchBarHeightConstraint: NSLayoutConstraint?
 	var webConfig: WKWebViewConfiguration?
 	fileprivate var searchBarHeight: CGFloat = 0
+	var supportsSearchBar: Bool { return true }
 	var searchBarVisible: Bool { return (searchBarHeightConstraint?.constant ?? 0 > 0) }
 	
 	open var pageTitle: String { return webView?.title ?? "" }
