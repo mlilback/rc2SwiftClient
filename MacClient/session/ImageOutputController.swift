@@ -12,23 +12,9 @@ import ReactiveSwift
 import Networking
 import Model
 
-//class DisplayableImage: NSObject {
-//	let imageId: Int
-//	let name: String
-//	var image: NSImage?
-//
-//	init(imageId: Int, name: String) {
-//		self.imageId = imageId
-//		self.name = name
-//	}
-//
-//	convenience init(_ simage: SessionImage) {
-//		self.init(imageId: simage.id, name: simage.displayName)
-//	}
-//}
-
-class ImageOutputController: NSViewController, OutputController, NSPageControllerDelegate, NSSharingServicePickerDelegate
+class ImageOutputController: NSViewController, OutputController, NSSharingServicePickerDelegate
 {
+	// MARK: properties
 	let emptyIdentifier = NSPageController.ObjectIdentifier("empty")
 	
 	@IBOutlet var containerView: NSView?
@@ -44,6 +30,7 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	fileprivate let emptyObject: Any = 1 as Any
 	var selectedImageId: Int { return selectedImage?.id ?? 0 }
 	
+	// MARK: - methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		pageController = NSPageController()
@@ -152,6 +139,26 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 		imagePopup?.isEnabled = false
 	}
 	
+	// load the images into the popup
+	func adjustImagePopup() {
+		imagePopup?.removeAllItems()
+		guard let images = allImages?.value, images.count > 0 else { return }
+		var currentBatch = images[0].batchId
+		for anImage in images {
+			if anImage.batchId != currentBatch {
+				imagePopup?.menu?.addItem(NSMenuItem.separator())
+				currentBatch = anImage.batchId
+			}
+			let item = NSMenuItem(title: anImage.name, action: #selector(selectImage(_:)), keyEquivalent: "")
+			item.tag = anImage.id
+			item.target = self
+			item.toolTip = anImage.name
+			item.representedObject = anImage
+			imagePopup?.menu?.addItem(item)
+		}
+	}
+	
+	// MARK: - actions
 	@IBAction func navigateClicked(_ sender: AnyObject?) {
 		switch (navigateButton?.selectedSegment)! {
 		case 0:
@@ -188,31 +195,15 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 			picker.show(relativeTo: (self.shareButton?.bounds)!, of: self.shareButton!, preferredEdge: .maxY)
 		}
 	}
-
-	// load the images into the popup
-	func adjustImagePopup() {
-		imagePopup?.removeAllItems()
-		guard let images = allImages?.value, images.count > 0 else { return }
-		var currentBatch = images[0].batchId
-		for anImage in images {
-			if anImage.batchId != currentBatch {
-				imagePopup?.menu?.addItem(NSMenuItem.separator())
-				currentBatch = anImage.batchId
-			}
-			let item = NSMenuItem(title: anImage.name, action: #selector(selectImage(_:)), keyEquivalent: "")
-			item.tag = anImage.id
-			item.target = self
-			item.toolTip = anImage.name
-			item.representedObject = anImage
-			imagePopup?.menu?.addItem(item)
-		}
-	}
 	
-	@objc func selectImage(_ sender: Any?) {
+	@IBAction func selectImage(_ sender: Any?) {
 		guard let menuItem = sender as? NSMenuItem, let image = menuItem.representedObject as? SessionImage else { return }
 		display(image: image)
 	}
-	
+}
+
+// MARK: - NSPageControllerDelegate
+extension ImageOutputController: NSPageControllerDelegate {
 	func sharingServicePicker(_ sharingServicePicker: NSSharingServicePicker, sharingServicesForItems items: [Any], proposedSharingServices proposedServices: [NSSharingService]) -> [NSSharingService]
 	{
 		return myShareServices + proposedServices
@@ -271,6 +262,8 @@ class ImageOutputController: NSViewController, OutputController, NSPageControlle
 	}
 }
 
+// MARK: -
+//controller shown in the page controller
 class ImageViewController: NSViewController {
 	var didAddConstraints = false
 	var imageLoadDisposable: Disposable?
