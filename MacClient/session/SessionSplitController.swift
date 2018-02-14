@@ -22,6 +22,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	// MARK: properties
 	var sidebarSegmentControl: NSSegmentedControl?
 	var outputSegmentControl: NSSegmentedControl?
+	var spacerToolbarItem: NSToolbarItem?
 	private let (lifetime, token) = Lifetime.make()
 
 	// MARK: methods
@@ -50,6 +51,8 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 			outputSegmentControl?.selectedSegment = 0
 			outputTabController().selectedOutputTab.value = .console
 			return true
+		} else if item.itemIdentifier.rawValue == "editorFixedSpace" {
+			spacerToolbarItem = item
 		}
 		return false
 	}
@@ -114,11 +117,21 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	@IBAction func toggleLeftView(_ sender: Any?) {
 		let splitItem = sidebarSplitItem()
 		splitItem.isCollapsed = !splitItem.isCollapsed
+		adjustToolbarItemWidth()
 		if let sidebar = sidebarSegmentControl {
 			sidebar.animator().setSelected(!splitItem.isCollapsed, forSegment: sidebar.selectedSegment)
 		}
 	}
 	
+	func adjustToolbarItemWidth() {
+		guard let spacerItem = spacerToolbarItem, let spacerView = spacerItem.view  else { return }
+		var size = spacerView.frame.size
+		size.width = sidebarSplitItem().isCollapsed ? 0 : 86.0
+		spacerItem.minSize = size
+		spacerItem.maxSize = size
+		spacerView.animator().setFrameSize(size)
+	}
+
 	func switchSidebarTo(tab: SidebarTab) {
 		let index = tab.rawValue
 		let sidebar = sidebarTabController()
@@ -139,6 +152,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 			sidebar.selectedTabViewItemIndex = index
 			UserDefaults.standard.set(index, forKey: LastSelectedSessionTabIndex)
 		}
+		adjustToolbarItemWidth()
 	}
 
 	func sidebarSplitItem() -> NSSplitViewItem {
