@@ -11,9 +11,9 @@ let rc2ErrorDomain = "Rc2ErrorDomain"
 
 extension Notification.Name {
 	///The object can be either a HelpTopic or a String
-	static let DisplayHelpTopic = Notification.Name("DisplayHelpTopicNotification")
+	static let displayHelpTopic = Notification.Name("DisplayHelpTopicNotification")
 	///The object is the FileImporter used
-	static let FilesImported = Notification.Name("FilesImportedNotification")
+	static let filesImported = Notification.Name("FilesImportedNotification")
 }
 
 struct LocalStrings {

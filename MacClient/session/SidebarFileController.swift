@@ -536,7 +536,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 					Log.error("got import error \(error)", .app)
 					self?.fileImporter = nil //free up importer
 				case .completed:
-					NotificationCenter.default.post(name: .FilesImported, object: self?.fileImporter!)
+					NotificationCenter.default.post(name: .filesImported, object: self?.fileImporter!)
 					self?.fileImporter = nil //free up importer
 				case .interrupted:
 					Log.info("import canceled", .app)

@@ -380,7 +380,7 @@ extension SourceEditorController: NSTextViewDelegate {
 	
 	func textView(_ textView: NSTextView, clickedOnLink link: Any, at charIndex: Int) -> Bool {
 		if let str = link as? String, let pieces = Optional(str.components(separatedBy: ":")), pieces.count == 2 {
-			NotificationCenter.default.post(name: .DisplayHelpTopic, object:pieces[1], userInfo:nil)
+			NotificationCenter.default.post(name: .displayHelpTopic, object:pieces[1], userInfo:nil)
 			return true
 		}
 		return false

@@ -46,7 +46,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	// MARK: methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		NotificationCenter.default.addObserver(self, selector: #selector(OutputTabController.handleDisplayHelp(_:)), name: .DisplayHelpTopic, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(handleDisplayHelp(_:)), name: .displayHelpTopic, object: nil)
 		selectedOutputTab.signal.observeValues { [weak self] tab in
 			self?.switchTo(tab: tab)
 		}

@@ -53,7 +53,7 @@ class RootViewController: AbstractSessionViewController, ToolbarItemHandler
 		super.viewDidAppear()
 		self.hookupToToolbarItems(self, window: view.window!)
 		NotificationCenter.default.addObserver(self, selector: #selector(windowWillClose(_:)), name: NSWindow.willCloseNotification, object:view.window!)
-		NotificationCenter.default.addObserver(self, selector: #selector(receivedImportNotification(_:)), name: .FilesImported, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(receivedImportNotification(_:)), name: .filesImported, object: nil)
 		//create dimming view
 		dimmingView = DimmingView(frame: view.bounds)
 		view.addSubview(dimmingView!)
