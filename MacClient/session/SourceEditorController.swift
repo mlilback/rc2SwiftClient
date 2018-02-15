@@ -40,6 +40,8 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 	private var defaultAttributes: [NSAttributedStringKey: Any] = [:]
 	private var currentChunkIndex = 0
 	
+	var searchableTextView: NSTextView? { return editor }
+	
 	///true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
 	private var ignoreTextStorageNotifications = false
 	
@@ -47,6 +49,8 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 		guard currentDocument?.isLoaded ?? false else { return false }
 		return currentDocument?.currentContents.count ?? 0 > 0
 	}
+	
+	var documentLoaded: Bool { return currentDocument != nil }
 
 	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFont(ofSize: UserDefaults.standard[.defaultFontSize])!.fontDescriptor {
 		didSet {

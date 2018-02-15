@@ -9,6 +9,7 @@ import Networking
 
 class NotebookEditorController: AbstractSessionViewController, CodeEditor {
 	@objc dynamic var canExecute: Bool { return true }
+	var documentLoaded: Bool { return false }
 	
 	func executeSource(type: ExecuteType) {
 		

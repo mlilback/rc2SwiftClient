@@ -18,14 +18,6 @@ enum OutputTab: Int {
 }
 
 protocol OutputController: Searchable {
-	var supportsSearchBar: Bool { get }
-	var searchBarVisible: Bool { get }
-}
-
-extension OutputController {
-	var supportsSearchBar: Bool { return false }
-	var searchBarVisible: Bool { return false }
-	func handleFind(action: NSTextFinder.Action) {}
 }
 
 class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandler {

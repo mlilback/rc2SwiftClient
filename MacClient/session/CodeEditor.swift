@@ -12,8 +12,9 @@ enum EditorMode: Int {
 	case source
 }
 
-protocol CodeEditor: class {
+protocol CodeEditor: class, Searchable {
 	var canExecute: Bool { get }
+	var documentLoaded: Bool { get }
 	func executeSource(type: ExecuteType)
 	func save(state: inout SessionState.EditorState)
 	func restore(state: SessionState.EditorState)

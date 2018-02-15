@@ -137,13 +137,13 @@
                     <toolbarItem implicitItemIdentifier="D673F222-EFB0-4C48-868F-162E54249040" explicitItemIdentifier="status" label="" paletteLabel="Status" tag="-1" id="FLu-mf-Dta">
                         <nil key="toolTip"/>
                         <size key="minSize" width="163" height="22"/>
-                        <size key="maxSize" width="300" height="96"/>
+                        <size key="maxSize" width="220" height="96"/>
                         <customView key="view" id="XT5-ai-z8C" customClass="AppStatusView" customModule="MacClient" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="14" width="300" height="22"/>
+                            <rect key="frame" x="0.0" y="14" width="220" height="22"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <subviews>
                                 <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zH3-I4-AdV">
-                                    <rect key="frame" x="4" y="3" width="292" height="16"/>
+                                    <rect key="frame" x="4" y="3" width="212" height="16"/>
                                     <subviews>
                                         <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="1" displayedWhenStopped="NO" bezeled="NO" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="Lw1-DM-2Ob" userLabel="determinate progress">
                                             <rect key="frame" x="0.0" y="0.0" width="16" height="16"/>
@@ -152,7 +152,7 @@
                                             <rect key="frame" x="24" y="0.0" width="16" height="16"/>
                                         </progressIndicator>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eFO-dJ-ehO">
-                                            <rect key="frame" x="46" y="1" width="225" height="14"/>
+                                            <rect key="frame" x="46" y="1" width="145" height="14"/>
                                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" placeholderString="" id="bDP-vL-bKg">
                                                 <font key="font" metaFont="systemLight" size="11"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -160,7 +160,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Yl9-hW-Ujq">
-                                            <rect key="frame" x="277" y="1" width="15" height="15"/>
+                                            <rect key="frame" x="197" y="1" width="15" height="15"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="Yl9-hW-Ujq" secondAttribute="height" multiplier="1:1" id="wm6-wP-g01"/>
                                             </constraints>
@@ -200,8 +200,24 @@
                             </connections>
                         </customView>
                     </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="75967C17-C5AE-4630-A64D-24E6DACCF4C3" explicitItemIdentifier="editorSearch" label="Editor Search" paletteLabel="Editor Search" id="rX7-OM-UAe" customClass="ValidatingToolbarItem" customModule="MacClient" customModuleProvider="target">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="34" height="25"/>
+                        <size key="maxSize" width="34" height="25"/>
+                        <segmentedControl key="view" toolTip="Search" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" id="ROF-z3-mny">
+                            <rect key="frame" x="22" y="14" width="34" height="25"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="2tj-MW-m1W">
+                                <font key="font" metaFont="system" size="14"/>
+                                <segments>
+                                    <segment image="search" width="32"/>
+                                </segments>
+                            </segmentedCell>
+                            <accessibility description="search"/>
+                        </segmentedControl>
+                    </toolbarItem>
                     <toolbarItem implicitItemIdentifier="701F23C2-A60A-4F8E-90C7-635064F66E7A" label="Centering" paletteLabel="Centering Space" tag="-1" id="7AX-AY-0Vz" customClass="TAAdaptiveSpaceItem"/>
-                    <toolbarItem implicitItemIdentifier="A80091C4-0706-4569-A310-373F8EDF0879" explicitItemIdentifier="editorFixedSpace" label="Custom View" paletteLabel="Custom View" tag="-1" id="waI-HT-cRP">
+                    <toolbarItem implicitItemIdentifier="A80091C4-0706-4569-A310-373F8EDF0879" explicitItemIdentifier="editorFixedSpace" label="Custom View" paletteLabel="Custom View" tag="-1" id="waI-HT-cRP" userLabel="Fixed Editor Spacer">
                         <nil key="toolTip"/>
                         <size key="minSize" width="86" height="24"/>
                         <size key="maxSize" width="86" height="96"/>
@@ -210,11 +226,49 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         </customView>
                     </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="1D981D0B-DA54-46C2-962D-8F69DE4C9994" explicitItemIdentifier="customEditor" label="Custom View" paletteLabel="Custom View" tag="-1" id="CYJ-5l-QhI" userLabel="comnbined" customClass="ValidatingToolbarItem" customModule="MacClient" customModuleProvider="target">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="126" height="25"/>
+                        <size key="maxSize" width="163" height="126"/>
+                        <customView key="view" id="kP9-9R-WRk">
+                            <rect key="frame" x="0.0" y="14" width="128" height="25"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <subviews>
+                                <segmentedControl focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="eLV-Ee-7gC">
+                                    <rect key="frame" x="0.0" y="0.0" width="71" height="23"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <segmentedCell key="cell" borderStyle="border" focusRingType="none" alignment="left" style="texturedSquare" trackingMode="selectOne" id="cyY-zG-SNx">
+                                        <font key="font" metaFont="system" size="14"/>
+                                        <segments>
+                                            <segment toolTip="Console" image="notebook" width="32">
+                                                <nil key="label"/>
+                                            </segment>
+                                            <segment image="source" width="32">
+                                                <nil key="label"/>
+                                            </segment>
+                                        </segments>
+                                    </segmentedCell>
+                                    <accessibility description="Right View Selector"/>
+                                </segmentedControl>
+                                <segmentedControl toolTip="Search" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="B9S-3j-Jdw">
+                                    <rect key="frame" x="79" y="0.0" width="36" height="23"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="BpV-xH-BVR">
+                                        <font key="font" metaFont="system" size="14"/>
+                                        <segments>
+                                            <segment image="search" width="32"/>
+                                        </segments>
+                                    </segmentedCell>
+                                    <accessibility description="search"/>
+                                </segmentedControl>
+                            </subviews>
+                        </customView>
+                    </toolbarItem>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
                     <toolbarItem reference="DRL-wf-hhl"/>
                     <toolbarItem reference="waI-HT-cRP"/>
-                    <toolbarItem reference="I8j-5c-hEs"/>
+                    <toolbarItem reference="CYJ-5l-QhI"/>
                     <toolbarItem reference="7AX-AY-0Vz"/>
                     <toolbarItem reference="FLu-mf-Dta"/>
                     <toolbarItem reference="XZ3-bl-7lg"/>
@@ -232,17 +286,18 @@
         </window>
     </objects>
     <resources>
-        <image name="NSStopProgressFreestandingTemplate" width="14" height="14"/>
+        <image name="NSStopProgressFreestandingTemplate" width="11" height="11"/>
         <image name="clear" width="16" height="16"/>
         <image name="console-tbar" width="38" height="38"/>
         <image name="content-tbar" width="38" height="38"/>
         <image name="files" width="20" height="20"/>
         <image name="help-tbar" width="38" height="38"/>
         <image name="image-tbar" width="38" height="30"/>
-        <image name="notebook" width="20" height="20"/>
+        <image name="notebook" width="18" height="20"/>
         <image name="package" width="38" height="38"/>
         <image name="prefsEditor" width="32" height="32"/>
         <image name="search" width="18" height="18"/>
+        <image name="source" width="18" height="20"/>
         <image name="variables" width="20" height="20"/>
     </resources>
 </document>

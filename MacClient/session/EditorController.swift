@@ -27,6 +27,7 @@ class EditorController: AbstractSessionViewController, ToolbarItemHandler {
 	private var observerTokens = [Any]()
 	// toolbar mode buttons
 	var toolbarModeButtons: NSSegmentedControl?
+	var toolbarSearchButton: NSSegmentedControl?
 	
 	@objc dynamic private(set) var notebookModeEnabled: Bool = false { didSet {
 		toolbarModeButtons?.setEnabled(notebookModeEnabled, forSegment: 0)
@@ -63,16 +64,22 @@ class EditorController: AbstractSessionViewController, ToolbarItemHandler {
 	}
 	
 	func handlesToolbarItem(_ item: NSToolbarItem) -> Bool {
-		if item.itemIdentifier.rawValue == "editorMode" {
-			guard let modeButtons = item.view as? NSSegmentedControl else { fatalError() }
+		if item.itemIdentifier.rawValue == "customEditor" {
+			guard let modeButtons = item.view?.viewWithTag(1) as? NSSegmentedControl else { fatalError() }
+			guard let searchButton = item.view?.viewWithTag(2) as? NSSegmentedControl else { fatalError() }
 			toolbarModeButtons = modeButtons
+			toolbarSearchButton = searchButton
+			modeButtons.setSelected(true, forSegment: 1)
 			TargetActionBlock { [weak self] sender in
 				self?.switchMode(EditorMode(rawValue: modeButtons.selectedSegment)!)
-				}.installInControl(modeButtons)
+			}.installInControl(modeButtons)
+			TargetActionBlock { [weak self] sender in
+				self?.toggleSearch()
+			}.installInControl(searchButton)
 			if let myItem = item as? ValidatingToolbarItem {
-				myItem.validationHandler = { item in
+				myItem.validationHandler = { [weak self] item in
 					item.isEnabled = true
-					modeButtons.setEnabled(self.notebookModeEnabled, forSegment: 0)
+					searchButton.setEnabled(self?.currentEditor?.documentLoaded ?? false, forSegment: 0)
 				}
 			}
 			return true
@@ -80,6 +87,12 @@ class EditorController: AbstractSessionViewController, ToolbarItemHandler {
 		return false
 	}
 
+	func toggleSearch() {
+		guard let editor = currentEditor else { return }
+		let action: NSTextFinder.Action = editor.searchBarVisible ? .hideFindInterface : .showFindInterface
+		editor.performFind(action: action)
+	}
+	
 	func switchMode(_ mode: EditorMode) {
 		currentEditor = mode == .notebook ? notebookEditor : sourceEditor
 		tabController.selectedTabViewItemIndex = mode.rawValue
@@ -95,7 +108,13 @@ class EditorController: AbstractSessionViewController, ToolbarItemHandler {
 	}
 }
 
+extension EditorController: Searchable {
+	var searchableTextView: NSTextView? { return currentEditor?.searchableTextView }
+	var supportsSearchBar: Bool { return true }
+}
+
 extension EditorController: EditorManager {
+	@objc dynamic var documentLoaded: Bool { return currentEditor?.documentLoaded ?? false }
 	@objc dynamic var canExecute: Bool { return currentEditor?.canExecute ?? false }
 	@objc dynamic var canSwitchToNotebookMode: Bool { return notebookModeEnabled && currentEditor != notebookEditor }
 	@objc dynamic var canSwitchToSourceMode: Bool { return currentEditor != sourceEditor }
