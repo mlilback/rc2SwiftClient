@@ -378,6 +378,17 @@ public class Session {
 	}
 }
 
+// MARK: FileSaver
+extension Session: FileSaver {
+	public func save(file: AppFile, contents: String?) -> SignalProducer<Void, Rc2Error> {
+		guard let contents = contents else {
+			return SignalProducer<Void, Rc2Error>(error: Rc2Error(type: .invalidArgument, explanation: "passed no contents to save"))
+		}
+		return sendSaveFileMessage(file: file, contents: contents, executeType: .none)
+			.map { _ in }
+	}
+}
+
 // MARK: private methods
 private extension Session {
 	//we've got a dictionary of the save response. keys should be transId, success, file, error

@@ -194,6 +194,7 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 		}
 	}
 
+	// TOOD: move to DocumentManager
 	//called when file has changed in UI
 	func fileChanged(file: AppFile?) {
 		if let theFile = file {
@@ -205,6 +206,7 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 		}
 	}
 	
+	// TOOD: move to DocumentManager
 	//called when a file in the workspace file array has changed
 	func process(changes: [AppWorkspace.FileChange]) {
 		//if it was a file change (content or metadata)
@@ -219,6 +221,7 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 		}
 	}
 	
+	// TOOD: move to DocumentManager
 	@objc func autosaveCurrentDocument() {
 		guard currentDocument?.dirty ?? false else { return }
 		saveWithProgress(isAutoSave: true).startWithResult { result in
@@ -412,6 +415,7 @@ fileprivate extension SourceEditorController {
 		editor!.scrollRangeToVisible(desiredRange)
 	}
 	
+	// TOOD: move to DocumentManager
 	//should be the only place an actual save is performed
 	private func saveWithProgress(isAutoSave: Bool = false) -> SignalProducer<Bool, Rc2Error> {
 		guard let doc = currentDocument, let file = currentDocument?.file else {
@@ -423,6 +427,7 @@ fileprivate extension SourceEditorController {
 			.observe(on: UIScheduler())
 	}
 	
+	// TOOD: move to DocumentManager
 	func adjustCurrentDocumentForFile(_ file: AppFile?) {
 		guard let editor = self.editor else { Log.error("can't adjust document without editor", .app); return }
 		//save old document
@@ -477,6 +482,7 @@ fileprivate extension SourceEditorController {
 		self.updateUIForCurrentDocument()
 	}
 	
+	// TOOD: move to DocumentManager
 	func saveDocument(_ doc: EditorDocument, contents: String) {
 		let editor = self.editor!
 		let lm = editor.layoutManager!

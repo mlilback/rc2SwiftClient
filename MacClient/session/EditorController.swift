@@ -18,6 +18,7 @@ class EditorController: AbstractSessionViewController, ToolbarItemHandler {
 	@IBOutlet var sourceButton: NSButton?
 	@IBOutlet var fileNameField: NSTextField?
 	@IBOutlet var contextualMenuAdditions: NSMenu?
+	var documentManager: DocumentManager!
 	var tabController: NSTabViewController!
 	var sourceEditor: SourceEditorController!
 	var notebookEditor: NotebookEditorController!
@@ -36,8 +37,14 @@ class EditorController: AbstractSessionViewController, ToolbarItemHandler {
 		}
 	} }
 	
+	override func sessionChanged() {
+		guard sessionOptional != nil else { return }
+		documentManager = DocumentManager(fileSaver: session, fileCache: session.fileCache)
+	}
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
 		let sboard = NSStoryboard(name: .mainController, bundle: nil)
 		// for some reason won't compile if directly setting tabController
 		let controller: NSTabViewController = embedViewController(storyboard: sboard, identifier: .editorTabController, contentView: contentView)

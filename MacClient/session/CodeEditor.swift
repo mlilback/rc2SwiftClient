@@ -5,7 +5,12 @@
 //
 
 import Cocoa
+import ClientCore
 import Networking
+import ReactiveSwift
+import SyntaxParsing
+import Result
+import SwiftyUserDefaults
 
 enum EditorMode: Int {
 	case notebook = 0
@@ -26,3 +31,14 @@ protocol EditorManager: CodeEditor {
 	var canSwitchToSourceMode: Bool { get }
 	func switchTo(mode: EditorMode)
 }
+
+protocol EditorContext: class {
+	var currentDocument: MutableProperty<Document?> { get }
+	var editorFont: MutableProperty<NSFont> { get }
+	var parser: SyntaxParser? { get }
+	var notificationCenter: NotificationCenter { get }
+	func save(document: Document) -> SignalProducer<String, Rc2Error>
+	func load(file: AppFile?) -> SignalProducer<String?, Rc2Error>
+}
+
+
