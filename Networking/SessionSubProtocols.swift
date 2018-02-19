@@ -9,6 +9,7 @@ import ClientCore
 import ReactiveSwift
 
 public protocol FileSaver {
+	var workspace: AppWorkspace { get }
 	/// Saves the file to the cache and remote server
 	///
 	/// - Parameters:

@@ -34,11 +34,11 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 	@IBOutlet var fileNameField: NSTextField?
 	@IBOutlet var contextualMenuAdditions: NSMenu?
 	
-	var parser: SyntaxParser?
-	private(set) var currentDocument: EditorDocument?
-	private var openDocuments: [Int: EditorDocument] = [:]
+	private(set) var context: EditorContext?
+	private var parser: SyntaxParser?
+	
 	private var defaultAttributes: [NSAttributedStringKey: Any] = [:]
-	private var currentChunkIndex = 0
+	private var currentChunkIndex: Int = 0
 	
 	var searchableTextView: NSTextView? { return editor }
 	
@@ -46,46 +46,27 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 	private var ignoreTextStorageNotifications = false
 	
 	@objc dynamic var canExecute: Bool {
-		guard currentDocument?.isLoaded ?? false else { return false }
-		return currentDocument?.currentContents.count ?? 0 > 0
+		guard context?.currentDocument.value?.isLoaded ?? false else { return false }
+		return context?.currentDocument.value?.currentContents?.count ?? 0 > 0
 	}
 	
-	var documentLoaded: Bool { return currentDocument != nil }
+//	var currentFontDescriptor: NSFontDescriptor { return context!.editorFont.value.fontDescriptor }
 
-	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFont(ofSize: UserDefaults.standard[.defaultFontSize])!.fontDescriptor {
-		didSet {
-			let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
-			editor?.font = font
-			defaultAttributes[.font] = font
-		}
-	}
-	
-	///allow dependency injection
-	var notificationCenter: NotificationCenter? {
-		willSet {
-			if newValue != notificationCenter {
-				notificationCenter?.removeObserver(self)
-				NSWorkspace.shared.notificationCenter.removeObserver(self)
-			}
-		}
-		didSet {
-			if oldValue != notificationCenter {
-				let ncenter = NotificationCenter.default
-				ncenter.addObserver(self, selector: .autoSave, name: NSApplication.didResignActiveNotification, object: NSApp)
-				ncenter.addObserver(self, selector: .autoSave, name: NSApplication.willTerminateNotification, object: NSApp)
-				let nswspace = NSWorkspace.shared
-				nswspace.notificationCenter.addObserver(self, selector: .autoSave, name: NSWorkspace.willSleepNotification, object: nswspace)
-			}
-		}
-	}
+//	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFont(ofSize: UserDefaults.standard[.defaultFontSize])!.fontDescriptor {
+//		didSet {
+//			let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
+//			editor?.font = font
+//			defaultAttributes[.font] = font
+//		}
+//	}
 	
 	var currentChunk: DocumentChunk? {
-		guard let parser = parser, parser.chunks.count > 0 else { return nil }
+		guard let parser = self.parser, parser.chunks.count > 0 else { return nil }
 		return parser.chunks[currentChunkIndex]
 	}
 	
 	var currentChunkHasPreviousExecutableChunks: Bool {
-		guard let parser = parser, parser.executableChunks.count > 0, let curChunk = currentChunk, curChunk.isExecutable
+		guard let parser = self.parser, parser.executableChunks.count > 0, let curChunk = currentChunk, curChunk.isExecutable
 			else { return false }
 		// return true if not the first executable chunk
 		return parser.executableChunks.index(of: curChunk) ?? 0 > 0
@@ -93,20 +74,29 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 	
 	// MARK: init/deinit
 	deinit {
-		NSWorkspace.shared.notificationCenter.removeObserver(self)
-		notificationCenter?.removeObserver(self)
+		context?.workspaceNotificationCenter.removeObserver(self)
+		context?.notificationCenter.removeObserver(self)
 	}
 	
 	// MARK: methods
+	func setContext(context: EditorContext) {
+		precondition(self.context == nil)
+		self.context = context
+		let ncenter = context.notificationCenter
+		ncenter.addObserver(self, selector: .autoSave, name: NSApplication.didResignActiveNotification, object: NSApp)
+		ncenter.addObserver(self, selector: .autoSave, name: NSApplication.willTerminateNotification, object: NSApp)
+		context.workspaceNotificationCenter.addObserver(self, selector: .autoSave, name: NSWorkspace.willSleepNotification, object: context.workspaceNotificationCenter)
+		context.editorFont.signal.observeValues { [weak self] newFont in
+			self?.editor?.font = newFont
+		}
+		context.currentDocument.signal.observeValues { [weak self] newDoc in
+			self?.documentChanged(newDocument: newDoc)
+		}
+	}
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		guard editor != nil else { return }
-		//try switching to Menlo instead of default monospaced font
-		let fdesc = NSFontDescriptor(name: "Menlo-Regular", size: UserDefaults.standard[.defaultFontSize])
-		if let _ = NSFont(descriptor: fdesc, size: fdesc.pointSize)
-		{
-			currentFontDescriptor = fdesc
-		}
 		editor?.menuDelegate = self
 		editor?.textContainer?.containerSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
 		editor?.textContainer?.widthTracksTextView = true
@@ -118,16 +108,13 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 		let lnv = NoodleLineNumberView(scrollView: editor!.enclosingScrollView)
 		editor!.enclosingScrollView!.verticalRulerView = lnv
 		editor!.enclosingScrollView!.rulersVisible = true
-		if nil == notificationCenter {
-			notificationCenter = NotificationCenter.default
-		}
 	}
 	
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action  {
 		case Selector.runQuery, Selector.sourceQuery:
-			return currentDocument?.currentContents.count ?? 0 > 0
+			return context?.currentDocument.value?.currentContents?.count ?? 0 > 0
 		case Selector.executeCurrentChunk:
 			return currentChunk?.isExecutable ?? false
 		case Selector.executePrevousChunks:
@@ -176,54 +163,8 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 		return items
 	}
 	
-	func save(state: inout SessionState.EditorState) {
-		state.editorFontDescriptor = NSKeyedArchiver.archivedData(withRootObject: currentFontDescriptor)
-	}
-	
-	func restore(state: SessionState.EditorState) {
-		if let fontData = state.editorFontDescriptor,
-			let fontDesc = NSKeyedUnarchiver.unarchiveObject(with: fontData) as? NSFontDescriptor
-		{
-			currentFontDescriptor = fontDesc
-		}
-	}
-	
-	override func sessionChanged() {
-		session.workspace.fileChangeSignal.observe(on: UIScheduler()).observeValues { [unowned self] (values) in
-			self.process(changes: values)
-		}
-	}
-
-	// TOOD: move to DocumentManager
-	//called when file has changed in UI
-	func fileChanged(file: AppFile?) {
-		if let theFile = file {
-			if currentDocument?.file.fileId == theFile.fileId && currentDocument?.file.version == theFile.version { return } //same file
-			self.adjustCurrentDocumentForFile(file)
-		} else {
-			currentDocument = nil
-			self.adjustCurrentDocumentForFile(nil)
-		}
-	}
-	
-	// TOOD: move to DocumentManager
-	//called when a file in the workspace file array has changed
-	func process(changes: [AppWorkspace.FileChange]) {
-		//if it was a file change (content or metadata)
-		guard let change = changes.first(where: { $0.file.fileId == currentDocument?.file.fileId }) else { return }
-		if change.type == .modify {
-			guard currentDocument?.file.fileId == change.file.fileId else { return }
-			self.currentDocument?.updateFile(change.file)
-			self.adjustCurrentDocumentForFile(change.file)
-		} else if change.type == .remove {
-			//document being editied was removed
-			fileChanged(file: nil)
-		}
-	}
-	
-	// TOOD: move to DocumentManager
 	@objc func autosaveCurrentDocument() {
-		guard currentDocument?.dirty ?? false else { return }
+		guard context?.currentDocument.value?.isDirty ?? false else { return }
 		saveWithProgress(isAutoSave: true).startWithResult { result in
 			guard result.error == nil else {
 				Log.warn("autosave failed: \(result.error!)", .session)
@@ -235,11 +176,11 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 
 	///actually implements running a query, saving first if document is dirty
 	func executeSource(type: ExecuteType) {
-		guard let currentDocument = currentDocument else {
+		guard let currentDocument = context?.currentDocument.value else {
 			fatalError("runQuery called with no file selected")
 		}
 		let file = currentDocument.file
-		guard currentDocument.dirty else {
+		guard currentDocument.isDirty else {
 			Log.debug("executeQuery executing without save", .app)
 			session.execute(file: file, type: type)
 			return
@@ -270,7 +211,9 @@ extension SourceEditorController {
 	}
 
 	@IBAction func nextChunkAction(_ sender: AnyObject) {
-		guard currentChunkIndex + 1 < parser!.chunks.count else {
+		guard let parser = parser else { fatalError() }
+		let nextIndex = currentChunkIndex + 1
+		guard nextIndex < parser.chunks.count else {
 			Log.error("called with invalid currentChunkIndex", .app)
 			assertionFailure() //called for debug builds only
 			return
@@ -335,38 +278,24 @@ extension SourceEditorController {
 	}
 }
 
-// MARK: UsesAdjustableFont
-extension SourceEditorController: UsesAdjustableFont {
-	func fontsEnabled() -> Bool {
-		return true
-	}
-	
-	func fontChanged(_ menuItem: NSMenuItem) {
-		Log.info("font changed: \((menuItem.representedObject as? NSObject)!)", .app)
-		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
-		let newDesc = newNameDesc.withSize(currentFontDescriptor.pointSize)
-		currentFontDescriptor = newDesc
-		editor?.font = NSFont(descriptor: newDesc, size: newDesc.pointSize)
-	}
-}
-
 // MARK: NSTextStorageDelegate
 extension SourceEditorController: NSTextStorageDelegate {
 	//called when text editing has ended
 	func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
 	{
+		guard let parser = parser else { fatalError("no parser when text changed") }
 		guard !ignoreTextStorageNotifications else { return }
 		//we don't care if attributes changed
 		guard editedMask.contains(.editedCharacters) else { return }
-		guard parser != nil else { return }
 		//parse() return true if the chunks changed. in that case, we need to recolor all of them
-		if parser!.parse() {
-			parser!.colorChunks(parser!.chunks)
+		if parser.parse() {
+			parser.colorChunks(parser.chunks)
 		} else {
 			//only color chunks in the edited range
-			parser!.colorChunks(parser!.chunksForRange(editedRange))
+			parser.colorChunks(parser.chunksForRange(editedRange))
 		}
-		currentChunkIndex = parser!.indexOfChunk(range: editedRange)
+		let currentDocument = context?.currentDocument.value
+		currentChunkIndex = parser.indexOfChunk(range: editedRange)
 		if currentDocument?.editedContents != textStorage.string {
 			currentDocument?.editedContents = textStorage.string
 		}
@@ -376,7 +305,7 @@ extension SourceEditorController: NSTextStorageDelegate {
 // MARK: NSTextViewDelegate methods
 extension SourceEditorController: NSTextViewDelegate {
 	func undoManager(for view: NSTextView) -> UndoManager? {
-		if currentDocument != nil { return currentDocument!.undoManager }
+		if let currentDocument = context?.currentDocument.value { return currentDocument.undoManager }
 		return editor?.undoManager
 	}
 	
@@ -398,8 +327,9 @@ extension SourceEditorController: NSTextViewDelegate {
 fileprivate extension SourceEditorController {
 	///adjusts the UI to mark the current chunk
 	func adjustUIForCurrentChunk() {
+		guard let parser = parser else { fatalError("called without parser") }
 		//for now we will move the cursor and scroll so it is visible
-		let chunkRange = parser!.chunks[currentChunkIndex].parsedRange
+		let chunkRange = parser.chunks[currentChunkIndex].parsedRange
 		var desiredRange = NSRange(location: chunkRange.location, length: 0)
 		//adjust desired range so it advances past any newlines at start of chunk (if not just whitespace)
 		let str = editor!.string
@@ -415,65 +345,42 @@ fileprivate extension SourceEditorController {
 		editor!.scrollRangeToVisible(desiredRange)
 	}
 	
-	// TOOD: move to DocumentManager
 	//should be the only place an actual save is performed
 	private func saveWithProgress(isAutoSave: Bool = false) -> SignalProducer<Bool, Rc2Error> {
-		guard let doc = currentDocument, let file = currentDocument?.file else {
+		guard let context = context else { fatalError() }
+		guard let doc = context.currentDocument.value else {
 			return SignalProducer<Bool, Rc2Error>(error: Rc2Error(type: .logic, severity: .error, explanation: "save called with nothing to save"))
 		}
-		return doc.saveContents(isAutoSave: isAutoSave)
-			.flatMap(.concat, { self.session.sendSaveFileMessage(file: file, contents: $0) })
+		return context.save(document: doc, isAutoSave: isAutoSave)
+			.flatMap(.concat, { self.session.sendSaveFileMessage(file: doc.file, contents: $0) })
 			.updateProgress(status: self.appStatus!, actionName: "Save document")
 			.observe(on: UIScheduler())
 	}
 	
-	// TOOD: move to DocumentManager
-	func adjustCurrentDocumentForFile(_ file: AppFile?) {
+	func documentChanged(newDocument: EditorDocument?) {
 		guard let editor = self.editor else { Log.error("can't adjust document without editor", .app); return }
-		//save old document
-		if let oldDocument = currentDocument, oldDocument.file.fileId != file?.fileId {
-			saveDocument(oldDocument, contents: editor.textStorage!.string)
-		}
-		guard let theFile = file else {
-			parser = nil
-			currentDocument = nil
+		if let document = newDocument {
+			loaded(document: document, content: document.currentContents ?? "")
+		} else {
 			editor.textStorage?.deleteCharacters(in: editor.rangeOfAllText)
-			updateUIForCurrentDocument()
-			return
 		}
-		currentDocument = openDocuments[theFile.fileId]
-		if currentDocument == nil {
-			currentDocument = EditorDocument(file: theFile, fileCache: session.fileCache)
-			openDocuments[theFile.fileId] = currentDocument!
-		}
-		let doc = currentDocument!
-		doc.loadContents().observe(on: UIScheduler()).startWithResult { result in
-			guard let contents = result.value else {
-				let appError = AppError(.failedToLoadDocument, nestedError: result.error!)
-				self.appStatus?.presentError(appError.rc2Error, session: self.session)
-				Log.error("error loading document contents \(result.error!)", .app)
-				return
-			}
-			self.documentContentsLoaded(doc, content: contents)
-		}
+		updateUIForCurrentDocument()
 	}
 	
-	func documentContentsLoaded(_ doc: EditorDocument, content: String) {
-		let editor = self.editor!
-		let lm = editor.layoutManager!
-		doc.willBecomeActive()
-		let storage = editor.textStorage!
-		self.ignoreTextStorageNotifications = true
+	func loaded(document: EditorDocument, content: String) {
+		guard let editor = self.editor, let lm = editor.layoutManager, let storage = editor.textStorage, let txtContainer = editor.textContainer
+		else { fatalError("editor missing required pieces") }
+		ignoreTextStorageNotifications = true
 		storage.deleteCharacters(in: editor.rangeOfAllText)
-		self.parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: doc.file.fileType) { (topic) in
+		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: document.file.fileType) { (topic) in
 			return HelpController.shared.hasTopic(topic)
 		}
-		self.ignoreTextStorageNotifications = false
+		ignoreTextStorageNotifications = false
 		storage.setAttributedString(NSAttributedString(string: content, attributes: self.defaultAttributes))
-		if doc.topVisibleIndex > 0 {
+		if document.topVisibleIndex > 0 {
 			//restore the scroll point to the saved character index
-			let idx = lm.glyphIndexForCharacter(at: doc.topVisibleIndex)
-			let point = lm.boundingRect(forGlyphRange: NSRange(location: idx, length: 1), in: editor.textContainer!)
+			let idx = lm.glyphIndexForCharacter(at: document.topVisibleIndex)
+			let point = lm.boundingRect(forGlyphRange: NSRange(location: idx, length: 1), in: txtContainer)
 			//postpone to next event loop cycle
 			DispatchQueue.main.async {
 				editor.enclosingScrollView?.contentView.scroll(to: point.origin)
@@ -483,16 +390,15 @@ fileprivate extension SourceEditorController {
 	}
 	
 	// TOOD: move to DocumentManager
-	func saveDocument(_ doc: EditorDocument, contents: String) {
-		let editor = self.editor!
-		let lm = editor.layoutManager!
+	func save(document: EditorDocument, contents: String) {
+		guard let editor = editor, let lm = editor.layoutManager else { fatalError() }
 		//save the index of the character at the top left of the text container
 		let bnds = editor.enclosingScrollView!.contentView.bounds
 		var partial: CGFloat = 1.0
 		let idx = lm.characterIndex(for: bnds.origin, in: editor.textContainer!, fractionOfDistanceBetweenInsertionPoints: &partial)
-		doc.topVisibleIndex = idx
-		doc.willBecomeInactive(contents)
-		if doc.dirty {
+		document.topVisibleIndex = idx
+		document.editedContents = contents
+		if document.isDirty {
 			saveWithProgress().startWithResult { result in
 				guard nil == result.error else {
 					let appError = AppError(.saveFailed, nestedError: result.error!)
@@ -505,12 +411,13 @@ fileprivate extension SourceEditorController {
 	}
 	
 	func updateUIForCurrentDocument() {
+		let currentDocument = context?.currentDocument.value
 		let selected = currentDocument?.file != nil
 		runButton?.isEnabled = selected
 		sourceButton?.isEnabled = selected
 		fileNameField?.stringValue = selected ? currentDocument!.file.name : ""
 		editor?.isEditable = selected
-		editor?.font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
+		editor?.font = context?.editorFont.value
 		// editor.textFinder.cancelFindIndicator() is not erasing the find info, so we have to remove the find interface even if loading another file
 		let menuItem = NSMenuItem(title: "foo", action: .findPanelAction, keyEquivalent: "")
 		menuItem.tag = Int(NSTextFinder.Action.hideFindInterface.rawValue)

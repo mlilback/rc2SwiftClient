@@ -6,13 +6,14 @@
 
 import Cocoa
 import Networking
+import MJLLogger
 
 fileprivate extension NSStoryboard.SceneIdentifier {
 	static let editorTabController = NSStoryboard.SceneIdentifier("editorTabController")
 }
 
 class EditorController: AbstractSessionViewController, ToolbarItemHandler {
-	
+	// MARK: properties
 	@IBOutlet var contentView: NSView!
 	@IBOutlet var runButton: NSButton?
 	@IBOutlet var sourceButton: NSButton?
@@ -37,9 +38,10 @@ class EditorController: AbstractSessionViewController, ToolbarItemHandler {
 		}
 	} }
 	
+	// MARK: methods
 	override func sessionChanged() {
 		guard sessionOptional != nil else { return }
-		documentManager = DocumentManager(fileSaver: session, fileCache: session.fileCache)
+		documentManager = DocumentManager(fileSaver: session, fileCache: session.fileCache, lifetime: session.lifetime)
 	}
 	
 	override func viewDidLoad() {
@@ -86,7 +88,7 @@ class EditorController: AbstractSessionViewController, ToolbarItemHandler {
 			if let myItem = item as? ValidatingToolbarItem {
 				myItem.validationHandler = { [weak self] item in
 					item.isEnabled = true
-					searchButton.setEnabled(self?.currentEditor?.documentLoaded ?? false, forSegment: 0)
+					searchButton.setEnabled(self?.documentLoaded ?? false, forSegment: 0)
 				}
 			}
 			return true
@@ -121,7 +123,7 @@ extension EditorController: Searchable {
 }
 
 extension EditorController: EditorManager {
-	@objc dynamic var documentLoaded: Bool { return currentEditor?.documentLoaded ?? false }
+	@objc dynamic var documentLoaded: Bool { return documentManager.currentDocument.value?.isLoaded ?? false }
 	@objc dynamic var canExecute: Bool { return currentEditor?.canExecute ?? false }
 	@objc dynamic var canSwitchToNotebookMode: Bool { return notebookModeEnabled && currentEditor != notebookEditor }
 	@objc dynamic var canSwitchToSourceMode: Bool { return currentEditor != sourceEditor }
@@ -135,23 +137,45 @@ extension EditorController: EditorManager {
 	}
 	
 	func save(state: inout SessionState.EditorState) {
-		sourceEditor.save(state: &state)
-		notebookEditor.save(state: &state)
+		let fontDesc = documentManager.editorFont.value.fontDescriptor
+		state.editorFontDescriptor = NSKeyedArchiver.archivedData(withRootObject: fontDesc)
 	}
 	
 	func restore(state: SessionState.EditorState) {
-		sourceEditor.restore(state: state)
-		notebookEditor.restore(state: state)
+		if let fontData = state.editorFontDescriptor,
+			let fontDesc = NSKeyedUnarchiver.unarchiveObject(with: fontData) as? NSFontDescriptor,
+			let font = NSFont(descriptor: fontDesc, size: fontDesc.pointSize)
+		{
+			documentManager.editorFont.value = font
+		}
 	}
 	
 	func fileChanged(file: AppFile?) {
 		willChangeValue(forKey: "canExecute")
-		sourceEditor.fileChanged(file: file)
+//		sourceEditor.fileChanged(file: file)
 		notebookEditor.fileChanged(file: file)
 		didChangeValue(forKey: "canExecute")
 		fileNameField?.stringValue = file == nil ? "" : file!.name
 		notebookModeEnabled = file?.fileType.fileExtension ?? "" == "Rmd"
 		toolbarModeButtons?.selectedSegment = currentEditor == notebookEditor ? 0 : 1
 	}
+}
+
+// MARK: UsesAdjustableFont
+extension EditorController: UsesAdjustableFont {
+	var currentFontDescriptor: NSFontDescriptor {
+		get { return documentManager.editorFont.value.fontDescriptor }
+		set { documentManager.editorFont.value = NSFont(descriptor: newValue, size: newValue.pointSize)! }
+	}
+	func fontsEnabled() -> Bool {
+		return true
+	}
 	
+	func fontChanged(_ menuItem: NSMenuItem) {
+		Log.info("font changed: \((menuItem.representedObject as? NSObject)!)", .app)
+		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
+		let newDesc = newNameDesc.withSize(documentManager.editorFont.value.pointSize)
+		guard let newFont = NSFont(descriptor: newDesc, size: newDesc.pointSize) else { fatalError() }
+		documentManager.editorFont.value = newFont
+	}
 }

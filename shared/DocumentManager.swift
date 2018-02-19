@@ -15,23 +15,28 @@ class DocumentManager: EditorContext {
 	enum State { case idle, loading, saving }
 	let minTimeBetweenAutoSaves: TimeInterval = 2
 	
+	// MARK: properties
 	private var state: State = .idle
 	// when changed, should use .updateProgress() while loading file contents
-	let currentDocument = MutableProperty<Document?>(nil)
+	let currentDocument = MutableProperty<EditorDocument?>(nil)
 	let editorFont: MutableProperty<NSFont>
-	var openDocuments: [Int: Document] = [:]
-	var parser: SyntaxParser?
+	var openDocuments: [Int: EditorDocument] = [:]
 	var notificationCenter: NotificationCenter
+	var workspaceNotificationCenter: NotificationCenter
+	let lifetime: Lifetime
 	var defaults: UserDefaults
 	//	var session: Session
 	let fileSaver: FileSaver
 	let fileCache: FileCache
 	
-	init(fileSaver: FileSaver, fileCache: FileCache, notificationCenter: NotificationCenter = .default, defaults: UserDefaults = .standard)
+	// MARK: methods
+	init(fileSaver: FileSaver, fileCache: FileCache, lifetime: Lifetime, notificationCenter: NotificationCenter = .default, wspaceCenter: NotificationCenter = NSWorkspace.shared.notificationCenter, defaults: UserDefaults = .standard)
 	{
 		self.fileSaver = fileSaver
 		self.fileCache = fileCache
+		self.lifetime = lifetime
 		self.notificationCenter = notificationCenter
+		self.workspaceNotificationCenter = wspaceCenter
 		self.defaults = defaults
 		let defaultSize = defaults[.defaultFontSize]
 		// font defaults to user-fixed pitch font
@@ -43,6 +48,24 @@ class DocumentManager: EditorContext {
 			initialFont = menlo
 		}
 		editorFont = MutableProperty<NSFont>(initialFont)
+		fileSaver.workspace.fileChangeSignal.observeValues { [weak self] changes in
+			self?.process(changes: changes)
+		}
+	}
+	
+	func process(changes: [AppWorkspace.FileChange]) {
+		// only care about change if it is our current document
+		guard let document = currentDocument.value,
+			let change = changes.first(where: { $0.file.fileId == document.file.fileId })
+		else { return }
+		if change.type == .modify {
+			guard document.file.fileId == change.file.fileId else { return }
+			document.fileUpdated()
+			currentDocument.value = document
+		} else if change.type == .remove {
+			//document being editied was removed
+			currentDocument.value = nil
+		}
 	}
 	
 	// returns a SP that will save the current document and load the document for file
@@ -68,7 +91,8 @@ class DocumentManager: EditorContext {
 	}
 	
 	// saves to server, fileCache, and memory cache
-	func save(document: Document) -> SignalProducer<String, Rc2Error> {
+	// FIXME: use autosave parameter
+	func save(document: EditorDocument, isAutoSave: Bool = false) -> SignalProducer<String, Rc2Error> {
 		guard let contents = document.editedContents else {
 			return SignalProducer<String, Rc2Error>(error: Rc2Error(type: .invalidArgument))
 		}
@@ -99,23 +123,27 @@ class DocumentManager: EditorContext {
 	}
 	
 	// returns SP to return the specified document, creating and inserting into openDocuments if necessary
-	private func getDocumentFor(file: AppFile) -> SignalProducer<Document, Rc2Error> {
-		let doc = openDocuments[file.fileId] ?? Document(file: file, fileUrl: fileCache.cachedUrl(file: file))
+	private func getDocumentFor(file: AppFile) -> SignalProducer<EditorDocument, Rc2Error> {
+		let doc = openDocuments[file.fileId] ?? EditorDocument(file: file, fileUrl: fileCache.cachedUrl(file: file))
 		openDocuments[file.fileId] = doc
-		return SignalProducer<Document, Rc2Error>(value: doc)
+		return SignalProducer<EditorDocument, Rc2Error>(value: doc)
 	}
-	private func load(document: Document) -> SignalProducer<String?, Rc2Error> {
+	
+	private func load(document: EditorDocument) -> SignalProducer<String?, Rc2Error> {
 		precondition(openDocuments[document.file.fileId] == document)
 		if document.isLoaded {
+			currentDocument.value = document
 			return SignalProducer<String?, Rc2Error>(value: document.currentContents)
 		}
 		if fileCache.isFileCached(document.file) {
 			return fileCache.contents(of: document.file)
+				.on(value: { _ in self.currentDocument.value = document })
 				.map( { String(data: $0, encoding: .utf8) } )
 		}
 		return fileCache.validUrl(for: document.file)
 			.map({ _ in return document.file })
 			.flatMap(.concat, fileCache.contents)
+			.on(value: { _ in self.currentDocument.value = document })
 			.map( { String(data: $0, encoding: .utf8) } )
 	}
 }

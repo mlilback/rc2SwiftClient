@@ -25,6 +25,7 @@ class RootViewController: AbstractSessionViewController
 	weak var splitController: SessionSplitController?
 	weak var outputHandler: OutputHandler?
 	weak var fileHandler: SidebarFileController?
+	weak var editorController: EditorController?
 	var formerFirstResponder: NSResponder? //used to restore first responder when dimmingview goes away
 	
 	deinit {
@@ -293,11 +294,11 @@ extension RootViewController: SessionControllerDelegate {
 
 	func save(state: inout SessionState) {
 		state.editorState.lastSelectedFileId = fileHandler?.selectedFile?.fileId ?? -1
-		sessionController?.codeEditor.save(state: &state.editorState)
+		editorController?.save(state: &state.editorState)
 	}
 	
 	func restore(state: SessionState) {
-		sessionController?.codeEditor.restore(state: state.editorState)
+		editorController?.restore(state: state.editorState)
 		if state.editorState.lastSelectedFileId > 0,
 			let file = session.workspace.file(withId: state.editorState.lastSelectedFileId)
 		{
@@ -310,10 +311,10 @@ extension RootViewController: SessionControllerDelegate {
 extension RootViewController: FileViewControllerDelegate {
 	func fileSelectionChanged(_ file: AppFile?, forEditing: Bool) {
 		if nil == file {
-			sessionController?.codeEditor.fileChanged(file: nil)
+			editorController?.fileChanged(file: nil)
 			self.outputHandler?.show(file: nil)
 		} else if file!.fileType.isSource || (forEditing && file!.fileSize <= MaxEditableFileSize) {
-			self.sessionController?.codeEditor.fileChanged(file: file)
+			editorController?.fileChanged(file: file)
 		} else {
 			outputHandler?.show(file: file)
 //			if let editingFile = editor?.currentDocument?.file {

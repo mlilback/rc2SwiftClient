@@ -19,11 +19,9 @@ enum EditorMode: Int {
 
 protocol CodeEditor: class, Searchable {
 	var canExecute: Bool { get }
-	var documentLoaded: Bool { get }
+//	var documentLoaded: Bool { get }
 	func executeSource(type: ExecuteType)
-	func save(state: inout SessionState.EditorState)
-	func restore(state: SessionState.EditorState)
-	func fileChanged(file: AppFile?)
+//	func fileChanged(file: AppFile?)
 }
 
 protocol EditorManager: CodeEditor {
@@ -33,11 +31,13 @@ protocol EditorManager: CodeEditor {
 }
 
 protocol EditorContext: class {
-	var currentDocument: MutableProperty<Document?> { get }
+	var currentDocument: MutableProperty<EditorDocument?> { get }
 	var editorFont: MutableProperty<NSFont> { get }
-	var parser: SyntaxParser? { get }
 	var notificationCenter: NotificationCenter { get }
-	func save(document: Document) -> SignalProducer<String, Rc2Error>
+	var workspaceNotificationCenter: NotificationCenter { get }
+	var lifetime: Lifetime { get }
+	
+	func save(document: EditorDocument, isAutoSave: Bool) -> SignalProducer<String, Rc2Error>
 	func load(file: AppFile?) -> SignalProducer<String?, Rc2Error>
 }
 
