@@ -97,6 +97,9 @@ class FakeFileCache: FileCache {
 	}
 	
 	func validUrl(for file: AppFile) -> SignalProducer<URL, Rc2Error> {
+		if let url = fileInfo[file.fileId]?.url {
+			return SignalProducer<URL, Rc2Error>(value: url)
+		}
 		return SignalProducer<URL, Rc2Error>(error: Rc2Error(type: .unknown, explanation: "not implemented"))
 	}
 	

@@ -97,7 +97,8 @@ class DocumentManager: EditorContext {
 			return SignalProducer<String, Rc2Error>(error: Rc2Error(type: .invalidArgument))
 		}
 		return setState(desired: .saving)
-			.flatMap(.concat, { self.fileSaver.save(file: document.file, contents: contents) })
+			.map { _ in (document.file, contents) }
+			.flatMap(.concat, self.fileSaver.save)
 			.map { _ in (document.file, contents) }
 			.flatMap(.concat, fileCache.save)
 			.on(completed: { document.contentsSaved() })
@@ -118,6 +119,7 @@ class DocumentManager: EditorContext {
 				return
 			}
 			self.state = desired
+			observer.send(value: ())
 			observer.sendCompleted()
 		}
 	}

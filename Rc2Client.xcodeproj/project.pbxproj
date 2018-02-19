@@ -316,6 +316,17 @@
 		08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
 		08BCEA2F20388B51004A5F47 /* SessionSubProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BCEA2E20388B51004A5F47 /* SessionSubProtocols.swift */; };
 		08BCEA3220388DB5004A5F47 /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BCEA3020388D5F004A5F47 /* DocumentManager.swift */; };
+		08BCEA33203B0BD9004A5F47 /* DocumentManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081263201C87A9E8003E37A5 /* DocumentManagerTests.swift */; };
+		08BCEA35203B1114004A5F47 /* FakeFileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935871E00AA5700C94B19 /* FakeFileCache.swift */; };
+		08BCEA38203B1997004A5F47 /* Starscream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; };
+		08BCEA39203B19D0004A5F47 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; };
+		08BCEA3A203B19D2004A5F47 /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; };
+		08BCEA3B203B19E4004A5F47 /* ZipArchive.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
+		08BCEA3C203B19E7004A5F47 /* SBInjector.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08C2D5E41E719DE20007A02D /* SBInjector.framework */; };
+		08BCEA3D203B19EA004A5F47 /* MJLLogger.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
+		08BCEA3E203B19F4004A5F47 /* ReactiveSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
+		08BCEA3F203B19F6004A5F47 /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
+		08BCEA40203B2102004A5F47 /* bulkInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 08BCEA34203B0E0B004A5F47 /* bulkInfo.json */; };
 		08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; };
 		08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08C2C3C91DF74DE200397DD3 /* Networking.strings in Resources */ = {isa = PBXBuildFile; fileRef = 08C2C3C81DF74DE200397DD3 /* Networking.strings */; };
@@ -614,6 +625,14 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				08BCEA38203B1997004A5F47 /* Starscream.framework in CopyFiles */,
+				08BCEA3B203B19E4004A5F47 /* ZipArchive.framework in CopyFiles */,
+				08BCEA3D203B19EA004A5F47 /* MJLLogger.framework in CopyFiles */,
+				08BCEA39203B19D0004A5F47 /* Nimble.framework in CopyFiles */,
+				08BCEA3C203B19E7004A5F47 /* SBInjector.framework in CopyFiles */,
+				08BCEA3E203B19F4004A5F47 /* ReactiveSwift.framework in CopyFiles */,
+				08BCEA3A203B19D2004A5F47 /* Quick.framework in CopyFiles */,
+				08BCEA3F203B19F6004A5F47 /* ReactiveCocoa.framework in CopyFiles */,
 				088E380C1EF410DC00136CFA /* Result.framework in CopyFiles */,
 				0803FCBE1C84C47400F17E4A /* Mockingjay.framework in CopyFiles */,
 			);
@@ -764,7 +783,7 @@
 		081263171C85D2E0003E37A5 /* NoodleLineNumberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoodleLineNumberView.h; sourceTree = "<group>"; };
 		081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoodleLineNumberView.m; sourceTree = "<group>"; };
 		0812631E1C862F4B003E37A5 /* EditorDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorDocument.swift; sourceTree = "<group>"; };
-		081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorDocumentTests.swift; sourceTree = "<group>"; };
+		081263201C87A9E8003E37A5 /* DocumentManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentManagerTests.swift; sourceTree = "<group>"; };
 		08127CC51DA81192002E0D01 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/Mac/ReactiveSwift.framework; sourceTree = "<group>"; };
 		08127CD21DAD2434002E0D01 /* ClientCoreIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClientCoreIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		08127CD41DAD2434002E0D01 /* ClientCoreIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientCoreIntegrationTests.swift; sourceTree = "<group>"; };
@@ -1020,6 +1039,7 @@
 		08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZipArchive.framework; path = Carthage/Build/Mac/ZipArchive.framework; sourceTree = "<group>"; };
 		08BCEA2E20388B51004A5F47 /* SessionSubProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSubProtocols.swift; sourceTree = "<group>"; };
 		08BCEA3020388D5F004A5F47 /* DocumentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
+		08BCEA34203B0E0B004A5F47 /* bulkInfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bulkInfo.json; sourceTree = "<group>"; };
 		08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessagePackSwift.framework; path = Carthage/Build/Mac/MessagePackSwift.framework; sourceTree = "<group>"; };
 		08C2C3C81DF74DE200397DD3 /* Networking.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Networking.strings; sourceTree = "<group>"; };
 		08C2D5E41E719DE20007A02D /* SBInjector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SBInjector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1518,6 +1538,7 @@
 		083382F41C68E43400D40EEB /* test resources */ = {
 			isa = PBXGroup;
 			children = (
+				08BCEA34203B0E0B004A5F47 /* bulkInfo.json */,
 				088CE6801C4B0AF500153414 /* Info.plist */,
 				083305F31C519B8500E27F66 /* createWorkspace.json */,
 				08FDB19A1C5917C3006FCD1A /* graph.png */,
@@ -1736,7 +1757,7 @@
 				083382F41C68E43400D40EEB /* test resources */,
 				083382F91C68F2A900D40EEB /* BaseTest.swift */,
 				0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */,
-				081263201C87A9E8003E37A5 /* EditorDocumentTests.swift */,
+				081263201C87A9E8003E37A5 /* DocumentManagerTests.swift */,
 				08FDB1981C591409006FCD1A /* ImageCacheTests.swift */,
 				0845CB1D1C616E060090267C /* MockFileManagers.swift */,
 				08F42FA11D33F47000A1EE8D /* MockSessionHelpers.swift */,
@@ -2593,6 +2614,7 @@
 				08D6106F1CD2C53100258D8E /* listvars.json in Resources */,
 				08FDB19B1C5917C3006FCD1A /* graph.png in Resources */,
 				083305F91C519B8500E27F66 /* createWorkspace.json in Resources */,
+				08BCEA40203B2102004A5F47 /* bulkInfo.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2955,6 +2977,8 @@
 			files = (
 				08A01FD81CC965F8001EDFAA /* HelpControllerTests.swift in Sources */,
 				08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */,
+				08BCEA33203B0BD9004A5F47 /* DocumentManagerTests.swift in Sources */,
+				08BCEA35203B1114004A5F47 /* FakeFileCache.swift in Sources */,
 				086413C82013614500116153 /* AppLoggerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
