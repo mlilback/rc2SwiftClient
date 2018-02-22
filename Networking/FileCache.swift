@@ -536,6 +536,7 @@ extension DefaultFileCache {
 			do {
 				Log.info("writing contents to file \(file.model.id)", .cache)
 				try contents.write(to: url, atomically: true, encoding: .utf8)
+				observer.send(value: ())
 				observer.sendCompleted()
 			} catch {
 				observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "failed to save \(file.name) to file cache"))

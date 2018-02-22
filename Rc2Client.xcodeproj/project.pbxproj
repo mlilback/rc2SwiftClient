@@ -999,6 +999,7 @@
 		0890650A1D26F59300C7CA5D /* MacAppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacAppStatus.swift; sourceTree = "<group>"; };
 		0892EE5D203F028700207F54 /* Encoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Encoding.swift; sourceTree = "<group>"; };
 		0892EE5F203F065000207F54 /* XAttributeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XAttributeManager.swift; sourceTree = "<group>"; };
+		0892EE61203F6DE700207F54 /* DevelopmentNotes.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = DevelopmentNotes.md; sourceTree = "<group>"; };
 		089346021C7F661400100CF6 /* PEGKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PEGKit.framework; path = Carthage/Build/Mac/PEGKit.framework; sourceTree = "<group>"; };
 		0897941A1D7B68F0003339EE /* ClientCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ClientCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0897941D1D7B68F0003339EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1683,6 +1684,7 @@
 			isa = PBXGroup;
 			children = (
 				087DC36A200F5140001F9560 /* README.md */,
+				0892EE61203F6DE700207F54 /* DevelopmentNotes.md */,
 				082564F4201511F300526957 /* ReleaseNotes.md */,
 				084199331D9179C60089A1AC /* xcconfig */,
 				088CE66B1C4B0AF400153414 /* MacClient */,
