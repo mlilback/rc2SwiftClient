@@ -12,6 +12,11 @@ import SwiftyUserDefaults
 import SyntaxParsing
 import MJLLogger
 
+extension Notification.Name {
+	/// sent before the currentDocument will be saved. object will be the EditorContext/DocummentManager
+	static let willSaveDocument = Notification.Name(rawValue: "DocumentWillSaveNotification")
+}
+
 class DocumentManager: EditorContext {
 	enum State { case idle, loading, saving }
 	let minTimeBetweenAutoSaves: TimeInterval = 2
@@ -98,6 +103,7 @@ class DocumentManager: EditorContext {
 		guard let contents = document.editedContents else {
 			return SignalProducer<String, Rc2Error>(error: Rc2Error(type: .invalidArgument))
 		}
+		notificationCenter.post(name: .willSaveDocument, object: self)
 		return setState(desired: .saving)
 			.map { _ in (document.file, contents) }
 			.flatMap(.concat, self.fileSaver.save)

@@ -85,6 +85,7 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 		let ncenter = context.notificationCenter
 		ncenter.addObserver(self, selector: .autoSave, name: NSApplication.didResignActiveNotification, object: NSApp)
 		ncenter.addObserver(self, selector: .autoSave, name: NSApplication.willTerminateNotification, object: NSApp)
+		ncenter.addObserver(self, selector: #selector(documentWillSave(_:)), name: .willSaveDocument, object: nil)
 		context.workspaceNotificationCenter.addObserver(self, selector: .autoSave, name: NSWorkspace.willSleepNotification, object: context.workspaceNotificationCenter)
 		context.editorFont.signal.observeValues { [weak self] newFont in
 			self?.editor?.font = newFont
@@ -399,27 +400,15 @@ fileprivate extension SourceEditorController {
 		self.updateUIForCurrentDocument()
 	}
 	
-	// TOOD: move to DocumentManager
-	func save(document: EditorDocument, contents: String) {
-		guard let editor = editor, let lm = editor.layoutManager else { fatalError() }
+	@objc func documentWillSave(_ notification: Notification) {
+		guard let document = context?.currentDocument.value, let editor = editor, let lm = editor.layoutManager else { fatalError()}
 		//save the index of the character at the top left of the text container
 		let bnds = editor.enclosingScrollView!.contentView.bounds
 		var partial: CGFloat = 1.0
 		let idx = lm.characterIndex(for: bnds.origin, in: editor.textContainer!, fractionOfDistanceBetweenInsertionPoints: &partial)
 		document.topVisibleIndex = idx
-		document.editedContents = contents
-		if document.isDirty {
-			saveWithProgress().startWithResult { result in
-				guard nil == result.error else {
-					let appError = AppError(.saveFailed, nestedError: result.error!)
-					Log.warn("editor save returned an error: \(result.error!)", .app)
-					self.appStatus?.presentError(appError.rc2Error, session: self.session)
-					return
-				}
-			}
-		}
 	}
-	
+
 	func updateUIForCurrentDocument() {
 		let currentDocument = context?.currentDocument.value
 		let selected = currentDocument?.file != nil
