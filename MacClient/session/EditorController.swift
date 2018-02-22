@@ -7,6 +7,7 @@
 import Cocoa
 import Networking
 import MJLLogger
+import ReactiveSwift
 
 fileprivate extension NSStoryboard.SceneIdentifier {
 	static let editorTabController = NSStoryboard.SceneIdentifier("editorTabController")
@@ -42,6 +43,8 @@ class EditorController: AbstractSessionViewController, ToolbarItemHandler {
 	override func sessionChanged() {
 		guard sessionOptional != nil else { return }
 		documentManager = DocumentManager(fileSaver: session, fileCache: session.fileCache, lifetime: session.lifetime)
+		switchMode(.source)
+		setContext(context: documentManager)
 	}
 	
 	override func viewDidLoad() {
@@ -150,14 +153,25 @@ extension EditorController: EditorManager {
 		}
 	}
 	
+	func setContext(context: EditorContext) {
+		sourceEditor.setContext(context: context)
+		notebookEditor.setContext(context: context)
+	}
+	
 	func fileChanged(file: AppFile?) {
-		willChangeValue(forKey: "canExecute")
-//		sourceEditor.fileChanged(file: file)
-		notebookEditor.fileChanged(file: file)
-		didChangeValue(forKey: "canExecute")
-		fileNameField?.stringValue = file == nil ? "" : file!.name
-		notebookModeEnabled = file?.fileType.fileExtension ?? "" == "Rmd"
-		toolbarModeButtons?.selectedSegment = currentEditor == notebookEditor ? 0 : 1
+		documentManager.load(file: file).observe(on: UIScheduler()).startWithResult { result in
+			guard result.error == nil else {
+				self.appStatus?.presentError(result.error!, session: self.session)
+				return
+			}
+			self.willChangeValue(forKey: "canExecute")
+	//		sourceEditor.fileChanged(file: file)
+			self.notebookEditor.fileChanged(file: file)
+			self.didChangeValue(forKey: "canExecute")
+			self.fileNameField?.stringValue = file == nil ? "" : file!.name
+			self.notebookModeEnabled = file?.fileType.fileExtension ?? "" == "Rmd"
+			self.toolbarModeButtons?.selectedSegment = self.currentEditor == self.notebookEditor ? 0 : 1
+		}
 	}
 }
 

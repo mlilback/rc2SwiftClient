@@ -11,6 +11,9 @@ class NotebookEditorController: AbstractSessionViewController, CodeEditor {
 	@objc dynamic var canExecute: Bool { return true }
 	var documentLoaded: Bool { return false }
 	
+	func setContext(context: EditorContext) {
+	}
+
 	func executeSource(type: ExecuteType) {
 		
 	}

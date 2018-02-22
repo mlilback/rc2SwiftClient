@@ -19,9 +19,8 @@ enum EditorMode: Int {
 
 protocol CodeEditor: class, Searchable {
 	var canExecute: Bool { get }
-//	var documentLoaded: Bool { get }
+	func setContext(context: EditorContext)
 	func executeSource(type: ExecuteType)
-//	func fileChanged(file: AppFile?)
 }
 
 protocol EditorManager: CodeEditor {

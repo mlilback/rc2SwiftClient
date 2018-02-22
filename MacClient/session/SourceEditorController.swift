@@ -360,7 +360,17 @@ fileprivate extension SourceEditorController {
 	func documentChanged(newDocument: EditorDocument?) {
 		guard let editor = self.editor else { Log.error("can't adjust document without editor", .app); return }
 		if let document = newDocument {
-			loaded(document: document, content: document.currentContents ?? "")
+			if document.isLoaded {
+				loaded(document: document, content: document.currentContents ?? "")
+			} else {
+				session.fileCache.contents(of: document.file).observe(on: UIScheduler()).startWithResult { result in
+					guard let data = result.value else  {
+						self.appStatus?.presentError(result.error!, session: self.session)
+						return
+					}
+					self.loaded(document: document, content: String(data: data, encoding: .utf8)!)
+				}
+			}
 		} else {
 			editor.textStorage?.deleteCharacters(in: editor.rangeOfAllText)
 		}
