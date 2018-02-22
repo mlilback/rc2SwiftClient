@@ -357,7 +357,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 	}
 	
 	fileprivate func makeTask(file: AppFile, partOfDownloadAll: Bool = false) -> DownloadTask {
-//		let fileUrl = URL(string: "workspaces/\(workspace.wspaceId)/files/\(file.fileId)", relativeTo: baseUrl)!
+		Log.info("preparing to download \(file.fileId)", .cache)
 		let fileUrl = URL(string: "file/\(file.fileId)", relativeTo: baseUrl)!
 		var request = URLRequest(url: fileUrl.absoluteURL)
 		let cacheUrl = cachedUrl(file: file)
@@ -467,7 +467,12 @@ extension DefaultFileCache {
 	public func handle(change: SessionResponse.FileChangedData) throws {
 		switch change.changeType {
 		case .delete:
-			guard let file = change.file, let fileUrl = try? cachedUrl(file: file), fileUrl.fileExists() else { return }
+			guard let file = workspace.file(withId: change.fileId) else { Log.warn("delete change message with non-existant file", .cache); return }
+			let fileUrl = cachedUrl(file: file)
+			guard fileUrl.fileExists() else {
+				Log.info("failed to find file \(change.fileId) on disk", .cache)
+				return
+			}
 			removeFile(fileUrl: fileUrl)
 		case .insert:
 			return
@@ -546,6 +551,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 		guard let task = tasks[urlTask.taskIdentifier] else {
 			fatalError("no cacheTask for task that thinks we are its delegate")
 		}
+		Log.debug("got data for \(task.file.fileId)", .cache)
 		task.bytesDownloaded = Int(totalBytesWritten)
 //		downloadAll?.adjust(completedTask: task)
 	}
@@ -558,6 +564,7 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 				Log.error("unknown url task did complete", .cache)
 				return
 			}
+			if let err = error { Log.debug("got error downloading \(dloadTask.file.fileId): \(err)", .cache) }
 			var generatedError: Rc2Error?
 			defer {
 				self.downloadAll?.adjust(completedTask: dloadTask, error: generatedError)
@@ -598,8 +605,8 @@ extension DefaultFileCache: URLSessionDownloadDelegate {
 			guard let cacheTask = tasks[downloadTask.taskIdentifier] else {
 				fatalError("no DownloadTask for Session Task")
 			}
-
 			let cacheUrl = cachedUrl(file: cacheTask.file)
+			Log.debug("finished downloading \(cacheTask.file.fileId), size = \(location.fileSize())", .cache)
 			//TODO: does this make sense? make a unit test
 			if let status = (downloadTask.response?.httpResponse)?.statusCode, status == 304 {
 				cacheTask.bytesDownloaded = cacheTask.file.fileSize
