@@ -16,7 +16,7 @@ class SidebarController: NSViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		let sboard = NSStoryboard(name: .mainController, bundle: nil)
+		guard let sboard = storyboard else { fatalError("no storyboard?") }
 		// for some reason won't compile if directly setting tabController
 		let controller: SidebarTabController = embedViewController(storyboard: sboard, identifier: .sidebarTabController, contentView: contentView)
 		tabController = controller

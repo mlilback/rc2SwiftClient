@@ -47,7 +47,7 @@ class EditorController: AbstractSessionViewController, ToolbarItemHandler {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		let sboard = NSStoryboard(name: .mainController, bundle: nil)
+		guard let sboard = self.storyboard else { fatalError("no storyboard? ") }
 		// for some reason won't compile if directly setting tabController
 		let controller: NSTabViewController = embedViewController(storyboard: sboard, identifier: .editorTabController, contentView: contentView)
 		tabController = controller
