@@ -76,18 +76,20 @@ class DocumentManager: EditorContext {
 	
 	// returns a SP that will save the current document and load the document for file
 	func load(file: AppFile?) -> SignalProducer<String?, Rc2Error> {
-		// if file is nil, nil out current document
-		guard let theFile = file else {
-			return setState(desired: .loading)
-				.flatMap(.concat, nilOutCurrentDocument)
-				.on(terminated: { self.state = .idle })
-		}
 		// get a producer to save the old document
 		let saveProducer: SignalProducer<String, Rc2Error>
 		if let curDoc = currentDocument.value {
 			saveProducer = save(document: curDoc)
 		} else { // make a producer that does nothing
 			saveProducer = SignalProducer<String, Rc2Error>(value: "")
+		}
+		// if file is nil, nil out current document (saving current first)
+		guard let theFile = file else {
+			return saveProducer
+				.map { _ in State.loading }
+				.flatMap(.concat, setState)
+				.flatMap(.concat, nilOutCurrentDocument)
+				.on(terminated: { self.state = .idle })
 		}
 		// save current document, get the document to load, and load it
 		return saveProducer
