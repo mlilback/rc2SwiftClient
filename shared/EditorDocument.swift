@@ -38,6 +38,16 @@ public class EditorDocument: NSObject {
 		self.undoManager = UndoManager()
 	}
 	
+	/// sets the savedContent value, clears any editied content, and marks document as loaded
+	///
+	/// - Parameter contents: the saved content of the file
+	func contentsLoaded(contents: String) {
+		savedContents = contents
+		editedContents = nil
+		isLoaded = true
+		lastSaveTime = Date.timeIntervalSinceReferenceDate
+	}
+	
 	/// resets clears out the cached contents and marks as not loaded
 	public func fileUpdated() {
 		guard isLoaded else { return }

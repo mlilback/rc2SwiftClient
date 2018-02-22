@@ -10,6 +10,7 @@ import ReactiveSwift
 import Networking
 import SwiftyUserDefaults
 import SyntaxParsing
+import MJLLogger
 
 class DocumentManager: EditorContext {
 	enum State { case idle, loading, saving }
@@ -74,7 +75,7 @@ class DocumentManager: EditorContext {
 		guard let theFile = file else {
 			return setState(desired: .loading)
 				.flatMap(.concat, nilOutCurrentDocument)
-				.on(completed: { self.state = .idle })
+				.on(terminated: { self.state = .idle })
 		}
 		// get a producer to save the old document
 		let saveProducer: SignalProducer<String, Rc2Error>
@@ -93,6 +94,7 @@ class DocumentManager: EditorContext {
 	// saves to server, fileCache, and memory cache
 	// FIXME: use autosave parameter
 	func save(document: EditorDocument, isAutoSave: Bool = false) -> SignalProducer<String, Rc2Error> {
+		guard document.isDirty else { return SignalProducer<String, Rc2Error>(value: document.savedContents!) }
 		guard let contents = document.editedContents else {
 			return SignalProducer<String, Rc2Error>(error: Rc2Error(type: .invalidArgument))
 		}
@@ -101,7 +103,9 @@ class DocumentManager: EditorContext {
 			.flatMap(.concat, self.fileSaver.save)
 			.map { _ in (document.file, contents) }
 			.flatMap(.concat, fileCache.save)
-			.on(completed: { document.contentsSaved() })
+			.on(completed: { document.contentsSaved() }, terminated: {
+				self.state = .idle
+			})
 			.map { return document.currentContents ?? "" }
 	}
 	
@@ -114,6 +118,7 @@ class DocumentManager: EditorContext {
 	// throws an error if state isn't idle, then sets state to the desired value
 	private func setState(desired: State) -> SignalProducer<Void, Rc2Error> {
 		return SignalProducer<Void, Rc2Error> { observer, _ in
+			Log.debug("setting state to \(desired)", .app)
 			guard self.state == .idle else {
 				observer.send(error: Rc2Error(type: .alreadyInProgress))
 				return
@@ -128,6 +133,12 @@ class DocumentManager: EditorContext {
 	private func getDocumentFor(file: AppFile) -> SignalProducer<EditorDocument, Rc2Error> {
 		let doc = openDocuments[file.fileId] ?? EditorDocument(file: file, fileUrl: fileCache.cachedUrl(file: file))
 		openDocuments[file.fileId] = doc
+		guard doc.isLoaded else {
+			return fileCache.contents(of: file)
+				.map { String(data: $0, encoding: .utf8)! }
+				.on(value: { doc.contentsLoaded(contents: $0) })
+				.map { _ in doc }
+		}
 		return SignalProducer<EditorDocument, Rc2Error>(value: doc)
 	}
 	
