@@ -20,7 +20,7 @@ public class FileImporter: NSObject {
 	public let fileCache: FileCache
 	public var workspace: AppWorkspace { return fileCache.workspace }
 	/// array of files that were imported. Only available after the import is completed
-	public fileprivate(set) var importedFileIds: [Int]
+	public fileprivate(set) var importedFileIds: Set<Int>
 	fileprivate let files: [FileToImport]
 	fileprivate var uploadSession: URLSession!
 	fileprivate var tasks: [Int: ImportData] = [:]
@@ -142,9 +142,6 @@ extension FileImporter: URLSessionDataDelegate {
 	public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?)
 	{
 		Log.info("url session said complete", .network)
-		defer {
-			do { try fileManager.removeItem(at: tmpDir) } catch {}
-		}
 		guard error == nil else {
 			Log.error("error uploading file \(String(describing: error))", .network)
 			progressObserver?.send(error: Rc2Error(type: .network, nested: NetworkingError.uploadFailed(error!)))
@@ -165,12 +162,14 @@ extension FileImporter: URLSessionDataDelegate {
 		}
 		do {
 			let rawFile: File = try conInfo.decode(data: importData.data)
+			defer {
+				importedFileIds.insert(rawFile.id)
+			}
 			let fileData = try Data(contentsOf: importData.srcFile)
 			//is this really the best way to handle this error? oberver might have been set to nil
 			fileCache.cache(file: rawFile, withData: fileData).startWithFailed { updateError in
 				self.progressObserver?.send(error: updateError)
 			}
-			importedFileIds.append(rawFile.id)
 		} catch let err as Rc2Error {
 			progressObserver?.send(error: err)
 		} catch {
@@ -182,6 +181,7 @@ extension FileImporter: URLSessionDataDelegate {
 			progressObserver?.sendCompleted()
 			progressObserver = nil
 			progressLifetime = nil
+			do { try fileManager.removeItem(at: tmpDir) } catch {}
 		}
 	}
 	

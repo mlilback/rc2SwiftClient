@@ -102,7 +102,7 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 	/// - Parameter fileIds: the ids of the files to look for
 	/// - Parameter timeout: how long to wait for the files to appear
 	/// - Returns: a producer that will return the requested files or an error if timeout elapses
-	public func whenFilesExist(withIds fileIds: [Int], within timeout: TimeInterval) -> SignalProducer<[AppFile], Rc2Error>
+	public func whenFilesExist(withIds fileIds: Set<Int>, within timeout: TimeInterval) -> SignalProducer<[AppFile], Rc2Error>
 	{
 		// should make 1 global timeout for all of them, but shouldn't really make a difference
 		let matchingFiles = _files.value.filter({ fileIds.contains($0.fileId) })
