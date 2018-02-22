@@ -283,8 +283,8 @@ extension SourceEditorController: NSTextStorageDelegate {
 	//called when text editing has ended
 	func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
 	{
-		guard let parser = parser else { fatalError("no parser when text changed") }
 		guard !ignoreTextStorageNotifications else { return }
+		guard let parser = parser else { fatalError("no parser when text changed") }
 		//we don't care if attributes changed
 		guard editedMask.contains(.editedCharacters) else { return }
 		//parse() return true if the chunks changed. in that case, we need to recolor all of them
