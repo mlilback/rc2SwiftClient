@@ -18,11 +18,9 @@ extension Notification.Name {
 }
 
 class DocumentManager: EditorContext {
-	enum State { case idle, loading, saving }
 	let minTimeBetweenAutoSaves: TimeInterval = 2
 	
 	// MARK: properties
-	private var state: State = .idle
 	// when changed, should use .updateProgress() while loading file contents
 	let currentDocument = MutableProperty<EditorDocument?>(nil)
 	let editorFont: MutableProperty<NSFont>
@@ -34,6 +32,9 @@ class DocumentManager: EditorContext {
 	//	var session: Session
 	let fileSaver: FileSaver
 	let fileCache: FileCache
+	let loading = Atomic<Bool>(false)
+	let saving = Atomic<Bool>(false)
+	var busy: Bool { return loading.value || saving.value }
 	
 	// MARK: methods
 	init(fileSaver: FileSaver, fileCache: FileCache, lifetime: Lifetime, notificationCenter: NotificationCenter = .default, wspaceCenter: NotificationCenter = NSWorkspace.shared.notificationCenter, defaults: UserDefaults = .standard)
@@ -60,6 +61,7 @@ class DocumentManager: EditorContext {
 	}
 	
 	func process(changes: [AppWorkspace.FileChange]) {
+		guard !busy else { Log.info("skipping filechange message", .app); return }
 		// only care about change if it is our current document
 		guard let document = currentDocument.value,
 			let change = changes.first(where: { $0.file.fileId == document.file.fileId })
@@ -76,6 +78,9 @@ class DocumentManager: EditorContext {
 	
 	// returns a SP that will save the current document and load the document for file
 	func load(file: AppFile?) -> SignalProducer<String?, Rc2Error> {
+		if loading.value {
+			Log.warn("load called while already loading", .app)
+		}
 		// get a producer to save the old document
 		let saveProducer: SignalProducer<String, Rc2Error>
 		if let curDoc = currentDocument.value {
@@ -86,16 +91,17 @@ class DocumentManager: EditorContext {
 		// if file is nil, nil out current document (saving current first)
 		guard let theFile = file else {
 			return saveProducer
-				.map { _ in State.loading }
-				.flatMap(.concat, setState)
+				.on(starting: {	self.loading.value = true })
+				.map { _ in () }
 				.flatMap(.concat, nilOutCurrentDocument)
-				.on(terminated: { self.state = .idle })
+				.on(terminated: { self.loading.value = false })
 		}
 		// save current document, get the document to load, and load it
 		return saveProducer
 			.map { _ in theFile }
 			.flatMap(.concat, getDocumentFor)
 			.flatMap(.concat, load)
+			.on(starting: { self.loading.value = true }, completed: { self.loading.value = false })
 	}
 	
 	// saves to server, fileCache, and memory cache
@@ -106,14 +112,12 @@ class DocumentManager: EditorContext {
 			return SignalProducer<String, Rc2Error>(error: Rc2Error(type: .invalidArgument))
 		}
 		notificationCenter.post(name: .willSaveDocument, object: self)
-		return setState(desired: .saving)
-			.map { _ in (document.file, contents) }
-			.flatMap(.concat, self.fileSaver.save)
+		return self.fileSaver.save(file: document.file, contents: contents)
+			.on(starting: { self.saving.value = true })
 			.map { _ in (document.file, contents) }
 			.flatMap(.concat, fileCache.save)
-			.on(completed: { document.contentsSaved() }, terminated: {
-				self.state = .idle
-			})
+			.on(completed: { document.contentsSaved() },
+				terminated: { self.saving.value = false })
 			.map { return document.currentContents ?? "" }
 	}
 	
@@ -121,20 +125,6 @@ class DocumentManager: EditorContext {
 	private func  nilOutCurrentDocument() -> SignalProducer<String?, Rc2Error> {
 		return SignalProducer<String?, Rc2Error>(value: nil)
 			.on(started: { self.currentDocument.value = nil })
-	}
-	
-	// throws an error if state isn't idle, then sets state to the desired value
-	private func setState(desired: State) -> SignalProducer<Void, Rc2Error> {
-		return SignalProducer<Void, Rc2Error> { observer, _ in
-			Log.debug("setting state to \(desired)", .app)
-			guard self.state == .idle else {
-				observer.send(error: Rc2Error(type: .alreadyInProgress))
-				return
-			}
-			self.state = desired
-			observer.send(value: ())
-			observer.sendCompleted()
-		}
 	}
 	
 	// returns SP to return the specified document, creating and inserting into openDocuments if necessary

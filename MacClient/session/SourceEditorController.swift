@@ -353,7 +353,7 @@ fileprivate extension SourceEditorController {
 			return SignalProducer<Bool, Rc2Error>(error: Rc2Error(type: .logic, severity: .error, explanation: "save called with nothing to save"))
 		}
 		return context.save(document: doc, isAutoSave: isAutoSave)
-			.flatMap(.concat, { self.session.sendSaveFileMessage(file: doc.file, contents: $0) })
+			.map { _ in return true }
 			.updateProgress(status: self.appStatus!, actionName: "Save document")
 			.observe(on: UIScheduler())
 	}
