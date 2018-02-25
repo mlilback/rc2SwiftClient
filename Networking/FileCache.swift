@@ -459,6 +459,7 @@ extension DefaultFileCache {
 		do {
 			let data = try Data(contentsOf: self.cachedUrl(file: file))
 			observer.send(value: data)
+			observer.sendCompleted()
 		} catch {
 			observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "failed to load contents of file \(file.name)"))
 		}
