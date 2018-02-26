@@ -1433,7 +1433,7 @@
 				08AD13351FCF18D000CFD516 /* FileInfoController.swift */,
 				08EE26FA202FA995008E008F /* FileInfoController.xib */,
 			);
-			name = sidebar;
+			path = sidebar;
 			sourceTree = "<group>";
 		};
 		08127CD31DAD2434002E0D01 /* ClientCoreIntegrationTests */ = {
@@ -1832,6 +1832,17 @@
 			path = shared;
 			sourceTree = "<group>";
 		};
+		088D7547204471A800D266DC /* editor */ = {
+			isa = PBXGroup;
+			children = (
+				08EE270720335561008E008F /* EditorController.swift */,
+				08F448F51C4E244500C64706 /* SourceEditorController.swift */,
+				08EE270920335B0A008E008F /* NotebookEditorController.swift */,
+				08EE270520334470008E008F /* CodeEditor.swift */,
+			);
+			path = editor;
+			sourceTree = "<group>";
+		};
 		0897941B1D7B68F0003339EE /* ClientCore */ = {
 			isa = PBXGroup;
 			children = (
@@ -1922,7 +1933,7 @@
 				08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */,
 				0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */,
 			);
-			name = output;
+			path = output;
 			sourceTree = "<group>";
 		};
 		08C2D5E71E71B1B60007A02D /* resources */ = {
@@ -1993,13 +2004,10 @@
 				083305E71C51812300E27F66 /* AbstractSessionViewController.swift */,
 				083174031C5571D300071408 /* RootViewController.swift */,
 				083174051C56BE7B00071408 /* SessionSplitController.swift */,
-				08EE270720335561008E008F /* EditorController.swift */,
-				08F448F51C4E244500C64706 /* SourceEditorController.swift */,
-				08EE270920335B0A008E008F /* NotebookEditorController.swift */,
-				08EE270520334470008E008F /* CodeEditor.swift */,
+				0812631D1C862B94003E37A5 /* sidebar */,
+				088D7547204471A800D266DC /* editor */,
 				080AB8DA1E92D8DF005452C7 /* multi image */,
 				08BCD3F81E69BA1A00B86BB4 /* output */,
-				0812631D1C862B94003E37A5 /* sidebar */,
 				0812631B1C8628D0003E37A5 /* session views */,
 				0812631C1C862918003E37A5 /* data/helpers */,
 			);
