@@ -5,6 +5,12 @@
 //
 
 import Cocoa
+import SwiftyUserDefaults
+
+
+private extension DefaultsKeys {
+	static let selectedTabIndex = DefaultsKey<Int>("prefsSelectedTabIndex")
+}
 
 class PreferencesViewController: NSTabViewController {
 	lazy var tabSizes = [String: NSSize]()
@@ -18,6 +24,7 @@ class PreferencesViewController: NSTabViewController {
 		}
 		let dockerItem = tabViewItems.first(where: { $0.identifier as? String == "Docker" })
 		dockerItem?.image = image
+		self.selectedTabViewItemIndex = UserDefaults.standard[.selectedTabIndex]
 	}
 	
 	override func tabView(_ tabView: NSTabView, willSelect tabViewItem: NSTabViewItem?)
@@ -42,5 +49,6 @@ class PreferencesViewController: NSTabViewController {
 		frame.size.height = contentFrame.size.height
 		frame.size.width = contentFrame.size.width
 		window.setFrame(frame, display: true, animate: true)
+		UserDefaults.standard[.selectedTabIndex] = self.selectedTabViewItemIndex
 	}
 }

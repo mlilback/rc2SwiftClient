@@ -1,5 +1,10 @@
 # Rc² release notes
 
+## Build 60
+
+* prefs window remembers location, selected tab
+* theme prefs properly highlights theme type
+
 ## Build 57
 
 * Log and Docker windows restored if open at last quit
