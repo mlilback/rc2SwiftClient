@@ -60,6 +60,16 @@ public class ThemeManager {
 		}
 	}
 	
+	@objc private func syntaxThemeChanged(_ note: Notification) {
+		guard let theme = note.object as? SyntaxTheme else { return }
+		activeSyntaxTheme.value = theme
+	}
+	
+	@objc private func outputThemeChanged(_ note: Notification) {
+		guard let theme = note.object as? OutputTheme else { return }
+		activeOutputTheme.value = theme
+	}
+	
 	/// returns a duplicate of theme with a unique name that has already been inserted in the correct array
 	public func duplicate<T: Theme>(theme: T) -> T {
 		let currentNames = existingNames(theme)
@@ -102,41 +112,17 @@ public class ThemeManager {
 	}
 	
 	private init() {
-		let synThemes = ThemeManager.loadSyntaxThemes()
-		let activeTheme = ThemeManager.findDefaultTheme(in: synThemes, key: .activeSyntaxTheme)
-		_syntaxThemes = synThemes
-		activeSyntaxTheme = MutableProperty(activeTheme)
-
-		let outThemes = ThemeManager.loadOutputThemes()
-		let activeOut = ThemeManager.findDefaultTheme(in: outThemes, key: .activeOutputTheme)
-		_outputThemes = outThemes
-		activeOutputTheme = MutableProperty(activeOut)
+		_syntaxThemes = BaseTheme.loadThemes()
+		_outputThemes = BaseTheme.loadThemes()
+		let activeSyntax = ThemeManager.findDefaultTheme(in: _syntaxThemes, key: .activeSyntaxTheme)
+		activeSyntaxTheme = MutableProperty(activeSyntax)
+		let activeOutput = ThemeManager.findDefaultTheme(in: _outputThemes, key: .activeOutputTheme)
+		activeOutputTheme = MutableProperty(activeOutput)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(syntaxThemeChanged(_:)), name: .SyntaxThemeModified, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(outputThemeChanged(_:)), name: .OutputThemeModified, object: nil)
 	}
 	
-	private static func loadSyntaxThemes() -> [SyntaxTheme] {
-		var themes = [SyntaxTheme]()
-		let systemUrl = Bundle(for: ThemeManager.self).url(forResource: "syntaxThemes", withExtension: "json")!
-		// swiftlint:disable:next force_try
-		let userUrl = try! AppInfo.subdirectory(type: .applicationSupportDirectory, named: "SyntaxThemes")
-		let sysThemes: [SyntaxTheme] = BaseTheme.loadThemes(from: systemUrl, builtin: true)
-		let userThemes: [SyntaxTheme] = BaseTheme.loadThemes(from: userUrl, builtin: false)
-		themes.append(contentsOf: sysThemes)
-		themes.append(contentsOf: userThemes)
-		return themes
-	}
-
-	private static func loadOutputThemes() -> [OutputTheme] {
-		var output = [OutputTheme]()
-		let systemUrl = Bundle(for: ThemeManager.self).url(forResource: "outputThemes", withExtension: "json")!
-		// swiftlint:disable:next force_try
-		let userUrl = try! AppInfo.subdirectory(type: .applicationSupportDirectory, named: "OutputThemes")
-		let sysThemes: [OutputTheme] = BaseTheme.loadThemes(from: systemUrl, builtin: true)
-		let userThemes: [OutputTheme] = BaseTheme.loadThemes(from: userUrl, builtin: false)
-		output.append(contentsOf: sysThemes)
-		output.append(contentsOf: userThemes)
-		return output
-	}
-
 	private static func findDefaultTheme<T: BaseTheme>(in array: [T], key: DefaultsKey<JSON?>) -> T {
 		if let json = UserDefaults.standard[key],
 			let theme = try? json.decode(type: T.self)

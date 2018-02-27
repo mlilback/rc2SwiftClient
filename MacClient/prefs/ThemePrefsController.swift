@@ -21,9 +21,10 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		
+		// FIXME: why are these using hardcoded paths instead of pulling from Theme/ThemeManager?
 		if outputEditor == nil {
 			let bundle = Bundle(for: OutputTheme.self)
-			let builtin = bundle.url(forResource: "outputThemes", withExtension: "json")!
+			let builtin = bundle.url(forResource: "OutputThemes", withExtension: "json")!
 			// swiftlint:disable:next force_try
 			let user = try! AppInfo.subdirectory(type: .applicationSupportDirectory, named: "OutputThemes")
 			outputEditor = ThemeEditorController<OutputTheme>.createInstance(userUrl: user, builtinUrl: builtin)
@@ -31,7 +32,7 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 		}
 		if syntaxEditor == nil {
 			let bundle = Bundle(for: SyntaxTheme.self)
-			let builtin = bundle.url(forResource: "syntaxThemes", withExtension: "json")!
+			let builtin = bundle.url(forResource: "SyntaxThemes", withExtension: "json")!
 			// swiftlint:disable:next force_try
 			let user = try! AppInfo.subdirectory(type: .applicationSupportDirectory, named: "SyntaxThemes")
 			syntaxEditor = ThemeEditorController<SyntaxTheme>.createInstance(userUrl: user, builtinUrl: builtin)

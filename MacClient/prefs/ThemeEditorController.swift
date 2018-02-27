@@ -200,7 +200,9 @@ class ThemeEditorController<T: BaseTheme>: NSViewController, NSTableViewDataSour
 	
 	@IBAction func colorChanged(_ sender: Any?) {
 		guard let cwell = sender as? NSColorWell else { fatalError("wtf") }
+		let row = cwell.tag
 		print("set \(cwell.tag) to \(cwell.color)")
+		selectedTheme[selectedTheme!.allProperties[row]] = cwell.color
 	}
 
 	// MARK: - private methods

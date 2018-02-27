@@ -456,8 +456,8 @@
 		08FDE5431EA10E3500F14FAA /* busybox1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 08FDE5401EA10E3500F14FAA /* busybox1.txt */; };
 		08FDE5441EA10E3500F14FAA /* busybox2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 08FDE5411EA10E3500F14FAA /* busybox2.txt */; };
 		08FDE5451EA10E3500F14FAA /* busybox3.txt in Resources */ = {isa = PBXBuildFile; fileRef = 08FDE5421EA10E3500F14FAA /* busybox3.txt */; };
-		FA2664C31FF81841003E5460 /* syntaxThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 086A40DA1E7B4B2300AE476B /* syntaxThemes.json */; };
-		FA2664C41FF81870003E5460 /* outputThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 088F59231E7578B80009A0B1 /* outputThemes.json */; };
+		FA2664C31FF81841003E5460 /* SyntaxThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 086A40DA1E7B4B2300AE476B /* SyntaxThemes.json */; };
+		FA2664C41FF81870003E5460 /* OutputThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 088F59231E7578B80009A0B1 /* OutputThemes.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -967,7 +967,7 @@
 		086A40D41E7B04F400AE476B /* ThemeEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThemeEditorController.swift; path = prefs/ThemeEditorController.swift; sourceTree = "<group>"; };
 		086A40D61E7B1E8600AE476B /* ThemeEditorController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ThemeEditorController.xib; path = prefs/ThemeEditorController.xib; sourceTree = "<group>"; };
 		086A40D81E7B3F0C00AE476B /* SyntaxTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxTheme.swift; sourceTree = "<group>"; };
-		086A40DA1E7B4B2300AE476B /* syntaxThemes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = syntaxThemes.json; path = resources/syntaxThemes.json; sourceTree = "<group>"; };
+		086A40DA1E7B4B2300AE476B /* SyntaxThemes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = SyntaxThemes.json; path = resources/SyntaxThemes.json; sourceTree = "<group>"; };
 		086A40DC1E7B578400AE476B /* ThemeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		086A40DE1E7D956400AE476B /* PlatformTypeAliases.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlatformTypeAliases.swift; sourceTree = "<group>"; };
 		086A40E01E7DAEE300AE476B /* InternalTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternalTheme.swift; sourceTree = "<group>"; };
@@ -995,7 +995,7 @@
 		088D1F941DF36E4D00BC891E /* updatedContainers.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = updatedContainers.json; sourceTree = "<group>"; };
 		088F59191E732EC40009A0B1 /* MockDockerAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockDockerAPI.swift; sourceTree = "<group>"; };
 		088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThemePrefsController.swift; path = prefs/ThemePrefsController.swift; sourceTree = "<group>"; };
-		088F59231E7578B80009A0B1 /* outputThemes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = outputThemes.json; path = resources/outputThemes.json; sourceTree = "<group>"; };
+		088F59231E7578B80009A0B1 /* OutputThemes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = OutputThemes.json; path = resources/OutputThemes.json; sourceTree = "<group>"; };
 		0890650A1D26F59300C7CA5D /* MacAppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacAppStatus.swift; sourceTree = "<group>"; };
 		0892EE5D203F028700207F54 /* Encoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Encoding.swift; sourceTree = "<group>"; };
 		0892EE5F203F065000207F54 /* XAttributeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XAttributeManager.swift; sourceTree = "<group>"; };
@@ -1815,8 +1815,8 @@
 				084FEA801D3045D800060A7D /* ObjcConstants.m */,
 				08F6ADA81DD643C900AF0722 /* Copyable.swift */,
 				08C484F71C9B159000FE824B /* server.cer */,
-				088F59231E7578B80009A0B1 /* outputThemes.json */,
-				086A40DA1E7B4B2300AE476B /* syntaxThemes.json */,
+				088F59231E7578B80009A0B1 /* OutputThemes.json */,
+				086A40DA1E7B4B2300AE476B /* SyntaxThemes.json */,
 				08A01FD11CC81479001EDFAA /* helpindex.db */,
 				08F189A71D0A0E7200866A05 /* static_html */,
 				08A01FB51CC7FCA3001EDFAA /* fmdb */,
@@ -2638,8 +2638,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA2664C41FF81870003E5460 /* outputThemes.json in Resources */,
-				FA2664C31FF81841003E5460 /* syntaxThemes.json in Resources */,
+				FA2664C41FF81870003E5460 /* OutputThemes.json in Resources */,
+				FA2664C31FF81841003E5460 /* SyntaxThemes.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
