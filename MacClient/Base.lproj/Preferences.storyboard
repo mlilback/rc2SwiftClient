@@ -219,7 +219,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button toolTip="Remove old docker images when a new image is downloaded" translatesAutoresizingMaskIntoConstraints="NO" id="3hm-1C-QEd">
-                                <rect key="frame" x="18" y="164" width="140" height="18"/>
+                                <rect key="frame" x="18" y="164" width="334" height="18"/>
                                 <buttonCell key="cell" type="check" title="Remove old images" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Ggf-1y-gG9">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -282,11 +282,12 @@
                             </button>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="SFz-Oh-OMb" firstAttribute="top" secondItem="3aQ-M2-X5E" secondAttribute="bottom" constant="20" symbolic="YES" id="2Fj-PW-QLS"/>
                             <constraint firstItem="3aQ-M2-X5E" firstAttribute="leading" secondItem="S3X-Gv-GCS" secondAttribute="leading" constant="20" symbolic="YES" id="6YO-O1-nd9"/>
                             <constraint firstItem="3hm-1C-QEd" firstAttribute="top" secondItem="S3X-Gv-GCS" secondAttribute="top" constant="20" symbolic="YES" id="9t4-jm-lqA"/>
+                            <constraint firstAttribute="trailing" secondItem="3hm-1C-QEd" secondAttribute="trailing" id="Fg2-8T-KK8"/>
                             <constraint firstItem="3aQ-M2-X5E" firstAttribute="top" secondItem="3hm-1C-QEd" secondAttribute="bottom" constant="8" symbolic="YES" id="OUY-vG-Pnc"/>
-                            <constraint firstItem="SFz-Oh-OMb" firstAttribute="leading" secondItem="S3X-Gv-GCS" secondAttribute="leading" constant="20" symbolic="YES" id="ZH4-KZ-YZd"/>
-                            <constraint firstItem="SFz-Oh-OMb" firstAttribute="top" secondItem="3aQ-M2-X5E" secondAttribute="bottom" constant="20" symbolic="YES" id="kbS-dP-4cz"/>
+                            <constraint firstItem="SFz-Oh-OMb" firstAttribute="leading" secondItem="3aQ-M2-X5E" secondAttribute="leading" id="fvZ-g9-iFK"/>
                             <constraint firstItem="3hm-1C-QEd" firstAttribute="leading" secondItem="S3X-Gv-GCS" secondAttribute="leading" constant="20" symbolic="YES" id="pf2-Fa-rue"/>
                         </constraints>
                     </view>
