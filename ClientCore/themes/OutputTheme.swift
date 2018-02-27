@@ -17,26 +17,20 @@ public enum OutputThemeProperty: String, ThemeProperty {
 	public static var foregroundProperties: [OutputThemeProperty] { return [.text, .note, .help, .error, .log, .input, .status] }
 }
 
-public final class OutputTheme: NSObject, InternalTheme, JSONDecodable, JSONEncodable {
+public final class OutputTheme: BaseTheme {
 	public static let AttributeName = NSAttributedStringKey("rc2.OutputTheme")
 
-	public var name: String
 	var colors = [OutputThemeProperty: PlatformColor]()
-	public var isBuiltin: Bool = false
-	public var fileUrl: URL?
-	var dirty: Bool = false
 
-	public var propertyCount: Int { return colors.count }
-	override public var description: String { return "OutputTheme \(name)" }
+	public override var propertyCount: Int { return colors.count }
+	public override var description: String { return "OutputTheme \(name)" }
 
-	init(name: String) {
-		self.name = name
-		super.init()
+	override init(name: String) {
+		super.init(name: name)
 	}
 
-	public init(json: JSON) throws {
-		name = try json.getString(at: "ThemeName")
-		super.init()
+	public required init(json: JSON) throws {
+		try super.init(json: json)
 		try OutputThemeProperty.allProperties.forEach { property in
 			colors[property] = PlatformColor(hexString: try json.getString(at: property.rawValue))
 		}
@@ -58,7 +52,7 @@ public final class OutputTheme: NSObject, InternalTheme, JSONDecodable, JSONEnco
 		}
 	}
 
-	public func toJSON() -> JSON {
+	public override func toJSON() -> JSON {
 		var props = [String: JSON]()
 		props["ThemeName"] = .string(name)
 		for (key, value) in colors {
@@ -67,7 +61,33 @@ public final class OutputTheme: NSObject, InternalTheme, JSONDecodable, JSONEnco
 		return .dictionary(props)
 	}
 
-	public static let defaultTheme: OutputTheme = {
+//	public override func stringAttributes<T: ThemeProperty>(for property: T) -> [NSAttributedStringKey: Any] {
+//		guard let prop = property as? OutputThemeProperty else { fatalError("unsupported property") }
+//		return [attributeName: property, NSAttributedStringKey.backgroundColor: color(for: prop)]
+//	}
+
+	public func stringAttributes(for property: OutputThemeProperty) -> [NSAttributedStringKey: Any] {
+		return [attributeName: property, NSAttributedStringKey.backgroundColor: color(for: property)]
+	}
+
+	public override func update(attributedString: NSMutableAttributedString) {
+		attributedString.enumerateAttribute(attributeName, in: attributedString.string.fullNSRange)
+		{ (rawProperty, range, _) in
+			guard let rawProperty = rawProperty,
+				let property = rawProperty as? OutputThemeProperty
+				else { return } //should never fail
+			attributedString.setAttributes(stringAttributes(for: property), range: range)
+		}
+	}
+
+	func duplicate(name: String) -> OutputTheme {
+		let other = OutputTheme(name: name)
+		other.colors = colors
+		other.dirty = true
+		return other
+	}
+
+	public static let defaultTheme: Theme = {
 		var theme = OutputTheme(name: "builtin")
 		theme.colors[.text] = PlatformColor.black
 		theme.colors[.background] = PlatformColor.white

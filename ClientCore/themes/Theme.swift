@@ -13,19 +13,24 @@ import Foundation
 import Freddy
 import MJLLogger
 
-/// enum for the different properties supported by a theme
-public protocol ThemeProperty: RawRepresentable, Hashable {
-	/// returns array of all properties
-	static var allProperties: [Self] { get }
-	/// returns array of all background properties
-	static var backgroundProperties: [Self] { get }
-	/// returns array of all text/foreground properties
-	static var foregroundProperties: [Self] { get }
-	/// returns the label to use for the property in a json file
+public protocol ThemeProperty {
 	var stringValue: String { get }
-	/// returns a localized version of this property's name. Looked up as TypeName.stringValue by protocol extension
 	var localizedDescription: String { get }
 }
+
+/// enum for the different properties supported by a theme
+//public protocol ThemeProperty: RawRepresentable, Hashable {
+//	/// returns array of all properties
+//	static var allProperties: [Self] { get }
+//	/// returns array of all background properties
+//	static var backgroundProperties: [Self] { get }
+//	/// returns array of all text/foreground properties
+//	static var foregroundProperties: [Self] { get }
+//	/// returns the label to use for the property in a json file
+//	var stringValue: String { get }
+//	/// returns a localized version of this property's name. Looked up as TypeName.stringValue by protocol extension
+//	var localizedDescription: String { get }
+//}
 
 extension ThemeProperty {
 	public var localizedDescription: String {
@@ -34,33 +39,33 @@ extension ThemeProperty {
 	}
 }
 
-public protocol Theme: NSObjectProtocol, JSONEncodable, JSONDecodable, CustomStringConvertible {
-	associatedtype Property: ThemeProperty
+public protocol Theme: JSONEncodable, JSONDecodable, CustomStringConvertible {
+	
 	/// the name for this type's property in an NSAttributedString
-	static var AttributeName: NSAttributedStringKey { get }
+//	static var AttributeName: NSAttributedStringKey { get }
 	/// implemented in protocol extension to allow using AttributeName w/o the type name
 	var attributeName: NSAttributedStringKey { get }
 	/// for user-editable themes, the file location of this theme
-	var fileUrl: URL? { get set }
+	var fileUrl: URL? { get }
 	
 	/// returns the default theme to use
-	static var defaultTheme: Self { get }
+//	static var defaultTheme: Theme { get }
 	
 	/// name of the theme
 	var name: String { get }
 	/// number of properties
 	var propertyCount: Int { get }
 	/// true if the theme is system-defined and not editable
-	var isBuiltin: Bool { get set }
+	var isBuiltin: Bool { get }
 
-	func color(for property: Property) -> PlatformColor
-	subscript(key: Property) -> PlatformColor? { get set }
+//	func color(for property: SyntaxThemeProperty) -> PlatformColor
+//	subscript(key: SyntaxThemeProperty) -> PlatformColor? { get set }
 
 	/// returns an array of themes loaded from the specified URL.
-	static func loadThemes(from: URL, builtin: Bool) -> [Self]
+//	static func loadThemes(from: URL, builtin: Bool) -> [Self]
 	
 	/// attributes to add to a NSAttributedString to represent the theme property
-	func stringAttributes(for property: Property) -> [NSAttributedStringKey: Any]
+//	func stringAttributes(for property: SyntaxThemeProperty) -> [NSAttributedStringKey: Any]
 
 	/// Updates the attributed string so its attributes use this theme
 	///
@@ -68,13 +73,51 @@ public protocol Theme: NSObjectProtocol, JSONEncodable, JSONDecodable, CustomStr
 	func update(attributedString: NSMutableAttributedString)
 }
 
-public extension Theme {
-	/// map the static AttributeName to a non-static property so type name is not required to reference it
-	public var attributeName: NSAttributedStringKey { return type(of: self).AttributeName }
+public class BaseTheme: NSObject, Theme {
+//	public static var defaultTheme: Theme = { fatalError("subclass must implement") }()
 	
-	static func loadThemes(from url: URL, builtin: Bool = false) -> [Self] {
+	public func toJSON() -> JSON {
+		fatalError("subclass must implement and write ThemeName")
+	}
+	
+	public init(name: String) {
+		self.name = name
+	}
+	
+	public required init(json: JSON) throws {
+		name = try json.getString(at: "ThemeName")
+	}
+	
+	public override var description: String { return "Theme \(name)" }
+	
+	/// map the static AttributeName to a non-static property so type name is not required to reference it
+	public let attributeName: NSAttributedStringKey = NSAttributedStringKey("rc2.BaseTheme")
+	
+	public var allProperties: [ThemeProperty] {
+		if type(of: self) == SyntaxTheme.self { return SyntaxThemeProperty.allProperties }
+		return OutputThemeProperty.allProperties
+	}
+	
+	public internal(set) var name: String
+	public internal(set) var isBuiltin: Bool = false
+	public internal(set) var fileUrl: URL?
+	var dirty: Bool = false
+
+	public var propertyCount: Int { return 0 }
+	
+	public func color(for property: ThemeProperty) -> PlatformColor {
+		if let syntax = self as? SyntaxTheme, let prop = property as? SyntaxThemeProperty {
+			return syntax.color(for: prop)
+		} else if let output = self as? OutputTheme, let prop = property as? OutputThemeProperty {
+			return output.color(for: prop)
+		}
+		Log.warn("unknown theme property \(property.localizedDescription)", .core)
+		return NSColor.black
+	}
+	
+	static public func loadThemes<T: BaseTheme>(from url: URL, builtin: Bool = false) -> [T] {
 		guard !builtin else { return loadBuiltinThemes(from: url) }
-		var themes = [Self]()
+		var themes = [T]()
 		var urls = [URL]()
 		do {
 			urls = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
@@ -87,7 +130,7 @@ public extension Theme {
 			do {
 				let data = try Data(contentsOf: aFile)
 				let json = try JSON(data: data)
-				let theme: Self = try json.decode()
+				let theme: T = try json.decode()
 				theme.isBuiltin = builtin
 				theme.fileUrl = aFile
 				themes.append(theme)
@@ -98,11 +141,11 @@ public extension Theme {
 		return themes
 	}
 
-	static func loadBuiltinThemes(from url: URL) -> [Self] {
+	static func loadBuiltinThemes<T: BaseTheme>(from url: URL) -> [T] {
 		do {
 			let data = try Data(contentsOf: url)
 			let json = try JSON(data: data)
-			let themes = try json.decodedArray(type: Self.self).sorted(by: { $0.name < $1.name })
+			let themes: [T] = try json.decodedArray().sorted(by: { $0.name < $1.name })
 			themes.forEach { $0.isBuiltin = true }
 			return themes
 		} catch {
@@ -111,20 +154,21 @@ public extension Theme {
 	}
 	
 	/// attributes to add to a NSAttributedString to represent the theme property
-	public func stringAttributes(for property: Property) -> [NSAttributedStringKey: Any] {
-		return [attributeName: property, NSAttributedStringKey.backgroundColor: color(for: property)]
-	}
+//	public func stringAttributes<T: ThemeProperty>(for property: T) -> [NSAttributedStringKey: Any] {
+//		return [:]
+//	}
 	
 	/// Updates the attributed string so its attributes use this theme
 	///
 	/// - Parameter attributedString: The string whose attributes will be updated
 	public func update(attributedString: NSMutableAttributedString) {
-		attributedString.enumerateAttribute(attributeName, in: attributedString.string.fullNSRange)
-		{ (rawProperty, range, _) in
-			guard let rawProperty = rawProperty,
-				let property = rawProperty as? Property
-				else { return } //should never fail
-			attributedString.setAttributes(stringAttributes(for: property), range: range)
-		}
+		fatalError("subclass must implement")
+//		attributedString.enumerateAttribute(attributeName, in: attributedString.string.fullNSRange)
+//		{ (rawProperty, range, _) in
+//			guard let rawProperty = rawProperty,
+//				let property = rawProperty as? ThemeProperty
+//				else { return } //should never fail
+//			attributedString.setAttributes(stringAttributes(for: property), range: range)
+//		}
 	}
 }

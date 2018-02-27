@@ -118,8 +118,10 @@ public class ThemeManager {
 		let systemUrl = Bundle(for: ThemeManager.self).url(forResource: "syntaxThemes", withExtension: "json")!
 		// swiftlint:disable:next force_try
 		let userUrl = try! AppInfo.subdirectory(type: .applicationSupportDirectory, named: "SyntaxThemes")
-		themes.append(contentsOf: SyntaxTheme.loadThemes(from: systemUrl, builtin: true))
-		themes.append(contentsOf: SyntaxTheme.loadThemes(from: userUrl, builtin: false))
+		let sysThemes: [SyntaxTheme] = BaseTheme.loadThemes(from: systemUrl, builtin: true)
+		let userThemes: [SyntaxTheme] = BaseTheme.loadThemes(from: userUrl, builtin: false)
+		themes.append(contentsOf: sysThemes)
+		themes.append(contentsOf: userThemes)
 		return themes
 	}
 
@@ -128,12 +130,14 @@ public class ThemeManager {
 		let systemUrl = Bundle(for: ThemeManager.self).url(forResource: "outputThemes", withExtension: "json")!
 		// swiftlint:disable:next force_try
 		let userUrl = try! AppInfo.subdirectory(type: .applicationSupportDirectory, named: "OutputThemes")
-		output.append(contentsOf: OutputTheme.loadThemes(from: systemUrl, builtin: true))
-		output.append(contentsOf: OutputTheme.loadThemes(from: userUrl, builtin: false))
+		let sysThemes: [OutputTheme] = BaseTheme.loadThemes(from: systemUrl, builtin: true)
+		let userThemes: [OutputTheme] = BaseTheme.loadThemes(from: userUrl, builtin: false)
+		output.append(contentsOf: sysThemes)
+		output.append(contentsOf: userThemes)
 		return output
 	}
 
-	private static func findDefaultTheme<T: Theme>(in array: [T], key: DefaultsKey<JSON?>) -> T {
+	private static func findDefaultTheme<T: BaseTheme>(in array: [T], key: DefaultsKey<JSON?>) -> T {
 		if let json = UserDefaults.standard[key],
 			let theme = try? json.decode(type: T.self)
 		{
@@ -143,7 +147,12 @@ public class ThemeManager {
 		if let defaultTheme = array.first(where: { $0.name == "Default" }) {
 			return defaultTheme
 		}
-		return T.defaultTheme
+		if T.self == SyntaxTheme.self {
+			return SyntaxTheme.defaultTheme as! T
+		} else if T.self == OutputTheme.self {
+			return OutputTheme.defaultTheme as! T
+		}
+		fatalError()
 	}
 	
 }
