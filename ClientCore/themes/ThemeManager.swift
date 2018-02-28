@@ -8,6 +8,7 @@ import Foundation
 import Freddy
 import ReactiveSwift
 import SwiftyUserDefaults
+import MJLLogger
 
 fileprivate extension DefaultsKeys {
 	static let activeOutputTheme = DefaultsKey<JSON?>("rc2.activeOutputTheme")
@@ -62,11 +63,25 @@ public class ThemeManager {
 	
 	@objc private func syntaxThemeChanged(_ note: Notification) {
 		guard let theme = note.object as? SyntaxTheme else { return }
+		if activeSyntaxTheme.value.dirty {
+			do {
+				try activeSyntaxTheme.value.save()
+			} catch {
+				Log.error("error saving theme: \(error)", .core)
+			}
+		}
 		activeSyntaxTheme.value = theme
 	}
 	
 	@objc private func outputThemeChanged(_ note: Notification) {
 		guard let theme = note.object as? OutputTheme else { return }
+		if theme != activeOutputTheme.value, activeOutputTheme.value.dirty {
+			do {
+				try activeOutputTheme.value.save()
+			} catch {
+				Log.error("error saving theme: \(error)", .core)
+			}
+		}
 		activeOutputTheme.value = theme
 	}
 	

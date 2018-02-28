@@ -4,6 +4,7 @@
 
 * prefs window remembers location, selected tab
 * theme prefs properly highlights theme type
+* theme names editable, saveable
 
 ## Build 57
 

@@ -195,7 +195,8 @@ class ThemeEditorController<T: BaseTheme>: NSViewController, NSTableViewDataSour
 			rowNum >= 0,
 			let theme = entries[rowNum].theme
 		else { print("not valid editor"); return }
-		print("set \(theme.name) to \(editor.stringValue)")
+		// TODO: check that valid theme name (not duplicate)
+		theme.name = editor.stringValue
 	}
 	
 	@IBAction func colorChanged(_ sender: Any?) {

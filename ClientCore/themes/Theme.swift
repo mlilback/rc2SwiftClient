@@ -45,7 +45,7 @@ public protocol Theme: JSONEncodable, JSONDecodable, CustomStringConvertible {
 	var fileUrl: URL? { get }
 	
 	/// name of the theme
-	var name: String { get }
+	var name: String { get set }
 	/// number of properties
 	var propertyCount: Int { get }
 	/// true if the theme is system-defined and not editable
@@ -67,15 +67,34 @@ public class BaseTheme: NSObject, Theme {
 	
 	public init(name: String) {
 		self.name = name
+		super.init()
+		fileUrl = BaseTheme.themesPath(type: themeType, builtin: false)
+			.appendingPathComponent(UUID().uuidString)
+			.appendingPathExtension("json")
+		saveIngoringError()
+	}
+	
+	/// saves user editable theme to disk.
+	public func save() throws {
+		guard !isBuiltin else { throw ThemeError.notEditable }
+		guard let url = fileUrl else { fatalError("why is there no url?") }
+		let data = try toJSON().serialize()
+		try data.write(to: url)
+		dirty = false
+	}
+	
+	private func saveIngoringError() {
+		do {
+			try save()
+		} catch {
+			Log.error("error saving theme: \(error)", .core)
+		}
 	}
 	
 	// really don't want to be public, but JSONDecodable requires it
 	public required init(json: JSON) throws {
 		name = try json.getString(at: "ThemeName")
 		super.init()
-		fileUrl = BaseTheme.themesPath(type: themeType, builtin: false)
-			.appendingPathComponent(UUID().uuidString)
-			.appendingPathExtension("json")
 	}
 	
 	public override var description: String { return "Theme \(name)" }
@@ -88,7 +107,10 @@ public class BaseTheme: NSObject, Theme {
 		return OutputThemeProperty.allProperties
 	}
 	
-	public internal(set) var name: String
+	public var name: String {
+		willSet { guard !isBuiltin else { fatalError("can't edit name of builtin theme")} }
+		didSet { if fileUrl != nil { saveIngoringError() } }
+	}
 	public internal(set) var isBuiltin: Bool = false
 	public internal(set) var fileUrl: URL?
 	var dirty: Bool = false
