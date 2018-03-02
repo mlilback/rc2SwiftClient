@@ -79,8 +79,9 @@ class RnwSyntaxParser: BaseSyntaxParser {
 				token = tok.nextToken()!
 				seaBegin = Int(token.offset)
 				let range = NSMakeRange(seaEnd, seaBegin-seaEnd)
-				chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1,
-											range: range, chunkNumber: chunkIndex))
+				if seaBegin - Int(tokenLast.offset)-seaBegin > 0 {
+					chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1, range: range, chunkNumber: chunkIndex))
+				}
 				state = .sea; chunkIndex += 1; closeChunk = false
 				currType = (.docs, .none)
 			}
@@ -90,18 +91,22 @@ class RnwSyntaxParser: BaseSyntaxParser {
 		}
 		// Handle end cases:
 		if state == .sea && Int(tokenLast.offset) > seaBegin {
-			let range = NSMakeRange(seaBegin, Int(tokenLast.offset)-seaBegin)
-			chunks.append(DocumentChunk(chunkType: .docs, equationType: .none,
-										range: range, chunkNumber: chunkIndex))
+			if seaBegin - Int(tokenLast.offset)-seaBegin > 0 {
+				let range = NSMakeRange(seaBegin, Int(tokenLast.offset)-seaBegin)
+				chunks.append(DocumentChunk(chunkType: .docs, equationType: .none,
+											range: range, chunkNumber: chunkIndex))
+			}
 		} else if Int(token.offset) > seaEnd {
-			let range = NSMakeRange(seaEnd, Int(tokenLast.offset)-seaEnd)
-			chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1,
-										range: range, chunkNumber: chunkIndex))
+			if seaEnd - Int(tokenLast.offset)-seaEnd > 0 {
+				let range = NSMakeRange(seaEnd, Int(tokenLast.offset)-seaEnd)
+				chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1,
+											range: range, chunkNumber: chunkIndex))
+			}
 		}
 		
-		for c in chunks {
-			print("num=\(c.chunkNumber), range=\(c.parsedRange), type=\(c.chunkType)")
-		}
+//		for c in chunks {
+//			print("num=\(c.chunkNumber), range=\(c.parsedRange), type=\(c.chunkType)")
+//		}
 		
 		colorChunks(chunks)
 	}
