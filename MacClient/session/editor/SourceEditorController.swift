@@ -296,7 +296,7 @@ extension SourceEditorController: NSTextStorageDelegate {
 			parser.colorChunks(parser.chunksForRange(editedRange))
 		}
 		let currentDocument = context?.currentDocument.value
-		currentChunkIndex = parser.indexOfChunk(range: editedRange)
+		currentChunkIndex = parser.indexOfChunk(inRange: editedRange)
 		if currentDocument?.editedContents != textStorage.string {
 			currentDocument?.editedContents = textStorage.string
 		}
@@ -312,7 +312,7 @@ extension SourceEditorController: NSTextViewDelegate {
 	
 	func textViewDidChangeSelection(_ notification: Notification) {
 		guard let parser = parser else { return }
-		currentChunkIndex = parser.indexOfChunk(range: editor!.selectedRange())
+		currentChunkIndex = parser.indexOfChunk(inRange: editor!.selectedRange())
 	}
 	
 	func textView(_ textView: NSTextView, clickedOnLink link: Any, at charIndex: Int) -> Bool {

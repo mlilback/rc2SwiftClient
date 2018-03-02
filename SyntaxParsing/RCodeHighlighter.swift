@@ -11,10 +11,9 @@ import Foundation
 import ClientCore
 import PEGKit
 
-let RCodeHighlighterColors = "RCodeHighlighterColors"
-
-open class RCodeHighlighter: CodeHighlighter {
+open class RCodeHighlighter: BaseHighlighter {
 	
+	// Get RKeywords from it's file in this bundle:
 	let keywords: Set<String> = {
 		let bundle = Bundle(for: RCodeHighlighter.self)
 		guard let url = bundle.url(forResource: "RKeywords", withExtension: "txt") else {
@@ -25,8 +24,7 @@ open class RCodeHighlighter: CodeHighlighter {
 		return Set<String>(keyArray)
 	}()
 	
-	override func colorForToken(_ token: PKToken, lastToken: PKToken?, includePreviousCharacter usePrevious:inout Bool) -> PlatformColor?
-	{
+	override func colorForToken(_ token: PKToken, lastToken: PKToken?, includePreviousCharacter usePrevious:inout Bool) -> PlatformColor? {
 		var color: PlatformColor?
 		switch token.tokenType {
 			case .comment:

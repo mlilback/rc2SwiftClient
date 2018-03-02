@@ -11,7 +11,7 @@ import Foundation
 import ClientCore
 import PEGKit
 
-open class LatexCodeHighlighter: CodeHighlighter {
+open class LatexHighlighter: BaseHighlighter {
 	let commentRegex: NSRegularExpression
 	
 	required public init(helpCallback: @escaping HighlighterHasHelpCallback)  {
@@ -22,15 +22,15 @@ open class LatexCodeHighlighter: CodeHighlighter {
 	
 	override func addAttributes(_ content: NSMutableAttributedString, range: NSRange) {
 		let color = theme.value.color(for: .comment)
-		let sourceStr = content.mutableString.substring(with: range)
-		commentRegex.enumerateMatches(in: sourceStr, options: [], range: NSRange(location: 0, length: sourceStr.count))
+		let str = content.mutableString.substring(with: range)
+		commentRegex.enumerateMatches(in: str, options: [],
+									  range: NSRange(location: 0, length: str.count))
 		{ (results, _, _) -> Void in
 			content.addAttribute(.foregroundColor, value: color, range: (results?.range(at:1))!)
 		}
 	}
 	
-	override func colorForToken(_ token: PKToken, lastToken: PKToken?, includePreviousCharacter usePrevious:inout Bool) -> PlatformColor?
-	{
+	override func colorForToken(_ token: PKToken, lastToken: PKToken?, includePreviousCharacter usePrevious:inout Bool) -> PlatformColor? {
 		var color: PlatformColor?
 		switch token.tokenType  {
 		case .comment:
@@ -40,8 +40,7 @@ open class LatexCodeHighlighter: CodeHighlighter {
 		case .symbol:
 			color = theme.value.color(for: .symbol)
 		case .word:
-			if lastToken?.tokenType == .symbol && lastToken?.stringValue.first == "\\"
-			{
+			if lastToken?.tokenType == .symbol && lastToken?.stringValue.first == "\\" {
 				usePrevious = true
 				color = theme.value.color(for: .keyword)
 			}

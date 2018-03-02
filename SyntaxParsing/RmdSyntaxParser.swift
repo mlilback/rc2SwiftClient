@@ -8,123 +8,125 @@ import Foundation
 #if os(OSX)
 	import AppKit
 #endif
-import ClientCore
-import Model
+import PEGKit
+
+private enum RmdParserState : Int {
+	case sea, codeBlock, codeIn, eqBlock, eqIn, eqPossible
+}
 
 class RmdSyntaxParser: BaseSyntaxParser {
-	let latexHighlighter: LatexCodeHighlighter
-	let rChunkRegex: NSRegularExpression
-	let blockEqRegex: NSRegularExpression
-	let inlineRegex: NSRegularExpression
-	let mathRegex: NSRegularExpression
 	
-	override init(storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HighlighterHasHelpCallback)
-	{
-		// swiftlint:disable force_try
-		try! rChunkRegex = NSRegularExpression(pattern: "\n```\\{r\\s*([^\\}]*)\\}\\s*\n+(.*?)\n```\n", options: .dotMatchesLineSeparators)
-		//matches: $$
-		try! blockEqRegex = NSRegularExpression(pattern: "(\\$\\$\\p{blank}*\\n+(.*?)\\$\\$\\p{blank}*\n)", options:.dotMatchesLineSeparators)
-		try! inlineRegex = NSRegularExpression(pattern: "`r\\s+([^`]*)`", options: .dotMatchesLineSeparators)
-		try! mathRegex = NSRegularExpression(pattern: "(<math(\\s+[^>]*)(display\\s*=\\s*\"(block|inline)\")([^>]*)>)(.*?)</math>\\s*?\\n?", options: .dotMatchesLineSeparators)
-		latexHighlighter = LatexCodeHighlighter(helpCallback: helpCallback)
-		// swiftlint:enable force_try
-		super.init(storage: storage, fileType: fileType, helpCallback: helpCallback)
-		codeHighlighter = RCodeHighlighter(helpCallback: helpCallback)
-		colorBackgrounds = true
-	}
-	
-	// swiftlint:disable:next function_body_length
 	override func parseRange(_ range: NSRange) {
-		let str = textStorage.string
-		chunks.removeAll()
-		var nextChunkIndex = 1
-		var newChunks = [DocumentChunk]()
-		var inlineMathML = [NSRange]()
-		//add R code chunks
-		rChunkRegex.enumerateMatches(in: str, options: [], range: range)
-		{ (result, _, _) -> Void in
-			guard let result = result else { return }
-			var cname: String?
-			if let subRange = result.range(at: 2).toStringRange(str) {
-				cname = String(str[subRange])
+		chunks.removeAll(); chunks = [DocumentChunk]()
+		var chunkIndex = 1
+		// PEG Kit:
+		let tok = PKTokenizer(string: textStorage.string)!
+		tok.whitespaceState.reportsWhitespaceTokens = true
+		tok.numberState.allowsScientificNotation = true	// good in general
+		tok.commentState.reportsCommentTokens = true
+		// Order of ``` before ` matters:
+		tok.symbolState.add("```")		// codeBlock begin, end
+		tok.symbolState.add("`")		// codeIn begin, end
+		tok.symbolState.add("$$")		// eqBlock begin, end
+		tok.symbolState.add("$")		// eqIn begin, end
+		tok.symbolState.add("<math")	// eqPossible
+		tok.symbolState.add(">")		// eqBlock mathML definite
+		tok.symbolState.add("</math>")	// eqBlock mathML end
+		let eof = PKToken.eof().tokenType
+		var state = RmdParserState.sea	// sea - docs chunk
+		var seaBegin:Int = 0, seaEnd:Int = 0
+		var token = tok.nextToken()!
+		var tokenLast = token
+		var closeChunk = false
+		// Reference:
+		//		public enum ChunkType {
+		//			case docs, code, equation
+		//		public enum EquationType: String {
+		//			case invalid, inline, display, mathML = "MathML"
+		var currType:(ChunkType, EquationType) = (.docs, .none)
+		// Parse by loop through tokens and changing states:
+		while token.tokenType != eof {
+			// Ignore everything but predefined chunk-defining symbols:
+			if token.tokenType != .symbol {
+				tokenLast = token
+				token = tok.nextToken()!
+				continue
 			}
-			let codeChunk = DocumentChunk(chunkType: .executable, chunkNumber: nextChunkIndex, name: cname)
-			nextChunkIndex += 1
-			let mrng = result.range //rangeAtIndex(0)
-			//skip the initial newline
-			codeChunk.parsedRange = NSRange(location: mrng.location + 1, length: mrng.length - 1)
-			newChunks.append(codeChunk)
-		}
-		//add chunks for block equations
-		blockEqRegex.enumerateMatches(in: str, options: [], range: range)
-		{ (results, _, _) -> Void in
-			let newChunk = DocumentChunk(chunkType: .equation, chunkNumber: nextChunkIndex)
-			newChunk.equationType = .display
-			nextChunkIndex += 1
-			newChunk.parsedRange = results!.range
-			newChunks.append(newChunk)
-		}
-		//look for MathML
-		mathRegex.enumerateMatches(in: str, options: [], range: range)
-		{ (results, _, _) -> Void in
-			if let subRange = results?.range(at:4).toStringRange(str), str[subRange] == "block" {
-				let newChunk = DocumentChunk(chunkType: .equation, chunkNumber: 1)
-				newChunk.equationType = .mathML
-				newChunk.parsedRange = results!.range
-				newChunks.append(newChunk)
-			} else {
-				inlineMathML.append(results!.range)
-			}
-		}
-		//sort them by range
-		newChunks = newChunks.sorted { (chunk1, chunk2) in
-			return chunk1.parsedRange.location < chunk2.parsedRange.location
-		}
-		//now loop through and add documentation chunks as needed
-		var docChunks: [DocumentChunk] = []
-		for (index, aChunk) in newChunks.enumerated() {
-			let docChunk = DocumentChunk(chunkType: .documentation, chunkNumber: 1)
-			if index == 0 { //first chunk
-				if aChunk.parsedRange.location > 0 {
-					docChunk.parsedRange = NSRange(location: 0, length: aChunk.parsedRange.location)
+			// Switch open state based on symbols:
+			if state == .sea || state == .eqPossible {
+				if token.stringValue == "```" {
+					currType = (.code, .none)
+					state = .codeBlock
+					closeChunk = true }
+				else if token.stringValue == "`" {
+					currType = (.code, .none)
+					state = .codeIn
+					closeChunk = true }
+				else if token.stringValue == "$$" {
+					currType = (.equation, .display)
+					state = .eqBlock
+					closeChunk = true }
+				else if token.stringValue == "$" {
+					currType = (.equation, .inline)
+					state = .eqIn
+					closeChunk = true }
+				else if token.stringValue == "<math" {
+					state = .eqPossible
+					seaEnd = Int(token.offset) }
+				else if token.stringValue == ">" && state == .eqPossible {
+					currType = (.equation, .mathML)
+					closeChunk = true
 				}
-			} else { //any other chunk
-				let startIdx = MaxNSRangeIndex(newChunks[index - 1].parsedRange) + 1
-				docChunk.parsedRange = NSRange(location: startIdx, length: aChunk.parsedRange.location - startIdx)
+				// Create a chunk after switching states:
+				if closeChunk {
+					if state == .eqPossible { state = .eqBlock }
+					else { seaEnd = Int(token.offset) }
+					let range = NSMakeRange(seaBegin, seaEnd-seaBegin)
+					chunks.append(DocumentChunk(chunkType: .docs, equationType: .none,
+												range: range, chunkNumber: chunkIndex))
+					chunkIndex += 1; closeChunk = false
+				}
 			}
-			docChunks.append(docChunk)
-			docChunks.append(aChunk)
+			// Switch close state based on symbols:
+			else if state == .codeIn    && token.stringValue == "`" {
+				closeChunk = true }
+			else if state == .codeBlock && token.stringValue == "```"{
+				closeChunk = true }
+			else if state == .eqIn      && token.stringValue == "$"{
+				closeChunk = true }
+			else if state == .eqBlock   && token.stringValue == "$$"{
+				closeChunk = true }
+			else if state == .eqBlock   && token.stringValue == "</math>"{
+				closeChunk = true
+			}
+			// Create a chunk after switching states:
+			tokenLast = token
+			if closeChunk {
+				token = tok.nextToken()!
+				seaBegin = Int(token.offset)
+				let range = NSMakeRange(seaEnd, seaBegin-seaEnd)
+				chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1,
+											range: range, chunkNumber: chunkIndex))
+				state = .sea; chunkIndex += 1; closeChunk = false
+				currType = (.docs, .none)
+			}
+			else {
+				token = tok.nextToken()!
+			}
 		}
-		//add any text after the last docChunk
-		if docChunks.count > 0 && MaxNSRangeIndex(docChunks.last!.parsedRange) < MaxNSRangeIndex(range) {
-			let finalChunk = DocumentChunk(chunkType: .documentation, chunkNumber: 1)
-			let loc = MaxNSRangeIndex(docChunks.last!.parsedRange) + 1
-			finalChunk.parsedRange = NSRange(location: loc, length: MaxNSRangeIndex(range) - loc)
-			docChunks.append(finalChunk)
-		}
-		//renumber and sort by number
-		var nextIdx = 0
-		chunks = docChunks.enumerated().map { (arg) in
-			nextIdx += 1
-			return arg.element.duplicateWithChunkNumber(nextIdx)
-		}.sorted { (chunk1, chunk2) -> Bool in
-			return chunk1.chunkNumber < chunk2.chunkNumber
+		// Handle end cases:
+		if state == .sea && Int(tokenLast.offset) > seaBegin {
+			let range = NSMakeRange(seaBegin, Int(tokenLast.offset)-seaBegin)
+			chunks.append(DocumentChunk(chunkType: .docs, equationType: .none,
+										range: range, chunkNumber: chunkIndex))
+		} else if Int(token.offset) > seaEnd {
+			let range = NSMakeRange(seaEnd, Int(tokenLast.offset)-seaEnd)
+			chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1,
+										range: range, chunkNumber: chunkIndex))
 		}
 		
-		colorChunks(chunks)
-		//set background of inline equations
-		let color = theme.value.color(for: .inlineBackground)
-		inlineRegex.enumerateMatches(in: str, options: [], range: range)
-		{ (results, _, _) -> Void in
-			self.textStorage.addAttribute(.backgroundColor, value: color, range: results!.range)
-			self.latexHighlighter.highlightText(self.textStorage, range: results!.range(at:1))
-		}
-		for aRange in inlineMathML {
-			self.textStorage.addAttribute(.backgroundColor, value: color, range: aRange)
-		}
-		//highlight latex code in display equation blocks
-		for aChunk in chunks where aChunk.type == .executable {
-			self.latexHighlighter.highlightText(self.textStorage, range: aChunk.parsedRange)
-		}
+//		for c in chunks {
+//			print("num=\(c.chunkNumber)\t range=\(c.parsedRange)\t type=\(c.chunkType)")
+//		}
 	}
 }

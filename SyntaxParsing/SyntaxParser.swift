@@ -5,38 +5,48 @@
 //
 
 import Foundation
-import ClientCore
+#if os(OSX)
+	import AppKit
+#endif
 import Model
 
-/// Protocol for an object that parses the contents of an NSTextStorage into an array of DocumentChunk objects
+/// Protocol for an object that parses the contents of an NSTextStorage
+/// into an array of DocumentChunk objects, used externally instead of
+/// particular parser objects.
 public protocol SyntaxParser: class {
-	/// The text storage that is parsed
+	/// Text storage that is parsed
 	var textStorage: NSTextStorage { get }
-	/// The type of file parsed by this parser
+	/// File type parsed, used to determine highlighter(s) to use
 	var fileType: FileType { get }
-	/// The current array of parsed chunks
+	/// Current array of parsed chunks
 	var chunks: [DocumentChunk] { get }
-	/// The current array of parsed chunks which are executable
+	
+	// MARK: - External use only (mainly SessionEditorController):
+	
+	/// Current array of parsed chunks that are executable
 	var executableChunks: [DocumentChunk] { get }
 	
-	/// Returns the index of the first chunk containing the start of the range
-	///
-	/// - Parameter range: The range whose start index should be found
-	/// - Returns: the index of the chunk containing the start of the range
-	func indexOfChunk(range: NSRange) -> Int
-	
-	/// Returns ordered array of chunks that contain the text in the requested range
-	///
-	/// - Parameter range: The range of text to find chunks for
-	/// - Returns: The chunks that contain text in the specified range
-	func chunksForRange(_ range: NSRange) -> [DocumentChunk]
-	
-	/// Parses the text storage and updates the chunks array
-	///
+	/// Calls subclasses to parse if textStorage has changed.
 	/// - Returns: true if the chunks array was updated
 	func parse() -> Bool
 	
-	/// Updates the NSTextStorage attributes for color and backgroundColor
+	/// Returns the index of the first chunk containing the start of the range.
+	/// Used in: SessionEditorController: NSTextViewDelegate & NSTextStorageDelegate.
+	///
+	/// - Parameter range: The range whose start index should be found.
+	/// - Returns: the index of the chunk containing the start of the range,
+	///   or 0 if not found.
+	func indexOfChunk(inRange: NSRange) -> Int
+	
+	/// Returns ordered array of chunks that contain the text in the requested range.
+	/// Used in: indexOfChunk and SessionEditorController: NSTextStorageDelegate.
+	///
+	/// - Parameter range: the range of text to find chunks for.
+	/// - Returns: the chunks that contain text in the specified range.
+	func chunksForRange(_ range: NSRange) -> [DocumentChunk]
+	
+	/// Updates the NSTextStorage attributes with color and back backgroundColor
+	/// based on coloring highlighted, parsed text.
 	///
 	/// - Parameter chunksToColor: array of chunks to color
 	func colorChunks(_ chunksToColor: [DocumentChunk])

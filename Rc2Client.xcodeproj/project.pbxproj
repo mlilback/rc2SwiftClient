@@ -114,11 +114,9 @@
 		082BE09B1F59D549006CE0B7 /* SyntaxParsing.h in Headers */ = {isa = PBXBuildFile; fileRef = 082BE08B1F59D549006CE0B7 /* SyntaxParsing.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; };
 		082BE09F1F59D549006CE0B7 /* SyntaxParsing.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		082BE0AE1F59D5BB006CE0B7 /* LatexCodeHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0A71F59D5BB006CE0B7 /* LatexCodeHighlighter.swift */; };
 		082BE0AF1F59D5BB006CE0B7 /* BaseSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0A81F59D5BB006CE0B7 /* BaseSyntaxParser.swift */; };
 		082BE0B01F59D5BB006CE0B7 /* DocumentChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */; };
 		082BE0B11F59D5BB006CE0B7 /* RmdSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0AA1F59D5BB006CE0B7 /* RmdSyntaxParser.swift */; };
-		082BE0B21F59D5BB006CE0B7 /* CodeHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0AB1F59D5BB006CE0B7 /* CodeHighlighter.swift */; };
 		082BE0B31F59D5BB006CE0B7 /* RnwSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0AC1F59D5BB006CE0B7 /* RnwSyntaxParser.swift */; };
 		082BE0B41F59D5BB006CE0B7 /* RCodeHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0AD1F59D5BB006CE0B7 /* RCodeHighlighter.swift */; };
 		082BE0B51F59D5FA006CE0B7 /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; };
@@ -199,6 +197,9 @@
 		08525E761E300185008A332E /* rdocs.tgz in Resources */ = {isa = PBXBuildFile; fileRef = 08525E751E300185008A332E /* rdocs.tgz */; };
 		08525E781E3143C3008A332E /* InputPrompter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E771E3143C3008A332E /* InputPrompter.swift */; };
 		08525E7A1E314558008A332E /* InputPrompter.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08525E791E314558008A332E /* InputPrompter.xib */; };
+		085A196A204977AE00B7EC5F /* BaseHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1969204977AD00B7EC5F /* BaseHighlighter.swift */; };
+		085A196C2049781100B7EC5F /* BaseSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A196B2049781100B7EC5F /* BaseSyntaxParser.swift */; };
+		085A196E2049785500B7EC5F /* LatexHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A196D2049785400B7EC5F /* LatexHighlighter.swift */; };
 		08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08604A4D1D9C0C0500DE2A79 /* Named.swift */; };
 		086413C82013614500116153 /* AppLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086413C620135E1C00116153 /* AppLoggerTests.swift */; };
 		086413CA201392C600116153 /* sampleLog.json in Resources */ = {isa = PBXBuildFile; fileRef = 086413C9201392C600116153 /* sampleLog.json */; };
@@ -847,11 +848,9 @@
 		082BE0981F59D549006CE0B7 /* SyntaxParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxParsingTests.swift; sourceTree = "<group>"; };
 		082BE09A1F59D549006CE0B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		082BE0A61F59D5BB006CE0B7 /* RKeywords.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = RKeywords.txt; sourceTree = "<group>"; };
-		082BE0A71F59D5BB006CE0B7 /* LatexCodeHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LatexCodeHighlighter.swift; sourceTree = "<group>"; };
 		082BE0A81F59D5BB006CE0B7 /* BaseSyntaxParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSyntaxParser.swift; sourceTree = "<group>"; };
 		082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentChunk.swift; sourceTree = "<group>"; };
 		082BE0AA1F59D5BB006CE0B7 /* RmdSyntaxParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RmdSyntaxParser.swift; sourceTree = "<group>"; };
-		082BE0AB1F59D5BB006CE0B7 /* CodeHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeHighlighter.swift; sourceTree = "<group>"; };
 		082BE0AC1F59D5BB006CE0B7 /* RnwSyntaxParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RnwSyntaxParser.swift; sourceTree = "<group>"; };
 		082BE0AD1F59D5BB006CE0B7 /* RCodeHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCodeHighlighter.swift; sourceTree = "<group>"; };
 		082BE0BD1F59E3C7006CE0B7 /* syntax2.Rmd */ = {isa = PBXFileReference; lastKnownFileType = text; path = syntax2.Rmd; sourceTree = "<group>"; };
@@ -935,6 +934,9 @@
 		08525E751E300185008A332E /* rdocs.tgz */ = {isa = PBXFileReference; lastKnownFileType = file; name = rdocs.tgz; path = vendor/rdocs.tgz; sourceTree = SOURCE_ROOT; };
 		08525E771E3143C3008A332E /* InputPrompter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputPrompter.swift; path = MacClient/InputPrompter.swift; sourceTree = SOURCE_ROOT; };
 		08525E791E314558008A332E /* InputPrompter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputPrompter.xib; sourceTree = "<group>"; };
+		085A1969204977AD00B7EC5F /* BaseHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseHighlighter.swift; sourceTree = "<group>"; };
+		085A196B2049781100B7EC5F /* BaseSyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseSyntaxParser.swift; sourceTree = "<group>"; };
+		085A196D2049785400B7EC5F /* LatexHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatexHighlighter.swift; sourceTree = "<group>"; };
 		08604A4D1D9C0C0500DE2A79 /* Named.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Named.swift; sourceTree = "<group>"; };
 		086413C620135E1C00116153 /* AppLoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggerTests.swift; sourceTree = "<group>"; };
 		086413C9201392C600116153 /* sampleLog.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sampleLog.json; sourceTree = "<group>"; };
@@ -1469,13 +1471,14 @@
 		082BE08A1F59D549006CE0B7 /* SyntaxParsing */ = {
 			isa = PBXGroup;
 			children = (
+				085A1969204977AD00B7EC5F /* BaseHighlighter.swift */,
+				085A196B2049781100B7EC5F /* BaseSyntaxParser.swift */,
 				082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */,
 				08EB36C81FBB63310078229A /* SyntaxParser.swift */,
 				082BE0A81F59D5BB006CE0B7 /* BaseSyntaxParser.swift */,
 				082BE0AA1F59D5BB006CE0B7 /* RmdSyntaxParser.swift */,
 				082BE0AC1F59D5BB006CE0B7 /* RnwSyntaxParser.swift */,
-				082BE0AB1F59D5BB006CE0B7 /* CodeHighlighter.swift */,
-				082BE0A71F59D5BB006CE0B7 /* LatexCodeHighlighter.swift */,
+				085A196D2049785400B7EC5F /* LatexHighlighter.swift */,
 				082BE0AD1F59D5BB006CE0B7 /* RCodeHighlighter.swift */,
 				082BE0A61F59D5BB006CE0B7 /* RKeywords.txt */,
 				082BE08B1F59D549006CE0B7 /* SyntaxParsing.h */,
@@ -2831,14 +2834,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				082BE0AE1F59D5BB006CE0B7 /* LatexCodeHighlighter.swift in Sources */,
 				08EB36C91FBB63310078229A /* SyntaxParser.swift in Sources */,
+				085A196E2049785500B7EC5F /* LatexHighlighter.swift in Sources */,
+				085A196A204977AE00B7EC5F /* BaseHighlighter.swift in Sources */,
 				082BE0B31F59D5BB006CE0B7 /* RnwSyntaxParser.swift in Sources */,
-				082BE0B21F59D5BB006CE0B7 /* CodeHighlighter.swift in Sources */,
 				082BE0AF1F59D5BB006CE0B7 /* BaseSyntaxParser.swift in Sources */,
 				082BE0B41F59D5BB006CE0B7 /* RCodeHighlighter.swift in Sources */,
 				082BE0B01F59D5BB006CE0B7 /* DocumentChunk.swift in Sources */,
 				082BE0B11F59D5BB006CE0B7 /* RmdSyntaxParser.swift in Sources */,
+				085A196C2049781100B7EC5F /* BaseSyntaxParser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

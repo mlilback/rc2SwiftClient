@@ -5,60 +5,104 @@
 //
 
 import Foundation
-import ClientCore
-import Networking
 #if os(OSX)
 	import AppKit
 #endif
-import Model
+//- import Model
+import PEGKit
+
+enum RnwParserState : Int {
+	case sea, eqBlock, codePossible, codeBlock
+}
 
 class RnwSyntaxParser: BaseSyntaxParser {
-	fileprivate let startExpression: NSRegularExpression
-	
-	override init(storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HighlighterHasHelpCallback)
-	{
-		// swiftlint:disable:next force_try
-		startExpression = try! NSRegularExpression(pattern: "(?:@( \\s*|\\n))|(?:<<([^>]*)>>= ?.*?)", options: [.anchorsMatchLines])
-		super.init(storage: storage, fileType: fileType, helpCallback: helpCallback)
-		codeHighlighter = RCodeHighlighter(helpCallback: helpCallback)
-		docHighlighter = LatexCodeHighlighter(helpCallback: helpCallback)
-		colorBackgrounds = true
-	}
 	
 	override func parseRange(_ fullRange: NSRange) {
-		let str = textStorage.string
-		let numChunks = startExpression.numberOfMatches(in: str, options: [], range: fullRange)
-		guard numChunks > 0 else { return }
-		var curChunkNum = 1
-		chunks = []
-		startExpression.enumerateMatches(in: str, options: [], range: fullRange)
-		{ (result, _, _) -> Void in
-			guard let result = result else { return }
-			var newChunk: DocumentChunk?
-			if curChunkNum == 1 && result.range.location > 0 { //first chunk
-				newChunk = DocumentChunk(chunkType: .documentation, chunkNumber: curChunkNum)
-				newChunk?.parsedRange = NSRange(location: 0, length: result.range.location)
-				self.chunks.append(newChunk!)
-				curChunkNum += 1
+		chunks.removeAll(); chunks = [DocumentChunk]()
+		var chunkIndex = 1
+		// PEG Kit:
+		let tok = PKTokenizer(string: textStorage.string)!
+		tok.whitespaceState.reportsWhitespaceTokens = true
+		tok.numberState.allowsScientificNotation = true	// good in general
+		tok.commentState.reportsCommentTokens = true
+		// Order of $$ before $ matters:
+		tok.symbolState.add("$$")	// eqBlock begin, end
+		tok.symbolState.add("<<")	// codePossible
+		tok.symbolState.add(">>=")	// codeBlock definite
+		tok.symbolState.add("@")	// codeBlock end
+		let eof = PKToken.eof().tokenType
+		var state = RnwParserState.sea	// sea - docs chunk
+		var seaBegin:Int = 0, seaEnd:Int = 0
+		var token = tok.nextToken()!
+		var tokenLast = token
+		var closeChunk = false
+		var currType:(ChunkType, EquationType) = (.docs, .none)
+		// Parse by loop through tokens and changing states:
+		while token.tokenType != eof {
+			// Ignore everything but predefined chunk-defining symbols:
+			if token.tokenType != .symbol {
+				tokenLast = token
+				token = tok.nextToken()!
+				continue
 			}
-			let matchStr = String(str[result.range.toStringRange(str)!])
-			if matchStr[matchStr.startIndex] == "@" {
-				newChunk = DocumentChunk(chunkType: .documentation, chunkNumber: curChunkNum)
-			} else  {
-				var cname: String?
-				if let subRange = result.range(at: 2).toStringRange(str) {
-					cname = String(str[subRange])
+			// Switch open state based on symbols:
+			if (state == .sea || state == .codePossible) {
+				if token.stringValue == "$$" {
+					currType = (.equation, .display)
+					state = .eqBlock
+					closeChunk = true }
+				else if token.stringValue == "<<" {
+					state = .codePossible
+					seaEnd = Int(token.offset) }
+				else if token.stringValue == ">>=" && state == .codePossible {
+					currType = (.code, .none)
+					closeChunk = true
 				}
-				newChunk = DocumentChunk(chunkType: .executable, chunkNumber: curChunkNum, name: cname)
+				// Create a chunk after switching states:
+				if closeChunk {
+					if state == .codePossible { state = .codeBlock }
+					else { seaEnd = Int(token.offset) }
+					let range = NSMakeRange(seaBegin, seaEnd-seaBegin)
+					chunks.append(DocumentChunk(chunkType: .docs, equationType: .none,
+												range: range, chunkNumber: chunkIndex))
+					chunkIndex += 1; closeChunk = false
+				}
+			// Switch close state based on symbols:
+			} else if state == .codeBlock && token.stringValue == "@" {
+				closeChunk = true
+			} else if state == .eqBlock   && token.stringValue == "$$"{
+				closeChunk = true
 			}
-			if let chunkToAdd = newChunk {
-				chunkToAdd.parsedRange = result.range
-//				chunkToAdd.contentOffset = result.range.length + 1
-				self.chunks.append(chunkToAdd)
-				curChunkNum += 1
+			// Create a chunk after switching states:
+			tokenLast = token
+			if closeChunk {
+				token = tok.nextToken()!
+				seaBegin = Int(token.offset)
+				let range = NSMakeRange(seaEnd, seaBegin-seaEnd)
+				chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1,
+											range: range, chunkNumber: chunkIndex))
+				state = .sea; chunkIndex += 1; closeChunk = false
+				currType = (.docs, .none)
+			}
+			else {
+				token = tok.nextToken()!
 			}
 		}
-		adjustParseRanges(fullRange.length)
+		// Handle end cases:
+		if state == .sea && Int(tokenLast.offset) > seaBegin {
+			let range = NSMakeRange(seaBegin, Int(tokenLast.offset)-seaBegin)
+			chunks.append(DocumentChunk(chunkType: .docs, equationType: .none,
+										range: range, chunkNumber: chunkIndex))
+		} else if Int(token.offset) > seaEnd {
+			let range = NSMakeRange(seaEnd, Int(tokenLast.offset)-seaEnd)
+			chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1,
+										range: range, chunkNumber: chunkIndex))
+		}
+		
+		for c in chunks {
+			print("num=\(c.chunkNumber), range=\(c.parsedRange), type=\(c.chunkType)")
+		}
+		
 		colorChunks(chunks)
 	}
 }

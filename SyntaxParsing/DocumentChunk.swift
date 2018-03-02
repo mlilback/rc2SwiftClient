@@ -9,42 +9,41 @@ import Foundation
 /// Possible types of chunks
 ///
 /// - documentation: normal text (that might be interpreted as a markup language such as markdown)
-/// - rCode: executable code
+/// - code: executable code (currently just R code)
 /// - equation: a mathmatical equation
 public enum ChunkType {
-	case documentation, executable, equation
+	case docs, code, equation
 }
 
-/// The possible types of equations
+/// Possible types of equations
 ///
-/// - invalid: An invalid equation
-/// - inline: An inline TeX equation
-/// - display: A TeX equation
-/// - mathML: An equation specified in MathML
+/// - invalid: not an equation type
+/// - inline: an inline TeX equation
+/// - display: a TeX equation (taking multiple lines)
+/// - mathML: an equation specified in MathML
 public enum EquationType: String {
-	case invalid, inline, display, mathML = "MathML"
+	case none, inline, display, mathML = "MathML"
 }
 
-/// Represents a "chunk" of data. An R document has 1 chunk.
-/// Rmd and Rnw documents can have multiple chunks of different types.
+/// Represents a "chunk" of text. An R document has 1 chunk.
+/// Rmd and Rnw documents can have multiple chunks of different types,
+/// which are broken up into docs, code, and equations by parsing
+/// various symbols (e.g. $$, ```, <...>).
 public class DocumentChunk {
-	/// A unique, serial number for each chunk.
-	public let chunkNumber: Int
-	/// An optional name for the chunk (normally only for code chunks)
-	public let name: String?
-	/// the type of chunk
-	public let type: ChunkType
-
-	/// if the type is .equation, the type of the equation
-	var equationType: EquationType = .invalid
-
-	// var contentOffset: Int = 0
-
+	/// Type of chunk
+	public let chunkType: ChunkType
+	/// If the type is .equation, the type of the equation
+	public let equationType: EquationType
 	// The range of text this chunk contains
 	public internal(set) var parsedRange: NSRange = NSRange(location: 0, length: 0)
 	
-	/// is this chunk one of the types that are executable
-	public var isExecutable: Bool { return type == .executable }
+	/// A unique, serial number for each chunk
+	public let chunkNumber: Int
+	/// An optional name for the chunk (normally only for code chunks)
+	public let name: String?
+	
+	/// Is this chunk one of the types that are executable?
+	public var isExecutable: Bool { return chunkType == .code }
 	
 	/// TODO: the updated parser implementation should store this propery instead of using the executableCode() function
 	/// public var executableRange: NSRange?
@@ -55,41 +54,40 @@ public class DocumentChunk {
 	/// - Returns: the substring beteen first and last newlines
 	public func executableCode(from: String) -> String {
 		guard isExecutable else { return "" }
-		guard let fullText = from.substring(from: parsedRange) else { return "" }
-		//exclude character up to the first newline and before the last newline
+		guard let str = from.substring(from: parsedRange) else { return "" }
+		// Exclude character up to the first newline and before the last newline:
 		do {
 			let regex = try NSRegularExpression(pattern: "(.*?\\n)(.*\\n)(.*\\n)", options: .dotMatchesLineSeparators)
-			guard let result = regex.firstMatch(in: fullText, options: [], range: NSRange(location: 0, length: fullText.count)) else { return "" }
-			guard let range = result.range(at: 2).toStringRange(fullText) else { return "" }
-			return String(fullText[range])
+			guard let result = regex.firstMatch(in: str, options: [], range: NSRange(location: 0, length: str.count))
+				else { return "" }
+			guard let range = result.range(at: 2).toStringRange(str)
+				else { return "" }
+			return String(str[range])
 		} catch {
 			return ""
 		}
 	}
 	
-	init(chunkType: ChunkType, chunkNumber: Int, name: String?=nil) {
+	init(chunkType: ChunkType, equationType: EquationType, range: NSRange, chunkNumber: Int, name: String?=nil) {
 		self.chunkNumber = chunkNumber
-		self.type = chunkType
-		self.name = name
-	}
-	
-	convenience init(equationType: EquationType, chunkNumber: Int) {
-		self.init(chunkType: .equation, chunkNumber:chunkNumber)
+		self.chunkType = chunkType
 		self.equationType = equationType
+		self.name = name
+		self.parsedRange = range
 	}
 	
-	/// returns a chunk that differs only in chunkNumber
+	/// Returns a chunk that differs only in chunkNumber
 	func duplicateWithChunkNumber(_ newNum: Int) -> DocumentChunk {
-		let dup = DocumentChunk(chunkType: type, chunkNumber: newNum, name: name)
-		dup.parsedRange = parsedRange
-		dup.equationType = equationType
-		return dup
+		return DocumentChunk(chunkType: chunkType, equationType: equationType,
+							 range: parsedRange, chunkNumber: newNum, name: name)
 	}
+	
 }
 
 extension DocumentChunk: Equatable {
 	public static func ==(lhs: DocumentChunk, rhs: DocumentChunk) -> Bool {
-		return lhs.chunkNumber == rhs.chunkNumber && lhs.type == rhs.type && lhs.name == rhs.name && NSEqualRanges(lhs.parsedRange, rhs.parsedRange)
+		return lhs.chunkNumber == rhs.chunkNumber && lhs.chunkType == rhs.chunkType
+			&& lhs.name == rhs.name && NSEqualRanges(lhs.parsedRange, rhs.parsedRange)
 	}
 }
 
@@ -100,11 +98,11 @@ extension DocumentChunk: Hashable {
 extension DocumentChunk: CustomStringConvertible {
 	public var description: String {
 		let range = NSStringFromRange(parsedRange)
-		switch self.type {
-		case .executable:
-			return "R chunk \(chunkNumber) \"\(name ?? "")\" (\(range))"
-		case .documentation:
-			return "documentation chunk \(chunkNumber) (\(range))"
+		switch self.chunkType {
+		case .code:
+			return "R code chunk \(chunkNumber) \"\(name ?? "")\" (\(range))"
+		case .docs:
+			return "Docs chunk \(chunkNumber) (\(range))"
 		case .equation:
 			return "\(equationType.rawValue) equation chunk \(chunkNumber) (\(range))"
 		}
