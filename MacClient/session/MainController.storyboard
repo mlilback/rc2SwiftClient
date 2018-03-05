@@ -72,8 +72,8 @@
                 <tabViewController identifier="outputTabController" storyboardIdentifier="output" tabStyle="unspecified" id="qFx-32-GX3" userLabel="output controller" customClass="OutputTabController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <tabViewItems>
                         <tabViewItem id="efd-Px-WGZ"/>
-                        <tabViewItem id="j2a-HV-n5N"/>
                         <tabViewItem id="8vd-Ra-yNB"/>
+                        <tabViewItem id="j2a-HV-n5N"/>
                         <tabViewItem id="QhP-0t-oU5"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="yzp-ro-Qov" customClass="OutputTopView" customModule="MacClient" customModuleProvider="target">
@@ -88,8 +88,8 @@
                     <connections>
                         <outlet property="tabView" destination="yzp-ro-Qov" id="jRF-JJ-3jl"/>
                         <segue destination="cmA-J2-3x3" kind="relationship" relationship="tabItems" id="ZGF-RH-jDc"/>
-                        <segue destination="cag-VX-0j2" kind="relationship" relationship="tabItems" id="hwK-qM-BN7"/>
                         <segue destination="q5U-HH-oqN" kind="relationship" relationship="tabItems" id="DYt-ys-YDI"/>
+                        <segue destination="cag-VX-0j2" kind="relationship" relationship="tabItems" id="hwK-qM-BN7"/>
                         <segue destination="p0J-JE-sdA" kind="relationship" relationship="tabItems" id="GSa-1R-8yz"/>
                     </connections>
                 </tabViewController>

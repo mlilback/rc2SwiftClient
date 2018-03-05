@@ -484,14 +484,14 @@
                                                             <action selector="switchOutputTab:" target="Ady-hI-5gd" id="FWH-vc-mgh"/>
                                                         </connections>
                                                     </menuItem>
-                                                    <menuItem title="Images" tag="1" keyEquivalent="5" id="kIf-uR-tv1">
-                                                        <connections>
-                                                            <action selector="switchOutputTab:" target="Ady-hI-5gd" id="unZ-wz-cOu"/>
-                                                        </connections>
-                                                    </menuItem>
-                                                    <menuItem title="File Contents" tag="2" keyEquivalent="6" id="bw9-kS-adU">
+                                                    <menuItem title="File Contents" tag="2" keyEquivalent="5" id="bw9-kS-adU">
                                                         <connections>
                                                             <action selector="switchOutputTab:" target="Ady-hI-5gd" id="P6X-LS-4dv"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                    <menuItem title="Images" tag="1" keyEquivalent="6" id="kIf-uR-tv1">
+                                                        <connections>
+                                                            <action selector="switchOutputTab:" target="Ady-hI-5gd" id="unZ-wz-cOu"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem title="Help" tag="3" keyEquivalent="7" id="7PT-kv-lsI">

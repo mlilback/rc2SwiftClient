@@ -75,10 +75,10 @@
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="B485D81B-B017-4BC2-9576-633E636B25FC" explicitItemIdentifier="rightView" label="" paletteLabel="Right View" id="rTc-JD-E1f" userLabel="Right View">
                         <nil key="toolTip"/>
-                        <size key="minSize" width="133" height="25"/>
-                        <size key="maxSize" width="133" height="28"/>
+                        <size key="minSize" width="133" height="24"/>
+                        <size key="maxSize" width="137" height="28"/>
                         <segmentedControl key="view" focusRingType="none" verticalHuggingPriority="750" id="qEC-FD-i7I">
-                            <rect key="frame" x="0.0" y="14" width="133" height="25"/>
+                            <rect key="frame" x="0.0" y="14" width="137" height="24"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <segmentedCell key="cell" borderStyle="border" focusRingType="none" alignment="left" style="texturedSquare" trackingMode="selectOne" id="OJ9-jP-7NI">
                                 <font key="font" metaFont="system" size="14"/>
@@ -86,10 +86,10 @@
                                     <segment toolTip="Console" image="console-tbar" width="32">
                                         <nil key="label"/>
                                     </segment>
-                                    <segment toolTip="Image Viewer" image="image-tbar" width="32" tag="1">
+                                    <segment toolTip="Image Viewer" image="content-tbar" width="32" tag="1">
                                         <nil key="label"/>
                                     </segment>
-                                    <segment toolTip="Content Viewer" image="content-tbar" width="32" tag="2">
+                                    <segment toolTip="Content Viewer" image="image-tbar" width="32" tag="2">
                                         <nil key="label"/>
                                     </segment>
                                     <segment toolTip="Help Viewer" image="help-tbar" width="32" tag="3">

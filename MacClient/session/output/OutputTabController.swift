@@ -14,7 +14,7 @@ import Result
 import SwiftyUserDefaults
 
 enum OutputTab: Int {
-	 case console = 0, image, webKit, help
+	 case console = 0, webKit, image, help
 }
 
 protocol OutputController: Searchable {
