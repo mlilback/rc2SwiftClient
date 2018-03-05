@@ -218,6 +218,13 @@ public final class DockerManager: NSObject {
 			fullSize += img.estSize
 			return self.pullSingleImage(pull: DockerPullOperation(imageName: img.fullName, estimatedSize: img.size))
 		}
+		// check to make sure there is enough free space on disk for the pull. Theoretically the user could have docker images stored on a different disk, but since docker is containerized there is no legitimate way to get the path to where images are stored.
+		let minSpaceNeeded = fullSize * 2
+		if let attrs = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory()),
+			let fsSizeBytes = attrs[.systemFreeSize] as? Int, fsSizeBytes < minSpaceNeeded
+		{
+			return SignalProducer<PullProgress, DockerError>(error: .notEnoughFreeSpace)
+		}
 		pullProgress = PullProgress(name: "all", size: fullSize)
 		//use concat instead of merge because progress depends on order of download (layer sizes)
 		let producer = SignalProducer< SignalProducer<PullProgress, DockerError>, DockerError >(producers)

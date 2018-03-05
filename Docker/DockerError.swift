@@ -26,6 +26,7 @@ public enum DockerError: LocalizedError {
 	case dockerNotInstalled
 	case dockerNotRunning
 	case unsupportedDockerVersion
+	case notEnoughFreeSpace
 	case invalidArgument(String?)
 	case networkError(NSError?)
 	case cocoaError(NSError?)
@@ -46,6 +47,7 @@ public enum DockerError: LocalizedError {
 			case .dockerNotInstalled: return NSLocalizedString("DockerError_DockerNotInstalled", bundle: myBundle, comment: "")
 			case .dockerNotRunning: return NSLocalizedString("DockerError_DockerNotRunning", bundle: myBundle, comment: "")
 			case .unsupportedDockerVersion: return NSLocalizedString("DockerError_UnsupportedVersion", bundle: myBundle, comment: "")
+		case .notEnoughFreeSpace: return NSLocalizedString("DockerError_NotEnoughFreeSpace", bundle: myBundle, comment: "")
 			case .httpError(let statusCode, let desc, _):
 				guard let desc = desc else { return "http error \(statusCode)" }
 				return "\(statusCode) (\(desc))"
