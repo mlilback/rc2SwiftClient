@@ -2486,7 +2486,6 @@
 					};
 					088CE6681C4B0AF400153414 = {
 						CreatedOnToolsVersion = 7.2;
-						DevelopmentTeam = V97NV337TR;
 						LastSwiftMigration = 0900;
 						SystemCapabilities = {
 							com.apple.iCloud = {
@@ -3612,7 +3611,6 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = V97NV337TR;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
@@ -3650,7 +3648,6 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = V97NV337TR;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SyntaxParsingTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
