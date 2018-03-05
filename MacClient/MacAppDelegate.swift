@@ -380,7 +380,8 @@ extension MacAppDelegate {
 	}
 	
 	@IBAction func backupDatabase(_ sender: Any?) {
-		backupManager?.performBackup().start()
+		// TODO: this should be obvserved in some manner so not run simultaneously 
+		backupManager?.performBackup().observe(on: UIScheduler()).start()
 	}
 	
 	@IBAction func showDockerControl(_ sender: Any?) {
