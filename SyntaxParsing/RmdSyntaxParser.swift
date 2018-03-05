@@ -105,7 +105,7 @@ class RmdSyntaxParser: BaseSyntaxParser {
 				token = tok.nextToken()!
 				seaBegin = Int(token.offset)
 				let range = NSMakeRange(seaEnd, seaBegin-seaEnd)
-				if seaBegin - Int(tokenLast.offset)-seaBegin > 0 {
+				if seaBegin - Int(tokenLast.offset) > 0 {
 					chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1,
 											range: range, chunkNumber: chunkIndex))
 				}
