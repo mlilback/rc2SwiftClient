@@ -267,6 +267,7 @@
                                             <size key="minSize" width="398" height="511"/>
                                             <size key="maxSize" width="463" height="10000000"/>
                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <accessibility description="editor"/>
                                             <connections>
                                                 <outlet property="delegate" destination="PjE-XL-yZ2" id="XMg-5C-zIC"/>
                                                 <outlet property="textFinder" destination="amI-QK-MgZ" id="3t9-It-ODC"/>
@@ -377,9 +378,15 @@
             <objects>
                 <tabViewController identifier="sidebarTabController" storyboardIdentifier="sidebarTabController" selectedTabViewItemIndex="0" tabStyle="unspecified" id="IeT-2r-pnl" userLabel="left tab controller" customClass="SidebarTabController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <tabViewItems>
-                        <tabViewItem identifier="fileTab" id="CTV-YU-27t"/>
-                        <tabViewItem identifier="variableTab" id="Wcq-lB-PA7"/>
-                        <tabViewItem identifier="userTab" id="YLl-p6-gzn"/>
+                        <tabViewItem identifier="fileTab" id="CTV-YU-27t">
+                            <accessibility description="files"/>
+                        </tabViewItem>
+                        <tabViewItem identifier="variableTab" id="Wcq-lB-PA7">
+                            <accessibility description="environment"/>
+                        </tabViewItem>
+                        <tabViewItem identifier="userTab" id="YLl-p6-gzn">
+                            <accessibility description="users"/>
+                        </tabViewItem>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="ue0-Rt-KyC">
                         <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
@@ -588,6 +595,7 @@
                                                             </prototypeCellViews>
                                                         </tableColumn>
                                                     </tableColumns>
+                                                    <accessibility description="file list"/>
                                                     <connections>
                                                         <outlet property="dataSource" destination="XJm-U6-51C" id="vbe-bE-Vei"/>
                                                         <outlet property="delegate" destination="XJm-U6-51C" id="vBb-kl-GIR"/>
@@ -620,6 +628,7 @@
                                                         <segment image="NSRemoveTemplate" width="23" tag="1"/>
                                                     </segments>
                                                 </segmentedCell>
+                                                <accessibility description="Add and Remove buttons"/>
                                                 <connections>
                                                     <action selector="segButtonClicked:" target="XJm-U6-51C" id="kih-D7-brA"/>
                                                 </connections>
@@ -665,6 +674,7 @@
                                                         </connections>
                                                     </menu>
                                                 </popUpButtonCell>
+                                                <accessibility description="file actions"/>
                                             </popUpButton>
                                         </subviews>
                                         <visibilityPriorities>
@@ -803,6 +813,7 @@
                                                             </connections>
                                                         </tableCellView>
                                                     </prototypeCellViews>
+                                                    <accessibility description="name"/>
                                                 </tableColumn>
                                                 <tableColumn identifier="value" editable="NO" width="121" minWidth="10" maxWidth="3.4028234663852886e+38" id="86D-Ip-haw">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Value">
@@ -840,8 +851,10 @@
                                                             </connections>
                                                         </tableCellView>
                                                     </prototypeCellViews>
+                                                    <accessibility description="value"/>
                                                 </tableColumn>
                                             </tableColumns>
+                                            <accessibility description="variables"/>
                                             <connections>
                                                 <outlet property="dataSource" destination="1Ce-Bb-cCN" id="EzR-nG-zb8"/>
                                                 <outlet property="delegate" destination="1Ce-Bb-cCN" id="xAh-2v-R4d"/>
@@ -863,7 +876,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NEv-qY-dh3" userLabel="Clear Workspace">
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NEv-qY-dh3" userLabel="clear environment">
                                 <rect key="frame" x="182" y="8" width="23" height="23"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="23" id="0nU-WL-TTG"/>
@@ -873,6 +886,7 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <accessibility description="clear environment"/>
                                 <connections>
                                     <action selector="clearWorkspace:" target="1Ce-Bb-cCN" id="EW4-PX-9Rp"/>
                                 </connections>
@@ -966,6 +980,7 @@
                                                     </prototypeCellViews>
                                                 </tableColumn>
                                             </tableColumns>
+                                            <accessibility description="packages"/>
                                             <connections>
                                                 <outlet property="dataSource" destination="lJM-BU-ZVt" id="B4D-xo-kPo"/>
                                                 <outlet property="delegate" destination="lJM-BU-ZVt" id="tZ6-Ej-DkT"/>
@@ -992,6 +1007,7 @@
                                         <outlet property="searchMenuTemplate" destination="7En-Ga-jia" id="5qK-5k-Q42"/>
                                     </connections>
                                 </searchFieldCell>
+                                <accessibility description="help topic search"/>
                                 <connections>
                                     <action selector="search:" target="lJM-BU-ZVt" id="WZE-0T-LxQ"/>
                                 </connections>
@@ -1072,7 +1088,7 @@
                                                             <segment toolTip="Share" image="history" width="32"/>
                                                         </segments>
                                                     </segmentedCell>
-                                                    <accessibility description="Share"/>
+                                                    <accessibility description="history"/>
                                                     <connections>
                                                         <action selector="historyClicked:" target="cmA-J2-3x3" id="Edv-ZI-emm"/>
                                                     </connections>
@@ -1087,7 +1103,7 @@
                                                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
-                                                    <accessibility description="Simple Query"/>
+                                                    <accessibility description="command"/>
                                                     <connections>
                                                         <binding destination="cmA-J2-3x3" name="value" keyPath="consoleInputText" id="H7V-im-Tv6">
                                                             <dictionary key="options">
@@ -1103,6 +1119,7 @@
                                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                         <font key="font" metaFont="system"/>
                                                     </buttonCell>
+                                                    <accessibility description="execute"/>
                                                     <connections>
                                                         <action selector="executeQuery:" target="cmA-J2-3x3" id="P38-Bo-LOJ"/>
                                                         <binding destination="cmA-J2-3x3" name="enabled" keyPath="canExecute" id="MZc-oa-4bR"/>
@@ -1150,6 +1167,7 @@
                                             <size key="minSize" width="464" height="473"/>
                                             <size key="maxSize" width="466" height="10000000"/>
                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <accessibility description="console output"/>
                                             <connections>
                                                 <outlet property="delegate" destination="cmA-J2-3x3" id="0KL-ea-ctq"/>
                                             </connections>
@@ -1216,7 +1234,7 @@
                                                             <segment toolTip="Forward" image="NSGoRightTemplate" width="32" tag="1"/>
                                                         </segments>
                                                     </segmentedCell>
-                                                    <accessibility description="Navigate"/>
+                                                    <accessibility description="previous and next buttons"/>
                                                     <connections>
                                                         <action selector="navigateClicked:" target="cag-VX-0j2" id="FGf-Nh-mNo"/>
                                                     </connections>
@@ -1232,6 +1250,7 @@
                                                             </items>
                                                         </menu>
                                                     </popUpButtonCell>
+                                                    <accessibility description="select image"/>
                                                 </popUpButton>
                                                 <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tFy-qc-1rE">
                                                     <rect key="frame" x="447" y="-2" width="38" height="24"/>
@@ -1276,6 +1295,7 @@
                             </box>
                             <customView horizontalHuggingPriority="200" verticalHuggingPriority="300" translatesAutoresizingMaskIntoConstraints="NO" id="Gpd-DQ-6DW">
                                 <rect key="frame" x="20" y="51" width="473" height="442"/>
+                                <accessibility description="images"/>
                             </customView>
                             <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="50G-Ve-ajM">
                                 <rect key="frame" x="0.0" y="36" width="513" height="5"/>
@@ -1465,6 +1485,7 @@
                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
+                                                    <accessibility description="help topic"/>
                                                 </textField>
                                                 <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BmN-Jc-kh4">
                                                     <rect key="frame" x="444" y="-2" width="38" height="24"/>

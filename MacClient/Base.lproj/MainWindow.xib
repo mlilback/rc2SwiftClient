@@ -70,7 +70,7 @@
                                     </segment>
                                 </segments>
                             </segmentedCell>
-                            <accessibility description="Right View Selector"/>
+                            <accessibility description="Editor Mode"/>
                         </segmentedControl>
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="B485D81B-B017-4BC2-9576-633E636B25FC" explicitItemIdentifier="rightView" label="" paletteLabel="Right View" id="rTc-JD-E1f" userLabel="Right View">
@@ -131,7 +131,7 @@
                                     <segment image="search" width="32"/>
                                 </segments>
                             </segmentedCell>
-                            <accessibility description="search"/>
+                            <accessibility description="output search"/>
                         </segmentedControl>
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="D673F222-EFB0-4C48-868F-162E54249040" explicitItemIdentifier="status" label="" paletteLabel="Status" tag="-1" id="FLu-mf-Dta">
@@ -192,6 +192,7 @@
                                 <constraint firstItem="zH3-I4-AdV" firstAttribute="centerY" secondItem="XT5-ai-z8C" secondAttribute="centerY" id="eW6-1A-W6T"/>
                                 <constraint firstItem="zH3-I4-AdV" firstAttribute="leading" secondItem="XT5-ai-z8C" secondAttribute="leading" constant="4" id="fwZ-R5-52H"/>
                             </constraints>
+                            <accessibility description="current status"/>
                             <connections>
                                 <outlet property="cancelButton" destination="Yl9-hW-Ujq" id="thH-o1-G4K"/>
                                 <outlet property="determinateProgress" destination="Lw1-DM-2Ob" id="ZfX-2D-OKm"/>
@@ -213,7 +214,7 @@
                                     <segment image="search" width="32"/>
                                 </segments>
                             </segmentedCell>
-                            <accessibility description="search"/>
+                            <accessibility description="editor search"/>
                         </segmentedControl>
                     </toolbarItem>
                     <toolbarItem implicitItemIdentifier="701F23C2-A60A-4F8E-90C7-635064F66E7A" label="Centering" paletteLabel="Centering Space" tag="-1" id="7AX-AY-0Vz" customClass="TAAdaptiveSpaceItem"/>
@@ -248,7 +249,7 @@
                                             </segment>
                                         </segments>
                                     </segmentedCell>
-                                    <accessibility description="Right View Selector"/>
+                                    <accessibility description="editor mode"/>
                                 </segmentedControl>
                                 <segmentedControl toolTip="Search" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="B9S-3j-Jdw">
                                     <rect key="frame" x="79" y="0.0" width="36" height="23"/>
@@ -259,9 +260,10 @@
                                             <segment image="search" width="32"/>
                                         </segments>
                                     </segmentedCell>
-                                    <accessibility description="search"/>
+                                    <accessibility description="editor search"/>
                                 </segmentedControl>
                             </subviews>
+                            <accessibility description="editor buttons"/>
                         </customView>
                     </toolbarItem>
                 </allowedToolbarItems>
