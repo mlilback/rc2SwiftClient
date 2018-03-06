@@ -16,12 +16,14 @@ enum SessionStateKey: String {
 }
 
 ///ViewController whose view contains the text view showing the results, and the text field for entering short queries
-class ConsoleOutputController: AbstractSessionViewController, OutputController, NSTextViewDelegate, NSTextFieldDelegate
+class ConsoleOutputController: AbstractSessionViewController, OutputController, NSTextViewDelegate, NSTextFieldDelegate, TextViewMenuDelegate
 {
 	// MARK: properties
 	@IBOutlet var resultsView: ResultsView?
 	@IBOutlet var consoleTextField: ConsoleTextField?
 	@IBOutlet var historyButton: NSSegmentedControl?
+	@IBOutlet var contextualMenuAdditions: NSMenu?
+
 	var outputFont: NSFont = NSFont(name: "Menlo", size: 14)!
 	let cmdHistory: CommandHistory
 	@objc dynamic var consoleInputText = "" { didSet { canExecute = consoleInputText.count > 0 } }
@@ -52,11 +54,22 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		consoleTextField?.adjustContextualMenu = { (editor: NSText, theMenu: NSMenu) in
 			return theMenu
 		}
+		resultsView?.menuDelegate = self
 		resultsView?.textContainerInset = NSSize(width: 4, height: 4)
 		restoreFont()
 		//try switching to Menlo instead of default monospaced font
 		ThemeManager.shared.activeOutputTheme.signal.observeValues { [weak self] _ in
 			self?.themeChanged()
+		}
+	}
+	
+	@objc override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+		guard let action = menuItem.action else { return false }
+		switch action  {
+		case #selector(ConsoleOutputController.clearConsole(_:)):
+			return resultsView?.string.count ?? 0 > 0
+		default:
+			return super.validateMenuItem(menuItem)
 		}
 	}
 	
@@ -218,6 +231,19 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		let attach = cell.attachment
 		guard let fw = attach?.fileWrapper else { return }
 		viewFileOrImage?(fw)
+	}
+
+	// MARK: TextViewMenuDelegate
+	@objc func additionalContextMenuItems() -> [NSMenuItem]? {
+		var items = [NSMenuItem]()
+		for anItem in contextualMenuAdditions?.items ?? [] {
+			if let dupItem = anItem.copy() as? NSMenuItem,
+				validateMenuItem(dupItem)
+			{
+				items.append(dupItem)
+			}
+		}
+		return items
 	}
 }
 

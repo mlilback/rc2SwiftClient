@@ -5,6 +5,9 @@
 * prefs window remembers location, selected tab
 * theme prefs properly highlights theme type
 * theme names editable, saveable
+* new parser
+* accessibility labels added
+* clear console option in contextual menu
 
 ## Build 57
 

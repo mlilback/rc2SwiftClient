@@ -1200,11 +1200,22 @@
                     </view>
                     <connections>
                         <outlet property="consoleTextField" destination="Y6X-8g-t8y" id="vSi-tw-9r1"/>
+                        <outlet property="contextualMenuAdditions" destination="3Wg-Nl-ODt" id="11F-b5-pQx"/>
                         <outlet property="historyButton" destination="FY8-og-Aex" id="Mab-pX-Pcr"/>
                         <outlet property="resultsView" destination="R7r-5U-fzT" id="DCd-VP-D9L"/>
                     </connections>
                 </viewController>
                 <customObject id="ziC-jg-V0t" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <menu id="3Wg-Nl-ODt">
+                    <items>
+                        <menuItem title="Clear Console" id="Qer-I1-fsQ">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="clearConsole:" target="cmA-J2-3x3" id="7Fu-Lv-Ehh"/>
+                            </connections>
+                        </menuItem>
+                    </items>
+                </menu>
             </objects>
             <point key="canvasLocation" x="1574" y="-41.5"/>
         </scene>
