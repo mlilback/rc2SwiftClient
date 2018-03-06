@@ -76,7 +76,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		#endif
 		logger.start()
 		logger.installLoggingUI(addMenusAfter: logLevelMenuSeperator)
-		resetOutdatedCaches()
+		checkIfSupportFileResetNeeded()
 		mainStoryboard = NSStoryboard(name: .mainBoard, bundle: nil)
 		precondition(mainStoryboard != nil)
 		//only init dockerManager if not running unit tests or not expressly disabled
@@ -320,6 +320,10 @@ extension MacAppDelegate {
 		logger.resetLogs()
 	}
 	
+	@IBAction func resetSupportFiles(_ sender: Any?) {
+		removeSupportFiles()
+	}
+	
 	@IBAction func newWorkspace(_ sender: Any?) {
 		guard let conInfo = connectionManager.localConnection, let project = conInfo.defaultProject else { fatalError() }
 		DispatchQueue.main.async {
@@ -466,14 +470,18 @@ extension MacAppDelegate {
 		return window
 	}
 
-	func resetOutdatedCaches() {
+	func checkIfSupportFileResetNeeded() {
 		let defaults = UserDefaults.standard
 		let lastVersion = defaults[.supportDataVersion]
 		let forceReset = ProcessInfo.processInfo.arguments.contains("--resetSupportData")
-		guard lastVersion < currentSupportDataVersion,
-			!forceReset
-			else { return }
-		// need to remove files from ~/Library
+		if lastVersion < currentSupportDataVersion || forceReset {
+			removeSupportFiles()
+		}
+	}
+	
+	/// removes files from ~/Library
+	private func removeSupportFiles() {
+		let defaults = UserDefaults.standard
 		defer {
 			defaults[.supportDataVersion] = currentSupportDataVersion
 		}
