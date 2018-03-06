@@ -86,6 +86,7 @@
                         </connections>
                     </tabView>
                     <connections>
+                        <outlet property="additionContextMenuItems" destination="8ub-sG-n4E" id="8h0-MK-Jf2"/>
                         <outlet property="tabView" destination="yzp-ro-Qov" id="jRF-JJ-3jl"/>
                         <segue destination="cmA-J2-3x3" kind="relationship" relationship="tabItems" id="ZGF-RH-jDc"/>
                         <segue destination="q5U-HH-oqN" kind="relationship" relationship="tabItems" id="DYt-ys-YDI"/>
@@ -94,6 +95,41 @@
                     </connections>
                 </tabViewController>
                 <customObject id="aWp-lc-ahp" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <menu id="8ub-sG-n4E">
+                    <items>
+                        <menuItem title="Switch To" id="JXz-0n-CRL">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <menu key="submenu" title="Switch To" id="9QI-Fo-gsq">
+                                <items>
+                                    <menuItem title="Console" id="T8V-id-ohF">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                        <connections>
+                                            <action selector="switchToSubView:" target="qFx-32-GX3" id="8Jq-oa-ZO4"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Content" tag="1" id="bIx-zQ-jvC">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                        <connections>
+                                            <action selector="switchToSubView:" target="qFx-32-GX3" id="Hbf-8w-5mN"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Image" tag="2" id="ydq-J8-E4M">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                        <connections>
+                                            <action selector="switchToSubView:" target="qFx-32-GX3" id="FcH-nX-p8o"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Help" tag="3" id="chg-w1-2zo">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                        <connections>
+                                            <action selector="switchToSubView:" target="qFx-32-GX3" id="4jv-bw-dKu"/>
+                                        </connections>
+                                    </menuItem>
+                                </items>
+                            </menu>
+                        </menuItem>
+                    </items>
+                </menu>
             </objects>
             <point key="canvasLocation" x="1826" y="-627"/>
         </scene>
@@ -1327,12 +1363,27 @@
                     </view>
                     <connections>
                         <outlet property="containerView" destination="Gpd-DQ-6DW" id="5FH-PI-MaQ"/>
+                        <outlet property="contextualMenu" destination="c42-aT-QRM" id="pg5-sK-rAG"/>
                         <outlet property="imagePopup" destination="3At-n8-Mu8" id="sQ0-iW-KpC"/>
                         <outlet property="navigateButton" destination="oGJ-LH-kvq" id="am5-2x-sqT"/>
                         <outlet property="shareButton" destination="tFy-qc-1rE" id="b7J-TL-EyC"/>
                     </connections>
                 </viewController>
                 <customObject id="W1T-z3-tEv" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <menu id="c42-aT-QRM">
+                    <items>
+                        <menuItem isSeparatorItem="YES" id="Vr5-k7-PdA"/>
+                        <menuItem title="Next Image" id="jMw-Xz-tWm">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                        <menuItem title="Previous Image" id="Xt9-7n-V3P">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                    </items>
+                    <connections>
+                        <outlet property="delegate" destination="cag-VX-0j2" id="kNG-Gm-49O"/>
+                    </connections>
+                </menu>
             </objects>
             <point key="canvasLocation" x="2096.5" y="-41.5"/>
         </scene>

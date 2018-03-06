@@ -17,11 +17,19 @@ enum OutputTab: Int {
 	 case console = 0, webKit, image, help
 }
 
+// to allow parent controller to potentially modify contextual menu of a child controller
+protocol ContextualMenuDelegate: class {
+	func contextMenuItems(for: OutputController) -> [NSMenuItem]
+}
+
 protocol OutputController: Searchable {
+	var contextualMenuDelegate: ContextualMenuDelegate? { get set }
 }
 
 class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandler {
 	// MARK: properties
+	@IBOutlet var additionContextMenuItems: NSMenu?
+	
 	var currentOutputController: OutputController!
 	weak var consoleController: ConsoleOutputController?
 	weak var imageController: ImageOutputController?
@@ -53,13 +61,17 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		guard consoleController == nil else { return }
 		consoleController = firstChildViewController(self)
 		consoleController?.viewFileOrImage = { [weak self] (fw) in self?.displayAttachment(fw) }
+		consoleController?.contextualMenuDelegate = self
 		imageController = firstChildViewController(self)
 		imageController?.imageCache = imageCache
+		imageController?.contextualMenuDelegate = self
 		webController = firstChildViewController(self)
 		webController?.onClear = { [weak self] in
 			self?.selectedOutputTab.value = .console
 		}
+		webController?.contextualMenuDelegate = self
 		helpController = firstChildViewController(self)
+		helpController?.contextualMenuDelegate = self
 		currentOutputController = consoleController
 	}
 	
@@ -76,6 +88,16 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			myView.windowSetCall = {
 				self.hookupToToolbarItems(self, window: myView.window!)
 			}
+		}
+	}
+	
+	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+		guard let action = menuItem.action else { return false }
+		switch action {
+		case #selector(switchToSubView(_:)):
+			guard let desiredTab = OutputTab(rawValue: menuItem.tag) else { return false }
+			return desiredTab != selectedOutputTab.value
+		default: return false
 		}
 	}
 	
@@ -138,9 +160,15 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		currentOutputController.performFind(action: action)
 	}
 	
-	@objc func clearConsole(_ sender: AnyObject?) {
+	@IBAction func clearConsole(_ sender: AnyObject?) {
 		consoleController?.clearConsole(sender)
 		imageCache?.clearCache()
+	}
+
+	/// action that switches to the OutputTab specified in a NSMenuItem's tag property
+	@IBAction func switchToSubView(_ sender: Any?) {
+		guard let mItem = sender as? NSMenuItem, let tab = OutputTab(rawValue: mItem.tag) else { return }
+		selectedOutputTab.value = tab
 	}
 	
 	func displayAttachment(_ fileWrapper: FileWrapper) {
@@ -232,6 +260,15 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		webController?.restore(state: savedState.webViewState)
 		helpController?.restore(state: savedState.helpViewState)
 		restoredState = nil
+	}
+}
+
+// MARK: - contextual menu delegate
+extension OutputTabController: ContextualMenuDelegate {
+	func contextMenuItems(for: OutputController) -> [NSMenuItem] {
+		// have to return copies of items
+		guard let tmpMenu = additionContextMenuItems?.copy() as? NSMenu else { return [] }
+		return tmpMenu.items
 	}
 }
 

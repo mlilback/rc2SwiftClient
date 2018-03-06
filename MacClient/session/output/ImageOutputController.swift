@@ -12,7 +12,7 @@ import ReactiveSwift
 import Networking
 import Model
 
-class ImageOutputController: NSViewController, OutputController, NSSharingServicePickerDelegate
+class ImageOutputController: NSViewController, OutputController, NSSharingServicePickerDelegate, NSMenuDelegate
 {
 	// MARK: properties
 	let emptyIdentifier = NSPageController.ObjectIdentifier("empty")
@@ -21,7 +21,10 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 	@IBOutlet var imagePopup: NSPopUpButton?
 	@IBOutlet var shareButton: NSSegmentedControl?
 	@IBOutlet var navigateButton: NSSegmentedControl?
-
+	@IBOutlet var contextualMenu: NSMenu?
+	
+	weak var contextualMenuDelegate: ContextualMenuDelegate?
+	
 	var pageController: NSPageController!
 	var allImages: MutableProperty< [SessionImage] >?
 	var imageCache: ImageCache? { didSet { imageCacheChanged() } }
@@ -29,6 +32,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 	fileprivate var selectedImage: SessionImage?
 	fileprivate let emptyObject: Any = 1 as Any
 	var selectedImageId: Int { return selectedImage?.id ?? 0 }
+	var itemsAddedToContextMenu: Int = 0
 	
 	// MARK: - methods
 	override func viewDidLoad() {
@@ -37,6 +41,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 		pageController.delegate = self
 		pageController.transitionStyle = .stackBook
 		pageController.view = containerView!
+		containerView?.menu = contextualMenu
 		// for some reason, the selected controller's view's frame is not correct. This fixes it, even though there is probably a more efficent way to fix this
 		pageController.view.postsFrameChangedNotifications = true
 		NotificationCenter.default.addObserver(self, selector: #selector(viewFrameChanged(_:)), name: NSView.frameDidChangeNotification, object: nil)
@@ -155,6 +160,29 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 			item.toolTip = anImage.name
 			item.representedObject = anImage
 			imagePopup?.menu?.addItem(item)
+		}
+	}
+	
+	// MARK: - menu delegate
+	
+	// need to add contextualMenuDelegate items to the menu being shown
+	func menuWillOpen(_ menu: NSMenu) {
+		if menu == contextualMenu {
+			guard let parentItems = contextualMenuDelegate?.contextMenuItems(for: self) else { return }
+			for (index, item) in parentItems.enumerated() {
+				menu.insertItem(item, at: index)
+			}
+			itemsAddedToContextMenu = parentItems.count
+		}
+	}
+	
+	// remove any items added in menuWillOpen(_)
+	func menuDidClose(_ menu: NSMenu) {
+		if menu == contextualMenu {
+			for _ in 0..<itemsAddedToContextMenu {
+				menu.removeItem(at: 0)
+			}
+			itemsAddedToContextMenu = 0
 		}
 	}
 	

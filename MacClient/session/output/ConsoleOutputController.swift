@@ -24,6 +24,8 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	@IBOutlet var historyButton: NSSegmentedControl?
 	@IBOutlet var contextualMenuAdditions: NSMenu?
 
+	weak var contextualMenuDelegate: ContextualMenuDelegate?
+	
 	var outputFont: NSFont = NSFont(name: "Menlo", size: 14)!
 	let cmdHistory: CommandHistory
 	@objc dynamic var consoleInputText = "" { didSet { canExecute = consoleInputText.count > 0 } }
@@ -235,7 +237,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 
 	// MARK: TextViewMenuDelegate
 	@objc func additionalContextMenuItems() -> [NSMenuItem]? {
-		var items = [NSMenuItem]()
+		var items = contextualMenuDelegate?.contextMenuItems(for: self) ?? []
 		for anItem in contextualMenuAdditions?.items ?? [] {
 			if let dupItem = anItem.copy() as? NSMenuItem,
 				validateMenuItem(dupItem)

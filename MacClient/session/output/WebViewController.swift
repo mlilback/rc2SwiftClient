@@ -9,14 +9,17 @@ import WebKit
 import MJLLogger
 import Freddy
 
-class WebViewController: AbstractSessionViewController, OutputController, WKNavigationDelegate {
-	var webView: WKWebView?
+class WebViewController: AbstractSessionViewController, OutputController, WKNavigationDelegate, ContextualMenuDelegate {
+	var webView: Rc2WebView?
 	@IBOutlet var containerView: NSView?
 	@IBOutlet var navButtons: NSSegmentedControl?
 	@IBOutlet var shareButton: NSSegmentedControl?
 	@IBOutlet var titleLabel: NSTextField?
 	@IBOutlet var searchBar: SearchBarView?
 	@IBOutlet var searchBarHeightConstraint: NSLayoutConstraint?
+	
+	weak var contextualMenuDelegate: ContextualMenuDelegate?
+	
 	var webConfig: WKWebViewConfiguration?
 	fileprivate var searchBarHeight: CGFloat = 0
 	var supportsSearchBar: Bool { return true }
@@ -47,7 +50,7 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 	
 	func setupWebView() {
 		webView?.removeFromSuperview()
-		webView = WKWebView(frame: view.frame.insetBy(dx: 4, dy: 4), configuration: webConfig!)
+		webView = Rc2WebView(frame: view.frame.insetBy(dx: 4, dy: 4), configuration: webConfig!)
 		webView?.navigationDelegate = self
 		webView?.translatesAutoresizingMaskIntoConstraints = false
 		containerView?.addSubview(webView!)
@@ -55,6 +58,7 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 		webView!.bottomAnchor.constraint(equalTo: (containerView?.bottomAnchor)!).isActive = true
 		webView!.leadingAnchor.constraint(equalTo: (containerView?.leadingAnchor)!).isActive = true
 		webView!.trailingAnchor.constraint(equalTo: (containerView?.trailingAnchor)!).isActive = true
+		webView!.contextualMenuDelegate = self
 	}
 	
 	func loadScript(filename: String, fileExtension: String) {
@@ -149,6 +153,9 @@ extension WebViewController: SearchBarViewDelegate {
 		}
 	}
 	
+	func contextMenuItems(for controller: OutputController) -> [NSMenuItem] {
+		return contextualMenuDelegate?.contextMenuItems(for: controller) ?? []
+	}
 }
 
 extension WebViewController: Searchable {
@@ -162,6 +169,31 @@ extension WebViewController: Searchable {
 			hideSearchBar()
 		default:
 			break
+		}
+	}
+}
+
+// MARK: -
+
+class Rc2WebView: WKWebView, OutputController {
+	private var menuItemsAdded: Int = 0
+	weak var contextualMenuDelegate: ContextualMenuDelegate?
+	
+	override func willOpenMenu(_ menu: NSMenu, with event: NSEvent) {
+		let items = contextualMenuDelegate!.contextMenuItems(for: self)
+		for (index, item) in items.enumerated() {
+			menu.insertItem(item, at: index)
+		}
+		menuItemsAdded = items.count
+		if menuItemsAdded > 0 {
+			menuItemsAdded += 1
+			menu.insertItem(NSMenuItem.separator(), at: items.count)
+		}
+	}
+	
+	override func didCloseMenu(_ menu: NSMenu, with event: NSEvent?) {
+		for _ in 0..<menuItemsAdded {
+			menu.removeItem(at: 0)
 		}
 	}
 }
