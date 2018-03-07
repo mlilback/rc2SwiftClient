@@ -54,6 +54,8 @@ The following 3rd party frameworks are used (via Carthage or in the vendor direc
 
 4. `(cd ..; git clone https://github.com/rc2server/appmodelSwift.git appModelSwift; cd appModelSwift; swift package generate-xcodeproj --xcconfig-overrides Mac.xcconfig)`. This will eventually be handled by carthage, but I don't want to have to keep making releases while under active development.
 
+5. `touch config/Local.xcconfig`. See below for details on this file.
+
 # Help support
 
 In the help directory, indexDocs.pl is a perl script to generate a json file with the help information necessary to make an index to search. These files are checked into git. The createHelpIndex target parses these files and creates an sqllite db that is embedded in the application for searching help.
@@ -76,6 +78,16 @@ tar xzf rdocs.tgz
 The two main config files are `Debug.xcconfig` and `Release.xcconfig`. Both include `Shared.xcconfig`, which includes `Local.config`. The local file is in .gitignore so you need to create an empty one if you don't want warnings about the file being missing.
 
 Therefore the local config file can be used to supply settings that shouldn't be included in git, like API keys and secrets.
+
+An example that uses the official hockeyapp setup and imageInfo URL would be:
+
+	INFOPLIST_PREPROCESS = YES
+	INFOPLIST_PREPROCESSOR_DEFINITIONS=SPARKLE_FEED_URL='https:&#47;&#47;rink.hockeyapp.net/api/2/apps/7574682489924a239272b421546d00f8' LSERVER_UPDATE_URL='http:&#47;&#47;www.rc2.io/imageInfo.json'
+ 
+	OTHER_SWIFT_FLAGS = $(inherited) -DHOCKEYAPP_ENABLED 
+	GCC_PREPROCESSOR_DEFINITIONS = $(inherited) HOCKEYAPP_ENABLED=1 HOCKEY_IDENTIFIER='@"7574682489924a239272b421546d00f8"'
+
+	DEVELOPMENT_TEAM = #Your Team Code#
 
 # HockeyApp support
 
