@@ -2,7 +2,7 @@
 
 "InitialServerPromptOk" = "Install";
 "InitialServerPromptMessage" = "Install a local server?";
-"InitialServerPromptInfo" = "Rc2 can download and install a local copy of the server.";
+"InitialServerPromptInfo" = "Rc² can download and install a local copy of the server.";
 
 "Failed to find workspace %@" = "Failed to find workspace %@";
 

@@ -3,11 +3,13 @@
 ## Build 60
 
 * prefs window remembers location, selected tab
-* theme prefs properly highlights theme type
+* theme prefs properly highlights theme type 
 * theme names editable, saveable
 * new parser
 * accessibility labels added
 * clear console option in contextual menu
+* all output tabs have contextual menu submenu to switch tab
+* updated docker image
 
 ## Build 57
 
