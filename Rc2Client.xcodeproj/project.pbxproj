@@ -42,6 +42,7 @@
 		080E82FC1DCCD56F0048F36C /* NetworkingBaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */; };
 		080E82FE1DCCD77D0048F36C /* bulkInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 080E82FD1DCCD77D0048F36C /* bulkInfo.json */; };
 		080E83001DCD07930048F36C /* NetworkingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82FF1DCD07930048F36C /* NetworkingError.swift */; };
+		0812178E2058805000ED328C /* PEGKitUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812178D2058805000ED328C /* PEGKitUtilities.swift */; };
 		081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */; };
 		0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */; };
 		0812631F1C862F4B003E37A5 /* EditorDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812631E1C862F4B003E37A5 /* EditorDocument.swift */; };
@@ -118,7 +119,6 @@
 		082BE0B01F59D5BB006CE0B7 /* DocumentChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */; };
 		082BE0B11F59D5BB006CE0B7 /* RmdSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0AA1F59D5BB006CE0B7 /* RmdSyntaxParser.swift */; };
 		082BE0B31F59D5BB006CE0B7 /* RnwSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0AC1F59D5BB006CE0B7 /* RnwSyntaxParser.swift */; };
-		082BE0B41F59D5BB006CE0B7 /* RCodeHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0AD1F59D5BB006CE0B7 /* RCodeHighlighter.swift */; };
 		082BE0B51F59D5FA006CE0B7 /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; };
 		082BE0B81F59D766006CE0B7 /* ClientCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; };
 		082BE0B91F59D779006CE0B7 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; };
@@ -198,8 +198,6 @@
 		08525E781E3143C3008A332E /* InputPrompter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E771E3143C3008A332E /* InputPrompter.swift */; };
 		08525E7A1E314558008A332E /* InputPrompter.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08525E791E314558008A332E /* InputPrompter.xib */; };
 		085A196A204977AE00B7EC5F /* BaseHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1969204977AD00B7EC5F /* BaseHighlighter.swift */; };
-		085A196C2049781100B7EC5F /* BaseSyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A196B2049781100B7EC5F /* BaseSyntaxParser.swift */; };
-		085A196E2049785500B7EC5F /* LatexHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A196D2049785400B7EC5F /* LatexHighlighter.swift */; };
 		085A196F2049E19C00B7EC5F /* ClientCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; };
 		085A19702049E1B000B7EC5F /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; };
 		085A19712049E1BD00B7EC5F /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 089346021C7F661400100CF6 /* PEGKit.framework */; };
@@ -806,6 +804,7 @@
 		080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingBaseSpec.swift; sourceTree = "<group>"; };
 		080E82FD1DCCD77D0048F36C /* bulkInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bulkInfo.json; sourceTree = "<group>"; };
 		080E82FF1DCD07930048F36C /* NetworkingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingError.swift; sourceTree = "<group>"; };
+		0812178D2058805000ED328C /* PEGKitUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PEGKitUtilities.swift; sourceTree = "<group>"; };
 		081263151C85D2E0003E37A5 /* NoodleLineNumberMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoodleLineNumberMarker.h; sourceTree = "<group>"; };
 		081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoodleLineNumberMarker.m; sourceTree = "<group>"; };
 		081263171C85D2E0003E37A5 /* NoodleLineNumberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoodleLineNumberView.h; sourceTree = "<group>"; };
@@ -877,7 +876,6 @@
 		082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentChunk.swift; sourceTree = "<group>"; };
 		082BE0AA1F59D5BB006CE0B7 /* RmdSyntaxParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RmdSyntaxParser.swift; sourceTree = "<group>"; };
 		082BE0AC1F59D5BB006CE0B7 /* RnwSyntaxParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RnwSyntaxParser.swift; sourceTree = "<group>"; };
-		082BE0AD1F59D5BB006CE0B7 /* RCodeHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCodeHighlighter.swift; sourceTree = "<group>"; };
 		082BE0BD1F59E3C7006CE0B7 /* syntax2.Rmd */ = {isa = PBXFileReference; lastKnownFileType = text; path = syntax2.Rmd; sourceTree = "<group>"; };
 		082BE0BE1F59E3C8006CE0B7 /* syntax1.Rnw */ = {isa = PBXFileReference; lastKnownFileType = text; path = syntax1.Rnw; sourceTree = "<group>"; };
 		082BE1561F5B3682006CE0B7 /* Model.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Model.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -960,8 +958,6 @@
 		08525E771E3143C3008A332E /* InputPrompter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputPrompter.swift; path = MacClient/InputPrompter.swift; sourceTree = SOURCE_ROOT; };
 		08525E791E314558008A332E /* InputPrompter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputPrompter.xib; sourceTree = "<group>"; };
 		085A1969204977AD00B7EC5F /* BaseHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseHighlighter.swift; sourceTree = "<group>"; };
-		085A196B2049781100B7EC5F /* BaseSyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseSyntaxParser.swift; sourceTree = "<group>"; };
-		085A196D2049785400B7EC5F /* LatexHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LatexHighlighter.swift; sourceTree = "<group>"; };
 		085A197F2049E2E700B7EC5F /* libswiftCoreLocation.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftCoreLocation.tbd; path = System/Library/PrivateFrameworks/Swift/libswiftCoreLocation.tbd; sourceTree = SDKROOT; };
 		085A19812049E2FA00B7EC5F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		085A19832049E3C000B7EC5F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -1502,15 +1498,13 @@
 		082BE08A1F59D549006CE0B7 /* SyntaxParsing */ = {
 			isa = PBXGroup;
 			children = (
-				085A1969204977AD00B7EC5F /* BaseHighlighter.swift */,
-				085A196B2049781100B7EC5F /* BaseSyntaxParser.swift */,
 				082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */,
 				08EB36C81FBB63310078229A /* SyntaxParser.swift */,
+				0812178D2058805000ED328C /* PEGKitUtilities.swift */,
 				082BE0A81F59D5BB006CE0B7 /* BaseSyntaxParser.swift */,
 				082BE0AA1F59D5BB006CE0B7 /* RmdSyntaxParser.swift */,
 				082BE0AC1F59D5BB006CE0B7 /* RnwSyntaxParser.swift */,
-				085A196D2049785400B7EC5F /* LatexHighlighter.swift */,
-				082BE0AD1F59D5BB006CE0B7 /* RCodeHighlighter.swift */,
+				085A1969204977AD00B7EC5F /* BaseHighlighter.swift */,
 				082BE0A61F59D5BB006CE0B7 /* RKeywords.txt */,
 				082BE08B1F59D549006CE0B7 /* SyntaxParsing.h */,
 				082BE08C1F59D549006CE0B7 /* Info.plist */,
@@ -2486,6 +2480,7 @@
 					};
 					088CE6681C4B0AF400153414 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = V97NV337TR;
 						LastSwiftMigration = 0900;
 						SystemCapabilities = {
 							com.apple.iCloud = {
@@ -2866,15 +2861,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0812178E2058805000ED328C /* PEGKitUtilities.swift in Sources */,
 				08EB36C91FBB63310078229A /* SyntaxParser.swift in Sources */,
-				085A196E2049785500B7EC5F /* LatexHighlighter.swift in Sources */,
 				085A196A204977AE00B7EC5F /* BaseHighlighter.swift in Sources */,
 				082BE0B31F59D5BB006CE0B7 /* RnwSyntaxParser.swift in Sources */,
 				082BE0AF1F59D5BB006CE0B7 /* BaseSyntaxParser.swift in Sources */,
-				082BE0B41F59D5BB006CE0B7 /* RCodeHighlighter.swift in Sources */,
 				082BE0B01F59D5BB006CE0B7 /* DocumentChunk.swift in Sources */,
 				082BE0B11F59D5BB006CE0B7 /* RmdSyntaxParser.swift in Sources */,
-				085A196C2049781100B7EC5F /* BaseSyntaxParser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

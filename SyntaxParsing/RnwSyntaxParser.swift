@@ -12,102 +12,107 @@ import Foundation
 import PEGKit
 
 enum RnwParserState : Int {
-	case sea, eqBlock, codePossible, codeBlock
+	case sea, eqBlock, eqIn, codePossible, codeBlock
 }
 
 class RnwSyntaxParser: BaseSyntaxParser {
 	
 	override func parseRange(_ fullRange: NSRange) {
-		chunks.removeAll(); chunks = [DocumentChunk]()
-		var chunkIndex = 1
+		// Clear and reinit chunks:
+		chunks.removeAll()
+		chunks = [DocumentChunk](); var chunkIndex = 1
 		// PEG Kit:
 		let tok = PKTokenizer(string: textStorage.string)!
-		tok.whitespaceState.reportsWhitespaceTokens = true
-		tok.numberState.allowsScientificNotation = true	// good in general
-		tok.commentState.reportsCommentTokens = true
+		setBaseTokenizer(tok)
+		tok.setTokenizerState(tok.commentState, from:percentChar, to:percentChar)
+		tok.commentState.addSingleLineStartMarker("%")
+		tok.setTokenizerState(tok.commentState, from:backSlashChar, to:backSlashChar)
+		tok.commentState.addMultiLineStartMarker("\\begin{comment}", endMarker:"\\end{comment}")
+		tok.commentState.addMultiLineStartMarker("\\iffalse", endMarker:"\\fi")
 		// Order of $$ before $ matters:
 		tok.symbolState.add("$$")	// eqBlock begin, end
+		tok.symbolState.add("$")	// eqIn begin, end
 		tok.symbolState.add("<<")	// codePossible
 		tok.symbolState.add(">>=")	// codeBlock definite
 		tok.symbolState.add("@")	// codeBlock end
 		let eof = PKToken.eof().tokenType
 		var state = RnwParserState.sea	// sea - docs chunk
-		var seaBegin:Int = 0, seaEnd:Int = 0
+		var begin:Int = 0, end:Int = 0
 		var token = tok.nextToken()!
-		var tokenLast = token
 		var closeChunk = false
-		var currType:(ChunkType, EquationType) = (.docs, .none)
+		var currType:(ChunkType, EquationType) = (.latex, .none)
+		var newType = currType
+		var ch:DocumentChunk
 		// Parse by loop through tokens and changing states:
 		while token.tokenType != eof {
 			// Ignore everything but predefined chunk-defining symbols:
+			print(token.stringValue)
 			if token.tokenType != .symbol {
-				tokenLast = token
 				token = tok.nextToken()!
 				continue
 			}
 			// Switch open state based on symbols:
 			if (state == .sea || state == .codePossible) {
 				if token.stringValue == "$$" {
-					currType = (.equation, .display)
-					state = .eqBlock
+					newType = (.equation, .multiLine); state = .eqBlock
+					closeChunk = true }
+				else if token.stringValue == "$" {
+					newType = (.equation, .inline); state = .eqIn
 					closeChunk = true }
 				else if token.stringValue == "<<" {
 					state = .codePossible
-					seaEnd = Int(token.offset) }
+					end = Int(token.offset) }
 				else if token.stringValue == ">>=" && state == .codePossible {
-					currType = (.code, .none)
+					newType = (.code, .none)
 					closeChunk = true
 				}
 				// Create a chunk after switching states:
 				if closeChunk {
 					if state == .codePossible { state = .codeBlock }
-					else { seaEnd = Int(token.offset) }
-					let range = NSMakeRange(seaBegin, seaEnd-seaBegin)
-					chunks.append(DocumentChunk(chunkType: .docs, equationType: .none,
-												range: range, chunkNumber: chunkIndex))
-					chunkIndex += 1; closeChunk = false
+					else { end = Int(token.offset) }
+					if end > fullRange.length { end = fullRange.length }
+					if end-begin > 0 {
+						let range = NSMakeRange(begin, end-begin)
+						ch = DocumentChunk(chunkType: currType.0, equationType: currType.1,
+										   range: range, chunkNumber: chunkIndex)
+						chunks.append(ch); chunkIndex += 1
+					}
+					currType = newType; begin = end
+					closeChunk = false
 				}
-			// Switch close state based on symbols:
-			} else if state == .codeBlock && token.stringValue == "@" {
-				closeChunk = true
-			} else if state == .eqBlock   && token.stringValue == "$$"{
+			}
+				// Switch close state based on symbols:
+			else if state == .codeBlock && token.stringValue == "@" {
+				closeChunk = true }
+			else if state == .eqBlock   && token.stringValue == "$$"{
+				closeChunk = true }
+			else if state == .eqIn   	&& token.stringValue == "$"{
 				closeChunk = true
 			}
 			// Create a chunk after switching states:
-			tokenLast = token
+			token = tok.nextToken()!
 			if closeChunk {
-				token = tok.nextToken()!
-				seaBegin = Int(token.offset)
-				let range = NSMakeRange(seaEnd, seaBegin-seaEnd)
-				if seaBegin - Int(tokenLast.offset)-seaBegin > 0 {
-					chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1, range: range, chunkNumber: chunkIndex))
+				if (token.tokenType == eof) { end = fullRange.length }
+				else { end = Int(token.offset) }
+				if end > fullRange.length { end = fullRange.length }
+				if end-begin > 2 { // has to have at least 3 chars, including ends
+					let fullRange = NSMakeRange(begin, end-begin)
+					ch = DocumentChunk(chunkType: currType.0, equationType: currType.1,
+									   range: fullRange, chunkNumber: chunkIndex)
+					chunks.append(ch); chunkIndex += 1
+					begin = end
 				}
-				state = .sea; chunkIndex += 1; closeChunk = false
-				currType = (.docs, .none)
-			}
-			else {
-				token = tok.nextToken()!
+				currType = (.latex, .none)
+				closeChunk = false; state = .sea
 			}
 		}
 		// Handle end cases:
-		if state == .sea && Int(tokenLast.offset) > seaBegin {
-			if seaBegin - Int(tokenLast.offset)-seaBegin > 0 {
-				let range = NSMakeRange(seaBegin, Int(tokenLast.offset)-seaBegin)
-				chunks.append(DocumentChunk(chunkType: .docs, equationType: .none,
-											range: range, chunkNumber: chunkIndex))
-			}
-		} else if Int(token.offset) > seaEnd {
-			if seaEnd - Int(tokenLast.offset)-seaEnd > 0 {
-				let range = NSMakeRange(seaEnd, Int(tokenLast.offset)-seaEnd)
-				chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1,
-											range: range, chunkNumber: chunkIndex))
-			}
+		end = fullRange.length
+		if end > begin {
+			let fullRange = NSMakeRange(begin, end-begin)
+			chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1,
+										range: fullRange, chunkNumber: chunkIndex))
 		}
-		
-//		for c in chunks {
-//			print("num=\(c.chunkNumber), range=\(c.parsedRange), type=\(c.chunkType)")
-//		}
-		
-		colorChunks(chunks)
 	}
 }
+

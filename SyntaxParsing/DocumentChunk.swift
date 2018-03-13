@@ -12,7 +12,7 @@ import Foundation
 /// - code: executable code (currently just R code)
 /// - equation: a mathmatical equation
 public enum ChunkType {
-	case docs, code, equation
+	case docs, rmd, latex, code, equation
 }
 
 /// Possible types of equations
@@ -22,7 +22,7 @@ public enum ChunkType {
 /// - display: a TeX equation (taking multiple lines)
 /// - mathML: an equation specified in MathML
 public enum EquationType: String {
-	case none, inline, display, mathML = "MathML"
+	case none, inline, multiLine, mathML = "MathML"
 }
 
 /// Represents a "chunk" of text. An R document has 1 chunk.
@@ -37,7 +37,8 @@ public class DocumentChunk {
 	// The range of text this chunk contains
 	public internal(set) var parsedRange: NSRange = NSRange(location: 0, length: 0)
 	
-	/// A unique, serial number for each chunk
+	/// A unique, serial number for each chunk used in SessionEditorController's
+	/// executePreviousChunks
 	public let chunkNumber: Int
 	/// An optional name for the chunk (normally only for code chunks)
 	public let name: String?
@@ -47,7 +48,6 @@ public class DocumentChunk {
 	
 	/// TODO: the updated parser implementation should store this propery instead of using the executableCode() function
 	/// public var executableRange: NSRange?
-	
 	/// Returns the substring between the first and last newlines if this chunk is executable
 	///
 	/// - Parameter from: the string this chunk is a part of
@@ -58,7 +58,8 @@ public class DocumentChunk {
 		// Exclude character up to the first newline and before the last newline:
 		do {
 			let regex = try NSRegularExpression(pattern: "(.*?\\n)(.*\\n)(.*\\n)", options: .dotMatchesLineSeparators)
-			guard let result = regex.firstMatch(in: str, options: [], range: NSRange(location: 0, length: str.count))
+			guard let result = regex.firstMatch(in: str, options: [],
+												range: NSRange(location: 0, length: str.count))
 				else { return "" }
 			guard let range = result.range(at: 2).toStringRange(str)
 				else { return "" }
@@ -102,9 +103,14 @@ extension DocumentChunk: CustomStringConvertible {
 		case .code:
 			return "R code chunk \(chunkNumber) \"\(name ?? "")\" (\(range))"
 		case .docs:
-			return "Docs chunk \(chunkNumber) (\(range))"
+			return "Other text chunk \(chunkNumber) (\(range))"
+		case .rmd:
+			return "R Markdown chunk \(chunkNumber) (\(range))"
+		case .latex:
+			return "LaTex chunk \(chunkNumber) (\(range))"
 		case .equation:
-			return "\(equationType.rawValue) equation chunk \(chunkNumber) (\(range))"
+			return "\(equationType.rawValue) equation chunk (LaTex)"
 		}
 	}
 }
+

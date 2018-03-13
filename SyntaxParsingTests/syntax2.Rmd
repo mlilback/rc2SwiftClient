@@ -1,21 +1,26 @@
-* point 1
-
-$$
+chunk1-doc
+$$ chunk2-eq-dis
 	\begin{aligned}
 	\dot{x} & = \sigma(y-x) \\
-	\dot{y} & = \rho x - y -xz \\
-	\dot{z} & = -\beta z + xy
 	\end{aligned}
 $$
 
-* point `r 2+2` $\frac{1}{n} \sum_{i=i}^{n} x_{i}$
+chunk3-doc `r 2+2 chunk4-code,in`$\frac{1}{n} \sum_{i=i}^{n} x_{i} chunk5-eq,in$
 
-```{r foo}
+chunk6-doc plot
+# comment `r 2+2 chunk4-code,in`$
+
+<!-- html-comment
+# ignored
+`$\frac{1}{n} \
+-->
+
+```{r foo} chunk7-code
 plot(rnorm(100))
 ```
-
+chunk8-doc
 <math display="block">
-<mrow>
+<mrow>chunk9-eq,mathML
    <apply>
      <power/>
      <apply>
@@ -27,5 +32,3 @@ plot(rnorm(100))
    </apply>
  </mrow>
 </math>
-
-_blah blah_

@@ -9,9 +9,9 @@ import Foundation
 	import AppKit
 #endif
 // Required for theme = Property(ThemeManager...):
+import Model
 import ClientCore
 import ReactiveSwift
-import Model
 
 /// Parent class of specific parsers that must be implemented and base
 /// implementation of protocol SyntaxParser used externally.
@@ -24,39 +24,33 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 	public internal(set) var chunks: [DocumentChunk] = []
 	// Highlighting:
 	public let theme = Property(ThemeManager.shared.activeSyntaxTheme)	// move?
-	internal var codeHighlighter: BaseHighlighter?
-	internal var docHighlighter: BaseHighlighter?
-	internal var eqnHighlighter: BaseHighlighter?
+	internal var highLighter: BaseHighlighter?
 	var colorBackgrounds = true
 	// Private:
 	fileprivate var textStorageStringLast: String = ""
-
+	
 	// See SyntaxParser protocol for parameters.
 	init(storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HighlighterHasHelpCallback)
 	{
 		self.textStorage = storage
 		self.fileType = fileType
 		super.init()
-		codeHighlighter?.helpCallback = helpCallback
+		highLighter?.helpCallback = helpCallback
 	}
 	
 	// Returns the approprate syntax parser (and highlighter) to use for fileType.
 	public class func parserWithTextStorage(_ storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HighlighterHasHelpCallback) -> BaseSyntaxParser?
 	{
 		var parser: BaseSyntaxParser?
-		let codeHighlighter = RCodeHighlighter(helpCallback: helpCallback)
 		if fileType.fileExtension == "Rnw" {		// R-sweave
 			parser = RnwSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
-			parser?.docHighlighter = LatexHighlighter(helpCallback: helpCallback)
-			parser?.eqnHighlighter = parser?.docHighlighter
 		} else if fileType.fileExtension == "Rmd" {	// R-markdown
 			parser = RmdSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
-			parser?.eqnHighlighter = LatexHighlighter(helpCallback: helpCallback)
 		} else if fileType.fileExtension == "R" {	// R-only
 			parser = RSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
 			parser?.colorBackgrounds = false
 		}
-		parser?.codeHighlighter = codeHighlighter
+		parser?.highLighter = BaseHighlighter(helpCallback: helpCallback)
 		return parser
 	}
 	
@@ -65,7 +59,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 	internal func parseRange(_ range: NSRange) {
 		preconditionFailure("subclass must implement")
 	}
-
+	
 	// MARK: - External use only (mainly SessionEditorController)
 	// See SyntaxParser protocol for documentation of each of the following.
 	public var executableChunks: [DocumentChunk] {
@@ -115,7 +109,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 		var outArray: [DocumentChunk] = []
 		for aChunk in chunks {
 			if NSIntersectionRange(aChunk.parsedRange, range).length > 0
-			//				|| NSLocationInRange(range.location-1, aChunk.parsedRange)
+				//				|| NSLocationInRange(range.location-1, aChunk.parsedRange)
 			{
 				outArray.append(aChunk)
 			}
@@ -128,19 +122,19 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 			var bgcolor = theme.value.color(for: .background)
 			if chunk.chunkType == .code {
 				bgcolor = theme.value.color(for: .codeBackground)
-				codeHighlighter?.highlightText(textStorage, range: chunk.parsedRange)
 			} else if chunk.chunkType == .docs {
 				bgcolor = theme.value.color(for: .background)
-				docHighlighter?.highlightText(textStorage, range: chunk.parsedRange)
+			} else if chunk.chunkType == .rmd {
+				bgcolor = theme.value.color(for: .background)
+			} else if chunk.chunkType == .latex {
+				bgcolor = theme.value.color(for: .background)
 			} else if chunk.chunkType == .equation {
 				bgcolor = theme.value.color(for: .equationBackground)
-				if chunk.equationType != .mathML {
-					eqnHighlighter?.highlightText(textStorage, range: chunk.parsedRange)
-				}
 			}
 			if colorBackgrounds {
 				textStorage.addAttribute(.backgroundColor, value: bgcolor, range: chunk.parsedRange)
 			}
+			highLighter?.highlightText(textStorage, chunk: chunk)
 		}
 	}
 }
