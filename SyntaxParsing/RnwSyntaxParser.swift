@@ -46,7 +46,6 @@ class RnwSyntaxParser: BaseSyntaxParser {
 		// Parse by loop through tokens and changing states:
 		while token.tokenType != eof {
 			// Ignore everything but predefined chunk-defining symbols:
-			print(token.stringValue)
 			if token.tokenType != .symbol {
 				token = tok.nextToken()!
 				continue

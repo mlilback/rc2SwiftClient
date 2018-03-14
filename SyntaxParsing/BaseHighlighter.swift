@@ -88,7 +88,6 @@ open class BaseHighlighter: NSObject {
 		-> PlatformColor?
 	{
 		var color: PlatformColor = PlatformColor.black // nil
-		print(token.stringValue)
 		if token.isQuotedString {
 			return theme.value.color(for: .quote)
 		}
