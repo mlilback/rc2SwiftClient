@@ -13,7 +13,7 @@ fileprivate extension NSStoryboard.SceneIdentifier {
 	static let editorTabController = NSStoryboard.SceneIdentifier("editorTabController")
 }
 
-class EditorController: AbstractSessionViewController, ToolbarItemHandler {
+class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 	// MARK: properties
 	@IBOutlet var contentView: NSView!
 	@IBOutlet var runButton: NSButton?
@@ -120,12 +120,12 @@ class EditorController: AbstractSessionViewController, ToolbarItemHandler {
 	}
 }
 
-extension EditorController: Searchable {
+extension RootEditorController: Searchable {
 	var searchableTextView: NSTextView? { return currentEditor?.searchableTextView }
 	var supportsSearchBar: Bool { return true }
 }
 
-extension EditorController: EditorManager {
+extension RootEditorController: EditorManager {
 	@objc dynamic var documentLoaded: Bool { return documentManager.currentDocument.value?.isLoaded ?? false }
 	@objc dynamic var canExecute: Bool { return currentEditor?.canExecute ?? false }
 	@objc dynamic var canSwitchToNotebookMode: Bool { return notebookModeEnabled && currentEditor != notebookEditor }
@@ -176,7 +176,7 @@ extension EditorController: EditorManager {
 }
 
 // MARK: UsesAdjustableFont
-extension EditorController: UsesAdjustableFont {
+extension RootEditorController: UsesAdjustableFont {
 	var currentFontDescriptor: NSFontDescriptor {
 		get { return documentManager.editorFont.value.fontDescriptor }
 		set { documentManager.editorFont.value = NSFont(descriptor: newValue, size: newValue.pointSize)! }

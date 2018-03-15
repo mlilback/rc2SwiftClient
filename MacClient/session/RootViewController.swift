@@ -25,7 +25,7 @@ class RootViewController: AbstractSessionViewController
 	weak var splitController: SessionSplitController?
 	weak var outputHandler: OutputHandler?
 	weak var fileHandler: SidebarFileController?
-	weak var editorController: EditorController?
+	weak var editorController: RootEditorController?
 	var formerFirstResponder: NSResponder? //used to restore first responder when dimmingview goes away
 	
 	deinit {

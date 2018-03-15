@@ -136,7 +136,7 @@
         <!--editor controller-->
         <scene sceneID="kwF-Xt-rNN">
             <objects>
-                <viewController storyboardIdentifier="editorController" id="thj-QN-rY1" userLabel="editor controller" customClass="EditorController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="editorController" id="thj-QN-rY1" userLabel="editor controller" customClass="RootEditorController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="kb3-PH-361">
                         <rect key="frame" x="0.0" y="0.0" width="400" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
