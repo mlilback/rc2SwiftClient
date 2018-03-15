@@ -25,7 +25,7 @@ extension Selector {
 	static let executePrevousChunks = #selector(SourceEditorController.executePreviousChunks(_:))
 }
 
-class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegate, CodeEditor
+class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 {
 	// MARK: properties
 	@IBOutlet var editor: SessionEditor?
@@ -34,7 +34,6 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 	@IBOutlet var fileNameField: NSTextField?
 	@IBOutlet var contextualMenuAdditions: NSMenu?
 	
-	private(set) var context: EditorContext?
 	private var parser: SyntaxParser?
 	
 	private var defaultAttributes: [NSAttributedStringKey: Any] = [:]
@@ -44,11 +43,6 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 	
 	///true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
 	private var ignoreTextStorageNotifications = false
-	
-	@objc dynamic var canExecute: Bool {
-		guard context?.currentDocument.value?.isLoaded ?? false else { return false }
-		return context?.currentDocument.value?.currentContents?.count ?? 0 > 0
-	}
 	
 //	var currentFontDescriptor: NSFontDescriptor { return context!.editorFont.value.fontDescriptor }
 
@@ -79,14 +73,8 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 	}
 	
 	// MARK: methods
-	func setContext(context: EditorContext) {
-		precondition(self.context == nil)
-		self.context = context
-		let ncenter = context.notificationCenter
-		ncenter.addObserver(self, selector: .autoSave, name: NSApplication.didResignActiveNotification, object: NSApp)
-		ncenter.addObserver(self, selector: .autoSave, name: NSApplication.willTerminateNotification, object: NSApp)
-		ncenter.addObserver(self, selector: #selector(documentWillSave(_:)), name: .willSaveDocument, object: nil)
-		context.workspaceNotificationCenter.addObserver(self, selector: .autoSave, name: NSWorkspace.willSleepNotification, object: context.workspaceNotificationCenter)
+	override func setContext(context: EditorContext) {
+		super.setContext(context: context)
 		context.editorFont.signal.observeValues { [weak self] newFont in
 			self?.editor?.font = newFont
 		}
@@ -164,38 +152,89 @@ class SourceEditorController: AbstractSessionViewController, TextViewMenuDelegat
 		return items
 	}
 	
-	@objc func autosaveCurrentDocument() {
-		guard context?.currentDocument.value?.isDirty ?? false else { return }
-		saveWithProgress(isAutoSave: true).startWithResult { result in
-			guard result.error == nil else {
-				Log.warn("autosave failed: \(result.error!)", .session)
-				return
+	// MARK: private methods
+	///adjusts the UI to mark the current chunk
+	func adjustUIForCurrentChunk() {
+		guard let parser = parser else { fatalError("called without parser") }
+		//for now we will move the cursor and scroll so it is visible
+		let chunkRange = parser.chunks[currentChunkIndex].parsedRange
+		var desiredRange = NSRange(location: chunkRange.location, length: 0)
+		//adjust desired range so it advances past any newlines at start of chunk (if not just whitespace)
+		let str = editor!.string
+		//only adjust if it includes a non-newline character
+		if let nlcount = str.substring(from: desiredRange)?.unicodeScalars.filter({ CharacterSet.newlines.contains($0) }), nlcount.count != chunkRange.length
+		{
+			let curIdx = str.index(str.startIndex, offsetBy: desiredRange.location)
+			if curIdx != str.endIndex && str[curIdx] == "\n" {
+				desiredRange.location += 1
 			}
-			//need to do anything when successful?
 		}
+		editor!.setSelectedRange(desiredRange)
+		editor!.scrollRangeToVisible(desiredRange)
 	}
-
-	///actually implements running a query, saving first if document is dirty
-	func executeSource(type: ExecuteType) {
-		guard let currentDocument = context?.currentDocument.value else {
-			fatalError("runQuery called with no file selected")
+	
+	//should be the only place an actual save is performed
+	override func saveWithProgress(isAutoSave: Bool = false) -> SignalProducer<Bool, Rc2Error> {
+		return super.saveWithProgress(isAutoSave: isAutoSave)
+	}
+	
+	override func documentChanged(newDocument: EditorDocument?) {
+		guard let editor = self.editor else { Log.error("can't adjust document without editor", .app); return }
+		super.documentChanged(newDocument: newDocument)
+		if nil == newDocument {
+			editor.textStorage?.deleteCharacters(in: editor.rangeOfAllText)
 		}
-		let file = currentDocument.file
-		guard currentDocument.isDirty else {
-			Log.debug("executeQuery executing without save", .app)
-			session.execute(file: file, type: type)
-			return
+		updateUIForCurrentDocument()
+	}
+	
+	override func loaded(document: EditorDocument, content: String) {
+		guard let editor = self.editor, let lm = editor.layoutManager, let storage = editor.textStorage, let txtContainer = editor.textContainer
+			else { fatalError("editor missing required pieces") }
+		ignoreTextStorageNotifications = true
+		storage.deleteCharacters(in: editor.rangeOfAllText)
+		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: document.file.fileType) { (topic) in
+			return HelpController.shared.hasTopic(topic)
 		}
-		saveWithProgress().startWithResult { result in
-			if let innerError = result.error {
-				let appError = AppError(.saveFailed, nestedError: innerError)
-				Log.info("save for execute returned an error: \(result.error!)", .app)
-				self.appStatus?.presentError(appError.rc2Error, session: self.session)
-				return
+		ignoreTextStorageNotifications = false
+		storage.setAttributedString(NSAttributedString(string: content, attributes: self.defaultAttributes))
+		if document.topVisibleIndex > 0 {
+			//restore the scroll point to the saved character index
+			let idx = lm.glyphIndexForCharacter(at: document.topVisibleIndex)
+			let point = lm.boundingRect(forGlyphRange: NSRange(location: idx, length: 1), in: txtContainer)
+			//postpone to next event loop cycle
+			DispatchQueue.main.async {
+				editor.enclosingScrollView?.contentView.scroll(to: point.origin)
 			}
-			Log.info("executeQuery saved file, now executing", .app)
-			self.session.execute(file: file, type: type)
 		}
+		self.updateUIForCurrentDocument()
+	}
+	
+	@objc override func documentWillSave(_ notification: Notification) {
+		guard let document = context?.currentDocument.value, let editor = editor, let lm = editor.layoutManager else { fatalError()}
+		super.documentWillSave(notification)
+		//save the index of the character at the top left of the text container
+		let bnds = editor.enclosingScrollView!.contentView.bounds
+		var partial: CGFloat = 1.0
+		let idx = lm.characterIndex(for: bnds.origin, in: editor.textContainer!, fractionOfDistanceBetweenInsertionPoints: &partial)
+		document.topVisibleIndex = idx
+	}
+	
+	func updateUIForCurrentDocument() {
+		let currentDocument = context?.currentDocument.value
+		let selected = currentDocument?.file != nil
+		runButton?.isEnabled = selected
+		sourceButton?.isEnabled = selected
+		fileNameField?.stringValue = selected ? currentDocument!.file.name : ""
+		editor?.isEditable = selected
+		editor?.font = context?.editorFont.value
+		// editor.textFinder.cancelFindIndicator() is not erasing the find info, so we have to remove the find interface even if loading another file
+		let menuItem = NSMenuItem(title: "foo", action: .findPanelAction, keyEquivalent: "")
+		menuItem.tag = Int(NSTextFinder.Action.hideFindInterface.rawValue)
+		editor?.performTextFinderAction(menuItem)
+		editor?.textFinder.cancelFindIndicator()
+		
+		willChangeValue(forKey: "canExecute")
+		didChangeValue(forKey: "canExecute")
 	}
 }
 
@@ -233,14 +272,6 @@ extension SourceEditorController {
 		let menuItem = NSMenuItem(title: "foo", action: .findPanelAction, keyEquivalent: "")
 		menuItem.tag = Int(NSFindPanelAction.showFindPanel.rawValue)
 		editor?.performFindPanelAction(menuItem)
-	}
-	
-	@IBAction func runQuery(_ sender: AnyObject?) {
-		executeSource(type: .run)
-	}
-	
-	@IBAction func sourceQuery(_ sender: AnyObject?) {
-		executeSource(type: .source)
 	}
 	
 	/// if there is a selection, executes the selection. Otherwise, executes the current line.
@@ -324,106 +355,3 @@ extension SourceEditorController: NSTextViewDelegate {
 	}
 }
 
-// MARK: private methods
-fileprivate extension SourceEditorController {
-	///adjusts the UI to mark the current chunk
-	func adjustUIForCurrentChunk() {
-		guard let parser = parser else { fatalError("called without parser") }
-		//for now we will move the cursor and scroll so it is visible
-		let chunkRange = parser.chunks[currentChunkIndex].parsedRange
-		var desiredRange = NSRange(location: chunkRange.location, length: 0)
-		//adjust desired range so it advances past any newlines at start of chunk (if not just whitespace)
-		let str = editor!.string
-		//only adjust if it includes a non-newline character
-		if let nlcount = str.substring(from: desiredRange)?.unicodeScalars.filter({ CharacterSet.newlines.contains($0) }), nlcount.count != chunkRange.length
-		{
-			let curIdx = str.index(str.startIndex, offsetBy: desiredRange.location)
-			if curIdx != str.endIndex && str[curIdx] == "\n" {
-				desiredRange.location += 1
-			}
-		}
-		editor!.setSelectedRange(desiredRange)
-		editor!.scrollRangeToVisible(desiredRange)
-	}
-	
-	//should be the only place an actual save is performed
-	private func saveWithProgress(isAutoSave: Bool = false) -> SignalProducer<Bool, Rc2Error> {
-		guard let context = context else { fatalError() }
-		guard let doc = context.currentDocument.value else {
-			return SignalProducer<Bool, Rc2Error>(error: Rc2Error(type: .logic, severity: .error, explanation: "save called with nothing to save"))
-		}
-		return context.save(document: doc, isAutoSave: isAutoSave)
-			.map { _ in return true }
-			.updateProgress(status: self.appStatus!, actionName: "Save document")
-			.observe(on: UIScheduler())
-	}
-	
-	func documentChanged(newDocument: EditorDocument?) {
-		guard let editor = self.editor else { Log.error("can't adjust document without editor", .app); return }
-		if let document = newDocument {
-			if document.isLoaded {
-				loaded(document: document, content: document.currentContents ?? "")
-			} else {
-				session.fileCache.contents(of: document.file).observe(on: UIScheduler()).startWithResult { result in
-					guard let data = result.value else  {
-						self.appStatus?.presentError(result.error!, session: self.session)
-						return
-					}
-					self.loaded(document: document, content: String(data: data, encoding: .utf8)!)
-				}
-			}
-		} else {
-			editor.textStorage?.deleteCharacters(in: editor.rangeOfAllText)
-		}
-		updateUIForCurrentDocument()
-	}
-	
-	func loaded(document: EditorDocument, content: String) {
-		guard let editor = self.editor, let lm = editor.layoutManager, let storage = editor.textStorage, let txtContainer = editor.textContainer
-		else { fatalError("editor missing required pieces") }
-		ignoreTextStorageNotifications = true
-		storage.deleteCharacters(in: editor.rangeOfAllText)
-		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: document.file.fileType) { (topic) in
-			return HelpController.shared.hasTopic(topic)
-		}
-		ignoreTextStorageNotifications = false
-		storage.setAttributedString(NSAttributedString(string: content, attributes: self.defaultAttributes))
-		if document.topVisibleIndex > 0 {
-			//restore the scroll point to the saved character index
-			let idx = lm.glyphIndexForCharacter(at: document.topVisibleIndex)
-			let point = lm.boundingRect(forGlyphRange: NSRange(location: idx, length: 1), in: txtContainer)
-			//postpone to next event loop cycle
-			DispatchQueue.main.async {
-				editor.enclosingScrollView?.contentView.scroll(to: point.origin)
-			}
-		}
-		self.updateUIForCurrentDocument()
-	}
-	
-	@objc func documentWillSave(_ notification: Notification) {
-		guard let document = context?.currentDocument.value, let editor = editor, let lm = editor.layoutManager else { fatalError()}
-		//save the index of the character at the top left of the text container
-		let bnds = editor.enclosingScrollView!.contentView.bounds
-		var partial: CGFloat = 1.0
-		let idx = lm.characterIndex(for: bnds.origin, in: editor.textContainer!, fractionOfDistanceBetweenInsertionPoints: &partial)
-		document.topVisibleIndex = idx
-	}
-
-	func updateUIForCurrentDocument() {
-		let currentDocument = context?.currentDocument.value
-		let selected = currentDocument?.file != nil
-		runButton?.isEnabled = selected
-		sourceButton?.isEnabled = selected
-		fileNameField?.stringValue = selected ? currentDocument!.file.name : ""
-		editor?.isEditable = selected
-		editor?.font = context?.editorFont.value
-		// editor.textFinder.cancelFindIndicator() is not erasing the find info, so we have to remove the find interface even if loading another file
-		let menuItem = NSMenuItem(title: "foo", action: .findPanelAction, keyEquivalent: "")
-		menuItem.tag = Int(NSTextFinder.Action.hideFindInterface.rawValue)
-		editor?.performTextFinderAction(menuItem)
-		editor?.textFinder.cancelFindIndicator()
-		
-		willChangeValue(forKey: "canExecute")
-		didChangeValue(forKey: "canExecute")
-	}
-}

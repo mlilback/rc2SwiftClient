@@ -212,6 +212,7 @@
 		085A197C2049E2B900B7EC5F /* ZipArchive.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		085A197E2049E2C800B7EC5F /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		085A19842049E3C000B7EC5F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 085A19832049E3C000B7EC5F /* Cocoa.framework */; };
+		085A1A2B205ACA4600B7EC5F /* AbstractEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A2A205ACA4600B7EC5F /* AbstractEditorController.swift */; };
 		08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08604A4D1D9C0C0500DE2A79 /* Named.swift */; };
 		086413C82013614500116153 /* AppLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086413C620135E1C00116153 /* AppLoggerTests.swift */; };
 		086413CA201392C600116153 /* sampleLog.json in Resources */ = {isa = PBXBuildFile; fileRef = 086413C9201392C600116153 /* sampleLog.json */; };
@@ -961,6 +962,7 @@
 		085A197F2049E2E700B7EC5F /* libswiftCoreLocation.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftCoreLocation.tbd; path = System/Library/PrivateFrameworks/Swift/libswiftCoreLocation.tbd; sourceTree = SDKROOT; };
 		085A19812049E2FA00B7EC5F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		085A19832049E3C000B7EC5F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		085A1A2A205ACA4600B7EC5F /* AbstractEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractEditorController.swift; sourceTree = "<group>"; };
 		08604A4D1D9C0C0500DE2A79 /* Named.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Named.swift; sourceTree = "<group>"; };
 		086413C620135E1C00116153 /* AppLoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggerTests.swift; sourceTree = "<group>"; };
 		086413C9201392C600116153 /* sampleLog.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sampleLog.json; sourceTree = "<group>"; };
@@ -1867,6 +1869,7 @@
 			isa = PBXGroup;
 			children = (
 				08EE270720335561008E008F /* RootEditorController.swift */,
+				085A1A2A205ACA4600B7EC5F /* AbstractEditorController.swift */,
 				08F448F51C4E244500C64706 /* SourceEditorController.swift */,
 				08EE270920335B0A008E008F /* NotebookEditorController.swift */,
 				08EE270520334470008E008F /* CodeEditor.swift */,
@@ -2998,6 +3001,7 @@
 				089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */,
 				08CCED4B1EE1DDFC004B5ADE /* DockerLogController.swift in Sources */,
 				0872676D1EE20A37004251C1 /* DockerBackupViewController.swift in Sources */,
+				085A1A2B205ACA4600B7EC5F /* AbstractEditorController.swift in Sources */,
 				08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */,
 				08EE27012030A0BC008E008F /* SidebarController.swift in Sources */,
 				08C2D5E91E71B1FC0007A02D /* Searchable.swift in Sources */,

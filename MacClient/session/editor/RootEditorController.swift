@@ -25,7 +25,7 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 	var sourceEditor: SourceEditorController!
 	var notebookEditor: NotebookEditorController!
 	/// the current editor, either sourceEditor or notebookEditor
-	var currentEditor: (AbstractSessionViewController & CodeEditor)?
+	var currentEditor: AbstractEditorController?
 	/// store for KVO tokens
 	private var observerTokens = [Any]()
 	// toolbar mode buttons
