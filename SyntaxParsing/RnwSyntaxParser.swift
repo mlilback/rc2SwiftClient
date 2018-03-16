@@ -114,6 +114,7 @@ class RnwSyntaxParser: BaseSyntaxParser {
 			ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
 							   equationType: currType.2, range: range,
 							   chunkNumber: chunkIndex)
+			chunks.append(ch); chunkIndex += 1
 		}
 	}
 }
