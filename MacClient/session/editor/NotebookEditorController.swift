@@ -25,7 +25,7 @@ class NotebookEditorController: AbstractEditorController {
 	private var parser: SyntaxParser?
 	private let storage = NSTextStorage()
 
-	// MARK: - Standard
+	// MARK: - standard
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		// Set up CollectionView:
@@ -48,6 +48,7 @@ class NotebookEditorController: AbstractEditorController {
 		super.viewWillLayout()
 	}
 
+	// MARK: - editor
 	override func loaded(document: EditorDocument, content: String) {
 		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: document.file.fileType) { (topic) in
 			return HelpController.shared.hasTopic(topic)
@@ -57,25 +58,6 @@ class NotebookEditorController: AbstractEditorController {
 		dataArray = parser!.chunks.map { NotebookItemData(chunk: $0, source: content, result: "") }
 		notebookView.reloadData()
 		notebookView.collectionViewLayout?.invalidateLayout()
-	}
-
-	// MARK: - CodeEditor
-	var documentLoaded: Bool { return false }
-	
-	override func setContext(context: EditorContext) {
-		super.setContext(context: context)
-	}
-
-	func save(state: inout SessionState.EditorState) {
-		
-	}
-	
-	func restore(state: SessionState.EditorState) {
-		
-	}
-	
-	func fileChanged(file: AppFile?) {
-		
 	}
 }
 

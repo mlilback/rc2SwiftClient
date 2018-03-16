@@ -165,8 +165,8 @@ extension RootEditorController: EditorManager {
 				return
 			}
 			self.willChangeValue(forKey: "canExecute")
-	//		sourceEditor.fileChanged(file: file)
-			self.notebookEditor.fileChanged(file: file)
+//			sourceEditor.fileChanged(file: file)
+//			self.notebookEditor.fileChanged(file: file)
 			self.didChangeValue(forKey: "canExecute")
 			self.fileNameField?.stringValue = file == nil ? "" : file!.name
 			self.notebookModeEnabled = file?.fileType.fileExtension ?? "" == "Rmd"
