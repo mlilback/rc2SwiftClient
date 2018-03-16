@@ -7,6 +7,7 @@
 import Cocoa
 import Networking
 import SyntaxParsing
+import MJLLogger
 
 class NotebookEditorController: AbstractEditorController {
 	// MARK: - constants
@@ -97,8 +98,7 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 	{
 		let dataItem = dataArray[indexPath.item]
 		let sz = NSSize(width: collectionView.visibleWidth, height: dataItem.height)
-		//		let str = dataItem.source.string[dataItem.source.string.startIndex]
-		//		print("sz for \(indexPath.item) is \(sz)")
+		Log.debug("sz for \(indexPath.item) is \(sz)", .app)
 		return sz
 	}
 	
@@ -139,7 +139,7 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 			let fromIndex = fromIndexPath.item
 			var toIndex = indexPath.item
 			if toIndex > fromIndex { toIndex -= 1 }
-			print("moving \(fromIndex) to \(toIndex)")
+			Log.debug("moving \(fromIndex) to \(toIndex)", .app)
 			let itemData = dataArray[fromIndex]
 			dataArray.remove(at: fromIndex)	// must be done first
 			dataArray.insert(itemData, at: toIndex)
