@@ -393,21 +393,50 @@
                         <rect key="frame" x="0.0" y="0.0" width="400" height="513"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8tK-OU-OmM">
-                                <rect key="frame" x="47" y="449" width="101" height="17"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="notebook editor" id="gwj-Ze-MYb">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RRO-kr-z3C">
+                                <rect key="frame" x="0.0" y="0.0" width="400" height="513"/>
+                                <clipView key="contentView" drawsBackground="NO" id="lk2-Jj-coN">
+                                    <rect key="frame" x="1" y="1" width="398" height="511"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <collectionView selectable="YES" allowsEmptySelection="NO" id="lc5-4J-j1N">
+                                            <rect key="frame" x="0.0" y="0.0" width="398" height="158"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                            <collectionViewLayout key="collectionViewLayout" id="pFZ-ZQ-oT6" customClass="NotebookCollectionLayout" customModule="MacClient" customModuleProvider="target"/>
+                                            <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <accessibility description="Notebook"/>
+                                            <connections>
+                                                <outlet property="dataSource" destination="1v9-4m-leU" id="axZ-c2-aik"/>
+                                                <outlet property="delegate" destination="1v9-4m-leU" id="8O8-NE-QKt"/>
+                                            </connections>
+                                        </collectionView>
+                                    </subviews>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="QpD-Gc-YcO">
+                                    <rect key="frame" x="1" y="144" width="233" height="15"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="GTn-oi-BrD">
+                                    <rect key="frame" x="234" y="1" width="15" height="143"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
                         </subviews>
+                        <constraints>
+                            <constraint firstItem="RRO-kr-z3C" firstAttribute="leading" secondItem="Qaq-zm-Wm6" secondAttribute="leading" id="3pr-mC-Xop"/>
+                            <constraint firstItem="RRO-kr-z3C" firstAttribute="top" secondItem="Qaq-zm-Wm6" secondAttribute="top" id="DdW-yY-FXU"/>
+                            <constraint firstAttribute="trailing" secondItem="RRO-kr-z3C" secondAttribute="trailing" id="ZYD-Hz-WxY"/>
+                            <constraint firstAttribute="bottom" secondItem="RRO-kr-z3C" secondAttribute="bottom" id="laC-Ib-RiO"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="notebookView" destination="lc5-4J-j1N" id="PYS-AP-XvW"/>
+                    </connections>
                 </viewController>
                 <customObject id="lea-Wf-GhM" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1073" y="1694"/>
+            <point key="canvasLocation" x="1073" y="1693.5"/>
         </scene>
         <!--left tab controller-->
         <scene sceneID="Zy7-r2-fPT">
