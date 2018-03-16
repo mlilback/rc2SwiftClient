@@ -107,7 +107,7 @@ open class BaseHighlighter: NSObject {
 			if chunk.chunkType == .code && keywords.contains(token.stringValue) {
 				color = theme.value.color(for: .keyword)
 			}
-			else if chunk.chunkType == .latex || chunk.chunkType == .equation {
+			else if chunk.docType == .latex || chunk.chunkType == .equation {
 				if lastToken?.tokenType == .symbol && lastToken?.stringValue.first == "\\" {
 					usePrevious = true
 					color = theme.value.color(for: .keyword)

@@ -8,11 +8,20 @@ import Foundation
 
 /// Possible types of chunks
 ///
-/// - documentation: normal text (that might be interpreted as a markup language such as markdown)
+/// - docs: normal text (that might be interpreted as a markup language such as markdown)
 /// - code: executable code (currently just R code)
 /// - equation: a mathmatical equation
 public enum ChunkType {
-	case docs, rmd, latex, code, equation
+	case docs, code, equation
+}
+
+/// Possible types of equations
+///
+/// - none: not an doc type
+/// - inline: an rmd doc
+/// - latex: a latex doc
+public enum DocType: String {
+	case none, rmd, latex
 }
 
 /// Possible types of equations
@@ -33,8 +42,10 @@ public class DocumentChunk {
 	/// Type of chunk
 	public let chunkType: ChunkType
 	/// If the type is .equation, the type of the equation
-	public let equationType: EquationType
+	public let docType: DocType
 	// The range of text this chunk contains
+	public let equationType: EquationType
+	/// If the type is .doc, the type of the doc
 	public internal(set) var parsedRange: NSRange = NSRange(location: 0, length: 0)
 	
 	/// A unique, serial number for each chunk used in SessionEditorController's
@@ -69,9 +80,11 @@ public class DocumentChunk {
 		}
 	}
 	
-	init(chunkType: ChunkType, equationType: EquationType, range: NSRange, chunkNumber: Int, name: String?=nil) {
+	init(chunkType: ChunkType, docType: DocType, equationType: EquationType,
+		 range: NSRange, chunkNumber: Int, name: String?=nil) {
 		self.chunkNumber = chunkNumber
 		self.chunkType = chunkType
+		self.docType = docType
 		self.equationType = equationType
 		self.name = name
 		self.parsedRange = range
@@ -79,7 +92,7 @@ public class DocumentChunk {
 	
 	/// Returns a chunk that differs only in chunkNumber
 	func duplicateWithChunkNumber(_ newNum: Int) -> DocumentChunk {
-		return DocumentChunk(chunkType: chunkType, equationType: equationType,
+		return DocumentChunk(chunkType: chunkType, docType: docType, equationType: equationType,
 							 range: parsedRange, chunkNumber: newNum, name: name)
 	}
 	
@@ -88,6 +101,7 @@ public class DocumentChunk {
 extension DocumentChunk: Equatable {
 	public static func ==(lhs: DocumentChunk, rhs: DocumentChunk) -> Bool {
 		return lhs.chunkNumber == rhs.chunkNumber && lhs.chunkType == rhs.chunkType
+			&& lhs.docType == rhs.docType && lhs.equationType == rhs.equationType
 			&& lhs.name == rhs.name && NSEqualRanges(lhs.parsedRange, rhs.parsedRange)
 	}
 }
@@ -103,11 +117,7 @@ extension DocumentChunk: CustomStringConvertible {
 		case .code:
 			return "R code chunk \(chunkNumber) \"\(name ?? "")\" (\(range))"
 		case .docs:
-			return "Other text chunk \(chunkNumber) (\(range))"
-		case .rmd:
-			return "R Markdown chunk \(chunkNumber) (\(range))"
-		case .latex:
-			return "LaTex chunk \(chunkNumber) (\(range))"
+			return "Document chunk \(chunkNumber) (\(range))"
 		case .equation:
 			return "\(equationType.rawValue) equation chunk (LaTex)"
 		}

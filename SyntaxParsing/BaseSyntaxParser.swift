@@ -124,10 +124,6 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 				bgcolor = theme.value.color(for: .codeBackground)
 			} else if chunk.chunkType == .docs {
 				bgcolor = theme.value.color(for: .background)
-			} else if chunk.chunkType == .rmd {
-				bgcolor = theme.value.color(for: .background)
-			} else if chunk.chunkType == .latex {
-				bgcolor = theme.value.color(for: .background)
 			} else if chunk.chunkType == .equation {
 				bgcolor = theme.value.color(for: .equationBackground)
 			}
@@ -145,7 +141,7 @@ class RSyntaxParser: BaseSyntaxParser {
 	internal override func parseRange(_ range: NSRange) {
 		chunks.removeAll()
 		let range = NSRange(location: 0, length: textStorage.string.count) // whole txt
-		let chunk = DocumentChunk(chunkType: .code, equationType: .none,
+		let chunk = DocumentChunk(chunkType: .code, docType: .none, equationType: .none,
 								  range: range, chunkNumber: 1)
 		chunks.append(chunk)
 	}
