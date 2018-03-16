@@ -155,12 +155,12 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	// MARK: private methods
 	///adjusts the UI to mark the current chunk
 	func adjustUIForCurrentChunk() {
-		guard let parser = parser else { fatalError("called without parser") }
+		guard let parser = parser, let editor = editor else { fatalError("called without parser and/or editor") }
 		//for now we will move the cursor and scroll so it is visible
 		let chunkRange = parser.chunks[currentChunkIndex].parsedRange
 		var desiredRange = NSRange(location: chunkRange.location, length: 0)
 		//adjust desired range so it advances past any newlines at start of chunk (if not just whitespace)
-		let str = editor!.string
+		let str = editor.string
 		//only adjust if it includes a non-newline character
 		if let nlcount = str.substring(from: desiredRange)?.unicodeScalars.filter({ CharacterSet.newlines.contains($0) }), nlcount.count != chunkRange.length
 		{
@@ -169,8 +169,8 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 				desiredRange.location += 1
 			}
 		}
-		editor!.setSelectedRange(desiredRange)
-		editor!.scrollRangeToVisible(desiredRange)
+		editor.setSelectedRange(desiredRange)
+		editor.scrollRangeToVisible(desiredRange)
 	}
 	
 	//should be the only place an actual save is performed
@@ -295,9 +295,9 @@ extension SourceEditorController {
 	
 	/// Execute every code chunk up to, but not including, the current chunk
 	@IBAction func executePreviousChunks(_ sender: Any?) {
-		guard let parser = parser, let editor = editor else { fatalError("why is there no parser?") }
+		guard let parser = parser, let editor = editor, let storage = editor.textStorage else { fatalError("why is there no parser?") }
 		let chunkNumber = currentChunk?.chunkNumber ?? 0
-		let fullScript = editor.textStorage!.mutableString as String //string makes a copy, we only need reference
+		let fullScript = storage.mutableString as String //string makes a copy, we only need reference
 		let validChunks = parser.executableChunks.prefix(while: { $0.chunkNumber < chunkNumber })
 		validChunks.forEach({ self.session.executeScript($0.executableCode(from: fullScript)) })
 	}
