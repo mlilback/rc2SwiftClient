@@ -7,37 +7,26 @@
 //
 
 import Cocoa
+import ReactiveSwift
+import MJLLogger
 
 class NotebookViewItem: NSCollectionViewItem {
-	let fontSize = CGFloat(13)
 	@IBOutlet var sourceView: SourceTextView!
 	@IBOutlet var resultView: SourceTextView!
 	@IBOutlet weak var topView: NSView!
 	@IBOutlet weak var middleView: NSView!
 	@IBOutlet weak var resultTwiddle: NSButton!
+	@IBOutlet weak var chunkTypeLabel: NSTextField!
 	var layingOut = false
 	
-	var data: NotebookItemData? {
-		didSet {
-			// Set font of can new data so it's the same:
-			guard let font = NSFont.userFixedPitchFont(ofSize: fontSize) else { fatalError() }
-			data?.source.font = font
-			sourceView.font = font
-			// Callbacks from changes in NSTextViews that adjust the item view size:
-			sourceView.changeCallback = { [weak self] in
-				self?.adjustSize()
-			}
-			resultView.changeCallback = { [weak self] in
-				self?.adjustSize()
-//				print("resultView.changeCallback")
-			}
-			// Sets each view's string from the data's string:
-			sourceView.replace(text: data?.source.string ?? "")
-			resultView.replace(text: data?.result.string ?? "")
-		}
-	}
+	var data: NotebookItemData? { didSet { dataChanged() } }
+	var context: EditorContext? { didSet { contextChanged() } }
+	private var fontDisposable: Disposable?
 
-	// Setup:
+	deinit {
+		fontDisposable?.dispose()
+	}
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -45,10 +34,6 @@ class NotebookViewItem: NSCollectionViewItem {
 		NotificationCenter.default.addObserver(self, selector: #selector(boundsChanged(_:)), name: NSView.boundsDidChangeNotification, object: sourceView)
 		NotificationCenter.default.addObserver(self, selector: #selector(boundsChanged(_:)), name: NSView.boundsDidChangeNotification, object: resultView)
 		
-		// Initial font:
-		if let font = NSFont.userFixedPitchFont(ofSize: fontSize) {
-			sourceView.font = font
-		}
 		// Set background colors for top and middle views:
 		topView.wantsLayer = true
 		topView.layer?.backgroundColor = NSColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
@@ -81,6 +66,62 @@ class NotebookViewItem: NSCollectionViewItem {
 	// If the view size changes, re-adjust data height:
 	@objc func boundsChanged(_ note: Notification) {
 		adjustSize()
+	}
+	
+	
+	private func contextChanged() {
+		fontDisposable?.dispose()
+		fontDisposable = context?.editorFont.signal.observeValues { [weak self] font in
+			self?.data?.source.font = font
+			self?.sourceView.font = font
+		}
+		guard let context = context else { return }
+		data?.source.font = context.editorFont.value
+		sourceView.font = context.editorFont.value
+	}
+	
+	private func dataChanged() {
+		guard let context = context else { fatalError("context must be set before data") }
+		// Callbacks from changes in NSTextViews that adjust the item view size:
+		sourceView.changeCallback = { [weak self] in
+			self?.adjustSize()
+		}
+		resultView.changeCallback = { [weak self] in
+			self?.adjustSize()
+			Log.debug("resultView.changeCallback", .app)
+		}
+		data?.source.font = context.editorFont.value
+		// Sets each view's string from the data's string:
+		sourceView.replace(text: data?.source.string ?? "")
+		resultView.replace(text: data?.result.string ?? "")
+		//adjust label
+		chunkTypeLabel.stringValue = titleForCurrentChunk()
+	}
+
+	private func titleForCurrentChunk() -> String {
+		guard let chunk = data?.chunk else { return "unknown" }
+		switch chunk.chunkType {
+		case .docs:
+			return NSLocalizedString("Markdown", comment: "")
+		case .rmd:
+			return NSLocalizedString("Markdown", comment: "")
+		case .latex:
+			return NSLocalizedString("Latex???", comment: "")
+		case .code:
+			return NSLocalizedString("R Code", comment: "")
+		case .equation:
+			switch chunk.equationType {
+			case .none:
+				Log.error("equation w/o equation type: \(chunk)", .app)
+				return "Impossible"
+			case .inline:
+				return NSLocalizedString("Inline Equation", comment: "")
+			case .display:
+				return NSLocalizedString("Display Equation", comment: "")
+			case .mathML:
+				return NSLocalizedString("MathML", comment: "")
+			}
+		}
 	}
 	
 	// Adjust sizes of each frame (within each item) and adjust the

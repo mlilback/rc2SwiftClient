@@ -11,10 +11,12 @@ public class NotebookItemData: NSObject {
 	@objc public let source: NSTextStorage
 	@objc public let result: NSTextStorage
 	@objc public var height: CGFloat = 40
-	public var chunk: DocumentChunk?
+	public var chunk: DocumentChunk
 	
-	public init(source: String, result: String) {
-		self.source = NSTextStorage(attributedString: NSAttributedString(string: source))
+	public init(chunk: DocumentChunk, source: String, result: String) {
+		self.chunk = chunk
+		let range = Range(chunk.parsedRange, in: source) ?? source.startIndex..<source.startIndex
+		self.source = NSTextStorage(attributedString: NSAttributedString(string: String(source[range])))
 		self.result = NSTextStorage(attributedString: NSAttributedString(string: result))
 		super.init()
 	}

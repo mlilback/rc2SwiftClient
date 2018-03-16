@@ -6,6 +6,7 @@
 
 import Cocoa
 import Networking
+import SyntaxParsing
 
 class NotebookEditorController: AbstractEditorController {
 	// MARK: - constants
@@ -21,8 +22,10 @@ class NotebookEditorController: AbstractEditorController {
 	var dataArray: [NotebookItemData] = []	// holds data for all items
 	var dragIndices: Set<IndexPath>?	// items being dragged
 
+	private var parser: SyntaxParser?
+	private let storage = NSTextStorage()
+
 	// MARK: - Standard
-	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		// Set up CollectionView:
@@ -36,12 +39,6 @@ class NotebookEditorController: AbstractEditorController {
 		layout.sectionInset = NSEdgeInsets(top: 20, left: 8, bottom: 20, right: 8)
 		layout.minimumLineSpacing = 20.0
 		layout.minimumInteritemSpacing = 14.0
-		
-		// Data sample:
-		dataArray.append(NotebookItemData(source: "0. this", result: "the results of the first source item"))
-		dataArray.append(NotebookItemData(source: "1. something\n", result: "results go here"))
-		dataArray.append(NotebookItemData(source: "2. little ones\n", result: "little results go here"))
-		dataArray.append(NotebookItemData(source: "3. fddsfdsfdsdfsdfd\nddfsdfs\ndfsdfsdf\n33\nadfsadfjskljkl\n", result: "results go here"))
 	}
 
 	// Called initially and when window is resized:
@@ -52,7 +49,14 @@ class NotebookEditorController: AbstractEditorController {
 	}
 
 	override func loaded(document: EditorDocument, content: String) {
-		
+		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: document.file.fileType) { (topic) in
+			return HelpController.shared.hasTopic(topic)
+		}
+		storage.replaceCharacters(in: storage.string.fullNSRange, with: content)
+		_ = parser?.parse()
+		dataArray = parser!.chunks.map { NotebookItemData(chunk: $0, source: content, result: "") }
+		notebookView.reloadData()
+		notebookView.collectionViewLayout?.invalidateLayout()
 	}
 
 	// MARK: - CodeEditor
@@ -86,6 +90,7 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 	{
 		let itemData = dataArray[indexPath.item]
 		guard let view = collectionView.makeItem(withIdentifier: viewItemId, for: indexPath) as? NotebookViewItem else { fatalError() }
+		view.context = context
 		view.data = itemData
 		return view
 	}

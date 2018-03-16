@@ -6,8 +6,9 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="NotebookViewItem" customModule="Rc2Notebook" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="NotebookViewItem" customModule="MacClient" customModuleProvider="target">
             <connections>
+                <outlet property="chunkTypeLabel" destination="fDF-zO-1NG" id="FqC-gX-aiS"/>
                 <outlet property="middleView" destination="y6B-4h-J3F" id="9ju-Cc-nT9"/>
                 <outlet property="resultTwiddle" destination="Lpr-hw-vve" id="zTY-ym-9a1"/>
                 <outlet property="resultView" destination="HRk-gT-qE6" id="NRD-uC-xpA"/>
@@ -18,7 +19,7 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customView identifier="rootItem" autoresizesSubviews="NO" wantsLayer="YES" id="Hz6-mo-xeY" customClass="NotebookEntryView" customModule="Rc2Notebook" customModuleProvider="target">
+        <customView identifier="rootItem" autoresizesSubviews="NO" wantsLayer="YES" id="Hz6-mo-xeY" customClass="NotebookEntryView" customModule="MacClient" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
@@ -37,14 +38,14 @@
                         </textField>
                     </subviews>
                 </customView>
-                <scrollView identifier="sourceScroll" focusRingType="exterior" misplaced="YES" borderType="line" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" id="OEf-2G-F4x" userLabel="source scroll" customClass="NoScrollView" customModule="Rc2Notebook" customModuleProvider="target">
+                <scrollView identifier="sourceScroll" focusRingType="exterior" misplaced="YES" borderType="line" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" id="OEf-2G-F4x" userLabel="source scroll" customClass="NoScrollView" customModule="MacClient" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="159" width="480" height="89"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <clipView key="contentView" id="2WR-4j-xeK">
                         <rect key="frame" x="1" y="1" width="478" height="87"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView importsGraphics="NO" verticallyResizable="NO" usesFontPanel="YES" findStyle="bar" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" textCompletion="NO" id="Zng-X6-LSA" customClass="SourceTextView" customModule="Rc2Notebook" customModuleProvider="target">
+                            <textView importsGraphics="NO" verticallyResizable="NO" usesFontPanel="YES" findStyle="bar" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" textCompletion="NO" id="Zng-X6-LSA" customClass="SourceTextView" customModule="MacClient" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="478" height="87"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -89,14 +90,14 @@
                         </textField>
                     </subviews>
                 </customView>
-                <scrollView identifier="resultScroll" verticalCompressionResistancePriority="250" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" id="wX6-cF-NiF" userLabel="result scroll" customClass="NoScrollView" customModule="Rc2Notebook" customModuleProvider="target">
+                <scrollView identifier="resultScroll" verticalCompressionResistancePriority="250" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" id="wX6-cF-NiF" userLabel="result scroll" customClass="NoScrollView" customModule="MacClient" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="0.0" width="480" height="131"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="5S1-Ay-aXO">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="131"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="HRk-gT-qE6" customClass="SourceTextView" customModule="Rc2Notebook" customModuleProvider="target">
+                            <textView importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="HRk-gT-qE6" customClass="SourceTextView" customModule="MacClient" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="480" height="131"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="0.94117647058823528" green="0.94117647058823528" blue="0.94117647058823528" alpha="1" colorSpace="calibratedRGB"/>

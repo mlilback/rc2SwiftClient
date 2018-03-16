@@ -41,7 +41,6 @@ class NotebookCollectionLayout: NSCollectionViewFlowLayout {
 		// Make newRect and set superAttrs!.frame to it:
 		let newRect = CGRect(x: sectionInset.left, y: y + yOff, width: itemWidth, height: height)
 		attrs.frame = newRect
-		Log.info("returning attrs \(attrs.frame)", .app)
 		return attrs
 	}
 }
