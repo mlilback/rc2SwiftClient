@@ -28,6 +28,7 @@ public protocol SyntaxParser: class {
 	
 	/// Calls subclasses to parse if textStorage has changed.
 	/// - Returns: true if the chunks array was updated
+	@discardableResult
 	func parse() -> Bool
 	
 	/// Returns the index of the first chunk containing the start of the range.

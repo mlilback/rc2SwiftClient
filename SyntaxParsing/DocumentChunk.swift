@@ -17,12 +17,12 @@ public enum ChunkType {
 
 /// Possible types of equations
 ///
-/// - invalid: not an equation type
+/// - none: not an equation type
 /// - inline: an inline TeX equation
 /// - display: a TeX equation (taking multiple lines)
 /// - mathML: an equation specified in MathML
 public enum EquationType: String {
-	case none, inline, multiLine, mathML = "MathML"
+	case none, inline, display, mathML = "MathML"
 }
 
 /// Represents a "chunk" of text. An R document has 1 chunk.

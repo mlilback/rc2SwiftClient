@@ -67,7 +67,7 @@ class RmdSyntaxParser: BaseSyntaxParser {
 					newType = (.code, .none); state = .codeIn
 					closeChunk = true }
 				else if token.stringValue == "$$" {
-					newType = (.equation, .multiLine); state = .eqBlock
+					newType = (.equation, .display); state = .eqBlock
 					closeChunk = true }
 				else if token.stringValue == "$" {
 					newType = (.equation, .inline); state = .eqIn

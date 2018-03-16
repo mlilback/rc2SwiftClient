@@ -53,7 +53,7 @@ class RnwSyntaxParser: BaseSyntaxParser {
 			// Switch open state based on symbols:
 			if (state == .sea || state == .codePossible) {
 				if token.stringValue == "$$" {
-					newType = (.equation, .multiLine); state = .eqBlock
+					newType = (.equation, .display); state = .eqBlock
 					closeChunk = true }
 				else if token.stringValue == "$" {
 					newType = (.equation, .inline); state = .eqIn
