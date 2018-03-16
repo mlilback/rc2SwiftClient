@@ -40,7 +40,7 @@ class RnwSyntaxParser: BaseSyntaxParser {
 		var begin:Int = 0, end:Int = 0
 		var token = tok.nextToken()!
 		var closeChunk = false
-		var currType:(ChunkType, EquationType) = (.latex, .none)
+		var currType:(ChunkType, DocType, EquationType) = (.docs, .latex, .none)
 		var newType = currType
 		var ch:DocumentChunk
 		// Parse by loop through tokens and changing states:
@@ -53,16 +53,16 @@ class RnwSyntaxParser: BaseSyntaxParser {
 			// Switch open state based on symbols:
 			if (state == .sea || state == .codePossible) {
 				if token.stringValue == "$$" {
-					newType = (.equation, .display); state = .eqBlock
+					newType = (.equation, .none, .display); state = .eqBlock
 					closeChunk = true }
 				else if token.stringValue == "$" {
-					newType = (.equation, .inline); state = .eqIn
+					newType = (.equation, .none, .inline); state = .eqIn
 					closeChunk = true }
 				else if token.stringValue == "<<" {
 					state = .codePossible
 					end = Int(token.offset) }
 				else if token.stringValue == ">>=" && state == .codePossible {
-					newType = (.code, .none)
+					newType = (.code, .none, .none)
 					closeChunk = true
 				}
 				// Create a chunk after switching states:
@@ -72,8 +72,9 @@ class RnwSyntaxParser: BaseSyntaxParser {
 					if end > fullRange.length { end = fullRange.length }
 					if end-begin > 0 {
 						let range = NSMakeRange(begin, end-begin)
-						ch = DocumentChunk(chunkType: currType.0, equationType: currType.1,
-										   range: range, chunkNumber: chunkIndex)
+						ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
+										   equationType: currType.2, range: range,
+										   chunkNumber: chunkIndex)
 						chunks.append(ch); chunkIndex += 1
 					}
 					currType = newType; begin = end
@@ -95,22 +96,24 @@ class RnwSyntaxParser: BaseSyntaxParser {
 				else { end = Int(token.offset) }
 				if end > fullRange.length { end = fullRange.length }
 				if end-begin > 2 { // has to have at least 3 chars, including ends
-					let fullRange = NSMakeRange(begin, end-begin)
-					ch = DocumentChunk(chunkType: currType.0, equationType: currType.1,
-									   range: fullRange, chunkNumber: chunkIndex)
+					let range = NSMakeRange(begin, end-begin)
+					ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
+									   equationType: currType.2, range: range,
+									   chunkNumber: chunkIndex)
 					chunks.append(ch); chunkIndex += 1
 					begin = end
 				}
-				currType = (.latex, .none)
+				currType = (.docs, .latex, .none)
 				closeChunk = false; state = .sea
 			}
 		}
 		// Handle end cases:
 		end = fullRange.length
 		if end > begin {
-			let fullRange = NSMakeRange(begin, end-begin)
-			chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1,
-										range: fullRange, chunkNumber: chunkIndex))
+			let range = NSMakeRange(begin, end-begin)
+			ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
+							   equationType: currType.2, range: range,
+							   chunkNumber: chunkIndex)
 		}
 	}
 }

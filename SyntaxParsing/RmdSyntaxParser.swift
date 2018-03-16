@@ -47,7 +47,7 @@ class RmdSyntaxParser: BaseSyntaxParser {
 		//			case docs, code, equation
 		//		public enum EquationType: String {
 		//			case invalid, inline, display, mathML = "MathML"
-		var currType:(ChunkType, EquationType) = (.rmd, .none)
+		var currType:(ChunkType, DocType, EquationType) = (.docs, .rmd, .none)
 		var newType = currType
 		var ch:DocumentChunk
 		// Parse by loop through tokens and changing states:
@@ -61,22 +61,22 @@ class RmdSyntaxParser: BaseSyntaxParser {
 			// Switch open state based on symbols:
 			if state == .sea || state == .eqPossible {
 				if token.stringValue == "```{r" {
-					newType = (.code, .none); state = .codeBlock
+					newType = (.code, .none, .none); state = .codeBlock
 					closeChunk = true }
 				else if token.stringValue == "`r" {
-					newType = (.code, .none); state = .codeIn
+					newType = (.code, .none, .none); state = .codeIn
 					closeChunk = true }
 				else if token.stringValue == "$$" {
-					newType = (.equation, .display); state = .eqBlock
+					newType = (.equation, .none, .display); state = .eqBlock
 					closeChunk = true }
 				else if token.stringValue == "$" {
-					newType = (.equation, .inline); state = .eqIn
+					newType = (.equation, .none, .inline); state = .eqIn
 					closeChunk = true }
 				else if token.stringValue == "<math" {
 					state = .eqPossible
 					end = Int(token.offset) }
 				else if token.stringValue == ">" && state == .eqPossible {
-					newType = (.equation, .mathML)
+					newType = (.equation, .none, .mathML)
 					closeChunk = true
 				}
 				if closeChunk {
@@ -84,9 +84,10 @@ class RmdSyntaxParser: BaseSyntaxParser {
 					else { end = Int(token.offset) }
 					if end > fullRange.length { end = fullRange.length }
 					if end-begin > 0 {
-						let fullRange = NSMakeRange(begin, end-begin)
-						ch = DocumentChunk(chunkType: currType.0, equationType: currType.1,
-										   range: fullRange, chunkNumber: chunkIndex)
+						let range = NSMakeRange(begin, end-begin)
+						ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
+										   equationType: currType.2, range: range,
+										   chunkNumber: chunkIndex)
 						chunks.append(ch); chunkIndex += 1
 						//						print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t type=\(ch.chunkType),\(ch.equationType)")
 					}
@@ -113,23 +114,26 @@ class RmdSyntaxParser: BaseSyntaxParser {
 				else { end = Int(token.offset) }
 				if end > fullRange.length { end = fullRange.length }
 				if end-begin > 2 { // has to have at least 3 chars, including ends
-					let fullRange = NSMakeRange(begin, end-begin)
-					ch = DocumentChunk(chunkType: currType.0, equationType: currType.1,
-									   range: fullRange, chunkNumber: chunkIndex)
+					let range = NSMakeRange(begin, end-begin)
+					ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
+									   equationType: currType.2, range: range,
+									   chunkNumber: chunkIndex)
 					chunks.append(ch); chunkIndex += 1
 					//					print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t type=\(ch.chunkType),\(ch.equationType)")
 					begin = end
 				}
-				currType = (.rmd, .none)
+				currType = (.docs, .rmd, .none)
 				closeChunk = false; state = .sea
 			}
 		}
 		// Handle end cases:
 		end = fullRange.length
 		if end > begin {
-			let fullRange = NSMakeRange(begin, end-begin)
-			chunks.append(DocumentChunk(chunkType: currType.0, equationType: currType.1,
-										range: fullRange, chunkNumber: chunkIndex))
+			let range = NSMakeRange(begin, end-begin)
+			ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
+							   equationType: currType.2, range: range,
+							   chunkNumber: chunkIndex)
+			chunks.append(ch); chunkIndex += 1
 		}
 	}
 }

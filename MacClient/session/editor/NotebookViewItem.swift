@@ -102,11 +102,14 @@ class NotebookViewItem: NSCollectionViewItem {
 		guard let chunk = data?.chunk else { return "unknown" }
 		switch chunk.chunkType {
 		case .docs:
-			return NSLocalizedString("Markdown", comment: "")
-		case .rmd:
-			return NSLocalizedString("Markdown", comment: "")
-		case .latex:
-			return NSLocalizedString("Latex???", comment: "")
+			switch chunk.docType {
+			case .rmd:
+				return NSLocalizedString("Markdown", comment: "")
+			case .latex:
+				return NSLocalizedString("Latex", comment: "")
+			default:
+				return NSLocalizedString("Unknown Document kind", comment: "")
+			}
 		case .code:
 			return NSLocalizedString("R Code", comment: "")
 		case .equation:
