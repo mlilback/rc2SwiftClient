@@ -60,6 +60,10 @@ class NotebookEditorController: AbstractEditorController {
 		notebookView.reloadData()
 		notebookView.collectionViewLayout?.invalidateLayout()
 	}
+	
+	override func documentWillSave(_ notification: Notification) {
+		// need to convert dataArray back to single source
+	}
 }
 
 // MARK: - NSCollectionViewDataSource
