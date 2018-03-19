@@ -12,11 +12,11 @@ import ClientCore
 import ReactiveSwift
 import PEGKit
 
-public typealias HighlighterHasHelpCallback = (String) -> Bool
+public typealias HasHelpCallback = (String) -> Bool
 
 open class BaseHighlighter: NSObject {
 	let theme = Property<SyntaxTheme>(ThemeManager.shared.activeSyntaxTheme)
-	var helpCallback: HighlighterHasHelpCallback?
+	var helpCallback: HasHelpCallback?
 	
 	// Get RKeywords from it's file in this bundle:
 	let keywords: Set<String> = {
@@ -29,7 +29,7 @@ open class BaseHighlighter: NSObject {
 		return Set<String>(keyArray)
 	}()
 	
-	public required init(helpCallback: @escaping HighlighterHasHelpCallback) {
+	public required init(helpCallback: @escaping HasHelpCallback) {
 		super.init()
 		self.helpCallback = helpCallback
 	}

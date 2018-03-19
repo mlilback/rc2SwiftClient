@@ -30,7 +30,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 	fileprivate var textStorageStringLast: String = ""
 	
 	// See SyntaxParser protocol for parameters.
-	init(storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HighlighterHasHelpCallback)
+	init(storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HasHelpCallback)
 	{
 		self.textStorage = storage
 		self.fileType = fileType
@@ -39,7 +39,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 	}
 	
 	// Returns the approprate syntax parser (and highlighter) to use for fileType.
-	public class func parserWithTextStorage(_ storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HighlighterHasHelpCallback) -> BaseSyntaxParser?
+	public class func parserWithTextStorage(_ storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HasHelpCallback) -> BaseSyntaxParser?
 	{
 		var parser: BaseSyntaxParser?
 		if fileType.fileExtension == "Rnw" {		// R-sweave
