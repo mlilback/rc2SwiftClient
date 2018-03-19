@@ -8,4 +8,5 @@ import Foundation
 
 public enum ParserError: Error {
 	case failedToParse
+	case inlineEquationNotInTextChunk
 }

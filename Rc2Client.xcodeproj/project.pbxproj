@@ -197,6 +197,7 @@
 		08525E761E300185008A332E /* rdocs.tgz in Resources */ = {isa = PBXBuildFile; fileRef = 08525E751E300185008A332E /* rdocs.tgz */; };
 		08525E781E3143C3008A332E /* InputPrompter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E771E3143C3008A332E /* InputPrompter.swift */; };
 		08525E7A1E314558008A332E /* InputPrompter.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08525E791E314558008A332E /* InputPrompter.xib */; };
+		0859A28C2060082A00103924 /* RmdDocumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0859A28B2060082A00103924 /* RmdDocumentTests.swift */; };
 		085A196A204977AE00B7EC5F /* BaseHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1969204977AD00B7EC5F /* BaseHighlighter.swift */; };
 		085A196F2049E19C00B7EC5F /* ClientCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* ClientCore.framework */; };
 		085A19702049E1B000B7EC5F /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; };
@@ -220,7 +221,7 @@
 		085A1A27205AC62B00B7EC5F /* NotebookDropIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A26205AC62B00B7EC5F /* NotebookDropIndicator.swift */; };
 		085A1A29205AC6CD00B7EC5F /* NotebookCollectionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A28205AC6CD00B7EC5F /* NotebookCollectionLayout.swift */; };
 		085A1A2B205ACA4600B7EC5F /* AbstractEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A2A205ACA4600B7EC5F /* AbstractEditorController.swift */; };
-		085A1A30205C73FC00B7EC5F /* StructruredDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A2F205C73FC00B7EC5F /* StructruredDocument.swift */; };
+		085A1A30205C73FC00B7EC5F /* RmdDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A2F205C73FC00B7EC5F /* RmdDocument.swift */; };
 		085A1A32205C88BF00B7EC5F /* ParserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A31205C88BF00B7EC5F /* ParserError.swift */; };
 		08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08604A4D1D9C0C0500DE2A79 /* Named.swift */; };
 		086413C82013614500116153 /* AppLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086413C620135E1C00116153 /* AppLoggerTests.swift */; };
@@ -967,6 +968,7 @@
 		08525E751E300185008A332E /* rdocs.tgz */ = {isa = PBXFileReference; lastKnownFileType = file; name = rdocs.tgz; path = vendor/rdocs.tgz; sourceTree = SOURCE_ROOT; };
 		08525E771E3143C3008A332E /* InputPrompter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputPrompter.swift; path = MacClient/InputPrompter.swift; sourceTree = SOURCE_ROOT; };
 		08525E791E314558008A332E /* InputPrompter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputPrompter.xib; sourceTree = "<group>"; };
+		0859A28B2060082A00103924 /* RmdDocumentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RmdDocumentTests.swift; sourceTree = "<group>"; };
 		085A1969204977AD00B7EC5F /* BaseHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseHighlighter.swift; sourceTree = "<group>"; };
 		085A197F2049E2E700B7EC5F /* libswiftCoreLocation.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftCoreLocation.tbd; path = System/Library/PrivateFrameworks/Swift/libswiftCoreLocation.tbd; sourceTree = SDKROOT; };
 		085A19812049E2FA00B7EC5F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -979,7 +981,7 @@
 		085A1A26205AC62B00B7EC5F /* NotebookDropIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookDropIndicator.swift; sourceTree = "<group>"; };
 		085A1A28205AC6CD00B7EC5F /* NotebookCollectionLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookCollectionLayout.swift; sourceTree = "<group>"; };
 		085A1A2A205ACA4600B7EC5F /* AbstractEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractEditorController.swift; sourceTree = "<group>"; };
-		085A1A2F205C73FC00B7EC5F /* StructruredDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructruredDocument.swift; sourceTree = "<group>"; };
+		085A1A2F205C73FC00B7EC5F /* RmdDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RmdDocument.swift; sourceTree = "<group>"; };
 		085A1A31205C88BF00B7EC5F /* ParserError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserError.swift; sourceTree = "<group>"; };
 		08604A4D1D9C0C0500DE2A79 /* Named.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Named.swift; sourceTree = "<group>"; };
 		086413C620135E1C00116153 /* AppLoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggerTests.swift; sourceTree = "<group>"; };
@@ -1518,7 +1520,7 @@
 		082BE08A1F59D549006CE0B7 /* SyntaxParsing */ = {
 			isa = PBXGroup;
 			children = (
-				085A1A2F205C73FC00B7EC5F /* StructruredDocument.swift */,
+				085A1A2F205C73FC00B7EC5F /* RmdDocument.swift */,
 				082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */,
 				085A1A31205C88BF00B7EC5F /* ParserError.swift */,
 				08EB36C81FBB63310078229A /* SyntaxParser.swift */,
@@ -1541,6 +1543,7 @@
 				082BE0BE1F59E3C8006CE0B7 /* syntax1.Rnw */,
 				082BE0BD1F59E3C7006CE0B7 /* syntax2.Rmd */,
 				082BE09A1F59D549006CE0B7 /* Info.plist */,
+				0859A28B2060082A00103924 /* RmdDocumentTests.swift */,
 			);
 			path = SyntaxParsingTests;
 			sourceTree = "<group>";
@@ -2894,7 +2897,7 @@
 			files = (
 				0812178E2058805000ED328C /* PEGKitUtilities.swift in Sources */,
 				08EB36C91FBB63310078229A /* SyntaxParser.swift in Sources */,
-				085A1A30205C73FC00B7EC5F /* StructruredDocument.swift in Sources */,
+				085A1A30205C73FC00B7EC5F /* RmdDocument.swift in Sources */,
 				085A196A204977AE00B7EC5F /* BaseHighlighter.swift in Sources */,
 				085A1A32205C88BF00B7EC5F /* ParserError.swift in Sources */,
 				082BE0B31F59D5BB006CE0B7 /* RnwSyntaxParser.swift in Sources */,
@@ -2908,6 +2911,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0859A28C2060082A00103924 /* RmdDocumentTests.swift in Sources */,
 				082BE0991F59D549006CE0B7 /* SyntaxParsingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
