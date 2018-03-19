@@ -43,6 +43,20 @@ class SyntaxParsingTests: XCTestCase {
 		parser.colorChunks(parser.chunks)
 	}
 
+	func testInlineEquation() {
+		let contents = "some `r 2+2` text"
+		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: FileType.fileType(withExtension: "Rmd")!) { _ in return false }
+		storage.append(NSAttributedString(string: contents))
+		parser.parse()
+		XCTAssertEqual(parser.chunks.count, 3)
+		XCTAssertEqual(parser.chunks[0].chunkType, ChunkType.docs)
+		XCTAssertFalse(parser.chunks[0].isInline)
+		XCTAssertEqual(parser.chunks[1].chunkType, ChunkType.code)
+		XCTAssertTrue(parser.chunks[1].isInline)
+		XCTAssertEqual(parser.chunks[2].chunkType, ChunkType.docs)
+		XCTAssertFalse(parser.chunks[2].isInline)
+	}
+	
 	func testRmdFile1() {
 		loadStorageWith("syntax2", suffix:"Rmd")
 		_ = parser.parse()

@@ -117,7 +117,7 @@ class RmdSyntaxParser: BaseSyntaxParser {
 					let range = NSMakeRange(begin, end-begin)
 					ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
 									   equationType: currType.2, range: range,
-									   chunkNumber: chunkIndex)
+									   chunkNumber: chunkIndex, isInline: state == .eqIn || state == .codeIn)
 					chunks.append(ch); chunkIndex += 1
 					//					print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t type=\(ch.chunkType),\(ch.equationType)")
 					begin = end

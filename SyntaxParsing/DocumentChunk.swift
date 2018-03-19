@@ -53,7 +53,8 @@ public class DocumentChunk {
 	public let chunkNumber: Int
 	/// An optional name for the chunk (normally only for code chunks)
 	public let name: String?
-	
+	/// Is this chunk inline
+	public let isInline: Bool
 	/// Is this chunk one of the types that are executable?
 	public var isExecutable: Bool { return chunkType == .code }
 	
@@ -81,13 +82,14 @@ public class DocumentChunk {
 	}
 	
 	init(chunkType: ChunkType, docType: DocType, equationType: EquationType,
-		 range: NSRange, chunkNumber: Int, name: String?=nil) {
+		 range: NSRange, chunkNumber: Int, name: String?=nil, isInline: Bool = false) {
 		self.chunkNumber = chunkNumber
 		self.chunkType = chunkType
 		self.docType = docType
 		self.equationType = equationType
 		self.name = name
 		self.parsedRange = range
+		self.isInline = isInline
 	}
 	
 	/// Returns a chunk that differs only in chunkNumber
@@ -115,7 +117,7 @@ extension DocumentChunk: CustomStringConvertible {
 		let range = NSStringFromRange(parsedRange)
 		switch self.chunkType {
 		case .code:
-			return "R code chunk \(chunkNumber) \"\(name ?? "")\" (\(range))"
+			return "R code chunk \(chunkNumber) \"\(name ?? "")\" (\(range)) inline=\(isInline)"
 		case .docs:
 			return "Document chunk \(chunkNumber) (\(range))"
 		case .equation:
