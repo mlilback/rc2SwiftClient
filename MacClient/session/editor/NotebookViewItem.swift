@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import SyntaxParsing
 import ReactiveSwift
 import MJLLogger
 
@@ -40,7 +41,7 @@ class NotebookViewItem: NSCollectionViewItem {
 		middleView.wantsLayer = true
 		middleView.layer?.backgroundColor = NSColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
 		// Note: results content background is set its .xib.
-
+		sourceView.layoutManager?.defaultAttachmentScaling = .scaleProportionallyDown
 		//  Create a callback to adjustSize, so NotebookEntryView can call it during its layout:
 		guard let myview = view as? NotebookEntryView else { fatalError() }
 		myview.performLayout = { [weak self] in
@@ -91,8 +92,13 @@ class NotebookViewItem: NSCollectionViewItem {
 			Log.debug("resultView.changeCallback", .app)
 		}
 		data?.source.font = context.editorFont.value
-		// Sets each view's string from the data's string:
-		sourceView.replace(text: data?.source.string ?? "")
+		// Sets each view's string from the data's string
+		guard let sourceStorage = sourceView?.textStorage else { fatalError() }
+		if let attrStr = data?.chunk.attributedContents {
+			sourceStorage.replaceCharacters(in: sourceStorage.string.fullNSRange, with: attrStr)
+		} else {
+			sourceView.replace(text: data?.source.string ?? "")
+		}
 		resultView.replace(text: data?.result.string ?? "")
 		//adjust label
 		chunkTypeLabel.stringValue = titleForCurrentChunk()
@@ -102,27 +108,20 @@ class NotebookViewItem: NSCollectionViewItem {
 		guard let chunk = data?.chunk else { return "unknown" }
 		switch chunk.chunkType {
 		case .docs:
-			switch chunk.docType {
-			case .rmd:
+			if chunk is TextChunk {
 				return NSLocalizedString("Markdown", comment: "")
-			case .latex:
+			} else if chunk is Equation {
 				return NSLocalizedString("Latex", comment: "")
-			default:
-				return NSLocalizedString("Unknown Document kind", comment: "")
 			}
+			return NSLocalizedString("Unknown Document kind", comment: "")
 		case .code:
 			return NSLocalizedString("R Code", comment: "")
 		case .equation:
-			switch chunk.equationType {
-			case .none:
-				Log.error("equation w/o equation type: \(chunk)", .app)
-				return "Impossible"
-			case .inline:
+			guard chunk is Equation else { fatalError() }
+			if chunk is InlineChunk {
 				return NSLocalizedString("Inline Equation", comment: "")
-			case .display:
+			} else {
 				return NSLocalizedString("Display Equation", comment: "")
-			case .mathML:
-				return NSLocalizedString("MathML", comment: "")
 			}
 		}
 	}

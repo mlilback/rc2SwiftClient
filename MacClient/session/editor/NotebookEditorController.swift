@@ -20,6 +20,7 @@ class NotebookEditorController: AbstractEditorController {
 	// MARK: - properties
 	@IBOutlet weak var notebookView: NSCollectionView!
 
+	var rmdDocument: RmdDocument?
 	var dataArray: [NotebookItemData] = []	// holds data for all items
 	var dragIndices: Set<IndexPath>?	// items being dragged
 
@@ -51,12 +52,11 @@ class NotebookEditorController: AbstractEditorController {
 
 	// MARK: - editor
 	override func loaded(document: EditorDocument, content: String) {
-		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: document.file.fileType) { (topic) in
+		self.rmdDocument = try! RmdDocument(contents: content) { (topic) in
 			return HelpController.shared.hasTopic(topic)
 		}
 		storage.replaceCharacters(in: storage.string.fullNSRange, with: content)
-		_ = parser?.parse()
-		dataArray = parser!.chunks.map { NotebookItemData(chunk: $0, source: content, result: "") }
+		dataArray = self.rmdDocument!.chunks.map { NotebookItemData(chunk: $0, result: "") }
 		notebookView.reloadData()
 		notebookView.collectionViewLayout?.invalidateLayout()
 	}
