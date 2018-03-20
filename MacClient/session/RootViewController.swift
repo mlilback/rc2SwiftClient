@@ -218,7 +218,7 @@ extension RootViewController: ManageFontMenu {
 			return
 		}
 		//prompt for size to use
-		guard let sboard = self.storyboard else { fatalError("wtf?") }
+		let sboard = NSStoryboard.init(name: .mainBoard, bundle: nil)
 		guard let wc = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "FontSizeWindowController")) as? NSWindowController, let vc = wc.contentViewController as? SingleInputViewController else
 		{
 			fatalError()
