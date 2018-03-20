@@ -11,6 +11,10 @@ import SyntaxParsing
 import ReactiveSwift
 import MJLLogger
 
+protocol NotebookViewItemDelegate: class {
+	func addChunk(after: NotebookViewItem, sender: NSButton?)
+}
+
 class NotebookViewItem: NSCollectionViewItem {
 	@IBOutlet var sourceView: SourceTextView!
 	@IBOutlet var resultView: SourceTextView!
@@ -18,8 +22,10 @@ class NotebookViewItem: NSCollectionViewItem {
 	@IBOutlet weak var middleView: NSView!
 	@IBOutlet weak var resultTwiddle: NSButton!
 	@IBOutlet weak var chunkTypeLabel: NSTextField!
+	@IBOutlet weak var addChunkButton: NSButton!
 	var layingOut = false
 	
+	weak var delegate: NotebookViewItemDelegate?
 	var data: NotebookItemData? { didSet { dataChanged() } }
 	var context: EditorContext? { didSet { contextChanged() } }
 	private var fontDisposable: Disposable?
@@ -178,6 +184,11 @@ class NotebookViewItem: NSCollectionViewItem {
 		collectionView?.collectionViewLayout?.invalidateLayout()
 	}
 
+	/// Asks the delegate to add a chunk after this one
+	@IBAction func addChunk(_ sender: Any?) {
+		delegate?.addChunk(after: self, sender: sender as? NSButton)
+	}
+	
 	// Hides/Shows results frame if the left most triangle is clicked.
 	// (Note: animation is used here with duration = 0  to make default
 	// animation not shown.)

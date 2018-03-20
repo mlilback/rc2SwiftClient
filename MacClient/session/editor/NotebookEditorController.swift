@@ -9,6 +9,12 @@ import Networking
 import SyntaxParsing
 import MJLLogger
 
+private enum AddChunkType: Int {
+	case code = 0
+	case mdown
+	case equation
+}
+
 class NotebookEditorController: AbstractEditorController {
 	// MARK: - constants
 	let viewItemId = NSUserInterfaceItemIdentifier(rawValue: "NotebookViewItem")
@@ -19,6 +25,7 @@ class NotebookEditorController: AbstractEditorController {
 
 	// MARK: - properties
 	@IBOutlet weak var notebookView: NSCollectionView!
+	@IBOutlet var addChunkPopupMenu: NSMenu!
 
 	var rmdDocument: RmdDocument?
 	var dataArray: [NotebookItemData] = []	// holds data for all items
@@ -64,6 +71,42 @@ class NotebookEditorController: AbstractEditorController {
 	override func documentWillSave(_ notification: Notification) {
 		// need to convert dataArray back to single source
 	}
+	
+	// MARK: actions
+	
+	@IBAction func addChunk(_ sender: Any?) {
+		guard let menuItem = sender as? NSMenuItem, let type = AddChunkType(rawValue: menuItem.tag), let previousChunk = menuItem.representedObject as? NotebookViewItem
+			else { Log.warn("addChunk called from non-menu item or with incorrect tag", .app); return }
+		switch type {
+		case .code:
+			rmdDocument?.insertCodeChunk(initalContents: "# R code", at: dataArray.index(of: previousChunk.data!)! + 1)
+		case .mdown:
+			rmdDocument?.insertTextChunk(initalContents: "# R code", at: dataArray.index(of: previousChunk.data!)! + 1)
+		case .equation:
+			rmdDocument?.insertEquationChunk(initalContents: "# R code", at: dataArray.index(of: previousChunk.data!)! + 1)
+		}
+		notebookView.reloadData()
+	}
+}
+
+extension NotebookEditorController: NSMenuDelegate {
+	func menuDidClose(_ menu: NSMenu) {
+		if menu == addChunkPopupMenu { // clear rep objects which are all set to the NotebookViewItem to add after
+			// not supposed to modify menu during this call. perform in a little bit. probably could just do next time through event loop. need action to complete first
+			DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(20)) {
+				self.addChunkPopupMenu.items.forEach { $0.representedObject = nil }
+			}
+		}
+	}
+}
+
+// MARK: - NotebookViewItemDelegate
+extension NotebookEditorController: NotebookViewItemDelegate {
+	func addChunk(after: NotebookViewItem, sender: NSButton?) {
+		guard let button = sender else { fatalError("no button supplied for adding chunk") }
+		addChunkPopupMenu.items.forEach { $0.representedObject = after }
+		addChunkPopupMenu.popUp(positioning: nil, at: CGPoint(x: 0, y: button.bounds.maxY), in: button)
+	}
 }
 
 // MARK: - NSCollectionViewDataSource
@@ -79,6 +122,7 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 		guard let view = collectionView.makeItem(withIdentifier: viewItemId, for: indexPath) as? NotebookViewItem else { fatalError() }
 		view.context = context
 		view.data = itemData
+		view.delegate = self
 		return view
 	}
 	

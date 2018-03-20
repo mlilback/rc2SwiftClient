@@ -431,10 +431,36 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="addChunkPopupMenu" destination="Iv3-h5-TGn" id="XdY-iK-b3D"/>
                         <outlet property="notebookView" destination="lc5-4J-j1N" id="PYS-AP-XvW"/>
                     </connections>
                 </viewController>
                 <customObject id="lea-Wf-GhM" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <menu autoenablesItems="NO" id="Iv3-h5-TGn">
+                    <items>
+                        <menuItem title="R Code" id="p10-aU-yfK">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="addChunk:" target="1v9-4m-leU" id="oWb-kv-yiw"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Markdown" tag="1" id="O7K-wR-2ns">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="addChunk:" target="1v9-4m-leU" id="P33-Gh-Mee"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Equation" tag="2" id="kHz-FS-MJN">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="addChunk:" target="1v9-4m-leU" id="Wid-ah-8SH"/>
+                            </connections>
+                        </menuItem>
+                    </items>
+                    <connections>
+                        <outlet property="delegate" destination="1v9-4m-leU" id="r1q-1P-YKp"/>
+                    </connections>
+                </menu>
             </objects>
             <point key="canvasLocation" x="1073" y="1693.5"/>
         </scene>
