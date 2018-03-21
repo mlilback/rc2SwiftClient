@@ -94,7 +94,7 @@ class NotebookViewItem: NSCollectionViewItem {
 		sourceView.font = context.editorFont.value
 	}
 	
-	private func dataChanged() {
+	func dataChanged() {
 		guard let context = context else { fatalError("context must be set before data") }
 		// Callbacks from changes in NSTextViews that adjust the item view size:
 		sourceView.changeCallback = { [weak self] in
@@ -163,7 +163,10 @@ class NotebookViewItem: NSCollectionViewItem {
 		resFrame.size.width = myWidth
 		
 		// Add some margin for the txt:
-		srcFrame.size.height += 10; resFrame.size.height += 10
+		srcFrame.size.height += 10
+		if resultTextView != nil {
+			resFrame.size.height += 10
+		}
 		
 		// Calculate Y origin of each frame (*from the bottom*!):
 		resFrame.origin.y = 0
@@ -187,8 +190,10 @@ class NotebookViewItem: NSCollectionViewItem {
 		view.setFrameSize(NSSize(width: myWidth, height: myHeight))
 		data?.height = myHeight
 		
-		// Tell parent view to re-layout:
-		collectionView?.collectionViewLayout?.invalidateLayout()
+		// Tell parent view to re-layout if showing text results
+		if resultTextView != nil {
+			collectionView?.collectionViewLayout?.invalidateLayout()
+		}
 	}
 	
 	/// Asks the delegate to add a chunk after this one

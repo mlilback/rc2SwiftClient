@@ -162,6 +162,8 @@
 		083A56731D247B52009D3091 /* AddBookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56721D247B52009D3091 /* AddBookmarkViewController.swift */; };
 		083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */; };
 		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
+		083AC0FD2062D01E0054023F /* EquationViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC0FC2062D01E0054023F /* EquationViewItem.swift */; };
+		083AC0FE2062D6270054023F /* mathFonts.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0859A3072062701900103924 /* mathFonts.bundle */; };
 		083D118F1DEDECEC00549268 /* linedBadHeader.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D118D1DEDECEC00549268 /* linedBadHeader.json */; };
 		083D11901DEDECEC00549268 /* linedNormal.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D118E1DEDECEC00549268 /* linedNormal.json */; };
 		083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11931DEE0DF300549268 /* DataRc2Spec.swift */; };
@@ -204,7 +206,6 @@
 		0859A316206270C500103924 /* xits-math.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0859A310206270C500103924 /* xits-math.plist */; };
 		0859A317206270C500103924 /* xits-math.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0859A311206270C500103924 /* xits-math.otf */; };
 		0859A318206270C500103924 /* texgyretermes-math.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0859A312206270C500103924 /* texgyretermes-math.otf */; };
-		0859A31B2062712500103924 /* mathFonts.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0859A3072062701900103924 /* mathFonts.bundle */; };
 		0859A35D2062726700103924 /* iosMath.h in Headers */ = {isa = PBXBuildFile; fileRef = 0859A35B2062726700103924 /* iosMath.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0859A3602062726700103924 /* iosMath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0859A3592062726700103924 /* iosMath.framework */; };
 		0859A3612062726700103924 /* iosMath.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0859A3592062726700103924 /* iosMath.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -591,6 +592,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 082BE1551F5B3682006CE0B7;
 			remoteInfo = Model;
+		};
+		083AC0FF2062D62F0054023F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0859A3062062701900103924;
+			remoteInfo = mathFonts;
 		};
 		084E93B8201E874900FF50EA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1000,6 +1008,7 @@
 		083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbeddedDialogController.swift; sourceTree = "<group>"; };
 		083A567C1D25AFE7009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/BookmarkManager.storyboard; sourceTree = "<group>"; };
 		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BookmarkManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		083AC0FC2062D01E0054023F /* EquationViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquationViewItem.swift; sourceTree = "<group>"; };
 		083D11821DE8C24C00549268 /* BuildInfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = BuildInfo.xcconfig; path = config/BuildInfo.xcconfig; sourceTree = "<group>"; };
 		083D11871DED00D200549268 /* LinedJsonHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinedJsonHandler.swift; sourceTree = "<group>"; };
 		083D118B1DEDEAED00549268 /* LinedJsonHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinedJsonHandlerSpec.swift; sourceTree = "<group>"; };
@@ -2108,6 +2117,7 @@
 				085A1A28205AC6CD00B7EC5F /* NotebookCollectionLayout.swift */,
 				085A1A1C205AC35200B7EC5F /* NotebookViewItem.swift */,
 				085A1A1D205AC35200B7EC5F /* NotebookViewItem.xib */,
+				083AC0FC2062D01E0054023F /* EquationViewItem.swift */,
 				085A1A20205AC39B00B7EC5F /* SourceTextView.swift */,
 				08EE270520334470008E008F /* CodeEditor.swift */,
 				085A1A22205AC45600B7EC5F /* NotebookItemData.swift */,
@@ -2588,6 +2598,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				083AC1002062D62F0054023F /* PBXTargetDependency */,
 			);
 			name = iosMath;
 			productName = iosMath;
@@ -2954,6 +2965,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				083AC0FE2062D6270054023F /* mathFonts.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2961,7 +2973,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0859A31B2062712500103924 /* mathFonts.bundle in Resources */,
 				085A1A1F205AC35200B7EC5F /* NotebookViewItem.xib in Resources */,
 				0864DA641DA2BDC1003F3F57 /* DockerControl.storyboard in Resources */,
 				08525E7A1E314558008A332E /* InputPrompter.xib in Resources */,
@@ -3369,6 +3380,7 @@
 				08EB36D01FBB9E480078229A /* ValuesVariableDetailController.swift in Sources */,
 				085A1A21205AC39C00B7EC5F /* SourceTextView.swift in Sources */,
 				086A40D51E7B04F400AE476B /* ThemeEditorController.swift in Sources */,
+				083AC0FD2062D01E0054023F /* EquationViewItem.swift in Sources */,
 				08A01FD61CC95C58001EDFAA /* HelpController.swift in Sources */,
 				083174101C57B2E200071408 /* CommandHistory.swift in Sources */,
 				085A1A23205AC45600B7EC5F /* NotebookItemData.swift in Sources */,
@@ -3577,6 +3589,11 @@
 			isa = PBXTargetDependency;
 			target = 082BE1551F5B3682006CE0B7 /* Model */;
 			targetProxy = 082BE15B1F5B3682006CE0B7 /* PBXContainerItemProxy */;
+		};
+		083AC1002062D62F0054023F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0859A3062062701900103924 /* mathFonts */;
+			targetProxy = 083AC0FF2062D62F0054023F /* PBXContainerItemProxy */;
 		};
 		084E93B9201E874900FF50EA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

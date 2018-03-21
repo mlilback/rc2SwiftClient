@@ -20,6 +20,7 @@ class NotebookEditorController: AbstractEditorController {
 	let viewItemId = NSUserInterfaceItemIdentifier(rawValue: "NotebookViewItem")
 	// The highlighted line where the dropped item will go:
 	let dropIndicatorId = NSUserInterfaceItemIdentifier(rawValue: "DropIndicator")
+	let equationItemId = NSUserInterfaceItemIdentifier(rawValue: "EquationViewItem")
 	// Holds dragged item for dropping:
 	let notebookItemPasteboardType = NSPasteboard.PasteboardType(rawValue: "io.rc2.client.notebook.entry")
 
@@ -41,6 +42,7 @@ class NotebookEditorController: AbstractEditorController {
 		notebookView.registerForDraggedTypes([notebookItemPasteboardType])
 		notebookView.setDraggingSourceOperationMask(.move, forLocal: true)
 		notebookView.register(NotebookViewItem.self, forItemWithIdentifier: viewItemId)
+		notebookView.register(EquationViewItem.self, forItemWithIdentifier: equationItemId)
 		notebookView.register(NotebookDropIndicator.self, forSupplementaryViewOfKind: .interItemGapIndicator, withIdentifier: dropIndicatorId)
 		// Set some CollectionView layout constrains:
 		guard let layout = notebookView.collectionViewLayout as? NSCollectionViewFlowLayout else {
@@ -119,7 +121,11 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 	func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem
 	{
 		let itemData = dataArray[indexPath.item]
-		guard let view = collectionView.makeItem(withIdentifier: viewItemId, for: indexPath) as? NotebookViewItem else { fatalError() }
+		var itemId = viewItemId
+		if itemData.chunk is Equation {
+			itemId = equationItemId
+		}
+		guard let view = collectionView.makeItem(withIdentifier: itemId, for: indexPath) as? NotebookViewItem else { fatalError() }
 		view.context = context
 		view.data = itemData
 		view.delegate = self
