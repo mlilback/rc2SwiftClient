@@ -10,3 +10,6 @@
 [submodule "vendor/MJLLogger"]
 	path = vendor/MJLLogger
 	url = https://github.com/mlilback/MJLLogger.git
+[submodule "vendor/iosMath"]
+	path = vendor/iosMath
+	url = https://github.com/kostub/iosMath.git
