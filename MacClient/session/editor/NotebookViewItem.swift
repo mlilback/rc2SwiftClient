@@ -17,13 +17,20 @@ protocol NotebookViewItemDelegate: class {
 
 class NotebookViewItem: NSCollectionViewItem {
 	@IBOutlet var sourceView: SourceTextView!
-	@IBOutlet var resultView: SourceTextView!
+	@IBOutlet var resultTextView: SourceTextView?
 	@IBOutlet weak var topView: NSView!
 	@IBOutlet weak var middleView: NSView!
 	@IBOutlet weak var resultTwiddle: NSButton!
 	@IBOutlet weak var chunkTypeLabel: NSTextField!
 	@IBOutlet weak var addChunkButton: NSButton!
 	var layingOut = false
+	
+	/// if a subclass uses a non-NSTextView results view, this needs to be overridden to calculate frame
+	var resultView: NSView { return resultTextView! }
+	/// if the result view shown is in a scrollview, this is the scrollview. otherwise it is the result view.
+	var resultOuterView: NSView { return resultView.enclosingScrollView ?? resultView }
+	/// if results are text, figure out the frame needed to show the content. otherwise, using fixed size
+	var dynamicContentFrame: CGRect { return resultTextView?.layoutManager!.usedRect(for: resultTextView!.textContainer!) ?? resultView.frame }
 	
 	weak var delegate: NotebookViewItemDelegate?
 	var data: NotebookItemData? { didSet { dataChanged() } }
@@ -67,7 +74,7 @@ class NotebookViewItem: NSCollectionViewItem {
 		super.prepareForReuse()
 		data = nil
 		sourceView.replace(text: "")
-		resultView.replace(text: "")
+		resultTextView?.replace(text: "")
 	}
 
 	// If the view size changes, re-adjust data height:
@@ -93,7 +100,7 @@ class NotebookViewItem: NSCollectionViewItem {
 		sourceView.changeCallback = { [weak self] in
 			self?.adjustSize()
 		}
-		resultView.changeCallback = { [weak self] in
+		resultTextView?.changeCallback = { [weak self] in
 			self?.adjustSize()
 			Log.debug("resultView.changeCallback", .app)
 		}
@@ -105,7 +112,7 @@ class NotebookViewItem: NSCollectionViewItem {
 		} else {
 			sourceView.replace(text: data?.source.string ?? "")
 		}
-		resultView.replace(text: data?.result.string ?? "")
+		resultTextView?.replace(text: data?.result.string ?? "")
 		//adjust label
 		chunkTypeLabel.stringValue = titleForCurrentChunk()
 	}
@@ -152,7 +159,7 @@ class NotebookViewItem: NSCollectionViewItem {
 		srcFrame.size.width = myWidth
 		
 		// Results frame height is set by the textContainer of the resultView:
-		resFrame = resultView.layoutManager!.usedRect(for: resultView.textContainer!)
+		resFrame = dynamicContentFrame
 		resFrame.size.width = myWidth
 		
 		// Add some margin for the txt:
@@ -160,7 +167,7 @@ class NotebookViewItem: NSCollectionViewItem {
 		
 		// Calculate Y origin of each frame (*from the bottom*!):
 		resFrame.origin.y = 0
-		let resMaxY = resultView.enclosingScrollView!.isHidden ? 0 : resFrame.maxY
+		let resMaxY = resultOuterView.isHidden ? 0 : resFrame.maxY
 		middleFrame.origin.y = resMaxY
 		srcFrame.origin.y = middleFrame.maxY
 		topFrame.origin.y = srcFrame.maxY
@@ -169,11 +176,11 @@ class NotebookViewItem: NSCollectionViewItem {
 		topView.frame = topFrame
 		sourceView.enclosingScrollView!.frame = srcFrame
 		middleView.frame = middleFrame
-		resultView.enclosingScrollView!.frame = resFrame
+		resultOuterView.frame = resFrame
 
 		// Calculate data?.height:
 		var myHeight: CGFloat = topFrame.size.height + srcFrame.size.height + middleFrame.size.height
-		if !resultView.enclosingScrollView!.isHidden {
+		if !resultOuterView.isHidden {
 			// if results are twiddled open, add it
 			myHeight += resFrame.size.height
 		}
@@ -183,7 +190,7 @@ class NotebookViewItem: NSCollectionViewItem {
 		// Tell parent view to re-layout:
 		collectionView?.collectionViewLayout?.invalidateLayout()
 	}
-
+	
 	/// Asks the delegate to add a chunk after this one
 	@IBAction func addChunk(_ sender: Any?) {
 		delegate?.addChunk(after: self, sender: sender as? NSButton)
@@ -195,7 +202,7 @@ class NotebookViewItem: NSCollectionViewItem {
 	@IBAction func twiddleResults(_ sender: Any?) {
 		NSAnimationContext.beginGrouping()
 		NSAnimationContext.current.duration = 0
-		resultView.enclosingScrollView?.animator().isHidden = resultTwiddle.state == .off
+		resultOuterView.animator().isHidden = resultTwiddle.state == .off
 		adjustSize(animate: false)
 		NSAnimationContext.endGrouping()
 	}

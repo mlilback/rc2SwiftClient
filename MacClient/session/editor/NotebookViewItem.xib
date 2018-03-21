@@ -11,8 +11,8 @@
                 <outlet property="addChunkButton" destination="WIS-13-SRF" id="DKl-De-RRy"/>
                 <outlet property="chunkTypeLabel" destination="fDF-zO-1NG" id="FqC-gX-aiS"/>
                 <outlet property="middleView" destination="y6B-4h-J3F" id="9ju-Cc-nT9"/>
+                <outlet property="resultTextView" destination="HRk-gT-qE6" id="NRD-uC-xpA"/>
                 <outlet property="resultTwiddle" destination="Lpr-hw-vve" id="zTY-ym-9a1"/>
-                <outlet property="resultView" destination="HRk-gT-qE6" id="NRD-uC-xpA"/>
                 <outlet property="sourceView" destination="Zng-X6-LSA" id="fr0-0K-Cwg"/>
                 <outlet property="topView" destination="bal-0H-T2E" id="odo-YY-6zv"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
@@ -109,7 +109,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="480" height="131"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="HRk-gT-qE6" customClass="SourceTextView" customModule="MacClient" customModuleProvider="target">
+                            <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="HRk-gT-qE6" customClass="SourceTextView" customModule="MacClient" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="480" height="131"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="0.94117647058823528" green="0.94117647058823528" blue="0.94117647058823528" alpha="1" colorSpace="calibratedRGB"/>
