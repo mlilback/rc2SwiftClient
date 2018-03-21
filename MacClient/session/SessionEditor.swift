@@ -11,12 +11,28 @@ import SwiftyUserDefaults
 class SessionEditor: TextViewWithContextualMenu {
 	var wordWrapEnabled: Bool { return textContainer!.widthTracksTextView }
 	
+	private var didSetup = false
+	
 	override func awakeFromNib() {
 		super.awakeFromNib()
+		guard !didSetup else { return }
+		didSetup = true
 		usesFindBar = true
 		isAutomaticSpellingCorrectionEnabled = false
 		isAutomaticQuoteSubstitutionEnabled = false
 		isAutomaticDashSubstitutionEnabled = false
+		textContainer?.containerSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+		textContainer?.widthTracksTextView = true
+		isHorizontallyResizable = true
+		isEditable = false
+	}
+	
+	/// installs line number view as the vertical ruler
+	func enableLineNumberView() {
+		guard enclosingScrollView!.verticalRulerView == nil else { return }
+		let lnv = NoodleLineNumberView(scrollView: enclosingScrollView)
+		enclosingScrollView!.verticalRulerView = lnv
+		enclosingScrollView!.rulersVisible = true
 	}
 	
 	var rangeOfAllText: NSRange {

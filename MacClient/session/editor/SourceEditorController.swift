@@ -87,16 +87,9 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		super.viewDidLoad()
 		guard editor != nil else { return }
 		editor?.menuDelegate = self
-		editor?.textContainer?.containerSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
-		editor?.textContainer?.widthTracksTextView = true
-		editor?.isHorizontallyResizable = true
-		editor?.isAutomaticSpellingCorrectionEnabled = false
-		editor?.isEditable = false
 		fileNameField?.stringValue = ""
 		editor?.textStorage?.delegate = self
-		let lnv = NoodleLineNumberView(scrollView: editor!.enclosingScrollView)
-		editor!.enclosingScrollView!.verticalRulerView = lnv
-		editor!.enclosingScrollView!.rulersVisible = true
+		editor?.enableLineNumberView()
 	}
 	
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
