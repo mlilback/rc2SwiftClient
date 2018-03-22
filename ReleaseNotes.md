@@ -1,5 +1,10 @@
 # Rc² release notes
 
+## Build 61
+
+* changed all notebook insets to 16 px (was 20/8) so scrollbar never overlaps edge of item view
+* notebook editor visually implemented
+
 ## Build 60
 
 * prefs window remembers location, selected tab

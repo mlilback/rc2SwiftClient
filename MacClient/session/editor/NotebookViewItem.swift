@@ -95,7 +95,8 @@ class NotebookViewItem: NSCollectionViewItem {
 	}
 	
 	func dataChanged() {
-		guard let context = context else { fatalError("context must be set before data") }
+		guard data != nil else { return }
+		guard let context = context else { return }
 		// Callbacks from changes in NSTextViews that adjust the item view size:
 		sourceView.changeCallback = { [weak self] in
 			self?.adjustSize()
@@ -154,8 +155,10 @@ class NotebookViewItem: NSCollectionViewItem {
 		topFrame = NSRect(x: 0, y: 0, width: myWidth, height: 21)
 		middleFrame = middleView != nil ? NSRect(x: 0, y: srcFrame.maxY, width: myWidth, height: 21) : .zero
 
-		// The Top frame height is set by the textContainer of the sourceView:
+		// The Top frame height is set by the textContainer of the sourceView. Must ensure the glyphs dimensions have been calculated
+		sourceView.layoutManager!.ensureLayout(for: sourceView.textContainer!)
 		srcFrame = sourceView.layoutManager!.usedRect(for: sourceView.textContainer!)
+		if srcFrame.size.height <= 0 { return }
 		srcFrame.size.width = myWidth
 		
 		// Results frame height is set by the textContainer of the resultView:
@@ -182,7 +185,10 @@ class NotebookViewItem: NSCollectionViewItem {
 		resultOuterView.frame = resFrame
 
 		// Calculate data?.height:
-		var myHeight: CGFloat = topFrame.size.height + srcFrame.size.height + middleFrame.size.height
+		var myHeight: CGFloat = topFrame.size.height + srcFrame.size.height
+		if middleView != nil {
+			myHeight += middleFrame.size.height
+		}
 		if !resultOuterView.isHidden {
 			// if results are twiddled open, add it
 			myHeight += resFrame.size.height

@@ -35,6 +35,7 @@ class NotebookEditorController: AbstractEditorController {
 
 	private var parser: SyntaxParser?
 	private let storage = NSTextStorage()
+	private var sizingItems: [NSUserInterfaceItemIdentifier : NotebookViewItem] = [:]
 
 	// MARK: - standard
 	override func viewDidLoad() {
@@ -46,10 +47,14 @@ class NotebookEditorController: AbstractEditorController {
 		notebookView.register(EquationViewItem.self, forItemWithIdentifier: equationItemId)
 		notebookView.register(MarkdownViewItem.self, forItemWithIdentifier: markdownItemId)
 		notebookView.register(NotebookDropIndicator.self, forSupplementaryViewOfKind: .interItemGapIndicator, withIdentifier: dropIndicatorId)
+		// setup dummy sizing views
+		sizingItems[viewItemId] = NotebookViewItem(nibName: nil, bundle: nil)
+		sizingItems[markdownItemId] = MarkdownViewItem(nibName: nil, bundle: nil)
+		sizingItems[equationItemId] = EquationViewItem(nibName: nil, bundle: nil)
 		// Set some CollectionView layout constrains:
 		guard let layout = notebookView.collectionViewLayout as? NSCollectionViewFlowLayout else {
 			fatalError() } // make sure we have a layout object
-		layout.sectionInset = NSEdgeInsets(top: 20, left: 8, bottom: 20, right: 8)
+		layout.sectionInset = NSEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
 		layout.minimumLineSpacing = 20.0
 		layout.minimumInteritemSpacing = 14.0
 	}
@@ -91,6 +96,16 @@ class NotebookEditorController: AbstractEditorController {
 		}
 		notebookView.reloadData()
 	}
+	
+	// MARK: private
+
+	func viewItemId(chunk: RmdChunk) -> NSUserInterfaceItemIdentifier {
+		switch chunk {
+		case is Equation: return equationItemId
+		case is TextChunk: return markdownItemId
+		default: return viewItemId
+		}
+	}
 }
 
 extension NotebookEditorController: NSMenuDelegate {
@@ -123,12 +138,7 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 	func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem
 	{
 		let itemData = dataArray[indexPath.item]
-		var itemId = viewItemId
-		if itemData.chunk is Equation {
-			itemId = equationItemId
-		} else if itemData.chunk is TextChunk {
-			itemId = markdownItemId
-		}
+		let itemId = viewItemId(chunk: itemData.chunk)
 		guard let view = collectionView.makeItem(withIdentifier: itemId, for: indexPath) as? NotebookViewItem else { fatalError() }
 		view.context = context
 		view.data = itemData
@@ -154,12 +164,20 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 	// Returns the size of each item:
 	func collectionView(_ collectionView: NSCollectionView, layout collectionViewLayout: NSCollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> NSSize
 	{
+		// if context not set, return fake size, will be caused again
+		guard let context = context, collectionView.collectionViewLayout is NSCollectionViewFlowLayout else {
+			return NSSize(width: 100, height: 100)
+		}
 		let dataItem = dataArray[indexPath.item]
-		let sz = NSSize(width: collectionView.visibleWidth, height: dataItem.height)
-		Log.debug("sz for \(indexPath.item) is \(sz)", .app)
+		let dummyItem = sizingItems[viewItemId(chunk: dataItem.chunk)]!
+		dummyItem.prepareForReuse()
+		dummyItem.data = dataItem
+		dummyItem.context = context
+		dummyItem.adjustSize()
+		let sz = NSSize(width: collectionView.visibleWidth, height: dummyItem.view.frame.size.height)
 		return sz
 	}
-	
+
 	// Places the data for the drag operation on the pasteboard:
 	func collectionView(_ collectionView: NSCollectionView, canDragItemsAt indexPaths: Set<IndexPath>, with event: NSEvent) -> Bool {
 		return true // when front matter is displayed, will need to return false for it

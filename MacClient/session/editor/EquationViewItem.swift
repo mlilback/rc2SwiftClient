@@ -37,7 +37,8 @@ class EquationViewItem: NotebookViewItem {
 	
 	override func dataChanged() {
 		super.dataChanged()
-		guard let inlineEq = data?.chunk as? Equation else { fatalError("chunk not an equation")}
+		guard let data = data else { return }
+		guard let inlineEq = data.chunk as? Equation else { fatalError("chunk not an equation")}
 		equationView.latex = inlineEq.equationSource
 	}
 }
