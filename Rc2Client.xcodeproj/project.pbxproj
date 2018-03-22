@@ -1796,7 +1796,6 @@
 		0859A3652062729B00103924 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				0859A3742062729B00103924 /* MTMathListDisplay.h */,
 				0859A3662062729B00103924 /* MTMathListIndex.h */,
 				0859A3672062729B00103924 /* MTUnicode.m */,
 				0859A3682062729B00103924 /* MTMathListBuilder.h */,
@@ -1815,6 +1814,7 @@
 		0859A3702062729B00103924 /* render */ = {
 			isa = PBXGroup;
 			children = (
+				0859A3742062729B00103924 /* MTMathListDisplay.h */,
 				0859A3712062729B00103924 /* NSColor+HexString.h */,
 				0859A3722062729B00103924 /* NSBezierPath+addLineToPoint.m */,
 				0859A3732062729B00103924 /* NSView+backgroundColor.h */,
