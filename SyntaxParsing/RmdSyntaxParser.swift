@@ -11,7 +11,7 @@ import Foundation
 import PEGKit
 
 private enum RmdParserState : Int {
-	case sea, codeBlock, codeIn, eqBlock, eqIn, eqPossible
+	case sea, codeBlock, codeIn, eqBlock, eqIn, eqPossible, frontMatter
 }
 
 class RmdSyntaxParser: BaseSyntaxParser {
@@ -30,6 +30,7 @@ class RmdSyntaxParser: BaseSyntaxParser {
 		// Order of ``` before ` matters:
 		tok.symbolState.add("```{r")	// codeBlock begin, end
 		tok.symbolState.add("```")		// codeBlock end
+		tok.symbolState.add("---")		// 
 		tok.symbolState.add("`r")		// codeIn begin, end
 		tok.symbolState.add("`")		// codeIn begin, end
 		tok.symbolState.add("$$")		// eqBlock begin, end
@@ -62,6 +63,9 @@ class RmdSyntaxParser: BaseSyntaxParser {
 			if state == .sea || state == .eqPossible {
 				if token.stringValue == "```{r" {
 					newType = (.code, .none, .none); state = .codeBlock
+					closeChunk = true }
+				else if token.stringValue == "---" {
+					state = .frontMatter
 					closeChunk = true }
 				else if token.stringValue == "`r" {
 					newType = (.code, .none, .none); state = .codeIn
@@ -100,6 +104,8 @@ class RmdSyntaxParser: BaseSyntaxParser {
 				closeChunk = true }
 			else if state == .codeBlock && token.stringValue == "```"{
 				closeChunk = true }
+			else if state == .frontMatter && token.stringValue == "---"{
+				closeChunk = true }
 			else if state == .eqBlock   && token.stringValue == "$$"{
 				closeChunk = true }
 			else if state == .eqIn      && token.stringValue == "$"{
@@ -113,8 +119,11 @@ class RmdSyntaxParser: BaseSyntaxParser {
 				if (token.tokenType == eof) { end = fullRange.length }
 				else { end = Int(token.offset) }
 				if end > fullRange.length { end = fullRange.length }
-				if end-begin > 2 { // has to have at least 3 chars, including ends
-					let range = NSMakeRange(begin, end-begin)
+				let range = NSMakeRange(begin, end-begin)
+				if end-begin > 2 && state == .frontMatter {
+					frontMatter = textStorage.string.substring(from: range)!
+				}
+				else if end-begin > 2 { // has to have at least 3 chars, including ends
 					ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
 									   equationType: currType.2, range: range,
 									   chunkNumber: chunkIndex, isInline: state == .eqIn || state == .codeIn)

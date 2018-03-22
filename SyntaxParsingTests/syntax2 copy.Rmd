@@ -24,4 +24,17 @@ chunk6-doc plot
 ```{r foo} chunk7-code
 plot(rnorm(100))
 ```
-
+chunk8-doc
+<math display="block">
+<mrow>chunk9-eq,mathML
+   <apply>
+     <power/>
+     <apply>
+       <plus/>
+       <ci>a</ci>
+       <ci>b</ci>
+     </apply>
+     <cn>2</cn>
+   </apply>
+ </mrow>
+</math>

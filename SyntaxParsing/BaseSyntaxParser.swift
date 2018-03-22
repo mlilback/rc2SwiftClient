@@ -22,6 +22,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 	public let textStorage: NSTextStorage
 	public let fileType: FileType
 	public internal(set) var chunks: [DocumentChunk] = []
+	public var frontMatter = ""
 	// Highlighting:
 	public let theme = Property(ThemeManager.shared.activeSyntaxTheme)	// move?
 	internal var highLighter: BaseHighlighter?

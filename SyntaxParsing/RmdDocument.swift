@@ -29,6 +29,7 @@ public class RmdDocument {
 		textStorage.append(NSAttributedString(string: contents))
 		parser = BaseSyntaxParser.parserWithTextStorage(textStorage, fileType: FileType.fileType(withExtension: "Rmd")!, helpCallback: helpCallback)!
 		parser.parse()
+		frontMatter = parser.frontMatter
 		var lastTextChunk: InternalTextChunk?
 		var lastWasInline: Bool = false
 		try parser.chunks.forEach { parserChunk in
@@ -72,7 +73,7 @@ public class RmdDocument {
 					lastTextChunk = nil
 					lastWasInline = false
 				case .mathML:
-					fatalError("MathML not supported yet")
+					print("MathML not supported yet")
 				}
 			}
 		}

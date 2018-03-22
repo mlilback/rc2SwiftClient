@@ -1,9 +1,3 @@
----
-title: "Habits"
-author: John Doe
-date: March 22, 2005
-output: html_document
----
 chunk1-doc
 $$ chunk2-eq-dis
 	\begin{aligned}
@@ -13,6 +7,8 @@ $$
 
 chunk3-doc `r 2+2 chunk4-code,in`$\frac{1}{n} \sum_{i=i}^{n} x_{i} chunk5-eq,in$
 
+$adadds$
+
 chunk6-doc plot
 # comment `r 2+2 chunk4-code,in`$
 
@@ -21,7 +17,6 @@ chunk6-doc plot
 `$\frac{1}{n} \
 -->
 
-```{r foo} chunk7-code
+```{r foo} 
 plot(rnorm(100))
 ```
-
