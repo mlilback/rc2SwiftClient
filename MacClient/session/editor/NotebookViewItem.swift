@@ -19,7 +19,7 @@ class NotebookViewItem: NSCollectionViewItem {
 	@IBOutlet var sourceView: SourceTextView!
 	@IBOutlet var resultTextView: SourceTextView?
 	@IBOutlet weak var topView: NSView!
-	@IBOutlet weak var middleView: NSView!
+	@IBOutlet weak var middleView: NSView?
 	@IBOutlet weak var resultTwiddle: NSButton!
 	@IBOutlet weak var chunkTypeLabel: NSTextField!
 	@IBOutlet weak var addChunkButton: NSButton!
@@ -51,8 +51,8 @@ class NotebookViewItem: NSCollectionViewItem {
 		// Set background colors for top and middle views:
 		topView.wantsLayer = true
 		topView.layer?.backgroundColor = NSColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
-		middleView.wantsLayer = true
-		middleView.layer?.backgroundColor = NSColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
+		middleView?.wantsLayer = true
+		middleView?.layer?.backgroundColor = NSColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
 		// Note: results content background is set its .xib.
 		sourceView.layoutManager?.defaultAttachmentScaling = .scaleProportionallyDown
 		//  Create a callback to adjustSize, so NotebookEntryView can call it during its layout:
@@ -152,7 +152,7 @@ class NotebookViewItem: NSCollectionViewItem {
 		let myWidth = view.frame.size.width	// width of all frames
 		
 		topFrame = NSRect(x: 0, y: 0, width: myWidth, height: 21)
-		middleFrame = NSRect(x: 0, y: srcFrame.maxY, width: myWidth, height: 21)
+		middleFrame = middleView != nil ? NSRect(x: 0, y: srcFrame.maxY, width: myWidth, height: 21) : .zero
 
 		// The Top frame height is set by the textContainer of the sourceView:
 		srcFrame = sourceView.layoutManager!.usedRect(for: sourceView.textContainer!)
@@ -178,7 +178,7 @@ class NotebookViewItem: NSCollectionViewItem {
 		// Set frame size changes. Note: animation (..animator().frame = ..) looks bad here.
 		topView.frame = topFrame
 		sourceView.enclosingScrollView!.frame = srcFrame
-		middleView.frame = middleFrame
+		middleView?.frame = middleFrame
 		resultOuterView.frame = resFrame
 
 		// Calculate data?.height:

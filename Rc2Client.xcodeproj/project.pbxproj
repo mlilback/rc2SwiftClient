@@ -164,6 +164,8 @@
 		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
 		083AC0FD2062D01E0054023F /* EquationViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC0FC2062D01E0054023F /* EquationViewItem.swift */; };
 		083AC0FE2062D6270054023F /* mathFonts.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0859A3072062701900103924 /* mathFonts.bundle */; };
+		083AC1022062E9670054023F /* MarkdownViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC1012062E9670054023F /* MarkdownViewItem.swift */; };
+		083AC1042062EDFB0054023F /* NSImage+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC1032062EDFB0054023F /* NSImage+Rc2.swift */; };
 		083D118F1DEDECEC00549268 /* linedBadHeader.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D118D1DEDECEC00549268 /* linedBadHeader.json */; };
 		083D11901DEDECEC00549268 /* linedNormal.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D118E1DEDECEC00549268 /* linedNormal.json */; };
 		083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11931DEE0DF300549268 /* DataRc2Spec.swift */; };
@@ -1009,6 +1011,8 @@
 		083A567C1D25AFE7009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/BookmarkManager.storyboard; sourceTree = "<group>"; };
 		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BookmarkManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		083AC0FC2062D01E0054023F /* EquationViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquationViewItem.swift; sourceTree = "<group>"; };
+		083AC1012062E9670054023F /* MarkdownViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewItem.swift; sourceTree = "<group>"; };
+		083AC1032062EDFB0054023F /* NSImage+Rc2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Rc2.swift"; sourceTree = "<group>"; };
 		083D11821DE8C24C00549268 /* BuildInfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = BuildInfo.xcconfig; path = config/BuildInfo.xcconfig; sourceTree = "<group>"; };
 		083D11871DED00D200549268 /* LinedJsonHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinedJsonHandler.swift; sourceTree = "<group>"; };
 		083D118B1DEDEAED00549268 /* LinedJsonHandlerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinedJsonHandlerSpec.swift; sourceTree = "<group>"; };
@@ -1719,6 +1723,7 @@
 				08F673D11D0214C700B87049 /* AppKitExtensions.swift */,
 				089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */,
 				08F189A51D09EE4000866A05 /* NSViewController+Rc2.swift */,
+				083AC1032062EDFB0054023F /* NSImage+Rc2.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -2118,6 +2123,7 @@
 				085A1A1C205AC35200B7EC5F /* NotebookViewItem.swift */,
 				085A1A1D205AC35200B7EC5F /* NotebookViewItem.xib */,
 				083AC0FC2062D01E0054023F /* EquationViewItem.swift */,
+				083AC1012062E9670054023F /* MarkdownViewItem.swift */,
 				085A1A20205AC39B00B7EC5F /* SourceTextView.swift */,
 				08EE270520334470008E008F /* CodeEditor.swift */,
 				085A1A22205AC45600B7EC5F /* NotebookItemData.swift */,
@@ -3391,6 +3397,7 @@
 				0872676D1EE20A37004251C1 /* DockerBackupViewController.swift in Sources */,
 				085A1A2B205ACA4600B7EC5F /* AbstractEditorController.swift in Sources */,
 				08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */,
+				083AC1022062E9670054023F /* MarkdownViewItem.swift in Sources */,
 				08EE27012030A0BC008E008F /* SidebarController.swift in Sources */,
 				08C2D5E91E71B1FC0007A02D /* Searchable.swift in Sources */,
 				0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */,
@@ -3400,6 +3407,7 @@
 				083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */,
 				08AD13361FCF18D000CFD516 /* FileInfoController.swift in Sources */,
 				08A01FC61CC7FCA3001EDFAA /* FMDatabasePool.m in Sources */,
+				083AC1042062EDFB0054023F /* NSImage+Rc2.swift in Sources */,
 				083A56711D24722C009D3091 /* ProjectManagerViewController.swift in Sources */,
 				08EE270620334470008E008F /* CodeEditor.swift in Sources */,
 				086508771E43F27C0067C8CA /* SingleInputViewController.swift in Sources */,
