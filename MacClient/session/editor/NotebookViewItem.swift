@@ -48,7 +48,9 @@ class NotebookViewItem: NSCollectionViewItem {
 		
 		// Get notified if view's bounds change:
 		NotificationCenter.default.addObserver(self, selector: #selector(boundsChanged(_:)), name: NSView.boundsDidChangeNotification, object: sourceView)
-		NotificationCenter.default.addObserver(self, selector: #selector(boundsChanged(_:)), name: NSView.boundsDidChangeNotification, object: resultView)
+		if resultTextView != nil {
+			NotificationCenter.default.addObserver(self, selector: #selector(boundsChanged(_:)), name: NSView.boundsDidChangeNotification, object: resultView)
+		}
 		
 		// Set background colors for top and middle views:
 		topView.wantsLayer = true
@@ -61,14 +63,6 @@ class NotebookViewItem: NSCollectionViewItem {
 		guard let myview = view as? NotebookEntryView else { fatalError() }
 		myview.performLayout = { [weak self] in
 			self?.adjustSize() }
-	}
-	
-	override func viewWillAppear() {
-		super.viewWillAppear()
-		// Hack that fixes a bug where usedRect for initial text is off by two pixels.
-		// As soon as the user changes the rect, it is correct.
-		data!.source.append(NSAttributedString(string: " "))
-		data!.source.deleteCharacters(in: NSRange(location: data!.source.length - 1, length: 1))
 	}
 	
 	// Recycle an unseen NotebookViewItem container for different visible data:
