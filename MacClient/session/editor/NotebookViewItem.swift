@@ -16,6 +16,7 @@ protocol NotebookViewItemDelegate: class {
 }
 
 class NotebookViewItem: NSCollectionViewItem {
+	// MARK: - properties
 	@IBOutlet var sourceView: SourceTextView!
 	@IBOutlet var resultTextView: SourceTextView?
 	@IBOutlet weak var topView: NSView!
@@ -37,6 +38,7 @@ class NotebookViewItem: NSCollectionViewItem {
 	var context: EditorContext? { didSet { contextChanged() } }
 	private var fontDisposable: Disposable?
 
+	// MARK: - standard
 	deinit {
 		fontDisposable?.dispose()
 	}
@@ -77,6 +79,7 @@ class NotebookViewItem: NSCollectionViewItem {
 		resultTextView?.replace(text: "")
 	}
 
+	// MARK: - change handling
 	// If the view size changes, re-adjust data height:
 	@objc func boundsChanged(_ note: Notification) {
 		adjustSize()
@@ -118,6 +121,8 @@ class NotebookViewItem: NSCollectionViewItem {
 		chunkTypeLabel.stringValue = titleForCurrentChunk()
 	}
 
+	// MARK: - private
+	
 	private func titleForCurrentChunk() -> String {
 		guard let chunk = data?.chunk else { return "unknown" }
 		switch chunk.chunkType {
@@ -202,6 +207,7 @@ class NotebookViewItem: NSCollectionViewItem {
 		}
 	}
 	
+	// MARK: - actions
 	/// Asks the delegate to add a chunk after this one
 	@IBAction func addChunk(_ sender: Any?) {
 		delegate?.addChunk(after: self, sender: sender as? NSButton)
