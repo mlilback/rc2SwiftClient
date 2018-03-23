@@ -130,7 +130,6 @@
                 </scrollView>
             </subviews>
             <connections>
-                <outlet property="resultHeaderView" destination="y6B-4h-J3F" id="q0G-3B-glQ"/>
                 <outlet property="resultView" destination="HRk-gT-qE6" id="ZVF-pM-geA"/>
                 <outlet property="sourceView" destination="Zng-X6-LSA" id="ytg-GA-IYc"/>
             </connections>

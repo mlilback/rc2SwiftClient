@@ -9,7 +9,6 @@ import Foundation
 class NotebookEntryView: NSView {
 	@IBOutlet var sourceView: SourceTextView!
 	@IBOutlet var resultView: SourceTextView!
-	@IBOutlet var resultHeaderView: NSView!
 	var performLayout: (() -> Void)?
 	
 	override func awakeFromNib() {
