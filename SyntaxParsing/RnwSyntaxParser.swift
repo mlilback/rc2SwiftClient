@@ -38,7 +38,12 @@ class RnwSyntaxParser: BaseSyntaxParser {
 		let eof = PKToken.eof().tokenType
 		var state = RnwParserState.sea	// sea - docs chunk
 		var begin:Int = 0, end:Int = 0
+		var beginInner:Int = 0, endInner:Int = 0
+		var beginOff:Int = 0, endOff:Int = 0
+		
 		var token = tok.nextToken()!
+		// TODO: add FrontMatter for LaTex
+		
 		var closeChunk = false
 		var currType:(ChunkType, DocType, EquationType) = (.docs, .latex, .none)
 		var newType = currType
@@ -54,15 +59,16 @@ class RnwSyntaxParser: BaseSyntaxParser {
 			if (state == .sea || state == .codePossible) {
 				if token.stringValue == "$$" {
 					newType = (.equation, .none, .display); state = .eqBlock
-					closeChunk = true }
+					beginOff = 2; closeChunk = true }
 				else if token.stringValue == "$" {
 					newType = (.equation, .none, .inline); state = .eqIn
-					closeChunk = true }
+					beginOff = 1; closeChunk = true }
 				else if token.stringValue == "<<" {
 					state = .codePossible
 					end = Int(token.offset) }
 				else if token.stringValue == ">>=" && state == .codePossible {
 					newType = (.code, .none, .none)
+					beginInner = Int(token.offset) + 3
 					closeChunk = true
 				}
 				// Create a chunk after switching states:
@@ -74,20 +80,21 @@ class RnwSyntaxParser: BaseSyntaxParser {
 						let range = NSMakeRange(begin, end-begin)
 						ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
 										   equationType: currType.2, range: range,
-										   chunkNumber: chunkIndex)
+										   innerRange: range, chunkNumber: chunkIndex)
 						chunks.append(ch); chunkIndex += 1
+						begin = end
 					}
-					currType = newType; begin = end
+					currType = newType
 					closeChunk = false
 				}
 			}
 				// Switch close state based on symbols:
 			else if state == .codeBlock && token.stringValue == "@" {
-				closeChunk = true }
+				endOff = 1; closeChunk = true }
 			else if state == .eqBlock   && token.stringValue == "$$"{
-				closeChunk = true }
+				endOff = 2; closeChunk = true }
 			else if state == .eqIn   	&& token.stringValue == "$"{
-				closeChunk = true
+				endOff = 1; closeChunk = true
 			}
 			// Create a chunk after switching states:
 			token = tok.nextToken()!
@@ -95,15 +102,19 @@ class RnwSyntaxParser: BaseSyntaxParser {
 				if (token.tokenType == eof) { end = fullRange.length }
 				else { end = Int(token.offset) }
 				if end > fullRange.length { end = fullRange.length }
-				if end-begin > 2 { // has to have at least 3 chars, including ends
+				if beginInner == 0 { beginInner = begin+beginOff }
+				endInner = end-endOff
+				if endInner-beginInner > 0 { // has to have at least 3 chars, including ends
 					let range = NSMakeRange(begin, end-begin)
+					let innerRange = NSMakeRange(beginInner, endInner-beginInner)
 					ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
 									   equationType: currType.2, range: range,
-									   chunkNumber: chunkIndex)
+									   innerRange: innerRange, chunkNumber: chunkIndex)
 					chunks.append(ch); chunkIndex += 1
 					begin = end
 				}
 				currType = (.docs, .latex, .none)
+				beginOff = 0; endOff = 0; beginInner = 0
 				closeChunk = false; state = .sea
 			}
 		}
@@ -113,7 +124,7 @@ class RnwSyntaxParser: BaseSyntaxParser {
 			let range = NSMakeRange(begin, end-begin)
 			ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
 							   equationType: currType.2, range: range,
-							   chunkNumber: chunkIndex)
+							   innerRange: range, chunkNumber: chunkIndex)
 			chunks.append(ch); chunkIndex += 1
 		}
 	}
