@@ -35,7 +35,7 @@ public class RmdDocument {
 		try parser.chunks.forEach { parserChunk in
 			switch parserChunk.chunkType {
 			case .docs:
-				let chunkContents = parser.textStorage.attributedSubstring(from: parserChunk.parsedRange)
+				let chunkContents = parser.textStorage.attributedSubstring(from: parserChunk.innerRange)
 				let whitespaceOnly = chunkContents.string.rangeOfCharacter(from: CharacterSet.whitespacesAndNewlines.inverted) == nil
 				if lastWasInline || whitespaceOnly {
 					// need to append this chunk's content to lastTextChunk
@@ -43,14 +43,14 @@ public class RmdDocument {
 					lastWasInline = false
 					return
 				}
-				let tchunk = InternalTextChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.parsedRange)
+				let tchunk = InternalTextChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
 				append(chunk: tchunk)
 				lastTextChunk = tchunk
 				lastWasInline = false
 			case .code:
-				let cchunk = InternalCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.parsedRange)
+				let cchunk = InternalCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
 				if parserChunk.isInline, let lastChunk = lastTextChunk {
-					let achunk = InternalInlineCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.parsedRange)
+					let achunk = InternalInlineCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
 					attach(chunk: achunk, to: lastChunk.storage)
 					lastWasInline = true
 					return
@@ -63,12 +63,12 @@ public class RmdDocument {
 				case .none: fatalError()
 				case .inline:
 					guard let lastChunk = lastTextChunk else { throw ParserError.inlineEquationNotInTextChunk }
-					let dchunk = InternalInlineEquation(parser: parser, contents: parser.textStorage.string, range: parserChunk.parsedRange)
+					let dchunk = InternalInlineEquation(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
 					lastChunk.inlineElements.append(dchunk)
 					attach(chunk: dchunk, to: lastChunk.storage)
 					lastWasInline = true
 				case .display:
-					let dchunk = InternalEquationChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.parsedRange)
+					let dchunk = InternalEquationChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.parsedRange, innerRange: parserChunk.innerRange)
 					append(chunk: dchunk)
 					lastTextChunk = nil
 					lastWasInline = false
@@ -122,7 +122,7 @@ public class RmdDocument {
 	}
 
 	public func insertEquationChunk(initalContents: String, at index: Int) {
-		let chunk = InternalEquationChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange)
+		let chunk = InternalEquationChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange, innerRange: initalContents.fullNSRange)
 		internalChunks.insert(chunk, at: index)
 	}
 }
@@ -246,13 +246,12 @@ class InternalCodeChunk: InternalRmdChunk, Code {
 // MARK: -
 class InternalEquationChunk: InternalRmdChunk, Equation {
 	override var chunkType: ChunkType { return .equation }
-	var equationSource: String {
-		return storage.string.substring(from: NSRange(location: 2, length: storage.length - 4))!
-	}
+	var equationSource: String
 	
-	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
+	init(parser: BaseSyntaxParser, contents: String, range: NSRange, innerRange: NSRange) {
 		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .display,
-								   range: range, innerRange: range, chunkNumber: 1)
+								   range: range, innerRange: innerRange, chunkNumber: 1)
+		equationSource = contents.substring(from: innerRange)!
 		super.init(parser: parser, chunk: pchunk)
 		storage.append(NSAttributedString(string: contents.substring(from: range)!))
 	}
@@ -262,7 +261,7 @@ class InternalEquationChunk: InternalRmdChunk, Equation {
 
 class InternalInlineEquation: InternalRmdChunk, InlineChunk, Equation {
 	var equationSource: String {
-		return storage.string.substring(from: NSRange(location: 1, length: storage.length - 2))!
+		return storage.string
 	}
 
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
