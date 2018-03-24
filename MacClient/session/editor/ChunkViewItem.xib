@@ -6,7 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="NotebookViewItem" customModule="MacClient" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="ChunkViewItem" customModule="MacClient" customModuleProvider="target">
             <connections>
                 <outlet property="addChunkButton" destination="WIS-13-SRF" id="DKl-De-RRy"/>
                 <outlet property="chunkTypeLabel" destination="fDF-zO-1NG" id="FqC-gX-aiS"/>

@@ -263,8 +263,8 @@
 		085A197C2049E2B900B7EC5F /* ZipArchive.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		085A197E2049E2C800B7EC5F /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		085A19842049E3C000B7EC5F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 085A19832049E3C000B7EC5F /* Cocoa.framework */; };
-		085A1A1E205AC35200B7EC5F /* NotebookViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A1C205AC35200B7EC5F /* NotebookViewItem.swift */; };
-		085A1A1F205AC35200B7EC5F /* NotebookViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 085A1A1D205AC35200B7EC5F /* NotebookViewItem.xib */; };
+		085A1A1E205AC35200B7EC5F /* ChunkViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A1C205AC35200B7EC5F /* ChunkViewItem.swift */; };
+		085A1A1F205AC35200B7EC5F /* ChunkViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 085A1A1D205AC35200B7EC5F /* ChunkViewItem.xib */; };
 		085A1A21205AC39C00B7EC5F /* SourceTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A20205AC39B00B7EC5F /* SourceTextView.swift */; };
 		085A1A23205AC45600B7EC5F /* NotebookItemData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A22205AC45600B7EC5F /* NotebookItemData.swift */; };
 		085A1A25205AC4CD00B7EC5F /* NotebookEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A24205AC4CD00B7EC5F /* NotebookEntryView.swift */; };
@@ -1096,8 +1096,8 @@
 		085A197F2049E2E700B7EC5F /* libswiftCoreLocation.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftCoreLocation.tbd; path = System/Library/PrivateFrameworks/Swift/libswiftCoreLocation.tbd; sourceTree = SDKROOT; };
 		085A19812049E2FA00B7EC5F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		085A19832049E3C000B7EC5F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		085A1A1C205AC35200B7EC5F /* NotebookViewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotebookViewItem.swift; sourceTree = "<group>"; };
-		085A1A1D205AC35200B7EC5F /* NotebookViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NotebookViewItem.xib; sourceTree = "<group>"; };
+		085A1A1C205AC35200B7EC5F /* ChunkViewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChunkViewItem.swift; sourceTree = "<group>"; };
+		085A1A1D205AC35200B7EC5F /* ChunkViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChunkViewItem.xib; sourceTree = "<group>"; };
 		085A1A20205AC39B00B7EC5F /* SourceTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceTextView.swift; sourceTree = "<group>"; };
 		085A1A22205AC45600B7EC5F /* NotebookItemData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookItemData.swift; sourceTree = "<group>"; };
 		085A1A24205AC4CD00B7EC5F /* NotebookEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookEntryView.swift; sourceTree = "<group>"; };
@@ -2124,8 +2124,8 @@
 				08EE270920335B0A008E008F /* NotebookEditorController.swift */,
 				085A1A26205AC62B00B7EC5F /* NotebookDropIndicator.swift */,
 				085A1A28205AC6CD00B7EC5F /* NotebookCollectionLayout.swift */,
-				085A1A1C205AC35200B7EC5F /* NotebookViewItem.swift */,
-				085A1A1D205AC35200B7EC5F /* NotebookViewItem.xib */,
+				085A1A1C205AC35200B7EC5F /* ChunkViewItem.swift */,
+				085A1A1D205AC35200B7EC5F /* ChunkViewItem.xib */,
 				083AC105206565720054023F /* FrontMatterView.swift */,
 				083AC107206565E30054023F /* FrontMatterView.xib */,
 				083AC0FC2062D01E0054023F /* EquationViewItem.swift */,
@@ -2985,7 +2985,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				085A1A1F205AC35200B7EC5F /* NotebookViewItem.xib in Resources */,
+				085A1A1F205AC35200B7EC5F /* ChunkViewItem.xib in Resources */,
 				0864DA641DA2BDC1003F3F57 /* DockerControl.storyboard in Resources */,
 				08525E7A1E314558008A332E /* InputPrompter.xib in Resources */,
 				0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */,
@@ -3401,7 +3401,7 @@
 				08EB36D21FBBA1640078229A /* TextVariableDetailController.swift in Sources */,
 				089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */,
 				08CCED4B1EE1DDFC004B5ADE /* DockerLogController.swift in Sources */,
-				085A1A1E205AC35200B7EC5F /* NotebookViewItem.swift in Sources */,
+				085A1A1E205AC35200B7EC5F /* ChunkViewItem.swift in Sources */,
 				0872676D1EE20A37004251C1 /* DockerBackupViewController.swift in Sources */,
 				085A1A2B205ACA4600B7EC5F /* AbstractEditorController.swift in Sources */,
 				08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */,

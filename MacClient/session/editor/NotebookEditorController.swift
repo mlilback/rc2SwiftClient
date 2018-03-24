@@ -36,7 +36,7 @@ class NotebookEditorController: AbstractEditorController {
 
 	private var parser: SyntaxParser?
 	private let storage = NSTextStorage()
-	private var sizingItems: [NSUserInterfaceItemIdentifier : NotebookViewItem] = [:]
+	private var sizingItems: [NSUserInterfaceItemIdentifier : ChunkViewItem] = [:]
 
 	// MARK: - standard
 	override func viewDidLoad() {
@@ -44,14 +44,14 @@ class NotebookEditorController: AbstractEditorController {
 		// Set up CollectionView:
 		notebookView.registerForDraggedTypes([notebookItemPasteboardType])
 		notebookView.setDraggingSourceOperationMask(.move, forLocal: true)
-		notebookView.register(NotebookViewItem.self, forItemWithIdentifier: viewItemId)
+		notebookView.register(ChunkViewItem.self, forItemWithIdentifier: viewItemId)
 		notebookView.register(EquationViewItem.self, forItemWithIdentifier: equationItemId)
 		notebookView.register(MarkdownViewItem.self, forItemWithIdentifier: markdownItemId)
 		notebookView.register(NSNib(nibNamed: NSNib.Name(rawValue: "FrontMatterView"), bundle: nil), forSupplementaryViewOfKind: .sectionHeader, withIdentifier: sectionHeaderId)
 		notebookView.register(NotebookDropIndicator.self, forSupplementaryViewOfKind: .interItemGapIndicator, withIdentifier: dropIndicatorId)
 		// setup dummy sizing views
-		sizingItems[viewItemId] = NotebookViewItem(nibName: nil, bundle: nil)
 		sizingItems[markdownItemId] = MarkdownViewItem(nibName: nil, bundle: nil)
+		sizingItems[viewItemId] = ChunkViewItem(nibName: nil, bundle: nil)
 		sizingItems[equationItemId] = EquationViewItem(nibName: nil, bundle: nil)
 		// Set some CollectionView layout constrains:
 		guard let layout = notebookView.collectionViewLayout as? NSCollectionViewFlowLayout else {
@@ -86,7 +86,7 @@ class NotebookEditorController: AbstractEditorController {
 	// MARK: actions
 	
 	@IBAction func addChunk(_ sender: Any?) {
-		guard let menuItem = sender as? NSMenuItem, let type = AddChunkType(rawValue: menuItem.tag), let previousChunk = menuItem.representedObject as? NotebookViewItem
+		guard let menuItem = sender as? NSMenuItem, let type = AddChunkType(rawValue: menuItem.tag), let previousChunk = menuItem.representedObject as? ChunkViewItem
 			else { Log.warn("addChunk called from non-menu item or with incorrect tag", .app); return }
 		switch type {
 		case .code:
@@ -123,7 +123,7 @@ extension NotebookEditorController: NSMenuDelegate {
 
 // MARK: - NotebookViewItemDelegate
 extension NotebookEditorController: NotebookViewItemDelegate {
-	func addChunk(after: NotebookViewItem, sender: NSButton?) {
+	func addChunk(after: ChunkViewItem, sender: NSButton?) {
 		guard let button = sender else { fatalError("no button supplied for adding chunk") }
 		addChunkPopupMenu.items.forEach { $0.representedObject = after }
 		addChunkPopupMenu.popUp(positioning: nil, at: CGPoint(x: 0, y: button.bounds.maxY), in: button)
@@ -141,7 +141,7 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 	{
 		let itemData = dataArray[indexPath.item]
 		let itemId = viewItemId(chunk: itemData.chunk)
-		guard let view = collectionView.makeItem(withIdentifier: itemId, for: indexPath) as? NotebookViewItem else { fatalError() }
+		guard let view = collectionView.makeItem(withIdentifier: itemId, for: indexPath) as? ChunkViewItem else { fatalError() }
 		view.context = context
 		view.data = itemData
 		view.delegate = self
