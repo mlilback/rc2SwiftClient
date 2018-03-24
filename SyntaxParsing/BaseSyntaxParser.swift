@@ -143,7 +143,7 @@ class RSyntaxParser: BaseSyntaxParser {
 		chunks.removeAll()
 		let range = NSRange(location: 0, length: textStorage.string.count) // whole txt
 		let chunk = DocumentChunk(chunkType: .code, docType: .none, equationType: .none,
-								  range: range, chunkNumber: 1)
+								  range: range, innerRange: range, chunkNumber: 1)
 		chunks.append(chunk)
 	}
 }

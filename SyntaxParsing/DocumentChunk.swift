@@ -47,6 +47,8 @@ public class DocumentChunk {
 	public let equationType: EquationType
 	/// If the type is .doc, the type of the doc
 	public internal(set) var parsedRange: NSRange = NSRange(location: 0, length: 0)
+	public internal(set) var innerRange: NSRange = NSRange(location: 0, length: 0)
+	public var rOps: String = ""
 	
 	/// A unique, serial number for each chunk used in SessionEditorController's
 	/// executePreviousChunks
@@ -82,20 +84,22 @@ public class DocumentChunk {
 	}
 	
 	init(chunkType: ChunkType, docType: DocType, equationType: EquationType,
-		 range: NSRange, chunkNumber: Int, name: String?=nil, isInline: Bool = false) {
+		 range: NSRange,  innerRange: NSRange, chunkNumber: Int, name: String?=nil,
+		 isInline: Bool = false) {
 		self.chunkNumber = chunkNumber
 		self.chunkType = chunkType
 		self.docType = docType
 		self.equationType = equationType
 		self.name = name
 		self.parsedRange = range
+		self.innerRange = innerRange
 		self.isInline = isInline
 	}
 	
 	/// Returns a chunk that differs only in chunkNumber
 	func duplicateWithChunkNumber(_ newNum: Int) -> DocumentChunk {
 		return DocumentChunk(chunkType: chunkType, docType: docType, equationType: equationType,
-							 range: parsedRange, chunkNumber: newNum, name: name)
+							 range: parsedRange, innerRange: innerRange, chunkNumber: newNum, name: name)
 	}
 	
 }

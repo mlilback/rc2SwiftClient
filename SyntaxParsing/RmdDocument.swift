@@ -207,7 +207,8 @@ class InternalTextChunk: InternalRmdChunk, TextChunk {
 	var inlineElements: [InlineChunk]
 	
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
-		let pchunk = DocumentChunk(chunkType: .docs, docType: .rmd, equationType: .none, range: range, chunkNumber: 1)
+		let pchunk = DocumentChunk(chunkType: .docs, docType: .rmd, equationType: .none,
+								   range: range, innerRange: range, chunkNumber: 1)
 		inlineElements = []
 		super.init(parser: parser, chunk: pchunk)
 		storage.append(NSAttributedString(string: contents.substring(from: range)!))
@@ -235,7 +236,8 @@ class InternalCodeChunk: InternalRmdChunk, Code {
 	
 	override var chunkType: ChunkType { return .code }
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
-		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none, range: range, chunkNumber: 1)
+		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
+								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
 		storage.append(NSAttributedString(string: contents.substring(from: range)!))
 	}
@@ -249,7 +251,8 @@ class InternalEquationChunk: InternalRmdChunk, Equation {
 	}
 	
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
-		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .display, range: range, chunkNumber: 1)
+		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .display,
+								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
 		storage.append(NSAttributedString(string: contents.substring(from: range)!))
 	}
@@ -263,7 +266,8 @@ class InternalInlineEquation: InternalRmdChunk, InlineChunk, Equation {
 	}
 
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
-		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .inline, range: range, chunkNumber: 1)
+		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .inline,
+								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
 		storage.append(NSAttributedString(string: contents.substring(from: range)!))
 	}
@@ -273,7 +277,8 @@ class InternalInlineCodeChunk: InternalRmdChunk, InlineChunk, Code {
 	var codeSource: String { return contents }
 	
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
-		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none, range: range, chunkNumber: 1)
+		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
+								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
 		storage.append(NSAttributedString(string: contents.substring(from: range)!))
 	}
