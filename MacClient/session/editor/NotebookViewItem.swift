@@ -54,9 +54,9 @@ class NotebookViewItem: NSCollectionViewItem {
 		
 		// Set background colors for top and middle views:
 		topView.wantsLayer = true
-		topView.layer?.backgroundColor = NSColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
+		topView.layer?.backgroundColor = notebookTopViewBackgroundColor.cgColor
 		middleView?.wantsLayer = true
-		middleView?.layer?.backgroundColor = NSColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
+		middleView?.layer?.backgroundColor = notebookTopViewBackgroundColor.cgColor
 		// Note: results content background is set its .xib.
 		sourceView.layoutManager?.defaultAttachmentScaling = .scaleProportionallyDown
 		//  Create a callback to adjustSize, so NotebookEntryView can call it during its layout:

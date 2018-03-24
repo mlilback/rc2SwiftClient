@@ -36,3 +36,5 @@ let helpUrlFuncSeperator = "/html"
 
 let variableUpdatedBackgroundColor = PlatformColor.green
 let variableNormalBackgroundColor = PlatformColor.white
+let noteBookFrontMatterColor = PlatformColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
+let notebookTopViewBackgroundColor = PlatformColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
