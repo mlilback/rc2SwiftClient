@@ -56,12 +56,12 @@ class RmdSyntaxParser: BaseSyntaxParser {
 			else if state == .frontMatter  {
 				if token.stringValue == "---" {
 					token = tok.nextToken()!
-					end = Int(token.offset)
+					end = Int(token.offset)-3
 					if end > fullRange.length { end = fullRange.length }
-					if end-begin > 6 {
+					if end-begin > 0 {
 						let range = NSMakeRange(begin, end-begin)
 						frontMatter = textStorage.string.substring(from: range)!
-						begin = end
+						begin = end+3
 					}
 					beyondFrontMatter = true
 				}
@@ -72,11 +72,13 @@ class RmdSyntaxParser: BaseSyntaxParser {
 			else if token.stringValue == "---" {
 				state = .frontMatter
 				token = tok.nextToken()!
+				begin = Int(token.offset)
 			}
 			else {
 				beyondFrontMatter = true
 			}
 		}
+		// print("\(frontMatter)")
 		// Reference:
 		//		public enum ChunkType {
 		//			case docs, code, equation
@@ -141,7 +143,7 @@ class RmdSyntaxParser: BaseSyntaxParser {
 										   equationType: currType.2, range: range,
 										   innerRange:range, chunkNumber: chunkIndex)
 						chunks.append(ch); chunkIndex += 1
-						print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)")
+						// print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)")
 						begin = end
 					}
 					currType = newType
@@ -173,13 +175,13 @@ class RmdSyntaxParser: BaseSyntaxParser {
 					let innerRange = NSMakeRange(beginInner, endInner-beginInner)
 					ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
 									   equationType: currType.2, range: range,
-									   innerRange:innerRange, chunkNumber: chunkIndex,
+									   innerRange: innerRange, chunkNumber: chunkIndex,
 									   isInline: state == .eqIn || state == .codeIn)
 					if currType.0 == .code && rOps.count > 0 {
 						// print(rOps)
 						ch.rOps = rOps; rOps = "" }
 					chunks.append(ch); chunkIndex += 1
-					print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)")
+					// print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)")
 					begin = end
 				}
 				currType = (.docs, .rmd, .none)
@@ -196,13 +198,14 @@ class RmdSyntaxParser: BaseSyntaxParser {
 			let innerRange = NSMakeRange(beginInner, end-begin)
 			ch = DocumentChunk(chunkType: currType.0, docType: currType.1,
 							   equationType: currType.2, range: range,
-							   innerRange:innerRange, chunkNumber: chunkIndex)
+							   innerRange: innerRange, chunkNumber: chunkIndex)
 			if currType.0 == .code && rOps.count > 0 {
 				print(rOps)
 				ch.rOps = rOps; rOps = "" }
 			chunks.append(ch); chunkIndex += 1
+			// print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)")
 		}
-		print("\n")
+		// print("\(rOps)")
 	}
 }
 
