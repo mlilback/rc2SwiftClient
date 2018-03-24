@@ -20,6 +20,7 @@ class NotebookEditorController: AbstractEditorController {
 	let viewItemId = NSUserInterfaceItemIdentifier(rawValue: "NotebookViewItem")
 	let equationItemId = NSUserInterfaceItemIdentifier(rawValue: "EquationViewItem")
 	let markdownItemId = NSUserInterfaceItemIdentifier(rawValue: "MarkdownViewItem")
+	let sectionHeaderId = NSUserInterfaceItemIdentifier(rawValue: "SectionHeader")
 	// The highlighted line where the dropped item will go:
 	let dropIndicatorId = NSUserInterfaceItemIdentifier(rawValue: "DropIndicator")
 	// Holds dragged item for dropping:
@@ -46,6 +47,7 @@ class NotebookEditorController: AbstractEditorController {
 		notebookView.register(NotebookViewItem.self, forItemWithIdentifier: viewItemId)
 		notebookView.register(EquationViewItem.self, forItemWithIdentifier: equationItemId)
 		notebookView.register(MarkdownViewItem.self, forItemWithIdentifier: markdownItemId)
+		notebookView.register(NSNib(nibNamed: NSNib.Name(rawValue: "FrontMatterView"), bundle: nil), forSupplementaryViewOfKind: .sectionHeader, withIdentifier: sectionHeaderId)
 		notebookView.register(NotebookDropIndicator.self, forSupplementaryViewOfKind: .interItemGapIndicator, withIdentifier: dropIndicatorId)
 		// setup dummy sizing views
 		sizingItems[viewItemId] = NotebookViewItem(nibName: nil, bundle: nil)
@@ -152,6 +154,11 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 		if kind == .interItemGapIndicator {
 			return collectionView.makeSupplementaryView(ofKind: kind, withIdentifier: dropIndicatorId, for: indexPath)
 		}
+		if kind == .sectionHeader {
+			let fmatterView = collectionView.makeSupplementaryView(ofKind: kind, withIdentifier: sectionHeaderId, for: indexPath) as! FrontMatterView
+			fmatterView.frontMatterText = rmdDocument?.frontMatter ?? ""
+			return fmatterView
+		}
 		// All other supplementary views go here (like footers), which are currently none:
 		return collectionView.makeSupplementaryView(ofKind: kind, withIdentifier: NSUserInterfaceItemIdentifier(rawValue: ""), for: indexPath)
 	}
@@ -166,7 +173,7 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 	{
 		// if context not set, return fake size, will be caused again
 		guard let context = context, collectionView.collectionViewLayout is NSCollectionViewFlowLayout else {
-			return NSSize(width: 100, height: 100)
+			return NSSize(width: 100, height: 120)
 		}
 		let dataItem = dataArray[indexPath.item]
 		let dummyItem = sizingItems[viewItemId(chunk: dataItem.chunk)]!
@@ -178,6 +185,11 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 		return sz
 	}
 
+	func collectionView(_ collectionView: NSCollectionView, layout collectionViewLayout: NSCollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> NSSize
+	{
+		return NSSize(width: 100, height: 140)
+	}
+	
 	// Places the data for the drag operation on the pasteboard:
 	func collectionView(_ collectionView: NSCollectionView, canDragItemsAt indexPaths: Set<IndexPath>, with event: NSEvent) -> Bool {
 		return true // when front matter is displayed, will need to return false for it
