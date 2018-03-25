@@ -11,11 +11,7 @@ import SyntaxParsing
 import ReactiveSwift
 import MJLLogger
 
-protocol NotebookViewItemDelegate: class {
-	func addChunk(after: ChunkViewItem, sender: NSButton?)
-}
-
-class ChunkViewItem: NSCollectionViewItem {
+class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 	// MARK: - properties
 	@IBOutlet var sourceView: SourceTextView!
 	@IBOutlet var resultTextView: SourceTextView?

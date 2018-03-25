@@ -25,19 +25,19 @@ class NotebookEditorController: AbstractEditorController {
 	let dropIndicatorId = NSUserInterfaceItemIdentifier(rawValue: "DropIndicator")
 	// Holds dragged item for dropping:
 	let notebookItemPasteboardType = NSPasteboard.PasteboardType(rawValue: "io.rc2.client.notebook.entry")
-
+	
 	// MARK: - properties
 	@IBOutlet weak var notebookView: NSCollectionView!
 	@IBOutlet var addChunkPopupMenu: NSMenu!
-
+	
 	var rmdDocument: RmdDocument?
 	var dataArray: [NotebookItemData] = []	// holds data for all items
 	var dragIndices: Set<IndexPath>?	// items being dragged
-
+	
 	private var parser: SyntaxParser?
 	private let storage = NSTextStorage()
-	private var sizingItems: [NSUserInterfaceItemIdentifier : ChunkViewItem] = [:]
-
+	private var sizingItems: [NSUserInterfaceItemIdentifier : NotebookViewItem] = [:]
+	
 	// MARK: - standard
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -50,9 +50,9 @@ class NotebookEditorController: AbstractEditorController {
 		notebookView.register(NSNib(nibNamed: NSNib.Name(rawValue: "FrontMatterView"), bundle: nil), forSupplementaryViewOfKind: .sectionHeader, withIdentifier: sectionHeaderId)
 		notebookView.register(NotebookDropIndicator.self, forSupplementaryViewOfKind: .interItemGapIndicator, withIdentifier: dropIndicatorId)
 		// setup dummy sizing views
-		sizingItems[markdownItemId] = MarkdownViewItem(nibName: nil, bundle: nil)
 		sizingItems[viewItemId] = ChunkViewItem(nibName: nil, bundle: nil)
 		sizingItems[equationItemId] = EquationViewItem(nibName: nil, bundle: nil)
+		sizingItems[markdownItemId] = MarkdownViewItem(nibName: nil, bundle: nil)
 		// Set some CollectionView layout constrains:
 		guard let layout = notebookView.collectionViewLayout as? NSCollectionViewFlowLayout else {
 			fatalError() } // make sure we have a layout object
@@ -60,21 +60,21 @@ class NotebookEditorController: AbstractEditorController {
 		layout.minimumLineSpacing = 20.0
 		layout.minimumInteritemSpacing = 14.0
 	}
-
+	
 	// Called initially and when window is resized:
 	override func viewWillLayout() {
 		// Make sure things are laid out again after all our manual changes:
 		notebookView.collectionViewLayout?.invalidateLayout()
 		super.viewWillLayout()
 	}
-
+	
 	// MARK: - editor
 	override func loaded(document: EditorDocument, content: String) {
 		self.rmdDocument = try! RmdDocument(contents: content) { (topic) in
 			return HelpController.shared.hasTopic(topic)
 		}
 		storage.replaceCharacters(in: storage.string.fullNSRange, with: content)
-		dataArray = self.rmdDocument!.chunks.map { NotebookItemData(chunk: $0, result: "") }
+		dataArray = self.rmdDocument!.chunks.flatMap { /*guard $0.chunkType == .docs else { return nil }; */return NotebookItemData(chunk: $0, result: "") }
 		notebookView.reloadData()
 		notebookView.collectionViewLayout?.invalidateLayout()
 	}
@@ -100,7 +100,7 @@ class NotebookEditorController: AbstractEditorController {
 	}
 	
 	// MARK: private
-
+	
 	func viewItemId(chunk: RmdChunk) -> NSUserInterfaceItemIdentifier {
 		switch chunk {
 		case is Equation: return equationItemId
@@ -123,7 +123,7 @@ extension NotebookEditorController: NSMenuDelegate {
 
 // MARK: - NotebookViewItemDelegate
 extension NotebookEditorController: NotebookViewItemDelegate {
-	func addChunk(after: ChunkViewItem, sender: NSButton?) {
+	func addChunk(after: NotebookViewItem, sender: NSButton?) {
 		guard let button = sender else { fatalError("no button supplied for adding chunk") }
 		addChunkPopupMenu.items.forEach { $0.representedObject = after }
 		addChunkPopupMenu.popUp(positioning: nil, at: CGPoint(x: 0, y: button.bounds.maxY), in: button)
@@ -141,11 +141,13 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 	{
 		let itemData = dataArray[indexPath.item]
 		let itemId = viewItemId(chunk: itemData.chunk)
-		guard let view = collectionView.makeItem(withIdentifier: itemId, for: indexPath) as? ChunkViewItem else { fatalError() }
+		let itemView: NSCollectionViewItem
+		guard let view = collectionView.makeItem(withIdentifier: itemId, for: indexPath) as? NotebookViewItem else { fatalError() }
+		itemView = view as! NSCollectionViewItem
 		view.context = context
 		view.data = itemData
 		view.delegate = self
-		return view
+		return itemView
 	}
 	
 	// Inits the horizontal line used to highlight where the drop will go:
@@ -176,7 +178,13 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 			return NSSize(width: 100, height: 120)
 		}
 		let dataItem = dataArray[indexPath.item]
-		let dummyItem = sizingItems[viewItemId(chunk: dataItem.chunk)]!
+		guard let dummyItem = sizingItems[viewItemId(chunk: dataItem.chunk)] as? ChunkViewItem else {
+			let mitem = sizingItems[markdownItemId] as! MarkdownViewItem
+			_ = mitem.view
+			mitem.data = dataItem
+			mitem.context = context
+			return mitem.size(forWidth: collectionView.visibleWidth)
+		}
 		dummyItem.prepareForReuse()
 		dummyItem.data = dataItem
 		dummyItem.context = context
@@ -184,7 +192,7 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 		let sz = NSSize(width: collectionView.visibleWidth, height: dummyItem.view.frame.size.height)
 		return sz
 	}
-
+	
 	func collectionView(_ collectionView: NSCollectionView, layout collectionViewLayout: NSCollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> NSSize
 	{
 		return NSSize(width: 100, height: 140)
@@ -255,3 +263,4 @@ class NoScrollView: NSScrollView {
 		nextResponder?.scrollWheel(with: event)
 	}
 }
+

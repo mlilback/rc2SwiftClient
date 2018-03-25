@@ -8,7 +8,7 @@ import Cocoa
 import SyntaxParsing
 import iosMath
 
-class EquationViewItem: NotebookViewItem {
+class EquationViewItem: ChunkViewItem {
 	var equationView: MTMathUILabel!
 	
 	override func viewDidLoad() {
@@ -26,7 +26,7 @@ class EquationViewItem: NotebookViewItem {
 		super.viewDidLoad()
 	}
 	
-	override var nibName: NSNib.Name? { return NSNib.Name(rawValue: "NotebookViewItem") }
+	override var nibName: NSNib.Name? { return NSNib.Name(rawValue: "ChunkViewItem") }
 	override var resultView: NSView { return equationView }
 	override var resultOuterView: NSView { return equationView }
 	
