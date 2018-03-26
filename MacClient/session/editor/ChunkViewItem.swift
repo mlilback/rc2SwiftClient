@@ -21,6 +21,7 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 	@IBOutlet weak var chunkTypeLabel: NSTextField!
 	@IBOutlet weak var addChunkButton: NSButton!
 	var layingOut = false
+	private var twiddleInProgress = false
 	
 	/// if a subclass uses a non-NSTextView results view, this needs to be overridden to calculate frame
 	var resultView: NSView { return resultTextView! }
@@ -33,6 +34,7 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 	var data: NotebookItemData? { didSet { dataChanged() } }
 	var context: EditorContext? { didSet { contextChanged() } }
 	private var fontDisposable: Disposable?
+	private var resultVisibleDisposable: Disposable?
 
 	// MARK: - standard
 	deinit {
@@ -88,8 +90,13 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 	}
 	
 	func dataChanged() {
-		guard data != nil else { return }
+		resultVisibleDisposable?.dispose()
+		guard let data = data else { return }
 		guard let context = context else { return }
+		// observe result visibility
+		resultVisibleDisposable = data.resultsVisible.producer.startWithValues { [weak self] visible in
+			self?.adjustResults(visible: visible)
+		}
 		// Callbacks from changes in NSTextViews that adjust the item view size:
 		sourceView.changeCallback = { [weak self] in
 			self?.adjustSize()
@@ -98,17 +105,15 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 			self?.adjustSize()
 			Log.debug("resultView.changeCallback", .app)
 		}
-		data?.source.font = context.editorFont.value
+		data.source.font = context.editorFont.value
 		// Sets each view's string from the data's string
 		guard let sourceStorage = sourceView?.textStorage else { fatalError() }
-		if let attrStr = data?.chunk.attributedContents {
-			sourceStorage.replaceCharacters(in: sourceStorage.string.fullNSRange, with: attrStr)
-		} else {
-			sourceView.replace(text: data?.source.string ?? "")
-		}
-		resultTextView?.replace(text: data?.result.string ?? "")
+		sourceStorage.replaceCharacters(in: sourceStorage.string.fullNSRange, with: data.chunk.attributedContents)
+		resultTextView?.replace(text: data.result.string)
 		//adjust label
 		chunkTypeLabel.stringValue = titleForCurrentChunk()
+		resultTwiddle.state = data.resultsVisible.value ? .on : .off
+		adjustSize(animate: false)
 	}
 
 	// MARK: - private
@@ -133,6 +138,16 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 				return NSLocalizedString("Display Equation", comment: "")
 			}
 		}
+	}
+	
+	private func adjustResults(visible: Bool) {
+		if twiddleInProgress {
+			resultOuterView.animator().isHidden = !visible
+		} else {
+			resultOuterView.isHidden = !visible
+			resultTwiddle.state = visible ? .on : .off
+		}
+		adjustSize(animate: false)
 	}
 	
 	// Adjust sizes of each frame (within each item) and adjust the
@@ -184,17 +199,14 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		if middleView != nil {
 			myHeight += middleFrame.size.height
 		}
-		if !resultOuterView.isHidden {
+		if data!.resultsVisible.value { //} !resultOuterView.isHidden {
 			// if results are twiddled open, add it
 			myHeight += resFrame.size.height
 		}
 		view.setFrameSize(NSSize(width: myWidth, height: myHeight))
 		data?.height = myHeight
 		
-		// Tell parent view to re-layout if showing text results
-		if resultTextView != nil {
-			collectionView?.collectionViewLayout?.invalidateLayout()
-		}
+		collectionView?.collectionViewLayout?.invalidateLayout()
 	}
 	
 	// MARK: - actions
@@ -207,10 +219,16 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 	// (Note: animation is used here with duration = 0  to make default
 	// animation not shown.)
 	@IBAction func twiddleResults(_ sender: Any?) {
+		guard let data = data else { fatalError("how can user twiddle w/o data?") }
+		if NSApp.currentEvent?.modifierFlags.contains(.option) ?? false {
+			delegate?.twiddleAllChunks(hide: resultTwiddle.state == .off)
+			return
+		}
+		twiddleInProgress = true
+		defer { twiddleInProgress = false }
 		NSAnimationContext.beginGrouping()
 		NSAnimationContext.current.duration = 0
-		resultOuterView.animator().isHidden = resultTwiddle.state == .off
-		adjustSize(animate: false)
+		data.resultsVisible.value = !data.resultsVisible.value
 		NSAnimationContext.endGrouping()
 	}
 }

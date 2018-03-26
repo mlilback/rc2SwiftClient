@@ -4,6 +4,7 @@
 
 * changed all notebook insets to 16 px (was 20/8) so scrollbar never overlaps edge of item view
 * notebook editor visually implemented
+* option clicking a results twiddle toggles for all chunks
 
 ## Build 60
 

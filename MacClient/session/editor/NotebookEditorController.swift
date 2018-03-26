@@ -129,6 +129,13 @@ extension NotebookEditorController: NotebookViewItemDelegate {
 		addChunkPopupMenu.items.forEach { $0.representedObject = after }
 		addChunkPopupMenu.popUp(positioning: nil, at: CGPoint(x: 0, y: button.bounds.maxY), in: button)
 	}
+	
+	func twiddleAllChunks(hide: Bool) {
+		NSAnimationContext.beginGrouping()
+		NSAnimationContext.current.duration = 0
+		dataArray.forEach { $0.resultsVisible.value = !hide }
+		NSAnimationContext.endGrouping()
+	}
 }
 
 // MARK: - NSCollectionViewDataSource
