@@ -20,7 +20,7 @@ class NotebookEditorController: AbstractEditorController {
 	let viewItemId = NSUserInterfaceItemIdentifier(rawValue: "NotebookViewItem")
 	let equationItemId = NSUserInterfaceItemIdentifier(rawValue: "EquationViewItem")
 	let markdownItemId = NSUserInterfaceItemIdentifier(rawValue: "MarkdownViewItem")
-	let sectionHeaderId = NSUserInterfaceItemIdentifier(rawValue: "SectionHeader")
+	let frontMatterItemId = NSUserInterfaceItemIdentifier(rawValue: "FrontMatterViewItem")
 	// The highlighted line where the dropped item will go:
 	let dropIndicatorId = NSUserInterfaceItemIdentifier(rawValue: "DropIndicator")
 	// Holds dragged item for dropping:
@@ -47,12 +47,13 @@ class NotebookEditorController: AbstractEditorController {
 		notebookView.register(ChunkViewItem.self, forItemWithIdentifier: viewItemId)
 		notebookView.register(EquationViewItem.self, forItemWithIdentifier: equationItemId)
 		notebookView.register(MarkdownViewItem.self, forItemWithIdentifier: markdownItemId)
-		notebookView.register(NSNib(nibNamed: NSNib.Name(rawValue: "FrontMatterView"), bundle: nil), forSupplementaryViewOfKind: .sectionHeader, withIdentifier: sectionHeaderId)
+		notebookView.register(FrontMatterViewItem.self, forItemWithIdentifier: frontMatterItemId)
 		notebookView.register(NotebookDropIndicator.self, forSupplementaryViewOfKind: .interItemGapIndicator, withIdentifier: dropIndicatorId)
 		// setup dummy sizing views
 		sizingItems[viewItemId] = ChunkViewItem(nibName: nil, bundle: nil)
 		sizingItems[equationItemId] = EquationViewItem(nibName: nil, bundle: nil)
 		sizingItems[markdownItemId] = MarkdownViewItem(nibName: nil, bundle: nil)
+		sizingItems[frontMatterItemId] = FrontMatterViewItem(nibName: nil, bundle: nil)
 		// Set some CollectionView layout constrains:
 		guard let layout = notebookView.collectionViewLayout as? NSCollectionViewFlowLayout else {
 			fatalError() } // make sure we have a layout object
@@ -74,7 +75,7 @@ class NotebookEditorController: AbstractEditorController {
 			return HelpController.shared.hasTopic(topic)
 		}
 		storage.replaceCharacters(in: storage.string.fullNSRange, with: content)
-		dataArray = self.rmdDocument!.chunks.flatMap { /*guard $0.chunkType == .docs else { return nil }; */return NotebookItemData(chunk: $0, result: "") }
+		dataArray = self.rmdDocument!.chunks.flatMap { return NotebookItemData(chunk: $0, result: "") }
 		notebookView.reloadData()
 		notebookView.collectionViewLayout?.invalidateLayout()
 	}
@@ -132,14 +133,27 @@ extension NotebookEditorController: NotebookViewItemDelegate {
 
 // MARK: - NSCollectionViewDataSource
 extension NotebookEditorController: NSCollectionViewDataSource {
+//	func numberOfSections(in collectionView: NSCollectionView) -> Int {
+//		return 2
+//	}
+	
 	func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
-		return dataArray.count
+//		if section == 0 { return 1}
+		return dataArray.count + 1
 	}
 	
 	// Inits views for each item given its indexPath:
 	func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem
 	{
-		let itemData = dataArray[indexPath.item]
+		if indexPath.item == 0 {
+//		guard indexPath.section == 1 else {
+			guard let fmItem = collectionView.makeItem(withIdentifier: frontMatterItemId, for: indexPath) as? FrontMatterViewItem else { fatalError() }
+			fmItem.context = context
+			fmItem.delegate = self
+			fmItem.frontMatterText = rmdDocument?.frontMatter ?? ""
+			return fmItem
+		}
+		let itemData = dataArray[indexPath.item - 1]
 		let itemId = viewItemId(chunk: itemData.chunk)
 		let itemView: NSCollectionViewItem
 		guard let view = collectionView.makeItem(withIdentifier: itemId, for: indexPath) as? NotebookViewItem else { fatalError() }
@@ -155,11 +169,6 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 	{
 		if kind == .interItemGapIndicator {
 			return collectionView.makeSupplementaryView(ofKind: kind, withIdentifier: dropIndicatorId, for: indexPath)
-		}
-		if kind == .sectionHeader {
-			let fmatterView = collectionView.makeSupplementaryView(ofKind: kind, withIdentifier: sectionHeaderId, for: indexPath) as! FrontMatterView
-			fmatterView.frontMatterText = rmdDocument?.frontMatter ?? ""
-			return fmatterView
 		}
 		// All other supplementary views go here (like footers), which are currently none:
 		return collectionView.makeSupplementaryView(ofKind: kind, withIdentifier: NSUserInterfaceItemIdentifier(rawValue: ""), for: indexPath)
@@ -177,7 +186,14 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 		guard let context = context, collectionView.collectionViewLayout is NSCollectionViewFlowLayout else {
 			return NSSize(width: 100, height: 120)
 		}
-		let dataItem = dataArray[indexPath.item]
+		if indexPath.item == 0 {
+			let fitem = sizingItems[frontMatterItemId] as! FrontMatterViewItem
+			_ = fitem.view
+			fitem.context = context
+			fitem.frontMatterText = rmdDocument!.frontMatter
+			return fitem.size(forWidth: collectionView.visibleWidth)
+		}
+		let dataItem = dataArray[indexPath.item - 1]
 		guard let dummyItem = sizingItems[viewItemId(chunk: dataItem.chunk)] as? ChunkViewItem else {
 			let mitem = sizingItems[markdownItemId] as! MarkdownViewItem
 			_ = mitem.view
@@ -193,14 +209,10 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 		return sz
 	}
 	
-	func collectionView(_ collectionView: NSCollectionView, layout collectionViewLayout: NSCollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> NSSize
-	{
-		return NSSize(width: 100, height: 140)
-	}
-	
 	// Places the data for the drag operation on the pasteboard:
 	func collectionView(_ collectionView: NSCollectionView, canDragItemsAt indexPaths: Set<IndexPath>, with event: NSEvent) -> Bool {
-		return true // when front matter is displayed, will need to return false for it
+		let includesFrontMatter = indexPaths.contains(where: { $0.item == 0 })
+		return !includesFrontMatter
 	}
 	
 	// Provides the pasteboard writer for the item at the specified index:
@@ -223,6 +235,8 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 	// Returns what type of drag operation is allowed:
 	func collectionView(_ collectionView: NSCollectionView, validateDrop draggingInfo: NSDraggingInfo, proposedIndexPath proposedDropIndexPath: AutoreleasingUnsafeMutablePointer<NSIndexPath>, dropOperation proposedDropOperation: UnsafeMutablePointer<NSCollectionView.DropOperation>) -> NSDragOperation {
 		guard let _ = dragIndices else { return [] } // make sure we have indices being dragged
+		// if moving to top, change location to after front-matter
+		if proposedDropIndexPath.pointee.item < 1 { proposedDropIndexPath.pointee = NSIndexPath(forItem: 1, inSection: 0) }
 		// Turn any drop on an item to a drop before since none are containers:
 		if proposedDropOperation.pointee == .on {
 			proposedDropOperation.pointee = .before }
@@ -231,16 +245,17 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 	
 	// Performs the drag (move) opperation, both updating our data and animating the move:
 	func collectionView(_ collectionView: NSCollectionView, acceptDrop draggingInfo: NSDraggingInfo, indexPath: IndexPath, dropOperation: NSCollectionView.DropOperation) -> Bool {
-		for fromIndexPath in dragIndices! {
-			let fromIndex = fromIndexPath.item
-			var toIndex = indexPath.item
-			if toIndex > fromIndex { toIndex -= 1 }
-			Log.debug("moving \(fromIndex) to \(toIndex)", .app)
-			let itemData = dataArray[fromIndex]
-			dataArray.remove(at: fromIndex)	// must be done first
-			dataArray.insert(itemData, at: toIndex)
-			collectionView.animator().moveItem(at: fromIndexPath, to: IndexPath(item: toIndex, section: 0))
+		guard let fromIndexPath = dragIndices?.first else {
+			return false
 		}
+		let fromIndex = fromIndexPath.item - 1
+		var toIndex = indexPath.item - 1
+		if toIndex > fromIndex { toIndex -= 1 }
+		Log.debug("moving \(fromIndex) to \(toIndex)", .app)
+		let itemData = dataArray[fromIndex]
+		dataArray.remove(at: fromIndex)	// must be done first
+		dataArray.insert(itemData, at: toIndex)
+		collectionView.animator().moveItem(at: IndexPath(item: fromIndex+1, section: 0), to: IndexPath(item: toIndex+1, section: 0))
 		return true
 	}
 }
@@ -249,6 +264,7 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 
 // Uses width of parent view to determine item width minus insets
 extension NSCollectionView {
+	/// the width of the collectionview minus the insets
 	var visibleWidth: CGFloat {
 		guard let layout = collectionViewLayout as? NSCollectionViewFlowLayout else {
 			return frame.width }

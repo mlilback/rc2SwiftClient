@@ -166,8 +166,8 @@
 		083AC0FE2062D6270054023F /* mathFonts.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0859A3072062701900103924 /* mathFonts.bundle */; };
 		083AC1022062E9670054023F /* MarkdownViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC1012062E9670054023F /* MarkdownViewItem.swift */; };
 		083AC1042062EDFB0054023F /* NSImage+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC1032062EDFB0054023F /* NSImage+Rc2.swift */; };
-		083AC106206565720054023F /* FrontMatterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC105206565720054023F /* FrontMatterView.swift */; };
-		083AC108206565E30054023F /* FrontMatterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 083AC107206565E30054023F /* FrontMatterView.xib */; };
+		083AC106206565720054023F /* FrontMatterViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC105206565720054023F /* FrontMatterViewItem.swift */; };
+		083AC108206565E30054023F /* FrontMatterViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 083AC107206565E30054023F /* FrontMatterViewItem.xib */; };
 		083AC10B2066DEF60054023F /* MarkdownViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 083AC10A2066DEF50054023F /* MarkdownViewItem.xib */; };
 		083AC10D2066E4BB0054023F /* NotebookViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC10C2066E4BB0054023F /* NotebookViewItem.swift */; };
 		083D118F1DEDECEC00549268 /* linedBadHeader.json in Resources */ = {isa = PBXBuildFile; fileRef = 083D118D1DEDECEC00549268 /* linedBadHeader.json */; };
@@ -1017,8 +1017,8 @@
 		083AC0FC2062D01E0054023F /* EquationViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquationViewItem.swift; sourceTree = "<group>"; };
 		083AC1012062E9670054023F /* MarkdownViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewItem.swift; sourceTree = "<group>"; };
 		083AC1032062EDFB0054023F /* NSImage+Rc2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Rc2.swift"; sourceTree = "<group>"; };
-		083AC105206565720054023F /* FrontMatterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontMatterView.swift; sourceTree = "<group>"; };
-		083AC107206565E30054023F /* FrontMatterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FrontMatterView.xib; sourceTree = "<group>"; };
+		083AC105206565720054023F /* FrontMatterViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontMatterViewItem.swift; sourceTree = "<group>"; };
+		083AC107206565E30054023F /* FrontMatterViewItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FrontMatterViewItem.xib; sourceTree = "<group>"; };
 		083AC10A2066DEF50054023F /* MarkdownViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MarkdownViewItem.xib; sourceTree = "<group>"; };
 		083AC10C2066E4BB0054023F /* NotebookViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookViewItem.swift; sourceTree = "<group>"; };
 		083D11821DE8C24C00549268 /* BuildInfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = BuildInfo.xcconfig; path = config/BuildInfo.xcconfig; sourceTree = "<group>"; };
@@ -2131,8 +2131,8 @@
 				085A1A1C205AC35200B7EC5F /* ChunkViewItem.swift */,
 				085A1A1D205AC35200B7EC5F /* ChunkViewItem.xib */,
 				083AC10C2066E4BB0054023F /* NotebookViewItem.swift */,
-				083AC105206565720054023F /* FrontMatterView.swift */,
-				083AC107206565E30054023F /* FrontMatterView.xib */,
+				083AC105206565720054023F /* FrontMatterViewItem.swift */,
+				083AC107206565E30054023F /* FrontMatterViewItem.xib */,
 				083AC0FC2062D01E0054023F /* EquationViewItem.swift */,
 				083AC1012062E9670054023F /* MarkdownViewItem.swift */,
 				083AC10A2066DEF50054023F /* MarkdownViewItem.xib */,
@@ -3004,7 +3004,7 @@
 				08F448FD1C4E244500C64706 /* MainController.storyboard in Resources */,
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
 				0825658C2016BB9200526957 /* OnboardingContent.rtfd in Resources */,
-				083AC108206565E30054023F /* FrontMatterView.xib in Resources */,
+				083AC108206565E30054023F /* FrontMatterViewItem.xib in Resources */,
 				08EE26FC202FA995008E008F /* FileInfoController.xib in Resources */,
 				08A01FD21CC81479001EDFAA /* helpindex.db in Resources */,
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
@@ -3397,7 +3397,7 @@
 				08A01FC41CC7FCA3001EDFAA /* FMDatabaseAdditions.m in Sources */,
 				089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */,
 				08EE26F9202FA4A5008E008F /* DimmingView.swift in Sources */,
-				083AC106206565720054023F /* FrontMatterView.swift in Sources */,
+				083AC106206565720054023F /* FrontMatterViewItem.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,
 				08EB36D01FBB9E480078229A /* ValuesVariableDetailController.swift in Sources */,
 				085A1A21205AC39C00B7EC5F /* SourceTextView.swift in Sources */,
