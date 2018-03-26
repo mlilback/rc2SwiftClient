@@ -7,6 +7,7 @@
 import Foundation
 import Model
 import MJLLogger
+import ReactiveSwift
 
 public typealias ParserErrorHandler = (ParserError) -> Void
 
@@ -14,7 +15,7 @@ public class RmdDocument {
 	/// the chunks comprising this document
 	public var chunks: [RmdChunk] { return internalChunks }
 	/// front matter
-	public private(set) var frontMatter: String = ""
+	public let frontMatter = MutableProperty("")
 	
 	private var internalChunks: [InternalRmdChunk] = []
 	private var textStorage = NSTextStorage()
@@ -29,7 +30,7 @@ public class RmdDocument {
 		textStorage.append(NSAttributedString(string: contents))
 		parser = BaseSyntaxParser.parserWithTextStorage(textStorage, fileType: FileType.fileType(withExtension: "Rmd")!, helpCallback: helpCallback)!
 		parser.parse()
-		frontMatter = parser.frontMatter
+		frontMatter.value = parser.frontMatter
 		var lastTextChunk: InternalTextChunk?
 		var lastWasInline: Bool = false
 		try parser.chunks.forEach { parserChunk in
