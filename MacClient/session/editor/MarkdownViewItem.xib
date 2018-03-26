@@ -20,7 +20,7 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView identifier="rootItem" autoresizesSubviews="NO" wantsLayer="YES" id="Hz6-mo-xeY" customClass="NotebookEntryView" customModule="MacClient" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="480" height="111"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bal-0H-T2E" userLabel="topView">
                     <rect key="frame" x="0.0" y="90" width="480" height="21"/>
@@ -86,11 +86,11 @@
             </subviews>
             <constraints>
                 <constraint firstItem="OEf-2G-F4x" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" id="DrM-fM-Hug"/>
+                <constraint firstAttribute="bottom" secondItem="OEf-2G-F4x" secondAttribute="bottom" id="K2r-Ap-Mf8"/>
                 <constraint firstItem="bal-0H-T2E" firstAttribute="top" secondItem="Hz6-mo-xeY" secondAttribute="top" id="TsA-lJ-kWc"/>
                 <constraint firstItem="bal-0H-T2E" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" id="YY0-Ug-tJV"/>
                 <constraint firstAttribute="trailing" secondItem="OEf-2G-F4x" secondAttribute="trailing" id="evy-Nv-X5s"/>
                 <constraint firstItem="OEf-2G-F4x" firstAttribute="top" secondItem="bal-0H-T2E" secondAttribute="bottom" id="jcY-7M-wh1"/>
-                <constraint firstAttribute="bottom" secondItem="OEf-2G-F4x" secondAttribute="bottom" id="mmN-2G-WGg"/>
                 <constraint firstAttribute="trailing" secondItem="bal-0H-T2E" secondAttribute="trailing" id="qX6-QI-Lsl"/>
             </constraints>
             <connections>

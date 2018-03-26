@@ -19,12 +19,18 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 	var data: NotebookItemData? { didSet { dataChanged() } }
 	var context: EditorContext? { didSet { contextChanged() } }
 	private var fontDisposable: Disposable?
+	private var boundsToken: Any?
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		sourceView.isEditable = true
 		view.translatesAutoresizingMaskIntoConstraints = false
 		topView.layer?.backgroundColor = notebookTopViewBackgroundColor.cgColor
+		sourceView.changeCallback = { [weak self] in
+			guard let datasrc = self?.data?.source else { return }
+			datasrc.replaceCharacters(in: datasrc.string.fullNSRange, with: self!.sourceView.textStorage!)
+			self?.collectionView?.collectionViewLayout?.invalidateLayout()
+		}
 	}
 
 	override func prepareForReuse() {
@@ -52,14 +58,15 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 	}
 	
 	func dataChanged() {
-		guard data != nil else { return }
+		boundsToken = nil
+		guard let data = data else { return }
+		boundsToken = NotificationCenter.default.addObserver(forName: NSView.boundsDidChangeNotification, object: sourceView, queue: .main)
+		{ [weak self] note in
+			self?.collectionView?.collectionViewLayout?.invalidateLayout()
+		}
 		// Sets each view's string from the data's string
 		guard let sourceStorage = sourceView?.textStorage else { fatalError() }
-		if let attrStr = data?.chunk.attributedContents {
-			sourceStorage.replaceCharacters(in: sourceStorage.string.fullNSRange, with: attrStr)
-		} else {
-			sourceView.replace(text: data?.source.string ?? "")
-		}
+		sourceStorage.replaceCharacters(in: sourceStorage.string.fullNSRange, with: data.source)
 	}
 	
 	func size(forWidth width: CGFloat) -> NSSize {
@@ -68,11 +75,11 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 		guard let manager = sourceView.textContainer?.layoutManager, let container = sourceView.textContainer else { return .zero }
 		manager.ensureLayout(for: container)
 		let textSize = manager.usedRect(for: container).size
-		return NSSize(width: width, height: textSize.height + topView.frame.size.height)
+		return NSSize(width: width, height: textSize.height + topView.frame.size.height + Notebook.textEditorMargin)
 	}
 }
 
-class MarkdownTextView: NSTextView {
+class MarkdownTextView: SourceTextView {
 	// use the space necessary for contents as intrinsic content size
 	override var intrinsicContentSize: NSSize {
 		guard let manager = textContainer?.layoutManager, let container = textContainer else { return .zero }

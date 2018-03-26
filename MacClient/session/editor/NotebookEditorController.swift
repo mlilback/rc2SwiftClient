@@ -157,7 +157,7 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 			guard let fmItem = collectionView.makeItem(withIdentifier: frontMatterItemId, for: indexPath) as? FrontMatterViewItem else { fatalError() }
 			fmItem.context = context
 			fmItem.delegate = self
-			fmItem.frontMatterText = rmdDocument?.frontMatter ?? ""
+			fmItem.rmdDocument = rmdDocument
 			return fmItem
 		}
 		let itemData = dataArray[indexPath.item - 1]
@@ -197,7 +197,7 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 			let fitem = sizingItems[frontMatterItemId] as! FrontMatterViewItem
 			_ = fitem.view
 			fitem.context = context
-			fitem.frontMatterText = rmdDocument!.frontMatter
+			fitem.rmdDocument = rmdDocument
 			return fitem.size(forWidth: collectionView.visibleWidth)
 		}
 		let dataItem = dataArray[indexPath.item - 1]
@@ -206,7 +206,8 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 			_ = mitem.view
 			mitem.data = dataItem
 			mitem.context = context
-			return mitem.size(forWidth: collectionView.visibleWidth)
+			let sz = mitem.size(forWidth: collectionView.visibleWidth)
+			return sz
 		}
 		dummyItem.prepareForReuse()
 		dummyItem.data = dataItem

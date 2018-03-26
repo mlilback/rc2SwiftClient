@@ -24,3 +24,7 @@ extension NSUserInterfaceItemIdentifier {
 struct Resources {
 	static let fileTemplateDirName = "FileTemplates"
 }
+
+struct Notebook {
+	static let textEditorMargin: CGFloat = 6
+}
