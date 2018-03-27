@@ -1774,6 +1774,16 @@
 			name = xcconfig;
 			sourceTree = "<group>";
 		};
+		084D32DC206AFAD900246CBD /* editing */ = {
+			isa = PBXGroup;
+			children = (
+				08EE270520334470008E008F /* CodeEditor.swift */,
+				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
+				08BCEA3020388D5F004A5F47 /* DocumentManager.swift */,
+			);
+			path = editing;
+			sourceTree = "<group>";
+		};
 		084E93B3201E874900FF50EA /* ModelTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -2106,6 +2116,7 @@
 		088CE6941C4B605D00153414 /* shared */ = {
 			isa = PBXGroup;
 			children = (
+				084D32DC206AFAD900246CBD /* editing */,
 				08E8F1A420698F7500F0FF5A /* CodeTemplates */,
 				0807F1601F83DE830018EF61 /* Rc2.xcassets */,
 				088CE6B51C4B71F300153414 /* Constants.swift */,
@@ -2118,8 +2129,6 @@
 				08A01FD11CC81479001EDFAA /* helpindex.db */,
 				08F189A71D0A0E7200866A05 /* static_html */,
 				08A01FB51CC7FCA3001EDFAA /* fmdb */,
-				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
-				08BCEA3020388D5F004A5F47 /* DocumentManager.swift */,
 				08055E311FBC810D007419C6 /* SpreadsheetDataSource.swift */,
 				08F5CDD41FCAE3F7009665AD /* DataFrameDataSource.swift */,
 				08A01FD51CC95C58001EDFAA /* HelpController.swift */,
@@ -2148,7 +2157,6 @@
 				083AC1012062E9670054023F /* MarkdownViewItem.swift */,
 				083AC10A2066DEF50054023F /* MarkdownViewItem.xib */,
 				085A1A20205AC39B00B7EC5F /* SourceTextView.swift */,
-				08EE270520334470008E008F /* CodeEditor.swift */,
 				085A1A22205AC45600B7EC5F /* NotebookItemData.swift */,
 				085A1A24205AC4CD00B7EC5F /* NotebookEntryView.swift */,
 			);
