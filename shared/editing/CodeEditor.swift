@@ -29,7 +29,7 @@ protocol EditorManager: CodeEditor {
 
 /// object passed to UI controllers that take part in editing a document
 protocol EditorContext: class {
-	var currentDocument: MutableProperty<EditorDocument?> { get }
+	var currentDocument: Property<EditorDocument?> { get }
 	var editorFont: MutableProperty<NSFont> { get }
 	var notificationCenter: NotificationCenter { get }
 	var workspaceNotificationCenter: NotificationCenter { get }

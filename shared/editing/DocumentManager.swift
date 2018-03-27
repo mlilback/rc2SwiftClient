@@ -23,7 +23,8 @@ class DocumentManager: EditorContext {
 	
 	// MARK: properties
 	// when changed, should use .updateProgress() while loading file contents
-	let currentDocument = MutableProperty<EditorDocument?>(nil)
+	private let _currentDocument = MutableProperty<EditorDocument?>(nil)
+	let currentDocument: Property<EditorDocument?>
 	let editorFont: MutableProperty<NSFont>
 	var openDocuments: [Int: EditorDocument] = [:]
 	var notificationCenter: NotificationCenter
@@ -40,6 +41,7 @@ class DocumentManager: EditorContext {
 	// MARK: methods
 	init(fileSaver: FileSaver, fileCache: FileCache, lifetime: Lifetime, notificationCenter: NotificationCenter = .default, wspaceCenter: NotificationCenter = NSWorkspace.shared.notificationCenter, defaults: UserDefaults = .standard)
 	{
+		currentDocument = Property<EditorDocument?>(_currentDocument)
 		self.fileSaver = fileSaver
 		self.fileCache = fileCache
 		self.lifetime = lifetime
@@ -70,10 +72,10 @@ class DocumentManager: EditorContext {
 		if change.type == .modify {
 			guard document.file.fileId == change.file.fileId else { return }
 			document.fileUpdated()
-			currentDocument.value = document
+			_currentDocument.value = document
 		} else if change.type == .remove {
 			//document being editied was removed
-			currentDocument.value = nil
+			_currentDocument.value = nil
 		}
 	}
 	
@@ -125,7 +127,7 @@ class DocumentManager: EditorContext {
 
 	private func  nilOutCurrentDocument() -> SignalProducer<String?, Rc2Error> {
 		return SignalProducer<String?, Rc2Error>(value: nil)
-			.on(started: { self.currentDocument.value = nil })
+			.on(started: { self._currentDocument.value = nil })
 	}
 	
 	// returns SP to return the specified document, creating and inserting into openDocuments if necessary
@@ -144,18 +146,18 @@ class DocumentManager: EditorContext {
 	private func load(document: EditorDocument) -> SignalProducer<String?, Rc2Error> {
 		precondition(openDocuments[document.file.fileId] == document)
 		if document.isLoaded {
-			currentDocument.value = document
+			_currentDocument.value = document
 			return SignalProducer<String?, Rc2Error>(value: document.currentContents)
 		}
 		if fileCache.isFileCached(document.file) {
 			return fileCache.contents(of: document.file)
-				.on(value: { _ in self.currentDocument.value = document })
+				.on(value: { _ in self._currentDocument.value = document })
 				.map( { String(data: $0, encoding: .utf8) } )
 		}
 		return fileCache.validUrl(for: document.file)
 			.map({ _ in return document.file })
 			.flatMap(.concat, fileCache.contents)
-			.on(value: { _ in self.currentDocument.value = document })
+			.on(value: { _ in self._currentDocument.value = document })
 			.map( { String(data: $0, encoding: .utf8) } )
 	}
 }
