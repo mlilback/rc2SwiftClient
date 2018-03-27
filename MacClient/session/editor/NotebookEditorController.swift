@@ -34,7 +34,6 @@ class NotebookEditorController: AbstractEditorController {
 	var dataArray: [NotebookItemData] = []	// holds data for all items
 	var dragIndices: Set<IndexPath>?	// items being dragged
 	
-	private var parser: SyntaxParser?
 	private let storage = NSTextStorage()
 	private var sizingItems: [NSUserInterfaceItemIdentifier : NotebookViewItem] = [:]
 	
