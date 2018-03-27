@@ -13,3 +13,6 @@
 [submodule "vendor/iosMath"]
 	path = vendor/iosMath
 	url = https://github.com/mlilback/iosMath.git
+[submodule "vendor/GRDB"]
+	path = vendor/GRDB
+	url = https://github.com/groue/GRDB.swift.git

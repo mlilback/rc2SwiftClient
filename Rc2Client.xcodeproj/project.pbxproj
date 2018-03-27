@@ -441,6 +441,10 @@
 		08E836691D94242A00E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
 		08E8366B1D94436D00E26EFE /* UserDefaults+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */; };
 		08E8366C1D94500900E26EFE /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08E8F1A620698F8500F0FF5A /* CodeTemplateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8F1A520698F8500F0FF5A /* CodeTemplateManager.swift */; };
+		08E8F1A8206995E700F0FF5A /* GRDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E8F1A9206995E700F0FF5A /* GRDB.framework */; };
+		08E8F1B22069982900F0FF5A /* GRDB.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08E8F1A9206995E700F0FF5A /* GRDB.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08E8F1B52069A0C100F0FF5A /* codetemplates.db in Resources */ = {isa = PBXBuildFile; fileRef = 08E8F1B42069A0C100F0FF5A /* codetemplates.db */; };
 		08EB36C91FBB63310078229A /* SyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36C81FBB63310078229A /* SyntaxParser.swift */; };
 		08EB36CE1FBB7CF90078229A /* VariableDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36CD1FBB7CF90078229A /* VariableDetailsViewController.swift */; };
 		08EB36D01FBB9E480078229A /* ValuesVariableDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36CF1FBB9E480078229A /* ValuesVariableDetailController.swift */; };
@@ -775,6 +779,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				08E8F1B22069982900F0FF5A /* GRDB.framework in Embed Frameworks */,
 				08698FEB1E41051900890092 /* Starscream.framework in Embed Frameworks */,
 				0815599F1DDF9E4F0047B3CE /* Freddy.framework in Embed Frameworks */,
 				0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */,
@@ -1248,6 +1253,9 @@
 		08E5D2111EAFD31000374055 /* DockerManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerManager.swift; sourceTree = "<group>"; };
 		08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = Carthage/Build/Mac/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
 		08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Rc2.swift"; sourceTree = "<group>"; };
+		08E8F1A520698F8500F0FF5A /* CodeTemplateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeTemplateManager.swift; sourceTree = "<group>"; };
+		08E8F1A9206995E700F0FF5A /* GRDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = GRDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		08E8F1B42069A0C100F0FF5A /* codetemplates.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = codetemplates.db; path = shared/resources/codetemplates.db; sourceTree = SOURCE_ROOT; };
 		08EB36C81FBB63310078229A /* SyntaxParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntaxParser.swift; sourceTree = "<group>"; };
 		08EB36CD1FBB7CF90078229A /* VariableDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableDetailsViewController.swift; sourceTree = "<group>"; };
 		08EB36CF1FBB9E480078229A /* ValuesVariableDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValuesVariableDetailController.swift; sourceTree = "<group>"; };
@@ -1435,6 +1443,7 @@
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				0897942F1D7B68F0003339EE /* ClientCore.framework in Frameworks */,
+				08E8F1A8206995E700F0FF5A /* GRDB.framework in Frameworks */,
 				0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2088,6 +2097,7 @@
 				088CE6B91C4C44BD00153414 /* Security.framework */,
 				0833A8251D2D87120033654B /* Sparkle.framework */,
 				08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */,
+				08E8F1A9206995E700F0FF5A /* GRDB.framework */,
 				082FF1ED1C7F339400CCC27F /* URITemplate.framework */,
 			);
 			name = Frameworks;
@@ -2096,6 +2106,7 @@
 		088CE6941C4B605D00153414 /* shared */ = {
 			isa = PBXGroup;
 			children = (
+				08E8F1A420698F7500F0FF5A /* CodeTemplates */,
 				0807F1601F83DE830018EF61 /* Rc2.xcassets */,
 				088CE6B51C4B71F300153414 /* Constants.swift */,
 				084FEA7F1D3044E700060A7D /* ObjcConstants.h */,
@@ -2287,6 +2298,15 @@
 				086A40D61E7B1E8600AE476B /* ThemeEditorController.xib */,
 			);
 			name = preferences;
+			sourceTree = "<group>";
+		};
+		08E8F1A420698F7500F0FF5A /* CodeTemplates */ = {
+			isa = PBXGroup;
+			children = (
+				08E8F1B42069A0C100F0FF5A /* codetemplates.db */,
+				08E8F1A520698F8500F0FF5A /* CodeTemplateManager.swift */,
+			);
+			path = CodeTemplates;
 			sourceTree = "<group>";
 		};
 		08ED575A1C7140C0002B2558 /* Products */ = {
@@ -3005,6 +3025,7 @@
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
 				0825658C2016BB9200526957 /* OnboardingContent.rtfd in Resources */,
 				083AC108206565E30054023F /* FrontMatterViewItem.xib in Resources */,
+				08E8F1B52069A0C100F0FF5A /* codetemplates.db in Resources */,
 				08EE26FC202FA995008E008F /* FileInfoController.xib in Resources */,
 				08A01FD21CC81479001EDFAA /* helpindex.db in Resources */,
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
@@ -3429,6 +3450,7 @@
 				086508771E43F27C0067C8CA /* SingleInputViewController.swift in Sources */,
 				08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */,
 				08525E781E3143C3008A332E /* InputPrompter.swift in Sources */,
+				08E8F1A620698F8500F0FF5A /* CodeTemplateManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
