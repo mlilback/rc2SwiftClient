@@ -116,7 +116,7 @@ class RmdSyntaxParser: BaseSyntaxParser {
 					beginInner = Int(token.offset) + 1
 					closeChunk = true }
 				else if token.stringValue == "`r" {
-					newType = (.code, .none, .none); state = .codeIn
+					newType = (.code, .none, .inline); state = .codeIn
 					beginOff = 2; closeChunk = true }
 				else if token.stringValue == "$$" {
 					newType = (.equation, .none, .display); state = .eqBlock
