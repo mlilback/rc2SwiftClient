@@ -17,6 +17,7 @@ extension Notification.Name {
 	static let willSaveDocument = Notification.Name(rawValue: "DocumentWillSaveNotification")
 }
 
+/// Manages open documents and the current document. Provides common properties to editor components via the EditorContext protocol.
 class DocumentManager: EditorContext {
 	let minTimeBetweenAutoSaves: TimeInterval = 2
 	

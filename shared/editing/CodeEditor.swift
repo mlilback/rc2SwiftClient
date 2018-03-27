@@ -9,8 +9,6 @@ import ClientCore
 import Networking
 import ReactiveSwift
 import SyntaxParsing
-import Result
-import SwiftyUserDefaults
 
 enum EditorMode: Int {
 	case notebook = 0
@@ -29,6 +27,7 @@ protocol EditorManager: CodeEditor {
 	func switchTo(mode: EditorMode)
 }
 
+/// object passed to UI controllers that take part in editing a document
 protocol EditorContext: class {
 	var currentDocument: MutableProperty<EditorDocument?> { get }
 	var editorFont: MutableProperty<NSFont> { get }
