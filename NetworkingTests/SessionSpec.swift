@@ -10,7 +10,7 @@ import Nimble
 import ReactiveSwift
 import Result
 import Freddy
-import ClientCore
+import Rc2Common
 import Mockingjay
 import Model
 @testable import Networking

@@ -4,7 +4,7 @@
 //  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
-import ClientCore
+import Rc2Common
 import Cocoa
 import Networking
 import MJLLogger

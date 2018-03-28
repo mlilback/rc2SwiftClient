@@ -6,7 +6,7 @@
 
 import Foundation
 import Result
-import ClientCore
+import Rc2Common
 import ReactiveSwift
 import Model
 @testable import Networking

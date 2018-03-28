@@ -10,7 +10,7 @@ import Foundation
 #endif
 // Required for theme = Property(ThemeManager...):
 import Model
-import ClientCore
+import Rc2Common
 import ReactiveSwift
 
 /// Parent class of specific parsers that must be implemented and base

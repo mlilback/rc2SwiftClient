@@ -10,7 +10,7 @@ import Nimble
 import ReactiveSwift
 import Result
 import Mockingjay
-import ClientCore
+import Rc2Common
 @testable import Docker
 
 /// a subclass of QuickSpec that has utility methods useful for docker testing

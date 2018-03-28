@@ -8,7 +8,7 @@ import Cocoa
 import ReactiveSwift
 import MJLLogger
 import Docker
-import ClientCore
+import Rc2Common
 
 class DockerBackupViewController: DockerManagerInjectable {
 	@IBOutlet var backupTableView: NSTableView!

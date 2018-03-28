@@ -8,7 +8,7 @@
 
 import Foundation
 @testable import Docker
-import ClientCore
+import Rc2Common
 import Darwin
 import Nimble
 import XCTest

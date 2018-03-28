@@ -6,7 +6,7 @@
 
 import Foundation
 @testable import MacClient
-import ClientCore
+import Rc2Common
 import ReactiveSwift
 import XCTest
 import os

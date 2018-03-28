@@ -7,7 +7,7 @@
 import Foundation
 import ReactiveSwift
 import Result
-import ClientCore
+import Rc2Common
 import MJLLogger
 import Model
 

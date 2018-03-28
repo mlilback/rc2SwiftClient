@@ -9,7 +9,7 @@ import XCTest
 import Quick
 import Nimble
 import ReactiveSwift
-import ClientCore
+import Rc2Common
 @testable import MacClient
 @testable import Networking
 

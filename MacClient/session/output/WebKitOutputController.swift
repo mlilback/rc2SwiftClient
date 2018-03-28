@@ -9,7 +9,7 @@ import Cocoa
 import Freddy
 import WebKit
 import MJLLogger
-import ClientCore
+import Rc2Common
 import Networking
 import ReactiveSwift
 import Result

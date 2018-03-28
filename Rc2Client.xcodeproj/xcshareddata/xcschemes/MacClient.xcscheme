@@ -90,8 +90,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "089794211D7B68F0003339EE"
-               BuildableName = "ClientCoreTests.xctest"
-               BlueprintName = "ClientCoreTests"
+               BuildableName = "Rc2CommonTests.xctest"
+               BlueprintName = "Rc2CommonTests"
                ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </TestableReference>

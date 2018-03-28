@@ -10,7 +10,7 @@ import MJLLogger
 import Networking
 import ReactiveSwift
 import Result
-import ClientCore
+import Rc2Common
 
 enum BookmarkEntry {
 	case group(String)

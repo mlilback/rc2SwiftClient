@@ -7,7 +7,7 @@
 
 import Foundation
 import Freddy
-import ClientCore
+import Rc2Common
 
 ///Represents a remote host
 public struct ServerHost: Codable, CustomStringConvertible, Hashable {

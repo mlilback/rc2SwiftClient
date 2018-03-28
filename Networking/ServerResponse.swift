@@ -9,7 +9,7 @@ import Freddy
 import MJLLogger
 import SwiftyUserDefaults
 import Result
-import ClientCore
+import Rc2Common
 import Model
 
 // MARK: Keys for UserDefaults

@@ -7,7 +7,7 @@
 import Foundation
 import Darwin
 import MJLLogger
-import ClientCore
+import Rc2Common
 
 enum LocalDockerMessage: Equatable {
 	case headers(HttpHeaders), data(Data), complete, error(DockerError)

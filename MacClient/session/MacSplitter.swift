@@ -6,7 +6,7 @@
 //
 
 import Cocoa
-import ClientCore
+import Rc2Common
 
 @objc open class MacSplitter: NSView {
 	override open func awakeFromNib() {

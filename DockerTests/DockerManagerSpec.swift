@@ -12,7 +12,7 @@ import Mockingjay
 import Result
 import Freddy
 import SwiftyUserDefaults
-import ClientCore
+import Rc2Common
 @testable import Docker
 
 class DockerManagerSpec: BaseDockerSpec {

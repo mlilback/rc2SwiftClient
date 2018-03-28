@@ -6,7 +6,7 @@
 
 import Foundation
 import Model
-import ClientCore
+import Rc2Common
 
 public struct SessionState: Codable {
 	public var outputState: OutputControllerState

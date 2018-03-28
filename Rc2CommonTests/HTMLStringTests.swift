@@ -1,13 +1,12 @@
 //
 //  HTMLStringTests.swift
-//  ClientCoreTests
 //
 //  Created by Mark Lilback on 1/12/18.
 //  Copyright © 2018 Rc2. All rights reserved.
 //
 
 import XCTest
-@testable import ClientCore
+@testable import Rc2Common
 
 class HTMLStringTests: XCTestCase {
 	func testBold() {

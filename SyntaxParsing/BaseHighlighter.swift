@@ -8,7 +8,7 @@ import Foundation
 #if os(OSX)
 	import AppKit
 #endif
-import ClientCore
+import Rc2Common
 import ReactiveSwift
 import PEGKit
 

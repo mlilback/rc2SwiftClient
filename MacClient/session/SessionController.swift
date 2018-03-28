@@ -11,7 +11,7 @@ import SwiftyUserDefaults
 import ReactiveSwift
 import ReactiveCocoa
 import Result
-import ClientCore
+import Rc2Common
 import Model
 
 protocol SessionControllerDelegate: class {

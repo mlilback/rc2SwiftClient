@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import ClientCore
+import Rc2Common
 import ReactiveSwift
 
 public protocol FileSaver {

@@ -6,7 +6,7 @@
 
 import Cocoa
 import Freddy
-import ClientCore
+import Rc2Common
 import SwiftyUserDefaults
 import Networking
 

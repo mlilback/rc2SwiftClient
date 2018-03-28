@@ -10,7 +10,7 @@ import ReactiveSwift
 import Result
 import Model
 import MJLLogger
-import ClientCore
+import Rc2Common
 
 /// Encapsulates the host and properties returned from a login request
 public class ConnectionInfo: CustomStringConvertible {

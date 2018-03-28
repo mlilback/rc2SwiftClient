@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import ClientCore
+import Rc2Common
 import Model
 
 /// represents a bookmark to an rc2 server

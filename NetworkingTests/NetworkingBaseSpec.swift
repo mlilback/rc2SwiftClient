@@ -10,7 +10,7 @@ import Nimble
 import Freddy
 import Result
 import ReactiveSwift
-import ClientCore
+import Rc2Common
 import Networking
 
 class NetworkingBaseSpec: QuickSpec {

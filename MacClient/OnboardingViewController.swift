@@ -6,7 +6,7 @@
 
 import Cocoa
 import MJLLogger
-import ClientCore
+import Rc2Common
 import Networking
 import Freddy
 import ReactiveSwift

@@ -7,7 +7,7 @@
 import Foundation
 import Quick
 import Nimble
-@testable import ClientCore
+@testable import Rc2Common
 
 class DataRc2Spec: QuickSpec {
 	override func spec() {

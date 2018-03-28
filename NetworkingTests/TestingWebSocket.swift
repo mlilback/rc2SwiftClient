@@ -6,7 +6,7 @@
 
 import Foundation
 @testable import Networking
-import ClientCore
+import Rc2Common
 import Starscream
 
 class TestingWebSocket: WebSocket {

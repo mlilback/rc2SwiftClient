@@ -8,7 +8,7 @@ import Foundation
 @testable import MacClient
 @testable import Networking
 import os
-import ClientCore
+import Rc2Common
 
 public class DefaultFileManager: Rc2FileManager {
 	public func Url(for directory: FileManager.SearchPathDirectory, domain: FileManager.SearchPathDomainMask, appropriateFor url: URL?, create shouldCreate: Bool) throws -> URL

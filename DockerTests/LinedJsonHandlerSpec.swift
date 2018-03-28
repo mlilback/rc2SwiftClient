@@ -9,7 +9,7 @@ import Quick
 import Nimble
 import Freddy
 @testable import Docker
-import ClientCore
+import Rc2Common
 
 class LinedJsonHandlerSpec: QuickSpec {
 	var lastMessageType: MessageType?

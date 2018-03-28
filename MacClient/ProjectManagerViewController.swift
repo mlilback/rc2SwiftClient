@@ -6,7 +6,7 @@
 
 import Cocoa
 import Networking
-import ClientCore
+import Rc2Common
 
 struct ProjectAndWorkspace {
 	let project: String

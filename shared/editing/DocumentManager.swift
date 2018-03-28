@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import ClientCore
+import Rc2Common
 import ReactiveSwift
 import Networking
 import SwiftyUserDefaults

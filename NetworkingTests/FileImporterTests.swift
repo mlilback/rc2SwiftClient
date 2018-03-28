@@ -11,7 +11,7 @@ import Freddy
 import Model
 @testable import Networking
 import Mockingjay
-import ClientCore
+import Rc2Common
 
 //TODO: implement FileImporterTests
 

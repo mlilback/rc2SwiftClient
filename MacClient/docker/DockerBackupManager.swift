@@ -7,7 +7,7 @@
 import Foundation
 import Docker
 import ReactiveSwift
-import ClientCore
+import Rc2Common
 import Result
 
 struct DockerBackup {

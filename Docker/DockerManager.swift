@@ -12,7 +12,7 @@ import ReactiveSwift
 import Result
 import ServiceManagement
 import SwiftyUserDefaults
-import ClientCore
+import Rc2Common
 import MJLLogger
 
 public enum DockerBackupOption: Int {

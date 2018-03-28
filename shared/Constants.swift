@@ -5,7 +5,7 @@
 //
 
 import Cocoa
-import ClientCore
+import Rc2Common
 
 let rc2ErrorDomain = "Rc2ErrorDomain"
 

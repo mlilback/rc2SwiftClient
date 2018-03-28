@@ -7,7 +7,7 @@
 import Foundation
 import Docker
 import ReactiveSwift
-import ClientCore
+import Rc2Common
 import Freddy
 
 class MockDockerAPI: DockerAPI {

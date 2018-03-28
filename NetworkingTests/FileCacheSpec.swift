@@ -12,7 +12,7 @@ import Mockingjay
 import URITemplate
 import Result
 import Model
-import ClientCore
+import Rc2Common
 @testable import Networking
 
 class FileCacheSpec: NetworkingBaseSpec {

@@ -8,7 +8,7 @@ import Foundation
 import MJLLogger
 import ReactiveSwift
 import Networking
-import ClientCore
+import Rc2Common
 
 fileprivate let minTimeBetweenAutoSaves: TimeInterval = 2
 

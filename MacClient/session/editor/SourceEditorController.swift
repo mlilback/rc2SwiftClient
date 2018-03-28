@@ -8,7 +8,7 @@ import Cocoa
 import MJLLogger
 import Freddy
 import ReactiveSwift
-import ClientCore
+import Rc2Common
 import Networking
 import SyntaxParsing
 

@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import ClientCore
+import Rc2Common
 
 enum AppErrorType: String {
 	case saveFailed

@@ -11,7 +11,7 @@ import Nimble
 import Mockingjay
 import Result
 import ReactiveSwift
-import ClientCore
+import Rc2Common
 import Freddy
 
 // TODO: create container

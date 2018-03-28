@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import ClientCore
+import Rc2Common
 import Model
 
 public protocol SessionDelegate: class {

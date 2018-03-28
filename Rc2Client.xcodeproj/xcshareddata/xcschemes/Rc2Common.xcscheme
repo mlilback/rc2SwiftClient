@@ -29,8 +29,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "089794191D7B68F0003339EE"
-               BuildableName = "ClientCore.framework"
-               BlueprintName = "ClientCore"
+               BuildableName = "Rc2Common.framework"
+               BlueprintName = "Rc2Common"
                ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -48,8 +48,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "089794211D7B68F0003339EE"
-               BuildableName = "ClientCoreTests.xctest"
-               BlueprintName = "ClientCoreTests"
+               BuildableName = "Rc2CommonTests.xctest"
+               BlueprintName = "Rc2CommonTests"
                ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -58,8 +58,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "089794191D7B68F0003339EE"
-            BuildableName = "ClientCore.framework"
-            BlueprintName = "ClientCore"
+            BuildableName = "Rc2Common.framework"
+            BlueprintName = "Rc2Common"
             ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -81,8 +81,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "089794191D7B68F0003339EE"
-            BuildableName = "ClientCore.framework"
-            BlueprintName = "ClientCore"
+            BuildableName = "Rc2Common.framework"
+            BlueprintName = "Rc2Common"
             ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -116,8 +116,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "089794191D7B68F0003339EE"
-            BuildableName = "ClientCore.framework"
-            BlueprintName = "ClientCore"
+            BuildableName = "Rc2Common.framework"
+            BlueprintName = "Rc2Common"
             ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

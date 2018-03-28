@@ -10,7 +10,7 @@
 #else
 	import UIKit
 #endif
-import ClientCore
+import Rc2Common
 import Freddy
 import ReactiveSwift
 import Result

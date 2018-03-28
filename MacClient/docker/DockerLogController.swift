@@ -6,7 +6,7 @@
 
 import Cocoa
 import Docker
-import ClientCore
+import Rc2Common
 
 enum LogType: Int {
 	case combined = 0

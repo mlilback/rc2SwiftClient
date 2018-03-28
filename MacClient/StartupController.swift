@@ -5,7 +5,7 @@
 //
 
 import Cocoa
-import ClientCore
+import Rc2Common
 import Docker
 
 public enum SetupStage {

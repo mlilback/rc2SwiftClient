@@ -29,8 +29,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "089794191D7B68F0003339EE"
-               BuildableName = "ClientCore.framework"
-               BlueprintName = "ClientCore"
+               BuildableName = "Rc2Common.framework"
+               BlueprintName = "Rc2Common"
                ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

@@ -8,7 +8,7 @@ import Cocoa
 import Networking
 import ReactiveSwift
 import Result
-import ClientCore
+import Rc2Common
 import MJLLogger
 
 ///used to update the progress display for an operation

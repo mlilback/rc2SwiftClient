@@ -9,7 +9,7 @@ import MJLLogger
 import ReactiveSwift
 import Result
 import SwiftyUserDefaults
-import ClientCore
+import Rc2Common
 import Networking
 import Model
 

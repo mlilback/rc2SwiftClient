@@ -5,7 +5,7 @@
 //
 
 import Cocoa
-import ClientCore
+import Rc2Common
 
 protocol EmbeddedDialogController {
 	var canContinue: Bool { get }
