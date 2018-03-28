@@ -6,10 +6,16 @@
 
 import Foundation
 
+/// A protocol to allow outer layers of the software stack to handle errors from a lower layer
+public protocol Rc2ErrorHandler: class {
+	/// handle an error from another component/layer of the software stack
+	func handle(error: Rc2Error)
+}
+
 /// A protocol to group domain-specific errors that will be nested inside an Rc2Error
 public protocol Rc2DomainError: LocalizedError {}
 
-//error object used throughoout project
+/// common error that can nest more detailed errors that is used throughoout project
 public struct Rc2Error: LocalizedError, CustomStringConvertible, CustomDebugStringConvertible {
 	/// basic categories of errors
 	public enum Rc2ErrorType: String, Error {
@@ -71,6 +77,7 @@ public struct Rc2Error: LocalizedError, CustomStringConvertible, CustomDebugStri
 		if explanation != nil { return explanation! }
 		return "\(type) @ \(location)"
 	}
+	
 	public var debugDescription: String { return "\(type) @ \(location)" }
 
 	public var nestedDescription: String? { return nestedError?.localizedDescription }
