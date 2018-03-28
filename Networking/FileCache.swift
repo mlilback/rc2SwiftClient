@@ -27,19 +27,19 @@ public protocol FileCache {
 	func close()
 	func isFileCached(_ file: AppFile) -> Bool
 //	func flushCache(workspace:Workspace)
-	//removes the cached file
+	/// removes the cached file
 	func flushCache(file: AppFile)
-	///recaches the specified file if it has changed
+	/// recaches the specified file if it has changed
 	func recache(file: AppFile) -> SignalProducer<Double, Rc2Error>
-	//recaches an array of files
+	/// recaches an array of files
 	func flushCache(files: [AppFile]) -> SignalProducer<Double, Rc2Error>
-	///caches all the files in the workspace that aren't already cached with the current version of the file
+	/// caches all the files in the workspace that aren't already cached with the current version of the file
 	func cacheAllFiles() -> SignalProducer<Double, Rc2Error>
 	/// returns the file system url where the file is/will be stored
 	func cachedUrl(file: AppFile) -> URL
-	// returns the file url where the specified file is/will be stored
+	/// returns the file url where the specified file is/will be stored
 	func cachedUrl(file: File) throws -> URL
-	///calls cachedUrl, but downloads the file if correct version is not cached on disk
+	/// calls cachedUrl, but downloads the file if correct version is not cached on disk
 	/// - Parameter file: the file whose url is desired
 	/// - Returns: signal producer that returns the URL to the cached contents of file
 	func validUrl(for file: AppFile) -> SignalProducer<URL, Rc2Error>
@@ -384,7 +384,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 		}
 	}
 
-	///returns a producer that forwards values/completed from our progress signal, converting an interrupted into completed.
+	/// returns a producer that forwards values/completed from our progress signal, converting an interrupted into completed.
 	/// This is because signals send interrupted if they are already closed, but the caller expects a normal signal producer.
 	func producer<E>(signal: Signal<Double, E>) -> SignalProducer<Double, Rc2Error> {
 		var theProducer: SignalProducer<Double, Rc2Error>?
@@ -484,7 +484,7 @@ extension DefaultFileCache {
 		}
 	}
 	
-	/// "caches" a file with provided data
+	/// "caches" a file with provided data. For use after importing a file so it doesn't have to be downloaded immediately.
 	///
 	/// - Parameters:
 	///   - file: the file whose contents changed

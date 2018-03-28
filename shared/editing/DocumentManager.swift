@@ -79,7 +79,7 @@ class DocumentManager: EditorContext {
 		}
 	}
 	
-	// returns a SP that will save the current document and load the document for file
+	/// returns a SP that will save the current document and load the document for file
 	func load(file: AppFile?) -> SignalProducer<String?, Rc2Error> {
 		if loading.value {
 			Log.warn("load called while already loading", .app)
@@ -107,9 +107,9 @@ class DocumentManager: EditorContext {
 			.on(starting: { self.loading.value = true }, completed: { self.loading.value = false })
 	}
 	
-	// saves to server, fileCache, and memory cache
-	// FIXME: use autosave parameter
+	/// saves to server, fileCache, and memory cache
 	func save(document: EditorDocument, isAutoSave: Bool = false) -> SignalProducer<String, Rc2Error> {
+		// FIXME: use autosave parameter
 		guard document.isDirty else { return SignalProducer<String, Rc2Error>(value: document.savedContents!) }
 		guard let contents = document.editedContents else {
 			return SignalProducer<String, Rc2Error>(error: Rc2Error(type: .invalidArgument))
