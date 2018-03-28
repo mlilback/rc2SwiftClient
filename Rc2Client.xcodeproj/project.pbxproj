@@ -350,7 +350,6 @@
 		089794231D7B68F0003339EE /* Rc2Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; };
 		0897942F1D7B68F0003339EE /* Rc2Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; };
 		089794301D7B68F0003339EE /* Rc2Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		089794381D7B6925003339EE /* Rc2Common-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 089794371D7B6925003339EE /* Rc2Common-Bridging-Header.h */; };
 		089794421D7B6A0F003339EE /* SharedConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089794411D7B6A0F003339EE /* SharedConstants.swift */; };
 		0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089794471D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift */; };
 		089794511D7B6A8F003339EE /* SystemExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0897944A1D7B6A8F003339EE /* SystemExtensions.swift */; };
@@ -1187,7 +1186,6 @@
 		0897941D1D7B68F0003339EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		089794221D7B68F0003339EE /* Rc2CommonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Rc2CommonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0897942B1D7B68F0003339EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		089794371D7B6925003339EE /* Rc2Common-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Rc2Common-Bridging-Header.h"; sourceTree = "<group>"; };
 		089794411D7B6A0F003339EE /* SharedConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SharedConstants.swift; sourceTree = "<group>"; };
 		089794471D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSTextCheckingResult+Rc2.swift"; sourceTree = "<group>"; };
 		0897944A1D7B6A8F003339EE /* SystemExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemExtensions.swift; sourceTree = "<group>"; };
@@ -2184,7 +2182,6 @@
 				08525E4F1E204672008A332E /* URLStaleChecker.swift */,
 				086A40CF1E7AEC5000AE476B /* themes */,
 				089794431D7B6A8F003339EE /* extensions */,
-				089794371D7B6925003339EE /* Rc2Common-Bridging-Header.h */,
 				0897941D1D7B68F0003339EE /* Info.plist */,
 				08CFE8CE1E75BA42002A35C1 /* DirectoryWatcher.swift */,
 				08E5D2081EAA58FD00374055 /* TimedEvent.swift */,
@@ -2467,7 +2464,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				089794381D7B6925003339EE /* Rc2Common-Bridging-Header.h in Headers */,
 				089794541D7B6C91003339EE /* Rc2Common.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
