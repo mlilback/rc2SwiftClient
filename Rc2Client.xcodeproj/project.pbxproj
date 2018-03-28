@@ -184,6 +184,7 @@
 		0841993E1D91B2C80089A1AC /* URITemplate.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0846D3E120175DF100795376 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0846D3E020175DF100795376 /* AppError.swift */; };
 		0846D3E32017C03900795376 /* FileTemplates in Resources */ = {isa = PBXBuildFile; fileRef = 0846D3E22017C03900795376 /* FileTemplates */; };
+		084D32DE206C30B500246CBD /* CodeEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D32DD206C30B500246CBD /* CodeEditor.swift */; };
 		084E93A9201A313900FF50EA /* FakeFileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935871E00AA5700C94B19 /* FakeFileCache.swift */; };
 		084E93AC201A352200FF50EA /* ConnectionInfoSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */; };
 		084E93B7201E874900FF50EA /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; };
@@ -456,7 +457,7 @@
 		08EE26FC202FA995008E008F /* FileInfoController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08EE26FA202FA995008E008F /* FileInfoController.xib */; };
 		08EE26FF202FAC08008E008F /* VariableDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08EE26FD202FAC08008E008F /* VariableDetails.storyboard */; };
 		08EE27012030A0BC008E008F /* SidebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE27002030A0BC008E008F /* SidebarController.swift */; };
-		08EE270620334470008E008F /* CodeEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE270520334470008E008F /* CodeEditor.swift */; };
+		08EE270620334470008E008F /* EditorContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE270520334470008E008F /* EditorContext.swift */; };
 		08EE270820335561008E008F /* RootEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE270720335561008E008F /* RootEditorController.swift */; };
 		08EE270A20335B0A008E008F /* NotebookEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE270920335B0A008E008F /* NotebookEditorController.swift */; };
 		08F01E961EFC74690047F397 /* NSData+Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F01E941EFC74690047F397 /* NSData+Hash.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1041,6 +1042,7 @@
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
 		0846D3E020175DF100795376 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		0846D3E22017C03900795376 /* FileTemplates */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FileTemplates; path = shared/resources/FileTemplates; sourceTree = SOURCE_ROOT; };
+		084D32DD206C30B500246CBD /* CodeEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeEditor.swift; sourceTree = "<group>"; };
 		084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfoSpec.swift; sourceTree = "<group>"; };
 		084E93B2201E874900FF50EA /* ModelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ModelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		084E93B6201E874900FF50EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1267,7 +1269,7 @@
 		08EE26FB202FA995008E008F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/FileInfoController.xib; sourceTree = SOURCE_ROOT; };
 		08EE26FE202FAC08008E008F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = MacClient/Base.lproj/VariableDetails.storyboard; sourceTree = SOURCE_ROOT; };
 		08EE27002030A0BC008E008F /* SidebarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarController.swift; sourceTree = "<group>"; };
-		08EE270520334470008E008F /* CodeEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditor.swift; sourceTree = "<group>"; };
+		08EE270520334470008E008F /* EditorContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorContext.swift; sourceTree = "<group>"; };
 		08EE270720335561008E008F /* RootEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootEditorController.swift; sourceTree = "<group>"; };
 		08EE270920335B0A008E008F /* NotebookEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookEditorController.swift; sourceTree = "<group>"; };
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
@@ -1777,7 +1779,8 @@
 		084D32DC206AFAD900246CBD /* editing */ = {
 			isa = PBXGroup;
 			children = (
-				08EE270520334470008E008F /* CodeEditor.swift */,
+				084D32DD206C30B500246CBD /* CodeEditor.swift */,
+				08EE270520334470008E008F /* EditorContext.swift */,
 				0812631E1C862F4B003E37A5 /* EditorDocument.swift */,
 				08BCEA3020388D5F004A5F47 /* DocumentManager.swift */,
 			);
@@ -3441,6 +3444,7 @@
 				085A1A1E205AC35200B7EC5F /* ChunkViewItem.swift in Sources */,
 				0872676D1EE20A37004251C1 /* DockerBackupViewController.swift in Sources */,
 				085A1A2B205ACA4600B7EC5F /* AbstractEditorController.swift in Sources */,
+				084D32DE206C30B500246CBD /* CodeEditor.swift in Sources */,
 				08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */,
 				083AC1022062E9670054023F /* MarkdownViewItem.swift in Sources */,
 				08EE27012030A0BC008E008F /* SidebarController.swift in Sources */,
@@ -3454,7 +3458,7 @@
 				08A01FC61CC7FCA3001EDFAA /* FMDatabasePool.m in Sources */,
 				083AC1042062EDFB0054023F /* NSImage+Rc2.swift in Sources */,
 				083A56711D24722C009D3091 /* ProjectManagerViewController.swift in Sources */,
-				08EE270620334470008E008F /* CodeEditor.swift in Sources */,
+				08EE270620334470008E008F /* EditorContext.swift in Sources */,
 				086508771E43F27C0067C8CA /* SingleInputViewController.swift in Sources */,
 				08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */,
 				08525E781E3143C3008A332E /* InputPrompter.swift in Sources */,

@@ -25,13 +25,17 @@ class DocumentManager: EditorContext {
 	// when changed, should use .updateProgress() while loading file contents
 	private let _currentDocument = MutableProperty<EditorDocument?>(nil)
 	let currentDocument: Property<EditorDocument?>
+	private let _parsedDocument = MutableProperty<RmdDocument?>(nil)
+	var parsedDocument: Property<RmdDocument?>
+	
 	let editorFont: MutableProperty<NSFont>
+	var errorHandler: Rc2ErrorHandler { return self }
 	var openDocuments: [Int: EditorDocument] = [:]
 	var notificationCenter: NotificationCenter
 	var workspaceNotificationCenter: NotificationCenter
 	let lifetime: Lifetime
 	var defaults: UserDefaults
-	//	var session: Session
+
 	let fileSaver: FileSaver
 	let fileCache: FileCache
 	let loading = Atomic<Bool>(false)
@@ -39,9 +43,11 @@ class DocumentManager: EditorContext {
 	var busy: Bool { return loading.value || saving.value }
 	
 	// MARK: methods
+	
 	init(fileSaver: FileSaver, fileCache: FileCache, lifetime: Lifetime, notificationCenter: NotificationCenter = .default, wspaceCenter: NotificationCenter = NSWorkspace.shared.notificationCenter, defaults: UserDefaults = .standard)
 	{
 		currentDocument = Property<EditorDocument?>(_currentDocument)
+		parsedDocument = Property<RmdDocument?>(_parsedDocument)
 		self.fileSaver = fileSaver
 		self.fileCache = fileCache
 		self.lifetime = lifetime
@@ -85,11 +91,11 @@ class DocumentManager: EditorContext {
 			Log.warn("load called while already loading", .app)
 		}
 		// get a producer to save the old document
-		let saveProducer: SignalProducer<String, Rc2Error>
+		let saveProducer: SignalProducer<(), Rc2Error>
 		if let curDoc = currentDocument.value {
 			saveProducer = save(document: curDoc)
 		} else { // make a producer that does nothing
-			saveProducer = SignalProducer<String, Rc2Error>(value: "")
+			saveProducer = SignalProducer<(), Rc2Error>(value: ())
 		}
 		// if file is nil, nil out current document (saving current first)
 		guard let theFile = file else {
@@ -108,11 +114,11 @@ class DocumentManager: EditorContext {
 	}
 	
 	/// saves to server, fileCache, and memory cache
-	func save(document: EditorDocument, isAutoSave: Bool = false) -> SignalProducer<String, Rc2Error> {
+	func save(document: EditorDocument, isAutoSave: Bool = false) -> SignalProducer<(), Rc2Error> {
 		// FIXME: use autosave parameter
-		guard document.isDirty else { return SignalProducer<String, Rc2Error>(value: document.savedContents!) }
+		guard document.isDirty else { return SignalProducer<(), Rc2Error>(value: ()) }
 		guard let contents = document.editedContents else {
-			return SignalProducer<String, Rc2Error>(error: Rc2Error(type: .invalidArgument))
+			return SignalProducer<(), Rc2Error>(error: Rc2Error(type: .invalidArgument))
 		}
 		notificationCenter.post(name: .willSaveDocument, object: self)
 		return self.fileSaver.save(file: document.file, contents: contents)
@@ -121,7 +127,6 @@ class DocumentManager: EditorContext {
 			.flatMap(.concat, fileCache.save)
 			.on(completed: { document.contentsSaved() },
 				terminated: { self.saving.value = false })
-			.map { return document.currentContents ?? "" }
 	}
 	
 
@@ -159,5 +164,11 @@ class DocumentManager: EditorContext {
 			.flatMap(.concat, fileCache.contents)
 			.on(value: { _ in self._currentDocument.value = document })
 			.map( { String(data: $0, encoding: .utf8) } )
+	}
+}
+
+extension DocumentManager: Rc2ErrorHandler {
+	func handle(error: Rc2Error) {
+		
 	}
 }

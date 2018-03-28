@@ -57,7 +57,7 @@ public protocol FileCache {
 	///   - file: the file whose contents changed
 	///   - data: the data with the contents of the file
 	/// - Returns: signal producer that signals completed or error
-	func cache(file: File, withData data: Data) -> SignalProducer<Void, Rc2Error>
+	func cache(file: File, withData data: Data) -> SignalProducer<(), Rc2Error>
 	
 	/// "caches" a file with contents of a specified file
 	///
@@ -65,7 +65,7 @@ public protocol FileCache {
 	///   - file: the file whose contents changed
 	///   - srcFile: the file whose contents should be used for file
 	/// - Returns: signal producer that signals completed or error
-	func cache(file: File, srcFile: URL) -> SignalProducer<Void, Rc2Error>
+	func cache(file: File, srcFile: URL) -> SignalProducer<(), Rc2Error>
 
 	/// saves file contents (does not update file object)
 	///
@@ -73,7 +73,7 @@ public protocol FileCache {
 	///   - file: the file to save data to
 	///   - contents: the contents to save to the file
 	/// - Returns: a signal producer that signals success or error
-	func save(file: AppFile, contents: String) -> SignalProducer<Void, Rc2Error>
+	func save(file: AppFile, contents: String) -> SignalProducer<(), Rc2Error>
 }
 
 // MARK: FileCache implementation
@@ -490,13 +490,14 @@ extension DefaultFileCache {
 	///   - file: the file whose contents changed
 	///   - data: the data with the contents of the file
 	/// - Returns: signal producer that signals completed or error
-	public func cache(file: File, withData data: Data) -> SignalProducer<Void, Rc2Error>
+	public func cache(file: File, withData data: Data) -> SignalProducer<(), Rc2Error>
 	{
-		return SignalProducer<Void, Rc2Error> { observer, _ in
+		return SignalProducer<(), Rc2Error> { observer, _ in
 			do {
 				let url = try self.cachedUrl(file: file)
 				Log.info("writing data to file \(file.id)", .cache)
 				try data.write(to: url)
+				observer.send(value: ())
 				observer.sendCompleted()
 			} catch {
 				observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "failed to save \(file.name) to file cache"))
@@ -510,14 +511,15 @@ extension DefaultFileCache {
 	///   - file: the file whose contents changed
 	///   - srcFile: the file whose contents should be used for file
 	/// - Returns: signal producer that signals completed or error
-	public func cache(file: File, srcFile: URL) -> SignalProducer<Void, Rc2Error>
+	public func cache(file: File, srcFile: URL) -> SignalProducer<(), Rc2Error>
 	{
 		precondition(srcFile.fileExists())
-		return SignalProducer<Void, Rc2Error> { observer, _ in
+		return SignalProducer<(), Rc2Error> { observer, _ in
 			do {
 				let url = try self.cachedUrl(file: file)
 				Log.info("copying to file \(file.id)", .cache)
 				try self.fileManager.copyItem(at: srcFile, to: url)
+				observer.send(value: ())
 				observer.sendCompleted()
 			} catch {
 				observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "failed to save \(file.name) to file cache"))
@@ -531,8 +533,8 @@ extension DefaultFileCache {
 	///   - file: the file to save data to
 	///   - contents: the contents to save to the file
 	/// - Returns: a signal producer that signals success or error
-	public func save(file: AppFile, contents: String) -> SignalProducer<Void, Rc2Error> {
-		return SignalProducer<Void, Rc2Error> { observer, _ in
+	public func save(file: AppFile, contents: String) -> SignalProducer<(), Rc2Error> {
+		return SignalProducer<(), Rc2Error> { observer, _ in
 			let url = self.cachedUrl(file: file)
 			do {
 				Log.info("writing contents to file \(file.model.id)", .cache)

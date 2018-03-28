@@ -1,5 +1,5 @@
 //
-//  CodeEditor.swift
+//  EditorContext.swift
 //
 //  Copyright ©2017 Mark Lilback. This file is licensed under the ISC license.
 //
@@ -26,17 +26,3 @@ protocol EditorManager: CodeEditor {
 	var canSwitchToSourceMode: Bool { get }
 	func switchTo(mode: EditorMode)
 }
-
-/// object passed to UI controllers that take part in editing a document
-protocol EditorContext: class {
-	var currentDocument: Property<EditorDocument?> { get }
-	var editorFont: MutableProperty<NSFont> { get }
-	var notificationCenter: NotificationCenter { get }
-	var workspaceNotificationCenter: NotificationCenter { get }
-	var lifetime: Lifetime { get }
-	
-	func save(document: EditorDocument, isAutoSave: Bool) -> SignalProducer<String, Rc2Error>
-	func load(file: AppFile?) -> SignalProducer<String?, Rc2Error>
-}
-
-
