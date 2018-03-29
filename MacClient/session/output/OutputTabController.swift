@@ -8,6 +8,7 @@ import Cocoa
 import Rc2Common
 import MJLLogger
 import Networking
+import ClientCore
 import ReactiveSwift
 import ReactiveCocoa
 import Result

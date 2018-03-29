@@ -7,6 +7,7 @@
 import Cocoa
 import Freddy
 import Rc2Common
+import ClientCore
 import ReactiveSwift
 import SwiftyUserDefaults
 import Docker

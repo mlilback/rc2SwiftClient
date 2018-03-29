@@ -11,6 +11,7 @@ import ReactiveSwift
 import Rc2Common
 import Networking
 import SyntaxParsing
+import ClientCore
 
 ///selectors used in this file, aliased with shorter, descriptive names
 extension Selector {

@@ -6,6 +6,7 @@
 
 import Foundation
 import Model
+import ClientCore
 
 fileprivate extension NSUserInterfaceItemIdentifier {
 	static let simpleList = NSUserInterfaceItemIdentifier(rawValue: "simpleList")

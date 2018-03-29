@@ -8,6 +8,7 @@ import Cocoa
 import Freddy
 import Model
 import Networking
+import ClientCore
 
 ///These protocols exist to decouple various view controllers
 

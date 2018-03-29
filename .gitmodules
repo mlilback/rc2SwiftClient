@@ -1,6 +1,3 @@
-[submodule "vendor/fmdb"]
-	path = vendor/fmdb
-	url = https://github.com/ccgus/fmdb
 [submodule "vendor/SBInjector"]
 	path = vendor/SBInjector
 	url = https://github.com/mlilback/SBInjector.git

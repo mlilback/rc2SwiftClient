@@ -8,12 +8,12 @@ import Foundation
 import Model
 
 /// Used to convert values of a variable to an array of strings
-class VariableFormatter {
-	let doubleFormatter: NumberFormatter
-	let dateFormatter: DateFormatter
-	let dateTimeFormatter: DateFormatter
+public class VariableFormatter {
+	public let doubleFormatter: NumberFormatter
+	public let dateFormatter: DateFormatter
+	public let dateTimeFormatter: DateFormatter
 	
-	init(doubleFormatter: NumberFormatter, dateFormatter: DateFormatter, dateTimeFormatter: DateFormatter? = nil) {
+	public init(doubleFormatter: NumberFormatter, dateFormatter: DateFormatter, dateTimeFormatter: DateFormatter? = nil) {
 		self.doubleFormatter = doubleFormatter
 		self.dateFormatter = dateFormatter
 		self.dateTimeFormatter = dateTimeFormatter ?? dateFormatter

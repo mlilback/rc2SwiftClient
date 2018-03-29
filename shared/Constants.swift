@@ -32,8 +32,6 @@ extension NSPasteboard.PasteboardType {
 
 let consoleAttachmentImageSize = CGSize(width: 48, height: 48)
 
-let helpUrlFuncSeperator = "/html"
-
 let variableUpdatedBackgroundColor = PlatformColor.green
 let variableNormalBackgroundColor = PlatformColor.white
 let noteBookFrontMatterColor = PlatformColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)

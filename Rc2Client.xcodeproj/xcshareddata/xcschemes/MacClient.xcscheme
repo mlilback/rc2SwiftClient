@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "08A01FAD1CC7FA28001EDFAA"
-               BuildableName = "createHelpIndex"
-               BlueprintName = "createHelpIndex"
+               BlueprintIdentifier = "084D3315206D3C9E00246CBD"
+               BuildableName = "HelpIndexTool"
+               BlueprintName = "HelpIndexTool"
                ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,6 +46,20 @@
                BuildableName = "GRDB.framework"
                BlueprintName = "GRDBOSX"
                ReferencedContainer = "container:vendor/GRDB/GRDB.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "084D32E6206D03DD00246CBD"
+               BuildableName = "ClientCore.framework"
+               BlueprintName = "ClientCore"
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -122,6 +136,16 @@
                BlueprintIdentifier = "082BE0901F59D549006CE0B7"
                BuildableName = "SyntaxParsingTests.xctest"
                BlueprintName = "SyntaxParsingTests"
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "084D32EE206D03DD00246CBD"
+               BuildableName = "ClientCoreTests.xctest"
+               BlueprintName = "ClientCoreTests"
                ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </TestableReference>

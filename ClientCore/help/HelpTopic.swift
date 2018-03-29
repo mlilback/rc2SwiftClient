@@ -7,25 +7,25 @@
 import Foundation
 
 /// Represents a help page or a package of pages
-class HelpTopic: Hashable {
+public class HelpTopic: Hashable {
 	/// a unique id per topic. nil if isPackage is true
-	let topicId: Int?
+	public let topicId: Int?
 	/// name of the topic
-	let name: String
+	public let name: String
 	/// true if this topic represents a package that groups other topics
-	let isPackage: Bool
+	public let isPackage: Bool
 	/// the title to display
-	let title: String?
+	public let title: String?
 	/// the short description of the topic
-	let desc: String?
+	public let desc: String?
 	/// known aliases for the topic
-	let aliases: [String]?
+	public let aliases: [String]?
 	/// if isPackage is true, the topics contained in this package
-	let subtopics: [HelpTopic]?
+	public let subtopics: [HelpTopic]?
 	/// if isPackage is true, the package name. Otherwise, the same as title
-	let packageName: String
+	public let packageName: String
 
-	///initializer for a package description
+	/// initializer for a package description
 	init(name: String, subtopics: [HelpTopic]) {
 		self.isPackage = true
 		self.topicId = nil
@@ -37,7 +37,7 @@ class HelpTopic: Hashable {
 		self.subtopics = subtopics
 	}
 
-	///initializer for an actual topic
+	/// initializer for an actual topic
 	init(id: Int? = nil, name: String, packageName: String, title: String, aliases: String, description: String?) {
 		self.isPackage = false
 		self.topicId = id
@@ -49,9 +49,9 @@ class HelpTopic: Hashable {
 		self.aliases = aliases.components(separatedBy: ":")
 	}
 
-	var hashValue: Int { return ObjectIdentifier(self).hashValue }
+	public var hashValue: Int { return ObjectIdentifier(self).hashValue }
 
-	static func == (lhs: HelpTopic, rhs: HelpTopic) -> Bool {
+	static public func == (lhs: HelpTopic, rhs: HelpTopic) -> Bool {
 		return ObjectIdentifier(lhs).hashValue == ObjectIdentifier(rhs).hashValue
 	}
 

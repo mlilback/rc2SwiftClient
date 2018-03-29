@@ -19,7 +19,7 @@ public class DataFrameDataSource: SpreadsheetDataSource {
 	
 	public let columnNames: [String]? // { return dataFrameData.columns.map { $0.name } }
 	
-	init(variable: Variable, formatter: VariableFormatter) {
+	public init(variable: Variable, formatter: VariableFormatter) {
 		self.variable = variable
 		if let matrixData = variable.matrixData {
 			// values is rows x columns

@@ -7,6 +7,7 @@
 import Foundation
 import WebKit
 import Networking
+import ClientCore
 
 class HelpOutputController: WebViewController {
 	private var currentTopic: HelpTopic?

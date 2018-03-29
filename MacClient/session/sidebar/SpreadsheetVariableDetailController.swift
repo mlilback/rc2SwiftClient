@@ -6,6 +6,7 @@
 
 import Foundation
 import Model
+import ClientCore
 import SigmaSwiftStatistics
 
 fileprivate extension NSUserInterfaceItemIdentifier {

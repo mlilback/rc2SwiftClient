@@ -7,6 +7,7 @@
 import Cocoa
 import MJLLogger
 import Networking
+import ClientCore
 import SwiftyUserDefaults
 import ReactiveSwift
 import ReactiveCocoa
