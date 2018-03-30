@@ -128,30 +128,32 @@ public class RmdDocument {
 	}
 }
 
+// MARK: - protocols
+
 public protocol Equation: class {
 	var equationSource: String { get }
 }
+
 public protocol Code: class {
 	var codeSource: String { get }
 }
+
 public protocol RmdChunk: class {
 	var contents: String { get }
 	var attributedContents: NSAttributedString { get }
 	var chunkType: ChunkType { get }
 	
 }
+
 public protocol InlineChunk: RmdChunk {}
 
 public protocol TextChunk: RmdChunk {
 	var inlineElements: [InlineChunk] { get }
 }
 
-public protocol CodeChunk: RmdChunk {
-}
+public protocol CodeChunk: RmdChunk {}
 
-// MARK: -
-let attachmentString = "⚓︎"
-let attachmentKey = NSAttributedStringKey("rc2.InlineChunk")
+// MARK: - attachments
 class InlineAttachment: NSTextAttachment {
 	weak var chunk: InlineChunk?
 	
@@ -177,6 +179,9 @@ class InlineAttachmentCell: NSTextAttachmentCell {
 		return rect
 	}
 }
+
+// MARK: - chunks
+
 class InternalRmdChunk: NSObject, RmdChunk, NSTextStorageDelegate {
 	weak var parser: BaseSyntaxParser?
 	var parserChunk: DocumentChunk
