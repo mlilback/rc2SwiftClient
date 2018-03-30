@@ -67,7 +67,7 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		data = nil
-		sourceView.replace(text: "")
+		sourceView.layoutManager?.replaceTextStorage(NSTextStorage())
 		resultTextView?.replace(text: "")
 	}
 
@@ -106,10 +106,8 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 			Log.debug("resultView.changeCallback", .app)
 		}
 		data.source.font = context.editorFont.value
-		// Sets each view's string from the data's string
-		guard let sourceStorage = sourceView?.textStorage else { fatalError() }
-		sourceStorage.replaceCharacters(in: sourceStorage.string.fullNSRange, with: data.chunk.attributedContents)
-		resultTextView?.replace(text: data.result.string)
+		// use the data's textstorage
+		sourceView.layoutManager?.replaceTextStorage(data.chunk.textStorage)
 		//adjust label
 		chunkTypeLabel.stringValue = titleForCurrentChunk()
 		resultTwiddle.state = data.resultsVisible.value ? .on : .off
@@ -158,6 +156,7 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		layingOut = true
 		defer { layingOut = false }
 		
+		let startingSize = view.frame.size
 		// Set the rects of each frame within each item:
 		var topFrame = NSRect.zero, srcFrame = NSRect.zero, resFrame = NSRect.zero, middleFrame = NSRect.zero
 		let myWidth = view.frame.size.width	// width of all frames
@@ -203,7 +202,9 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 			// if results are twiddled open, add it
 			myHeight += resFrame.size.height
 		}
-		view.setFrameSize(NSSize(width: myWidth, height: myHeight))
+		let newSize = NSSize(width: myWidth, height: myHeight)
+		guard newSize != startingSize else { return }
+		view.setFrameSize(newSize)
 		data?.height = myHeight
 		
 		collectionView?.collectionViewLayout?.invalidateLayout()

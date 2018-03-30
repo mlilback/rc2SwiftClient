@@ -40,7 +40,7 @@ public class RmdDocument {
 				let whitespaceOnly = chunkContents.string.rangeOfCharacter(from: CharacterSet.whitespacesAndNewlines.inverted) == nil
 				if lastWasInline || whitespaceOnly {
 					// need to append this chunk's content to lastTextChunk
-					lastTextChunk?.storage.append(chunkContents)
+					lastTextChunk?.textStorage.append(chunkContents)
 					lastWasInline = false
 					return
 				}
@@ -52,7 +52,7 @@ public class RmdDocument {
 				let cchunk = InternalCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
 				if parserChunk.isInline, let lastChunk = lastTextChunk {
 					let achunk = InternalInlineCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
-					attach(chunk: achunk, to: lastChunk.storage)
+					attach(chunk: achunk, to: lastChunk.textStorage)
 					lastWasInline = true
 					return
 				}
@@ -66,7 +66,7 @@ public class RmdDocument {
 					guard let lastChunk = lastTextChunk else { throw ParserError.inlineEquationNotInTextChunk }
 					let dchunk = InternalInlineEquation(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
 					lastChunk.inlineElements.append(dchunk)
-					attach(chunk: dchunk, to: lastChunk.storage)
+					attach(chunk: dchunk, to: lastChunk.textStorage)
 					lastWasInline = true
 				case .display:
 					let dchunk = InternalEquationChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.parsedRange, innerRange: parserChunk.innerRange)
@@ -130,17 +130,12 @@ public class RmdDocument {
 
 // MARK: - protocols
 
-public protocol Equation: class {
-	var equationSource: String { get }
-}
+public protocol Equation: class {}
 
-public protocol Code: class {
-	var codeSource: String { get }
-}
+public protocol Code: class {}
 
 public protocol RmdChunk: class {
-	var contents: String { get }
-	var attributedContents: NSAttributedString { get }
+	var textStorage: NSTextStorage { get }
 	var chunkType: ChunkType { get }
 	
 }
@@ -150,8 +145,6 @@ public protocol InlineChunk: RmdChunk {}
 public protocol TextChunk: RmdChunk {
 	var inlineElements: [InlineChunk] { get }
 }
-
-public protocol CodeChunk: RmdChunk {}
 
 // MARK: - attachments
 class InlineAttachment: NSTextAttachment {
@@ -182,21 +175,23 @@ class InlineAttachmentCell: NSTextAttachmentCell {
 
 // MARK: - chunks
 
-class InternalRmdChunk: NSObject, RmdChunk, NSTextStorageDelegate {
+class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate {
 	weak var parser: BaseSyntaxParser?
-	var parserChunk: DocumentChunk
-	var storage: NSTextStorage
-	var chunkType: ChunkType { return .docs }
-	
-	public var contents: String { return storage.string }
-	public var attributedContents: NSAttributedString { return NSAttributedString(attributedString: storage) }
+//	var parserChunk: DocumentChunk
+	var textStorage: NSTextStorage
+	let chunkType: ChunkType
+	let docType: DocType
+	let equationType: EquationType
 	
 	init(parser: BaseSyntaxParser, chunk: DocumentChunk) {
 		self.parser = parser
-		self.parserChunk = chunk
-		storage = NSTextStorage()
+		self.chunkType = chunk.chunkType
+		self.docType = chunk.docType
+		self.equationType = chunk.equationType
+//		self.parserChunk = chunk
+		textStorage = NSTextStorage()
 		super.init()
-		storage.delegate = self
+		textStorage.delegate = self
 	}
 
 	// called when text editing has ended
@@ -204,7 +199,9 @@ class InternalRmdChunk: NSObject, RmdChunk, NSTextStorageDelegate {
 	{
 		//we don't care if attributes changed
 		guard editedMask.contains(.editedCharacters) else { return }
-		parser?.colorChunks([parserChunk])
+		Log.debug("did edit: \(textStorage.string.substring(from: editedRange) ?? "")", .core)
+		parser?.highLighter?.highlightText(textStorage, range: textStorage.string.fullNSRange, chunk: self)
+//		parser?.colorChunks([parserChunk])
 	}
 }
 
@@ -217,11 +214,11 @@ class InternalTextChunk: InternalRmdChunk, TextChunk {
 								   range: range, innerRange: range, chunkNumber: 1)
 		inlineElements = []
 		super.init(parser: parser, chunk: pchunk)
-		storage.append(NSAttributedString(string: contents.substring(from: range)!))
+		textStorage.append(NSAttributedString(string: contents.substring(from: range)!))
 	}
 	
-	override var attributedContents: NSAttributedString {
-		let out = NSMutableAttributedString(attributedString: storage)
+//	override var attributedContents: NSAttributedString {
+//		let out = NSMutableAttributedString(attributedString: storage)
 //		storage.enumerateAttribute(.attachment, in: out.string.fullNSRange, options: [.reverse])
 //		{ (value, attrRange, stopPtr) in
 //			guard let ival = value as? InlineAttachment,
@@ -230,62 +227,47 @@ class InternalTextChunk: InternalRmdChunk, TextChunk {
 //			else { return }
 //			out.replaceCharacters(in: attrRange, with: chunk.storage)
 //		}
-		return out
-	}
-	
-	override var contents: String { return attributedContents.string }
+//		return out
+//	}
 }
 
 // MARK: -
 class InternalCodeChunk: InternalRmdChunk, Code {
-	var codeSource: String { return contents }
-	
-	override var chunkType: ChunkType { return .code }
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
 		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
-		storage.append(NSAttributedString(string: contents.substring(from: range)!))
+		textStorage.append(NSAttributedString(string: contents.substring(from: range)!))
 	}
 }
 
 // MARK: -
 class InternalEquationChunk: InternalRmdChunk, Equation {
-	override var chunkType: ChunkType { return .equation }
-	var equationSource: String
-	
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange, innerRange: NSRange) {
 		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .display,
 								   range: range, innerRange: innerRange, chunkNumber: 1)
-		equationSource = contents.substring(from: innerRange)!
 		super.init(parser: parser, chunk: pchunk)
-		storage.append(NSAttributedString(string: contents.substring(from: range)!))
+		textStorage.append(NSAttributedString(string: contents.substring(from: range)!))
 	}
 }
 
 // MARK:
 
 class InternalInlineEquation: InternalRmdChunk, InlineChunk, Equation {
-	var equationSource: String {
-		return storage.string
-	}
-
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
 		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .inline,
 								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
-		storage.append(NSAttributedString(string: contents.substring(from: range)!))
+		textStorage.append(NSAttributedString(string: contents.substring(from: range)!))
 	}
 }
 
 class InternalInlineCodeChunk: InternalRmdChunk, InlineChunk, Code {
-	var codeSource: String { return contents }
-	
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
 		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
-		storage.append(NSAttributedString(string: contents.substring(from: range)!))
+		textStorage.append(NSAttributedString(string: contents.substring(from: range)!))
 	}
 }
 

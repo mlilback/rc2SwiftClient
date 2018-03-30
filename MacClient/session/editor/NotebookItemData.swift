@@ -18,7 +18,7 @@ public class NotebookItemData: NSObject {
 
 	public init(chunk: RmdChunk, result: String) {
 		self.chunk = chunk
-		self.source = NSTextStorage(attributedString: chunk.attributedContents)
+		self.source = chunk.textStorage
 		self.result = NSTextStorage(attributedString: NSAttributedString(string: result))
 		super.init()
 	}

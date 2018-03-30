@@ -32,7 +32,7 @@ class RmdDocumentTests: XCTestCase {
 		XCTAssertTrue(textChunk.contents.hasSuffix("here"))
 		XCTAssertEqual(textChunk.inlineElements.count, 1)
 		guard let inlineChunk = textChunk.inlineElements.first, let inlineEq = inlineChunk as? Equation else { XCTFail("failed to get inline chunk"); return }
-		XCTAssertTrue(inlineEq.equationSource.starts(with: "\\f"))
+		XCTAssertTrue(inlineEq.textStorage.string.starts(with: "\\f"))
 		let strContents = textChunk.contents
 		XCTAssertEqual(strContents, source)
 	}

@@ -27,14 +27,13 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 		view.translatesAutoresizingMaskIntoConstraints = false
 		topView.layer?.backgroundColor = notebookTopViewBackgroundColor.cgColor
 		sourceView.changeCallback = { [weak self] in
-			guard let datasrc = self?.data?.source else { return }
-			datasrc.replaceCharacters(in: datasrc.string.fullNSRange, with: self!.sourceView.textStorage!)
 			self?.collectionView?.collectionViewLayout?.invalidateLayout()
 		}
 	}
 
 	override func prepareForReuse() {
 		super.prepareForReuse()
+		sourceView.layoutManager?.replaceTextStorage(NSTextStorage())
 	}
 
 	@IBAction func addChunk(_ sender: Any?) {
@@ -64,9 +63,8 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 		{ [weak self] note in
 			self?.collectionView?.collectionViewLayout?.invalidateLayout()
 		}
-		// Sets each view's string from the data's string
-		guard let sourceStorage = sourceView?.textStorage else { fatalError() }
-		sourceStorage.replaceCharacters(in: sourceStorage.string.fullNSRange, with: data.source)
+		// use the data's text storage
+		sourceView.layoutManager?.replaceTextStorage(data.source)
 	}
 	
 	func size(forWidth width: CGFloat) -> NSSize {
