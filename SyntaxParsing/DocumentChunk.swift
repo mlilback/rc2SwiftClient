@@ -34,11 +34,18 @@ public enum EquationType: String {
 	case none, inline, display, mathML = "MathML"
 }
 
+/// Protocol for any value that is a chunk
+public protocol ChunkProtocol {
+	var chunkType: ChunkType { get }
+	var docType: DocType { get }
+	var equationType: EquationType { get }
+}
+
 /// Represents a "chunk" of text. An R document has 1 chunk.
 /// Rmd and Rnw documents can have multiple chunks of different types,
 /// which are broken up into docs, code, and equations by parsing
 /// various symbols (e.g. $$, ```, <...>).
-public class DocumentChunk {
+public class DocumentChunk: ChunkProtocol {
 	/// Type of chunk
 	public let chunkType: ChunkType
 	/// If the type is .equation, the type of the equation

@@ -19,7 +19,7 @@ open class BaseHighlighter: NSObject {
 	var helpCallback: HasHelpCallback?
 	
 	// Get RKeywords from it's file in this bundle:
-	let keywords: Set<String> = {
+	static let rKeywords: Set<String> = {
 		let bundle = Bundle(for: BaseHighlighter.self)
 		guard let url = bundle.url(forResource: "RKeywords", withExtension: "txt")
 			else { fatalError("failed to find RKeywords file")
@@ -29,7 +29,11 @@ open class BaseHighlighter: NSObject {
 		return Set<String>(keyArray)
 	}()
 	
+	/// keywords used by this highlighter. property to eventually allow for different sets of keywords
+	public let keywords: Set<String>
+	
 	public required init(helpCallback: @escaping HasHelpCallback) {
+		keywords = BaseHighlighter.rKeywords
 		super.init()
 		self.helpCallback = helpCallback
 	}
@@ -38,8 +42,12 @@ open class BaseHighlighter: NSObject {
 	func addAttributes(_ string: NSMutableAttributedString, range: NSRange) {
 	}
 	
+	
 	func highlightText(_ attribStr: NSMutableAttributedString, chunk: DocumentChunk) {
-		let range = chunk.parsedRange
+		highlightText(attribStr, range: chunk.parsedRange, chunk: chunk)
+	}
+	
+	func highlightText(_ attribStr: NSMutableAttributedString, range: NSRange, chunk: ChunkProtocol) {
 		guard range.length > 0 else { return }
 		attribStr.removeAttribute(.foregroundColor, range: range)
 		// PEGKit:
@@ -84,7 +92,7 @@ open class BaseHighlighter: NSObject {
 	
 	func colorForToken(_ token: PKToken, lastToken: PKToken?,
 					   includePreviousCharacter usePrevious:inout Bool,
-					   chunk: DocumentChunk)
+					   chunk: ChunkProtocol)
 		-> PlatformColor?
 	{
 		var color: PlatformColor = PlatformColor.black // nil
