@@ -244,6 +244,10 @@ class CodeChunk: InternalRmdChunk, Code {
 		super.init(parser: parser, chunk: pchunk)
 		textStorage.append(NSAttributedString(string: contents.substring(from: range)!))
 	}
+	
+	override var rawText: String {
+		return "```{r \(options)}\n\(textStorage.string)\n```"
+	}
 }
 
 // MARK: -
@@ -254,9 +258,13 @@ class EquationChunk: InternalRmdChunk, Equation {
 		super.init(parser: parser, chunk: pchunk)
 		textStorage.append(NSAttributedString(string: contents.substring(from: range)!))
 	}
+	
+	override var rawText: String {
+		return "$$\n\(textStorage.string)\n$$\n"
+	}
 }
 
-// MARK:
+// MARK: -
 
 class InternalInlineEquation: InternalRmdChunk, InlineChunk, Equation {
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
