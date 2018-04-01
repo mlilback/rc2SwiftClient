@@ -49,7 +49,7 @@ public class RmdDocument {
 				lastTextChunk = tchunk
 				lastWasInline = false
 			case .code:
-				let cchunk = InternalCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange, options: parserChunk.rOps)
+				let cchunk = CodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange, options: parserChunk.rOps)
 				if parserChunk.isInline, let lastChunk = lastTextChunk {
 					let achunk = InternalInlineCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
 					attach(chunk: achunk, to: lastChunk.textStorage)
@@ -69,7 +69,7 @@ public class RmdDocument {
 					attach(chunk: dchunk, to: lastChunk.textStorage)
 					lastWasInline = true
 				case .display:
-					let dchunk = InternalEquationChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.parsedRange, innerRange: parserChunk.innerRange)
+					let dchunk = EquationChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.parsedRange, innerRange: parserChunk.innerRange)
 					append(chunk: dchunk)
 					lastTextChunk = nil
 					lastWasInline = false
@@ -118,12 +118,12 @@ public class RmdDocument {
 	}
 
 	public func insertCodeChunk(initalContents: String, at index: Int) {
-		let chunk = InternalCodeChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange, options: nil)
+		let chunk = CodeChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange, options: nil)
 		internalChunks.insert(chunk, at: index)
 	}
 
 	public func insertEquationChunk(initalContents: String, at index: Int) {
-		let chunk = InternalEquationChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange, innerRange: initalContents.fullNSRange)
+		let chunk = EquationChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange, innerRange: initalContents.fullNSRange)
 		internalChunks.insert(chunk, at: index)
 	}
 }
@@ -235,7 +235,7 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 }
 
 // MARK: -
-class InternalCodeChunk: InternalRmdChunk, Code {
+class CodeChunk: InternalRmdChunk, Code {
 	var options: String
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange, options: String?) {
 		self.options = options ?? ""
@@ -247,7 +247,7 @@ class InternalCodeChunk: InternalRmdChunk, Code {
 }
 
 // MARK: -
-class InternalEquationChunk: InternalRmdChunk, Equation {
+class EquationChunk: InternalRmdChunk, Equation {
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange, innerRange: NSRange) {
 		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .display,
 								   range: range, innerRange: innerRange, chunkNumber: 1)
