@@ -11,6 +11,14 @@ import SyntaxParsing
 import MJLLogger
 import ReactiveSwift
 
+///selectors used in this file, aliased with shorter, descriptive names
+extension Selector {
+	static let runQuery = #selector(SourceEditorController.runQuery(_:))
+	static let sourceQuery = #selector(SourceEditorController.sourceQuery(_:))
+	static let findPanelAction = #selector(NSTextView.performFindPanelAction(_:))
+	static let executeLine = #selector(SourceEditorController.executeCurrentLine(_:))
+}
+
 class AbstractEditorController: AbstractSessionViewController, CodeEditor {
 	private(set) var context: EditorContext?
 	
@@ -23,10 +31,11 @@ class AbstractEditorController: AbstractSessionViewController, CodeEditor {
 		precondition(self.context == nil)
 		self.context = context
 		let ncenter = context.notificationCenter
-		ncenter.addObserver(self, selector: .autoSave, name: NSApplication.didResignActiveNotification, object: NSApp)
-		ncenter.addObserver(self, selector: .autoSave, name: NSApplication.willTerminateNotification, object: NSApp)
+		let autoSave = #selector(autosaveCurrentDocument)
+		ncenter.addObserver(self, selector: autoSave, name: NSApplication.didResignActiveNotification, object: NSApp)
+		ncenter.addObserver(self, selector: autoSave, name: NSApplication.willTerminateNotification, object: NSApp)
 		ncenter.addObserver(self, selector: #selector(documentWillSave(_:)), name: .willSaveDocument, object: nil)
-		context.workspaceNotificationCenter.addObserver(self, selector: #selector(autosaveCurrentDocument), name: NSWorkspace.willSleepNotification, object: context.workspaceNotificationCenter)
+		context.workspaceNotificationCenter.addObserver(self, selector: autoSave, name: NSWorkspace.willSleepNotification, object: context.workspaceNotificationCenter)
 		context.currentDocument.signal.observeValues { [weak self] newDoc in
 			self?.documentChanged(newDocument: newDoc)
 		}

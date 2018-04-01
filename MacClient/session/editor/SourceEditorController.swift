@@ -13,19 +13,6 @@ import Networking
 import SyntaxParsing
 import ClientCore
 
-///selectors used in this file, aliased with shorter, descriptive names
-extension Selector {
-	static let runQuery = #selector(SourceEditorController.runQuery(_:))
-	static let sourceQuery = #selector(SourceEditorController.sourceQuery(_:))
-	static let autoSave = #selector(SourceEditorController.autosaveCurrentDocument)
-	static let findPanelAction = #selector(NSTextView.performFindPanelAction(_:))
-	static let previousChunkAction = #selector(SourceEditorController.previousChunkAction(_:))
-	static let nextChunkAction = #selector(SourceEditorController.nextChunkAction(_:))
-	static let executeLine = #selector(SourceEditorController.executeCurrentLine(_:))
-	static let executeCurrentChunk = #selector(SourceEditorController.executeCurrentChunk(_:))
-	static let executePrevousChunks = #selector(SourceEditorController.executePreviousChunks(_:))
-}
-
 class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 {
 	// MARK: properties
@@ -95,10 +82,6 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		switch action  {
 		case Selector.runQuery, Selector.sourceQuery:
 			return context?.currentDocument.value?.currentContents?.count ?? 0 > 0
-		case Selector.executeCurrentChunk:
-			return currentChunk?.isExecutable ?? false
-		case Selector.executePrevousChunks:
-			return currentChunkHasPreviousExecutableChunks
 		case Selector.executeLine:
 			if editor?.selectedRange().length ?? 0 > 0 {
 				menuItem.title = NSLocalizedString("Execute Selection", comment: "")
@@ -113,12 +96,6 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 
 	func validateUserInterfaceItem(_ anItem: NSValidatedUserInterfaceItem) -> Bool {
 		switch anItem.action! as Selector {
-		case Selector.nextChunkAction:
-			return currentChunkIndex + 1 < (parser?.chunks.count ?? 0)
-		case Selector.previousChunkAction:
-			return currentChunkIndex > 0
-		case Selector.executePrevousChunks:
-			return currentChunkHasPreviousExecutableChunks
 		case #selector(ManageFontMenu.adjustFontSize(_:)):
 			return true
 		case #selector(UsesAdjustableFont.fontChanged(_:)):
@@ -144,31 +121,7 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	}
 	
 	// MARK: private methods
-	///adjusts the UI to mark the current chunk
-	func adjustUIForCurrentChunk() {
-		guard let parser = parser, let editor = editor else { fatalError("called without parser and/or editor") }
-		//for now we will move the cursor and scroll so it is visible
-		let chunkRange = parser.chunks[currentChunkIndex].parsedRange
-		var desiredRange = NSRange(location: chunkRange.location, length: 0)
-		//adjust desired range so it advances past any newlines at start of chunk (if not just whitespace)
-		let str = editor.string
-		//only adjust if it includes a non-newline character
-		if let nlcount = str.substring(from: desiredRange)?.unicodeScalars.filter({ CharacterSet.newlines.contains($0) }), nlcount.count != chunkRange.length
-		{
-			let curIdx = str.index(str.startIndex, offsetBy: desiredRange.location)
-			if curIdx != str.endIndex && str[curIdx] == "\n" {
-				desiredRange.location += 1
-			}
-		}
-		editor.setSelectedRange(desiredRange)
-		editor.scrollRangeToVisible(desiredRange)
-	}
-	
-	//should be the only place an actual save is performed
-	override func saveWithProgress(isAutoSave: Bool = false) -> SignalProducer<Bool, Rc2Error> {
-		return super.saveWithProgress(isAutoSave: isAutoSave)
-	}
-	
+
 	override func documentChanged(newDocument: EditorDocument?) {
 		guard let editor = self.editor else { Log.error("can't adjust document without editor", .app); return }
 		super.documentChanged(newDocument: newDocument)
@@ -231,28 +184,6 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 
 // MARK: Actions
 extension SourceEditorController {
-	@IBAction func previousChunkAction(_ sender: AnyObject) {
-		guard currentChunkIndex > 0 else {
-			Log.error("called with invalid currentChunkIndex", .app)
-			assertionFailure() //called for debug builds only
-			return
-		}
-		currentChunkIndex -= 1
-		adjustUIForCurrentChunk()
-	}
-
-	@IBAction func nextChunkAction(_ sender: AnyObject) {
-		guard let parser = parser else { fatalError() }
-		let nextIndex = currentChunkIndex + 1
-		guard nextIndex < parser.chunks.count else {
-			Log.error("called with invalid currentChunkIndex", .app)
-			assertionFailure() //called for debug builds only
-			return
-		}
-		currentChunkIndex += 1
-		adjustUIForCurrentChunk()
-	}
-
 	@IBAction func showFindInterface(_ sender: Any?) {
 		let menuItem = NSMenuItem(title: "foo", action: .findPanelAction, keyEquivalent: "")
 		menuItem.tag = Int(NSFindPanelAction.showFindPanel.rawValue)
@@ -282,22 +213,6 @@ extension SourceEditorController {
 			//if execute line, move to next line
 			editor.moveCursorToNextNonBlankLine()
 		}
-	}
-	
-	/// Execute every code chunk up to, but not including, the current chunk
-	@IBAction func executePreviousChunks(_ sender: Any?) {
-		guard let parser = parser, let editor = editor, let storage = editor.textStorage else { fatalError("why is there no parser?") }
-		let chunkNumber = currentChunk?.chunkNumber ?? 0
-		let fullScript = storage.mutableString as String //string makes a copy, we only need reference
-		let validChunks = parser.executableChunks.prefix(while: { $0.chunkNumber < chunkNumber })
-		validChunks.forEach({ self.session.executeScript($0.executableCode(from: fullScript)) })
-	}
-	
-	@IBAction func executeCurrentChunk(_ sender: Any?) {
-		guard let chunk = currentChunk, chunk.isExecutable,
-			let fullScript = editor?.textStorage?.mutableString as String? //string makes a copy, we only need reference
-			else { return }
-		session.executeScript(chunk.executableCode(from: fullScript))
 	}
 }
 

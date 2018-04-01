@@ -72,9 +72,4 @@ class EquationViewItem: ChunkViewItem {
 		image.addRepresentation(rep)
 		return image
 	}
-	
-	@IBAction func takeSnapshot(_ sender: Any?) {
-		let image = generateEquationImage(size: equationView.frame.size)
-		try! image.pngRepresentation!.write(to: URL(fileURLWithPath: "/Users/mlilback/Desktop/shot.png"))
-	}
 }
