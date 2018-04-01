@@ -31,7 +31,7 @@ public class RmdDocument {
 		parser = BaseSyntaxParser.parserWithTextStorage(textStorage, fileType: FileType.fileType(withExtension: "Rmd")!, helpCallback: helpCallback)!
 		parser.parse()
 		frontMatter.value = parser.frontMatter
-		var lastTextChunk: InternalTextChunk?
+		var lastTextChunk: MarkdownChunk?
 		var lastWasInline: Bool = false
 		try parser.chunks.forEach { parserChunk in
 			switch parserChunk.chunkType {
@@ -44,7 +44,7 @@ public class RmdDocument {
 					lastWasInline = false
 					return
 				}
-				let tchunk = InternalTextChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
+				let tchunk = MarkdownChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
 				append(chunk: tchunk)
 				lastTextChunk = tchunk
 				lastWasInline = false
@@ -113,7 +113,7 @@ public class RmdDocument {
 	}
 	
 	public func insertTextChunk(initalContents: String, at index: Int) {
-		let chunk = InternalTextChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange)
+		let chunk = MarkdownChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange)
 		internalChunks.insert(chunk, at: index)
 	}
 
@@ -137,7 +137,7 @@ public protocol Code: class {}
 public protocol RmdChunk: class {
 	var textStorage: NSTextStorage { get }
 	var chunkType: ChunkType { get }
-	
+	var rawText: String { get }
 }
 
 public protocol InlineChunk: RmdChunk {}
@@ -183,6 +183,8 @@ class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate
 	let docType: DocType
 	let equationType: EquationType
 	
+	var rawText: String { return textStorage.string }
+	
 	init(parser: BaseSyntaxParser, chunk: DocumentChunk) {
 		self.parser = parser
 		self.chunkType = chunk.chunkType
@@ -206,7 +208,7 @@ class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate
 }
 
 // MARK: -
-class InternalTextChunk: InternalRmdChunk, TextChunk {
+class MarkdownChunk: InternalRmdChunk, TextChunk {
 	var inlineElements: [InlineChunk]
 	
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
