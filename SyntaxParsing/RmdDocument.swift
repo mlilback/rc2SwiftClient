@@ -49,7 +49,7 @@ public class RmdDocument {
 				lastTextChunk = tchunk
 				lastWasInline = false
 			case .code:
-				let cchunk = InternalCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
+				let cchunk = InternalCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange, options: parserChunk.rOps)
 				if parserChunk.isInline, let lastChunk = lastTextChunk {
 					let achunk = InternalInlineCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
 					attach(chunk: achunk, to: lastChunk.textStorage)
@@ -118,7 +118,7 @@ public class RmdDocument {
 	}
 
 	public func insertCodeChunk(initalContents: String, at index: Int) {
-		let chunk = InternalCodeChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange)
+		let chunk = InternalCodeChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange, options: nil)
 		internalChunks.insert(chunk, at: index)
 	}
 
@@ -212,6 +212,7 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 	var inlineElements: [InlineChunk]
 	
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
+		// use a fake chunk to create from contents
 		let pchunk = DocumentChunk(chunkType: .docs, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
 		inlineElements = []
@@ -235,7 +236,9 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 
 // MARK: -
 class InternalCodeChunk: InternalRmdChunk, Code {
-	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
+	var options: String
+	init(parser: BaseSyntaxParser, contents: String, range: NSRange, options: String?) {
+		self.options = options ?? ""
 		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
