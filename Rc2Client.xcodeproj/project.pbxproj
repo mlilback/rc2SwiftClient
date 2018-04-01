@@ -198,6 +198,7 @@
 		084D330E206D387800246CBD /* Rc2Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; };
 		084D3310206D39A800246CBD /* helpindex.db in Resources */ = {isa = PBXBuildFile; fileRef = 084D330F206D399E00246CBD /* helpindex.db */; };
 		084D3319206D3C9E00246CBD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D3318206D3C9E00246CBD /* main.swift */; };
+		084D33282071576F00246CBD /* EquationViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 084D33272071576E00246CBD /* EquationViewItem.xib */; };
 		084E93A9201A313900FF50EA /* FakeFileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935871E00AA5700C94B19 /* FakeFileCache.swift */; };
 		084E93AC201A352200FF50EA /* ConnectionInfoSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */; };
 		084E93B7201E874900FF50EA /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; };
@@ -1080,6 +1081,7 @@
 		084D330F206D399E00246CBD /* helpindex.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = helpindex.db; sourceTree = BUILT_PRODUCTS_DIR; };
 		084D3316206D3C9E00246CBD /* HelpIndexTool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HelpIndexTool; sourceTree = BUILT_PRODUCTS_DIR; };
 		084D3318206D3C9E00246CBD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		084D33272071576E00246CBD /* EquationViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EquationViewItem.xib; sourceTree = "<group>"; };
 		084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfoSpec.swift; sourceTree = "<group>"; };
 		084E93B2201E874900FF50EA /* ModelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ModelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		084E93B6201E874900FF50EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2230,6 +2232,7 @@
 				083AC105206565720054023F /* FrontMatterViewItem.swift */,
 				083AC107206565E30054023F /* FrontMatterViewItem.xib */,
 				083AC0FC2062D01E0054023F /* EquationViewItem.swift */,
+				084D33272071576E00246CBD /* EquationViewItem.xib */,
 				083AC1012062E9670054023F /* MarkdownViewItem.swift */,
 				083AC10A2066DEF50054023F /* MarkdownViewItem.xib */,
 				085A1A20205AC39B00B7EC5F /* SourceTextView.swift */,
@@ -3153,6 +3156,7 @@
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
 				0825658C2016BB9200526957 /* OnboardingContent.rtfd in Resources */,
 				083AC108206565E30054023F /* FrontMatterViewItem.xib in Resources */,
+				084D33282071576F00246CBD /* EquationViewItem.xib in Resources */,
 				08E8F1B52069A0C100F0FF5A /* codetemplates.db in Resources */,
 				08EE26FC202FA995008E008F /* FileInfoController.xib in Resources */,
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
