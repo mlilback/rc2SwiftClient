@@ -83,20 +83,21 @@ class AbstractEditorController: AbstractSessionViewController, CodeEditor {
 
 	func documentChanged(newDocument: EditorDocument?) {
 		guard let document = newDocument else { return }
+		Log.info("doc changed", .core) // FIXME: why is this called twice per document?
 		if document.isLoaded {
-			loaded(document: document, content: document.currentContents ?? "")
+			loaded(content: document.currentContents ?? "")
 		} else {
 			session.fileCache.contents(of: document.file).observe(on: UIScheduler()).startWithResult { result in
 				guard let data = result.value else  {
 					self.appStatus?.presentError(result.error!, session: self.session)
 					return
 				}
-				self.loaded(document: document, content: String(data: data, encoding: .utf8)!)
+				self.loaded(content: String(data: data, encoding: .utf8)!)
 			}
 		}
 	}
 
-	func loaded(document: EditorDocument, content: String) {
+	func loaded(content: String) {
 		fatalError("subclass must implement, not call super")
 	}
 

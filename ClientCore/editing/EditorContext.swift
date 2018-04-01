@@ -11,9 +11,9 @@ import ReactiveSwift
 import SyntaxParsing
 /// object passed to UI controllers that take part in editing a document. Any values that might need to be observed for changes are declared as ReactiveSwift Properties.
 protocol EditorContext: class {
-	/// the current EditorDocument
+	/// the current EditorDocument. Signals are processed synchronously on the calling thread
 	var currentDocument: Property<EditorDocument?> { get }
-	/// the parsed version of the currentDocument
+	/// the parsed version of the currentDocument. This property is updated on a main loop cycle after the currentDocument
 	var parsedDocument: Property<RmdDocument?> { get }
 	/// the user-selected font for any editing task
 	var editorFont: MutableProperty<NSFont> { get }

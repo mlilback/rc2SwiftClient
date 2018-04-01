@@ -23,6 +23,8 @@ public class EditorDocument: NSObject {
 	var editedContents: String?
 	private(set) var isLoaded: Bool = false
 	
+	public var parsable: Bool { return file.fileType.fileExtension == "Rmd" }
+	
 	var currentContents: String? {
 		return editedContents == nil ? savedContents : editedContents
 	}

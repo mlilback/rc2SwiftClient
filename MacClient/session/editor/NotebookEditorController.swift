@@ -9,6 +9,7 @@ import ClientCore
 import Networking
 import SyntaxParsing
 import MJLLogger
+import ReactiveSwift
 
 private enum AddChunkType: Int {
 	case code = 0
@@ -31,12 +32,12 @@ class NotebookEditorController: AbstractEditorController {
 	@IBOutlet weak var notebookView: NSCollectionView!
 	@IBOutlet var addChunkPopupMenu: NSMenu!
 	
-	var rmdDocument: RmdDocument?
+	var rmdDocument: RmdDocument? { return context?.parsedDocument.value }
 	var dataArray: [NotebookItemData] = []	// holds data for all items
 	var dragIndices: Set<IndexPath>?	// items being dragged
 	
-	private let storage = NSTextStorage()
 	private var sizingItems: [NSUserInterfaceItemIdentifier : NotebookViewItem] = [:]
+	private var parsedDocDisposable: Disposable?
 	
 	// MARK: - standard
 	override func viewDidLoad() {
@@ -70,12 +71,26 @@ class NotebookEditorController: AbstractEditorController {
 	}
 	
 	// MARK: - editor
-	override func loaded(document: EditorDocument, content: String) {
-		self.rmdDocument = try! RmdDocument(contents: content) { (topic) in
-			return HelpController.shared.hasTopic(topic)
+	
+	override func setContext(context: EditorContext) {
+		super.setContext(context: context)
+		parsedDocDisposable?.dispose()
+		parsedDocDisposable = context.parsedDocument.producer.startWithValues { [weak self] newDocument in
+			self?.parsedDocumentChanged(newDocument)
 		}
-		storage.replaceCharacters(in: storage.string.fullNSRange, with: content)
-		dataArray = self.rmdDocument!.chunks.flatMap { return NotebookItemData(chunk: $0, result: "") }
+	}
+	
+	// called when the editor document has changed
+	override func loaded(content: String) {
+		// we only care about the parsed document, so do nothing here
+	}
+	
+	func parsedDocumentChanged(_ newDocument: RmdDocument?) {
+		if let parsed = newDocument {
+			dataArray = parsed.chunks.flatMap { return NotebookItemData(chunk: $0, result: "") }
+		} else {
+			dataArray = []
+		}
 		notebookView.reloadData()
 		notebookView.collectionViewLayout?.invalidateLayout()
 	}
@@ -84,7 +99,7 @@ class NotebookEditorController: AbstractEditorController {
 		// need to convert dataArray back to single source
 	}
 	
-	// MARK: actions
+	// MARK: - actions
 	
 	@IBAction func addChunk(_ sender: Any?) {
 		guard let menuItem = sender as? NSMenuItem, let type = AddChunkType(rawValue: menuItem.tag), let previousChunk = menuItem.representedObject as? ChunkViewItem
@@ -100,7 +115,7 @@ class NotebookEditorController: AbstractEditorController {
 		notebookView.reloadData()
 	}
 	
-	// MARK: private
+	// MARK: - private
 	
 	func viewItemId(chunk: RmdChunk) -> NSUserInterfaceItemIdentifier {
 		switch chunk {

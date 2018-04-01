@@ -79,9 +79,6 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		context.editorFont.signal.observeValues { [weak self] newFont in
 			self?.editor?.font = newFont
 		}
-		context.currentDocument.signal.observeValues { [weak self] newDoc in
-			self?.documentChanged(newDocument: newDoc)
-		}
 	}
 	
 	override func viewDidLoad() {
@@ -181,19 +178,19 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		updateUIForCurrentDocument()
 	}
 	
-	override func loaded(document: EditorDocument, content: String) {
+	override func loaded(content: String) {
 		guard let editor = self.editor, let lm = editor.layoutManager, let storage = editor.textStorage, let txtContainer = editor.textContainer
 			else { fatalError("editor missing required pieces") }
 		ignoreTextStorageNotifications = true
 		storage.deleteCharacters(in: editor.rangeOfAllText)
-		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: document.file.fileType) { (topic) in
-			return HelpController.shared.hasTopic(topic)
-		}
+//		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: document.file.fileType) { (topic) in
+//			return HelpController.shared.hasTopic(topic)
+//		}
 		ignoreTextStorageNotifications = false
 		storage.setAttributedString(NSAttributedString(string: content, attributes: self.defaultAttributes))
-		if document.topVisibleIndex > 0 {
+		if let index = context?.currentDocument.value?.topVisibleIndex, index > 0 {
 			//restore the scroll point to the saved character index
-			let idx = lm.glyphIndexForCharacter(at: document.topVisibleIndex)
+			let idx = lm.glyphIndexForCharacter(at: index)
 			let point = lm.boundingRect(forGlyphRange: NSRange(location: idx, length: 1), in: txtContainer)
 			//postpone to next event loop cycle
 			DispatchQueue.main.async {
@@ -310,21 +307,21 @@ extension SourceEditorController: NSTextStorageDelegate {
 	func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
 	{
 		guard !ignoreTextStorageNotifications else { return }
-		guard let parser = parser else { fatalError("no parser when text changed") }
-		//we don't care if attributes changed
-		guard editedMask.contains(.editedCharacters) else { return }
-		//parse() return true if the chunks changed. in that case, we need to recolor all of them
-		if parser.parse() {
-			parser.colorChunks(parser.chunks)
-		} else {
-			//only color chunks in the edited range
-			parser.colorChunks(parser.chunksForRange(editedRange))
-		}
-		let currentDocument = context?.currentDocument.value
-		currentChunkIndex = parser.indexOfChunk(inRange: editedRange)
-		if currentDocument?.editedContents != textStorage.string {
-			currentDocument?.editedContents = textStorage.string
-		}
+//		guard let parser = parser else { fatalError("no parser when text changed") }
+//		//we don't care if attributes changed
+//		guard editedMask.contains(.editedCharacters) else { return }
+//		//parse() return true if the chunks changed. in that case, we need to recolor all of them
+//		if parser.parse() {
+//			parser.colorChunks(parser.chunks)
+//		} else {
+//			//only color chunks in the edited range
+//			parser.colorChunks(parser.chunksForRange(editedRange))
+//		}
+//		let currentDocument = context?.currentDocument.value
+//		currentChunkIndex = parser.indexOfChunk(inRange: editedRange)
+//		if currentDocument?.editedContents != textStorage.string {
+//			currentDocument?.editedContents = textStorage.string
+//		}
 	}
 }
 

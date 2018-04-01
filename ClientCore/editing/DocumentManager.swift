@@ -6,6 +6,7 @@
 
 import Foundation
 import Rc2Common
+import ClientCore
 import ReactiveSwift
 import Networking
 import SwiftyUserDefaults
@@ -30,7 +31,7 @@ class DocumentManager: EditorContext {
 	
 	let editorFont: MutableProperty<NSFont>
 	var errorHandler: Rc2ErrorHandler { return self }
-	var openDocuments: [Int: EditorDocument] = [:]
+	private var openDocuments: [Int: EditorDocument] = [:]
 	var notificationCenter: NotificationCenter
 	var workspaceNotificationCenter: NotificationCenter
 	let lifetime: Lifetime
@@ -78,10 +79,10 @@ class DocumentManager: EditorContext {
 		if change.type == .modify {
 			guard document.file.fileId == change.file.fileId else { return }
 			document.fileUpdated()
-			_currentDocument.value = document
+			switchTo(document: document)
 		} else if change.type == .remove {
 			//document being editied was removed
-			_currentDocument.value = nil
+			switchTo(document: nil)
 		}
 	}
 	
@@ -130,9 +131,30 @@ class DocumentManager: EditorContext {
 	}
 	
 
-	private func  nilOutCurrentDocument() -> SignalProducer<String?, Rc2Error> {
+	private func nilOutCurrentDocument() -> SignalProducer<String?, Rc2Error> {
 		return SignalProducer<String?, Rc2Error>(value: nil)
-			.on(started: { self._currentDocument.value = nil })
+			.on(started: { self.switchTo(document: nil) })
+	}
+	
+	// the only function that should change _currentDocument, so that parsedDocument is updated appropriately
+	private func switchTo(document: EditorDocument?) {
+		// parsed is updated on a later cycle of the main thread
+		var newParsed: RmdDocument?
+		defer {
+			_currentDocument.value = document
+			DispatchQueue.main.async {
+				self._parsedDocument.value = newParsed // newParsed will be the value set below
+			}
+		}
+		guard let document = document else { return }
+		guard document.parsable else { return }
+		do {
+			newParsed = try RmdDocument(contents: document.currentContents ?? "") { (topic) in
+				return HelpController.shared.hasTopic(topic)
+			}
+		} catch {
+			Log.info("failed to parse document \(document.file.name)", .core)
+		}
 	}
 	
 	// returns SP to return the specified document, creating and inserting into openDocuments if necessary
@@ -151,18 +173,18 @@ class DocumentManager: EditorContext {
 	private func load(document: EditorDocument) -> SignalProducer<String?, Rc2Error> {
 		precondition(openDocuments[document.file.fileId] == document)
 		if document.isLoaded {
-			_currentDocument.value = document
+			switchTo(document: document)
 			return SignalProducer<String?, Rc2Error>(value: document.currentContents)
 		}
 		if fileCache.isFileCached(document.file) {
 			return fileCache.contents(of: document.file)
-				.on(value: { _ in self._currentDocument.value = document })
+				.on(value: { _ in self.switchTo(document: document) })
 				.map( { String(data: $0, encoding: .utf8) } )
 		}
 		return fileCache.validUrl(for: document.file)
 			.map({ _ in return document.file })
 			.flatMap(.concat, fileCache.contents)
-			.on(value: { _ in self._currentDocument.value = document })
+			.on(value: { _ in self.switchTo(document: document) })
 			.map( { String(data: $0, encoding: .utf8) } )
 	}
 }
