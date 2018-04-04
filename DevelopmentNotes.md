@@ -19,6 +19,9 @@ notebook saving
 
 clear undo cache on file change notification from server
 
+### TODO
+
+* updated FrontMatterViewItem to use reactive binding when updated to use ReactiveCocoa 7.1
 
 ### code templates
 
