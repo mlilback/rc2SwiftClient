@@ -98,7 +98,6 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		resultVisibleDisposable?.dispose()
 		guard let data = data else { return }
 		guard let context = context else { return }
-		guard let codeChunk = data.chunk as? Code else { fatalError("chunk is not Code") }
 		// observe result visibility
 		resultVisibleDisposable = data.resultsVisible.producer.startWithValues { [weak self] visible in
 			self?.adjustResults(visible: visible)
@@ -116,7 +115,9 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		sourceView.layoutManager?.replaceTextStorage(data.chunk.textStorage)
 		// bind options field
 		optionsDisposable?.dispose()
-		optionsDisposable = optionsField.reactive.stringValue <~ codeChunk.options
+		if let codeChunk = data.chunk as? Code {
+			optionsDisposable = optionsField.reactive.stringValue <~ codeChunk.options
+		}
 		//adjust label
 		chunkTypeLabel.stringValue = titleForCurrentChunk()
 		resultTwiddle.state = data.resultsVisible.value ? .on : .off
