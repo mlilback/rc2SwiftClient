@@ -39,6 +39,11 @@ class NotebookEditorController: AbstractEditorController {
 	private var sizingItems: [NSUserInterfaceItemIdentifier : NotebookViewItem] = [:]
 	private var parsedDocDisposable: Disposable?
 	
+	override var documentDirty: Bool {
+		guard let saved = context?.currentDocument.value?.savedContents else { return false }
+		return saved != currentContents()
+	}
+	
 	// MARK: - standard
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -61,6 +66,11 @@ class NotebookEditorController: AbstractEditorController {
 		layout.sectionInset = NSEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
 		layout.minimumLineSpacing = 20.0
 		layout.minimumInteritemSpacing = 14.0
+	}
+	
+	override func viewWillDisappear() {
+		super.viewWillDisappear()
+		autosaveCurrentDocument()
 	}
 	
 	// Called initially and when window is resized:
@@ -96,7 +106,11 @@ class NotebookEditorController: AbstractEditorController {
 	}
 	
 	override func documentWillSave(_ notification: Notification) {
-		// need to convert dataArray back to single source
+		if view.window != nil {
+			// need to convert dataArray back to document contents
+			context?.currentDocument.value?.editedContents = currentContents()
+		}
+		super.documentWillSave(notification)
 	}
 	
 	// MARK: - actions
@@ -116,6 +130,15 @@ class NotebookEditorController: AbstractEditorController {
 	}
 	
 	// MARK: - private
+	
+	private func currentContents() -> String {
+		var contents = ""
+		if let fm = context?.parsedDocument.value?.frontMatter.value, fm.count > 0 {
+			contents += "---\n\(fm)\n---\n"
+		}
+		dataArray.forEach { contents += $0.chunk.rawText }
+		return contents
+	}
 	
 	func viewItemId(chunk: RmdChunk) -> NSUserInterfaceItemIdentifier {
 		switch chunk {

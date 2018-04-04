@@ -92,6 +92,18 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="foq-va-rvM"/>
+                                        <menuItem title="Save" keyEquivalent="s" id="dUH-zS-JmW">
+                                            <connections>
+                                                <action selector="save:" target="Ady-hI-5gd" id="fzb-Jx-Uad"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Revert to Saved…" id="wDO-9o-F06">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="revert:" target="Ady-hI-5gd" id="aK4-e6-XVl"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="OBW-Uc-aG9"/>
                                         <menuItem title="Import…" id="iiO-yF-ulD">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>

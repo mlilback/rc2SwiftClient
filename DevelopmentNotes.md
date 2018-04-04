@@ -8,6 +8,7 @@
 
 * not using invalidationcontext because should never be enough chunks that resizing should cause a performance issue
 
+should probably have EditorDocument send a notification/signal when contentsSaved called so notebook can reparse
 
 notebook saving
 

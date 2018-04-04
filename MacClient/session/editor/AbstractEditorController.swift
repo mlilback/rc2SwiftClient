@@ -21,10 +21,25 @@ extension Selector {
 
 class AbstractEditorController: AbstractSessionViewController, CodeEditor {
 	private(set) var context: EditorContext?
+	private var autoSaveDisposable = Atomic<Disposable?>(nil)
 	
 	@objc dynamic var canExecute: Bool {
 		guard context?.currentDocument.value?.isLoaded ?? false else { return false }
 		return context?.currentDocument.value?.currentContents?.count ?? 0 > 0
+	}
+	
+	var documentDirty: Bool { return false }
+	
+	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+		guard let action = menuItem.action else { return false }
+		switch action {
+		case #selector(save(_:)):
+			return documentDirty
+		case #selector(revert(_:)):
+			return documentDirty
+		default:
+			return super.validateMenuItem(menuItem)
+		}
 	}
 	
 	func setContext(context: EditorContext) {
@@ -64,20 +79,53 @@ class AbstractEditorController: AbstractSessionViewController, CodeEditor {
 		}
 	}
 
+	// called by notifications when sleeping/backgrounding
 	@objc func autosaveCurrentDocument() {
-		guard context?.currentDocument.value?.isDirty ?? false else { return }
-		saveWithProgress(isAutoSave: true).startWithResult { result in
-			guard result.error == nil else {
-				Log.warn("autosave failed: \(result.error!)", .session)
-				return
+		// return if autosave in progress or no document
+		guard autoSaveDisposable.value == nil,
+			let doc = context?.currentDocument.value
+			else { return }
+		autoSaveDisposable.value?.dispose()
+		autoSaveDisposable.value = context?.save(document: doc, isAutoSave: true)
+			.updateProgress(status: self.appStatus!, actionName: "Autosave")
+			.observe(on: UIScheduler())
+			.startWithCompleted { [weak self] in
+				self?.autoSaveDisposable.value?.dispose()
+				self?.autoSaveDisposable.value = nil
 			}
-			//need to do anything when successful?
-		}
+//		guard context?.currentDocument.value?.isDirty ?? false else { return }
+//		saveWithProgress(isAutoSave: true).startWithResult { result in
+//			guard result.error == nil else {
+//				Log.warn("autosave failed: \(result.error!)", .session)
+//				return
+//			}
+//			//need to do anything when successful?
+//		}
 	}
 	
 	@objc func documentWillSave(_ notification: Notification) {
 	}
 
+	@IBAction func save(_ sender: Any?) {
+		saveWithProgress().startWithResult { result in
+			if let innerError = result.error {
+				let appError = AppError(.saveFailed, nestedError: innerError)
+				Log.info("save for execute returned an error: \(result.error!)", .app)
+				self.appStatus?.presentError(appError.rc2Error, session: self.session)
+				return
+			}
+		}
+	}
+	
+	@IBAction func revert(_ sender: Any?) {
+		guard let doc = context?.currentDocument.value else { return }
+		// Do you want to revert the document “AbstractEditorController.swift” to the last saved version?
+		confirmAction(message: "Do you want to revert the document \"\(doc.file.name)\" to the last saved version?", infoText: "", buttonTitle: "Revert") { confirmed in
+			guard confirmed else { return }
+			self.context?.revertCurrentDocument()
+		}
+	}
+	
 	//should be the only place an actual save is performed
 	func saveWithProgress(isAutoSave: Bool = false) -> SignalProducer<Bool, Rc2Error> {
 		guard let context = context else { fatalError() }

@@ -54,6 +54,11 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		return parser.executableChunks.index(of: curChunk) ?? 0 > 0
 	}
 	
+	override var documentDirty: Bool {
+		guard let edited = editor?.string, let original = context?.currentDocument.value?.savedContents else { return false }
+		return edited != original
+	}
+	
 	// MARK: init/deinit
 	deinit {
 		context?.workspaceNotificationCenter.removeObserver(self)
@@ -90,7 +95,8 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 			}
 			return editor?.string.count ?? 0 > 0
 		default:
-			return validateUserInterfaceItem(menuItem)
+			if validateUserInterfaceItem(menuItem) { return true }
+			return super.validateMenuItem(menuItem)
 		}
 	}
 
@@ -156,11 +162,13 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	@objc override func documentWillSave(_ notification: Notification) {
 		guard let document = context?.currentDocument.value, let editor = editor, let lm = editor.layoutManager else { fatalError()}
 		super.documentWillSave(notification)
+		guard view.window != nil else { return }
 		//save the index of the character at the top left of the text container
 		let bnds = editor.enclosingScrollView!.contentView.bounds
 		var partial: CGFloat = 1.0
 		let idx = lm.characterIndex(for: bnds.origin, in: editor.textContainer!, fractionOfDistanceBetweenInsertionPoints: &partial)
 		document.topVisibleIndex = idx
+		document.editedContents = editor.string
 	}
 	
 	func updateUIForCurrentDocument() {

@@ -34,6 +34,9 @@ protocol EditorContext: class {
 	///   - isAutoSave: true if an autosave, false if a user-initiated save
 	/// - Returns: a SignalProducer that returns an empty value or an error
 	func save(document: EditorDocument, isAutoSave: Bool) -> SignalProducer<(), Rc2Error>
+	
+	/// Reverts the current document to last saved contents
+	func revertCurrentDocument()
 }
 
 

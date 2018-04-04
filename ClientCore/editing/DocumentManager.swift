@@ -114,22 +114,68 @@ class DocumentManager: EditorContext {
 			.on(starting: { self.loading.value = true }, completed: { self.loading.value = false })
 	}
 	
+	func revertCurrentDocument() {
+		guard let doc = currentDocument.value else { return }
+		// clear autosave document if exists
+		let tmpUrl = autosaveUrl(document: doc)
+		if tmpUrl.fileExists() {
+			try? fileCache.fileManager.removeItem(at: tmpUrl)
+		}
+		switchTo(document: doc)
+	}
+	
 	/// saves to server, fileCache, and memory cache
 	func save(document: EditorDocument, isAutoSave: Bool = false) -> SignalProducer<(), Rc2Error> {
-		// FIXME: use autosave parameter
+		if isAutoSave {
+			return autosave(document: document)
+		}
 		guard document.isDirty else { return SignalProducer<(), Rc2Error>(value: ()) }
+		notificationCenter.post(name: .willSaveDocument, object: self)
 		guard let contents = document.editedContents else {
 			return SignalProducer<(), Rc2Error>(error: Rc2Error(type: .invalidArgument))
 		}
-		notificationCenter.post(name: .willSaveDocument, object: self)
 		return self.fileSaver.save(file: document.file, contents: contents)
 			.on(starting: { self.saving.value = true })
 			.map { _ in (document.file, contents) }
 			.flatMap(.concat, fileCache.save)
-			.on(completed: { document.contentsSaved() },
+			.on(completed: {
+				document.contentsSaved()
+				self.switchTo(document: document)
+			},
 				terminated: { self.saving.value = false })
 	}
 	
+	/// actually autosaves a file
+	private func autosave(document: EditorDocument) -> SignalProducer<(), Rc2Error> {
+		Log.info("autosaving \(document.file.name)", .core)
+		let tmpUrl = autosaveUrl(document: document)
+		return SignalProducer<(), Rc2Error> { [weak self] observer, _ in
+			var err: Rc2Error?
+			defer {
+				if let err = err {
+					observer.send(error: err)
+				} else {
+					observer.send(value: ())
+					observer.sendCompleted()
+				}
+			}
+			guard let me = self else { return }
+			me.notificationCenter.post(name: .willSaveDocument, object: self)
+			if let content = document.editedContents {
+				do {
+					try content.data(using: .utf8)?.write(to: tmpUrl)
+					document.file.writeXAttributes(tmpUrl)
+					Log.info("autosaved \(tmpUrl.lastPathComponent)", .core)
+				} catch {
+					err = Rc2Error(type: .file, nested: error, explanation: "failed to autosave \(tmpUrl.lastPathComponent)")
+				}
+			}
+		}
+	}
+	
+	private func autosaveUrl(document: EditorDocument) -> URL {
+		return fileCache.fileCacheUrl.appendingPathComponent("~\(document.file.fileId).\(document.file.fileType.fileExtension)")
+	}
 
 	private func nilOutCurrentDocument() -> SignalProducer<String?, Rc2Error> {
 		return SignalProducer<String?, Rc2Error>(value: nil)
@@ -176,11 +222,22 @@ class DocumentManager: EditorContext {
 			switchTo(document: document)
 			return SignalProducer<String?, Rc2Error>(value: document.currentContents)
 		}
+		// see if there is autosave data to use
+		let tmpUrl = autosaveUrl(document: document)
+		if tmpUrl.fileExists(),
+			document.file.versionXAttributesMatch(url: tmpUrl),
+			let contents = try? String(contentsOf: tmpUrl, encoding: .utf8)
+		{
+			Log.info("using contents from autosave file (\(document.file.fileId))", .core)
+			return SignalProducer<String?, Rc2Error>(value: contents)
+		}
+		// read cache
 		if fileCache.isFileCached(document.file) {
 			return fileCache.contents(of: document.file)
 				.on(value: { _ in self.switchTo(document: document) })
 				.map( { String(data: $0, encoding: .utf8) } )
 		}
+		// load from network
 		return fileCache.validUrl(for: document.file)
 			.map({ _ in return document.file })
 			.flatMap(.concat, fileCache.contents)
