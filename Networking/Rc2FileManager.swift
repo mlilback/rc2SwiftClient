@@ -115,8 +115,19 @@ open class Rc2DefaultFileManager: Rc2FileManager {
 	}
 }
 
-extension AppFile {
-	///checks to see if file at url is the file we represent
+public extension AppFile {
+	/// checks to see if the file at url has the same version information as this file
+	public func versionXAttributesMatch(url: URL) -> Bool {
+		if let versionData = dataForXAttributeNamed(FileAttrVersion, atURL: url).data,
+		let readString = String(data: versionData, encoding: .utf8),
+		let readVersion = Int(readString)
+		{
+			return readVersion == version
+		}
+		return false
+	}
+	
+	/// checks to see if file at url is the file we represent
 	public func urlXAttributesMatch(_ url: URL) -> Bool {
 		if let versionData = dataForXAttributeNamed(FileAttrVersion, atURL: url).data,
 			let readString = String(data: versionData, encoding: .utf8),
@@ -129,7 +140,7 @@ extension AppFile {
 		return false
 	}
 	
-	///writes data to xattributes to later validate if a url points to a file reprsented this object
+	/// writes data to xattributes to later validate if a url points to a file reprsented this object
 	public func writeXAttributes(_ toUrl: URL) {
 		let versionData = String(version).data(using: String.Encoding.utf8)
 		setXAttributeWithName(FileAttrVersion, data: versionData!, atURL: toUrl)

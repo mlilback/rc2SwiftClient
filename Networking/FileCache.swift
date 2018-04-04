@@ -23,6 +23,7 @@ public enum FileCacheError: Error, Rc2DomainError {
 public protocol FileCache {
 	var fileManager: Rc2FileManager { get }
 	var workspace: AppWorkspace { get }
+	var fileCacheUrl: URL { get }
 
 	func close()
 	func isFileCached(_ file: AppFile) -> Bool
@@ -154,7 +155,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 	fileprivate var downloadAll: DownloadAll?
 	fileprivate var lastModTimes: [Int: TimeInterval] = [:]
 	
-	lazy var fileCacheUrl: URL = { () -> URL in
+	public lazy var fileCacheUrl: URL = { () -> URL in
 		do {
 			return try AppInfo.subdirectory(type: .cachesDirectory, named: self.workspace.uniqueId)
 		} catch {
