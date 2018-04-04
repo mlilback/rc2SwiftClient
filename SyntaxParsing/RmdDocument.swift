@@ -246,7 +246,9 @@ class CodeChunk: InternalRmdChunk, Code {
 	}
 	
 	override var rawText: String {
-		return "```{r \(options)}\n\(textStorage.string)\n```"
+		var opts = options
+		if opts.count > 0 { opts = " " + opts }
+		return "```{r\(opts)}\n\(textStorage.string)\n```\n"
 	}
 }
 
@@ -256,7 +258,8 @@ class EquationChunk: InternalRmdChunk, Equation {
 		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .display,
 								   range: range, innerRange: innerRange, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
-		textStorage.append(NSAttributedString(string: contents.substring(from: range)!))
+		let eqstr = NSAttributedString(string: contents.substring(from: innerRange)!)
+		textStorage.append(eqstr)
 	}
 	
 	override var rawText: String {
