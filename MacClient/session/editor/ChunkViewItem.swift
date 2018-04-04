@@ -9,6 +9,7 @@
 import Cocoa
 import SyntaxParsing
 import ReactiveSwift
+import ReactiveCocoa
 import MJLLogger
 
 class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
@@ -20,8 +21,10 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 	@IBOutlet weak var resultTwiddle: NSButton!
 	@IBOutlet weak var chunkTypeLabel: NSTextField!
 	@IBOutlet weak var addChunkButton: NSButton!
+	@IBOutlet weak var optionsField: NSTextField!
 	var layingOut = false
 	private var twiddleInProgress = false
+	private var optionsDisposable: Disposable?
 	
 	/// if a subclass uses a non-NSTextView results view, this needs to be overridden to calculate frame
 	var resultView: NSView { return resultTextView! }
@@ -69,6 +72,8 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		data = nil
 		sourceView.layoutManager?.replaceTextStorage(NSTextStorage())
 		resultTextView?.replace(text: "")
+		optionsDisposable?.dispose()
+		optionsDisposable = nil
 	}
 
 	// MARK: - change handling
@@ -93,6 +98,7 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		resultVisibleDisposable?.dispose()
 		guard let data = data else { return }
 		guard let context = context else { return }
+		guard let codeChunk = data.chunk as? Code else { fatalError("chunk is not Code") }
 		// observe result visibility
 		resultVisibleDisposable = data.resultsVisible.producer.startWithValues { [weak self] visible in
 			self?.adjustResults(visible: visible)
@@ -108,6 +114,9 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		data.source.font = context.editorFont.value
 		// use the data's textstorage
 		sourceView.layoutManager?.replaceTextStorage(data.chunk.textStorage)
+		// bind options field
+		optionsDisposable?.dispose()
+		optionsDisposable = optionsField.reactive.stringValue <~ codeChunk.options
 		//adjust label
 		chunkTypeLabel.stringValue = titleForCurrentChunk()
 		resultTwiddle.state = data.resultsVisible.value ? .on : .off

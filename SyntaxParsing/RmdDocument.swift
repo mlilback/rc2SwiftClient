@@ -51,7 +51,7 @@ public class RmdDocument {
 			case .code:
 				let cchunk = CodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange, options: parserChunk.rOps)
 				if parserChunk.isInline, let lastChunk = lastTextChunk {
-					let achunk = InternalInlineCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
+					let achunk = InternalInlineCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange, options: parserChunk.rOps)
 					attach(chunk: achunk, to: lastChunk.textStorage)
 					lastWasInline = true
 					return
@@ -132,7 +132,9 @@ public class RmdDocument {
 
 public protocol Equation: class {}
 
-public protocol Code: class {}
+public protocol Code: class {
+	var options: MutableProperty<String> { get }
+}
 
 public protocol RmdChunk: class {
 	var textStorage: NSTextStorage { get }
@@ -236,9 +238,9 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 
 // MARK: -
 class CodeChunk: InternalRmdChunk, Code {
-	var options: String
+	var options: MutableProperty<String>
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange, options: String?) {
-		self.options = options ?? ""
+		self.options = MutableProperty<String>(options ?? "")
 		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
@@ -246,7 +248,7 @@ class CodeChunk: InternalRmdChunk, Code {
 	}
 	
 	override var rawText: String {
-		var opts = options
+		var opts = options.value
 		if opts.count > 0 { opts = " " + opts }
 		return "```{r\(opts)}\n\(textStorage.string)\n```\n"
 	}
@@ -279,7 +281,9 @@ class InternalInlineEquation: InternalRmdChunk, InlineChunk, Equation {
 }
 
 class InternalInlineCodeChunk: InternalRmdChunk, InlineChunk, Code {
-	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
+	var options: MutableProperty<String>
+	init(parser: BaseSyntaxParser, contents: String, range: NSRange, options: String) {
+		self.options = MutableProperty<String>(options)
 		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)

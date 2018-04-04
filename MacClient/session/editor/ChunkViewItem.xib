@@ -11,6 +11,7 @@
                 <outlet property="addChunkButton" destination="WIS-13-SRF" id="DKl-De-RRy"/>
                 <outlet property="chunkTypeLabel" destination="fDF-zO-1NG" id="FqC-gX-aiS"/>
                 <outlet property="middleView" destination="y6B-4h-J3F" id="9ju-Cc-nT9"/>
+                <outlet property="optionsField" destination="rTV-st-dDs" id="xLm-75-pWo"/>
                 <outlet property="resultTextView" destination="HRk-gT-qE6" id="NRD-uC-xpA"/>
                 <outlet property="resultTwiddle" destination="Lpr-hw-vve" id="zTY-ym-9a1"/>
                 <outlet property="sourceView" destination="Zng-X6-LSA" id="fr0-0K-Cwg"/>
@@ -31,7 +32,7 @@
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="fDF-zO-1NG">
                             <rect key="frame" x="27" y="2" width="112" height="17"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Markdown" id="UYd-N7-SZ9">
+                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="R code" id="UYd-N7-SZ9">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -48,6 +49,15 @@
                                 <action selector="addChunk:" target="-2" id="uC2-RW-M32"/>
                             </connections>
                         </button>
+                        <textField verticalHuggingPriority="750" misplaced="YES" id="rTV-st-dDs">
+                            <rect key="frame" x="179" y="1" width="273" height="19"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                            <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="yyq-Cm-WwP">
+                                <font key="font" metaFont="smallSystem"/>
+                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
                     </subviews>
                 </customView>
                 <scrollView identifier="sourceScroll" focusRingType="exterior" misplaced="YES" borderType="line" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" id="OEf-2G-F4x" userLabel="source scroll" customClass="NoScrollView" customModule="MacClient" customModuleProvider="target">
