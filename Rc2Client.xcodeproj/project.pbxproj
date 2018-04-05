@@ -201,6 +201,8 @@
 		084D33282071576F00246CBD /* EquationViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 084D33272071576E00246CBD /* EquationViewItem.xib */; };
 		084D332D20752C7D00246CBD /* CodeTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D332C20752C7D00246CBD /* CodeTemplate.swift */; };
 		084D332E20752E8800246CBD /* CodeTemplateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8F1A520698F8500F0FF5A /* CodeTemplateManager.swift */; };
+		084D33302075619500246CBD /* TemplatesPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D332F2075619500246CBD /* TemplatesPrefsController.swift */; };
+		084D333220767A7E00246CBD /* DoubleClickEditableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D333120767A7E00246CBD /* DoubleClickEditableTextField.swift */; };
 		084E93A9201A313900FF50EA /* FakeFileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935871E00AA5700C94B19 /* FakeFileCache.swift */; };
 		084E93AC201A352200FF50EA /* ConnectionInfoSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */; };
 		084E93B7201E874900FF50EA /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; };
@@ -1083,6 +1085,8 @@
 		084D3318206D3C9E00246CBD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		084D33272071576E00246CBD /* EquationViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EquationViewItem.xib; sourceTree = "<group>"; };
 		084D332C20752C7D00246CBD /* CodeTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeTemplate.swift; sourceTree = "<group>"; };
+		084D332F2075619500246CBD /* TemplatesPrefsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TemplatesPrefsController.swift; path = prefs/TemplatesPrefsController.swift; sourceTree = "<group>"; };
+		084D333120767A7E00246CBD /* DoubleClickEditableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleClickEditableTextField.swift; sourceTree = "<group>"; };
 		084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfoSpec.swift; sourceTree = "<group>"; };
 		084E93B2201E874900FF50EA /* ModelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ModelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		084E93B6201E874900FF50EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1629,6 +1633,7 @@
 				08AA5F061E5350AA00389089 /* SearchBarField.h */,
 				08AA5F071E5350AA00389089 /* SearchBarField.m */,
 				08EE26F8202FA4A5008E008F /* DimmingView.swift */,
+				084D333120767A7E00246CBD /* DoubleClickEditableTextField.swift */,
 			);
 			name = "generic views";
 			path = MacClient/views;
@@ -2352,6 +2357,7 @@
 				08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */,
 				08C2D5EB1E71BB290007A02D /* DockerPrefsController.swift */,
 				0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */,
+				084D332F2075619500246CBD /* TemplatesPrefsController.swift */,
 				088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */,
 				086A40D41E7B04F400AE476B /* ThemeEditorController.swift */,
 				086A40D61E7B1E8600AE476B /* ThemeEditorController.xib */,
@@ -3603,6 +3609,8 @@
 				08EE27012030A0BC008E008F /* SidebarController.swift in Sources */,
 				08C2D5E91E71B1FC0007A02D /* Searchable.swift in Sources */,
 				0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */,
+				084D33302075619500246CBD /* TemplatesPrefsController.swift in Sources */,
+				084D333220767A7E00246CBD /* DoubleClickEditableTextField.swift in Sources */,
 				088F591C1E74BCEA0009A0B1 /* ThemePrefsController.swift in Sources */,
 				08CCED4D1EE1DF6E004B5ADE /* DockerTabViewController.swift in Sources */,
 				080314231D2412ED006D668F /* SelectServerViewController.swift in Sources */,

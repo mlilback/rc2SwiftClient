@@ -6,8 +6,12 @@
 
 import Foundation
 
+public protocol CodeTemplateObject: class {
+	var name: String { get set }
+}
+
 /// a user-defined category to organize CodeTemplates in
-public class CodeTemplateCategory: Codable {
+public class CodeTemplateCategory: Codable, CodeTemplateObject {
 	/// the name of the category
 	public var name: String
 	/// the templates contained in the category
@@ -20,7 +24,7 @@ public class CodeTemplateCategory: Codable {
 }
 
 /// represents a named template for code
-public class CodeTemplate: Codable {
+public class CodeTemplate: Codable, CodeTemplateObject {
 	///  the name of the template
 	public var name: String
 	/// the contents of the template

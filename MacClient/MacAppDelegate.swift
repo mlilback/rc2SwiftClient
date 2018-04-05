@@ -48,6 +48,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	private var dockerEnabled = true
 	@objc dynamic var dockerManager: DockerManager?
 	private var backupManager: DockerBackupManager?
+	private var templateManager: CodeTemplateManager?
 	var startupWindowController: StartupWindowController?
 	var startupController: StartupController?
 	private var onboardingController: OnboardingWindowController?
@@ -354,7 +355,23 @@ extension MacAppDelegate {
 	
 	@IBAction func showPreferencesWindow(_ sender: AnyObject?) {
 		if nil == preferencesWindowController {
-			let sboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Preferences"), bundle: nil)
+			if nil == templateManager {
+				do {
+					let dataFolder = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "CodeTemplates", create: true)
+					let defaultFolder = Bundle.main.resourceURL!.appendingPathComponent("CodeTemplates")
+					templateManager = try CodeTemplateManager(dataFolderUrl: dataFolder, defaultFolderUrl: defaultFolder)
+				} catch {
+					Log.error("failed to load template manager: \(error)", .app)
+					fatalError("failed to load template manager")
+				}
+			}
+			let icontext = InjectorContext()
+			icontext.register(TemplatesPrefsController.self) { controller in
+				controller.templateManager = self.templateManager!
+			}
+			
+			let sboard = NSStoryboard(name: .prefs, bundle: nil)
+			sboard.injectionContext = icontext
 			preferencesWindowController = sboard.instantiateInitialController() as? NSWindowController
 			preferencesWindowController?.window?.setFrameAutosaveName(NSWindow.FrameAutosaveName(rawValue: "PrefsWindow"))
 		}

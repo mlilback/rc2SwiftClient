@@ -9,6 +9,7 @@ import Cocoa
 extension NSStoryboard.Name {
 	static let mainBoard = NSStoryboard.Name(rawValue: "Main")
 	static let mainController = NSStoryboard.Name(rawValue: "MainController")
+	static let prefs = NSStoryboard.Name(rawValue: "Preferences")
 }
 
 extension NSStoryboard.SceneIdentifier {
