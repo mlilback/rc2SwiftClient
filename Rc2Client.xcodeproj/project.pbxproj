@@ -203,6 +203,7 @@
 		084D332E20752E8800246CBD /* CodeTemplateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8F1A520698F8500F0FF5A /* CodeTemplateManager.swift */; };
 		084D33302075619500246CBD /* TemplatesPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D332F2075619500246CBD /* TemplatesPrefsController.swift */; };
 		084D333220767A7E00246CBD /* DoubleClickEditableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D333120767A7E00246CBD /* DoubleClickEditableTextField.swift */; };
+		084D33332076B18000246CBD /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		084E93A9201A313900FF50EA /* FakeFileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935871E00AA5700C94B19 /* FakeFileCache.swift */; };
 		084E93AC201A352200FF50EA /* ConnectionInfoSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */; };
 		084E93B7201E874900FF50EA /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; };
@@ -1426,6 +1427,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				084D330E206D387800246CBD /* Rc2Common.framework in Frameworks */,
+				084D33332076B18000246CBD /* ReactiveSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4380,6 +4382,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_PREPROCESSOR_DEFINITIONS = (

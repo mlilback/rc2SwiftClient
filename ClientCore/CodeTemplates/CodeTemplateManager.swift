@@ -55,8 +55,19 @@ public class CodeTemplateManager {
 	}
 	
 	/// return the categories for a particular type
-	public func templates(for type: TemplateType) -> [CodeTemplateCategory] {
+	public func categories(for type: TemplateType) -> [CodeTemplateCategory] {
 		return categories[type] ?? []
+	}
+	
+	public func set(categories newCats: [CodeTemplateCategory], for type: TemplateType) {
+		categories[type] = newCats
+	}
+	
+	/// creates a new CodeTemplateCategory and inserts it the array of categories for type at the desired index
+	public func createCategory(of type: TemplateType, at destIndex: Int) -> CodeTemplateCategory {
+		let cat = CodeTemplateCategory(name: "Untitled")
+		categories[type]!.insert(cat, at: destIndex)
+		return cat
 	}
 	
 	/// reads the stored values of the specified type from the dataFolderUrl. If there is no file there, it loads one from defaultFolderUrl. If there isn't one there, it loads a hardcoded general category.

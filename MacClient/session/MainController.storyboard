@@ -368,18 +368,6 @@
                                 <action selector="executeCurrentLine:" target="PjE-XL-yZ2" id="M4T-Fl-K4H"/>
                             </connections>
                         </menuItem>
-                        <menuItem title="Execute Current Chunk" id="4nC-cJ-dBA">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="executeCurrentChunk:" target="PjE-XL-yZ2" id="94S-jt-rCv"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Execute Previous Chunks" id="HJE-Ez-TeX">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="executePreviousChunks:" target="PjE-XL-yZ2" id="Kky-rk-m4r"/>
-                            </connections>
-                        </menuItem>
                     </items>
                 </menu>
             </objects>
