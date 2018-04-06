@@ -204,6 +204,7 @@
 		084D33302075619500246CBD /* TemplatesPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D332F2075619500246CBD /* TemplatesPrefsController.swift */; };
 		084D333220767A7E00246CBD /* DoubleClickEditableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D333120767A7E00246CBD /* DoubleClickEditableTextField.swift */; };
 		084D33332076B18000246CBD /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
+		084D33352077D1FD00246CBD /* NSViewController+Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D33342077D1FD00246CBD /* NSViewController+Alerts.swift */; };
 		084E93A9201A313900FF50EA /* FakeFileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935871E00AA5700C94B19 /* FakeFileCache.swift */; };
 		084E93AC201A352200FF50EA /* ConnectionInfoSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */; };
 		084E93B7201E874900FF50EA /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; };
@@ -1088,6 +1089,7 @@
 		084D332C20752C7D00246CBD /* CodeTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeTemplate.swift; sourceTree = "<group>"; };
 		084D332F2075619500246CBD /* TemplatesPrefsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TemplatesPrefsController.swift; path = prefs/TemplatesPrefsController.swift; sourceTree = "<group>"; };
 		084D333120767A7E00246CBD /* DoubleClickEditableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleClickEditableTextField.swift; sourceTree = "<group>"; };
+		084D33342077D1FD00246CBD /* NSViewController+Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "NSViewController+Alerts.swift"; path = "vendor/MJLCommon/Sources/MJLCommon/extensions/NSViewController+Alerts.swift"; sourceTree = SOURCE_ROOT; };
 		084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionInfoSpec.swift; sourceTree = "<group>"; };
 		084E93B2201E874900FF50EA /* ModelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ModelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		084E93B6201E874900FF50EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1788,6 +1790,7 @@
 				089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */,
 				08F189A51D09EE4000866A05 /* NSViewController+Rc2.swift */,
 				083AC1032062EDFB0054023F /* NSImage+Rc2.swift */,
+				084D33342077D1FD00246CBD /* NSViewController+Alerts.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -3578,6 +3581,7 @@
 				083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */,
 				08F673D01D020B2700B87049 /* FontManagement.swift in Sources */,
 				084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */,
+				084D33352077D1FD00246CBD /* NSViewController+Alerts.swift in Sources */,
 				08F189A21D09AA0300866A05 /* SessionController.swift in Sources */,
 				085A1A25205AC4CD00B7EC5F /* NotebookEntryView.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
