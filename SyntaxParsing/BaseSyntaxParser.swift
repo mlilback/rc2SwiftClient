@@ -57,6 +57,9 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 	
 	// Called by parse (called externally), which in turn calls parseRange
 	// implemented by particular parser subclasses.
+	internal func parseAndAttributeString(_ str:NSMutableAttributedString, inRange: NSRange) {
+		preconditionFailure("subclass must implement")
+	}
 	internal func parseRange(_ range: NSRange) {
 		preconditionFailure("subclass must implement")
 	}
@@ -117,8 +120,10 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 		}
 		return outArray
 	}
-	
+
 	public func colorChunks(_ chunksToColor: [DocumentChunk]) {
+		let fullRange = NSRange(location: 0, length: textStorage.length)
+		textStorage.removeAttribute(.backgroundColor, range: fullRange)
 		for chunk in chunksToColor {
 			var bgcolor = theme.value.color(for: .background)
 			if chunk.chunkType == .code {

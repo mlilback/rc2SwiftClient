@@ -10,6 +10,12 @@ import Foundation
 #endif
 import Model
 
+public let rc2syntaxAttributeKey = NSAttributedStringKey("rc2AttributeKey")
+
+enum SyntaxAttributeType: String {
+	case none, frontmatter, code, codeOptions, document, equation, mathML, quote, comment, keyword, symbol, number, block, inline
+}
+
 /// Protocol for an object that parses the contents of an NSTextStorage
 /// into an array of DocumentChunk objects, used externally instead of
 /// particular parser objects.

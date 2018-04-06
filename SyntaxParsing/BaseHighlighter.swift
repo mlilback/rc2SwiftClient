@@ -14,6 +14,10 @@ import PEGKit
 
 public typealias HasHelpCallback = (String) -> Bool
 
+//extension NSAttributedStringKey {
+//	public static let rc2code: NSAttributedStringKey
+//}
+
 open class BaseHighlighter: NSObject {
 	let theme = Property<SyntaxTheme>(ThemeManager.shared.activeSyntaxTheme)
 	var helpCallback: HasHelpCallback?
@@ -47,11 +51,11 @@ open class BaseHighlighter: NSObject {
 		highlightText(attribStr, range: chunk.parsedRange, chunk: chunk)
 	}
 	
-	func highlightText(_ attribStr: NSMutableAttributedString, range: NSRange, chunk: ChunkProtocol) {
+	func highlightText(_ aStr: NSMutableAttributedString, range: NSRange, chunk: ChunkProtocol) {
 		guard range.length > 0 else { return }
-		attribStr.removeAttribute(.foregroundColor, range: range)
+		aStr.removeAttribute(.foregroundColor, range: range)
 		// PEGKit:
-		let swiftStr = attribStr.mutableString.substring(with: range)
+		let swiftStr = aStr.mutableString.substring(with: range)
 		let tok = PKTokenizer(string: swiftStr)!
 		setBaseTokenizer(tok)
 		// Comments tags:
@@ -73,18 +77,20 @@ open class BaseHighlighter: NSObject {
 			var tokenRange = NSRange(location: range.location + Int(token.offset),
 									 length: token.stringValue.count)
 			var includePrevious: Bool = false
-			if let color = colorForToken(token, lastToken: lastToken,
-										 includePreviousCharacter: &includePrevious,
-										 chunk: chunk) {
-				if includePrevious {	//>>> check
-					tokenRange.location -= 1
-					tokenRange.length += 1
-				}
-				attribStr.addAttribute(.foregroundColor, value: color, range: tokenRange)
+			let (color, type) = colorForToken(token, lastToken: lastToken,
+											  includePreviousCharacter: &includePrevious,
+											  chunk: chunk)
+			if includePrevious {	//>>> check
+				tokenRange.location -= 1
+				tokenRange.length += 1
+			}
+			aStr.addAttribute(.foregroundColor, value: color, range: tokenRange)
+			if type != .none {
+				aStr.addAttribute(rc2syntaxAttributeKey, value: type, range: tokenRange)
 			}
 			if token.tokenType == .word, helpCallback?(token.stringValue) ?? false {
 				// add tag marking as having help
-				attribStr.addAttribute(.link, value: "help:\(token.stringValue!)", range: tokenRange)
+				aStr.addAttribute(.link, value: "help:\(token.stringValue!)", range: tokenRange)
 			}
 			lastToken = token
 		}
@@ -93,38 +99,39 @@ open class BaseHighlighter: NSObject {
 	func colorForToken(_ token: PKToken, lastToken: PKToken?,
 					   includePreviousCharacter usePrevious:inout Bool,
 					   chunk: ChunkProtocol)
-		-> PlatformColor?
+		-> (PlatformColor, SyntaxAttributeType)
 	{
-		var color: PlatformColor = PlatformColor.black // nil
+//=		var color = PlatformColor.black // nil
+		var out = (theme.value.color(for: .quote), SyntaxAttributeType.quote)
 		if token.isQuotedString {
-			return theme.value.color(for: .quote)
+			return out
 		}
 		else if token.stringValue == "\"" {
-			return theme.value.color(for: .quote)
+			return out
 		}
 		switch token.tokenType {
 		case .comment:
-			color = theme.value.color(for: .comment)
+			out = (theme.value.color(for: .comment), SyntaxAttributeType.comment)
 		case .quotedString:
-			color = theme.value.color(for: .quote)
+			out = (theme.value.color(for: .quote), SyntaxAttributeType.quote)
 		case .number:
-			color = PlatformColor.black
+			out = (PlatformColor.black, SyntaxAttributeType.number)
 		case .symbol:	// a bug in PEGKit?!
-			color = theme.value.color(for: .symbol)
+			out = (theme.value.color(for: .symbol), SyntaxAttributeType.symbol)
 		case .word:
 			if chunk.chunkType == .code && keywords.contains(token.stringValue) {
-				color = theme.value.color(for: .keyword)
+				out = (theme.value.color(for: .keyword), SyntaxAttributeType.keyword)
 			}
 			else if chunk.docType == .latex || chunk.chunkType == .equation {
 				if lastToken?.tokenType == .symbol && lastToken?.stringValue.first == "\\" {
 					usePrevious = true
-					color = theme.value.color(for: .keyword)
+					out = (theme.value.color(for: .keyword), SyntaxAttributeType.keyword)
 				}
 			}
 		default:
-			color = PlatformColor.black // nil
+			out = (PlatformColor.black, SyntaxAttributeType.none) // nil
 		}
-		return color
+		return out
 	}
 }
 
