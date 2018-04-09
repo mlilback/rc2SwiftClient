@@ -138,15 +138,17 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	}
 	
 	override func loaded(content: String) {
-		guard let editor = self.editor, let lm = editor.layoutManager, let storage = editor.textStorage, let txtContainer = editor.textContainer
+		guard let editor = self.editor, let lm = editor.layoutManager, let storage = editor.textStorage, let txtContainer = editor.textContainer, let document = context!.currentDocument.value
 			else { fatalError("editor missing required pieces") }
 		ignoreTextStorageNotifications = true
 		storage.deleteCharacters(in: editor.rangeOfAllText)
-//		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: document.file.fileType) { (topic) in
-//			return HelpController.shared.hasTopic(topic)
-//		}
-		ignoreTextStorageNotifications = false
+		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: document.file.fileType) { (topic) in
+			return HelpController.shared.hasTopic(topic)
+		}
 		storage.setAttributedString(NSAttributedString(string: content, attributes: self.defaultAttributes))
+		parser?.parseAndAttribute(string: storage, inRange: storage.string.fullNSRange)
+		updateSyntaxStyle(targetString: storage)
+		ignoreTextStorageNotifications = false
 		if let index = context?.currentDocument.value?.topVisibleIndex, index > 0 {
 			//restore the scroll point to the saved character index
 			let idx = lm.glyphIndexForCharacter(at: index)
@@ -230,6 +232,10 @@ extension SourceEditorController: NSTextStorageDelegate {
 	func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
 	{
 		guard !ignoreTextStorageNotifications else { return }
+		ignoreTextStorageNotifications = true
+		defer { ignoreTextStorageNotifications = false }
+		parser?.parseAndAttribute(string: textStorage, inRange: textStorage.string.fullNSRange)
+		updateSyntaxStyle(targetString: textStorage)
 //		guard let parser = parser else { fatalError("no parser when text changed") }
 //		//we don't care if attributes changed
 //		guard editedMask.contains(.editedCharacters) else { return }

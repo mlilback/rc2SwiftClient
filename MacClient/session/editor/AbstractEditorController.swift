@@ -154,6 +154,47 @@ class AbstractEditorController: AbstractSessionViewController, CodeEditor {
 		}
 	}
 
+	func updateSyntaxStyle(targetString: NSMutableAttributedString) {
+		let theme = ThemeManager.shared.activeSyntaxTheme.value
+		let fullRange = targetString.string.fullNSRange
+		targetString.removeAttribute(.foregroundColor, range: fullRange)
+		targetString.removeAttribute(.backgroundColor, range: fullRange)
+		targetString.enumerateAttribute(rc2syntaxAttributeKey, in: fullRange, options: []) { (attrValue, attrRange, stop) in
+			guard let attrTypeStr = attrValue as? String, let attrType = SyntaxAttributeType(rawValue: attrTypeStr)
+				else { Log.warn("invalid syntax attribute type: \(attrValue)", .app); stop.pointee = true; return }
+			switch attrType {
+			case .none:
+				break
+			case .frontmatter:
+				break
+			case .code:
+				break
+			case .codeOptions:
+				break
+			case .document:
+				break
+			case .equation:
+				break
+			case .mathML:
+				break
+			case .quote:
+				targetString.addAttribute(.foregroundColor, value: theme.color(for: .quote), range: attrRange)
+			case .comment:
+				targetString.addAttribute(.foregroundColor, value: theme.color(for: .comment), range: attrRange)
+			case .keyword:
+				targetString.addAttribute(.foregroundColor, value: theme.color(for: .keyword), range: attrRange)
+			case .symbol:
+				targetString.addAttribute(.foregroundColor, value: theme.color(for: .symbol), range: attrRange)
+			case .number:
+				break
+			case .block:
+				break
+			case .inline:
+				break
+			}
+		}
+	}
+	
 	func loaded(content: String) {
 		fatalError("subclass must implement, not call super")
 	}
