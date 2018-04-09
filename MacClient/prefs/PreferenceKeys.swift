@@ -30,8 +30,9 @@ extension DefaultsKeys {
 	static let clearImagesWithConsole = DefaultsKey<Bool>("clearImagesWithConsole")
 	
 	static let inNotebookView = DefaultsKey<Bool>("editorInNotebookView")
+	static let suppressDeleteTemplate = DefaultsKey<Bool>("suppressDeleteTemplate")
 	static let suppressDeleteFileWarnings = DefaultsKey<Bool>("SuppressDeleteFileWarning")
 	static let suppressClearWorkspace = DefaultsKey<Bool>("SuppressClearWorkspaceWarning")
 	static let suppressClearImagesWithConsole = DefaultsKey<Bool>("SuppressClearImagesWithConsole")
-	static let suppressKeys = [suppressDeleteFileWarnings, suppressClearWorkspace, suppressClearImagesWithConsole]
+	static let suppressKeys = [suppressDeleteFileWarnings, suppressClearWorkspace, suppressClearImagesWithConsole, suppressDeleteTemplate]
 }

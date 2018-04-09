@@ -141,7 +141,6 @@ class ThemeEditorController<T: BaseTheme>: NSViewController, NSTableViewDataSour
 		guard tableView == themeTable else { return nil }
 		guard entries[row].isSectionLabel else { return nil }
 		let view = GroupRowView()
-//		view.isGroupRowStyle = true
 		view.backgroundColor = NSColor.lightGray//.withAlphaComponent(0.8)
 		return view
 	}

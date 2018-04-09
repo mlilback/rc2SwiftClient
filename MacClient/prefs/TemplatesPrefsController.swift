@@ -44,8 +44,12 @@ class TemplatesPrefsController: NSViewController {
 	private var currentCategories: [CodeTemplateCategory] = []
 	private var editingDisposables = CompositeDisposable()
 	private var currentType: TemplateType = .markdown
+	private let _undoManager = UndoManager()
 	
-	// MARK: methods
+	override var undoManager: UndoManager? { return _undoManager }
+	override var acceptsFirstResponder: Bool { return true }
+	
+	// MARK: - methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		codeOutlineView.dataSource = self
@@ -63,9 +67,11 @@ class TemplatesPrefsController: NSViewController {
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return super.validateMenuItem(menuItem) }
 		switch action {
-		case #selector(addTemplate(_:)): // can only add if something is selected
+		case #selector(addTemplate(_:)),
+			 #selector(duplicateSelection(_:)),
+			 #selector(deleteBackward(_:)): // something must be selected
 			return codeOutlineView.selectedRow != -1
-		case #selector(addGroup(_:)):
+		case #selector(addCategory(_:)):
 			return true
 		default:
 			return super.validateMenuItem(menuItem)
@@ -95,7 +101,7 @@ class TemplatesPrefsController: NSViewController {
 		codeOutlineView.reloadData()
 	}
 	
-	// MARK: actions
+	// MARK: - actions
 	@IBAction func switchType(_ sender: Any?) {
 		guard let button = sender as? NSButton else { return }
 		switch button {
@@ -110,6 +116,19 @@ class TemplatesPrefsController: NSViewController {
 		}
 	}
 	
+	@IBAction func duplicateSelection(_ sender: Any?) {
+		
+	}
+	
+	@IBAction override func deleteBackward(_ sender: Any?) {
+		guard let selItem = selectedItem else { fatalError("how was delete called with no selection?") }
+		guard let cat = selItem as? CodeTemplateCategory else {
+			delete(template: selItem as! CodeTemplate)
+			return
+		}
+		delete(category: cat)
+	}
+
 	/// displays popup menu to select what type of object to add
 	@IBAction func addItem(_ sender: Any?) {
 		addButton.menu?.popUp(positioning: nil, at: CGPoint(x: 0, y: addButton.bounds.maxY), in: addButton)
@@ -133,21 +152,20 @@ class TemplatesPrefsController: NSViewController {
 			codeOutlineView.expandItem(parent)
 		}
 		let template = CodeTemplate(name: "Untitled", contents: "")
-		parent.templates.value.insert(template, at: newIndex)
-		codeOutlineView.insertItems(at: IndexSet(integer: newIndex), inParent: parent, withAnimation: [])
-		codeOutlineView.selectRowIndexes(IndexSet(integer: codeOutlineView.row(forItem: template)), byExtendingSelection: false)
+		undoManager?.registerUndo(withTarget: self) { [theTemplate = template] (me) -> Void in
+			me.remove(template: theTemplate)
+		}
+		insert(template: template, in: parent, at: newIndex)
 		view.window?.makeFirstResponder(nameEditField)
 	}
-	
+
 	/// adds a CodeTemplateCategory
-	@IBAction func addGroup(_ sender: Any?) {
+	@IBAction func addCategory(_ sender: Any?) {
 		var newIndex: Int = currentCategories.count
 		var newGroup: CodeTemplateCategory
 		defer {
-			codeOutlineView.insertItems(at: IndexSet(integer: newIndex), inParent: nil, withAnimation: [])
-			guard let cview = codeOutlineView.view(atColumn: 0, row: newIndex, makeIfNecessary: false) as? TemplateCellView else { fatalError() }
-			let iset = IndexSet(integer:  codeOutlineView.childIndex(forItem: newGroup))
-			codeOutlineView.selectRowIndexes(iset, byExtendingSelection: false)
+			insert(category: newGroup, at: newIndex)
+			codeOutlineView.expandItem(newGroup)
 			view.window?.makeFirstResponder(nameEditField)
 		}
 		guard let selection = selectedItem else {
@@ -164,10 +182,6 @@ class TemplatesPrefsController: NSViewController {
 			newIndex = codeOutlineView.childIndex(forItem: selection)
 			newGroup = templateManager.createCategory(of: currentType, at: newIndex)
 		}
-	}
-	
-	@IBAction func removeSelection(_ sender: Any?) {
-		
 	}
 }
 
@@ -231,6 +245,7 @@ extension TemplatesPrefsController: NSOutlineViewDelegate {
 		let indexes = codeOutlineView.selectedRowIndexes
 		defer {
 			nameEditField.isEnabled = indexes.count > 0
+			removeButton.isEnabled = indexes.count > 0
 		}
 		guard indexes.count > 0 else {
 			nameEditField.stringValue = ""
@@ -266,7 +281,7 @@ extension TemplatesPrefsController: NSSplitViewDelegate {
 	}
 }
 
-// MARK: - NNSTextFieldDelegate
+// MARK: - NSTextFieldDelegate
 extension TemplatesPrefsController: NSTextFieldDelegate {
 	override func controlTextDidEndEditing(_ obj: Notification) {
 		_ = try? templateManager.save(type: currentType)
@@ -276,13 +291,96 @@ extension TemplatesPrefsController: NSTextFieldDelegate {
 
 // MARK: - private
 extension TemplatesPrefsController {
+	/// the currently selected template/category, or nil if there is no selection
 	private var selectedItem: Any? {
 		let index = codeOutlineView.selectedRow
 		if index == -1 { return nil }
 		return codeOutlineView.item(atRow: index)
 	}
+	
+	/// inserts a new category. separate function for undo
+	private func insert(category: CodeTemplateCategory, at index: Int) {
+		currentCategories.insert(category, at: index)
+		codeOutlineView.insertItems(at: IndexSet(integer: index), inParent: nil, withAnimation: [])
+		let iset = IndexSet(integer: codeOutlineView.row(forItem: category))
+		codeOutlineView.selectRowIndexes(iset, byExtendingSelection: false)
+	}
+
+	/// actually removes the category from storage
+	private func remove(category: CodeTemplateCategory) {
+		let index = codeOutlineView.childIndex(forItem: category)
+		currentCategories.remove(at: index)
+		templateManager.set(categories: currentCategories, for: currentType)
+		codeOutlineView.removeItems(at: IndexSet(integer: index), inParent: nil, withAnimation: .slideUp)
+	}
+	
+	/// deletes category with undo
+	private func delete(category: CodeTemplateCategory) {
+		let index = codeOutlineView.childIndex(forItem: category)
+		let undoAction = { (me: TemplatesPrefsController) -> Void in
+			me.insert(category: category, at: index)
+		}
+		if category.templates.value.count == 0 {
+			// if no templates, don't require conformation
+			self.undoManager?.registerUndo(withTarget: self, handler: undoAction)
+			self.remove(category: category)
+			return
+		}
+		confirmAction(message: NSLocalizedString("DeleteCodeTemplateWarning", comment: ""),
+					  infoText: NSLocalizedString("DeleteCodeTemplateWarningInfo", comment: ""), buttonTitle: NSLocalizedString("Delete", comment: ""))
+		{ confirmed in
+			guard confirmed else { return }
+			self.undoManager?.registerUndo(withTarget: self, handler: undoAction)
+			self.remove(category: category)
+		}
+	}
+	
+	/// insert a new template. separate function for undo purposes
+	private func insert(template: CodeTemplate, in parent: CodeTemplateCategory, at index: Int) {
+		parent.templates.value.insert(template, at: index)
+		codeOutlineView.insertItems(at: IndexSet(integer: index), inParent: parent, withAnimation: [])
+		codeOutlineView.selectRowIndexes(IndexSet(integer: codeOutlineView.row(forItem: template)), byExtendingSelection: false)
+	}
+	
+	/// actually removes the template visually and from storage
+	private func remove(template: CodeTemplate) {
+		guard let parent = codeOutlineView.parent(forItem: template) as? CodeTemplateCategory,
+				let index = Optional.some(codeOutlineView.childIndex(forItem: template)), index != -1
+			else { Log.error("", .app); return }
+		parent.templates.value.remove(at: index)
+		codeOutlineView.removeItems(at: IndexSet(integer: index), inParent: parent, withAnimation: .slideUp)
+	}
+
+	/// deletes template with undo, cofirming with user if necessary
+	private func delete(template: CodeTemplate) {
+		let defaults = UserDefaults.standard
+		// create local variables to enforce capture of current values
+		let parent = codeOutlineView.parent(forItem: template) as! CodeTemplateCategory
+		let index = codeOutlineView.childIndex(forItem: template)
+		// create closure that will do the reverse
+		let undoAction = { (me: TemplatesPrefsController) -> Void in
+			me.insert(template: template, in: parent, at: index)
+		}
+		let actuallyRemove = {
+			self.undoManager?.registerUndo(withTarget: self, handler: undoAction)
+			self.remove(template: template)
+		}
+		guard !defaults[.suppressDeleteTemplate] else {
+			actuallyRemove()
+			return
+		}
+		// need to confirm deletion with user
+		confirmAction(message: NSLocalizedString("DeleteCodeTemplateWarning", comment: ""),
+					  infoText: NSLocalizedString("DeleteCodeTemplateWarningInfo", comment: ""), buttonTitle: NSLocalizedString("Delete", comment: ""), suppressionKey: .suppressDeleteTemplate)
+		{ confirmed in
+			guard confirmed else { return }
+			actuallyRemove()
+		}
+	}
 }
 
+// MARK: - NSTextView
+// adds a binding target of textValue to NSTextView
 extension Reactive where Base: NSTextView {
 	public var textValue: BindingTarget<String> {
 		return makeBindingTarget { (view, string) in
@@ -291,7 +389,7 @@ extension Reactive where Base: NSTextView {
 	}
 }
 
-// MARK: -
+// MARK: - helper views
 
 class TemplateCellView: NSTableCellView {
 	var templateItem: CodeTemplateObject? { didSet { templateItemWasSet() } }

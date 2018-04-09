@@ -17,6 +17,9 @@
 "ClearImagesButton" = "Clear Images";
 "ClearConsoleOnlyButton" = "Keep Images";
 
+"DeleteCodeTemplateWarning" = "Confirm Delete Template";
+"DeleteCodeTemplateWarningInfo" = "This will delete the selected catagory and all templates in it.";
+
 "SyntaxThemeProperty.codeBackground" = "code background";
 "SyntaxThemeProperty.inlineBackground" = "inline equation background";
 "SyntaxThemeProperty.equationBackground" = "equation background";

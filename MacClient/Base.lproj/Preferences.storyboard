@@ -321,7 +321,7 @@
                                                     <rect key="frame" x="1" y="1" width="408" height="182"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" viewBased="YES" floatsGroupRows="NO" indentationPerLevel="16" outlineTableColumn="PIF-Ed-ZIL" id="dqb-UH-UaX" customClass="TemplatesOutlineView" customModule="MacClient" customModuleProvider="target">
+                                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" autosaveName="codeTemplateEditor" rowSizeStyle="automatic" viewBased="YES" floatsGroupRows="NO" indentationPerLevel="16" outlineTableColumn="PIF-Ed-ZIL" id="dqb-UH-UaX" customClass="TemplatesOutlineView" customModule="MacClient" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="408" height="182"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -395,7 +395,7 @@
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                         <connections>
-                                                            <action selector="addItem:" target="Gbv-3R-tK5" id="l07-xQ-MCH"/>
+                                                            <action selector="addItem:" target="Gbv-3R-tK5" id="Alx-EU-I52"/>
                                                             <outlet property="menu" destination="jNV-cz-NSA" id="iKL-Mf-1tF"/>
                                                         </connections>
                                                     </button>
@@ -406,7 +406,7 @@
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                         <connections>
-                                                            <action selector="removeSelection:" target="Gbv-3R-tK5" id="A6m-M4-dRA"/>
+                                                            <action selector="deleteBackward:" target="Gbv-3R-tK5" id="XH0-uU-0eo"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
@@ -499,7 +499,7 @@
                                             <font key="font" metaFont="smallSystem"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="switchType:" target="Gbv-3R-tK5" id="88a-Yk-Sio"/>
+                                            <action selector="addCategory:" target="Gbv-3R-tK5" id="88a-Yk-Sio"/>
                                         </connections>
                                     </button>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="Hb5-aC-eUq">
@@ -509,7 +509,7 @@
                                             <font key="font" metaFont="smallSystem"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="switchType:" target="Gbv-3R-tK5" id="d80-zg-ipT"/>
+                                            <action selector="addCategory:" target="Gbv-3R-tK5" id="d80-zg-ipT"/>
                                         </connections>
                                     </button>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="eC7-Ni-OaE">
@@ -519,7 +519,7 @@
                                             <font key="font" metaFont="smallSystem"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="switchType:" target="Gbv-3R-tK5" id="QqI-Qi-EXl"/>
+                                            <action selector="addCategory:" target="Gbv-3R-tK5" id="QqI-Qi-EXl"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -562,13 +562,13 @@
                         <menuItem title="Group" id="Fdk-yW-Li1">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <action selector="addGroup:" target="Gbv-3R-tK5" id="qcU-8E-xGa"/>
+                                <action selector="addCategory:" target="Gbv-3R-tK5" id="qcU-8E-xGa"/>
                             </connections>
                         </menuItem>
                         <menuItem title="Template" id="LDb-aO-lAn">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <action selector="addTemplate:" target="Gbv-3R-tK5" id="jDL-el-1Dt"/>
+                                <action selector="addTemplate:" target="Gbv-3R-tK5" id="mE8-5v-zBo"/>
                             </connections>
                         </menuItem>
                     </items>
