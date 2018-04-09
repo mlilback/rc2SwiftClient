@@ -12,7 +12,7 @@ import Model
 
 public let rc2syntaxAttributeKey = NSAttributedStringKey("rc2AttributeKey")
 
-enum SyntaxAttributeType: String {
+public enum SyntaxAttributeType: String {
 	case none, frontmatter, code, codeOptions, document, equation, mathML, quote, comment, keyword, symbol, number, block, inline
 }
 
@@ -37,6 +37,8 @@ public protocol SyntaxParser: class {
 	@discardableResult
 	func parse() -> Bool
 	
+	func parseAndAttribute(string: NSMutableAttributedString, inRange: NSRange)
+
 	/// Returns the index of the first chunk containing the start of the range.
 	/// Used in: SessionEditorController: NSTextViewDelegate & NSTextStorageDelegate.
 	///

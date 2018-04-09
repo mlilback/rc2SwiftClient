@@ -57,7 +57,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 	
 	// Called by parse (called externally), which in turn calls parseRange
 	// implemented by particular parser subclasses.
-	internal func parseAndAttributeString(_ str:NSMutableAttributedString, inRange: NSRange) {
+	public func parseAndAttribute(string: NSMutableAttributedString, inRange: NSRange) {
 		preconditionFailure("subclass must implement")
 	}
 	internal func parseRange(_ range: NSRange) {

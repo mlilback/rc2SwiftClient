@@ -16,7 +16,7 @@ private enum RmdParserState : Int {
 
 class RmdSyntaxParser: BaseSyntaxParser {
 	
-	override func parseAndAttributeString(_ aStr:NSMutableAttributedString, inRange: NSRange) {
+	override func parseAndAttribute(string aStr: NSMutableAttributedString, inRange: NSRange) {
 		aStr.removeAttribute(rc2syntaxAttributeKey, range:inRange)
 		// PEG Kit:
 		let tok = PKTokenizer(string: aStr.string)!
