@@ -321,7 +321,7 @@
                                                     <rect key="frame" x="1" y="1" width="408" height="182"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" autosaveName="codeTemplateEditor" rowSizeStyle="automatic" viewBased="YES" floatsGroupRows="NO" indentationPerLevel="16" outlineTableColumn="PIF-Ed-ZIL" id="dqb-UH-UaX" customClass="TemplatesOutlineView" customModule="MacClient" customModuleProvider="target">
+                                                        <outlineView toolTip="code templates organized by category" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" autosaveName="codeTemplateEditor" rowSizeStyle="automatic" viewBased="YES" floatsGroupRows="NO" indentationPerLevel="16" outlineTableColumn="PIF-Ed-ZIL" id="dqb-UH-UaX" customClass="TemplatesOutlineView" customModule="MacClient" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="408" height="182"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -382,26 +382,39 @@
                                                 </scroller>
                                             </scrollView>
                                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hfE-7b-8xn" userLabel="add/remove stack">
-                                                <rect key="frame" x="20" y="8" width="56" height="24"/>
+                                                <rect key="frame" x="20" y="8" width="96" height="24"/>
                                                 <subviews>
-                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LXH-3A-J5q" userLabel="add">
-                                                        <rect key="frame" x="0.0" y="0.0" width="24" height="24"/>
+                                                    <button toolTip="add a template category" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bya-hJ-PBe" userLabel="add group">
+                                                        <rect key="frame" x="0.0" y="0.0" width="32" height="24"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="24" id="exj-Ul-OvH"/>
-                                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="24" id="x5Q-gp-r0R"/>
+                                                            <constraint firstAttribute="height" constant="24" id="Qvf-FD-ss5"/>
+                                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="24" id="YbX-t0-Ssb"/>
                                                         </constraints>
-                                                        <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" transparent="YES" imageScaling="proportionallyDown" inset="2" id="EW0-rm-A4t">
+                                                        <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSFolder" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" transparent="YES" imageScaling="proportionallyDown" inset="2" id="Z6u-VN-vQO">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                         <connections>
-                                                            <action selector="addItem:" target="Gbv-3R-tK5" id="Alx-EU-I52"/>
-                                                            <outlet property="menu" destination="jNV-cz-NSA" id="iKL-Mf-1tF"/>
+                                                            <action selector="addCategory:" target="Gbv-3R-tK5" id="Ffn-y4-mKN"/>
                                                         </connections>
                                                     </button>
-                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VcN-DB-0nW" userLabel="remove">
-                                                        <rect key="frame" x="32" y="0.0" width="24" height="24"/>
-                                                        <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" transparent="YES" imageScaling="proportionallyDown" inset="2" id="kw2-yX-yB6">
+                                                    <button toolTip="add a template" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LXH-3A-J5q" userLabel="add template">
+                                                        <rect key="frame" x="40" y="0.0" width="24" height="24"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="24" id="exj-Ul-OvH"/>
+                                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="24" id="x5Q-gp-r0R"/>
+                                                        </constraints>
+                                                        <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" enabled="NO" state="on" transparent="YES" imageScaling="proportionallyDown" inset="2" id="EW0-rm-A4t">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="addTemplate:" target="Gbv-3R-tK5" id="zj0-SL-MAL"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button toolTip="remove the selected category or group" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VcN-DB-0nW" userLabel="remove">
+                                                        <rect key="frame" x="72" y="0.0" width="24" height="24"/>
+                                                        <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" enabled="NO" state="on" transparent="YES" imageScaling="proportionallyDown" inset="2" id="kw2-yX-yB6">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -418,8 +431,10 @@
                                                 <visibilityPriorities>
                                                     <integer value="1000"/>
                                                     <integer value="1000"/>
+                                                    <integer value="1000"/>
                                                 </visibilityPriorities>
                                                 <customSpacing>
+                                                    <real value="3.4028234663852886e+38"/>
                                                     <real value="3.4028234663852886e+38"/>
                                                     <real value="3.4028234663852886e+38"/>
                                                 </customSpacing>
@@ -438,7 +453,7 @@
                                         <rect key="frame" x="0.0" y="234" width="450" height="236"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-                                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iKx-oX-xHR">
+                                            <textField toolTip="name of the selected template or category" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iKx-oX-xHR">
                                                 <rect key="frame" x="20" y="194" width="410" height="22"/>
                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" enabled="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="x3g-9e-3dr">
                                                     <font key="font" metaFont="system"/>
@@ -452,7 +467,7 @@
                                                     <rect key="frame" x="1" y="1" width="408" height="164"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="qvc-NY-HNF">
+                                                        <textView toolTip="contents of the selected template" editable="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="qvc-NY-HNF">
                                                             <rect key="frame" x="0.0" y="0.0" width="408" height="164"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -489,7 +504,7 @@
                                     <real value="250"/>
                                 </holdingPriorities>
                             </splitView>
-                            <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="32" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9p4-jg-pIi" userLabel="type stack">
+                            <stackView toolTip="types of code templates" distribution="fill" orientation="horizontal" alignment="top" spacing="32" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9p4-jg-pIi" userLabel="type stack">
                                 <rect key="frame" x="117" y="478" width="216" height="14"/>
                                 <subviews>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="ZPK-dP-ReW">
@@ -546,6 +561,7 @@
                     </view>
                     <connections>
                         <outlet property="addButton" destination="LXH-3A-J5q" id="Dnk-bH-UHQ"/>
+                        <outlet property="addCategoryButton" destination="bya-hJ-PBe" id="joL-pb-Cwf"/>
                         <outlet property="codeEditView" destination="qvc-NY-HNF" id="eiI-pI-93e"/>
                         <outlet property="codeOutlineView" destination="dqb-UH-UaX" id="bkF-0h-eVh"/>
                         <outlet property="equationButton" destination="eC7-Ni-OaE" id="fas-c4-x08"/>
@@ -557,28 +573,13 @@
                     </connections>
                 </viewController>
                 <customObject id="Su2-v1-Rtd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <menu id="jNV-cz-NSA">
-                    <items>
-                        <menuItem title="Group" id="Fdk-yW-Li1">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="addCategory:" target="Gbv-3R-tK5" id="qcU-8E-xGa"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Template" id="LDb-aO-lAn">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="addTemplate:" target="Gbv-3R-tK5" id="mE8-5v-zBo"/>
-                            </connections>
-                        </menuItem>
-                    </items>
-                </menu>
             </objects>
             <point key="canvasLocation" x="-864" y="1442.5"/>
         </scene>
     </scenes>
     <resources>
         <image name="NSAddTemplate" width="11" height="11"/>
+        <image name="NSFolder" width="32" height="32"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
         <image name="prefsEditor" width="32" height="32"/>
         <image name="prefsGeneral" width="32" height="32"/>

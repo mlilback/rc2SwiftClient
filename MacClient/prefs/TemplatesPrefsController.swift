@@ -36,6 +36,7 @@ class TemplatesPrefsController: NSViewController {
 	@IBOutlet private var equationButton: NSButton!
 	@IBOutlet private var codeOutlineView: NSOutlineView!
 	@IBOutlet private var addButton: NSButton!
+	@IBOutlet private var addCategoryButton: NSButton!
 	@IBOutlet private var removeButton: NSButton!
 	@IBOutlet private var nameEditField: NSTextField!
 	@IBOutlet private var codeEditView: NSTextView!
@@ -57,6 +58,12 @@ class TemplatesPrefsController: NSViewController {
 		splitterView.delegate = self
 		nameEditField.delegate = self
 		switchTo(type: UserDefaults.standard[.lastTemplateType])
+		
+		// setup add template icon
+		let folderImage = NSImage(named: .folder)!
+		let addImage = NSImage(named: .addTemplate)!
+		folderImage.overlay(image: addImage)
+		addCategoryButton.image = folderImage
 	}
 	
 	override func viewDidDisappear() {
@@ -129,11 +136,6 @@ class TemplatesPrefsController: NSViewController {
 		delete(category: cat)
 	}
 
-	/// displays popup menu to select what type of object to add
-	@IBAction func addItem(_ sender: Any?) {
-		addButton.menu?.popUp(positioning: nil, at: CGPoint(x: 0, y: addButton.bounds.maxY), in: addButton)
-	}
-	
 	/// adds a CodeTemplate
 	@IBAction func addTemplate(_ sender: Any?) {
 		guard let selection = selectedItem else { fatalError("adding template w/o selection") }
@@ -246,6 +248,7 @@ extension TemplatesPrefsController: NSOutlineViewDelegate {
 		defer {
 			nameEditField.isEnabled = indexes.count > 0
 			removeButton.isEnabled = indexes.count > 0
+			addButton.isEnabled = indexes.count > 0
 		}
 		guard indexes.count > 0 else {
 			nameEditField.stringValue = ""

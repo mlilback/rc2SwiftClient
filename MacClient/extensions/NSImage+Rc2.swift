@@ -28,6 +28,20 @@ extension NSImage {
 		return nil
 	}
 	
+	/// Draws smallImage on the bottom right corner of largeImage at half size
+	///
+	/// - Parameters:
+	///   - image: the image to overlay in the bottom right
+	///   - scale: the scale to draw image at. Defaults to .5
+	func overlay(image: NSImage, scale: CGFloat = 0.5) {
+		assert(scale > 0 && scale < 1.0, "invalid scale for overlay image")
+		self.lockFocus()
+		NSGraphicsContext.current?.imageInterpolation = .high
+		let miniWidth = self.size.width * scale
+		image.draw(in: CGRect(x: miniWidth, y: 0, width: miniWidth, height: miniWidth), from: .zero, operation: .sourceOver, fraction: 1.0)
+		self.unlockFocus()
+	}
+	
 	///  Copies the current image and resizes it to the given size.
 	///
 	///  - parameter size: The size of the new image.
