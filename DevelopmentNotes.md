@@ -25,3 +25,4 @@ clear undo cache on file change notification from server
 
 ### code templates
 * add dirty flag to template manager when using swift 4.2 for auto generation of Hashable
+* editor needs to remember expanded categories

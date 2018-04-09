@@ -45,7 +45,12 @@ class TemplatesPrefsController: NSViewController {
 	private var currentCategories: [CodeTemplateCategory] = []
 	private var editingDisposables = CompositeDisposable()
 	private var currentType: TemplateType = .markdown
+	private var currentTemplate: CodeTemplate?
 	private let _undoManager = UndoManager()
+	private let selectionMarkerRegex = try! NSRegularExpression(pattern: CodeTemplate.selectionTemplateKey, options: [.caseInsensitive, .ignoreMetacharacters])
+	private let selectionMarkerColor =  NSColor(calibratedRed: 0.884, green: 0.974, blue: 0.323, alpha: 1.0)
+	private var lastSelectionMarkerRange: NSRange?
+	private var manuallyExpanding: Bool = false
 	
 	override var undoManager: UndoManager? { return _undoManager }
 	override var acceptsFirstResponder: Bool { return true }
@@ -57,8 +62,8 @@ class TemplatesPrefsController: NSViewController {
 		codeOutlineView.delegate = self
 		splitterView.delegate = self
 		nameEditField.delegate = self
+		codeEditView.delegate = self
 		switchTo(type: UserDefaults.standard[.lastTemplateType])
-		
 		// setup add template icon
 		let folderImage = NSImage(named: .folder)!
 		let addImage = NSImage(named: .addTemplate)!
@@ -221,10 +226,12 @@ extension TemplatesPrefsController: NSOutlineViewDelegate {
 	
 	func outlineView(_ outlineView: NSOutlineView, shouldExpandItem item: Any) -> Bool {
 		let result = item is CodeTemplateCategory
-		if NSApp.currentEvent?.modifierFlags.contains(.option) ?? false {
+		if !manuallyExpanding, NSApp.currentEvent?.modifierFlags.contains(.option) ?? false {
 			// expand them all
+			manuallyExpanding = true
 			DispatchQueue.main.async {
-				self.currentCategories.forEach { self.codeOutlineView.expandItem($0) }
+				self.codeOutlineView.expandItem(nil, expandChildren: true)
+				self.manuallyExpanding = false
 			}
 		}
 		return result
@@ -232,10 +239,12 @@ extension TemplatesPrefsController: NSOutlineViewDelegate {
 	
 	func outlineView(_ outlineView: NSOutlineView, shouldCollapseItem item: Any) -> Bool {
 		let result = item is CodeTemplateCategory
-		if NSApp.currentEvent?.modifierFlags.contains(.option) ?? false {
+		if !manuallyExpanding, NSApp.currentEvent?.modifierFlags.contains(.option) ?? false {
 			// collapse them all
+			manuallyExpanding = true
 			DispatchQueue.main.async {
-				self.currentCategories.forEach { self.codeOutlineView.collapseItem($0) }
+				self.codeOutlineView.collapseItem(nil, collapseChildren: true)
+				self.manuallyExpanding = false
 			}
 		}
 		return result
@@ -244,6 +253,7 @@ extension TemplatesPrefsController: NSOutlineViewDelegate {
 	func outlineViewSelectionDidChange(_ notification: Notification) {
 		editingDisposables.dispose()
 		editingDisposables = CompositeDisposable()
+		currentTemplate = nil
 		let indexes = codeOutlineView.selectedRowIndexes
 		defer {
 			nameEditField.isEnabled = indexes.count > 0
@@ -264,9 +274,12 @@ extension TemplatesPrefsController: NSOutlineViewDelegate {
 		} else if let template = item as? CodeTemplate {
 			editingDisposables += nameEditField.reactive.stringValue <~ template.name
 			editingDisposables += template.name <~ nameEditField.reactive.continuousStringValues
-			editingDisposables += codeEditView.reactive.textValue <~ template.contents
-			editingDisposables += template.contents <~ codeEditView.reactive.continuousStringValues
+			codeEditView.textStorage?.replaceCharacters(in: codeEditView.string.fullNSRange, with: template.contents.value)
+//			editingDisposables += codeEditView.reactive.textValue <~ template.contents
+//			editingDisposables += template.contents <~ codeEditView.reactive.continuousStringValues
 			codeEditView.isEditable = true
+			currentTemplate = template
+			colorizeSelectionMarker()
 		}
 	}
 }
@@ -291,6 +304,15 @@ extension TemplatesPrefsController: NSTextFieldDelegate {
 	}
 }
 
+// MARK: - NSTextViewDelegate
+extension TemplatesPrefsController: NSTextViewDelegate {
+	func textDidChange(_ notification: Notification) {
+		colorizeSelectionMarker()
+		if codeEditView.isEditable {
+			currentTemplate?.contents.value = codeEditView.string
+		}
+	}
+}
 
 // MARK: - private
 extension TemplatesPrefsController {
@@ -299,6 +321,24 @@ extension TemplatesPrefsController {
 		let index = codeOutlineView.selectedRow
 		if index == -1 { return nil }
 		return codeOutlineView.item(atRow: index)
+	}
+	
+	private func colorizeSelectionMarker() {
+		guard let selMatch = selectionMarkerRegex.firstMatch(in: codeEditView.string, options: [], range: codeEditView.string.fullNSRange)
+			else { removeSelectionMarker(); return }
+		let last = lastSelectionMarkerRange ?? NSRange(location: 0, length: 0)
+		guard last != selMatch.range else { return } // no change
+		removeSelectionMarker()
+		codeEditView.layoutManager?.addTemporaryAttribute(.backgroundColor, value: selectionMarkerColor, forCharacterRange: selMatch.range)
+		lastSelectionMarkerRange = selMatch.range
+	}
+	
+	private func removeSelectionMarker() {
+		if lastSelectionMarkerRange != nil {
+			// the range might have changed, and we won't know unless we switch to using NSTextStorageDelegate instead of NSTextViewDelegate. so we'll just remove the background color from everywhere
+			codeEditView.layoutManager?.removeTemporaryAttribute(.backgroundColor, forCharacterRange: codeEditView.string.fullNSRange)
+			lastSelectionMarkerRange = nil
+		}
 	}
 	
 	/// inserts a new category. separate function for undo
@@ -387,7 +427,9 @@ extension TemplatesPrefsController {
 extension Reactive where Base: NSTextView {
 	public var textValue: BindingTarget<String> {
 		return makeBindingTarget { (view, string) in
+			let selection = view.selectedRanges
 			view.replaceCharacters(in: view.string.fullNSRange, with: string)
+			view.selectedRanges = selection
 		}
 	}
 }

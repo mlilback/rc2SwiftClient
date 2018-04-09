@@ -44,6 +44,8 @@ public class CodeTemplateCategory: Codable, CodeTemplateObject {
 
 /// represents a named template for code
 public class CodeTemplate: Codable, CodeTemplateObject {
+	public static let selectionTemplateKey = "<!#selection#!>"
+
 	private enum CodingKeys: String, CodingKey {
 		case name
 		case contents
