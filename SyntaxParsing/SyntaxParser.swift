@@ -10,11 +10,11 @@ import Foundation
 #endif
 import Model
 
-public let rc2syntaxAttributeKey = NSAttributedStringKey("rc2AttributeKey")
-
-public enum SyntaxAttributeType: String {
-	case none, frontmatter, code, codeOptions, document, equation, mathML, quote, comment, keyword, symbol, number, block, inline
-}
+//public let rc2syntaxAttributeKey = NSAttributedStringKey("rc2AttributeKey")
+//
+//public enum SyntaxAttributeType: String {
+//	case none, frontmatter, code, codeOptions, document, equation, mathML, quote, comment, keyword, symbol, number, block, inline
+//}
 
 /// Protocol for an object that parses the contents of an NSTextStorage
 /// into an array of DocumentChunk objects, used externally instead of
@@ -37,7 +37,8 @@ public protocol SyntaxParser: class {
 	@discardableResult
 	func parse() -> Bool
 	
-	func parseAndAttribute(string: NSMutableAttributedString, inRange: NSRange)
+	func parseAndAttribute(string: NSMutableAttributedString, docType: DocType,
+						   inRange: NSRange, makeChunks: Bool)
 
 	/// Returns the index of the first chunk containing the start of the range.
 	/// Used in: SessionEditorController: NSTextViewDelegate & NSTextStorageDelegate.
