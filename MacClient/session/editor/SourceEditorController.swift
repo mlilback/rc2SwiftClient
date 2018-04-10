@@ -146,7 +146,7 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 			return HelpController.shared.hasTopic(topic)
 		}
 		storage.setAttributedString(NSAttributedString(string: content, attributes: self.defaultAttributes))
-		parser?.parseAndAttribute(string: storage, inRange: storage.string.fullNSRange)
+		parser?.parseAndAttribute(string: storage, docType: context!.docType, inRange: storage.string.fullNSRange, makeChunks: true)
 		updateSyntaxStyle(targetString: storage)
 		ignoreTextStorageNotifications = false
 		if let index = context?.currentDocument.value?.topVisibleIndex, index > 0 {
@@ -234,23 +234,8 @@ extension SourceEditorController: NSTextStorageDelegate {
 		guard !ignoreTextStorageNotifications else { return }
 		ignoreTextStorageNotifications = true
 		defer { ignoreTextStorageNotifications = false }
-		parser?.parseAndAttribute(string: textStorage, inRange: textStorage.string.fullNSRange)
+		parser?.parseAndAttribute(string: textStorage, docType: context!.docType, inRange: textStorage.string.fullNSRange, makeChunks: true)
 		updateSyntaxStyle(targetString: textStorage)
-//		guard let parser = parser else { fatalError("no parser when text changed") }
-//		//we don't care if attributes changed
-//		guard editedMask.contains(.editedCharacters) else { return }
-//		//parse() return true if the chunks changed. in that case, we need to recolor all of them
-//		if parser.parse() {
-//			parser.colorChunks(parser.chunks)
-//		} else {
-//			//only color chunks in the edited range
-//			parser.colorChunks(parser.chunksForRange(editedRange))
-//		}
-//		let currentDocument = context?.currentDocument.value
-//		currentChunkIndex = parser.indexOfChunk(inRange: editedRange)
-//		if currentDocument?.editedContents != textStorage.string {
-//			currentDocument?.editedContents = textStorage.string
-//		}
 	}
 }
 

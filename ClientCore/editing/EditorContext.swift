@@ -9,6 +9,7 @@ import Rc2Common
 import Networking
 import ReactiveSwift
 import SyntaxParsing
+
 /// object passed to UI controllers that take part in editing a document. Any values that might need to be observed for changes are declared as ReactiveSwift Properties.
 protocol EditorContext: class {
 	/// the current EditorDocument. Signals are processed synchronously on the calling thread
@@ -25,7 +26,8 @@ protocol EditorContext: class {
 	var workspaceNotificationCenter: NotificationCenter { get }
 	/// the ReactiveSwift lifetime to use for any observers related to this EditorContext
 	var lifetime: Lifetime { get }
-	
+	/// the DocType of the current document
+	var docType: DocType { get }
 	
 	/// Saves a document
 	///
@@ -39,4 +41,14 @@ protocol EditorContext: class {
 	func revertCurrentDocument()
 }
 
+extension EditorContext {
+	var docType: DocType {
+		guard let fileExt = currentDocument.value?.file.fileType.fileExtension else { return .none }
+		switch fileExt {
+		case "Rmd": return .rmd
+		case "Rnw": return .latex
+		default: return .none
+		}
+	}
+}
 
