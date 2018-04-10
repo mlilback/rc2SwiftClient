@@ -161,7 +161,7 @@ class AbstractEditorController: AbstractSessionViewController, CodeEditor {
 		targetString.removeAttribute(.backgroundColor, range: fullRange)
 		targetString.enumerateAttribute(rc2syntaxAttributeKey, in: fullRange, options: []) { (attrValue, attrRange, stop) in
 			guard let attrTypeStr = attrValue as? String, let attrType = SyntaxAttributeType(rawValue: attrTypeStr)
-				else { Log.warn("invalid syntax attribute type: \(attrValue)", .app); stop.pointee = true; return }
+				else { Log.warn("invalid syntax attribute type: \(attrValue ?? "nil")", .app); stop.pointee = true; return }
 			switch attrType {
 			case .none:
 				break

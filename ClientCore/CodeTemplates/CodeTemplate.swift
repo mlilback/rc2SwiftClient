@@ -7,16 +7,18 @@
 import Foundation
 import ReactiveSwift
 
-public protocol CodeTemplateObject: class {
+public protocol CodeTemplateObject: class, Codable, CustomStringConvertible {
 	var name: MutableProperty<String> { get }
 }
 
 /// a user-defined category to organize CodeTemplates in
-public class CodeTemplateCategory: Codable, CodeTemplateObject {
+public class CodeTemplateCategory: Codable, CodeTemplateObject, CustomStringConvertible {
 	private enum CodingKeys: String, CodingKey {
 		case name
 		case templates
 	}
+	
+	public var description: String { return "category \(name.value)" }
 	
 	/// the name of the category
 	public var name: MutableProperty<String>
@@ -43,13 +45,15 @@ public class CodeTemplateCategory: Codable, CodeTemplateObject {
 }
 
 /// represents a named template for code
-public class CodeTemplate: Codable, CodeTemplateObject {
+public class CodeTemplate: Codable, CodeTemplateObject, CustomStringConvertible {
 	public static let selectionTemplateKey = "<!#selection#!>"
 
 	private enum CodingKeys: String, CodingKey {
 		case name
 		case contents
 	}
+	
+	public var description: String { return "template \(name.value)" }
 	
 	///  the name of the template
 	public var name: MutableProperty<String>

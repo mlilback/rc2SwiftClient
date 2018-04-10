@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import Rc2Common
 import ClientCore
 import ReactiveSwift
 import SwiftyUserDefaults
@@ -29,6 +30,8 @@ extension NSUserInterfaceItemIdentifier {
 
 // MARK: - main controller
 class TemplatesPrefsController: NSViewController {
+	let templatePasteboardType = NSPasteboard.PasteboardType(rawValue: "io.rc2.client.codeTemplate")
+
 	// MARK: properties
 	@IBOutlet private var splitterView: NSSplitView!
 	@IBOutlet private var markdownButton: NSButton!
@@ -69,6 +72,8 @@ class TemplatesPrefsController: NSViewController {
 		let addImage = NSImage(named: .addTemplate)!
 		folderImage.overlay(image: addImage)
 		addCategoryButton.image = folderImage
+		codeOutlineView.registerForDraggedTypes([templatePasteboardType])
+		codeOutlineView.setDraggingSourceOperationMask([.move, .copy], forLocal: true)
 	}
 	
 	override func viewDidDisappear() {
@@ -213,6 +218,50 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 	func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
 		return item
 	}
+
+	// implement so autosave expanded items works, or manually implement
+//	func outlineView(_ outlineView: NSOutlineView, persistentObjectForItem item: Any?) -> Any? {
+//
+//	}
+	
+	func outlineView(_ outlineView: NSOutlineView, writeItems items: [Any], to pasteboard: NSPasteboard) -> Bool
+	{
+		guard items.count == 1 else { return false }
+		let wrapper = DragData(items[0])
+		pasteboard.setData(wrapper.encode(), forType: templatePasteboardType)
+		return true
+	}
+	
+	func outlineView(_ outlineView: NSOutlineView, validateDrop info: NSDraggingInfo, proposedItem parentItem: Any?, proposedChildIndex index: Int) -> NSDragOperation
+	{
+		guard let wrapperData = info.draggingPasteboard().data(forType: templatePasteboardType), let wrapper = try? JSONDecoder().decode(DragData.self, from: wrapperData)
+			else { Log.warn("asked to validate invalid drag data", .app); return [] }
+		let destObj = parentItem as? CodeTemplateObject
+		let dropOperation = (info.draggingSourceOperationMask() == [.copy]) ? NSDragOperation.copy : NSDragOperation.move
+		//print("validate drop of \(wrapper) to \(destObj?.description ?? "root") @ \(index) as \(info.draggingSourceOperationMask())")
+		// breaking from the switch will return [.move, .copy]
+		if wrapper.isCategory {
+			switch destObj {
+			case nil: // proposed is root, which is fine
+				return dropOperation
+			case is CodeTemplateCategory:
+				outlineView.setDropItem(nil, dropChildIndex: outlineView.childIndex(forItem: destObj!) + 1)
+			case is CodeTemplate:
+				outlineView.setDropItem(nil, dropChildIndex: outlineView.childIndex(forItem: outlineView.parent(forItem: destObj!)!))
+			default:
+				return []
+			}
+			return dropOperation
+		}
+		// dragging a template
+		if destObj == nil { return [] } // don't allow a template at the root level
+		return dropOperation
+	}
+	
+	func outlineView(_ outlineView: NSOutlineView, acceptDrop info: NSDraggingInfo, item: Any?, childIndex index: Int) -> Bool
+	{
+		return false
+	}
 }
 
 // MARK: - NSOutlineViewDelegate
@@ -284,7 +333,7 @@ extension TemplatesPrefsController: NSOutlineViewDelegate {
 	}
 }
 
-// MARK: NSSplitViewDelegate
+// MARK: - NSSplitViewDelegate
 extension TemplatesPrefsController: NSSplitViewDelegate {
 	func splitView(_ splitView: NSSplitView, constrainMinCoordinate proposedMinimumPosition: CGFloat, ofSubviewAt dividerIndex: Int) -> CGFloat
 	{
@@ -434,7 +483,41 @@ extension Reactive where Base: NSTextView {
 	}
 }
 
-// MARK: - helper views
+// MARK: - helper types
+
+fileprivate struct DragData: Codable, CustomStringConvertible {
+	let category: CodeTemplateCategory?
+	let template: CodeTemplate?
+	var isCategory: Bool { return category != nil }
+	var description: String { return isCategory ? category!.description : template!.description }
+	var item: CodeTemplateObject { return isCategory ? category! : template! }
+	
+	init(category: CodeTemplateCategory) {
+		self.category = category
+		self.template = nil
+	}
+	
+	init(template: CodeTemplate) {
+		self.template = template
+		self.category = nil
+	}
+	
+	init(_ item: Any) {
+		if let titem = item as? CodeTemplate {
+			self.template = titem
+			self.category = nil
+		} else if let tcat = item as? CodeTemplateCategory {
+			self.category = tcat
+			self.template = nil
+		} else {
+			fatalError("invalid drag object")
+		}
+	}
+	
+	func encode() -> Data {
+		return try! JSONEncoder().encode(self)
+	}
+}
 
 class TemplateCellView: NSTableCellView {
 	var templateItem: CodeTemplateObject? { didSet { templateItemWasSet() } }
