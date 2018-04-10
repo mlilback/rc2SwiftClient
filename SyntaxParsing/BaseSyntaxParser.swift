@@ -13,7 +13,7 @@ import Model
 import Rc2Common
 import ReactiveSwift
 import PEGKit
-
+import MJLLogger
 
 
 /// Parent class of specific parsers that must be implemented and base
@@ -164,8 +164,6 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 		var lastToken: PKToken?
 		// Parse by loop through tokens and changing states:
 		while token.tokenType != eof {
-			// print(token.stringValue)
-			
 			// Add attributes for Quotes, Comments, Numbers, Symbols, and Keywords:
 			var range = NSMakeRange(Int(token.offset), token.stringValue.count)
 			var frag = FragmentType.none
@@ -251,7 +249,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 												   range:range, innerRange:range,
 												   chunkNumber:chunkIndex)
 							chunks.append(ch); chunkIndex += 1
-							print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)")
+							Log.debug("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)", .parser)
 						}
 						aStr.addAttribute(ChunkTypeKey, value:currChunkType, range:range)
 						begin = end
@@ -286,7 +284,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 					let innerRange = NSMakeRange(beginInner, endInner-beginInner)
 					aStr.addAttribute(ChunkTypeKey, value:currChunkType, range:range)
 					if equationType != .none {
-						aStr.addAttribute(ChunkTypeKey, value:equationType, range:range)
+						aStr.addAttribute(EquationTypeKey, value:equationType, range:range)
 					}
 					let ch = DocumentChunk(chunkType:newChunkType,
 										   docType:docType,
@@ -294,11 +292,9 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 										   range:range, innerRange:innerRange,
 										   chunkNumber:chunkIndex,
 										   isInline: (state == .eqIn || state == .codeIn))
-					if newChunkType == .code && rOps.count > 0 {
-						print(rOps)
-						ch.rOps = rOps; rOps = "" }
+					if newChunkType == .code && rOps.count > 0 { ch.rOps = rOps; rOps = "" }
 					chunks.append(ch); chunkIndex += 1
-					print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)")
+					Log.debug("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)", .parser)
 					begin = end
 				}
 				currChunkType = .docs; equationType = .none
@@ -315,7 +311,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 			let innerRange = NSMakeRange(beginInner, end-begin)
 			aStr.addAttribute(ChunkTypeKey, value:currChunkType, range:range)
 			if equationType != .none {
-				aStr.addAttribute(ChunkTypeKey, value:equationType, range:range)
+				aStr.addAttribute(EquationTypeKey, value:equationType, range:range)
 			}
 			let ch = DocumentChunk(chunkType:newChunkType,
 								   docType:docType,
@@ -323,11 +319,9 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 								   range:range, innerRange:innerRange,
 								   chunkNumber:chunkIndex,
 								   isInline: (state == .eqIn || state == .codeIn))
-			if newChunkType == .code && rOps.count > 0 {
-				print(rOps)
-				ch.rOps = rOps; rOps = "" }
+			if newChunkType == .code && rOps.count > 0 { ch.rOps = rOps; rOps = "" }
 			chunks.append(ch); chunkIndex += 1
-			print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)")
+			Log.debug("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)", .parser)
 		}
 	}
 	

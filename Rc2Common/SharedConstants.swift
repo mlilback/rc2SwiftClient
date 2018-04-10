@@ -16,8 +16,9 @@ public extension LogCategory {
 	public static let core: LogCategory = LogCategory("core")
 	public static let app: LogCategory = LogCategory("app")
 	public static let cache: LogCategory = LogCategory("cache")
+	public static let parser: LogCategory = LogCategory("parser")
 	
-	public static let allRc2Categories: [LogCategory] = [.app, .session, .model, .network, .core, .cache, .docker, .dockerEvt]
+	public static let allRc2Categories: [LogCategory] = [.app, .session, .model, .network, .core, .cache, .parser, .docker, .dockerEvt]
 }
 
 public let defaultAppServerPort = 3145
