@@ -77,17 +77,14 @@ open class BaseHighlighter: NSObject {
 			var tokenRange = NSRange(location: range.location + Int(token.offset),
 									 length: token.stringValue.count)
 			var includePrevious: Bool = false
-			let (color, type) = colorForToken(token, lastToken: lastToken,
-											  includePreviousCharacter: &includePrevious,
-											  chunk: chunk)
+			let color = colorForToken(token, lastToken: lastToken,
+									  includePreviousCharacter: &includePrevious,
+									  chunk: chunk)
 			if includePrevious {	//>>> check
 				tokenRange.location -= 1
 				tokenRange.length += 1
 			}
 			aStr.addAttribute(.foregroundColor, value: color, range: tokenRange)
-			if type != .none {
-				aStr.addAttribute(rc2syntaxAttributeKey, value: type, range: tokenRange)
-			}
 			if token.tokenType == .word, helpCallback?(token.stringValue) ?? false {
 				// add tag marking as having help
 				aStr.addAttribute(.link, value: "help:\(token.stringValue!)", range: tokenRange)
@@ -99,10 +96,10 @@ open class BaseHighlighter: NSObject {
 	func colorForToken(_ token: PKToken, lastToken: PKToken?,
 					   includePreviousCharacter usePrevious:inout Bool,
 					   chunk: ChunkProtocol)
-		-> (PlatformColor, SyntaxAttributeType)
+		-> PlatformColor
 	{
 //=		var color = PlatformColor.black // nil
-		var out = (theme.value.color(for: .quote), SyntaxAttributeType.quote)
+		var out = theme.value.color(for: .quote)
 		if token.isQuotedString {
 			return out
 		}
@@ -111,25 +108,25 @@ open class BaseHighlighter: NSObject {
 		}
 		switch token.tokenType {
 		case .comment:
-			out = (theme.value.color(for: .comment), SyntaxAttributeType.comment)
+			out = theme.value.color(for: .comment)
 		case .quotedString:
-			out = (theme.value.color(for: .quote), SyntaxAttributeType.quote)
+			out = theme.value.color(for: .quote)
 		case .number:
-			out = (PlatformColor.black, SyntaxAttributeType.number)
+			out = PlatformColor.black
 		case .symbol:	// a bug in PEGKit?!
-			out = (theme.value.color(for: .symbol), SyntaxAttributeType.symbol)
+			out = theme.value.color(for: .symbol)
 		case .word:
 			if chunk.chunkType == .code && keywords.contains(token.stringValue) {
-				out = (theme.value.color(for: .keyword), SyntaxAttributeType.keyword)
+				out = theme.value.color(for: .keyword)
 			}
 			else if chunk.docType == .latex || chunk.chunkType == .equation {
 				if lastToken?.tokenType == .symbol && lastToken?.stringValue.first == "\\" {
 					usePrevious = true
-					out = (theme.value.color(for: .keyword), SyntaxAttributeType.keyword)
+					out = theme.value.color(for: .keyword)
 				}
 			}
 		default:
-			out = (PlatformColor.black, SyntaxAttributeType.none) // nil
+			out = PlatformColor.black
 		}
 		return out
 	}

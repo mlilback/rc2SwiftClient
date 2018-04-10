@@ -6,22 +6,26 @@
 
 import Foundation
 
+public let DocTypeKey = NSAttributedStringKey("DocTypeKey")
+public let ChunkTypeKey = NSAttributedStringKey("ChunkTypeKey")
+public let FragmentTypeKey = NSAttributedStringKey("FragmentTypeKey")
+public let EquationTypeKey = NSAttributedStringKey("EquationTypeKey")
+
+/// Possible types of equations
+public enum DocType: String {
+	case none, rmd, latex
+}
 /// Possible types of chunks
 ///
 /// - docs: normal text (that might be interpreted as a markup language such as markdown)
 /// - code: executable code (currently just R code)
 /// - equation: a mathmatical equation
-public enum ChunkType {
+public enum ChunkType: String {
 	case docs, code, equation
 }
 
-/// Possible types of equations
-///
-/// - none: not an doc type
-/// - inline: an rmd doc
-/// - latex: a latex doc
-public enum DocType: String {
-	case none, rmd, latex
+public enum FragmentType: String {
+	case none, quote, comment, keyword, symbol, number
 }
 
 /// Possible types of equations
