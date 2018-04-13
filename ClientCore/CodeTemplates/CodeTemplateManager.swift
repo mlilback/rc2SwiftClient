@@ -8,6 +8,10 @@ import Foundation
 import Rc2Common
 import MJLLogger
 
+public extension Notification.Name {
+	public static let codeTemplatesChanged = Notification.Name("CodeTempaltesChanged")
+}
+
 public enum TemplateType: String {
 	case markdown, rCode, equation
 	static var allCases: [TemplateType] { return [.markdown, .rCode, .equation] }
@@ -17,10 +21,14 @@ public enum TemplateType: String {
 public class CodeTemplateManager {
 	
 	private let dataFolderUrl: URL
+	private let notificationCenter: NotificationCenter
 	private var categories: [TemplateType: [CodeTemplateCategory]]
+	/// flag to prevent multiple changed notifications being sent in a row
+	private var saveAllInProgress = false
 
-	public init(dataFolderUrl: URL, defaultFolderUrl: URL, fileManager: FileManager = .default) throws {
+	public init(dataFolderUrl: URL, defaultFolderUrl: URL, notificationCenter: NotificationCenter = .default, fileManager: FileManager = .default) throws {
 		self.dataFolderUrl = dataFolderUrl
+		self.notificationCenter = notificationCenter
 		self.categories = [:]
 		if !fileManager.directoryExists(at: dataFolderUrl) {
 			do {
@@ -37,7 +45,10 @@ public class CodeTemplateManager {
 	
 	/// save data for all types
 	public func saveAll() throws {
+		saveAllInProgress = true
 		try TemplateType.allCases.forEach { try self.save(type: $0) }
+		saveAllInProgress = false
+		notificationCenter.post(name: .codeTemplatesChanged, object: self)
 	}
 	
 	/// save data for the particular type
@@ -51,6 +62,9 @@ public class CodeTemplateManager {
 		} catch {
 			Log.warn("failed to save CodeTemplates: \(error)", .core)
 			throw error
+		}
+		if !saveAllInProgress {
+			notificationCenter.post(name: .codeTemplatesChanged, object: self)
 		}
 	}
 	
