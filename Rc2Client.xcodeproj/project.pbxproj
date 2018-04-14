@@ -527,6 +527,7 @@
 		08F6ADFC1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADED1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift */; };
 		08F6ADFD1DD9178A00AF0722 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
 		08F6AE001DD918CF00AF0722 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADFF1DD918CF00AF0722 /* FileCache.swift */; };
+		08FAE518208111730076F90C /* NSFont+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FAE517208111730076F90C /* NSFont+MJL.swift */; };
 		08FDB19B1C5917C3006FCD1A /* graph.png in Resources */ = {isa = PBXBuildFile; fileRef = 08FDB19A1C5917C3006FCD1A /* graph.png */; };
 		08FDE53E1EA02AFA00F14FAA /* LocalConnectionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDE53D1EA02AFA00F14FAA /* LocalConnectionSpec.swift */; };
 		08FDE53F1EA1054000F14FAA /* LinedJsonHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11871DED00D200549268 /* LinedJsonHandler.swift */; };
@@ -1353,6 +1354,7 @@
 		08F6ADEA1DD9172C00AF0722 /* DockerUrlProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerUrlProtocol.swift; sourceTree = "<group>"; };
 		08F6ADED1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURLRequest+RcDocker.swift"; sourceTree = "<group>"; };
 		08F6ADFF1DD918CF00AF0722 /* FileCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = FileCache.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		08FAE517208111730076F90C /* NSFont+MJL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "NSFont+MJL.swift"; path = "vendor/MJLCommon/Sources/MJLCommon/extensions/NSFont+MJL.swift"; sourceTree = SOURCE_ROOT; };
 		08FDB1981C591409006FCD1A /* ImageCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCacheTests.swift; sourceTree = "<group>"; };
 		08FDB19A1C5917C3006FCD1A /* graph.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graph.png; sourceTree = "<group>"; };
 		08FDE53D1EA02AFA00F14FAA /* LocalConnectionSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalConnectionSpec.swift; sourceTree = "<group>"; };
@@ -1791,6 +1793,7 @@
 				08F189A51D09EE4000866A05 /* NSViewController+Rc2.swift */,
 				083AC1032062EDFB0054023F /* NSImage+Rc2.swift */,
 				084D33342077D1FD00246CBD /* NSViewController+Alerts.swift */,
+				08FAE517208111730076F90C /* NSFont+MJL.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -3594,6 +3597,7 @@
 				08680690200D892B00C986A9 /* RecursiveFlatMap.swift in Sources */,
 				080AB8DE1E92DA10005452C7 /* MultiImageViewController.swift in Sources */,
 				089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */,
+				08FAE518208111730076F90C /* NSFont+MJL.swift in Sources */,
 				08EE26F9202FA4A5008E008F /* DimmingView.swift in Sources */,
 				083AC106206565720054023F /* FrontMatterViewItem.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,
