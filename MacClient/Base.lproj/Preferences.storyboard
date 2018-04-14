@@ -92,6 +92,21 @@
                                     <binding destination="Ff9-8k-zjR" name="value" keyPath="values.OpenGeneratedFiles" id="h8I-wu-NJD"/>
                                 </connections>
                             </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5qt-jd-3ie">
+                                <rect key="frame" x="18" y="144" width="149" height="18"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="check" title="Autosave documents" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="2dG-Yb-gWj">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <binding destination="Ff9-8k-zjR" name="value" keyPath="values.AutoSaveEnabled" id="bR2-5O-RDf">
+                                        <dictionary key="options">
+                                            <integer key="NSNullPlaceholder" value="1"/>
+                                        </dictionary>
+                                    </binding>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="YMq-ZG-rf1" firstAttribute="centerX" secondItem="ggO-BD-xoA" secondAttribute="centerX" id="782-5a-Jnu"/>
@@ -100,7 +115,6 @@
                     </view>
                 </viewController>
                 <customObject id="NwH-hB-G4H" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <userDefaultsController id="1lA-Fe-TjL"/>
                 <userDefaultsController id="Ff9-8k-zjR"/>
             </objects>
             <point key="canvasLocation" x="222" y="253"/>

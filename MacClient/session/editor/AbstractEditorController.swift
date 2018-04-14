@@ -85,6 +85,7 @@ class AbstractEditorController: AbstractSessionViewController, CodeEditor {
 		guard autoSaveDisposable.value == nil,
 			let doc = context?.currentDocument.value
 			else { return }
+		guard UserDefaults.standard[.autosaveEnabled] else { return }
 		autoSaveDisposable.value?.dispose()
 		autoSaveDisposable.value = context?.save(document: doc, isAutoSave: true)
 			.updateProgress(status: self.appStatus!, actionName: "Autosave")

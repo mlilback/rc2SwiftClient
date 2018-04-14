@@ -147,6 +147,10 @@ class DocumentManager: EditorContext {
 	
 	/// actually autosaves a file
 	private func autosave(document: EditorDocument) -> SignalProducer<(), Rc2Error> {
+		guard UserDefaults.standard[.autosaveEnabled] else {
+			Log.info("skipping autosave", .app)
+			return SignalProducer<(), Rc2Error>(value: ())
+		}
 		Log.info("autosaving \(document.file.name)", .core)
 		let tmpUrl = autosaveUrl(document: document)
 		return SignalProducer<(), Rc2Error> { [weak self] observer, _ in

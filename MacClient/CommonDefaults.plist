@@ -14,5 +14,7 @@
 	<string>FFFFFF</string>
 	<key>MaxCommandHistorySize</key>
 	<integer>10</integer>
+	<key>AutoSaveEnabled</key>
+	<true/>
 </dict>
 </plist>

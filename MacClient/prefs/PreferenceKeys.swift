@@ -17,6 +17,7 @@ extension DefaultsKeys {
 	static let lastImportDirectory = DefaultsKey<Data?>("rc2.LastImportDirectory")
 	static let replaceFiles = DefaultsKey<Bool>("rc2.ImportReplacesExistingFiles")
 
+	static let autosaveEnabled = DefaultsKey<Bool>("AutoSaveEnabled")
 	static let wordWrapEnabled = DefaultsKey<Bool>("WordWrapEnabled")
 	static let openGeneratedFiles = DefaultsKey<Bool>("OpenGeneratedFiles")
 	
