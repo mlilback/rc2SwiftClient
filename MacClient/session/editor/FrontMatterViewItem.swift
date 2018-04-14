@@ -64,7 +64,7 @@ class FrontMatterViewItem: NSCollectionViewItem, NotebookViewItem {
 	}
 	
 	@IBAction func addChunk(_ sender: Any?) {
-		
+		delegate?.addChunk(after: self, sender: sender as? NSButton)
 	}
 }
 
