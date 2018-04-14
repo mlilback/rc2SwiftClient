@@ -129,8 +129,8 @@ class DocumentManager: EditorContext {
 		if isAutoSave {
 			return autosave(document: document)
 		}
-		guard document.isDirty else { return SignalProducer<(), Rc2Error>(value: ()) }
 		notificationCenter.post(name: .willSaveDocument, object: self)
+		guard document.isDirty else { return SignalProducer<(), Rc2Error>(value: ()) }
 		guard let contents = document.editedContents else {
 			return SignalProducer<(), Rc2Error>(error: Rc2Error(type: .invalidArgument))
 		}

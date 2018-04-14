@@ -84,6 +84,7 @@ class MacAppStatus {
 	///   - disposable: the disposable for the action that is starting
 	fileprivate func actionStarting(name: String, disposable: Disposable, determinate: Bool) {
 		Log.info("starting action \(name)", .app)
+		// FIXME: if debugging, this can happen after action is finished and the assert will fail
 		_statusQueue.sync {
 			assert(nil == _currentDisposable)
 			currentActionName = name
