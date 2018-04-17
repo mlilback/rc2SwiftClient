@@ -51,6 +51,7 @@ public class CodeTemplate: Codable, CodeTemplateObject, CustomStringConvertible 
 	private enum CodingKeys: String, CodingKey {
 		case name
 		case contents
+		case type
 	}
 	
 	public var description: String { return "template \(name.value)" }
@@ -59,23 +60,30 @@ public class CodeTemplate: Codable, CodeTemplateObject, CustomStringConvertible 
 	public var name: MutableProperty<String>
 	/// the contents of the template
 	public var contents: MutableProperty<String>
+	/// the type of the template
+	public let type: TemplateType
 	
-	public init(name: String, contents: String) {
+	public init(name: String, contents: String, type: TemplateType) {
 		self.name = MutableProperty<String>(name)
 		self.contents = MutableProperty<String>(contents)
+		self.type = type
 	}
 	
 	public required init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		let dname = try container.decode(String.self, forKey: .name)
 		let dcontents = try container.decode(String.self, forKey: .contents)
+		// if no type, assign to markdown
+		let dtype = try TemplateType(rawValue: container.decode(String.self, forKey: .type)) ?? .markdown
 		self.name = MutableProperty<String>(dname)
 		self.contents = MutableProperty<String>(dcontents)
+		self.type = dtype
 	}
 
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
 		try container.encode(name.value, forKey: .name)
 		try container.encode(contents.value, forKey: .contents)
+		try container.encode(type.rawValue, forKey: .type)
 	}
 }

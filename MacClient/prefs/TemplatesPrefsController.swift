@@ -163,7 +163,7 @@ class TemplatesPrefsController: NSViewController {
 		if !codeOutlineView.isItemExpanded(parent) {
 			codeOutlineView.expandItem(parent)
 		}
-		let template = CodeTemplate(name: "Untitled", contents: "")
+		let template = CodeTemplate(name: "Untitled", contents: "", type: currentType)
 		undoManager?.registerUndo(withTarget: self) { [theTemplate = template] (me) -> Void in
 			me.remove(template: theTemplate)
 		}
