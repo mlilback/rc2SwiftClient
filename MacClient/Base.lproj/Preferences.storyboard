@@ -528,7 +528,7 @@
                                             <font key="font" metaFont="smallSystem"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="addCategory:" target="Gbv-3R-tK5" id="88a-Yk-Sio"/>
+                                            <action selector="switchType:" target="Gbv-3R-tK5" id="coz-MC-uSU"/>
                                         </connections>
                                     </button>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="Hb5-aC-eUq">
@@ -538,7 +538,7 @@
                                             <font key="font" metaFont="smallSystem"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="addCategory:" target="Gbv-3R-tK5" id="d80-zg-ipT"/>
+                                            <action selector="switchType:" target="Gbv-3R-tK5" id="ym3-PA-izk"/>
                                         </connections>
                                     </button>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="eC7-Ni-OaE">
@@ -548,7 +548,7 @@
                                             <font key="font" metaFont="smallSystem"/>
                                         </buttonCell>
                                         <connections>
-                                            <action selector="addCategory:" target="Gbv-3R-tK5" id="QqI-Qi-EXl"/>
+                                            <action selector="switchType:" target="Gbv-3R-tK5" id="y1l-4g-RtI"/>
                                         </connections>
                                     </button>
                                 </subviews>

@@ -239,7 +239,6 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 		let destObj = parentItem as? CodeTemplateObject
 		let dropOperation = (info.draggingSourceOperationMask() == [.copy]) ? NSDragOperation.copy : NSDragOperation.move
 		//print("validate drop of \(wrapper) to \(destObj?.description ?? "root") @ \(index) as \(info.draggingSourceOperationMask())")
-		// breaking from the switch will return [.move, .copy]
 		if wrapper.isCategory {
 			switch destObj {
 			case nil: // proposed is root, which is fine
