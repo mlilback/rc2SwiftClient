@@ -419,7 +419,6 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="addChunkPopupMenu" destination="Iv3-h5-TGn" id="XdY-iK-b3D"/>
                         <outlet property="notebookView" destination="lc5-4J-j1N" id="PYS-AP-XvW"/>
                     </connections>
                 </viewController>
