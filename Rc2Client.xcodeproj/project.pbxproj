@@ -4376,6 +4376,7 @@
 		};
 		084D32FF206D03DD00246CBD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
