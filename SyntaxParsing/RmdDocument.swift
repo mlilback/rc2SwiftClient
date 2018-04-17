@@ -8,16 +8,22 @@ import Foundation
 import Model
 import MJLLogger
 import ReactiveSwift
+import Result
 
 public typealias ParserErrorHandler = (ParserError) -> Void
 
 public class RmdDocument {
 	/// the chunks comprising this document
-	public var chunks: [RmdChunk] { return internalChunks }
+	public var chunks: [RmdChunk] { return _chunks.value }
+	/// a Property of a protocol (RmdChunk) can't observer changes to a mutableproperty of a concrete type. Instead, this signal is mapped to changes in the chunks array
+	public let chunksSignal: Signal<[RmdChunk], NoError>
+	private let chunksObserver: Signal<[RmdChunk], NoError>.Observer
+
+	//	public var chunks: [RmdChunk] { return internalChunks }
 	/// front matter
 	public let frontMatter = MutableProperty("")
 	
-	private var internalChunks: [InternalRmdChunk] = []
+	private let _chunks = MutableProperty<[InternalRmdChunk]>([])
 	private var textStorage = NSTextStorage()
 	private var parser: BaseSyntaxParser
 	
@@ -27,8 +33,10 @@ public class RmdDocument {
 	///   - contents: initial contents of the document
 	///   - helpCallback: callback that returns true if a term should be highlighted as a help term
 	public init(contents: String, helpCallback: @escaping  HasHelpCallback) throws {
+		(chunksSignal, chunksObserver) = Signal<[RmdChunk], NoError>.pipe()
 		textStorage.append(NSAttributedString(string: contents))
 		parser = BaseSyntaxParser.parserWithTextStorage(textStorage, fileType: FileType.fileType(withExtension: "Rmd")!, helpCallback: helpCallback)!
+		_chunks.signal.observeValues { [weak self] val in self?.chunksObserver.send(value: val) }
 		parser.parse()
 		frontMatter.value = parser.frontMatter
 		var lastTextChunk: MarkdownChunk?
@@ -91,40 +99,41 @@ public class RmdDocument {
 	}
 	
 	private func append(chunk: InternalRmdChunk) {
-		internalChunks.append(chunk)
+		_chunks.value.append(chunk)
 	}
 	
 	public func moveChunk(from startIndex: Int, to endIndex: Int) {
 		assert(startIndex >= 0)
 		assert(endIndex >= 0) //don't check high constraint because anything larger than count will move to end
 		guard startIndex != endIndex else { return }
-		if endIndex >= internalChunks.count {
-			let elem = internalChunks[startIndex]
-			internalChunks.remove(at: startIndex)
-			internalChunks.append(elem)
-			return
+		var tmpChunks = _chunks.value
+		defer { _chunks.value = tmpChunks }
+		if endIndex >= tmpChunks.count {
+			let elem = tmpChunks[startIndex]
+			tmpChunks.remove(at: startIndex)
+			tmpChunks.append(elem)
 		} else if endIndex > startIndex {
-			let elem = internalChunks.remove(at: startIndex)
-			internalChunks.insert(elem, at: endIndex - 1)
+			let elem = tmpChunks.remove(at: startIndex)
+			tmpChunks.insert(elem, at: endIndex - 1)
 		} else {
-			let elem = internalChunks.remove(at: startIndex)
-			internalChunks.insert(elem, at: endIndex)
+			let elem = tmpChunks.remove(at: startIndex)
+			tmpChunks.insert(elem, at: endIndex)
 		}
 	}
 	
 	public func insertTextChunk(initalContents: String, at index: Int) {
 		let chunk = MarkdownChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange)
-		internalChunks.insert(chunk, at: index)
+		_chunks.value.insert(chunk, at: index)
 	}
 
 	public func insertCodeChunk(initalContents: String, at index: Int) {
 		let chunk = CodeChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange, options: nil)
-		internalChunks.insert(chunk, at: index)
+		_chunks.value.insert(chunk, at: index)
 	}
 
 	public func insertEquationChunk(initalContents: String, at index: Int) {
 		let chunk = EquationChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange, innerRange: initalContents.fullNSRange)
-		internalChunks.insert(chunk, at: index)
+		_chunks.value.insert(chunk, at: index)
 	}
 }
 
