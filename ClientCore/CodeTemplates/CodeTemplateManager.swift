@@ -14,7 +14,16 @@ public extension Notification.Name {
 
 public enum TemplateType: String {
 	case markdown, rCode, equation
-	static var allCases: [TemplateType] { return [.markdown, .rCode, .equation] }
+	public static var allCases: [TemplateType] { return [.markdown, .rCode, .equation] }
+
+	/// localized title to use for displaying to user
+	public var title: String {
+		switch self {
+		case .rCode: return NSLocalizedString("RCodeChunkMenuTitle", value: "R Code", comment: "")
+		case .markdown: return NSLocalizedString("MarkdownChunkMenuTitle", value: "Markdown", comment: "")
+		case .equation: return NSLocalizedString("EquationChunkMenuTitle", value: "Equation", comment: "")
+		}
+	}
 }
 
 /// manages loading/saving of code templates
