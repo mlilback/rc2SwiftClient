@@ -45,7 +45,7 @@ public class CodeTemplateCategory: Codable, CodeTemplateObject, CustomStringConv
 }
 
 /// represents a named template for code
-public class CodeTemplate: Codable, CodeTemplateObject, CustomStringConvertible {
+public class CodeTemplate: Codable, CodeTemplateObject, Equatable, CustomStringConvertible {
 	public static let selectionTemplateKey = "<!#selection#!>"
 
 	private enum CodingKeys: String, CodingKey {
@@ -85,5 +85,9 @@ public class CodeTemplate: Codable, CodeTemplateObject, CustomStringConvertible 
 		try container.encode(name.value, forKey: .name)
 		try container.encode(contents.value, forKey: .contents)
 		try container.encode(type.rawValue, forKey: .type)
+	}
+
+	public static func ==(lhs: CodeTemplate, rhs: CodeTemplate) -> Bool {
+		return lhs.name.value == rhs.name.value && lhs.type == rhs.type && lhs.contents.value == rhs.contents.value
 	}
 }
