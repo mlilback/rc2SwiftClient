@@ -48,7 +48,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	private var dockerEnabled = true
 	@objc dynamic var dockerManager: DockerManager?
 	private var backupManager: DockerBackupManager?
-	private var templateManager: CodeTemplateManager?
 	var startupWindowController: StartupWindowController?
 	var startupController: StartupController?
 	private var onboardingController: OnboardingWindowController?
@@ -62,6 +61,17 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	@IBOutlet weak var logLevelMenuSeperator: NSMenuItem?
 	private var sessionsBeingRestored: [WorkspaceIdentifier: (NSWindow?, Error?) -> Void] = [:]
 	private var workspacesBeingOpened = Set<WorkspaceIdentifier>()
+
+	private lazy var templateManager: CodeTemplateManager = {
+		do {
+			let dataFolder = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "CodeTemplates", create: true)
+			let defaultFolder = Bundle.main.resourceURL!.appendingPathComponent("CodeTemplates")
+			return try CodeTemplateManager(dataFolderUrl: dataFolder, defaultFolderUrl: defaultFolder)
+		} catch {
+			Log.error("failed to load template manager: \(error)", .app)
+			fatalError("failed to load template manager")
+		}
+	}()
 
 	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
 
@@ -197,6 +207,9 @@ extension MacAppDelegate {
 		let icontext = InjectorContext()
 		icontext.register(AbstractSessionViewController.self) { controller in
 			controller.appStatus = self.appStatus
+		}
+		icontext.register(NotebookEditorController.self) { controller in
+			controller.templateManager = self.templateManager
 		}
 		
 		let sboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "MainController"), bundle: nil)
@@ -355,19 +368,9 @@ extension MacAppDelegate {
 	
 	@IBAction func showPreferencesWindow(_ sender: AnyObject?) {
 		if nil == preferencesWindowController {
-			if nil == templateManager {
-				do {
-					let dataFolder = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "CodeTemplates", create: true)
-					let defaultFolder = Bundle.main.resourceURL!.appendingPathComponent("CodeTemplates")
-					templateManager = try CodeTemplateManager(dataFolderUrl: dataFolder, defaultFolderUrl: defaultFolder)
-				} catch {
-					Log.error("failed to load template manager: \(error)", .app)
-					fatalError("failed to load template manager")
-				}
-			}
 			let icontext = InjectorContext()
 			icontext.register(TemplatesPrefsController.self) { controller in
-				controller.templateManager = self.templateManager!
+				controller.templateManager = self.templateManager
 			}
 			
 			let sboard = NSStoryboard(name: .prefs, bundle: nil)

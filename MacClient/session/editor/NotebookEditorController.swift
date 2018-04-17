@@ -35,6 +35,8 @@ class NotebookEditorController: AbstractEditorController {
 	var rmdDocument: RmdDocument? { return context?.parsedDocument.value }
 	var dataArray: [NotebookItemData] = []	// holds data for all items
 	var dragIndices: Set<IndexPath>?	// items being dragged
+	// injected
+	var templateManager: CodeTemplateManager!
 	
 	private var sizingItems: [NSUserInterfaceItemIdentifier : NotebookViewItem] = [:]
 	private var parsedDocDisposable: Disposable?
