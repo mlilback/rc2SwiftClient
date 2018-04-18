@@ -121,6 +121,20 @@ public class RmdDocument {
 		}
 	}
 	
+	public func insertChunk(type: ChunkType, contents: String, at index: Int) {
+		let chunk: InternalRmdChunk
+		switch type {
+		case .code:
+			chunk = CodeChunk(parser: parser, contents: contents, range: contents.fullNSRange, options: nil)
+		case .docs:
+			chunk = MarkdownChunk(parser: parser, contents: contents, range: contents.fullNSRange)
+		case .equation:
+			let fullContents = "$$\n\(contents)\n$$\n"
+			chunk = EquationChunk(parser: parser, contents: fullContents, range: contents.fullNSRange, innerRange: NSRange(location: 3, length: contents.count))
+		}
+		_chunks.value.insert(chunk, at: index)
+	}
+	
 	public func insertTextChunk(initalContents: String, at index: Int) {
 		let chunk = MarkdownChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange)
 		_chunks.value.insert(chunk, at: index)

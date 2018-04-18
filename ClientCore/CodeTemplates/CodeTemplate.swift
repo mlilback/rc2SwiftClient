@@ -97,6 +97,10 @@ public class CodeTemplate: NSObject, Codable, CodeTemplateObject {
 		self.type = other.type
 		super.init()
 	}
+
+	public func contentsWith(selectionString: String) -> String {
+		return contents.value.replacingOccurrences(of: CodeTemplate.selectionTemplateKey, with: selectionString)
+	}
 	
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)

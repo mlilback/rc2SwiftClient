@@ -7,6 +7,7 @@
 import Foundation
 import Rc2Common
 import MJLLogger
+import SyntaxParsing
 
 public extension Notification.Name {
 	public static let codeTemplatesChanged = Notification.Name("CodeTempaltesChanged")
@@ -22,6 +23,24 @@ public enum TemplateType: String {
 		case .rCode: return NSLocalizedString("RCodeChunkMenuTitle", value: "R Code", comment: "")
 		case .markdown: return NSLocalizedString("MarkdownChunkMenuTitle", value: "Markdown", comment: "")
 		case .equation: return NSLocalizedString("EquationChunkMenuTitle", value: "Equation", comment: "")
+		}
+	}
+	
+	/// create from a ChunkType from the syntax parser
+	public init(chunkType: ChunkType) {
+		switch chunkType {
+		case .code: self = .rCode
+		case .docs: self = .markdown
+		case .equation: self = .equation
+		}
+	}
+	
+	/// return the SyntaxParser.ChunkType equivelent of this TemplateType
+	public var chunkType: ChunkType {
+		switch self {
+		case .markdown: return .docs
+		case .rCode: return .code
+		case .equation: return .equation
 		}
 	}
 }

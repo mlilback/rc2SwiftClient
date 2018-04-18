@@ -136,26 +136,15 @@ class NotebookEditorController: AbstractEditorController {
 	@IBAction func addChunk(_ sender: Any?) {
 		guard let menuItem = sender as? NSMenuItem, let previousChunk = activeAddChunkItem
 			else { Log.warn("addChunk called from non-menu item or with incorrect tag", .app); return }
+		let newIndex = previousChunk.data == nil ? 0 : dataArray.index(of: previousChunk.data!)!
 		if let type = menuItem.representedObject as? TemplateType {
-			print("add \(type) after \(activeAddChunkItem!)")
-			let newIndex = dataArray.index(of: previousChunk.data!)! + 1
-			switch type {
-			case .rCode:
-				rmdDocument?.insertCodeChunk(initalContents: "\n", at: newIndex)
-			case .markdown:
-				rmdDocument?.insertTextChunk(initalContents: "\n", at: newIndex)
-			case .equation:
-				rmdDocument?.insertEquationChunk(initalContents: "\n", at: newIndex)
-			}
-//			let ipath = IndexPath(item: newIndex, section: 0)
-//			notebookView.insertItems(at: Set<IndexPath>([ipath]))
+			rmdDocument?.insertChunk(type: type.chunkType, contents: "\n", at: newIndex)
 		} else if let template = menuItem.representedObject as? CodeTemplate {
-			print("add \(template.name.value) after \(activeAddChunkItem!)")
+			rmdDocument?.insertChunk(type: template.type.chunkType, contents: template.contentsWith(selectionString: ""), at: newIndex)
 		} else {
-			print("bad")
+			Log.warn("invalid represented object in menu item for add chunk", .app)
+			assertionFailure()
 		}
-//		guard let type = AddChunkType(rawValue: menuItem.tag), let previousChunk = menuItem.representedObject as? ChunkViewItem else { print("bad"); return }
-//		notebookView.reloadData()
 	}
 	
 	// MARK: - private
