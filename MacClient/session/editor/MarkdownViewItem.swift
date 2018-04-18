@@ -33,10 +33,11 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 
 	override func prepareForReuse() {
 		super.prepareForReuse()
-		sourceView.layoutManager?.replaceTextStorage(NSTextStorage())
+		changeTo(storage: NSTextStorage())
 	}
 
 	@IBAction func addChunk(_ sender: Any?) {
+		print("add clicked: svts=\(Unmanaged.passUnretained(sourceView.textStorage!).toOpaque()), dts=\(Unmanaged.passUnretained(data!.source).toOpaque())")
 		delegate?.addChunk(after: self, sender: sender as? NSButton)
 	}
 
@@ -56,15 +57,22 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 		sourceView.font = context.editorFont.value
 	}
 	
+	private func changeTo(storage: NSTextStorage) {
+		let oldTs = sourceView.layoutManager!
+		sourceView.layoutManager?.replaceTextStorage(storage)
+		print("\(Unmanaged.passUnretained(self).toOpaque()) changed ts from \(Unmanaged.passUnretained(oldTs).toOpaque()) to \(Unmanaged.passUnretained(sourceView.textStorage!).toOpaque())")
+	}
+	
 	func dataChanged() {
 		boundsToken = nil
 		guard let data = data else { return }
+		print("changed data to \(Unmanaged.passUnretained(data).toOpaque()), ts=\(Unmanaged.passUnretained(data.source).toOpaque()), content=\(data.source.string)")
 		boundsToken = NotificationCenter.default.addObserver(forName: NSView.boundsDidChangeNotification, object: sourceView, queue: .main)
 		{ [weak self] note in
 			self?.collectionView?.collectionViewLayout?.invalidateLayout()
 		}
 		// use the data's text storage
-		sourceView.layoutManager?.replaceTextStorage(data.source)
+		changeTo(storage: data.source)
 	}
 	
 	func size(forWidth width: CGFloat) -> NSSize {

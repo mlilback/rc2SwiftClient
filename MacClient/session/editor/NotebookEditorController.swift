@@ -65,6 +65,7 @@ class NotebookEditorController: AbstractEditorController {
 		sizingItems[equationItemId] = EquationViewItem(nibName: nil, bundle: nil)
 		sizingItems[markdownItemId] = MarkdownViewItem(nibName: nil, bundle: nil)
 		sizingItems[frontMatterItemId] = FrontMatterViewItem(nibName: nil, bundle: nil)
+		print("dummy = \(Unmanaged.passUnretained(sizingItems[markdownItemId] as! MarkdownViewItem).toOpaque())")
 		// Set some CollectionView layout constrains:
 		guard let layout = notebookView.collectionViewLayout as? NSCollectionViewFlowLayout else {
 			fatalError() } // make sure we have a layout object
@@ -221,6 +222,13 @@ extension NotebookEditorController: NotebookViewItemDelegate {
 		guard let button = sender else { fatalError("no button supplied for adding chunk") }
 //		addChunkPopupMenu.items.forEach { $0.representedObject = after }
 		activeAddChunkItem = after
+//		for aView in notebookView.visibleItems() {
+//			if let eqView = aView as? EquationViewItem {
+//				print("evis tv=\(Unmanaged.passUnretained(eqView.sourceView).toOpaque()), ts=\(Unmanaged.passUnretained(eqView.sourceView.textStorage!).toOpaque()), tc=\(eqView.sourceView.string)")
+//			} else if let mview = aView as? MarkdownViewItem {
+//				print("mvis tv=\(Unmanaged.passUnretained(mview.sourceView).toOpaque()), ts=\(Unmanaged.passUnretained(mview.sourceView.textStorage!).toOpaque()), dts=\(Unmanaged.passUnretained(mview.data!.source).toOpaque()) tc=\(mview.sourceView.string)")
+//			}
+//		}
 		addChunkPopupMenu.popUp(positioning: nil, at: CGPoint(x: 0, y: button.bounds.maxY), in: button)
 	}
 	
@@ -257,14 +265,19 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 		let itemData = dataArray[indexPath.item - 1]
 		let itemId = viewItemId(chunk: itemData.chunk)
 		let itemView: NSCollectionViewItem
+		print("ident=\(itemId) for \(indexPath)")
 		guard let view = collectionView.makeItem(withIdentifier: itemId, for: indexPath) as? NotebookViewItem else { fatalError() }
 		itemView = view as! NSCollectionViewItem
+		print("view = \(Unmanaged.passUnretained(itemView).toOpaque()) for \(Unmanaged.passUnretained(itemData).toOpaque())")
 		view.context = context
 		view.data = itemData
 		view.delegate = self
+//		if let eqView = itemView as? EquationViewItem {
+//			print("rep view=\(Unmanaged.passUnretained(eqView).toOpaque()), lm=\(Unmanaged.passUnretained(eqView.sourceView.layoutManager!).toOpaque()), sv=\(Unmanaged.passUnretained(eqView.sourceView).toOpaque()) s=\(eqView.sourceView.string)")
+//		}
 		return itemView
 	}
-	
+
 	// Inits the horizontal line used to highlight where the drop will go:
 	func collectionView(_ collectionView: NSCollectionView, viewForSupplementaryElementOfKind kind: NSCollectionView.SupplementaryElementKind, at indexPath: IndexPath) -> NSView
 	{
@@ -297,6 +310,7 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 		let dataItem = dataArray[indexPath.item - 1]
 		guard let dummyItem = sizingItems[viewItemId(chunk: dataItem.chunk)] as? ChunkViewItem else {
 			let mitem = sizingItems[markdownItemId] as! MarkdownViewItem
+			mitem.prepareForReuse()
 			_ = mitem.view
 			mitem.data = dataItem
 			mitem.context = context
