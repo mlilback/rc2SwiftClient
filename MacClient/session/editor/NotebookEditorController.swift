@@ -30,7 +30,9 @@ class NotebookEditorController: AbstractEditorController {
 	
 	// MARK: - properties
 	@IBOutlet weak var notebookView: NSCollectionView!
-	@IBOutlet var addChunkPopupMenu: NSMenu!
+	
+	var addChunkPopupMenu: NSMenu!
+	var activeAddChunkItem: NotebookViewItem?
 	
 	var rmdDocument: RmdDocument? { return context?.parsedDocument.value }
 	var dataArray: [NotebookItemData] = []	// holds data for all items
@@ -40,6 +42,7 @@ class NotebookEditorController: AbstractEditorController {
 	
 	private var sizingItems: [NSUserInterfaceItemIdentifier : NotebookViewItem] = [:]
 	private var parsedDocDisposable: Disposable?
+	private var chunksDisposable: Disposable?
 	
 	override var documentDirty: Bool {
 		guard let saved = context?.currentDocument.value?.savedContents else { return false }
@@ -68,6 +71,8 @@ class NotebookEditorController: AbstractEditorController {
 		layout.sectionInset = NSEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
 		layout.minimumLineSpacing = 20.0
 		layout.minimumInteritemSpacing = 14.0
+		buildAddChunkMenu()
+		NotificationCenter.default.addObserver(self, selector: #selector(buildAddChunkMenu), name: .codeTemplatesChanged, object: templateManager)
 	}
 	
 	override func viewWillDisappear() {
@@ -97,9 +102,20 @@ class NotebookEditorController: AbstractEditorController {
 		// we only care about the parsed document, so do nothing here
 	}
 	
+	func chunksChanged(_ chunks: [RmdChunk]) {
+		dataArray = chunks.flatMap { return NotebookItemData(chunk: $0, result: "")}
+		notebookView.reloadData()
+		notebookView.collectionViewLayout?.invalidateLayout()
+	}
+	
 	func parsedDocumentChanged(_ newDocument: RmdDocument?) {
+		chunksDisposable?.dispose()
+		chunksDisposable = nil
 		if let parsed = newDocument {
 			dataArray = parsed.chunks.flatMap { return NotebookItemData(chunk: $0, result: "") }
+			chunksDisposable = parsed.chunksSignal.observeValues { [weak self] cnks in
+				self?.chunksChanged(cnks)
+			}
 		} else {
 			dataArray = []
 		}
@@ -118,17 +134,28 @@ class NotebookEditorController: AbstractEditorController {
 	// MARK: - actions
 	
 	@IBAction func addChunk(_ sender: Any?) {
-		guard let menuItem = sender as? NSMenuItem, let type = AddChunkType(rawValue: menuItem.tag), let previousChunk = menuItem.representedObject as? ChunkViewItem
+		guard let menuItem = sender as? NSMenuItem, let previousChunk = activeAddChunkItem
 			else { Log.warn("addChunk called from non-menu item or with incorrect tag", .app); return }
-		switch type {
-		case .code:
-			rmdDocument?.insertCodeChunk(initalContents: "# R code", at: dataArray.index(of: previousChunk.data!)! + 1)
-		case .mdown:
-			rmdDocument?.insertTextChunk(initalContents: "# R code", at: dataArray.index(of: previousChunk.data!)! + 1)
-		case .equation:
-			rmdDocument?.insertEquationChunk(initalContents: "# R code", at: dataArray.index(of: previousChunk.data!)! + 1)
+		if let type = menuItem.representedObject as? TemplateType {
+			print("add \(type) after \(activeAddChunkItem!)")
+			let newIndex = dataArray.index(of: previousChunk.data!)! + 1
+			switch type {
+			case .rCode:
+				rmdDocument?.insertCodeChunk(initalContents: "\n", at: newIndex)
+			case .markdown:
+				rmdDocument?.insertTextChunk(initalContents: "\n", at: newIndex)
+			case .equation:
+				rmdDocument?.insertEquationChunk(initalContents: "\n", at: newIndex)
+			}
+//			let ipath = IndexPath(item: newIndex, section: 0)
+//			notebookView.insertItems(at: Set<IndexPath>([ipath]))
+		} else if let template = menuItem.representedObject as? CodeTemplate {
+			print("add \(template.name.value) after \(activeAddChunkItem!)")
+		} else {
+			print("bad")
 		}
-		notebookView.reloadData()
+//		guard let type = AddChunkType(rawValue: menuItem.tag), let previousChunk = menuItem.representedObject as? ChunkViewItem else { print("bad"); return }
+//		notebookView.reloadData()
 	}
 	
 	// MARK: - private
@@ -149,14 +176,51 @@ class NotebookEditorController: AbstractEditorController {
 		default: return viewItemId
 		}
 	}
+	
+	@objc private func buildAddChunkMenu() {
+		addChunkPopupMenu = NSMenu(title: "")
+		addChunkPopupMenu.autoenablesItems = false
+		TemplateType.allCases.forEach { type in
+			let templates = self.templateManager.categories(for: type)
+			let mi = NSMenuItem(title: type.title, action: #selector(addChunk(_:)), keyEquivalent: "")
+			mi.target = self
+			addChunkPopupMenu.addItem(mi)
+			let submenu = NSMenu(title: type.title)
+			mi.submenu = submenu
+			submenu.autoenablesItems = false
+			// add an empty  item
+			let subitem = NSMenuItem(title: "Empty", action: #selector(addChunk(_:)), keyEquivalent: "")
+			subitem.target = self
+			subitem.attributedTitle = NSAttributedString(string: "Empty", attributes: [.font: NSFont.menuFont(ofSize: 0).italic])
+			subitem.representedObject = type
+			submenu.addItem(subitem)
+			// add an item for each category that has a template
+			templates.filter({ $0.templates.value.count > 0 }).forEach { aCat in
+				let catItem = NSMenuItem(title: aCat.name.value, action: #selector(addChunk(_:)), keyEquivalent: "")
+				catItem.target = self
+				catItem.representedObject = aCat
+				catItem.submenu = NSMenu(title: aCat.name.value)
+				catItem.submenu?.autoenablesItems = false
+				aCat.templates.value.forEach { aTemplate in
+					let titem = NSMenuItem(title: aTemplate.name.value, action: #selector(addChunk(_:)), keyEquivalent: "")
+					titem.target = self
+					titem.representedObject = aTemplate
+					catItem.submenu?.addItem(titem)
+				}
+				submenu.addItem(catItem)
+			}
+		}
+	}
 }
 
+// MARK: - NSMenuDelegate
 extension NotebookEditorController: NSMenuDelegate {
 	func menuDidClose(_ menu: NSMenu) {
 		if menu == addChunkPopupMenu { // clear rep objects which are all set to the NotebookViewItem to add after
 			// not supposed to modify menu during this call. perform in a little bit. probably could just do next time through event loop. need action to complete first
 			DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(20)) {
-				self.addChunkPopupMenu.items.forEach { $0.representedObject = nil }
+				self.activeAddChunkItem = nil
+//				self.addChunkPopupMenu.items.forEach { $0.representedObject = nil }
 			}
 		}
 	}
@@ -166,7 +230,8 @@ extension NotebookEditorController: NSMenuDelegate {
 extension NotebookEditorController: NotebookViewItemDelegate {
 	func addChunk(after: NotebookViewItem, sender: NSButton?) {
 		guard let button = sender else { fatalError("no button supplied for adding chunk") }
-		addChunkPopupMenu.items.forEach { $0.representedObject = after }
+//		addChunkPopupMenu.items.forEach { $0.representedObject = after }
+		activeAddChunkItem = after
 		addChunkPopupMenu.popUp(positioning: nil, at: CGPoint(x: 0, y: button.bounds.maxY), in: button)
 	}
 	
@@ -296,6 +361,7 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 		guard let fromIndexPath = dragIndices?.first else {
 			return false
 		}
+		// subtracting 1 for frontmatter
 		let fromIndex = fromIndexPath.item - 1
 		var toIndex = indexPath.item - 1
 		if toIndex > fromIndex { toIndex -= 1 }

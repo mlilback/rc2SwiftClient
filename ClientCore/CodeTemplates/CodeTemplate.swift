@@ -7,18 +7,18 @@
 import Foundation
 import ReactiveSwift
 
-public protocol CodeTemplateObject: class, Codable, CustomStringConvertible {
+public protocol CodeTemplateObject: NSObjectProtocol, Codable, CustomStringConvertible {
 	var name: MutableProperty<String> { get }
 }
 
 /// a user-defined category to organize CodeTemplates in
-public class CodeTemplateCategory: Codable, CodeTemplateObject, CustomStringConvertible {
+public class CodeTemplateCategory: NSObject, Codable, CodeTemplateObject {
 	private enum CodingKeys: String, CodingKey {
 		case name
 		case templates
 	}
 	
-	public var description: String { return "category \(name.value)" }
+	public override var description: String { return "category \(name.value)" }
 	
 	/// the name of the category
 	public var name: MutableProperty<String>
@@ -28,6 +28,14 @@ public class CodeTemplateCategory: Codable, CodeTemplateObject, CustomStringConv
 	public init(name: String) {
 		self.name = MutableProperty<String>(name)
 		self.templates = MutableProperty<[CodeTemplate]>([])
+		super.init()
+	}
+	
+	public init(_ other: CodeTemplateCategory) {
+		self.name = MutableProperty(other.name.value)
+		let otherTemplates = other.templates.value.map { CodeTemplate($0) }
+		self.templates = MutableProperty(otherTemplates)
+		super.init()
 	}
 	
 	public required init(from decoder: Decoder) throws {
@@ -35,6 +43,7 @@ public class CodeTemplateCategory: Codable, CodeTemplateObject, CustomStringConv
 		let dname = try container.decode(String.self, forKey: .name)
 		name = MutableProperty<String>(dname)
 		templates = MutableProperty<[CodeTemplate]>(try container.decode([CodeTemplate].self, forKey: .templates))
+		super.init()
 	}
 	
 	public func encode(to encoder: Encoder) throws {
@@ -45,7 +54,7 @@ public class CodeTemplateCategory: Codable, CodeTemplateObject, CustomStringConv
 }
 
 /// represents a named template for code
-public class CodeTemplate: Codable, CodeTemplateObject, Equatable, CustomStringConvertible {
+public class CodeTemplate: NSObject, Codable, CodeTemplateObject {
 	public static let selectionTemplateKey = "<!#selection#!>"
 
 	private enum CodingKeys: String, CodingKey {
@@ -54,7 +63,7 @@ public class CodeTemplate: Codable, CodeTemplateObject, Equatable, CustomStringC
 		case type
 	}
 	
-	public var description: String { return "template \(name.value)" }
+	public override var description: String { return "template \(name.value)" }
 	
 	///  the name of the template
 	public var name: MutableProperty<String>
@@ -67,6 +76,7 @@ public class CodeTemplate: Codable, CodeTemplateObject, Equatable, CustomStringC
 		self.name = MutableProperty<String>(name)
 		self.contents = MutableProperty<String>(contents)
 		self.type = type
+		super.init()
 	}
 	
 	public required init(from decoder: Decoder) throws {
@@ -78,8 +88,16 @@ public class CodeTemplate: Codable, CodeTemplateObject, Equatable, CustomStringC
 		self.name = MutableProperty<String>(dname)
 		self.contents = MutableProperty<String>(dcontents)
 		self.type = dtype
+		super.init()
 	}
 
+	public init(_ other: CodeTemplate) {
+		self.name = MutableProperty(other.name.value)
+		self.contents = MutableProperty(other.contents.value)
+		self.type = other.type
+		super.init()
+	}
+	
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
 		try container.encode(name.value, forKey: .name)
@@ -87,7 +105,8 @@ public class CodeTemplate: Codable, CodeTemplateObject, Equatable, CustomStringC
 		try container.encode(type.rawValue, forKey: .type)
 	}
 
-	public static func ==(lhs: CodeTemplate, rhs: CodeTemplate) -> Bool {
-		return lhs.name.value == rhs.name.value && lhs.type == rhs.type && lhs.contents.value == rhs.contents.value
+	/// compares with another CodeTemplate. == operator tests if same instance in memory
+	public func equals(_ object: CodeTemplate) -> Bool {
+		return name.value == object.name.value && type == object.type && contents.value == object.contents.value
 	}
 }

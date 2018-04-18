@@ -113,6 +113,7 @@ class TemplatesPrefsController: NSViewController {
 			rCodeButton.state = .off
 			currentCategories = templateManager.categories(for: .equation)
 		}
+		print("curCats = \(type) \(currentCategories.count)")
 		UserDefaults.standard[.lastTemplateType] = type
 		currentType = type
 		codeOutlineView.reloadData()
@@ -226,22 +227,28 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 	
 	func outlineView(_ outlineView: NSOutlineView, writeItems items: [Any], to pasteboard: NSPasteboard) -> Bool
 	{
-		guard items.count == 1 else { return false }
-		let wrapper = DragData(items[0])
+		guard items.count == 1, let item = items[0] as? CodeTemplateObject else { return false }
+		let wrapper = DragData(item, path: indexPath(for: item))
 		pasteboard.setData(wrapper.encode(), forType: templatePasteboardType)
 		return true
 	}
 	
 	func outlineView(_ outlineView: NSOutlineView, validateDrop info: NSDraggingInfo, proposedItem parentItem: Any?, proposedChildIndex index: Int) -> NSDragOperation
 	{
-		guard let wrapperData = info.draggingPasteboard().data(forType: templatePasteboardType), let wrapper = try? JSONDecoder().decode(DragData.self, from: wrapperData)
+		guard let wrapperData = info.draggingPasteboard().data(forType: templatePasteboardType), let wrapper2 = try? JSONDecoder().decode(DragData.self, from: wrapperData)
 			else { Log.warn("asked to validate invalid drag data", .app); return [] }
 		let destObj = parentItem as? CodeTemplateObject
-		let dropOperation = (info.draggingSourceOperationMask() == [.copy]) ? NSDragOperation.copy : NSDragOperation.move
-		//print("validate drop of \(wrapper) to \(destObj?.description ?? "root") @ \(index) as \(info.draggingSourceOperationMask())")
-		if wrapper.isCategory {
+		let srcPath = wrapper2.indexPath
+		let dropOperation = (info.draggingSourceOperationMask() == .copy) ? NSDragOperation.copy : NSDragOperation.move
+//		print("validate drop of \(wrapper.indexPath) to \(destObj?.description ?? "root") @ \(index)")
+		if srcPath.count == 1 {
+			print("proposed on \(destObj?.description ?? "nil") @ \(index)")
 			switch destObj {
+			case nil where index < 0:
+				print("skip")
+				return []
 			case nil: // proposed is root, which is fine
+				print("proposed on \(index) of nil")
 				return dropOperation
 			case is CodeTemplateCategory:
 				outlineView.setDropItem(nil, dropChildIndex: outlineView.childIndex(forItem: destObj!) + 1)
@@ -257,8 +264,30 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 		return dropOperation
 	}
 	
-	func outlineView(_ outlineView: NSOutlineView, acceptDrop info: NSDraggingInfo, item: Any?, childIndex index: Int) -> Bool
+	func outlineView(_ outlineView: NSOutlineView, acceptDrop info: NSDraggingInfo, item parentItem: Any?, childIndex index: Int) -> Bool
 	{
+		// wrapper is not identical object
+		guard let wrapperData = info.draggingPasteboard().data(forType: templatePasteboardType),
+			let wrapper = try? JSONDecoder().decode(DragData.self, from: wrapperData)
+			else { Log.warn("asked to validate invalid drag data", .app); return false }
+//		let srcIndex = outlineView.childIndex(forItem: wrapper.item)
+		let destObj = parentItem as? CodeTemplateObject
+		let isCopy = info.draggingSourceOperationMask() == .copy
+		if wrapper.isCategory {
+			let srcIndex = wrapper.indexPath[0]
+			print("dropping on \(destObj?.description ?? "nil") idx \(index) from \(wrapper.indexPath)")
+			var destIndex = (index == -1) ? currentCategories.count - 1 : index
+			if isCopy {
+				let newCat = CodeTemplateCategory(wrapper.category!)
+				currentCategories.insert(newCat, at: destIndex)
+				codeOutlineView.insertItems(at: IndexSet(integer: destIndex), inParent: nil, withAnimation: .effectGap)
+			} else {
+				currentCategories.moveElement(from: srcIndex, to: destIndex)
+				if destIndex >= currentCategories.count { destIndex -= 1 }
+				codeOutlineView.moveItem(at: srcIndex, inParent: nil, to: destIndex, inParent: nil)
+			}
+			return true
+		}
 		return false
 	}
 }
@@ -369,6 +398,14 @@ extension TemplatesPrefsController {
 		let index = codeOutlineView.selectedRow
 		if index == -1 { return nil }
 		return codeOutlineView.item(atRow: index)
+	}
+	
+	private func indexPath(for item: Any) -> IndexPath {
+		if let cat = item as? CodeTemplateCategory {
+			return IndexPath(index: codeOutlineView.childIndex(forItem: cat))
+		}
+		guard let template = item as? CodeTemplate, let parent = codeOutlineView.parent(forItem: template) as? CodeTemplateCategory else { fatalError("invalid item") }
+		return IndexPath(indexes: [codeOutlineView.childIndex(forItem: parent), codeOutlineView.childIndex(forItem: template)])
 	}
 	
 	private func colorizeSelectionMarker() {
@@ -490,18 +527,21 @@ fileprivate struct DragData: Codable, CustomStringConvertible {
 	var isCategory: Bool { return category != nil }
 	var description: String { return isCategory ? category!.description : template!.description }
 	var item: CodeTemplateObject { return isCategory ? category! : template! }
+	var indexPath: IndexPath
 	
-	init(category: CodeTemplateCategory) {
+	init(category: CodeTemplateCategory, path: IndexPath) {
 		self.category = category
 		self.template = nil
+		self.indexPath = path
 	}
 	
-	init(template: CodeTemplate) {
+	init(template: CodeTemplate, path: IndexPath) {
 		self.template = template
 		self.category = nil
+		self.indexPath = path
 	}
 	
-	init(_ item: Any) {
+	init(_ item: Any, path: IndexPath) {
 		if let titem = item as? CodeTemplate {
 			self.template = titem
 			self.category = nil
@@ -511,6 +551,7 @@ fileprivate struct DragData: Codable, CustomStringConvertible {
 		} else {
 			fatalError("invalid drag object")
 		}
+		self.indexPath = path
 	}
 	
 	func encode() -> Data {

@@ -527,6 +527,7 @@
 		08F6ADFC1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADED1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift */; };
 		08F6ADFD1DD9178A00AF0722 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
 		08F6AE001DD918CF00AF0722 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADFF1DD918CF00AF0722 /* FileCache.swift */; };
+		08F867B92086876E00108044 /* Array+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F867B82086876E00108044 /* Array+MJL.swift */; };
 		08FAE518208111730076F90C /* NSFont+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FAE517208111730076F90C /* NSFont+MJL.swift */; };
 		08FDB19B1C5917C3006FCD1A /* graph.png in Resources */ = {isa = PBXBuildFile; fileRef = 08FDB19A1C5917C3006FCD1A /* graph.png */; };
 		08FDE53E1EA02AFA00F14FAA /* LocalConnectionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDE53D1EA02AFA00F14FAA /* LocalConnectionSpec.swift */; };
@@ -1354,6 +1355,7 @@
 		08F6ADEA1DD9172C00AF0722 /* DockerUrlProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerUrlProtocol.swift; sourceTree = "<group>"; };
 		08F6ADED1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURLRequest+RcDocker.swift"; sourceTree = "<group>"; };
 		08F6ADFF1DD918CF00AF0722 /* FileCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = FileCache.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		08F867B82086876E00108044 /* Array+MJL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+MJL.swift"; sourceTree = "<group>"; };
 		08FAE517208111730076F90C /* NSFont+MJL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "NSFont+MJL.swift"; path = "vendor/MJLCommon/Sources/MJLCommon/extensions/NSFont+MJL.swift"; sourceTree = SOURCE_ROOT; };
 		08FDB1981C591409006FCD1A /* ImageCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCacheTests.swift; sourceTree = "<group>"; };
 		08FDB19A1C5917C3006FCD1A /* graph.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graph.png; sourceTree = "<group>"; };
@@ -2003,6 +2005,7 @@
 				0868067B200D892000C986A9 /* String+MJL.swift */,
 				0868067C200D892000C986A9 /* URL+MJL.swift */,
 				08EDB9CF2019527D000663EF /* Set+MJL+update.swift */,
+				08F867B82086876E00108044 /* Array+MJL.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -2952,6 +2955,7 @@
 					};
 					084D32E6206D03DD00246CBD = {
 						CreatedOnToolsVersion = 9.2;
+						DevelopmentTeam = V97NV337TR;
 						ProvisioningStyle = Automatic;
 					};
 					084D32EE206D03DD00246CBD = {
@@ -3655,6 +3659,7 @@
 				08E5D2091EAA58FD00374055 /* TimedEvent.swift in Sources */,
 				089794421D7B6A0F003339EE /* SharedConstants.swift in Sources */,
 				089794511D7B6A8F003339EE /* SystemExtensions.swift in Sources */,
+				08F867B92086876E00108044 /* Array+MJL.swift in Sources */,
 				081559951DDCCD960047B3CE /* RACSignals+Rc2.swift in Sources */,
 				086A40D11E7AEC5000AE476B /* OutputTheme.swift in Sources */,
 				0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */,
