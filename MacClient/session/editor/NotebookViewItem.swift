@@ -16,5 +16,9 @@ protocol NotebookViewItem: class {
 	var delegate: NotebookViewItemDelegate? { get set }
 	var data: NotebookItemData? { get set }
 	var context: EditorContext? { get set }
+	var view: NSView { get }
+	
+	func size(forWidth width: CGFloat, data: NotebookItemData) -> NSSize
+	func prepareForReuse()
 }
 

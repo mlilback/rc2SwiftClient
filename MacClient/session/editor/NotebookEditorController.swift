@@ -65,7 +65,6 @@ class NotebookEditorController: AbstractEditorController {
 		sizingItems[equationItemId] = EquationViewItem(nibName: nil, bundle: nil)
 		sizingItems[markdownItemId] = MarkdownViewItem(nibName: nil, bundle: nil)
 		sizingItems[frontMatterItemId] = FrontMatterViewItem(nibName: nil, bundle: nil)
-		print("dummy = \(Unmanaged.passUnretained(sizingItems[markdownItemId] as! MarkdownViewItem).toOpaque())")
 		// Set some CollectionView layout constrains:
 		guard let layout = notebookView.collectionViewLayout as? NSCollectionViewFlowLayout else {
 			fatalError() } // make sure we have a layout object
@@ -222,13 +221,6 @@ extension NotebookEditorController: NotebookViewItemDelegate {
 		guard let button = sender else { fatalError("no button supplied for adding chunk") }
 //		addChunkPopupMenu.items.forEach { $0.representedObject = after }
 		activeAddChunkItem = after
-//		for aView in notebookView.visibleItems() {
-//			if let eqView = aView as? EquationViewItem {
-//				print("evis tv=\(Unmanaged.passUnretained(eqView.sourceView).toOpaque()), ts=\(Unmanaged.passUnretained(eqView.sourceView.textStorage!).toOpaque()), tc=\(eqView.sourceView.string)")
-//			} else if let mview = aView as? MarkdownViewItem {
-//				print("mvis tv=\(Unmanaged.passUnretained(mview.sourceView).toOpaque()), ts=\(Unmanaged.passUnretained(mview.sourceView.textStorage!).toOpaque()), dts=\(Unmanaged.passUnretained(mview.data!.source).toOpaque()) tc=\(mview.sourceView.string)")
-//			}
-//		}
 		addChunkPopupMenu.popUp(positioning: nil, at: CGPoint(x: 0, y: button.bounds.maxY), in: button)
 	}
 	
@@ -242,12 +234,8 @@ extension NotebookEditorController: NotebookViewItemDelegate {
 
 // MARK: - NSCollectionViewDataSource
 extension NotebookEditorController: NSCollectionViewDataSource {
-//	func numberOfSections(in collectionView: NSCollectionView) -> Int {
-//		return 2
-//	}
 	
 	func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
-//		if section == 0 { return 1}
 		return dataArray.count + 1
 	}
 	
@@ -255,7 +243,6 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 	func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem
 	{
 		if indexPath.item == 0 {
-//		guard indexPath.section == 1 else {
 			guard let fmItem = collectionView.makeItem(withIdentifier: frontMatterItemId, for: indexPath) as? FrontMatterViewItem else { fatalError() }
 			fmItem.context = context
 			fmItem.delegate = self
@@ -265,16 +252,11 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 		let itemData = dataArray[indexPath.item - 1]
 		let itemId = viewItemId(chunk: itemData.chunk)
 		let itemView: NSCollectionViewItem
-		print("ident=\(itemId) for \(indexPath)")
 		guard let view = collectionView.makeItem(withIdentifier: itemId, for: indexPath) as? NotebookViewItem else { fatalError() }
 		itemView = view as! NSCollectionViewItem
-		print("view = \(Unmanaged.passUnretained(itemView).toOpaque()) for \(Unmanaged.passUnretained(itemData).toOpaque())")
 		view.context = context
 		view.data = itemData
 		view.delegate = self
-//		if let eqView = itemView as? EquationViewItem {
-//			print("rep view=\(Unmanaged.passUnretained(eqView).toOpaque()), lm=\(Unmanaged.passUnretained(eqView.sourceView.layoutManager!).toOpaque()), sv=\(Unmanaged.passUnretained(eqView.sourceView).toOpaque()) s=\(eqView.sourceView.string)")
-//		}
 		return itemView
 	}
 
@@ -308,21 +290,10 @@ extension NotebookEditorController: NSCollectionViewDelegateFlowLayout {
 			return fitem.size(forWidth: collectionView.visibleWidth)
 		}
 		let dataItem = dataArray[indexPath.item - 1]
-		guard let dummyItem = sizingItems[viewItemId(chunk: dataItem.chunk)] as? ChunkViewItem else {
-			let mitem = sizingItems[markdownItemId] as! MarkdownViewItem
-			mitem.prepareForReuse()
-			_ = mitem.view
-			mitem.data = dataItem
-			mitem.context = context
-			let sz = mitem.size(forWidth: collectionView.visibleWidth)
-			return sz
-		}
+		guard let dummyItem = sizingItems[viewItemId(chunk: dataItem.chunk)] else { fatalError("no sizing view") }
 		dummyItem.prepareForReuse()
-		dummyItem.data = dataItem
-		dummyItem.context = context
-		dummyItem.adjustSize()
-		let sz = NSSize(width: collectionView.visibleWidth, height: dummyItem.view.frame.size.height)
-		return sz
+		_ = dummyItem.view
+		return dummyItem.size(forWidth: collectionView.visibleWidth, data: dataItem)
 	}
 	
 	// Places the data for the drag operation on the pasteboard:

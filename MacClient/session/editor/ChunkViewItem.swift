@@ -27,6 +27,7 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 	var layingOut = false
 	private var twiddleInProgress = false
 	private var optionsDisposable: Disposable?
+	private var sizingTextView: NSTextView?
 	
 	/// if a subclass uses a non-NSTextView results view, this needs to be overridden to calculate frame
 	var resultView: NSView { return resultTextView! }
@@ -114,7 +115,7 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		}
 		data.source.font = context.editorFont.value
 		// use the data's textstorage
-		sourceView.layoutManager?.replaceTextStorage(data.chunk.textStorage)
+		sourceView.layoutManager!.replaceTextStorage(data.chunk.textStorage)
 		// bind options field
 		optionsDisposable?.dispose()
 		if let codeChunk = data.chunk as? Code {
@@ -126,6 +127,35 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		adjustSize(animate: false)
 	}
 
+	// MARK: - sizing
+	
+	func size(forWidth width: CGFloat, data: NotebookItemData) -> NSSize {
+		if nil == sizingTextView {
+			sizingTextView = NSTextView(frame: CGRect(x: 0, y: 0, width: width, height: 100))
+		}
+		guard let manager = sizingTextView?.textContainer?.layoutManager, let container = sizingTextView?.textContainer else { return .zero }
+		let tmpSize = NSSize(width: width, height: 100)
+		sizingTextView?.setFrameSize(tmpSize)
+		sizingTextView?.textStorage?.replaceCharacters(in: sizingTextView!.string.fullNSRange, with: data.source)
+		manager.ensureLayout(for: container)
+		var workingSize = manager.usedRect(for: container).size
+		workingSize.height += dividerBarHeight
+		if middleView != nil {
+			workingSize.height += dividerBarHeight
+		}
+		if data.resultsVisible.value {
+			sizingTextView?.textStorage?.replaceCharacters(in: sizingTextView!.string.fullNSRange, with: data.result)
+			manager.ensureLayout(for: container)
+			workingSize.height += dynamicContentFrame.size.height
+		}
+		workingSize.height += Notebook.textEditorMargin
+		workingSize.height += topView.frame.size.height
+		return workingSize
+//		return NSSize(width: width, height: sourceSize.height + topView.frame.size.height + Notebook.textEditorMargin)
+	}
+
+	
+	
 	// MARK: - private
 	
 	private func titleForCurrentChunk() -> String {

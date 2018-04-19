@@ -9,6 +9,7 @@ import ReactiveSwift
 import SyntaxParsing
 
 class FrontMatterViewItem: NSCollectionViewItem, NotebookViewItem {
+	
 	// only here because protocol demands, won't be used
 	var data: NotebookItemData?
 	
@@ -43,6 +44,10 @@ class FrontMatterViewItem: NSCollectionViewItem, NotebookViewItem {
 			me.myEdit = false
 			me.collectionView?.collectionViewLayout?.invalidateLayout()
 		}
+	}
+	
+	func size(forWidth width: CGFloat, data: NotebookItemData) -> NSSize {
+		fatalError("not implemented")
 	}
 	
 	func size(forWidth width: CGFloat) -> NSSize {

@@ -20,6 +20,7 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 	var context: EditorContext? { didSet { contextChanged() } }
 	private var fontDisposable: Disposable?
 	private var boundsToken: Any?
+	private var sizingTextView: NSTextView?
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -37,7 +38,6 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 	}
 
 	@IBAction func addChunk(_ sender: Any?) {
-		print("add clicked: svts=\(Unmanaged.passUnretained(sourceView.textStorage!).toOpaque()), dts=\(Unmanaged.passUnretained(data!.source).toOpaque())")
 		delegate?.addChunk(after: self, sender: sender as? NSButton)
 	}
 
@@ -60,13 +60,11 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 	private func changeTo(storage: NSTextStorage) {
 		let oldTs = sourceView.layoutManager!
 		sourceView.layoutManager?.replaceTextStorage(storage)
-		print("\(Unmanaged.passUnretained(self).toOpaque()) changed ts from \(Unmanaged.passUnretained(oldTs).toOpaque()) to \(Unmanaged.passUnretained(sourceView.textStorage!).toOpaque())")
 	}
 	
 	func dataChanged() {
 		boundsToken = nil
 		guard let data = data else { return }
-		print("changed data to \(Unmanaged.passUnretained(data).toOpaque()), ts=\(Unmanaged.passUnretained(data.source).toOpaque()), content=\(data.source.string)")
 		boundsToken = NotificationCenter.default.addObserver(forName: NSView.boundsDidChangeNotification, object: sourceView, queue: .main)
 		{ [weak self] note in
 			self?.collectionView?.collectionViewLayout?.invalidateLayout()
@@ -79,6 +77,19 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 		let tmpSize = NSSize(width: width, height: 100)
 		sourceView.setFrameSize(tmpSize)
 		guard let manager = sourceView.textContainer?.layoutManager, let container = sourceView.textContainer else { return .zero }
+		manager.ensureLayout(for: container)
+		let textSize = manager.usedRect(for: container).size
+		return NSSize(width: width, height: textSize.height + topView.frame.size.height + Notebook.textEditorMargin)
+	}
+
+	func size(forWidth width: CGFloat, data: NotebookItemData) -> NSSize {
+		if nil == sizingTextView {
+			sizingTextView = NSTextView(frame: CGRect(x: 0, y: 0, width: width, height: 100))
+		}
+		let tmpSize = NSSize(width: width, height: 100)
+		sizingTextView?.setFrameSize(tmpSize)
+		sizingTextView?.textStorage?.replaceCharacters(in: sizingTextView!.string.fullNSRange, with: data.source)
+		guard let manager = sizingTextView?.textContainer?.layoutManager, let container = sizingTextView?.textContainer else { return .zero }
 		manager.ensureLayout(for: container)
 		let textSize = manager.usedRect(for: container).size
 		return NSSize(width: width, height: textSize.height + topView.frame.size.height + Notebook.textEditorMargin)
