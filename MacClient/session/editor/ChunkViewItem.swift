@@ -13,6 +13,8 @@ import ReactiveCocoa
 import MJLLogger
 
 class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
+	let dividerBarHeight: CGFloat = 21
+	let verticalMarginHeight: CGFloat = 10
 	// MARK: - properties
 	@IBOutlet var sourceView: SourceTextView!
 	@IBOutlet var resultTextView: SourceTextView?
@@ -171,8 +173,8 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		var topFrame = NSRect.zero, srcFrame = NSRect.zero, resFrame = NSRect.zero, middleFrame = NSRect.zero
 		let myWidth = view.frame.size.width	// width of all frames
 		
-		topFrame = NSRect(x: 0, y: 0, width: myWidth, height: 21)
-		middleFrame = middleView != nil ? NSRect(x: 0, y: srcFrame.maxY, width: myWidth, height: 21) : .zero
+		topFrame = NSRect(x: 0, y: 0, width: myWidth, height: dividerBarHeight)
+		middleFrame = middleView != nil ? NSRect(x: 0, y: srcFrame.maxY, width: myWidth, height: dividerBarHeight) : .zero
 
 		// The Top frame height is set by the textContainer of the sourceView. Must ensure the glyphs dimensions have been calculated
 		sourceView.layoutManager!.ensureLayout(for: sourceView.textContainer!)
@@ -185,9 +187,9 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		resFrame.size.width = myWidth
 		
 		// Add some margin for the txt:
-		srcFrame.size.height += 10
+		srcFrame.size.height += verticalMarginHeight
 		if resultTextView != nil {
-			resFrame.size.height += 10
+			resFrame.size.height += verticalMarginHeight
 		}
 		
 		// Calculate Y origin of each frame (*from the bottom*!):
