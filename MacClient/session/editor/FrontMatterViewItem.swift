@@ -34,8 +34,8 @@ class FrontMatterViewItem: NSCollectionViewItem, NotebookViewItem {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		topView?.layer?.backgroundColor = noteBookFrontMatterColor.cgColor
-		view.layer?.borderColor = NSColor.black.cgColor
-		view.layer?.borderWidth = 1
+		view.layer?.borderColor = notebookBorderColor.cgColor
+		view.layer?.borderWidth = notebookItemBorderWidth
 		sourceView.delegate = self
 		sourceView.changeCallback = { [weak self] in
 			guard let me = self else { return }

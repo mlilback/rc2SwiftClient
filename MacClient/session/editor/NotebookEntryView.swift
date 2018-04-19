@@ -14,8 +14,8 @@ class NotebookEntryView: NSView {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		// Some preferences:
-		layer?.borderColor = NSColor.black.cgColor
-		layer?.borderWidth = 1
+		layer?.borderColor = notebookBorderColor.cgColor
+		layer?.borderWidth = notebookItemBorderWidth
 		// These are most appropriate for code text:
 		sourceView.smartInsertDeleteEnabled = false
 		sourceView.isAutomaticQuoteSubstitutionEnabled = false

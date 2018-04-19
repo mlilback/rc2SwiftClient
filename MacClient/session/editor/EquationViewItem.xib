@@ -50,18 +50,18 @@
                         </button>
                     </subviews>
                 </customView>
-                <scrollView identifier="sourceScroll" focusRingType="exterior" misplaced="YES" borderType="line" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" id="OEf-2G-F4x" userLabel="source scroll" customClass="NoScrollView" customModule="MacClient" customModuleProvider="target">
+                <scrollView identifier="sourceScroll" focusRingType="exterior" misplaced="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" id="OEf-2G-F4x" userLabel="source scroll" customClass="NoScrollView" customModule="MacClient" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="159" width="480" height="89"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <clipView key="contentView" id="2WR-4j-xeK">
-                        <rect key="frame" x="1" y="1" width="478" height="87"/>
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="89"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView importsGraphics="NO" verticallyResizable="NO" usesFontPanel="YES" findStyle="bar" allowsUndo="YES" usesRuler="YES" textCompletion="NO" id="Zng-X6-LSA" customClass="SourceTextView" customModule="MacClient" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="478" height="87"/>
+                            <textView focusRingType="none" importsGraphics="NO" verticallyResizable="NO" usesFontPanel="YES" findStyle="bar" allowsUndo="YES" usesRuler="YES" textCompletion="NO" id="Zng-X6-LSA" customClass="SourceTextView" customModule="MacClient" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="480" height="89"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <size key="minSize" width="478" height="87"/>
+                                <size key="minSize" width="480" height="89"/>
                                 <size key="maxSize" width="491" height="10000000"/>
                                 <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </textView>
@@ -76,7 +76,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>
-                <customView identifier="middle" wantsLayer="YES" id="y6B-4h-J3F" userLabel="middle">
+                <customView identifier="middle" wantsLayer="YES" id="y6B-4h-J3F" userLabel="middle" customClass="NotebookMiddleView" customModule="MacClient" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="131" width="480" height="21"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <subviews>
@@ -91,7 +91,7 @@
                                 <action selector="twiddleResults:" target="-2" id="r5N-9g-krP"/>
                             </connections>
                         </button>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="zy6-6b-9wI">
+                        <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="zy6-6b-9wI">
                             <rect key="frame" x="27" y="2" width="49" height="17"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Results" id="G27-NQ-AEY">

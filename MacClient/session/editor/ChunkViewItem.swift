@@ -60,7 +60,8 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		topView.wantsLayer = true
 		topView.layer?.backgroundColor = notebookTopViewBackgroundColor.cgColor
 		middleView?.wantsLayer = true
-		middleView?.layer?.backgroundColor = notebookTopViewBackgroundColor.cgColor
+		middleView?.layer?.backgroundColor = notebookMiddleBackgroundColor.cgColor
+		resultView.layer?.backgroundColor = notebookMiddleBackgroundColor.cgColor
 		// Note: results content background is set its .xib.
 		sourceView.layoutManager?.defaultAttachmentScaling = .scaleProportionallyDown
 		//  Create a callback to adjustSize, so NotebookEntryView can call it during its layout:

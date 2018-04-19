@@ -68,8 +68,8 @@ class NotebookEditorController: AbstractEditorController {
 		// Set some CollectionView layout constrains:
 		guard let layout = notebookView.collectionViewLayout as? NSCollectionViewFlowLayout else {
 			fatalError() } // make sure we have a layout object
-		layout.sectionInset = NSEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-		layout.minimumLineSpacing = 20.0
+		layout.sectionInset = NSEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
+		layout.minimumLineSpacing = 4.0
 		layout.minimumInteritemSpacing = 14.0
 		buildAddChunkMenu()
 		NotificationCenter.default.addObserver(self, selector: #selector(buildAddChunkMenu), name: .codeTemplatesChanged, object: templateManager)

@@ -52,17 +52,17 @@
                         <constraint firstAttribute="height" constant="21" id="uXC-af-fXC"/>
                     </constraints>
                 </customView>
-                <scrollView identifier="sourceScroll" focusRingType="exterior" borderType="line" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="TI0-2n-HeX" userLabel="source scroll" customClass="NoScrollView" customModule="MacClient" customModuleProvider="target">
+                <scrollView identifier="sourceScroll" focusRingType="exterior" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="TI0-2n-HeX" userLabel="source scroll" customClass="NoScrollView" customModule="MacClient" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="0.0" width="448" height="90"/>
                     <clipView key="contentView" id="dBz-qY-vmd">
-                        <rect key="frame" x="1" y="1" width="446" height="88"/>
+                        <rect key="frame" x="0.0" y="0.0" width="448" height="90"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView importsGraphics="NO" verticallyResizable="NO" usesFontPanel="YES" findStyle="bar" allowsUndo="YES" usesRuler="YES" textCompletion="NO" spellingCorrection="YES" id="IoA-2c-332" customClass="SourceTextView" customModule="MacClient" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="446" height="88"/>
+                            <textView focusRingType="none" importsGraphics="NO" verticallyResizable="NO" usesFontPanel="YES" findStyle="bar" allowsUndo="YES" usesRuler="YES" textCompletion="NO" spellingCorrection="YES" id="IoA-2c-332" customClass="SourceTextView" customModule="MacClient" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="448" height="90"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <size key="minSize" width="446" height="88"/>
+                                <size key="minSize" width="448" height="90"/>
                                 <size key="maxSize" width="998" height="10000000"/>
                                 <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </textView>

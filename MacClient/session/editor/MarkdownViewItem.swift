@@ -58,7 +58,6 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 	}
 	
 	private func changeTo(storage: NSTextStorage) {
-		let oldTs = sourceView.layoutManager!
 		sourceView.layoutManager?.replaceTextStorage(storage)
 	}
 	

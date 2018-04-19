@@ -397,6 +397,7 @@
 		08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
 		08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
+		08B73E8C208952A700DB7339 /* NotebookMiddleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B73E8B208952A700DB7339 /* NotebookMiddleView.swift */; };
 		08BCEA2F20388B51004A5F47 /* SessionSubProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BCEA2E20388B51004A5F47 /* SessionSubProtocols.swift */; };
 		08BCEA3220388DB5004A5F47 /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BCEA3020388D5F004A5F47 /* DocumentManager.swift */; };
 		08BCEA33203B0BD9004A5F47 /* DocumentManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081263201C87A9E8003E37A5 /* DocumentManagerTests.swift */; };
@@ -1258,6 +1259,7 @@
 		08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; name = defaultWorkspaceFiles; path = shared/resources/defaultWorkspaceFiles; sourceTree = SOURCE_ROOT; };
 		08B184D31E5F384800F4A6D6 /* AppInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZipArchive.framework; path = Carthage/Build/Mac/ZipArchive.framework; sourceTree = "<group>"; };
+		08B73E8B208952A700DB7339 /* NotebookMiddleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookMiddleView.swift; sourceTree = "<group>"; };
 		08BCEA2E20388B51004A5F47 /* SessionSubProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSubProtocols.swift; sourceTree = "<group>"; };
 		08BCEA3020388D5F004A5F47 /* DocumentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
 		08BCEA34203B0E0B004A5F47 /* bulkInfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bulkInfo.json; sourceTree = "<group>"; };
@@ -2242,6 +2244,7 @@
 				08EE270920335B0A008E008F /* NotebookEditorController.swift */,
 				085A1A26205AC62B00B7EC5F /* NotebookDropIndicator.swift */,
 				085A1A28205AC6CD00B7EC5F /* NotebookCollectionLayout.swift */,
+				08B73E8B208952A700DB7339 /* NotebookMiddleView.swift */,
 				085A1A1C205AC35200B7EC5F /* ChunkViewItem.swift */,
 				085A1A1D205AC35200B7EC5F /* ChunkViewItem.xib */,
 				083AC10C2066E4BB0054023F /* NotebookViewItem.swift */,
@@ -3587,6 +3590,7 @@
 				08680692200E415600C986A9 /* AppLogger.swift in Sources */,
 				083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */,
 				08F673D01D020B2700B87049 /* FontManagement.swift in Sources */,
+				08B73E8C208952A700DB7339 /* NotebookMiddleView.swift in Sources */,
 				084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */,
 				084D33352077D1FD00246CBD /* NSViewController+Alerts.swift in Sources */,
 				08F189A21D09AA0300866A05 /* SessionController.swift in Sources */,
