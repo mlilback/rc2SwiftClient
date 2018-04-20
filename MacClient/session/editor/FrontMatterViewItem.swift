@@ -11,7 +11,6 @@ import SyntaxParsing
 class FrontMatterViewItem: NotebookViewItem {
 	
 	@IBOutlet var sourceView: SourceTextView!
-	@IBOutlet var topView: NSView!
 
 	private var fontDisposable: Disposable?
 	private var fmDisposable: Disposable?
@@ -28,9 +27,6 @@ class FrontMatterViewItem: NotebookViewItem {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		topView?.layer?.backgroundColor = noteBookFrontMatterColor.cgColor
-		view.layer?.borderColor = notebookBorderColor.cgColor
-		view.layer?.borderWidth = notebookItemBorderWidth
 		sourceView.delegate = self
 		sourceView.changeCallback = { [weak self] in
 			guard let me = self else { return }
@@ -47,7 +43,7 @@ class FrontMatterViewItem: NotebookViewItem {
 		guard let manager = sourceView.textContainer?.layoutManager, let container = sourceView.textContainer else { return .zero }
 		manager.ensureLayout(for: container)
 		let textSize = manager.usedRect(for: container).size
-		return NSSize(width: width, height: textSize.height + topView.frame.size.height + Notebook.textEditorMargin)
+		return NSSize(width: width, height: textSize.height + topView!.frame.size.height + Notebook.textEditorMargin)
 	}
 
 	override func contextChanged() {

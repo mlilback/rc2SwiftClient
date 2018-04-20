@@ -14,6 +14,8 @@ extension Notification.Name {
 	static let displayHelpTopic = Notification.Name("DisplayHelpTopicNotification")
 	///The object is the FileImporter used
 	static let filesImported = Notification.Name("FilesImportedNotification")
+	/// the main window first responder has changed
+	static let firstResponderChanged = Notification.Name("FirstResponderChanged")
 }
 
 struct LocalStrings {
@@ -34,9 +36,10 @@ let consoleAttachmentImageSize = CGSize(width: 48, height: 48)
 
 let variableUpdatedBackgroundColor = PlatformColor.green
 let variableNormalBackgroundColor = PlatformColor.white
-let noteBookFrontMatterColor = PlatformColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
-let notebookTopViewBackgroundColor = PlatformColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0)
+let notebookTopViewBackgroundColor = PlatformColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 0.6)
 let notebookMiddleBackgroundColor = PlatformColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 0.6)
 let notebookBorderColor = PlatformColor.black.withAlphaComponent(0.4)
+let notebookSelectionColor = PlatformColor.systemBlue.withAlphaComponent(0.6)
 let notebookItemBorderWidth = CGFloat(0.5)
+let notebookSelectionBorderWidth = CGFloat(3.0)
 

@@ -82,3 +82,11 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 		}
 	}
 }
+
+class MainWindow: NSWindow {
+	override func makeFirstResponder(_ responder: NSResponder?) -> Bool {
+		let result = super.makeFirstResponder(responder)
+		NotificationCenter.default.post(name: .firstResponderChanged, object: self)
+		return result
+	}
+}

@@ -18,7 +18,6 @@ class ChunkViewItem: NotebookViewItem {
 	// MARK: - properties
 	@IBOutlet var sourceView: SourceTextView!
 	@IBOutlet var resultTextView: SourceTextView?
-	@IBOutlet weak var topView: NSView!
 	@IBOutlet weak var middleView: NSView?
 	@IBOutlet weak var resultTwiddle: NSButton!
 	@IBOutlet weak var chunkTypeLabel: NSTextField!
@@ -54,8 +53,6 @@ class ChunkViewItem: NotebookViewItem {
 		}
 		
 		// Set background colors for top and middle views:
-		topView.wantsLayer = true
-		topView.layer?.backgroundColor = notebookTopViewBackgroundColor.cgColor
 		middleView?.wantsLayer = true
 		middleView?.layer?.backgroundColor = notebookMiddleBackgroundColor.cgColor
 		resultView.layer?.backgroundColor = notebookMiddleBackgroundColor.cgColor

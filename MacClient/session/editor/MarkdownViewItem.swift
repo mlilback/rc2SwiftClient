@@ -11,7 +11,6 @@ import ReactiveSwift
 class MarkdownViewItem: NotebookViewItem, NSTextViewDelegate {
 	@IBOutlet var sourceView: SourceTextView!
 	@IBOutlet var scrollView: NSScrollView!
-	@IBOutlet weak var topView: NSView!
 	@IBOutlet weak var chunkTypeLabel: NSTextField!
 	@IBOutlet weak var addChunkButton: NSButton!
 	
@@ -23,7 +22,6 @@ class MarkdownViewItem: NotebookViewItem, NSTextViewDelegate {
 		super.viewDidLoad()
 		sourceView.isEditable = true
 		view.translatesAutoresizingMaskIntoConstraints = false
-		topView.layer?.backgroundColor = notebookTopViewBackgroundColor.cgColor
 		sourceView.changeCallback = { [weak self] in
 			self?.collectionView?.collectionViewLayout?.invalidateLayout()
 		}
