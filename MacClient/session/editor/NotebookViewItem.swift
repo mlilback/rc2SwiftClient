@@ -12,13 +12,19 @@ protocol NotebookViewItemDelegate: class {
 	func twiddleAllChunks(hide: Bool)
 }
 
-protocol NotebookViewItem: class {
-	var delegate: NotebookViewItemDelegate? { get set }
-	var data: NotebookItemData? { get set }
-	var context: EditorContext? { get set }
-	var view: NSView { get }
+class NotebookViewItem: NSCollectionViewItem {
+	weak var delegate: NotebookViewItemDelegate?
+	var data: NotebookItemData? { didSet { dataChanged() } }
+	var context: EditorContext? { didSet { contextChanged() } }
 	
-	func size(forWidth width: CGFloat, data: NotebookItemData) -> NSSize
-	func prepareForReuse()
+	/// called when the context value has changed
+	func contextChanged() { }
+	
+	/// called when the data item has changed
+	func dataChanged() { }
+	
+	func size(forWidth width: CGFloat, data: NotebookItemData) -> NSSize {
+		fatalError("not implemented")
+	}
 }
 

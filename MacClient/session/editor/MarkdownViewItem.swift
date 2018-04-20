@@ -8,16 +8,13 @@ import Cocoa
 import SyntaxParsing
 import ReactiveSwift
 
-class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelegate {
+class MarkdownViewItem: NotebookViewItem, NSTextViewDelegate {
 	@IBOutlet var sourceView: SourceTextView!
 	@IBOutlet var scrollView: NSScrollView!
 	@IBOutlet weak var topView: NSView!
 	@IBOutlet weak var chunkTypeLabel: NSTextField!
 	@IBOutlet weak var addChunkButton: NSButton!
 	
-	weak var delegate: NotebookViewItemDelegate?
-	var data: NotebookItemData? { didSet { dataChanged() } }
-	var context: EditorContext? { didSet { contextChanged() } }
 	private var fontDisposable: Disposable?
 	private var boundsToken: Any?
 	private var sizingTextView: NSTextView?
@@ -46,7 +43,7 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 		textView.invalidateIntrinsicContentSize()
 	}
 
-	private func contextChanged() {
+	override func contextChanged() {
 		fontDisposable?.dispose()
 		fontDisposable = context?.editorFont.signal.observeValues { [weak self] font in
 			self?.data?.source.font = font
@@ -61,7 +58,7 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 		sourceView.layoutManager?.replaceTextStorage(storage)
 	}
 	
-	func dataChanged() {
+	override func dataChanged() {
 		boundsToken = nil
 		guard let data = data else { return }
 		boundsToken = NotificationCenter.default.addObserver(forName: NSView.boundsDidChangeNotification, object: sourceView, queue: .main)
@@ -81,7 +78,7 @@ class MarkdownViewItem: NSCollectionViewItem, NotebookViewItem, NSTextViewDelega
 		return NSSize(width: width, height: textSize.height + topView.frame.size.height + Notebook.textEditorMargin)
 	}
 
-	func size(forWidth width: CGFloat, data: NotebookItemData) -> NSSize {
+	override func size(forWidth width: CGFloat, data: NotebookItemData) -> NSSize {
 		if nil == sizingTextView {
 			sizingTextView = NSTextView(frame: CGRect(x: 0, y: 0, width: width, height: 100))
 		}
