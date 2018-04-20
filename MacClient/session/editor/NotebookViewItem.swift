@@ -5,6 +5,7 @@
 //
 
 import Cocoa
+import ClientCore
 
 protocol NotebookViewItemDelegate: class {
 	func addChunk(after: NotebookViewItem, sender: NSButton?)

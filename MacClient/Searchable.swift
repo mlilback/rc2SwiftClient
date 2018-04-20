@@ -5,6 +5,9 @@
 //
 
 import Cocoa
+import ClientCore
+
+protocol MacCodeEditor: CodeEditor, Searchable {}
 
 protocol Searchable {
 	func performFind(action: NSTextFinder.Action)

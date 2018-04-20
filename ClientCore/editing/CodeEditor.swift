@@ -10,18 +10,18 @@ import Networking
 import ReactiveSwift
 import SyntaxParsing
 
-enum EditorMode: Int {
+public enum EditorMode: Int {
 	case notebook = 0
 	case source
 }
 
-protocol CodeEditor: class, Searchable {
+public protocol CodeEditor: class {
 	var canExecute: Bool { get }
 	func setContext(context: EditorContext)
 	func executeSource(type: ExecuteType)
 }
 
-protocol EditorManager: CodeEditor {
+public protocol EditorManager: CodeEditor {
 	var canSwitchToNotebookMode: Bool { get }
 	var canSwitchToSourceMode: Bool { get }
 	func switchTo(mode: EditorMode)

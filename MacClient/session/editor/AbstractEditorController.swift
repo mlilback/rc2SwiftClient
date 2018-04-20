@@ -6,6 +6,7 @@
 
 import Cocoa
 import Rc2Common
+import ClientCore
 import Networking
 import SyntaxParsing
 import MJLLogger
@@ -19,7 +20,7 @@ extension Selector {
 	static let executeLine = #selector(SourceEditorController.executeCurrentLine(_:))
 }
 
-class AbstractEditorController: AbstractSessionViewController, CodeEditor {
+class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 	private(set) var context: EditorContext?
 	private var autoSaveDisposable = Atomic<Disposable?>(nil)
 	

@@ -6,46 +6,45 @@
 
 import Foundation
 import Rc2Common
-import ClientCore
 import ReactiveSwift
 import Networking
 import SwiftyUserDefaults
 import SyntaxParsing
 import MJLLogger
 
-extension Notification.Name {
+public extension Notification.Name {
 	/// sent before the currentDocument will be saved. object will be the EditorContext/DocummentManager
 	static let willSaveDocument = Notification.Name(rawValue: "DocumentWillSaveNotification")
 }
 
 /// Manages open documents and the current document. Provides common properties to editor components via the EditorContext protocol.
-class DocumentManager: EditorContext {
+public class DocumentManager: EditorContext {
 	let minTimeBetweenAutoSaves: TimeInterval = 2
 	
 	// MARK: properties
 	// when changed, should use .updateProgress() while loading file contents
 	private let _currentDocument = MutableProperty<EditorDocument?>(nil)
-	let currentDocument: Property<EditorDocument?>
+	public let currentDocument: Property<EditorDocument?>
 	private let _parsedDocument = MutableProperty<RmdDocument?>(nil)
-	var parsedDocument: Property<RmdDocument?>
+	public var parsedDocument: Property<RmdDocument?>
 	
-	let editorFont: MutableProperty<NSFont>
-	var errorHandler: Rc2ErrorHandler { return self }
+	public let editorFont: MutableProperty<NSFont>
+	public var errorHandler: Rc2ErrorHandler { return self }
 	private var openDocuments: [Int: EditorDocument] = [:]
-	var notificationCenter: NotificationCenter
-	var workspaceNotificationCenter: NotificationCenter
-	let lifetime: Lifetime
+	public var notificationCenter: NotificationCenter
+	public var workspaceNotificationCenter: NotificationCenter
+	public let lifetime: Lifetime
 	var defaults: UserDefaults
 
 	let fileSaver: FileSaver
 	let fileCache: FileCache
 	let loading = Atomic<Bool>(false)
 	let saving = Atomic<Bool>(false)
-	var busy: Bool { return loading.value || saving.value }
+	public var busy: Bool { return loading.value || saving.value }
 	
 	// MARK: methods
 	
-	init(fileSaver: FileSaver, fileCache: FileCache, lifetime: Lifetime, notificationCenter: NotificationCenter = .default, wspaceCenter: NotificationCenter = NSWorkspace.shared.notificationCenter, defaults: UserDefaults = .standard)
+	public init(fileSaver: FileSaver, fileCache: FileCache, lifetime: Lifetime, notificationCenter: NotificationCenter = .default, wspaceCenter: NotificationCenter = NSWorkspace.shared.notificationCenter, defaults: UserDefaults = .standard)
 	{
 		currentDocument = Property<EditorDocument?>(_currentDocument)
 		parsedDocument = Property<RmdDocument?>(_parsedDocument)
@@ -87,7 +86,7 @@ class DocumentManager: EditorContext {
 	}
 	
 	/// returns a SP that will save the current document and load the document for file
-	func load(file: AppFile?) -> SignalProducer<String?, Rc2Error> {
+	public func load(file: AppFile?) -> SignalProducer<String?, Rc2Error> {
 		if loading.value {
 			Log.warn("load called while already loading", .app)
 		}
@@ -114,7 +113,7 @@ class DocumentManager: EditorContext {
 			.on(starting: { self.loading.value = true }, completed: { self.loading.value = false })
 	}
 	
-	func revertCurrentDocument() {
+	public func revertCurrentDocument() {
 		guard let doc = currentDocument.value else { return }
 		// clear autosave document if exists
 		let tmpUrl = autosaveUrl(document: doc)
@@ -125,7 +124,7 @@ class DocumentManager: EditorContext {
 	}
 	
 	/// saves to server, fileCache, and memory cache
-	func save(document: EditorDocument, isAutoSave: Bool = false) -> SignalProducer<(), Rc2Error> {
+	public func save(document: EditorDocument, isAutoSave: Bool = false) -> SignalProducer<(), Rc2Error> {
 		if isAutoSave {
 			return autosave(document: document)
 		}
@@ -251,7 +250,7 @@ class DocumentManager: EditorContext {
 }
 
 extension DocumentManager: Rc2ErrorHandler {
-	func handle(error: Rc2Error) {
+	public func handle(error: Rc2Error) {
 		
 	}
 }
