@@ -12,12 +12,26 @@ import Rc2Common
 
 fileprivate let minTimeBetweenAutoSaves: TimeInterval = 2
 
+/// used for the notebook to save its state for a document
+public struct NotebookState: Codable {
+	public let selectionPath: IndexPath
+	/// nil if frontmatter and indexPath is zero
+	public let selectionType: TemplateType?
+	
+	public init(path: IndexPath, type: TemplateType?) {
+		self.selectionPath = path
+		self.selectionType = type
+	}
+}
+
 public class EditorDocument: NSObject {
 	public private(set) var file: AppFile
 	private var fileUrl: URL
 	public let undoManager: UndoManager
 	/// index of contents at top of scroll view
 	public var topVisibleIndex: Int = 0
+	/// state of the notebook when this document was last used
+	public var notebookState: NotebookState?
 	var lastSaveTime: TimeInterval = 0
 	public private(set) var savedContents: String?
 	public var editedContents: String?

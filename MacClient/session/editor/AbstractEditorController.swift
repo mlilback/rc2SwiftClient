@@ -142,7 +142,8 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 
 	func documentChanged(newDocument: EditorDocument?) {
 		guard let document = newDocument else { return }
-		Log.info("doc changed", .core) // FIXME: why is this called twice per document?
+		print("editor doc changed to \(newDocument?.file.name ?? "nil")")
+		Log.info("doc changed", .app) // FIXME: why is this called twice per document?
 		if document.isLoaded {
 			loaded(content: document.currentContents ?? "")
 		} else {

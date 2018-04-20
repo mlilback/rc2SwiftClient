@@ -235,16 +235,25 @@ class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate
 // MARK: -
 class MarkdownChunk: InternalRmdChunk, TextChunk {
 	var inlineElements: [InlineChunk]
+	let origText: String
 	
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
 		// use a fake chunk to create from contents
 		let pchunk = DocumentChunk(chunkType: .docs, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
 		inlineElements = []
+		origText = contents.substring(from: range)!
 		super.init(parser: parser, chunk: pchunk)
-		textStorage.append(NSAttributedString(string: contents.substring(from: range)!))
+		textStorage.append(NSAttributedString(string: origText))
 	}
 	
+	override var rawText: String {
+		let val = textStorage.string
+		if origText.count != val.count {
+			print("differing lengths for \(origText)")
+		}
+		return val
+	}
 //	override var attributedContents: NSAttributedString {
 //		let out = NSMutableAttributedString(attributedString: storage)
 //		storage.enumerateAttribute(.attachment, in: out.string.fullNSRange, options: [.reverse])
@@ -273,7 +282,7 @@ class CodeChunk: InternalRmdChunk, Code {
 	override var rawText: String {
 		var opts = options.value
 		if opts.count > 0 { opts = " " + opts }
-		return "```{r\(opts)}\n\(textStorage.string)\n```\n"
+		return textStorage.string.surroundWithoutAddingNewlines(startText: "```{r\(opts)", endText: "```")
 	}
 }
 
@@ -288,7 +297,7 @@ class EquationChunk: InternalRmdChunk, Equation {
 	}
 	
 	override var rawText: String {
-		return "$$\n\(textStorage.string)\n$$\n"
+		return textStorage.string.surroundWithoutAddingNewlines(startText: "$$", endText: "$$")
 	}
 }
 
@@ -314,3 +323,16 @@ class InternalInlineCodeChunk: InternalRmdChunk, InlineChunk, Code {
 	}
 }
 
+public extension String {
+	/// surrounds self with startText and endText, only adding newlines if none already exist
+	public func surroundWithoutAddingNewlines(startText: String, endText: String) -> String {
+		var contents = ""
+		contents += startText
+		if !self.hasPrefix("\n") { contents += "\n" }
+		contents += self
+		if !self.hasSuffix("\n") { contents += "\n" }
+		contents += endText
+		contents += "\n"
+		return contents
+	}
+}
