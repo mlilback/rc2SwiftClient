@@ -139,7 +139,6 @@ public class DocumentManager: EditorContext {
 			.flatMap(.concat, fileCache.save)
 			.on(completed: {
 				document.contentsSaved()
-				self.switchTo(document: document)
 			},
 				terminated: { self.saving.value = false })
 	}
