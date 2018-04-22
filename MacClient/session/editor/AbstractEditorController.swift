@@ -21,6 +21,7 @@ extension Selector {
 }
 
 class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
+	// MARK: properties
 	private(set) var context: EditorContext?
 	private var autoSaveDisposable = Atomic<Disposable?>(nil)
 	
@@ -31,6 +32,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 	
 	var documentDirty: Bool { return false }
 	
+	// MARK: - standard
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action {
@@ -43,6 +45,36 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		}
 	}
 	
+	// MARK: - actions
+	@IBAction func save(_ sender: Any?) {
+		saveWithProgress().startWithResult { result in
+			if let innerError = result.error {
+				let appError = AppError(.saveFailed, nestedError: innerError)
+				Log.info("save for execute returned an error: \(result.error!)", .app)
+				self.appStatus?.presentError(appError.rc2Error, session: self.session)
+				return
+			}
+		}
+	}
+	
+	@IBAction func revert(_ sender: Any?) {
+		guard let doc = context?.currentDocument.value else { return }
+		// Do you want to revert the document “AbstractEditorController.swift” to the last saved version?
+		confirmAction(message: "Do you want to revert the document \"\(doc.file.name)\" to the last saved version?", infoText: "", buttonTitle: "Revert") { confirmed in
+			guard confirmed else { return }
+			self.context?.revertCurrentDocument()
+		}
+	}
+	
+	@IBAction func runQuery(_ sender: AnyObject?) {
+		executeSource(type: .run)
+	}
+	
+	@IBAction func sourceQuery(_ sender: AnyObject?) {
+		executeSource(type: .source)
+	}
+	
+	// MARK: - internal
 	func setContext(context: EditorContext) {
 		precondition(self.context == nil)
 		self.context = context
@@ -56,7 +88,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			self?.documentChanged(newDocument: newDoc)
 		}
 	}
-
+	
 	///actually implements running a query, saving first if document is dirty
 	func executeSource(type: ExecuteType) {
 		guard let currentDocument = context?.currentDocument.value else {
@@ -79,7 +111,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			self.session.execute(file: file, type: type)
 		}
 	}
-
+	
 	// called by notifications when sleeping/backgrounding
 	@objc func autosaveCurrentDocument() {
 		// return if autosave in progress or no document
@@ -94,38 +126,11 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			.startWithCompleted { [weak self] in
 				self?.autoSaveDisposable.value?.dispose()
 				self?.autoSaveDisposable.value = nil
-			}
-//		guard context?.currentDocument.value?.isDirty ?? false else { return }
-//		saveWithProgress(isAutoSave: true).startWithResult { result in
-//			guard result.error == nil else {
-//				Log.warn("autosave failed: \(result.error!)", .session)
-//				return
-//			}
-//			//need to do anything when successful?
-//		}
+		}
 	}
 	
+	/// called before Document is saved (edited contents become savedContents)
 	@objc func documentWillSave(_ notification: Notification) {
-	}
-
-	@IBAction func save(_ sender: Any?) {
-		saveWithProgress().startWithResult { result in
-			if let innerError = result.error {
-				let appError = AppError(.saveFailed, nestedError: innerError)
-				Log.info("save for execute returned an error: \(result.error!)", .app)
-				self.appStatus?.presentError(appError.rc2Error, session: self.session)
-				return
-			}
-		}
-	}
-	
-	@IBAction func revert(_ sender: Any?) {
-		guard let doc = context?.currentDocument.value else { return }
-		// Do you want to revert the document “AbstractEditorController.swift” to the last saved version?
-		confirmAction(message: "Do you want to revert the document \"\(doc.file.name)\" to the last saved version?", infoText: "", buttonTitle: "Revert") { confirmed in
-			guard confirmed else { return }
-			self.context?.revertCurrentDocument()
-		}
 	}
 	
 	//should be the only place an actual save is performed
@@ -140,6 +145,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			.observe(on: UIScheduler())
 	}
 
+	/// called when the current document changes
 	func documentChanged(newDocument: EditorDocument?) {
 		guard let document = newDocument else { return }
 		if document.isLoaded {
@@ -179,6 +185,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		}
 	}
 	
+	/// updates the style attributes for a fragment in an attributed string
 	private func style(fragmentType: FragmentType, in text: NSMutableAttributedString, range: NSRange, theme: SyntaxTheme) {
 		switch fragmentType {
 		case .none:
@@ -196,16 +203,9 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		}
 	}
 	
+	/// called after the current document has changed. called by documentChanged() after the contents have been loaded from disk/network. Subclasses must override.
 	func loaded(content: String) {
 		fatalError("subclass must implement, not call super")
 	}
 
-	@IBAction func runQuery(_ sender: AnyObject?) {
-		executeSource(type: .run)
-	}
-	
-	@IBAction func sourceQuery(_ sender: AnyObject?) {
-		executeSource(type: .source)
-	}
-	
 }
