@@ -200,7 +200,7 @@ public class DocumentManager: EditorContext {
 			newParsed = try RmdDocument(contents: document.currentContents ?? "") { (topic) in
 				return HelpController.shared.hasTopic(topic)
 			}
-			print("parsed \(document.file.name)")
+			print("parsed \(document.file.name) with \(newParsed!.chunks.count) chunks")
 		} catch {
 			Log.info("failed to parse document \(document.file.name)", .core)
 		}
