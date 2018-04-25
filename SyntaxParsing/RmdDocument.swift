@@ -282,7 +282,7 @@ class CodeChunk: InternalRmdChunk, Code {
 	override var rawText: String {
 		var opts = options.value
 		if opts.count > 0 { opts = " " + opts }
-		return textStorage.string.surroundWithoutAddingNewlines(startText: "```{r\(opts)", endText: "```")
+		return textStorage.string.surroundWithoutAddingNewlines(startText: "```{r\(opts)}", endText: "```")
 	}
 }
 
