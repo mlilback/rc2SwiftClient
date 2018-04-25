@@ -31,7 +31,9 @@ extension NSUserInterfaceItemIdentifier {
 // MARK: - main controller
 class TemplatesPrefsController: NSViewController {
 	let templatePasteboardType = NSPasteboard.PasteboardType(rawValue: "io.rc2.client.codeTemplate")
-
+	//>>>
+	var last = ""
+	
 	// MARK: properties
 	@IBOutlet private var splitterView: NSSplitView!
 	@IBOutlet private var markdownButton: NSButton!
@@ -200,6 +202,7 @@ class TemplatesPrefsController: NSViewController {
 
 // MARK: - NSOutlineViewDataSource
 extension TemplatesPrefsController: NSOutlineViewDataSource {
+	
 	func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
 		if item == nil { return currentCategories.count }
 		guard let category = item as? CodeTemplateCategory else { return 0 }
@@ -235,32 +238,50 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 	
 	func outlineView(_ outlineView: NSOutlineView, validateDrop info: NSDraggingInfo, proposedItem parentItem: Any?, proposedChildIndex index: Int) -> NSDragOperation
 	{
-		guard let wrapperData = info.draggingPasteboard().data(forType: templatePasteboardType), let wrapper2 = try? JSONDecoder().decode(DragData.self, from: wrapperData)
-			else { Log.warn("asked to validate invalid drag data", .app); return [] }
-		let destObj = parentItem as? CodeTemplateObject
-		let srcPath = wrapper2.indexPath
+		guard let wrapperData = info.draggingPasteboard().data(forType: templatePasteboardType),
+			let wrapper = try? JSONDecoder().decode(DragData.self, from: wrapperData)
+			else { print("asked to validate invalid drag data"); return [] }
+		// { Log.warn("asked to validate invalid drag data", .app); } // return [] }
+		let targetObj = parentItem as? CodeTemplateObject
+		let fromPath = wrapper.indexPath
 		let dropOperation = (info.draggingSourceOperationMask() == .copy) ? NSDragOperation.copy : NSDragOperation.move
 //		print("validate drop of \(wrapper.indexPath) to \(destObj?.description ?? "root") @ \(index)")
-		if srcPath.count == 1 {
-			print("proposed on \(destObj?.description ?? "nil") @ \(index)")
-			switch destObj {
-			case nil where index < 0:
-				print("skip")
-				return []
-			case nil: // proposed is root, which is fine
-				print("proposed on \(index) of nil")
+
+		// If we're dragging a Category:
+		if wrapper.isCategory {
+			switch targetObj {
+			case nil where index >= 0: // proposed is root, which is fine
 				return dropOperation
 			case is CodeTemplateCategory:
-				outlineView.setDropItem(nil, dropChildIndex: outlineView.childIndex(forItem: destObj!) + 1)
+				let targetIndex = outlineView.childIndex(forItem: targetObj!) + 1
+				// print("Category, new idx: \(targetIndex)")
+				outlineView.setDropItem(nil, dropChildIndex: targetIndex)
 			case is CodeTemplate:
-				outlineView.setDropItem(nil, dropChildIndex: outlineView.childIndex(forItem: outlineView.parent(forItem: destObj!)!))
+				let targetIndex = outlineView.childIndex(forItem: outlineView.parent(forItem: targetObj!)!) + 1
+				// print("Template, new idx: \(targetIndex)")
+				outlineView.setDropItem(nil, dropChildIndex: targetIndex)
 			default:
 				return []
 			}
 			return dropOperation
 		}
-		// dragging a template
-		if destObj == nil { return [] } // don't allow a template at the root level
+		// If we're dragging a Template:
+		else if fromPath.count == 2 {
+			switch targetObj {
+			case nil: // don't allow a template at the root level
+				return []
+			case is CodeTemplateCategory:
+				return dropOperation
+			case is CodeTemplate:
+				let targetIndex = outlineView.childIndex(forItem: targetObj!) + 1
+				let parent = outlineView.parent(forItem: targetObj!)!
+				// print("\(parent) \(targetIndex)")
+				outlineView.setDropItem(parent, dropChildIndex: targetIndex)
+			default:
+				return []
+			}
+		}
+
 		return dropOperation
 	}
 	
@@ -269,23 +290,58 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 		// wrapper is not identical object
 		guard let wrapperData = info.draggingPasteboard().data(forType: templatePasteboardType),
 			let wrapper = try? JSONDecoder().decode(DragData.self, from: wrapperData)
-			else { Log.warn("asked to validate invalid drag data", .app); return false }
+			else { print("asked to acceptDrop invalid drag data"); return false }
 //		let srcIndex = outlineView.childIndex(forItem: wrapper.item)
-		let destObj = parentItem as? CodeTemplateObject
+//		let targetObj = parentItem as? CodeTemplateCategory
+		let fromPath = wrapper.indexPath
 		let isCopy = info.draggingSourceOperationMask() == .copy
+		
+		var op = "move"
+		if isCopy { op = "copy" }
+		let out = op + " from \(fromPath), to \(index), parent: " + String(describing: parentItem)
+		if last != out { print(out) }
+		last = out
+		
+		// If we're dragging a Category:
 		if wrapper.isCategory {
-			let srcIndex = wrapper.indexPath[0]
-			print("dropping on \(destObj?.description ?? "nil") idx \(index) from \(wrapper.indexPath)")
-			var destIndex = (index == -1) ? currentCategories.count - 1 : index
+			let fromIndex = fromPath[0]
+			// print("dropping on \(targetObj?.description ?? "nil") idx \(index) from \(wrapper.indexPath)")
+			var toIndex = (index == -1) ? 0 : index	// currentCategories.count - 1
+			if toIndex > fromIndex { toIndex -= 1 }
+			if toIndex >= currentCategories.count { toIndex -= 1 }
+//			print("from \(fromIndex), to \(toIndex)")
 			if isCopy {
+				//>>> TEST:
 				let newCat = CodeTemplateCategory(wrapper.category!)
-				currentCategories.insert(newCat, at: destIndex)
-				codeOutlineView.insertItems(at: IndexSet(integer: destIndex), inParent: nil, withAnimation: .effectGap)
+				currentCategories.insert(newCat, at: toIndex)
+				codeOutlineView.insertItems(at: IndexSet(integer: toIndex), inParent: nil, withAnimation: .effectGap)
 			} else {
-				currentCategories.moveElement(from: srcIndex, to: destIndex)
-				if destIndex >= currentCategories.count { destIndex -= 1 }
-				codeOutlineView.moveItem(at: srcIndex, inParent: nil, to: destIndex, inParent: nil)
+				//currentCategories.moveElement(from: fromIndex, to: toIndex)
+				let item = currentCategories.remove(at: fromIndex)
+				currentCategories.insert(item, at: toIndex)
+				if toIndex >= currentCategories.count { toIndex -= 1 }
+				codeOutlineView.moveItem(at: fromIndex, inParent: nil, to: toIndex, inParent: nil)
 			}
+			return true
+		}
+		// If we're dragging a Template:
+		if let toCat = parentItem as? CodeTemplateCategory, fromPath.count == 2,
+			let item = wrapper.item as? CodeTemplate {
+			// let fromCat = outlineView.parent(forItem: item) as! CodeTemplateCategory
+			// let fromCat = codeOutlineView.parent(forItem: item) as! CodeTemplateCategory
+			let fromCat = currentCategories[fromPath[0]]
+			let fromIndex = fromPath[1]
+			var toIndex = (index == -1) ? 0 : index // toCat.templates.value.count-1
+			if toCat == fromCat {
+				if toIndex > fromIndex { toIndex -= 1 }
+			}
+//			let toCatIndex = outlineView.childIndex(forItem: toCat)
+//			print("item \(item) to \(toIndex) in \(toCat)")
+			if !isCopy {
+				fromCat.templates.value.remove(at: fromIndex)
+				codeOutlineView.removeItems(at: IndexSet(integer: fromIndex), inParent: fromCat)
+			}
+			self.insert(template: item, in: toCat, at: toIndex)
 			return true
 		}
 		return false
@@ -475,6 +531,7 @@ extension TemplatesPrefsController {
 		guard let parent = codeOutlineView.parent(forItem: template) as? CodeTemplateCategory,
 				let index = Optional.some(codeOutlineView.childIndex(forItem: template)), index != -1
 			else { Log.error("", .app); return }
+//		let index = parent.childIndex(forItem: template)
 		parent.templates.value.remove(at: index)
 		codeOutlineView.removeItems(at: IndexSet(integer: index), inParent: parent, withAnimation: .slideUp)
 	}
