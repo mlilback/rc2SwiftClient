@@ -58,6 +58,7 @@ class MarkdownViewItem: NotebookViewItem {
 		}
 		// use the data's text storage
 		sourceView.textStorage?.replace(with: data.source)
+		sourceView.textStorage?.addAttribute(.font, value: context?.editorFont.value as Any, range: sourceView.textStorage!.string.fullNSRange)
 	}
 	
 	func size(forWidth width: CGFloat) -> NSSize {

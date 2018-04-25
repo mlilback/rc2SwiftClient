@@ -107,6 +107,7 @@ class ChunkViewItem: NotebookViewItem {
 		}
 		// copy the source string
 		sourceView.textStorage!.replace(with: data.source)
+		sourceView.textStorage?.addAttribute(.font, value: context?.editorFont.value as Any, range: sourceView.textStorage!.string.fullNSRange)
 		// bind options field
 		optionsDisposable?.dispose()
 		if let codeChunk = data.chunk as? Code {
