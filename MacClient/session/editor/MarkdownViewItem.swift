@@ -8,7 +8,8 @@ import Cocoa
 import SyntaxParsing
 import ReactiveSwift
 
-class MarkdownViewItem: NotebookViewItem, NSTextViewDelegate {
+class MarkdownViewItem: NotebookViewItem {
+	// MARK: properties
 	@IBOutlet var sourceView: SourceTextView!
 	@IBOutlet var scrollView: NSScrollView!
 	@IBOutlet weak var chunkTypeLabel: NSTextField!
@@ -17,10 +18,13 @@ class MarkdownViewItem: NotebookViewItem, NSTextViewDelegate {
 	private var fontDisposable: Disposable?
 	private var boundsToken: Any?
 	private var sizingTextView: NSTextView?
+	private var ignoreTextChanges = false
 
+	// MARK: methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		sourceView.isEditable = true
+		sourceView.delegate = self
 		view.translatesAutoresizingMaskIntoConstraints = false
 		sourceView.changeCallback = { [weak self] in
 			self?.collectionView?.collectionViewLayout?.invalidateLayout()
@@ -29,16 +33,12 @@ class MarkdownViewItem: NotebookViewItem, NSTextViewDelegate {
 
 	override func prepareForReuse() {
 		super.prepareForReuse()
-		changeTo(storage: NSTextStorage())
+		sourceView.replace(text: "")
+//		changeTo(storage: NSTextStorage())
 	}
 
 	@IBAction func addChunk(_ sender: Any?) {
 		delegate?.addChunk(after: self, sender: sender as? NSButton)
-	}
-
-	func textDidChange(_ notification: Notification) {
-		guard let textView = notification.object as? MarkdownTextView else { return }
-		textView.invalidateIntrinsicContentSize()
 	}
 
 	override func contextChanged() {
@@ -64,7 +64,8 @@ class MarkdownViewItem: NotebookViewItem, NSTextViewDelegate {
 			self?.collectionView?.collectionViewLayout?.invalidateLayout()
 		}
 		// use the data's text storage
-		changeTo(storage: data.source)
+		sourceView.textStorage!.setAttributedString(data.source)
+//		changeTo(storage: data.source)
 	}
 	
 	func size(forWidth width: CGFloat) -> NSSize {
@@ -87,6 +88,24 @@ class MarkdownViewItem: NotebookViewItem, NSTextViewDelegate {
 		manager.ensureLayout(for: container)
 		let textSize = manager.usedRect(for: container).size
 		return NSSize(width: width, height: textSize.height + topView.frame.size.height + Notebook.textEditorMargin)
+	}
+}
+
+extension MarkdownViewItem: NSTextViewDelegate {
+	func textShouldEndEditing(_ textObject: NSText) -> Bool {
+		guard !ignoreTextChanges else { return true }
+		ignoreTextChanges = true
+		defer { ignoreTextChanges = false }
+		data?.source.setAttributedString(sourceView.textStorage!)
+		delegate?.viewItemLostFocus()
+		return true
+	}
+
+	func textDidChange(_ notification: Notification) {
+		guard let textView = notification.object as? MarkdownTextView else { return }
+		data?.source.deleteCharacters(in: NSRange(location: 0, length: data!.source.length))
+		data?.source.append(textView.textStorage!)
+		textView.invalidateIntrinsicContentSize()
 	}
 }
 

@@ -8,6 +8,9 @@ import Cocoa
 import ClientCore
 
 protocol NotebookViewItemDelegate: class {
+	/// called by views when they lose focus
+	func viewItemLostFocus()
+	/// adds a new chunk
 	func addChunk(after: NotebookViewItem, sender: NSButton?)
 	/// should call .resultsVisible = hide on all chunks
 	func twiddleAllChunks(hide: Bool)

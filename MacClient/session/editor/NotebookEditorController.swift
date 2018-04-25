@@ -77,11 +77,6 @@ class NotebookEditorController: AbstractEditorController {
 		NotificationCenter.default.addObserver(self, selector: #selector(buildAddChunkMenu), name: .codeTemplatesChanged, object: templateManager)
 	}
 	
-	override func viewWillDisappear() {
-		super.viewWillDisappear()
-		autosaveCurrentDocument()
-	}
-	
 	// Called initially and when window is resized:
 	override func viewWillLayout() {
 		// Make sure things are laid out again after all our manual changes:
@@ -163,13 +158,10 @@ class NotebookEditorController: AbstractEditorController {
 		notebookView.reloadData()
 		notebookView.collectionViewLayout?.invalidateLayout()
 	}
-	
-	override func documentWillSave(_ notification: Notification) {
-		if view.window != nil {
-			// need to convert dataArray back to document contents
-			context?.currentDocument.value?.editedContents = currentContents()
-		}
-		super.documentWillSave(notification)
+
+	override func editsNeedSaving() {
+		guard view.window != nil else { return }
+		save(edits: currentContents())
 	}
 	
 	// MARK: - actions
@@ -199,7 +191,11 @@ class NotebookEditorController: AbstractEditorController {
 			if !fm.hasSuffix("\n") { contents += "\n" }
 			contents += "---\n"
 		}
-		dataArray.forEach { contents += $0.chunk.rawText }
+		dataArray.forEach {
+			let additions = $0.chunk.rawText
+			contents += additions
+		}
+		contents = contents.replacingOccurrences(of: "\n$$\n\n", with: "\n$$\n")
 		return contents
 	}
 	
@@ -274,6 +270,10 @@ extension NotebookEditorController: NotebookViewItemDelegate {
 		NSAnimationContext.current.duration = 0
 		dataArray.forEach { $0.resultsVisible.value = !hide }
 		NSAnimationContext.endGrouping()
+	}
+	
+	func viewItemLostFocus() {
+		save(edits: currentContents())
 	}
 }
 

@@ -35,6 +35,8 @@ public class DocumentManager: EditorContext {
 	public var workspaceNotificationCenter: NotificationCenter
 	public let lifetime: Lifetime
 	var defaults: UserDefaults
+	private var contentsChangedDisposable: Disposable?
+	private var lastParsed: TimeInterval = 0
 
 	let fileSaver: FileSaver
 	let fileCache: FileCache
@@ -130,7 +132,7 @@ public class DocumentManager: EditorContext {
 		}
 		notificationCenter.post(name: .willSaveDocument, object: self)
 		guard document.isDirty else { return SignalProducer<(), Rc2Error>(value: ()) }
-		guard let contents = document.editedContents else {
+		guard let contents = document.savedContents else {
 			return SignalProducer<(), Rc2Error>(error: Rc2Error(type: .invalidArgument))
 		}
 		return self.fileSaver.save(file: document.file, contents: contents)
@@ -163,9 +165,9 @@ public class DocumentManager: EditorContext {
 			}
 			guard let me = self else { return }
 			me.notificationCenter.post(name: .willSaveDocument, object: self)
-			if let content = document.editedContents {
+			if let content = document.savedContents {
 				do {
-					try content.data(using: .utf8)?.write(to: tmpUrl)
+					try Data(content.utf8).write(to: tmpUrl)
 					document.file.writeXAttributes(tmpUrl)
 					Log.info("autosaved \(tmpUrl.lastPathComponent)", .core)
 				} catch {
@@ -187,20 +189,28 @@ public class DocumentManager: EditorContext {
 	// the only function that should change _currentDocument, so that parsedDocument is updated appropriately
 	private func switchTo(document: EditorDocument?) {
 		// parsed is updated on a later cycle of the main thread
-		var newParsed: RmdDocument?
-		defer {
-			_currentDocument.value = document
-			DispatchQueue.main.async {
-				self._parsedDocument.value = newParsed // newParsed will be the value set below
-			}
+		contentsChangedDisposable?.dispose()
+		_currentDocument.value = document
+		contentsChangedDisposable = document?.editedContents.signal.observeValues { [weak self] _ in
+			// if contents changed, need to reparse
+			self?.parseCurrentDocument()
 		}
-		guard let document = document else { return }
-		guard document.parsable else { return }
+		DispatchQueue.main.async {
+			self.parseCurrentDocument()
+		}
+	}
+	
+	private func parseCurrentDocument() {
+		guard let document = currentDocument.value, document.parsable else {
+			_parsedDocument.value = nil
+			return
+		}
 		do {
-			newParsed = try RmdDocument(contents: document.currentContents ?? "") { (topic) in
+			let newParsed = try RmdDocument(contents: document.currentContents ?? "") { (topic) in
 				return HelpController.shared.hasTopic(topic)
 			}
-			print("parsed \(document.file.name) with \(newParsed!.chunks.count) chunks")
+			Log.info("parsed \(document.file.name) with \(newParsed.chunks.count) chunks", .core)
+			_parsedDocument.value = newParsed
 		} catch {
 			Log.info("failed to parse document \(document.file.name)", .core)
 		}

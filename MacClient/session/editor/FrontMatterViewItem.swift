@@ -9,6 +9,7 @@ import ReactiveSwift
 import SyntaxParsing
 
 class FrontMatterViewItem: NotebookViewItem {
+	let textOffset = NSSize(width: 2, height: 4)
 	
 	@IBOutlet var sourceView: SourceTextView!
 
@@ -28,6 +29,7 @@ class FrontMatterViewItem: NotebookViewItem {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		sourceView.delegate = self
+		sourceView.textContainerInset = textOffset
 		sourceView.changeCallback = { [weak self] in
 			guard let me = self else { return }
 			me.myEdit = true
@@ -43,7 +45,7 @@ class FrontMatterViewItem: NotebookViewItem {
 		guard let manager = sourceView.textContainer?.layoutManager, let container = sourceView.textContainer else { return .zero }
 		manager.ensureLayout(for: container)
 		let textSize = manager.usedRect(for: container).size
-		return NSSize(width: width, height: textSize.height + topView!.frame.size.height + Notebook.textEditorMargin)
+		return NSSize(width: width, height: textSize.height + topView!.frame.size.height + textOffset.height + Notebook.textEditorMargin)
 	}
 
 	override func contextChanged() {

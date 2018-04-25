@@ -45,6 +45,7 @@ class ChunkViewItem: NotebookViewItem {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		sourceView.delegate = self
 		
 		// Get notified if view's bounds change:
 		NotificationCenter.default.addObserver(self, selector: #selector(boundsChanged(_:)), name: NSView.boundsDidChangeNotification, object: sourceView)
@@ -148,8 +149,6 @@ class ChunkViewItem: NotebookViewItem {
 		return workingSize
 //		return NSSize(width: width, height: sourceSize.height + topView.frame.size.height + Notebook.textEditorMargin)
 	}
-
-	
 	
 	// MARK: - private
 	
@@ -268,6 +267,13 @@ class ChunkViewItem: NotebookViewItem {
 		NSAnimationContext.current.duration = 0
 		data.resultsVisible.value = !data.resultsVisible.value
 		NSAnimationContext.endGrouping()
+	}
+}
+
+extension ChunkViewItem: NSTextViewDelegate {
+	func textShouldEndEditing(_ textObject: NSText) -> Bool {
+		delegate?.viewItemLostFocus()
+		return true
 	}
 }
 

@@ -29,18 +29,8 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	
 	var searchableTextView: NSTextView? { return editor }
 	
-	///true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
+	/// true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
 	private var ignoreTextStorageNotifications = false
-	
-//	var currentFontDescriptor: NSFontDescriptor { return context!.editorFont.value.fontDescriptor }
-
-//	var currentFontDescriptor: NSFontDescriptor = NSFont.userFixedPitchFont(ofSize: UserDefaults.standard[.defaultFontSize])!.fontDescriptor {
-//		didSet {
-//			let font = NSFont(descriptor: currentFontDescriptor, size: currentFontDescriptor.pointSize)
-//			editor?.font = font
-//			defaultAttributes[.font] = font
-//		}
-//	}
 	
 	var currentChunk: DocumentChunk? {
 		guard let parser = self.parser, parser.chunks.count > 0 else { return nil }
@@ -128,7 +118,7 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	}
 	
 	// MARK: private methods
-
+	
 	override func documentChanged(newDocument: EditorDocument?) {
 		guard let editor = self.editor else { Log.error("can't adjust document without editor", .app); return }
 		super.documentChanged(newDocument: newDocument)
@@ -162,16 +152,15 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		self.updateUIForCurrentDocument()
 	}
 	
-	@objc override func documentWillSave(_ notification: Notification) {
+	@objc override func editsNeedSaving() {
 		guard let document = context?.currentDocument.value, let editor = editor, let lm = editor.layoutManager else { fatalError()}
-		super.documentWillSave(notification)
 		guard view.window != nil else { return }
 		//save the index of the character at the top left of the text container
 		let bnds = editor.enclosingScrollView!.contentView.bounds
 		var partial: CGFloat = 1.0
 		let idx = lm.characterIndex(for: bnds.origin, in: editor.textContainer!, fractionOfDistanceBetweenInsertionPoints: &partial)
 		document.topVisibleIndex = idx
-		document.editedContents = editor.string
+		save(edits: editor.string)
 	}
 	
 	func updateUIForCurrentDocument() {
@@ -258,6 +247,12 @@ extension SourceEditorController: NSTextViewDelegate {
 			return true
 		}
 		return false
+	}
+	
+	func textShouldEndEditing(_ textObject: NSText) -> Bool {
+		// called when resigning first responder. update the document's contents
+		save(edits: editor!.string)
+		return true
 	}
 }
 
