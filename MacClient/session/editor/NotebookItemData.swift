@@ -9,12 +9,17 @@ import SyntaxParsing
 import ReactiveSwift
 
 public class NotebookItemData: NSObject {
+	private var _source: NSAttributedString
+	
 	/// sets to a copy if assigned value is NSMutableAttributedString
-	@objc public var source: NSAttributedString { didSet {
-		if source is NSMutableAttributedString {
-			source = NSAttributedString(attributedString: source)
+	@objc public var source: NSAttributedString {
+		get { return _source }
+		set {
+			_source = newValue is NSMutableAttributedString ? NSAttributedString(attributedString: newValue) : newValue
+			chunk.contents = _source //this will do syntax highlighting
+			_source = chunk.contents
 		}
-	}}
+	}
 	/// sets to a copy if assigned value is NSMutableAttributedString
 	@objc public var result: NSAttributedString { didSet {
 		if source is NSMutableAttributedString {
@@ -28,7 +33,7 @@ public class NotebookItemData: NSObject {
 
 	public init(chunk: RmdChunk, result: String) {
 		self.chunk = chunk
-		self.source = chunk.textStorage
+		self._source = chunk.contents
 		self.result = NSAttributedString(string: result)
 		super.init()
 	}

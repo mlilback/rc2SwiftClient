@@ -52,7 +52,7 @@ public class RmdDocument {
 					lastWasInline = false
 					return
 				}
-				let tchunk = MarkdownChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
+				let tchunk = MarkdownChunk(parser: parser, contents: parser.textStorage, range: parserChunk.innerRange)
 				append(chunk: tchunk)
 				lastTextChunk = tchunk
 				lastWasInline = false
@@ -160,7 +160,8 @@ public protocol Code: class {
 }
 
 public protocol RmdChunk: class {
-	var textStorage: NSTextStorage { get }
+	var contents: NSAttributedString { get set }
+//	var textStorage: NSTextStorage { get }
 	var chunkType: ChunkType { get }
 	var rawText: String { get }
 }
@@ -207,6 +208,12 @@ class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate
 	let chunkType: ChunkType
 	let docType: DocType
 	let equationType: EquationType
+	private var ignoreTextChanges = false
+	
+	var contents: NSAttributedString {
+		get { return textStorage.attributedSubstring(from: textStorage.string.fullNSRange) }
+		set { update(text: newValue) }
+	}
 	
 	var rawText: String { return textStorage.string }
 	
@@ -221,11 +228,20 @@ class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate
 		textStorage.delegate = self
 	}
 
+	func update(text: NSAttributedString) {
+		guard !ignoreTextChanges else { return }
+		ignoreTextChanges = true
+		defer { ignoreTextChanges = false }
+		textStorage.replace(with: text)
+		parser?.highLighter?.highlightText(textStorage, range: textStorage.string.fullNSRange, chunk: self)
+	}
+	
 	// called when text editing has ended
 	public func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
 	{
 		//we don't care if attributes changed
 		guard editedMask.contains(.editedCharacters) else { return }
+		guard !ignoreTextChanges else { return }
 		Log.debug("did edit: \(textStorage.string.substring(from: editedRange) ?? "")", .core)
 		parser?.highLighter?.highlightText(textStorage, range: textStorage.string.fullNSRange, chunk: self)
 //		parser?.colorChunks([parserChunk])
@@ -237,6 +253,16 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 	var inlineElements: [InlineChunk]
 	let origText: String
 	
+	init(parser: BaseSyntaxParser, contents: NSAttributedString, range: NSRange) {
+		// use a fake chunk to create from contents
+		let pchunk = DocumentChunk(chunkType: .docs, docType: .rmd, equationType: .none,
+								   range: range, innerRange: range, chunkNumber: 1)
+		inlineElements = []
+		origText = contents.string.substring(from: range)!
+		super.init(parser: parser, chunk: pchunk)
+		update(text: contents.attributedSubstring(from: range))
+	}
+	
 	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
 		// use a fake chunk to create from contents
 		let pchunk = DocumentChunk(chunkType: .docs, docType: .rmd, equationType: .none,
@@ -244,7 +270,8 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 		inlineElements = []
 		origText = contents.substring(from: range)!
 		super.init(parser: parser, chunk: pchunk)
-		textStorage.append(NSAttributedString(string: origText))
+		update(text: NSAttributedString(string: contents.substring(from: range)!))
+		parser.highLighter?.highlightText(textStorage, chunk: pchunk)
 	}
 	
 	override var rawText: String {
@@ -276,7 +303,7 @@ class CodeChunk: InternalRmdChunk, Code {
 		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
-		textStorage.append(NSAttributedString(string: contents.substring(from: range)!))
+		update(text: NSAttributedString(string: contents.substring(from: range)!))
 	}
 	
 	override var rawText: String {
@@ -293,7 +320,7 @@ class EquationChunk: InternalRmdChunk, Equation {
 								   range: range, innerRange: innerRange, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
 		let eqstr = NSAttributedString(string: contents.substring(from: innerRange)!)
-		textStorage.append(eqstr)
+		update(text: eqstr)
 	}
 	
 	override var rawText: String {
