@@ -28,7 +28,7 @@ public class DocumentManager: EditorContext {
 	private let _parsedDocument = MutableProperty<RmdDocument?>(nil)
 	public var parsedDocument: Property<RmdDocument?>
 	
-	public let editorFont: MutableProperty<NSFont>
+	public let editorFont: MutableProperty<PlatformFont>
 	public var errorHandler: Rc2ErrorHandler { return self }
 	private var openDocuments: [Int: EditorDocument] = [:]
 	public var notificationCenter: NotificationCenter
@@ -58,14 +58,14 @@ public class DocumentManager: EditorContext {
 		self.defaults = defaults
 		let defaultSize = defaults[.defaultFontSize]
 		// font defaults to user-fixed pitch font
-		var initialFont = NSFont.userFixedPitchFont(ofSize: defaultSize)!
+		var initialFont = PlatformFont.userFixedPitchFont(ofSize: defaultSize)!
 		// try loading a saved font, or if there isn't one, Menlo
-		if let fontDesc = defaults[.editorFont], let font = NSFont(descriptor: fontDesc, size: fontDesc.pointSize) {
+		if let fontDesc = defaults[.editorFont], let font = PlatformFont(descriptor: fontDesc, size: fontDesc.pointSize) {
 			initialFont = font
-		} else if let menlo = NSFont(name: "Menlo-Regular", size: defaultSize) {
+		} else if let menlo = PlatformFont(name: "Menlo-Regular", size: defaultSize) {
 			initialFont = menlo
 		}
-		editorFont = MutableProperty<NSFont>(initialFont)
+		editorFont = MutableProperty<PlatformFont>(initialFont)
 		fileSaver.workspace.fileChangeSignal.observeValues { [weak self] changes in
 			self?.process(changes: changes)
 		}
