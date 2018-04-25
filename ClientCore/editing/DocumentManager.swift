@@ -132,7 +132,7 @@ public class DocumentManager: EditorContext {
 		}
 		notificationCenter.post(name: .willSaveDocument, object: self)
 		guard document.isDirty else { return SignalProducer<(), Rc2Error>(value: ()) }
-		guard let contents = document.savedContents else {
+		guard let contents = document.currentContents else {
 			return SignalProducer<(), Rc2Error>(error: Rc2Error(type: .invalidArgument))
 		}
 		return self.fileSaver.save(file: document.file, contents: contents)
