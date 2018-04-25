@@ -49,10 +49,6 @@ class MarkdownViewItem: NotebookViewItem {
 		sourceView.font = context.editorFont.value
 	}
 	
-	private func changeTo(storage: NSTextStorage) {
-		sourceView.layoutManager?.replaceTextStorage(storage)
-	}
-	
 	override func dataChanged() {
 		boundsToken = nil
 		guard let data = data else { return }
