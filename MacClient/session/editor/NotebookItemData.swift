@@ -26,7 +26,7 @@ public class NotebookItemData: NSObject {
 			source = NSAttributedString(attributedString: source)
 		}
 	}}
-	@objc public var height: CGFloat = 40
+
 	public var chunk: RmdChunk
 	/// this is bookkeeping for NotebookViewItem and is meant to be used by it
 	public let resultsVisible = MutableProperty(true)

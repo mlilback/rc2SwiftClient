@@ -236,7 +236,6 @@ class ChunkViewItem: NotebookViewItem {
 		let newSize = NSSize(width: myWidth, height: myHeight)
 		guard newSize != startingSize else { return }
 		view.setFrameSize(newSize)
-		data?.height = myHeight
 		
 		collectionView?.collectionViewLayout?.invalidateLayout()
 	}
