@@ -413,6 +413,7 @@
 		08BCEA3E203B19F4004A5F47 /* ReactiveSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		08BCEA3F203B19F6004A5F47 /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
 		08BCEA40203B2102004A5F47 /* bulkInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 08BCEA34203B0E0B004A5F47 /* bulkInfo.json */; };
+		08BE3E122090A3D000EA4DDD /* NSAttributedString+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BE3E112090A3D000EA4DDD /* NSAttributedString+MJL.swift */; };
 		08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; };
 		08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08C2C3C91DF74DE200397DD3 /* Networking.strings in Resources */ = {isa = PBXBuildFile; fileRef = 08C2C3C81DF74DE200397DD3 /* Networking.strings */; };
@@ -1264,6 +1265,7 @@
 		08BCEA2E20388B51004A5F47 /* SessionSubProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSubProtocols.swift; sourceTree = "<group>"; };
 		08BCEA3020388D5F004A5F47 /* DocumentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
 		08BCEA34203B0E0B004A5F47 /* bulkInfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bulkInfo.json; sourceTree = "<group>"; };
+		08BE3E112090A3D000EA4DDD /* NSAttributedString+MJL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+MJL.swift"; sourceTree = "<group>"; };
 		08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessagePackSwift.framework; path = Carthage/Build/Mac/MessagePackSwift.framework; sourceTree = "<group>"; };
 		08C2C3C81DF74DE200397DD3 /* Networking.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Networking.strings; sourceTree = "<group>"; };
 		08C2D5E41E719DE20007A02D /* SBInjector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SBInjector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2011,6 +2013,7 @@
 				0868067C200D892000C986A9 /* URL+MJL.swift */,
 				08EDB9CF2019527D000663EF /* Set+MJL+update.swift */,
 				08F867B82086876E00108044 /* Array+MJL.swift */,
+				08BE3E112090A3D000EA4DDD /* NSAttributedString+MJL.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -3670,6 +3673,7 @@
 				086A40D11E7AEC5000AE476B /* OutputTheme.swift in Sources */,
 				0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */,
 				0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */,
+				08BE3E122090A3D000EA4DDD /* NSAttributedString+MJL.swift in Sources */,
 				08680689200D892000C986A9 /* GenericError.swift in Sources */,
 				08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */,
 				086A40DF1E7D956400AE476B /* PlatformTypeAliases.swift in Sources */,

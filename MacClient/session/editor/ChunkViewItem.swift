@@ -69,8 +69,7 @@ class ChunkViewItem: NotebookViewItem {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		data = nil
-		sourceView.layoutManager?.replaceTextStorage(NSTextStorage())
-		resultTextView?.replace(text: "")
+		resultTextView?.textStorage?.replace(with: "")
 		optionsDisposable?.dispose()
 		optionsDisposable = nil
 	}
@@ -85,18 +84,15 @@ class ChunkViewItem: NotebookViewItem {
 	override func contextChanged() {
 		fontDisposable?.dispose()
 		fontDisposable = context?.editorFont.signal.observeValues { [weak self] font in
-			self?.data?.source.font = font
 			self?.sourceView.font = font
 		}
 		guard let context = context else { return }
-		data?.source.font = context.editorFont.value
 		sourceView.font = context.editorFont.value
 	}
 	
 	override func dataChanged() {
 		resultVisibleDisposable?.dispose()
 		guard let data = data else { return }
-		guard let context = context else { return }
 		// observe result visibility
 		resultVisibleDisposable = data.resultsVisible.producer.startWithValues { [weak self] visible in
 			self?.adjustResults(visible: visible)
@@ -109,9 +105,8 @@ class ChunkViewItem: NotebookViewItem {
 			self?.adjustSize()
 			Log.debug("resultView.changeCallback", .app)
 		}
-		data.source.font = context.editorFont.value
-		// use the data's textstorage
-		sourceView.layoutManager!.replaceTextStorage(data.chunk.textStorage)
+		// copy the source string
+		sourceView.textStorage!.replace(with: data.source)
 		// bind options field
 		optionsDisposable?.dispose()
 		if let codeChunk = data.chunk as? Code {
@@ -132,7 +127,7 @@ class ChunkViewItem: NotebookViewItem {
 		guard let manager = sizingTextView?.textContainer?.layoutManager, let container = sizingTextView?.textContainer else { return .zero }
 		let tmpSize = NSSize(width: width, height: 100)
 		sizingTextView?.setFrameSize(tmpSize)
-		sizingTextView?.textStorage?.replaceCharacters(in: sizingTextView!.string.fullNSRange, with: data.source)
+		sizingTextView?.textStorage?.replace(with: data.source)
 		manager.ensureLayout(for: container)
 		var workingSize = manager.usedRect(for: container).size
 		workingSize.height += dividerBarHeight
@@ -140,7 +135,7 @@ class ChunkViewItem: NotebookViewItem {
 			workingSize.height += dividerBarHeight
 		}
 		if data.resultsVisible.value {
-			sizingTextView?.textStorage?.replaceCharacters(in: sizingTextView!.string.fullNSRange, with: data.result)
+			sizingTextView?.textStorage?.replace(with: data.result)
 			manager.ensureLayout(for: container)
 			workingSize.height += dynamicContentFrame.size.height
 		}
@@ -274,6 +269,11 @@ extension ChunkViewItem: NSTextViewDelegate {
 	func textShouldEndEditing(_ textObject: NSText) -> Bool {
 		delegate?.viewItemLostFocus()
 		return true
+	}
+
+	func textDidChange(_ notification: Notification) {
+		guard let textView = notification.object as? SourceTextView else { return }
+		data?.source = textView.textStorage!
 	}
 }
 

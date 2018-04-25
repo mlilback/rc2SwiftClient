@@ -33,8 +33,7 @@ class MarkdownViewItem: NotebookViewItem {
 
 	override func prepareForReuse() {
 		super.prepareForReuse()
-		sourceView.replace(text: "")
-//		changeTo(storage: NSTextStorage())
+		sourceView.textStorage?.replace(with: "")
 	}
 
 	@IBAction func addChunk(_ sender: Any?) {
@@ -44,11 +43,9 @@ class MarkdownViewItem: NotebookViewItem {
 	override func contextChanged() {
 		fontDisposable?.dispose()
 		fontDisposable = context?.editorFont.signal.observeValues { [weak self] font in
-			self?.data?.source.font = font
 			self?.sourceView.font = font
 		}
 		guard let context = context else { return }
-		data?.source.font = context.editorFont.value
 		sourceView.font = context.editorFont.value
 	}
 	
@@ -64,8 +61,7 @@ class MarkdownViewItem: NotebookViewItem {
 			self?.collectionView?.collectionViewLayout?.invalidateLayout()
 		}
 		// use the data's text storage
-		sourceView.textStorage!.setAttributedString(data.source)
-//		changeTo(storage: data.source)
+		sourceView.textStorage?.replace(with: data.source)
 	}
 	
 	func size(forWidth width: CGFloat) -> NSSize {
@@ -96,15 +92,14 @@ extension MarkdownViewItem: NSTextViewDelegate {
 		guard !ignoreTextChanges else { return true }
 		ignoreTextChanges = true
 		defer { ignoreTextChanges = false }
-		data?.source.setAttributedString(sourceView.textStorage!)
+		data?.source = sourceView.textStorage!
 		delegate?.viewItemLostFocus()
 		return true
 	}
 
 	func textDidChange(_ notification: Notification) {
 		guard let textView = notification.object as? MarkdownTextView else { return }
-		data?.source.deleteCharacters(in: NSRange(location: 0, length: data!.source.length))
-		data?.source.append(textView.textStorage!)
+		data?.source = sourceView.textStorage!
 		textView.invalidateIntrinsicContentSize()
 	}
 }
