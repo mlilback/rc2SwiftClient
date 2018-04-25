@@ -16,20 +16,20 @@ public class EditorDocument: NSObject {
 	public private(set) var file: AppFile
 	private var fileUrl: URL
 	public let undoManager: UndoManager
-	// index of contents at top of scroll view
-	var topVisibleIndex: Int = 0
+	/// index of contents at top of scroll view
+	public var topVisibleIndex: Int = 0
 	var lastSaveTime: TimeInterval = 0
-	private(set) var savedContents: String?
-	var editedContents: String?
-	private(set) var isLoaded: Bool = false
+	public private(set) var savedContents: String?
+	public var editedContents: String?
+	public private(set) var isLoaded: Bool = false
 	
 	public var parsable: Bool { return file.fileType.fileExtension == "Rmd" }
 	
-	var currentContents: String? {
+	public var currentContents: String? {
 		return editedContents == nil ? savedContents : editedContents
 	}
 	
-	var isDirty: Bool {
+	public var isDirty: Bool {
 		if nil == editedContents { return false }
 		return editedContents != savedContents
 	}

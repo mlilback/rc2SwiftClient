@@ -12,13 +12,12 @@ import ReactiveSwift
 import ReactiveCocoa
 import MJLLogger
 
-class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
+class ChunkViewItem: NotebookViewItem {
 	let dividerBarHeight: CGFloat = 21
 	let verticalMarginHeight: CGFloat = 10
 	// MARK: - properties
 	@IBOutlet var sourceView: SourceTextView!
 	@IBOutlet var resultTextView: SourceTextView?
-	@IBOutlet weak var topView: NSView!
 	@IBOutlet weak var middleView: NSView?
 	@IBOutlet weak var resultTwiddle: NSButton!
 	@IBOutlet weak var chunkTypeLabel: NSTextField!
@@ -36,9 +35,6 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 	/// if results are text, figure out the frame needed to show the content. otherwise, using fixed size
 	var dynamicContentFrame: CGRect { return resultTextView?.layoutManager!.usedRect(for: resultTextView!.textContainer!) ?? resultView.frame }
 	
-	weak var delegate: NotebookViewItemDelegate?
-	var data: NotebookItemData? { didSet { dataChanged() } }
-	var context: EditorContext? { didSet { contextChanged() } }
 	private var fontDisposable: Disposable?
 	private var resultVisibleDisposable: Disposable?
 
@@ -57,8 +53,6 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		}
 		
 		// Set background colors for top and middle views:
-		topView.wantsLayer = true
-		topView.layer?.backgroundColor = notebookTopViewBackgroundColor.cgColor
 		middleView?.wantsLayer = true
 		middleView?.layer?.backgroundColor = notebookMiddleBackgroundColor.cgColor
 		resultView.layer?.backgroundColor = notebookMiddleBackgroundColor.cgColor
@@ -87,7 +81,7 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 	}
 	
 	
-	private func contextChanged() {
+	override func contextChanged() {
 		fontDisposable?.dispose()
 		fontDisposable = context?.editorFont.signal.observeValues { [weak self] font in
 			self?.data?.source.font = font
@@ -98,7 +92,7 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 		sourceView.font = context.editorFont.value
 	}
 	
-	func dataChanged() {
+	override func dataChanged() {
 		resultVisibleDisposable?.dispose()
 		guard let data = data else { return }
 		guard let context = context else { return }
@@ -130,7 +124,7 @@ class ChunkViewItem: NSCollectionViewItem, NotebookViewItem {
 
 	// MARK: - sizing
 	
-	func size(forWidth width: CGFloat, data: NotebookItemData) -> NSSize {
+	override func size(forWidth width: CGFloat, data: NotebookItemData) -> NSSize {
 		if nil == sizingTextView {
 			sizingTextView = NSTextView(frame: CGRect(x: 0, y: 0, width: width, height: 100))
 		}

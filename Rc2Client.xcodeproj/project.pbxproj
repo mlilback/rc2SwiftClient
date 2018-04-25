@@ -42,7 +42,6 @@
 		0812178E2058805000ED328C /* PEGKitUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812178D2058805000ED328C /* PEGKitUtilities.swift */; };
 		081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */; };
 		0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */; };
-		0812631F1C862F4B003E37A5 /* EditorDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812631E1C862F4B003E37A5 /* EditorDocument.swift */; };
 		08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		08127CC71DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -181,7 +180,6 @@
 		0841993E1D91B2C80089A1AC /* URITemplate.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1ED1C7F339400CCC27F /* URITemplate.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0846D3E120175DF100795376 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0846D3E020175DF100795376 /* AppError.swift */; };
 		0846D3E32017C03900795376 /* FileTemplates in Resources */ = {isa = PBXBuildFile; fileRef = 0846D3E22017C03900795376 /* FileTemplates */; };
-		084D32DE206C30B500246CBD /* CodeEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D32DD206C30B500246CBD /* CodeEditor.swift */; };
 		084D32F0206D03DD00246CBD /* ClientCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 084D32E7206D03DD00246CBD /* ClientCore.framework */; };
 		084D32F7206D03DD00246CBD /* ClientCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D32F6206D03DD00246CBD /* ClientCoreTests.swift */; };
 		084D32F9206D03DD00246CBD /* ClientCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 084D32E9206D03DD00246CBD /* ClientCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -305,7 +303,6 @@
 		086508791E452D3A0067C8CA /* Result+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086508781E452D3A0067C8CA /* Result+Rc2.swift */; };
 		0865087D1E49360A0067C8CA /* Starscream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0865087F1E4940E20067C8CA /* xattrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0865087E1E4940E20067C8CA /* xattrTests.swift */; };
-		086526291E6E1B0100D75B25 /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086526281E6E1B0100D75B25 /* PreferenceKeys.swift */; };
 		0865262B1E6E1BE900D75B25 /* GeneralPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */; };
 		0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086659991CA1F3E5007AC555 /* MainWindow.xib */; };
 		08678C971DCA78CE00F9F283 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
@@ -398,8 +395,13 @@
 		08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
 		08B73E8C208952A700DB7339 /* NotebookMiddleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B73E8B208952A700DB7339 /* NotebookMiddleView.swift */; };
+		08B73E8D208A133F00DB7339 /* EditorDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812631E1C862F4B003E37A5 /* EditorDocument.swift */; };
+		08B73E8E208A134900DB7339 /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BCEA3020388D5F004A5F47 /* DocumentManager.swift */; };
+		08B73E8F208A134F00DB7339 /* EditorContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE270520334470008E008F /* EditorContext.swift */; };
+		08B73E90208A135400DB7339 /* CodeEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D32DD206C30B500246CBD /* CodeEditor.swift */; };
+		08B73E91208A14A100DB7339 /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
+		08B73E92208A14E800DB7339 /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086526281E6E1B0100D75B25 /* PreferenceKeys.swift */; };
 		08BCEA2F20388B51004A5F47 /* SessionSubProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BCEA2E20388B51004A5F47 /* SessionSubProtocols.swift */; };
-		08BCEA3220388DB5004A5F47 /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BCEA3020388D5F004A5F47 /* DocumentManager.swift */; };
 		08BCEA33203B0BD9004A5F47 /* DocumentManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081263201C87A9E8003E37A5 /* DocumentManagerTests.swift */; };
 		08BCEA35203B1114004A5F47 /* FakeFileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935871E00AA5700C94B19 /* FakeFileCache.swift */; };
 		08BCEA38203B1997004A5F47 /* Starscream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; };
@@ -458,7 +460,6 @@
 		08EE26FC202FA995008E008F /* FileInfoController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08EE26FA202FA995008E008F /* FileInfoController.xib */; };
 		08EE26FF202FAC08008E008F /* VariableDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08EE26FD202FAC08008E008F /* VariableDetails.storyboard */; };
 		08EE27012030A0BC008E008F /* SidebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE27002030A0BC008E008F /* SidebarController.swift */; };
-		08EE270620334470008E008F /* EditorContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE270520334470008E008F /* EditorContext.swift */; };
 		08EE270820335561008E008F /* RootEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE270720335561008E008F /* RootEditorController.swift */; };
 		08EE270A20335B0A008E008F /* NotebookEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE270920335B0A008E008F /* NotebookEditorController.swift */; };
 		08F01E961EFC74690047F397 /* NSData+Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F01E941EFC74690047F397 /* NSData+Hash.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1176,7 +1177,7 @@
 		086508781E452D3A0067C8CA /* Result+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Result+Rc2.swift"; sourceTree = "<group>"; };
 		0865087E1E4940E20067C8CA /* xattrTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = xattrTests.swift; sourceTree = "<group>"; };
 		086508801E4A431C0067C8CA /* FileImporterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileImporterTests.swift; sourceTree = "<group>"; };
-		086526281E6E1B0100D75B25 /* PreferenceKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PreferenceKeys.swift; path = prefs/PreferenceKeys.swift; sourceTree = "<group>"; };
+		086526281E6E1B0100D75B25 /* PreferenceKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferenceKeys.swift; sourceTree = "<group>"; };
 		0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GeneralPrefsController.swift; path = prefs/GeneralPrefsController.swift; sourceTree = "<group>"; };
 		086659971CA1DF8D007AC555 /* SystemExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemExtensionsTests.swift; sourceTree = "<group>"; };
 		0866599A1CA1F3E5007AC555 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacClient/Base.lproj/MainWindow.xib; sourceTree = SOURCE_ROOT; };
@@ -1436,6 +1437,7 @@
 			files = (
 				084D330E206D387800246CBD /* Rc2Common.framework in Frameworks */,
 				084D33332076B18000246CBD /* ReactiveSwift.framework in Frameworks */,
+				08B73E91208A14A100DB7339 /* SwiftyUserDefaults.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1845,6 +1847,7 @@
 		084D32E8206D03DD00246CBD /* ClientCore */ = {
 			isa = PBXGroup;
 			children = (
+				086526281E6E1B0100D75B25 /* PreferenceKeys.swift */,
 				084D32DC206AFAD900246CBD /* editing */,
 				084D3311206D3A6F00246CBD /* help */,
 				08E8F1A420698F7500F0FF5A /* CodeTemplates */,
@@ -2245,9 +2248,9 @@
 				085A1A26205AC62B00B7EC5F /* NotebookDropIndicator.swift */,
 				085A1A28205AC6CD00B7EC5F /* NotebookCollectionLayout.swift */,
 				08B73E8B208952A700DB7339 /* NotebookMiddleView.swift */,
+				083AC10C2066E4BB0054023F /* NotebookViewItem.swift */,
 				085A1A1C205AC35200B7EC5F /* ChunkViewItem.swift */,
 				085A1A1D205AC35200B7EC5F /* ChunkViewItem.xib */,
-				083AC10C2066E4BB0054023F /* NotebookViewItem.swift */,
 				083AC105206565720054023F /* FrontMatterViewItem.swift */,
 				083AC107206565E30054023F /* FrontMatterViewItem.xib */,
 				083AC0FC2062D01E0054023F /* EquationViewItem.swift */,
@@ -2367,7 +2370,6 @@
 			isa = PBXGroup;
 			children = (
 				08F5746B1E4D04A70000956B /* Preferences.storyboard */,
-				086526281E6E1B0100D75B25 /* PreferenceKeys.swift */,
 				08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */,
 				08C2D5EB1E71BB290007A02D /* DockerPrefsController.swift */,
 				0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */,
@@ -3469,9 +3471,14 @@
 				084D3306206D042500246CBD /* MonoFontManager.swift in Sources */,
 				084D3308206D042500246CBD /* HelpController.swift in Sources */,
 				084D3305206D042500246CBD /* DataFrameDataSource.swift in Sources */,
+				08B73E8D208A133F00DB7339 /* EditorDocument.swift in Sources */,
+				08B73E90208A135400DB7339 /* CodeEditor.swift in Sources */,
+				08B73E8E208A134900DB7339 /* DocumentManager.swift in Sources */,
 				084D330A206D053700246CBD /* VariableFormatter.swift in Sources */,
+				08B73E8F208A134F00DB7339 /* EditorContext.swift in Sources */,
 				084D332D20752C7D00246CBD /* CodeTemplate.swift in Sources */,
 				084D3307206D042500246CBD /* HelpTopic.swift in Sources */,
+				08B73E92208A14E800DB7339 /* PreferenceKeys.swift in Sources */,
 				084D3309206D046E00246CBD /* Copyable.swift in Sources */,
 				084D3304206D042500246CBD /* SpreadsheetDataSource.swift in Sources */,
 				084D332E20752E8800246CBD /* CodeTemplateManager.swift in Sources */,
@@ -3551,7 +3558,6 @@
 				0816FD1D1E5226010006FF26 /* SearchBarView.swift in Sources */,
 				0835A07E1E57823500123820 /* OnboardingViewController.swift in Sources */,
 				0816F8A01C6D3A4500A6120B /* SessionHandlerProtocols.swift in Sources */,
-				0812631F1C862F4B003E37A5 /* EditorDocument.swift in Sources */,
 				0864DA681DA2C8D1003F3F57 /* DockerContainerController.swift in Sources */,
 				083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */,
 				085A1A29205AC6CD00B7EC5F /* NotebookCollectionLayout.swift in Sources */,
@@ -3563,7 +3569,6 @@
 				08F448FA1C4E244500C64706 /* SourceEditorController.swift in Sources */,
 				0868068F200D892600C986A9 /* ToolbarItemHandler.swift in Sources */,
 				08EE270820335561008E008F /* RootEditorController.swift in Sources */,
-				086526291E6E1B0100D75B25 /* PreferenceKeys.swift in Sources */,
 				08EE270A20335B0A008E008F /* NotebookEditorController.swift in Sources */,
 				08F448FC1C4E244500C64706 /* ConsoleOutputController.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
@@ -3578,7 +3583,6 @@
 				0890650B1D26F59300C7CA5D /* MacAppStatus.swift in Sources */,
 				088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */,
 				08A01FA91CBC07B0001EDFAA /* WebKitOutputController.swift in Sources */,
-				08BCEA3220388DB5004A5F47 /* DocumentManager.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
 				08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */,
 				0865262B1E6E1BE900D75B25 /* GeneralPrefsController.swift in Sources */,
@@ -3621,7 +3625,6 @@
 				085A1A1E205AC35200B7EC5F /* ChunkViewItem.swift in Sources */,
 				0872676D1EE20A37004251C1 /* DockerBackupViewController.swift in Sources */,
 				085A1A2B205ACA4600B7EC5F /* AbstractEditorController.swift in Sources */,
-				084D32DE206C30B500246CBD /* CodeEditor.swift in Sources */,
 				08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */,
 				083AC1022062E9670054023F /* MarkdownViewItem.swift in Sources */,
 				08EE27012030A0BC008E008F /* SidebarController.swift in Sources */,
@@ -3636,7 +3639,6 @@
 				08AD13361FCF18D000CFD516 /* FileInfoController.swift in Sources */,
 				083AC1042062EDFB0054023F /* NSImage+Rc2.swift in Sources */,
 				083A56711D24722C009D3091 /* ProjectManagerViewController.swift in Sources */,
-				08EE270620334470008E008F /* EditorContext.swift in Sources */,
 				086508771E43F27C0067C8CA /* SingleInputViewController.swift in Sources */,
 				08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */,
 				08525E781E3143C3008A332E /* InputPrompter.swift in Sources */,

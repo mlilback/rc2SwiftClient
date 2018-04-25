@@ -251,13 +251,11 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 		}
 		let itemData = dataArray[indexPath.item - 1]
 		let itemId = viewItemId(chunk: itemData.chunk)
-		let itemView: NSCollectionViewItem
 		guard let view = collectionView.makeItem(withIdentifier: itemId, for: indexPath) as? NotebookViewItem else { fatalError() }
-		itemView = view as! NSCollectionViewItem
 		view.context = context
 		view.data = itemData
 		view.delegate = self
-		return itemView
+		return view
 	}
 
 	// Inits the horizontal line used to highlight where the drop will go:

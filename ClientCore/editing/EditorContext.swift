@@ -11,7 +11,7 @@ import ReactiveSwift
 import SyntaxParsing
 
 /// object passed to UI controllers that take part in editing a document. Any values that might need to be observed for changes are declared as ReactiveSwift Properties.
-protocol EditorContext: class {
+public protocol EditorContext: class {
 	/// the current EditorDocument. Signals are processed synchronously on the calling thread
 	var currentDocument: Property<EditorDocument?> { get }
 	/// the parsed version of the currentDocument. This property is updated on a main loop cycle after the currentDocument
@@ -41,7 +41,7 @@ protocol EditorContext: class {
 	func revertCurrentDocument()
 }
 
-extension EditorContext {
+public extension EditorContext {
 	var docType: DocType {
 		guard let fileExt = currentDocument.value?.file.fileType.fileExtension else { return .none }
 		switch fileExt {

@@ -13,7 +13,7 @@ public extension Notification.Name {
 	public static let codeTemplatesChanged = Notification.Name("CodeTempaltesChanged")
 }
 
-public enum TemplateType: String {
+public enum TemplateType: String, Codable {
 	case markdown, rCode, equation
 	public static var allCases: [TemplateType] { return [.markdown, .rCode, .equation] }
 
