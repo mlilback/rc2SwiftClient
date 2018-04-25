@@ -45,10 +45,11 @@ class NotebookEditorController: AbstractEditorController {
 	private var sizingItems: [NSUserInterfaceItemIdentifier : NotebookViewItem] = [:]
 	private var contextDisposables: CompositeDisposable?
 	private var chunksDisposable: Disposable?
+	private var cachedCurrentContents = ""
 	
 	override var documentDirty: Bool {
 		guard let saved = context?.currentDocument.value?.savedContents else { return false }
-		return saved != currentContents()
+		return saved != cachedCurrentContents
 	}
 	
 	// MARK: - standard
@@ -196,6 +197,7 @@ class NotebookEditorController: AbstractEditorController {
 			contents += additions
 		}
 		contents = contents.replacingOccurrences(of: "\n$$\n\n", with: "\n$$\n")
+		cachedCurrentContents = contents
 		return contents
 	}
 	
