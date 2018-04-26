@@ -6,6 +6,7 @@
 
 import Cocoa
 import ClientCore
+import SyntaxParsing
 
 protocol NotebookViewItemDelegate: class {
 	/// called by views when they lose focus
@@ -14,6 +15,14 @@ protocol NotebookViewItemDelegate: class {
 	func addChunk(after: NotebookViewItem, sender: NSButton?)
 	/// should call .resultsVisible = hide on all chunks
 	func twiddleAllChunks(hide: Bool)
+
+	/// Called to allow the user to edit an inline chunk
+	///
+	/// - Parameter chunk: the inline chunk to edit
+	/// - Parameter parentItem: the NotebookViewItem containing a toplevel chunk
+	/// - Parameter sourceView: the item that was clicked to initiate the edit
+	/// - Parameter positioningRect: the positioning rect for showing a popover
+	func presentInlineEditor(chunk: InlineChunk, parentItem: NotebookViewItem, sourceView: NSView, positioningRect: NSRect)
 }
 
 class NotebookViewItem: NSCollectionViewItem {

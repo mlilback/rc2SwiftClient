@@ -11,6 +11,7 @@ import Networking
 import SwiftyUserDefaults
 import SyntaxParsing
 import MJLLogger
+import iosMath
 
 public extension Notification.Name {
 	/// sent before the currentDocument will be saved. object will be the EditorContext/DocummentManager
@@ -37,6 +38,7 @@ public class DocumentManager: EditorContext {
 	var defaults: UserDefaults
 	private var contentsChangedDisposable: Disposable?
 	private var lastParsed: TimeInterval = 0
+	private var equationLabel: MTMathUILabel?
 
 	let fileSaver: FileSaver
 	let fileCache: FileCache
@@ -145,6 +147,35 @@ public class DocumentManager: EditorContext {
 				terminated: { self.saving.value = false })
 	}
 	
+	/// Generates an image to use for the passed in latex, size based on the editor font's size
+	///
+	/// - Parameter latex: The latex to use as an inline equation
+	/// - Returns: an image of the latex as an inline equation
+	public func inlineImageFor(latex: String) -> PlatformImage? {
+		if nil == equationLabel {
+			equationLabel = MTMathUILabel(frame: CGRect(x: 0, y: 0, width: 1000, height: 20)) // default max size for equation image
+			equationLabel?.labelMode = .text
+		}
+		equationLabel?.fontSize = editorFont.value.pointSize
+		equationLabel?.latex = latex
+		equationLabel?.layout()
+		guard let dlist = equationLabel?.displayList else {
+			print("error with list no list")
+			return nil
+		}
+		let size = equationLabel!.intrinsicContentSize
+		let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(size.width), pixelsHigh: Int(size.height), bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .calibratedRGB, bytesPerRow: 0, bitsPerPixel: 0)!
+		let nscontext = NSGraphicsContext(bitmapImageRep: rep)!
+		NSGraphicsContext.saveGraphicsState()
+		NSGraphicsContext.current = nscontext
+		dlist.draw(nscontext.cgContext)
+		NSGraphicsContext.restoreGraphicsState()
+		let image = NSImage(size: size)
+		image.addRepresentation(rep)
+		return image
+	}
+	
+	// MARK: - private methods
 	/// actually autosaves a file
 	private func autosave(document: EditorDocument) -> SignalProducer<(), Rc2Error> {
 		guard UserDefaults.standard[.autosaveEnabled] else {

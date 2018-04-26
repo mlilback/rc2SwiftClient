@@ -6,6 +6,7 @@
 
 import Cocoa
 import SyntaxParsing
+import MJLLogger
 import ReactiveSwift
 
 class MarkdownViewItem: NotebookViewItem {
@@ -58,6 +59,16 @@ class MarkdownViewItem: NotebookViewItem {
 		}
 		// use the data's text storage
 		sourceView.textStorage?.replace(with: data.source)
+		sourceView.textStorage!.enumerateAttribute(.attachment, in: sourceView.string.fullNSRange, options: []) { (aValue, aRange, stop) in
+			guard let attach = aValue as? InlineAttachment else { return }
+			guard let cell = attach.attachmentCell as? NSTextAttachmentCell else { return }
+			guard let chunk = attach.chunk else { return }
+			// eventually need to support code chunks, too
+			guard chunk is Equation else { return }
+			if let eqImage = context?.inlineImageFor(latex: chunk.contents.string) {
+				cell.image = eqImage
+			}
+		}
 		sourceView.textStorage?.addAttribute(.font, value: context?.editorFont.value as Any, range: sourceView.textStorage!.string.fullNSRange)
 	}
 	
@@ -98,6 +109,13 @@ extension MarkdownViewItem: NSTextViewDelegate {
 		guard let textView = notification.object as? MarkdownTextView else { return }
 		data?.source = sourceView.textStorage!
 		textView.invalidateIntrinsicContentSize()
+	}
+	
+	func textView(_ textView: NSTextView, clickedOn cell: NSTextAttachmentCellProtocol, in cellFrame: NSRect, at charIndex: Int)
+	{
+		guard let attach = cell.attachment as? InlineAttachment, let ichunk = attach.chunk
+			else { Log.warn("unknown attachment type clicked"); return }
+		delegate?.presentInlineEditor(chunk: ichunk, parentItem: self, sourceView: textView, positioningRect: cellFrame)
 	}
 }
 

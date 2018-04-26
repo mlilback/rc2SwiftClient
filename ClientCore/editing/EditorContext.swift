@@ -30,6 +30,12 @@ public protocol EditorContext: class {
 	/// the DocType of the current document
 	var docType: DocType { get }
 	
+	/// Generates an image to use for the passed in latex, size based on the editor font's size
+	///
+	/// - Parameter latex: The latex to use as an inline equation
+	/// - Returns: an image of the latex as an inline equation
+	func inlineImageFor(latex: String) -> PlatformImage?
+	
 	/// Saves a document
 	///
 	/// - Parameters:

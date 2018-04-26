@@ -34,6 +34,8 @@ class NotebookEditorController: AbstractEditorController {
 	var addChunkPopupMenu: NSMenu!
 	var activeAddChunkItem: NotebookViewItem?
 	
+	var inlineEditorPopover: NSPopover?
+	
 	var rmdDocument: RmdDocument? { return context?.parsedDocument.value }
 	var dataArray: [NotebookItemData] = []	// holds data for all items
 	var dragIndices: Set<IndexPath>?	// items being dragged
@@ -274,6 +276,30 @@ extension NotebookEditorController: NotebookViewItemDelegate {
 		NSAnimationContext.endGrouping()
 	}
 	
+	func presentInlineEditor(chunk: InlineChunk, parentItem: NotebookViewItem, sourceView: NSView, positioningRect: NSRect) {
+		if inlineEditorPopover == nil {
+			inlineEditorPopover = NSPopover()
+			inlineEditorPopover?.behavior = .semitransient
+		}
+		guard let eqChunk = chunk as? InlineEquationChunk else {
+			Log.warn("unsupported inline chunk for editing", .app)
+			return
+		}
+		let editorVC = InlineEquationEditorController()
+		editorVC.chunk = eqChunk
+		editorVC.font = context!.editorFont.value
+		editorVC.saveAction = { (editor, save) in
+			print("saving \(save) change \(editor.chunk!.contents.string) to \(parentItem)")
+			self.inlineEditorPopover?.close()
+			if save {
+				self.notebookView.reloadItems(at: Set([self.notebookView.indexPath(for: parentItem)!]))
+			}
+		}
+
+		inlineEditorPopover?.contentViewController = editorVC
+		inlineEditorPopover?.show(relativeTo: positioningRect, of: sourceView, preferredEdge: .maxX)
+	}
+
 	func viewItemLostFocus() {
 		save(edits: currentContents())
 	}

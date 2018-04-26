@@ -161,7 +161,6 @@ public protocol Code: class {
 
 public protocol RmdChunk: class {
 	var contents: NSAttributedString { get set }
-//	var textStorage: NSTextStorage { get }
 	var chunkType: ChunkType { get }
 	var rawText: String { get }
 }
@@ -172,9 +171,11 @@ public protocol TextChunk: RmdChunk {
 	var inlineElements: [InlineChunk] { get }
 }
 
+public typealias InlineEquationChunk = InlineChunk & Equation
+
 // MARK: - attachments
-class InlineAttachment: NSTextAttachment {
-	weak var chunk: InlineChunk?
+public class InlineAttachment: NSTextAttachment {
+	public internal(set) weak var chunk: InlineChunk?
 	
 //	override func attachmentBounds(for textContainer: NSTextContainer?, proposedLineFragment lineFrag: NSRect, glyphPosition position: CGPoint, characterIndex charIndex: Int) -> NSRect {
 //		let font = textContainer?.textView?.font ?? NSFont.userFixedPitchFont(ofSize: 14.0)
@@ -275,10 +276,22 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 	}
 	
 	override var rawText: String {
-		let val = textStorage.string
-		if origText.count != val.count {
-			print("differing lengths for \(origText)")
+		// Need to replace attachments with their rawText
+		let tmpAttrStr = NSMutableAttributedString(attributedString: textStorage)
+		// FIXME: needs to handle code chunks, likely via method on inline attachment class that returns the equiv of iContents
+		tmpAttrStr.enumerateAttribute(.attachment, in: tmpAttrStr.string.fullNSRange, options: [])
+		{ (attrValue, attrRange, stop) in
+			guard attrValue != nil else { return }
+			guard let iAttach = attrValue as? InlineAttachment,
+				let iChunk = iAttach.chunk
+				else { tmpAttrStr.deleteCharacters(in: attrRange); return }
+			let iContents = NSMutableAttributedString(attributedString: iChunk.contents)
+			let dollar = NSAttributedString(string: "$")
+			iContents.insert(dollar, at: 0)
+			iContents.append(dollar)
+			tmpAttrStr.replaceCharacters(in: attrRange, with: iContents)
 		}
+		let val = tmpAttrStr.string
 		return val
 	}
 //	override var attributedContents: NSAttributedString {
