@@ -44,7 +44,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 	{
 		self.textStorage = storage
 		self.fileType = fileType
-		self.keywords = BaseHighlighter.rKeywords
+		self.keywords = BaseSyntaxParser.rKeywords
 		self.helpCallback = helpCallback
 		super.init()
 		highLighter?.helpCallback = helpCallback
@@ -77,6 +77,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 		let tok = PKTokenizer(string: attributedString.string)!
 		setBaseTokenizer(tok)
 		// Default (rmd) chunk begin & end symbols:
+		//TODO: make blocks only work at beginning, skip \n#...
 		var codeBlockPoss = "```{r", codeBlockBegin = "}", codeBlockEnd = "```"
 		let codeInlineBegin	= "`r", codeInlineEnd = "`"
 		let eqBlock = "$$", eqInline = "$"
@@ -178,7 +179,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 			else if token.tokenType == .comment { frag = .comment }
 			else if token.tokenType == .quotedString { frag = .quote }
 			else if token.tokenType == .number { frag = .number }
-//			else if token.tokenType == .symbol { frag = .symbol }
+			// else if token.tokenType == .symbol { frag = .symbol }
 			else if token.tokenType == .word {
 				if newChunkType == .code && keywords.contains(token.stringValue) {
 					frag = .keyword
@@ -207,7 +208,6 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 			// Switch open state based on symbols:
 			if state == .sea || state == .eqPoss || state == .codeBlockPoss {
 				if token.stringValue == codeBlockPoss {
-					// beginRops = Int(token.offset) + codeBlockPoss.count + 1
 					state = .codeBlockPoss
 					end = Int(token.offset) }
 				else if token.stringValue == codeBlockBegin && state == .codeBlockPoss {
@@ -313,7 +313,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 			let innerRange = NSMakeRange(beginInner, end-begin)
 			aStr.addAttribute(ChunkTypeKey, value:currChunkType, range:range)
 			aStr.addAttribute(EquationTypeKey, value:currEquationType, range:range)
-			let ch = DocumentChunk(chunkType:newChunkType,
+			let ch = DocumentChunk(chunkType:currChunkType,
 								   docType:docType,
 								   equationType:currEquationType,
 								   range:range, innerRange:innerRange,
@@ -335,7 +335,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 			// parser = RnwSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
 		} else if fileType.fileExtension == "Rmd" {	// R-markdown
 			parser?.docType = .rmd
-			parser = RmdSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
+			// parser = RmdSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
 		} else if fileType.fileExtension == "R" {	// R-only
 			parser?.docType = .r
 			// parser = RSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
@@ -348,7 +348,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 	// Called by parse (called externally), which in turn calls parseRange
 	// implemented by particular parser subclasses.
 	internal func parseRange(_ range: NSRange) {
-		preconditionFailure("subclass must implement")
+		parseAndAttribute(attributedString: textStorage, docType: docType, inRange: range, makeChunks: true)
 	}
 	
 	// MARK: - External use only (mainly SessionEditorController)
@@ -363,7 +363,6 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 			let chunksLast = chunks
 			let fullRange = NSRange(location: 0, length: textStorage.length)
 			parseRange(fullRange)
-			//parseAndAttribute(attributedString: textStorage, docType: docType, inRange: fullRange, makeChunks: true)
 			textStorageStringLast = textStorage.string
 			// return true if the chunks array was updated:
 			if chunksLast == chunks {
@@ -410,24 +409,24 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 		return outArray
 	}
 
-	public func colorChunks(_ chunksToColor: [DocumentChunk]) {
-		let fullRange = NSRange(location: 0, length: textStorage.length)
-		textStorage.removeAttribute(.backgroundColor, range: fullRange)
-		for chunk in chunksToColor {
-			var bgcolor = theme.value.color(for: .background)
-			if chunk.chunkType == .code {
-				bgcolor = theme.value.color(for: .codeBackground)
-			} else if chunk.chunkType == .docs {
-				bgcolor = theme.value.color(for: .background)
-			} else if chunk.chunkType == .equation {
-				bgcolor = theme.value.color(for: .equationBackground)
-			}
-			if colorBackgrounds {
-				textStorage.addAttribute(.backgroundColor, value: bgcolor, range: chunk.parsedRange)
-			}
-			highLighter?.highlightText(textStorage, chunk: chunk)
-		}
-	}
+//	public func colorChunks(_ chunksToColor: [DocumentChunk]) {
+//		let fullRange = NSRange(location: 0, length: textStorage.length)
+//		textStorage.removeAttribute(.backgroundColor, range: fullRange)
+//		for chunk in chunksToColor {
+//			var bgcolor = theme.value.color(for: .background)
+//			if chunk.chunkType == .code {
+//				bgcolor = theme.value.color(for: .codeBackground)
+//			} else if chunk.chunkType == .docs {
+//				bgcolor = theme.value.color(for: .background)
+//			} else if chunk.chunkType == .equation {
+//				bgcolor = theme.value.color(for: .equationBackground)
+//			}
+//			if colorBackgrounds {
+//				textStorage.addAttribute(.backgroundColor, value: bgcolor, range: chunk.parsedRange)
+//			}
+//			highLighter?.highlightText(textStorage, chunk: chunk)
+//		}
+//	}
 }
 
 // If the text is only just R, then there is only one chunk of the entire

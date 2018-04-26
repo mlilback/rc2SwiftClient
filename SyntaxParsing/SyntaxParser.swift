@@ -59,6 +59,6 @@ public protocol SyntaxParser: class {
 	/// based on coloring highlighted, parsed text.
 	///
 	/// - Parameter chunksToColor: array of chunks to color
-	func colorChunks(_ chunksToColor: [DocumentChunk])
+//	func colorChunks(_ chunksToColor: [DocumentChunk])
 }
 

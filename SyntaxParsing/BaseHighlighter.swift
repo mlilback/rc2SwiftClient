@@ -59,8 +59,8 @@ open class BaseHighlighter: NSObject {
 		let tok = PKTokenizer(string: swiftStr)!
 		setBaseTokenizer(tok)
 		// Comments tags:
-		tok.setTokenizerState(tok.commentState, from: hashChar, to: hashChar)
-		tok.commentState.addSingleLineStartMarker("#")
+//		tok.setTokenizerState(tok.commentState, from: hashChar, to: hashChar)
+//		tok.commentState.addSingleLineStartMarker("#")
 		tok.setTokenizerState(tok.commentState, from:percentChar, to:percentChar)
 		tok.commentState.addSingleLineStartMarker("%")
 		tok.setTokenizerState(tok.commentState, from:lessChar, to:lessChar)
