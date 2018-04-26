@@ -6,9 +6,11 @@
 
 import Cocoa
 import SyntaxParsing
+import MJLLogger
 import ReactiveSwift
 
-class MarkdownViewItem: NotebookViewItem, NSTextViewDelegate {
+class MarkdownViewItem: NotebookViewItem {
+	// MARK: properties
 	@IBOutlet var sourceView: SourceTextView!
 	@IBOutlet var scrollView: NSScrollView!
 	@IBOutlet weak var chunkTypeLabel: NSTextField!
@@ -17,10 +19,13 @@ class MarkdownViewItem: NotebookViewItem, NSTextViewDelegate {
 	private var fontDisposable: Disposable?
 	private var boundsToken: Any?
 	private var sizingTextView: NSTextView?
+	private var ignoreTextChanges = false
 
+	// MARK: methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		sourceView.isEditable = true
+		sourceView.delegate = self
 		view.translatesAutoresizingMaskIntoConstraints = false
 		sourceView.changeCallback = { [weak self] in
 			self?.collectionView?.collectionViewLayout?.invalidateLayout()
@@ -29,31 +34,20 @@ class MarkdownViewItem: NotebookViewItem, NSTextViewDelegate {
 
 	override func prepareForReuse() {
 		super.prepareForReuse()
-		changeTo(storage: NSTextStorage())
+		sourceView.textStorage?.replace(with: "")
 	}
 
 	@IBAction func addChunk(_ sender: Any?) {
 		delegate?.addChunk(after: self, sender: sender as? NSButton)
 	}
 
-	func textDidChange(_ notification: Notification) {
-		guard let textView = notification.object as? MarkdownTextView else { return }
-		textView.invalidateIntrinsicContentSize()
-	}
-
 	override func contextChanged() {
 		fontDisposable?.dispose()
 		fontDisposable = context?.editorFont.signal.observeValues { [weak self] font in
-			self?.data?.source.font = font
 			self?.sourceView.font = font
 		}
 		guard let context = context else { return }
-		data?.source.font = context.editorFont.value
 		sourceView.font = context.editorFont.value
-	}
-	
-	private func changeTo(storage: NSTextStorage) {
-		sourceView.layoutManager?.replaceTextStorage(storage)
 	}
 	
 	override func dataChanged() {
@@ -64,7 +58,18 @@ class MarkdownViewItem: NotebookViewItem, NSTextViewDelegate {
 			self?.collectionView?.collectionViewLayout?.invalidateLayout()
 		}
 		// use the data's text storage
-		changeTo(storage: data.source)
+		sourceView.textStorage?.replace(with: data.source)
+		sourceView.textStorage!.enumerateAttribute(.attachment, in: sourceView.string.fullNSRange, options: []) { (aValue, aRange, stop) in
+			guard let attach = aValue as? InlineAttachment else { return }
+			guard let cell = attach.attachmentCell as? NSTextAttachmentCell else { return }
+			guard let chunk = attach.chunk else { return }
+			// eventually need to support code chunks, too
+			guard chunk is Equation else { return }
+			if let eqImage = context?.inlineImageFor(latex: chunk.contents.string) {
+				cell.image = eqImage
+			}
+		}
+		sourceView.textStorage?.addAttribute(.font, value: context?.editorFont.value as Any, range: sourceView.textStorage!.string.fullNSRange)
 	}
 	
 	func size(forWidth width: CGFloat) -> NSSize {
@@ -87,6 +92,30 @@ class MarkdownViewItem: NotebookViewItem, NSTextViewDelegate {
 		manager.ensureLayout(for: container)
 		let textSize = manager.usedRect(for: container).size
 		return NSSize(width: width, height: textSize.height + topView.frame.size.height + Notebook.textEditorMargin)
+	}
+}
+
+extension MarkdownViewItem: NSTextViewDelegate {
+	func textShouldEndEditing(_ textObject: NSText) -> Bool {
+		guard !ignoreTextChanges else { return true }
+		ignoreTextChanges = true
+		defer { ignoreTextChanges = false }
+		data?.source = sourceView.textStorage!
+		delegate?.viewItemLostFocus()
+		return true
+	}
+
+	func textDidChange(_ notification: Notification) {
+		guard let textView = notification.object as? MarkdownTextView else { return }
+		data?.source = sourceView.textStorage!
+		textView.invalidateIntrinsicContentSize()
+	}
+	
+	func textView(_ textView: NSTextView, clickedOn cell: NSTextAttachmentCellProtocol, in cellFrame: NSRect, at charIndex: Int)
+	{
+		guard let attach = cell.attachment as? InlineAttachment, let ichunk = attach.chunk
+			else { Log.warn("unknown attachment type clicked"); return }
+		delegate?.presentInlineEditor(chunk: ichunk, parentItem: self, sourceView: textView, positioningRect: cellFrame)
 	}
 }
 

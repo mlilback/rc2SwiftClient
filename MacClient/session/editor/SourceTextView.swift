@@ -34,9 +34,4 @@ public class SourceTextView: NSTextView {
 		super.paste(sender)
 		changeCallback?()
 	}
-	
-	func replace(text: String) {
-		textStorage!.deleteCharacters(in: NSRange(location: 0, length: textStorage!.length))
-		textStorage!.append(NSAttributedString(string: text))
-	}
 }

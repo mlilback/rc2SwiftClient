@@ -20,16 +20,30 @@ extension Selector {
 	static let executeLine = #selector(SourceEditorController.executeCurrentLine(_:))
 }
 
+/// base class for editor controllers. Subclasses must implement loaded() and editsNeedSaving()
 class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
+	// MARK: properties
 	private(set) var context: EditorContext?
 	private var autoSaveDisposable = Atomic<Disposable?>(nil)
+	/// contents are disposed when the document changes
+	private(set) var compositeDisposable = CompositeDisposable()
+	/// used internally to prevent responding to a change made by self
+	private var ignoreContentChanges = false
 	
+	/// checks if document is loaded and is not empty
 	@objc dynamic var canExecute: Bool {
 		guard context?.currentDocument.value?.isLoaded ?? false else { return false }
 		return context?.currentDocument.value?.currentContents?.count ?? 0 > 0
 	}
 	
+	/// for subclasses to override
 	var documentDirty: Bool { return false }
+	
+	// MARK: - standard
+	override func viewWillDisappear() {
+		super.viewWillDisappear()
+		autosaveCurrentDocument()
+	}
 	
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
@@ -39,16 +53,65 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		case #selector(revert(_:)):
 			return documentDirty
 		default:
-			return super.validateMenuItem(menuItem)
+			return false
 		}
 	}
 	
+	// MARK: - actions
+	@IBAction func save(_ sender: Any?) {
+		saveWithProgress().startWithResult { result in
+			if let innerError = result.error {
+				let appError = AppError(.saveFailed, nestedError: innerError)
+				Log.info("save for execute returned an error: \(result.error!)", .app)
+				self.appStatus?.presentError(appError.rc2Error, session: self.session)
+				return
+			}
+		}
+	}
+	
+	@IBAction func revert(_ sender: Any?) {
+		guard let doc = context?.currentDocument.value else { return }
+		// Do you want to revert the document “AbstractEditorController.swift” to the last saved version?
+		confirmAction(message: "Do you want to revert the document \"\(doc.file.name)\" to the last saved version?", infoText: "", buttonTitle: "Revert") { confirmed in
+			guard confirmed else { return }
+			self.context?.revertCurrentDocument()
+		}
+	}
+	
+	@IBAction func runQuery(_ sender: AnyObject?) {
+		executeSource(type: .run)
+	}
+	
+	@IBAction func sourceQuery(_ sender: AnyObject?) {
+		executeSource(type: .source)
+	}
+	
+	// MARK: - internal
+	/// called when document's editedContents is changed by something besides this object
+	private func editedContentsChanged(updatedContents: String) {
+		guard !ignoreContentChanges else { return }
+		loaded(content: updatedContents)
+	}
+	
+	/// for subclasses to call to save edits. loaded will not be called, which would happen if a subclass set the document's editedContents directly
+	func save(edits: String) {
+		// prevent recursion
+		guard !ignoreContentChanges else { return }
+		ignoreContentChanges = true
+		context?.currentDocument.value?.editedContents.value = edits
+		ignoreContentChanges = false
+	}
+	
+	/// called after view loaded with injected data
 	func setContext(context: EditorContext) {
 		precondition(self.context == nil)
 		self.context = context
 		let ncenter = context.notificationCenter
 		let autoSave = #selector(autosaveCurrentDocument)
-		ncenter.addObserver(self, selector: autoSave, name: NSApplication.didResignActiveNotification, object: NSApp)
+		// don't enable autsave on backgrounding while running in the debugger or else can't debug saving
+		if !AppInfo.amIBeingDebugged {
+			ncenter.addObserver(self, selector: autoSave, name: NSApplication.didResignActiveNotification, object: NSApp)
+		}
 		ncenter.addObserver(self, selector: autoSave, name: NSApplication.willTerminateNotification, object: NSApp)
 		ncenter.addObserver(self, selector: #selector(documentWillSave(_:)), name: .willSaveDocument, object: nil)
 		context.workspaceNotificationCenter.addObserver(self, selector: autoSave, name: NSWorkspace.willSleepNotification, object: context.workspaceNotificationCenter)
@@ -56,7 +119,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			self?.documentChanged(newDocument: newDoc)
 		}
 	}
-
+	
 	///actually implements running a query, saving first if document is dirty
 	func executeSource(type: ExecuteType) {
 		guard let currentDocument = context?.currentDocument.value else {
@@ -79,13 +142,16 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			self.session.execute(file: file, type: type)
 		}
 	}
-
+	
 	// called by notifications when sleeping/backgrounding
 	@objc func autosaveCurrentDocument() {
 		// return if autosave in progress or no document
 		guard autoSaveDisposable.value == nil,
 			let doc = context?.currentDocument.value
 			else { return }
+		// don't save if have saved in last half a second
+		guard Date.timeIntervalSinceReferenceDate - doc.lastSaveTime > 0.5 else { return }
+		editsNeedSaving()
 		guard UserDefaults.standard[.autosaveEnabled] else { return }
 		autoSaveDisposable.value?.dispose()
 		autoSaveDisposable.value = context?.save(document: doc, isAutoSave: true)
@@ -94,38 +160,12 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			.startWithCompleted { [weak self] in
 				self?.autoSaveDisposable.value?.dispose()
 				self?.autoSaveDisposable.value = nil
-			}
-//		guard context?.currentDocument.value?.isDirty ?? false else { return }
-//		saveWithProgress(isAutoSave: true).startWithResult { result in
-//			guard result.error == nil else {
-//				Log.warn("autosave failed: \(result.error!)", .session)
-//				return
-//			}
-//			//need to do anything when successful?
-//		}
-	}
-	
-	@objc func documentWillSave(_ notification: Notification) {
-	}
-
-	@IBAction func save(_ sender: Any?) {
-		saveWithProgress().startWithResult { result in
-			if let innerError = result.error {
-				let appError = AppError(.saveFailed, nestedError: innerError)
-				Log.info("save for execute returned an error: \(result.error!)", .app)
-				self.appStatus?.presentError(appError.rc2Error, session: self.session)
-				return
-			}
 		}
 	}
 	
-	@IBAction func revert(_ sender: Any?) {
-		guard let doc = context?.currentDocument.value else { return }
-		// Do you want to revert the document “AbstractEditorController.swift” to the last saved version?
-		confirmAction(message: "Do you want to revert the document \"\(doc.file.name)\" to the last saved version?", infoText: "", buttonTitle: "Revert") { confirmed in
-			guard confirmed else { return }
-			self.context?.revertCurrentDocument()
-		}
+	/// called before document is about to be saved
+	@objc private func documentWillSave(_ notification: Notification) {
+		editsNeedSaving()
 	}
 	
 	//should be the only place an actual save is performed
@@ -140,16 +180,25 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			.observe(on: UIScheduler())
 	}
 
+	/// called when the current document changes
 	func documentChanged(newDocument: EditorDocument?) {
+		compositeDisposable.dispose()
+		compositeDisposable = CompositeDisposable()
 		guard let document = newDocument else { return }
-		Log.info("doc changed", .core) // FIXME: why is this called twice per document?
 		if document.isLoaded {
+			compositeDisposable += document.editedContents.signal.observeValues { [weak self] contents in
+				guard let me = self else { return }
+				me.editedContentsChanged(updatedContents: document.currentContents ?? "")
+			}
 			loaded(content: document.currentContents ?? "")
 		} else {
 			session.fileCache.contents(of: document.file).observe(on: UIScheduler()).startWithResult { result in
 				guard let data = result.value else  {
 					self.appStatus?.presentError(result.error!, session: self.session)
 					return
+				}
+				self.compositeDisposable += document.editedContents.signal.observeValues { [weak self] contents in
+					self?.editedContentsChanged(updatedContents: contents ?? "")
 				}
 				self.loaded(content: String(data: data, encoding: .utf8)!)
 			}
@@ -180,6 +229,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		}
 	}
 	
+	/// updates the style attributes for a fragment in an attributed string
 	private func style(fragmentType: FragmentType, in text: NSMutableAttributedString, range: NSRange, theme: SyntaxTheme) {
 		switch fragmentType {
 		case .none:
@@ -197,16 +247,14 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		}
 	}
 	
+	/// called after the current document has changed. called by documentChanged() after the contents have been loaded from disk/network. Subclasses must override.
 	func loaded(content: String) {
 		fatalError("subclass must implement, not call super")
 	}
 
-	@IBAction func runQuery(_ sender: AnyObject?) {
-		executeSource(type: .run)
-	}
-	
-	@IBAction func sourceQuery(_ sender: AnyObject?) {
-		executeSource(type: .source)
+	/// subclasses should override and save contents via save(edits:). super should not be called
+	func editsNeedSaving() {
+		fatalError("subclasses must implement, not call super")
 	}
 	
 }

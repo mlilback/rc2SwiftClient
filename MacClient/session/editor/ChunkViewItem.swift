@@ -45,6 +45,7 @@ class ChunkViewItem: NotebookViewItem {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		sourceView.delegate = self
 		
 		// Get notified if view's bounds change:
 		NotificationCenter.default.addObserver(self, selector: #selector(boundsChanged(_:)), name: NSView.boundsDidChangeNotification, object: sourceView)
@@ -68,8 +69,7 @@ class ChunkViewItem: NotebookViewItem {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		data = nil
-		sourceView.layoutManager?.replaceTextStorage(NSTextStorage())
-		resultTextView?.replace(text: "")
+		resultTextView?.textStorage?.replace(with: "")
 		optionsDisposable?.dispose()
 		optionsDisposable = nil
 	}
@@ -84,18 +84,15 @@ class ChunkViewItem: NotebookViewItem {
 	override func contextChanged() {
 		fontDisposable?.dispose()
 		fontDisposable = context?.editorFont.signal.observeValues { [weak self] font in
-			self?.data?.source.font = font
 			self?.sourceView.font = font
 		}
 		guard let context = context else { return }
-		data?.source.font = context.editorFont.value
 		sourceView.font = context.editorFont.value
 	}
 	
 	override func dataChanged() {
 		resultVisibleDisposable?.dispose()
 		guard let data = data else { return }
-		guard let context = context else { return }
 		// observe result visibility
 		resultVisibleDisposable = data.resultsVisible.producer.startWithValues { [weak self] visible in
 			self?.adjustResults(visible: visible)
@@ -108,9 +105,9 @@ class ChunkViewItem: NotebookViewItem {
 			self?.adjustSize()
 			Log.debug("resultView.changeCallback", .app)
 		}
-		data.source.font = context.editorFont.value
-		// use the data's textstorage
-		sourceView.layoutManager!.replaceTextStorage(data.chunk.textStorage)
+		// copy the source string
+		sourceView.textStorage!.replace(with: data.source)
+		sourceView.textStorage?.addAttribute(.font, value: context?.editorFont.value as Any, range: sourceView.textStorage!.string.fullNSRange)
 		// bind options field
 		optionsDisposable?.dispose()
 		if let codeChunk = data.chunk as? Code {
@@ -131,7 +128,7 @@ class ChunkViewItem: NotebookViewItem {
 		guard let manager = sizingTextView?.textContainer?.layoutManager, let container = sizingTextView?.textContainer else { return .zero }
 		let tmpSize = NSSize(width: width, height: 100)
 		sizingTextView?.setFrameSize(tmpSize)
-		sizingTextView?.textStorage?.replaceCharacters(in: sizingTextView!.string.fullNSRange, with: data.source)
+		sizingTextView?.textStorage?.replace(with: data.source)
 		manager.ensureLayout(for: container)
 		var workingSize = manager.usedRect(for: container).size
 		workingSize.height += dividerBarHeight
@@ -139,7 +136,7 @@ class ChunkViewItem: NotebookViewItem {
 			workingSize.height += dividerBarHeight
 		}
 		if data.resultsVisible.value {
-			sizingTextView?.textStorage?.replaceCharacters(in: sizingTextView!.string.fullNSRange, with: data.result)
+			sizingTextView?.textStorage?.replace(with: data.result)
 			manager.ensureLayout(for: container)
 			workingSize.height += dynamicContentFrame.size.height
 		}
@@ -148,8 +145,6 @@ class ChunkViewItem: NotebookViewItem {
 		return workingSize
 //		return NSSize(width: width, height: sourceSize.height + topView.frame.size.height + Notebook.textEditorMargin)
 	}
-
-	
 	
 	// MARK: - private
 	
@@ -242,7 +237,6 @@ class ChunkViewItem: NotebookViewItem {
 		let newSize = NSSize(width: myWidth, height: myHeight)
 		guard newSize != startingSize else { return }
 		view.setFrameSize(newSize)
-		data?.height = myHeight
 		
 		collectionView?.collectionViewLayout?.invalidateLayout()
 	}
@@ -268,6 +262,18 @@ class ChunkViewItem: NotebookViewItem {
 		NSAnimationContext.current.duration = 0
 		data.resultsVisible.value = !data.resultsVisible.value
 		NSAnimationContext.endGrouping()
+	}
+}
+
+extension ChunkViewItem: NSTextViewDelegate {
+	func textShouldEndEditing(_ textObject: NSText) -> Bool {
+		delegate?.viewItemLostFocus()
+		return true
+	}
+
+	func textDidChange(_ notification: Notification) {
+		guard let textView = notification.object as? SourceTextView else { return }
+		data?.source = textView.textStorage!
 	}
 }
 

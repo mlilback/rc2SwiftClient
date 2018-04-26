@@ -11,6 +11,7 @@ import Networking
 import SwiftyUserDefaults
 import SyntaxParsing
 import MJLLogger
+import iosMath
 
 public extension Notification.Name {
 	/// sent before the currentDocument will be saved. object will be the EditorContext/DocummentManager
@@ -28,13 +29,16 @@ public class DocumentManager: EditorContext {
 	private let _parsedDocument = MutableProperty<RmdDocument?>(nil)
 	public var parsedDocument: Property<RmdDocument?>
 	
-	public let editorFont: MutableProperty<NSFont>
+	public let editorFont: MutableProperty<PlatformFont>
 	public var errorHandler: Rc2ErrorHandler { return self }
 	private var openDocuments: [Int: EditorDocument] = [:]
 	public var notificationCenter: NotificationCenter
 	public var workspaceNotificationCenter: NotificationCenter
 	public let lifetime: Lifetime
 	var defaults: UserDefaults
+	private var contentsChangedDisposable: Disposable?
+	private var lastParsed: TimeInterval = 0
+	private var equationLabel: MTMathUILabel?
 
 	let fileSaver: FileSaver
 	let fileCache: FileCache
@@ -56,14 +60,14 @@ public class DocumentManager: EditorContext {
 		self.defaults = defaults
 		let defaultSize = defaults[.defaultFontSize]
 		// font defaults to user-fixed pitch font
-		var initialFont = NSFont.userFixedPitchFont(ofSize: defaultSize)!
+		var initialFont = PlatformFont.userFixedPitchFont(ofSize: defaultSize)!
 		// try loading a saved font, or if there isn't one, Menlo
-		if let fontDesc = defaults[.editorFont], let font = NSFont(descriptor: fontDesc, size: fontDesc.pointSize) {
+		if let fontDesc = defaults[.editorFont], let font = PlatformFont(descriptor: fontDesc, size: fontDesc.pointSize) {
 			initialFont = font
-		} else if let menlo = NSFont(name: "Menlo-Regular", size: defaultSize) {
+		} else if let menlo = PlatformFont(name: "Menlo-Regular", size: defaultSize) {
 			initialFont = menlo
 		}
-		editorFont = MutableProperty<NSFont>(initialFont)
+		editorFont = MutableProperty<PlatformFont>(initialFont)
 		fileSaver.workspace.fileChangeSignal.observeValues { [weak self] changes in
 			self?.process(changes: changes)
 		}
@@ -130,7 +134,7 @@ public class DocumentManager: EditorContext {
 		}
 		notificationCenter.post(name: .willSaveDocument, object: self)
 		guard document.isDirty else { return SignalProducer<(), Rc2Error>(value: ()) }
-		guard let contents = document.editedContents else {
+		guard let contents = document.currentContents else {
 			return SignalProducer<(), Rc2Error>(error: Rc2Error(type: .invalidArgument))
 		}
 		return self.fileSaver.save(file: document.file, contents: contents)
@@ -139,11 +143,39 @@ public class DocumentManager: EditorContext {
 			.flatMap(.concat, fileCache.save)
 			.on(completed: {
 				document.contentsSaved()
-				self.switchTo(document: document)
 			},
 				terminated: { self.saving.value = false })
 	}
 	
+	/// Generates an image to use for the passed in latex, size based on the editor font's size
+	///
+	/// - Parameter latex: The latex to use as an inline equation
+	/// - Returns: an image of the latex as an inline equation
+	public func inlineImageFor(latex: String) -> PlatformImage? {
+		if nil == equationLabel {
+			equationLabel = MTMathUILabel(frame: CGRect(x: 0, y: 0, width: 1000, height: 20)) // default max size for equation image
+			equationLabel?.labelMode = .text
+		}
+		equationLabel?.fontSize = editorFont.value.pointSize
+		equationLabel?.latex = latex
+		equationLabel?.layout()
+		guard let dlist = equationLabel?.displayList else {
+			print("error with list no list")
+			return nil
+		}
+		let size = equationLabel!.intrinsicContentSize
+		let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(size.width), pixelsHigh: Int(size.height), bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .calibratedRGB, bytesPerRow: 0, bitsPerPixel: 0)!
+		let nscontext = NSGraphicsContext(bitmapImageRep: rep)!
+		NSGraphicsContext.saveGraphicsState()
+		NSGraphicsContext.current = nscontext
+		dlist.draw(nscontext.cgContext)
+		NSGraphicsContext.restoreGraphicsState()
+		let image = NSImage(size: size)
+		image.addRepresentation(rep)
+		return image
+	}
+	
+	// MARK: - private methods
 	/// actually autosaves a file
 	private func autosave(document: EditorDocument) -> SignalProducer<(), Rc2Error> {
 		guard UserDefaults.standard[.autosaveEnabled] else {
@@ -164,9 +196,9 @@ public class DocumentManager: EditorContext {
 			}
 			guard let me = self else { return }
 			me.notificationCenter.post(name: .willSaveDocument, object: self)
-			if let content = document.editedContents {
+			if let content = document.savedContents {
 				do {
-					try content.data(using: .utf8)?.write(to: tmpUrl)
+					try Data(content.utf8).write(to: tmpUrl)
 					document.file.writeXAttributes(tmpUrl)
 					Log.info("autosaved \(tmpUrl.lastPathComponent)", .core)
 				} catch {
@@ -188,19 +220,28 @@ public class DocumentManager: EditorContext {
 	// the only function that should change _currentDocument, so that parsedDocument is updated appropriately
 	private func switchTo(document: EditorDocument?) {
 		// parsed is updated on a later cycle of the main thread
-		var newParsed: RmdDocument?
-		defer {
-			_currentDocument.value = document
-			DispatchQueue.main.async {
-				self._parsedDocument.value = newParsed // newParsed will be the value set below
-			}
+		contentsChangedDisposable?.dispose()
+		_currentDocument.value = document
+		contentsChangedDisposable = document?.editedContents.signal.observeValues { [weak self] _ in
+			// if contents changed, need to reparse
+			self?.parseCurrentDocument()
 		}
-		guard let document = document else { return }
-		guard document.parsable else { return }
+		DispatchQueue.main.async {
+			self.parseCurrentDocument()
+		}
+	}
+	
+	private func parseCurrentDocument() {
+		guard let document = currentDocument.value, document.parsable else {
+			_parsedDocument.value = nil
+			return
+		}
 		do {
-			newParsed = try RmdDocument(contents: document.currentContents ?? "") { (topic) in
+			let newParsed = try RmdDocument(contents: document.currentContents ?? "") { (topic) in
 				return HelpController.shared.hasTopic(topic)
 			}
+			Log.info("parsed \(document.file.name) with \(newParsed.chunks.count) chunks", .core)
+			_parsedDocument.value = newParsed
 		} catch {
 			Log.info("failed to parse document \(document.file.name)", .core)
 		}

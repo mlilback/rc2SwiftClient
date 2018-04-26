@@ -34,19 +34,24 @@ class NotebookEditorController: AbstractEditorController {
 	var addChunkPopupMenu: NSMenu!
 	var activeAddChunkItem: NotebookViewItem?
 	
+	var inlineEditorPopover: NSPopover?
+	
 	var rmdDocument: RmdDocument? { return context?.parsedDocument.value }
 	var dataArray: [NotebookItemData] = []	// holds data for all items
 	var dragIndices: Set<IndexPath>?	// items being dragged
 	// injected
 	var templateManager: CodeTemplateManager!
 	
+	/// for saving the notebook state when the current document has changed
+	private var previousDocument: EditorDocument?
 	private var sizingItems: [NSUserInterfaceItemIdentifier : NotebookViewItem] = [:]
-	private var parsedDocDisposable: Disposable?
+	private var contextDisposables: CompositeDisposable?
 	private var chunksDisposable: Disposable?
+	private var cachedCurrentContents = ""
 	
 	override var documentDirty: Bool {
 		guard let saved = context?.currentDocument.value?.savedContents else { return false }
-		return saved != currentContents()
+		return saved != cachedCurrentContents
 	}
 	
 	// MARK: - standard
@@ -75,11 +80,6 @@ class NotebookEditorController: AbstractEditorController {
 		NotificationCenter.default.addObserver(self, selector: #selector(buildAddChunkMenu), name: .codeTemplatesChanged, object: templateManager)
 	}
 	
-	override func viewWillDisappear() {
-		super.viewWillDisappear()
-		autosaveCurrentDocument()
-	}
-	
 	// Called initially and when window is resized:
 	override func viewWillLayout() {
 		// Make sure things are laid out again after all our manual changes:
@@ -91,9 +91,48 @@ class NotebookEditorController: AbstractEditorController {
 	
 	override func setContext(context: EditorContext) {
 		super.setContext(context: context)
-		parsedDocDisposable?.dispose()
-		parsedDocDisposable = context.parsedDocument.producer.startWithValues { [weak self] newDocument in
+		contextDisposables?.dispose()
+		contextDisposables = CompositeDisposable()
+		contextDisposables! += context.parsedDocument.signal.observeValues { [weak self] newDocument in
 			self?.parsedDocumentChanged(newDocument)
+		}
+		contextDisposables! += context.currentDocument.producer.startWithValues { [weak self] newDocument in
+			// save NotebookState to previous document
+			guard let me = self else { return }
+			me.adjustNotebookState(newDocument: newDocument)
+
+		}
+	}
+	
+	private func adjustNotebookState(newDocument: EditorDocument?) {
+		guard previousDocument != newDocument else { return }
+		if let prevDoc = previousDocument {
+			// save current state previous document
+			if let selPath = notebookView.selectionIndexPaths.first {
+				let type = selPath.item > 0 ? TemplateType(chunkType: dataArray[selPath.item - 1].chunk.chunkType) : nil
+				let state = NotebookState(path: selPath, type: type)
+				prevDoc.notebookState = state
+			} else {
+				prevDoc.notebookState = nil
+			}
+		}
+		previousDocument = newDocument
+		// change selection if newDocument has a valid notebook state
+		guard let state = newDocument?.notebookState else { return }
+		if state.selectionType == nil, state.selectionPath.item == 0 {
+			//frontmatter was selected
+			print("restoring to frontmatter")
+			notebookView.selectionIndexPaths = Set([state.selectionPath])
+		} else {
+			// validate data at path is same type
+			precondition(state.selectionPath.item > 0)
+			let selIndex = state.selectionPath.item
+			guard selIndex < dataArray.count else { return }
+			let selData = dataArray[selIndex]
+			if selData.chunk.chunkType == state.selectionType!.chunkType {
+				print("restoring \(state.selectionPath)")
+				notebookView.selectionIndexPaths = Set([state.selectionPath])
+			}
 		}
 	}
 	
@@ -122,13 +161,10 @@ class NotebookEditorController: AbstractEditorController {
 		notebookView.reloadData()
 		notebookView.collectionViewLayout?.invalidateLayout()
 	}
-	
-	override func documentWillSave(_ notification: Notification) {
-		if view.window != nil {
-			// need to convert dataArray back to document contents
-			context?.currentDocument.value?.editedContents = currentContents()
-		}
-		super.documentWillSave(notification)
+
+	override func editsNeedSaving() {
+		guard view.window != nil else { return }
+		save(edits: currentContents())
 	}
 	
 	// MARK: - actions
@@ -152,9 +188,18 @@ class NotebookEditorController: AbstractEditorController {
 	private func currentContents() -> String {
 		var contents = ""
 		if let fm = context?.parsedDocument.value?.frontMatter.value, fm.count > 0 {
-			contents += "---\n\(fm)\n---\n"
+			contents += "---"
+			if !fm.hasPrefix("\n") { contents += "\n" }
+			contents += fm
+			if !fm.hasSuffix("\n") { contents += "\n" }
+			contents += "---\n"
 		}
-		dataArray.forEach { contents += $0.chunk.rawText }
+		dataArray.forEach {
+			let additions = $0.chunk.rawText
+			contents += additions
+		}
+		contents = contents.replacingOccurrences(of: "\n$$\n\n", with: "\n$$\n")
+		cachedCurrentContents = contents
 		return contents
 	}
 	
@@ -229,6 +274,34 @@ extension NotebookEditorController: NotebookViewItemDelegate {
 		NSAnimationContext.current.duration = 0
 		dataArray.forEach { $0.resultsVisible.value = !hide }
 		NSAnimationContext.endGrouping()
+	}
+	
+	func presentInlineEditor(chunk: InlineChunk, parentItem: NotebookViewItem, sourceView: NSView, positioningRect: NSRect) {
+		if inlineEditorPopover == nil {
+			inlineEditorPopover = NSPopover()
+			inlineEditorPopover?.behavior = .semitransient
+		}
+		guard let eqChunk = chunk as? InlineEquationChunk else {
+			Log.warn("unsupported inline chunk for editing", .app)
+			return
+		}
+		let editorVC = InlineEquationEditorController()
+		editorVC.chunk = eqChunk
+		editorVC.font = context!.editorFont.value
+		editorVC.saveAction = { (editor, save) in
+			print("saving \(save) change \(editor.chunk!.contents.string) to \(parentItem)")
+			self.inlineEditorPopover?.close()
+			if save {
+				self.notebookView.reloadItems(at: Set([self.notebookView.indexPath(for: parentItem)!]))
+			}
+		}
+
+		inlineEditorPopover?.contentViewController = editorVC
+		inlineEditorPopover?.show(relativeTo: positioningRect, of: sourceView, preferredEdge: .maxX)
+	}
+
+	func viewItemLostFocus() {
+		save(edits: currentContents())
 	}
 }
 

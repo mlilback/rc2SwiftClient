@@ -30,7 +30,7 @@ class RmdSyntaxParser: BaseSyntaxParser {
 		// Order of ``` before ` matters:
 		tok.symbolState.add("```{r")	// codeBlock begin
 		tok.symbolState.add("```")		// codeBlock end
-		tok.symbolState.add("---")		// frontMatter
+		tok.symbolState.add("---\n")	// frontMatter
 		tok.symbolState.add("`r")		// codeIn begin, end
 		tok.symbolState.add("`")		// codeIn begin, end
 		tok.symbolState.add("$$")		// eqBlock begin, end
@@ -54,14 +54,14 @@ class RmdSyntaxParser: BaseSyntaxParser {
 				token = tok.nextToken()!
 			}
 			else if state == .frontMatter  {
-				if token.stringValue == "---" {
+				if token.stringValue == "---\n" {
 					token = tok.nextToken()!
-					end = Int(token.offset)-3
+					end = Int(token.offset)-5
 					if end > fullRange.length { end = fullRange.length }
 					if end-begin > 0 {
 						let range = NSMakeRange(begin, end-begin)
 						frontMatter = textStorage.string.substring(from: range)!
-						begin = end+3
+						begin = end+5
 					}
 					beyondFrontMatter = true
 				}
@@ -69,7 +69,7 @@ class RmdSyntaxParser: BaseSyntaxParser {
 					token = tok.nextToken()!
 				}
 			}
-			else if token.stringValue == "---" {
+			else if token.stringValue == "---\n" {
 				state = .frontMatter
 				token = tok.nextToken()!
 				begin = Int(token.offset)

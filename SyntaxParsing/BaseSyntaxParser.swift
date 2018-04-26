@@ -83,8 +83,8 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 		// For R-Markdown,
 		if docType == .rmd {
 			// add markdown comment tokens:
-			tok.setTokenizerState(tok.commentState, from:hashChar, to:hashChar)
-			tok.commentState.addSingleLineStartMarker("#")
+			// tok.setTokenizerState(tok.commentState, from:hashChar, to:hashChar)
+			// tok.commentState.addSingleLineStartMarker("#")
 			// add HTML comment tokens:
 			tok.setTokenizerState(tok.commentState, from:lessChar, to:lessChar)
 			tok.commentState.addMultiLineStartMarker("<!--", endMarker:"-->")

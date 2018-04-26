@@ -413,6 +413,7 @@
 		08BCEA3E203B19F4004A5F47 /* ReactiveSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		08BCEA3F203B19F6004A5F47 /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
 		08BCEA40203B2102004A5F47 /* bulkInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 08BCEA34203B0E0B004A5F47 /* bulkInfo.json */; };
+		08BE3E122090A3D000EA4DDD /* NSAttributedString+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BE3E112090A3D000EA4DDD /* NSAttributedString+MJL.swift */; };
 		08BFD3E41C90B55C0041EB1C /* MessagePackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; };
 		08BFD3E61C90B5640041EB1C /* MessagePackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08C2C3C91DF74DE200397DD3 /* Networking.strings in Resources */ = {isa = PBXBuildFile; fileRef = 08C2C3C81DF74DE200397DD3 /* Networking.strings */; };
@@ -530,6 +531,9 @@
 		08F6ADFD1DD9178A00AF0722 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
 		08F6AE001DD918CF00AF0722 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F6ADFF1DD918CF00AF0722 /* FileCache.swift */; };
 		08F867B92086876E00108044 /* Array+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F867B82086876E00108044 /* Array+MJL.swift */; };
+		08F8C1802091226B00DFB269 /* iosMath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0859A3592062726700103924 /* iosMath.framework */; };
+		08F8C1822092272E00DFB269 /* InlineEquationEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F8C1812092272E00DFB269 /* InlineEquationEditorController.swift */; };
+		08F8C184209228A600DFB269 /* InlineEquationEditorController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08F8C183209228A600DFB269 /* InlineEquationEditorController.xib */; };
 		08FAE518208111730076F90C /* NSFont+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FAE517208111730076F90C /* NSFont+MJL.swift */; };
 		08FDB19B1C5917C3006FCD1A /* graph.png in Resources */ = {isa = PBXBuildFile; fileRef = 08FDB19A1C5917C3006FCD1A /* graph.png */; };
 		08FDE53E1EA02AFA00F14FAA /* LocalConnectionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDE53D1EA02AFA00F14FAA /* LocalConnectionSpec.swift */; };
@@ -1264,6 +1268,7 @@
 		08BCEA2E20388B51004A5F47 /* SessionSubProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSubProtocols.swift; sourceTree = "<group>"; };
 		08BCEA3020388D5F004A5F47 /* DocumentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
 		08BCEA34203B0E0B004A5F47 /* bulkInfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bulkInfo.json; sourceTree = "<group>"; };
+		08BE3E112090A3D000EA4DDD /* NSAttributedString+MJL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+MJL.swift"; sourceTree = "<group>"; };
 		08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessagePackSwift.framework; path = Carthage/Build/Mac/MessagePackSwift.framework; sourceTree = "<group>"; };
 		08C2C3C81DF74DE200397DD3 /* Networking.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Networking.strings; sourceTree = "<group>"; };
 		08C2D5E41E719DE20007A02D /* SBInjector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SBInjector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1359,6 +1364,8 @@
 		08F6ADED1DD9172C00AF0722 /* NSURLRequest+RcDocker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURLRequest+RcDocker.swift"; sourceTree = "<group>"; };
 		08F6ADFF1DD918CF00AF0722 /* FileCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = FileCache.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F867B82086876E00108044 /* Array+MJL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+MJL.swift"; sourceTree = "<group>"; };
+		08F8C1812092272E00DFB269 /* InlineEquationEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineEquationEditorController.swift; sourceTree = "<group>"; };
+		08F8C183209228A600DFB269 /* InlineEquationEditorController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InlineEquationEditorController.xib; sourceTree = "<group>"; };
 		08FAE517208111730076F90C /* NSFont+MJL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "NSFont+MJL.swift"; path = "vendor/MJLCommon/Sources/MJLCommon/extensions/NSFont+MJL.swift"; sourceTree = SOURCE_ROOT; };
 		08FDB1981C591409006FCD1A /* ImageCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCacheTests.swift; sourceTree = "<group>"; };
 		08FDB19A1C5917C3006FCD1A /* graph.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graph.png; sourceTree = "<group>"; };
@@ -1435,6 +1442,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08F8C1802091226B00DFB269 /* iosMath.framework in Frameworks */,
 				084D330E206D387800246CBD /* Rc2Common.framework in Frameworks */,
 				084D33332076B18000246CBD /* ReactiveSwift.framework in Frameworks */,
 				08B73E91208A14A100DB7339 /* SwiftyUserDefaults.framework in Frameworks */,
@@ -2011,6 +2019,7 @@
 				0868067C200D892000C986A9 /* URL+MJL.swift */,
 				08EDB9CF2019527D000663EF /* Set+MJL+update.swift */,
 				08F867B82086876E00108044 /* Array+MJL.swift */,
+				08BE3E112090A3D000EA4DDD /* NSAttributedString+MJL.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -2260,6 +2269,8 @@
 				085A1A20205AC39B00B7EC5F /* SourceTextView.swift */,
 				085A1A22205AC45600B7EC5F /* NotebookItemData.swift */,
 				085A1A24205AC4CD00B7EC5F /* NotebookEntryView.swift */,
+				08F8C1812092272E00DFB269 /* InlineEquationEditorController.swift */,
+				08F8C183209228A600DFB269 /* InlineEquationEditorController.xib */,
 			);
 			path = editor;
 			sourceTree = "<group>";
@@ -3175,6 +3186,7 @@
 				088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */,
 				08EE26FF202FAC08008E008F /* VariableDetails.storyboard in Resources */,
 				083305E01C51571500E27F66 /* Localizable.strings in Resources */,
+				08F8C184209228A600DFB269 /* InlineEquationEditorController.xib in Resources */,
 				08F448FD1C4E244500C64706 /* MainController.storyboard in Resources */,
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
 				0825658C2016BB9200526957 /* OnboardingContent.rtfd in Resources */,
@@ -3546,6 +3558,7 @@
 				08C2D5EC1E71BB290007A02D /* DockerPrefsController.swift in Sources */,
 				08ED575F1C724383002B2558 /* MacFileImportSetup.swift in Sources */,
 				08F189AA1D109A4F00866A05 /* TextViewWithContextualMenu.swift in Sources */,
+				08F8C1822092272E00DFB269 /* InlineEquationEditorController.swift in Sources */,
 				08A2A2A2200A9B0E00D9807B /* LogViewController.swift in Sources */,
 				08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */,
 				08F189A61D09EE4000866A05 /* NSViewController+Rc2.swift in Sources */,
@@ -3670,6 +3683,7 @@
 				086A40D11E7AEC5000AE476B /* OutputTheme.swift in Sources */,
 				0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */,
 				0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */,
+				08BE3E122090A3D000EA4DDD /* NSAttributedString+MJL.swift in Sources */,
 				08680689200D892000C986A9 /* GenericError.swift in Sources */,
 				08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */,
 				086A40DF1E7D956400AE476B /* PlatformTypeAliases.swift in Sources */,
@@ -4389,6 +4403,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -4430,6 +4445,7 @@
 		084D3300206D03DD00246CBD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

@@ -20,12 +20,12 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customView identifier="rootItem" autoresizesSubviews="NO" wantsLayer="YES" id="Hz6-mo-xeY" userLabel="notebook view" customClass="NotebookEntryView" customModule="MacClient" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
+        <customView identifier="rootItem" autoresizesSubviews="NO" wantsLayer="YES" misplaced="YES" id="Hz6-mo-xeY" userLabel="notebook view" customClass="NotebookEntryView" customModule="MacClient" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="480" height="222"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <customView misplaced="YES" id="bal-0H-T2E">
-                    <rect key="frame" x="0.0" y="248" width="480" height="21"/>
+                    <rect key="frame" x="0.0" y="201" width="480" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <subviews>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="fDF-zO-1NG">
@@ -51,7 +51,7 @@
                     </subviews>
                 </customView>
                 <scrollView identifier="sourceScroll" focusRingType="exterior" misplaced="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" id="OEf-2G-F4x" userLabel="source scroll" customClass="NoScrollView" customModule="MacClient" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="159" width="480" height="89"/>
+                    <rect key="frame" x="0.0" y="112" width="480" height="89"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <clipView key="contentView" id="2WR-4j-xeK">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="89"/>
@@ -76,8 +76,8 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>
-                <customView identifier="middle" wantsLayer="YES" id="y6B-4h-J3F" userLabel="middle" customClass="NotebookMiddleView" customModule="MacClient" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="131" width="480" height="21"/>
+                <customView identifier="middle" wantsLayer="YES" misplaced="YES" id="y6B-4h-J3F" userLabel="middle" customClass="NotebookMiddleView" customModule="MacClient" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="91" width="480" height="21"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <button horizontalHuggingPriority="750" verticalHuggingPriority="750" id="Lpr-hw-vve">
@@ -103,13 +103,14 @@
                     </subviews>
                 </customView>
                 <customView misplaced="YES" id="cEr-3b-Q08" customClass="MTMathUILabel">
-                    <rect key="frame" x="0.0" y="0.0" width="480" height="131"/>
+                    <rect key="frame" x="0.0" y="0.0" width="480" height="91"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
                 </customView>
             </subviews>
             <connections>
                 <outlet property="sourceView" destination="Zng-X6-LSA" id="a39-N9-nO8"/>
             </connections>
+            <point key="canvasLocation" x="139" y="189"/>
         </customView>
     </objects>
     <resources>
