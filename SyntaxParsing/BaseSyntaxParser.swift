@@ -24,6 +24,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 	// SyntaxParser protocol (model):
 	public let textStorage: NSTextStorage
 	public let fileType: FileType
+	public var docType: DocType = .r
 	public internal(set) var chunks: [DocumentChunk] = []
 	public var frontMatter = ""
 	public var keywords: Set<String>
@@ -51,7 +52,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 	
 	// Get RKeywords from it's file in this bundle:
 	static let rKeywords: Set<String> = {
-		let bundle = Bundle(for: RmdSyntaxParser.self)
+		let bundle = Bundle(for: BaseSyntaxParser.self)
 		guard let url = bundle.url(forResource: "RKeywords", withExtension: "txt")
 			else { fatalError("failed to find RKeywords file")
 		}
@@ -60,20 +61,20 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 		return Set<String>(keyArray)
 	}()
 	
-	public func parseAndAttribute(string: NSMutableAttributedString, docType: DocType, inRange: NSRange, makeChunks: Bool) {
+	public func parseAndAttribute(attributedString: NSMutableAttributedString, docType: DocType, inRange: NSRange, makeChunks: Bool) {
 		if makeChunks {
 			// Clear and reinit chunks:
 			chunks.removeAll(); chunks = [DocumentChunk]();
 		}
 		var chunkIndex = 1
 		// Remove previous attributes:
-		let aStr = string
+		let aStr = attributedString
 		aStr.removeAttribute(DocTypeKey, range:inRange)
 		aStr.removeAttribute(ChunkTypeKey, range:inRange)
 		aStr.removeAttribute(FragmentTypeKey, range:inRange)
 		aStr.removeAttribute(EquationTypeKey, range:inRange)
 		// Set up PEG Kit tokenizer:
-		let tok = PKTokenizer(string: aStr.string)!
+		let tok = PKTokenizer(string: attributedString.string)!
 		setBaseTokenizer(tok)
 		// Default (rmd) chunk begin & end symbols:
 		var codeBlockPoss = "```{r", codeBlockBegin = "}", codeBlockEnd = "```"
@@ -106,9 +107,11 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 		tok.symbolState.add(codeBlockEnd)
 		tok.symbolState.add(codeInlineBegin); tok.symbolState.add(codeInlineEnd)
 		tok.symbolState.add(eqBlock); tok.symbolState.add(eqInline)
-		tok.symbolState.add("<math")	// eqPossible
+		tok.symbolState.add("<math")	// eqBlock mathML possible
 		tok.symbolState.add(">")		// eqBlock mathML definite
 		tok.symbolState.add("</math>")	// eqBlock mathML end
+		let frontMatterSymbol = "---"
+		tok.symbolState.add(frontMatterSymbol)
 		// Init Range parameters:
 		var begin:Int = 0, end:Int = 0
 		var beginInner:Int = 0, endInner:Int = 0
@@ -122,9 +125,8 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 		var state = ParserState.sea	// sea - docs chunk
 		
 		// Get FrontMatter:
-		let frontMatterSymbol = "---"
-		tok.symbolState.add(frontMatterSymbol)
 		var beyondFrontMatter = false
+		if docType == .r { beyondFrontMatter = true }
 		while !beyondFrontMatter && token.tokenType != eof {
 			if token.isWhitespace {
 				token = tok.nextToken()!
@@ -158,12 +160,14 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 		// Initial states:
 		var currChunkType:ChunkType = .docs
 		var newChunkType = currChunkType
-		var equationType:EquationType = .none
+		var currEquationType:EquationType = .none
+		var newEquationType = currEquationType
 		state = .sea
 		var closeChunk = false
 		var lastToken: PKToken?
 		// Parse by loop through tokens and changing states:
 		while token.tokenType != eof {
+			// print(token.stringValue)
 			// Add attributes for Quotes, Comments, Numbers, Symbols, and Keywords:
 			var range = NSMakeRange(Int(token.offset), token.stringValue.count)
 			var frag = FragmentType.none
@@ -186,7 +190,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 						frag = .keyword
 					}
 				}
-				if helpCallback?(token.stringValue) ?? false {
+				if frag == .keyword && helpCallback?(token.stringValue) ?? false {
 					aStr.addAttribute(.link, value: "help:\(token.stringValue!)",
 						range: range)
 				}
@@ -195,7 +199,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 				aStr.addAttribute(FragmentTypeKey, value:frag, range:range)
 			}
 			
-			if token.tokenType != .symbol {
+			if token.tokenType != .symbol || docType == .r {
 				lastToken = token
 				token = tok.nextToken()!
 				continue
@@ -207,7 +211,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 					state = .codeBlockPoss
 					end = Int(token.offset) }
 				else if token.stringValue == codeBlockBegin && state == .codeBlockPoss {
-					newChunkType = .code; equationType = .display
+					newChunkType = .code; newEquationType = .display
 					let len = Int(token.offset)-beginRops
 					if  len > 0 && beginRops > 0 {
 						let range = NSMakeRange(beginRops, len)
@@ -219,19 +223,19 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 					beginInner = Int(token.offset) + codeBlockBegin.count
 					closeChunk = true }
 				else if token.stringValue == codeInlineBegin {
-					newChunkType = .code; equationType = .inline
+					newChunkType = .code; newEquationType = .inline
 					state = .codeIn; beginOff = codeInlineBegin.count; closeChunk = true }
 				else if token.stringValue == eqBlock {
-					newChunkType = .equation; equationType = .display
+					newChunkType = .equation; newEquationType = .display
 					state = .eqBlock; beginOff = eqBlock.count; closeChunk = true }
 				else if token.stringValue == eqInline {
-					newChunkType = .equation; equationType = .inline
+					newChunkType = .equation; newEquationType = .inline
 					state = .eqIn; beginOff = eqInline.count; closeChunk = true }
 				else if token.stringValue == "<math" {
 					state = .eqPoss
 					end = Int(token.offset) }
 				else if token.stringValue == ">" && state == .eqPoss {
-					newChunkType = .equation; equationType = .mathML
+					newChunkType = .equation; newEquationType = .mathML
 					beginInner = Int(token.offset) + ">".count
 					closeChunk = true
 				}
@@ -243,9 +247,9 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 					if end-begin > 0 {
 						let range = NSMakeRange(begin, end-begin)
 						if makeChunks {
-							let ch = DocumentChunk(chunkType:newChunkType,
+							let ch = DocumentChunk(chunkType:currChunkType,
 												   docType:docType,
-												   equationType:equationType,
+												   equationType:currEquationType,
 												   range:range, innerRange:range,
 												   chunkNumber:chunkIndex)
 							chunks.append(ch); chunkIndex += 1
@@ -254,7 +258,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 						aStr.addAttribute(ChunkTypeKey, value:currChunkType, range:range)
 						begin = end
 					}
-					currChunkType = newChunkType
+					currChunkType = newChunkType; currEquationType = newEquationType
 					closeChunk = false
 				}
 			}
@@ -283,12 +287,10 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 					let range = NSMakeRange(begin, end-begin)
 					let innerRange = NSMakeRange(beginInner, endInner-beginInner)
 					aStr.addAttribute(ChunkTypeKey, value:currChunkType, range:range)
-					if equationType != .none {
-						aStr.addAttribute(EquationTypeKey, value:equationType, range:range)
-					}
-					let ch = DocumentChunk(chunkType:newChunkType,
+					aStr.addAttribute(EquationTypeKey, value:currEquationType, range:range)
+					let ch = DocumentChunk(chunkType:currChunkType,
 										   docType:docType,
-										   equationType:equationType,
+										   equationType:currEquationType,
 										   range:range, innerRange:innerRange,
 										   chunkNumber:chunkIndex,
 										   isInline: (state == .eqIn || state == .codeIn))
@@ -297,7 +299,7 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 					Log.debug("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)", .parser)
 					begin = end
 				}
-				currChunkType = .docs; equationType = .none
+				currChunkType = .docs; currEquationType = .none
 				beginOff = 0; endOff = 0; beginInner = 0
 				closeChunk = false; state = .sea
 			}
@@ -310,12 +312,10 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 			let range = NSMakeRange(begin, end-begin)
 			let innerRange = NSMakeRange(beginInner, end-begin)
 			aStr.addAttribute(ChunkTypeKey, value:currChunkType, range:range)
-			if equationType != .none {
-				aStr.addAttribute(EquationTypeKey, value:equationType, range:range)
-			}
+			aStr.addAttribute(EquationTypeKey, value:currEquationType, range:range)
 			let ch = DocumentChunk(chunkType:newChunkType,
 								   docType:docType,
-								   equationType:equationType,
+								   equationType:currEquationType,
 								   range:range, innerRange:innerRange,
 								   chunkNumber:chunkIndex,
 								   isInline: (state == .eqIn || state == .codeIn))
@@ -325,37 +325,20 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 		}
 	}
 	
-//	public func chunksFromAttributes(string: NSMutableAttributedString, inRange: NSRange) {
-//		// Clear and reinit chunks:
-//		chunks.removeAll();
-//		chunks = [DocumentChunk]();
-//		var ch:DocumentChunk
-//		var chunkIndex = 1
-//		var begin:Int = 0, end:Int = 0
-//		var docType = DocType.none
-//		var chunkType = ChunkType.docs
-//		var equationType = EquationType.none
-//		for char in string.string {
-//			let range = NSMakeRange(begin, end-begin)
-//			let innerRange = NSMakeRange(beginInner, endInner-beginInner)
-//			ch = DocumentChunk(chunkType: chunkType, docType: docType,
-//							   equationType: equationType, range: range,
-//							   innerRange: range, chunkNumber: chunkIndex)
-//			chunks.append(ch); chunkIndex += 1
-//		}
-//
-//	}
-	
 	// Returns the approprate syntax parser (and highlighter) to use for fileType.
 	public class func parserWithTextStorage(_ storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HasHelpCallback) -> BaseSyntaxParser?
 	{
 		var parser: BaseSyntaxParser?
+		parser = BaseSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
 		if fileType.fileExtension == "Rnw" {		// R-sweave
-			parser = RnwSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
+			parser?.docType = .latex
+			// parser = RnwSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
 		} else if fileType.fileExtension == "Rmd" {	// R-markdown
+			parser?.docType = .rmd
 			parser = RmdSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
 		} else if fileType.fileExtension == "R" {	// R-only
-			parser = RSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
+			parser?.docType = .r
+			// parser = RSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
 			parser?.colorBackgrounds = false
 		}
 		parser?.highLighter = BaseHighlighter(helpCallback: helpCallback)
@@ -378,7 +361,9 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 		// Only parse if text has changed since last:
 		if textStorage.length == 0 || textStorage.string != textStorageStringLast {
 			let chunksLast = chunks
-			parseRange(NSRange(location: 0, length: textStorage.length))
+			let fullRange = NSRange(location: 0, length: textStorage.length)
+			parseRange(fullRange)
+			//parseAndAttribute(attributedString: textStorage, docType: docType, inRange: fullRange, makeChunks: true)
 			textStorageStringLast = textStorage.string
 			// return true if the chunks array was updated:
 			if chunksLast == chunks {
@@ -447,13 +432,13 @@ public class BaseSyntaxParser: NSObject, SyntaxParser {
 
 // If the text is only just R, then there is only one chunk of the entire
 // text and no chunk parsing required.
-class RSyntaxParser: BaseSyntaxParser {
-	internal override func parseRange(_ range: NSRange) {
-		chunks.removeAll()
-		let range = NSRange(location: 0, length: textStorage.string.count) // whole txt
-		let chunk = DocumentChunk(chunkType: .code, docType: .none, equationType: .none,
-								  range: range, innerRange: range, chunkNumber: 1)
-		chunks.append(chunk)
-	}
-}
+//class RSyntaxParser: BaseSyntaxParser {
+//	internal override func parseRange(_ range: NSRange) {
+//		chunks.removeAll()
+//		let range = NSRange(location: 0, length: textStorage.string.count) // whole txt
+//		let chunk = DocumentChunk(chunkType: .code, docType: .none, equationType: .none,
+//								  range: range, innerRange: range, chunkNumber: 1)
+//		chunks.append(chunk)
+//	}
+//}
 

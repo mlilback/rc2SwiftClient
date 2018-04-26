@@ -147,7 +147,7 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 			return HelpController.shared.hasTopic(topic)
 		}
 		storage.setAttributedString(NSAttributedString(string: content, attributes: self.defaultAttributes))
-		parser?.parseAndAttribute(string: storage, docType: context!.docType, inRange: storage.string.fullNSRange, makeChunks: true)
+		parser?.parseAndAttribute(attributedString: storage, docType: context!.docType, inRange: storage.string.fullNSRange, makeChunks: true)
 		updateSyntaxStyle(targetString: storage)
 		ignoreTextStorageNotifications = false
 		if let index = context?.currentDocument.value?.topVisibleIndex, index > 0 {
@@ -235,7 +235,7 @@ extension SourceEditorController: NSTextStorageDelegate {
 		guard !ignoreTextStorageNotifications else { return }
 		ignoreTextStorageNotifications = true
 		defer { ignoreTextStorageNotifications = false }
-		parser?.parseAndAttribute(string: textStorage, docType: context!.docType, inRange: textStorage.string.fullNSRange, makeChunks: true)
+		parser?.parseAndAttribute(attributedString: textStorage, docType: context!.docType, inRange: textStorage.string.fullNSRange, makeChunks: true)
 		updateSyntaxStyle(targetString: textStorage)
 	}
 }

@@ -15,12 +15,12 @@ private enum ParserState : Int {
 }
 
 class RmdSyntaxParser: BaseSyntaxParser {
-	
+
 	override func parseRange(_ fullRange: NSRange) {
 		// Clear and reinit chunks:
-		chunks.removeAll();
-		chunks = [DocumentChunk](); var chunkIndex = 1
-		// PEG Kit:
+		chunks.removeAll(); chunks = [DocumentChunk]();
+		var chunkIndex = 1
+		// Set up PEG Kit tokenizer:
 		let tok = PKTokenizer(string: textStorage.string)!
 		setBaseTokenizer(tok)
 		tok.setTokenizerState(tok.commentState, from:hashChar, to:hashChar)
@@ -28,7 +28,7 @@ class RmdSyntaxParser: BaseSyntaxParser {
 		tok.setTokenizerState(tok.commentState, from:lessChar, to:lessChar)
 		tok.commentState.addMultiLineStartMarker("<!--", endMarker:"-->")
 		// Order of ``` before ` matters:
-		tok.symbolState.add("```{r")	// codeBlock begin, end
+		tok.symbolState.add("```{r")	// codeBlock begin
 		tok.symbolState.add("```")		// codeBlock end
 		tok.symbolState.add("---")		// frontMatter
 		tok.symbolState.add("`r")		// codeIn begin, end
@@ -45,7 +45,7 @@ class RmdSyntaxParser: BaseSyntaxParser {
 		var beginOff:Int = 0, endOff:Int = 0
 		var beginRops:Int = 0
 		var rOps = ""
-		
+
 		var token = tok.nextToken()!
 		// Get FrontMatter:
 		var beyondFrontMatter = false
@@ -143,7 +143,7 @@ class RmdSyntaxParser: BaseSyntaxParser {
 										   equationType: currType.2, range: range,
 										   innerRange:range, chunkNumber: chunkIndex)
 						chunks.append(ch); chunkIndex += 1
-						// print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)")
+						print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)")
 						begin = end
 					}
 					currType = newType
@@ -181,7 +181,7 @@ class RmdSyntaxParser: BaseSyntaxParser {
 						// print(rOps)
 						ch.rOps = rOps; rOps = "" }
 					chunks.append(ch); chunkIndex += 1
-					// print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)")
+					print("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)")
 					begin = end
 				}
 				currType = (.docs, .rmd, .none)

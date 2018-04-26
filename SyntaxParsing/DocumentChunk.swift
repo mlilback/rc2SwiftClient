@@ -13,7 +13,7 @@ public let EquationTypeKey = NSAttributedStringKey("EquationTypeKey")
 
 /// Possible types of equations
 public enum DocType: String {
-	case none, rmd, latex
+	case none, rmd, latex, r
 }
 /// Possible types of chunks
 ///

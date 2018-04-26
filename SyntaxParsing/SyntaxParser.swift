@@ -37,7 +37,7 @@ public protocol SyntaxParser: class {
 	@discardableResult
 	func parse() -> Bool
 	
-	func parseAndAttribute(string: NSMutableAttributedString, docType: DocType,
+	func parseAndAttribute(attributedString: NSMutableAttributedString, docType: DocType,
 						   inRange: NSRange, makeChunks: Bool)
 
 	/// Returns the index of the first chunk containing the start of the range.
