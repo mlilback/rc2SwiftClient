@@ -8,18 +8,17 @@ import Foundation
 #if os(OSX)
 	import AppKit
 #endif
-// Required for theme = Property(ThemeManager...):
-import Model
-//-import Rc2Common
-//-import ReactiveSwift
+import Model	// required for FileType
 import PEGKit
 import MJLLogger
 
-/// Parent class of specific parsers that must be implemented and base
-/// implementation of protocol SyntaxParser used externally.
-/// Parses the contents of an NSTextStorage into an array of chunks
-/// that can be syntax colored.
-public class SyntaxParser: NSObject { //- , SyntaxParser {
+/// Multi-language syntax parser that takes an NSTextStorage object, switches
+/// parsing modes based on FileType, creates DocumentChunk's, and applies
+/// custom attributes (DocType, ChunkType, FragmentType, EquationType),
+/// for later highlighting text of a NSMutableAttributedString by Highlighter,
+/// for the purpose of highlighting: code, equation, quotes, comments, etc.
+/// This also creates help links to R keywords.
+public class SyntaxParser: NSObject {
 	// SyntaxParser protocol (model):
 	public let textStorage: NSTextStorage
 	public var docType: DocType = .r
@@ -33,7 +32,6 @@ public class SyntaxParser: NSObject { //- , SyntaxParser {
 		case sea, codeBlock, codeBlockPoss, codeIn, eqBlock, eqIn, eqPoss, frontMatter
 	}
 	
-	// See SyntaxParser protocol for parameters.
 	public init(storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HasHelpCallback)
 	{
 		self.textStorage = storage
@@ -49,7 +47,7 @@ public class SyntaxParser: NSObject { //- , SyntaxParser {
 		super.init()
 	}
 	
-	// Get RKeywords from it's file in this bundle:
+	// Get RKeywords from a file in it's bundle:
 	static let rKeywords: Set<String> = {
 		let bundle = Bundle(for: SyntaxParser.self)
 		guard let url = bundle.url(forResource: "RKeywords", withExtension: "txt")
@@ -61,7 +59,7 @@ public class SyntaxParser: NSObject { //- , SyntaxParser {
 		return Set<String>(keyArray)
 	}()
 	
-	// Chunk funcs:
+	// MARK: - Chunk funcs:
 	public var executableChunks: [DocumentChunk] {
 		return chunks.filter({ $0.chunkType == .code })
 	}
@@ -74,7 +72,7 @@ public class SyntaxParser: NSObject { //- , SyntaxParser {
 		return chunkIndex
 	}
 	
-	// Called by indexOfChunk.
+	// Called by indexOfChunk:
 	public func chunksForRange(_ range: NSRange) -> [DocumentChunk] {
 		// If no chunks, return []:
 		guard chunks.count > 0 else { return [] }
@@ -101,13 +99,13 @@ public class SyntaxParser: NSObject { //- , SyntaxParser {
 		return outArray
 	}
 	
+	// MARK: - Parser funcs:
 	@discardableResult
 	public func parse() -> Bool {
 		// Only parse if text has changed since last:
 		if textStorage.length > 0 && textStorage.string != textStorageStringLast {
 			let chunksLast = chunks
 			let fullRange = NSRange(location: 0, length: textStorage.length)
-			//-parseRange(fullRange)
 			parseAndAttribute(attributedString: textStorage,
 							  docType: docType, inRange: fullRange, makeChunks: true)
 			textStorageStringLast = textStorage.string
@@ -240,7 +238,6 @@ public class SyntaxParser: NSObject { //- , SyntaxParser {
 			else if token.tokenType == .number { frag = .number }
 			// else if token.tokenType == .symbol { frag = .symbol }
 			else if token.tokenType == .word {
-				print(token.stringValue)
 				if newChunkType == .code && keywords.contains(token.stringValue) {
 					frag = .keyword
 					if helpCallback?(token.stringValue) ?? false {
@@ -323,7 +320,7 @@ public class SyntaxParser: NSObject { //- , SyntaxParser {
 					closeChunk = false
 				}
 			}
-				// Switch close state based on symbols:
+			// Switch close state based on symbols:
 			else if state == .codeBlock && token.stringValue == codeBlockEnd {
 				endOff = codeBlockEnd.count; closeChunk = true }
 			else if state == .codeIn    && token.stringValue == codeInlineEnd {
@@ -385,64 +382,4 @@ public class SyntaxParser: NSObject { //- , SyntaxParser {
 			Log.debug("num=\(ch.chunkNumber)\t range=\(ch.parsedRange)\t inner=\(ch.innerRange)\t type=\(ch.chunkType),\(ch.equationType)", .parser)
 		}
 	}
-	
-	// Returns the approprate syntax parser (and highlighter) to use for fileType.
-//-	public class func parserWithTextStorage(_ storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HasHelpCallback) -> BaseSyntaxParser?
-//	{
-//-		var parser: BaseSyntaxParser?
-//		parser = BaseSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
-//		if fileType.fileExtension == "Rnw" {		// R-sweave
-//			parser?.docType = .latex
-//			// parser = RnwSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
-//		} else if fileType.fileExtension == "Rmd" {	// R-markdown
-//			parser?.docType = .rmd
-//			// parser = RmdSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
-//		} else if fileType.fileExtension == "R" {	// R-only
-//			parser?.docType = .r
-//			// parser = RSyntaxParser(storage: storage, fileType: fileType, helpCallback: helpCallback)
-//			parser?.colorBackgrounds = false
-//		}
-//		parser?.highLighter = BaseHighlighter(helpCallback: helpCallback)
-//		return parser
-//	}
-	
-//	// Called by parse (called externally), which in turn calls parseRange
-//	// implemented by particular parser subclasses.
-//-	internal func parseRange(_ range: NSRange) {
-//		parseAndAttribute(attributedString: textStorage, docType: docType, inRange: range, makeChunks: true)
-//	}
-	
-
-	
-//-	public func colorChunks(_ chunksToColor: [DocumentChunk]) {
-//		let fullRange = NSRange(location: 0, length: textStorage.length)
-//		textStorage.removeAttribute(.backgroundColor, range: fullRange)
-//		for chunk in chunksToColor {
-//			var bgcolor = theme.value.color(for: .background)
-//			if chunk.chunkType == .code {
-//				bgcolor = theme.value.color(for: .codeBackground)
-//			} else if chunk.chunkType == .docs {
-//				bgcolor = theme.value.color(for: .background)
-//			} else if chunk.chunkType == .equation {
-//				bgcolor = theme.value.color(for: .equationBackground)
-//			}
-//			if colorBackgrounds {
-//				textStorage.addAttribute(.backgroundColor, value: bgcolor, range: chunk.parsedRange)
-//			}
-//			highLighter?.highlightText(textStorage, chunk: chunk)
-//		}
-//	}
 }
-
-// If the text is only just R, then there is only one chunk of the entire
-// text and no chunk parsing required.
-// class RSyntaxParser: BaseSyntaxParser {
-//-	internal override func parseRange(_ range: NSRange) {
-//		chunks.removeAll()
-//		let range = NSRange(location: 0, length: textStorage.string.count) // whole txt
-//		let chunk = DocumentChunk(chunkType: .code, docType: .none, equationType: .none,
-//								  range: range, innerRange: range, chunkNumber: 1)
-//		chunks.append(chunk)
-//	}
-//}
-

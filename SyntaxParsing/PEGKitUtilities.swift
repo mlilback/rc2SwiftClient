@@ -18,6 +18,7 @@ let fwdSlashChar = Int32("/".unicodeScalars.first!.value)
 let dQuoteChar = Int32("\"".unicodeScalars.first!.value)
 let sQuoteChar = Int32("'".unicodeScalars.first!.value)
 
+// Default Tokenizer settings:
 func setBaseTokenizer(_ tok: PKTokenizer) {
 	tok.whitespaceState.reportsWhitespaceTokens = true
 	tok.numberState.allowsScientificNotation = true	// good in general

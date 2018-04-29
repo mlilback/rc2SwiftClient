@@ -135,14 +135,10 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		storage.deleteCharacters(in: editor.rangeOfAllText)
 		parser = SyntaxParser(storage: storage, fileType: document.file.fileType, helpCallback: { (topic) -> Bool in
 			HelpController.shared.hasTopic(topic) })
-//-		parser = BaseSyntaxParser.parserWithTextStorage(storage, fileType: document.file.fileType) { (topic) in
-//			return HelpController.shared.hasTopic(topic)
-//		}
 		storage.setAttributedString(NSAttributedString(string: content, attributes: self.defaultAttributes))
 		let range = storage.string.fullNSRange
 		parser?.parseAndAttribute(attributedString: storage, docType: context!.docType, inRange: range, makeChunks: true)
 		highlight(attributedString: storage, inRange: range)
-//		updateSyntaxStyle(targetString: storage)
 		ignoreTextStorageNotifications = false
 		if let index = context?.currentDocument.value?.topVisibleIndex, index > 0 {
 			//restore the scroll point to the saved character index
@@ -231,7 +227,6 @@ extension SourceEditorController: NSTextStorageDelegate {
 		let range = textStorage.string.fullNSRange
 		parser?.parseAndAttribute(attributedString: textStorage, docType: context!.docType, inRange: range, makeChunks: true)
 		highlight(attributedString: textStorage, inRange: range)
-//		updateSyntaxStyle(targetString: textStorage)
 	}
 }
 

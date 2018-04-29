@@ -18,21 +18,20 @@ public typealias HasHelpCallback = (String) -> Bool
 public typealias ParserErrorHandler = (ParserError) -> Void
 
 public class RmdDocument {
-	/// the chunks comprising this document
+	/// Chunks comprising this document:
 	public var chunks: [RmdChunk] { return _chunks.value }
-	/// a Property of a protocol (RmdChunk) can't observer changes to a mutableproperty of a concrete type. Instead, this signal is mapped to changes in the chunks array
+	/// A Property of a protocol (RmdChunk) can't observer changes to a mutableproperty
+	/// of a concrete type. Instead, this signal is mapped to changes in the chunks array:
 	public let chunksSignal: Signal<[RmdChunk], NoError>
 	private let chunksObserver: Signal<[RmdChunk], NoError>.Observer
-
-	//	public var chunks: [RmdChunk] { return internalChunks }
-	/// front matter
+	/// Front matter:
 	public let frontMatter = MutableProperty("")
-	
+	// Private:
 	private let _chunks = MutableProperty<[InternalRmdChunk]>([])
 	private var textStorage = NSTextStorage()
 	private var parser: SyntaxParser
 	
-	/// create a structure document
+	/// Creates a structure document.
 	///
 	/// - Parameters:
 	///   - contents: initial contents of the document
@@ -42,7 +41,6 @@ public class RmdDocument {
 		textStorage.append(NSAttributedString(string: contents))
 		let filetype = FileType.fileType(withExtension: "Rmd")!
 		parser = SyntaxParser(storage: textStorage, fileType: filetype, helpCallback: helpCallback)
-//-		parser = BaseSyntaxParser.parserWithTextStorage(textStorage, fileType: FileType.fileType(withExtension: "Rmd")!, helpCallback: helpCallback)!
 		_chunks.signal.observeValues { [weak self] val in self?.chunksObserver.send(value: val) }
 		parser.parse()
 		frontMatter.value = parser.frontMatter
@@ -183,19 +181,6 @@ public typealias InlineEquationChunk = InlineChunk & Equation
 // MARK: - attachments
 public class InlineAttachment: NSTextAttachment {
 	public internal(set) weak var chunk: InlineChunk?
-	
-//	override func attachmentBounds(for textContainer: NSTextContainer?, proposedLineFragment lineFrag: NSRect, glyphPosition position: CGPoint, characterIndex charIndex: Int) -> NSRect {
-//		let font = textContainer?.textView?.font ?? NSFont.userFixedPitchFont(ofSize: 14.0)
-//		let height = lineFrag.size.height
-//		var scale: CGFloat = 1.0
-//		let imageSize = image!.size
-//		if (height < imageSize.height) {
-//			scale = CGFloat(height / imageSize.height)
-//		}
-//		print("returning size")
-//		return CGRect(x: 0, y: 15, width: imageSize.width * scale, height: imageSize.height * scale)
-////		return CGRect(x: 0, y: (font!.capHeight - imageSize.height).rounded() / 2, width: imageSize.width * scale, height: imageSize.height * scale)
-//	}
 }
 
 class InlineAttachmentCell: NSTextAttachmentCell {
@@ -211,7 +196,6 @@ class InlineAttachmentCell: NSTextAttachmentCell {
 
 class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate {
 	weak var parser: SyntaxParser?
-//-	var parserChunk: DocumentChunk
 	var textStorage: NSTextStorage
 	let chunkType: ChunkType
 	let docType: DocType
@@ -230,7 +214,6 @@ class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate
 		self.chunkType = chunk.chunkType
 		self.docType = chunk.docType
 		self.equationType = chunk.equationType
-//-		self.parserChunk = chunk
 		textStorage = NSTextStorage()
 		super.init()
 		textStorage.delegate = self
@@ -242,19 +225,16 @@ class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate
 		defer { ignoreTextChanges = false }
 		textStorage.replace(with: text)
 		highlight(attributedString: textStorage)
-//-		parser?.highLighter?.highlightText(textStorage, range: textStorage.string.fullNSRange, chunk: self)
 	}
 	
-	// called when text editing has ended
+	// Called when text editing has ended:
 	public func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
 	{
-		//we don't care if attributes changed
+		// We don't care if attributes changed.
 		guard editedMask.contains(.editedCharacters) else { return }
 		guard !ignoreTextChanges else { return }
 		Log.debug("did edit: \(textStorage.string.substring(from: editedRange) ?? "")", .core)
 		highlight(attributedString: textStorage)
-//-		parser?.highLighter?.highlightText(textStorage, range: textStorage.string.fullNSRange, chunk: self)
-//-		parser?.colorChunks([parserChunk])
 	}
 }
 
@@ -264,7 +244,7 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 	let origText: String
 	
 	init(parser: SyntaxParser, contents: NSAttributedString, range: NSRange) {
-		// use a fake chunk to create from contents
+		// Use a fake chunk to create from contents.
 		let pchunk = DocumentChunk(chunkType: .docs, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
 		inlineElements = []
@@ -274,7 +254,7 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 	}
 	
 	init(parser: SyntaxParser, contents: String, range: NSRange) {
-		// use a fake chunk to create from contents
+		// Use a fake chunk to create from contents.
 		let pchunk = DocumentChunk(chunkType: .docs, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
 		inlineElements = []
@@ -282,11 +262,10 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 		super.init(parser: parser, chunk: pchunk)
 		update(text: NSAttributedString(string: contents.substring(from: range)!))
 		highlight(attributedString: textStorage, inRange: pchunk.innerRange)
-//-		parser.highLighter?.highlightText(textStorage, chunk: pchunk)
 	}
 	
 	override var rawText: String {
-		// Need to replace attachments with their rawText
+		// Need to replace attachments with their rawText.
 		let tmpAttrStr = NSMutableAttributedString(attributedString: textStorage)
 		// FIXME: needs to handle code chunks, likely via method on inline attachment class that returns the equiv of iContents
 		tmpAttrStr.enumerateAttribute(.attachment, in: tmpAttrStr.string.fullNSRange, options: [])
@@ -304,18 +283,6 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 		let val = tmpAttrStr.string
 		return val
 	}
-//-	override var attributedContents: NSAttributedString {
-//		let out = NSMutableAttributedString(attributedString: storage)
-//		storage.enumerateAttribute(.attachment, in: out.string.fullNSRange, options: [.reverse])
-//		{ (value, attrRange, stopPtr) in
-//			guard let ival = value as? InlineAttachment,
-//				let chunk = ival.chunk as? InternalRmdChunk,
-//				let cell = ival.attachmentCell as? NSCell
-//			else { return }
-//			out.replaceCharacters(in: attrRange, with: chunk.storage)
-//		}
-//		return out
-//	}
 }
 
 // MARK: -
