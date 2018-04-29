@@ -10,6 +10,11 @@ import MJLLogger
 import ReactiveSwift
 import Result
 
+public enum ParserError: Error {
+	case failedToParse
+	case inlineEquationNotInTextChunk
+}
+public typealias HasHelpCallback = (String) -> Bool
 public typealias ParserErrorHandler = (ParserError) -> Void
 
 public class RmdDocument {
@@ -25,7 +30,7 @@ public class RmdDocument {
 	
 	private let _chunks = MutableProperty<[InternalRmdChunk]>([])
 	private var textStorage = NSTextStorage()
-	private var parser: BaseSyntaxParser
+	private var parser: SyntaxParser
 	
 	/// create a structure document
 	///
@@ -35,7 +40,9 @@ public class RmdDocument {
 	public init(contents: String, helpCallback: @escaping  HasHelpCallback) throws {
 		(chunksSignal, chunksObserver) = Signal<[RmdChunk], NoError>.pipe()
 		textStorage.append(NSAttributedString(string: contents))
-		parser = BaseSyntaxParser.parserWithTextStorage(textStorage, fileType: FileType.fileType(withExtension: "Rmd")!, helpCallback: helpCallback)!
+		let filetype = FileType.fileType(withExtension: "Rmd")!
+		parser = SyntaxParser(storage: textStorage, fileType: filetype, helpCallback: helpCallback)
+//-		parser = BaseSyntaxParser.parserWithTextStorage(textStorage, fileType: FileType.fileType(withExtension: "Rmd")!, helpCallback: helpCallback)!
 		_chunks.signal.observeValues { [weak self] val in self?.chunksObserver.send(value: val) }
 		parser.parse()
 		frontMatter.value = parser.frontMatter
@@ -203,8 +210,8 @@ class InlineAttachmentCell: NSTextAttachmentCell {
 // MARK: - chunks
 
 class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate {
-	weak var parser: BaseSyntaxParser?
-//	var parserChunk: DocumentChunk
+	weak var parser: SyntaxParser?
+//-	var parserChunk: DocumentChunk
 	var textStorage: NSTextStorage
 	let chunkType: ChunkType
 	let docType: DocType
@@ -218,12 +225,12 @@ class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate
 	
 	var rawText: String { return textStorage.string }
 	
-	init(parser: BaseSyntaxParser, chunk: DocumentChunk) {
+	init(parser: SyntaxParser, chunk: DocumentChunk) {
 		self.parser = parser
 		self.chunkType = chunk.chunkType
 		self.docType = chunk.docType
 		self.equationType = chunk.equationType
-//		self.parserChunk = chunk
+//-		self.parserChunk = chunk
 		textStorage = NSTextStorage()
 		super.init()
 		textStorage.delegate = self
@@ -234,7 +241,8 @@ class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate
 		ignoreTextChanges = true
 		defer { ignoreTextChanges = false }
 		textStorage.replace(with: text)
-		parser?.highLighter?.highlightText(textStorage, range: textStorage.string.fullNSRange, chunk: self)
+		highlight(attributedString: textStorage)
+//-		parser?.highLighter?.highlightText(textStorage, range: textStorage.string.fullNSRange, chunk: self)
 	}
 	
 	// called when text editing has ended
@@ -244,8 +252,9 @@ class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate
 		guard editedMask.contains(.editedCharacters) else { return }
 		guard !ignoreTextChanges else { return }
 		Log.debug("did edit: \(textStorage.string.substring(from: editedRange) ?? "")", .core)
-		parser?.highLighter?.highlightText(textStorage, range: textStorage.string.fullNSRange, chunk: self)
-//		parser?.colorChunks([parserChunk])
+		highlight(attributedString: textStorage)
+//-		parser?.highLighter?.highlightText(textStorage, range: textStorage.string.fullNSRange, chunk: self)
+//-		parser?.colorChunks([parserChunk])
 	}
 }
 
@@ -254,7 +263,7 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 	var inlineElements: [InlineChunk]
 	let origText: String
 	
-	init(parser: BaseSyntaxParser, contents: NSAttributedString, range: NSRange) {
+	init(parser: SyntaxParser, contents: NSAttributedString, range: NSRange) {
 		// use a fake chunk to create from contents
 		let pchunk = DocumentChunk(chunkType: .docs, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
@@ -264,7 +273,7 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 		update(text: contents.attributedSubstring(from: range))
 	}
 	
-	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
+	init(parser: SyntaxParser, contents: String, range: NSRange) {
 		// use a fake chunk to create from contents
 		let pchunk = DocumentChunk(chunkType: .docs, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
@@ -272,7 +281,8 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 		origText = contents.substring(from: range)!
 		super.init(parser: parser, chunk: pchunk)
 		update(text: NSAttributedString(string: contents.substring(from: range)!))
-		parser.highLighter?.highlightText(textStorage, chunk: pchunk)
+		highlight(attributedString: textStorage, inRange: pchunk.innerRange)
+//-		parser.highLighter?.highlightText(textStorage, chunk: pchunk)
 	}
 	
 	override var rawText: String {
@@ -294,7 +304,7 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 		let val = tmpAttrStr.string
 		return val
 	}
-//	override var attributedContents: NSAttributedString {
+//-	override var attributedContents: NSAttributedString {
 //		let out = NSMutableAttributedString(attributedString: storage)
 //		storage.enumerateAttribute(.attachment, in: out.string.fullNSRange, options: [.reverse])
 //		{ (value, attrRange, stopPtr) in
@@ -311,7 +321,7 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 // MARK: -
 class CodeChunk: InternalRmdChunk, Code {
 	var options: MutableProperty<String>
-	init(parser: BaseSyntaxParser, contents: String, range: NSRange, options: String?) {
+	init(parser: SyntaxParser, contents: String, range: NSRange, options: String?) {
 		self.options = MutableProperty<String>(options ?? "")
 		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
@@ -328,7 +338,7 @@ class CodeChunk: InternalRmdChunk, Code {
 
 // MARK: -
 class EquationChunk: InternalRmdChunk, Equation {
-	init(parser: BaseSyntaxParser, contents: String, range: NSRange, innerRange: NSRange) {
+	init(parser: SyntaxParser, contents: String, range: NSRange, innerRange: NSRange) {
 		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .display,
 								   range: range, innerRange: innerRange, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
@@ -344,7 +354,7 @@ class EquationChunk: InternalRmdChunk, Equation {
 // MARK: -
 
 class InternalInlineEquation: InternalRmdChunk, InlineChunk, Equation {
-	init(parser: BaseSyntaxParser, contents: String, range: NSRange) {
+	init(parser: SyntaxParser, contents: String, range: NSRange) {
 		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .inline,
 								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
@@ -354,7 +364,7 @@ class InternalInlineEquation: InternalRmdChunk, InlineChunk, Equation {
 
 class InternalInlineCodeChunk: InternalRmdChunk, InlineChunk, Code {
 	var options: MutableProperty<String>
-	init(parser: BaseSyntaxParser, contents: String, range: NSRange, options: String) {
+	init(parser: SyntaxParser, contents: String, range: NSRange, options: String) {
 		self.options = MutableProperty<String>(options)
 		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)

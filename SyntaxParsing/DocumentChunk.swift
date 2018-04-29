@@ -11,7 +11,7 @@ public let ChunkTypeKey = NSAttributedStringKey("ChunkTypeKey")
 public let FragmentTypeKey = NSAttributedStringKey("FragmentTypeKey")
 public let EquationTypeKey = NSAttributedStringKey("EquationTypeKey")
 
-/// Possible types of equations
+/// Possible types of documents
 public enum DocType: String {
 	case none, rmd, latex, r
 }
@@ -24,6 +24,7 @@ public enum ChunkType: String {
 	case docs, code, equation
 }
 
+/// Possible types of fragments
 public enum FragmentType: String {
 	case none, quote, comment, keyword, symbol, number
 }
@@ -52,11 +53,12 @@ public protocol ChunkProtocol {
 public class DocumentChunk: ChunkProtocol {
 	/// Type of chunk
 	public let chunkType: ChunkType
-	/// If the type is .equation, the type of the equation
-	public let docType: DocType
-	// The range of text this chunk contains
-	public let equationType: EquationType
 	/// If the type is .doc, the type of the doc
+	public let docType: DocType
+	
+	//  If the type is .equation, the type of the equation
+	public let equationType: EquationType
+	// The range of text this chunk contains
 	public internal(set) var parsedRange: NSRange = NSRange(location: 0, length: 0)
 	public internal(set) var innerRange: NSRange = NSRange(location: 0, length: 0)
 	public var rOps: String = ""

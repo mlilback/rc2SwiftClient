@@ -31,8 +31,6 @@ extension NSUserInterfaceItemIdentifier {
 // MARK: - main controller
 class TemplatesPrefsController: NSViewController {
 	let templatePasteboardType = NSPasteboard.PasteboardType(rawValue: "io.rc2.client.codeTemplate")
-	//>>>
-	var last = ""
 	
 	// MARK: properties
 	@IBOutlet private var splitterView: NSSplitView!
@@ -296,11 +294,9 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 		let fromPath = wrapper.indexPath
 		let isCopy = info.draggingSourceOperationMask() == .copy
 		
-		var op = "move"
-		if isCopy { op = "copy" }
+		let op = isCopy ? "copy" : "move"
 		let out = op + " from \(fromPath), to \(index), parent: " + String(describing: parentItem)
-		if last != out { print(out) }
-		last = out
+		Log.debug(out, .app)
 		
 		// If we're dragging a Category:
 		if wrapper.isCategory {
@@ -311,7 +307,7 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 			if toIndex >= currentCategories.count { toIndex -= 1 }
 //			print("from \(fromIndex), to \(toIndex)")
 			if isCopy {
-				//>>> TEST:
+				//>>>TEST:
 				let newCat = CodeTemplateCategory(wrapper.category!)
 				currentCategories.insert(newCat, at: toIndex)
 				codeOutlineView.insertItems(at: IndexSet(integer: toIndex), inParent: nil, withAnimation: .effectGap)

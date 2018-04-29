@@ -35,7 +35,7 @@ public enum TemplateType: String, Codable {
 		}
 	}
 	
-	/// return the SyntaxParser.ChunkType equivelent of this TemplateType
+	/// return the SyntaxParser ChunkType equivelent of this TemplateType
 	public var chunkType: ChunkType {
 		switch self {
 		case .markdown: return .docs

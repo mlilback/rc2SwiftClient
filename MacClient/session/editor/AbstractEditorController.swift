@@ -205,47 +205,47 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		}
 	}
 
-	/// applies current theme to the targetString which should have been parsed
-	func updateSyntaxStyle(targetString: NSMutableAttributedString) {
-		let theme = ThemeManager.shared.activeSyntaxTheme.value
-		let fullRange = targetString.string.fullNSRange
-		targetString.addAttribute(.font, value: context!.editorFont.value, range: fullRange)
-		targetString.removeAttribute(.foregroundColor, range: fullRange)
-		targetString.removeAttribute(.backgroundColor, range: fullRange)
-		targetString.enumerateAttributes(in: fullRange, options: []) { (keyValues, attrRange, stop) in
-			if let fragmentType = keyValues[FragmentTypeKey] as? FragmentType {
-				self.style(fragmentType: fragmentType, in: targetString, range: attrRange, theme: theme)
-			}
-			if let chunkType = keyValues[ChunkTypeKey] as? ChunkType {
-				switch chunkType {
-				case .code:
-					targetString.addAttribute(.backgroundColor, value: theme.color(for: .codeBackground), range: attrRange)
-				case .equation:
-					targetString.addAttribute(.backgroundColor, value: theme.color(for: .equationBackground), range: attrRange)
-				case .docs:
-					break
-				}
-			}
-		}
-	}
-	
-	/// updates the style attributes for a fragment in an attributed string
-	private func style(fragmentType: FragmentType, in text: NSMutableAttributedString, range: NSRange, theme: SyntaxTheme) {
-		switch fragmentType {
-		case .none:
-			break
-		case .quote:
-			text.addAttribute(.foregroundColor, value: theme.color(for: .quote), range: range)
-		case .comment:
-			text.addAttribute(.foregroundColor, value: theme.color(for: .comment), range: range)
-		case .keyword:
-			text.addAttribute(.foregroundColor, value: theme.color(for: .keyword), range: range)
-		case .symbol:
-			text.addAttribute(.foregroundColor, value: theme.color(for: .symbol), range: range)
-		case .number:
-			break
-		}
-	}
+//	/// applies current theme to the targetString which should have been parsed
+//-	func updateSyntaxStyle(targetString: NSMutableAttributedString) {
+//		let theme = ThemeManager.shared.activeSyntaxTheme.value
+//		let fullRange = targetString.string.fullNSRange
+//		targetString.addAttribute(.font, value: context!.editorFont.value, range: fullRange)
+//		targetString.removeAttribute(.foregroundColor, range: fullRange)
+//		targetString.removeAttribute(.backgroundColor, range: fullRange)
+//		targetString.enumerateAttributes(in: fullRange, options: []) { (keyValues, attrRange, stop) in
+//			if let fragmentType = keyValues[FragmentTypeKey] as? FragmentType {
+//				self.style(fragmentType: fragmentType, in: targetString, range: attrRange, theme: theme)
+//			}
+//			if let chunkType = keyValues[ChunkTypeKey] as? ChunkType {
+//				switch chunkType {
+//				case .code:
+//					targetString.addAttribute(.backgroundColor, value: theme.color(for: .codeBackground), range: attrRange)
+//				case .equation:
+//					targetString.addAttribute(.backgroundColor, value: theme.color(for: .equationBackground), range: attrRange)
+//				case .docs:
+//					break
+//				}
+//			}
+//		}
+//	}
+//
+//	/// updates the style attributes for a fragment in an attributed string
+//-	private func style(fragmentType: FragmentType, in text: NSMutableAttributedString, range: NSRange, theme: SyntaxTheme) {
+//		switch fragmentType {
+//		case .none:
+//			break
+//		case .quote:
+//			text.addAttribute(.foregroundColor, value: theme.color(for: .quote), range: range)
+//		case .comment:
+//			text.addAttribute(.foregroundColor, value: theme.color(for: .comment), range: range)
+//		case .keyword:
+//			text.addAttribute(.foregroundColor, value: theme.color(for: .keyword), range: range)
+//		case .symbol:
+//			text.addAttribute(.foregroundColor, value: theme.color(for: .symbol), range: range)
+//		case .number:
+//			break
+//		}
+//	}
 	
 	/// called after the current document has changed. called by documentChanged() after the contents have been loaded from disk/network. Subclasses must override.
 	func loaded(content: String) {
