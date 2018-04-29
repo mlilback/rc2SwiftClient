@@ -107,6 +107,7 @@ class ChunkViewItem: NotebookViewItem {
 		}
 		// copy the source string
 		sourceView.textStorage!.replace(with: data.source)
+		highlight(attributedString: sourceView.textStorage!)
 		sourceView.textStorage?.addAttribute(.font, value: context?.editorFont.value as Any, range: sourceView.textStorage!.string.fullNSRange)
 		// bind options field
 		optionsDisposable?.dispose()
@@ -274,6 +275,15 @@ extension ChunkViewItem: NSTextViewDelegate {
 	func textDidChange(_ notification: Notification) {
 		guard let textView = notification.object as? SourceTextView else { return }
 		data?.source = textView.textStorage!
+		highlight(attributedString: textView.textStorage!)
+	}
+
+	func textView(_ textView: NSTextView, clickedOnLink link: Any, at charIndex: Int) -> Bool {
+		if let str = link as? String, let pieces = Optional(str.components(separatedBy: ":")), pieces.count == 2 {
+			NotificationCenter.default.post(name: .displayHelpTopic, object:pieces[1], userInfo:nil)
+			return true
+		}
+		return false
 	}
 }
 
