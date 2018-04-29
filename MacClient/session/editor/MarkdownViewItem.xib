@@ -37,7 +37,7 @@
                             </textFieldCell>
                         </textField>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WIS-13-SRF" userLabel="Add button">
-                            <rect key="frame" x="462" y="3" width="11" height="15"/>
+                            <rect key="frame" x="460" y="2" width="11" height="15"/>
                             <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="rWY-fH-PSh">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="system"/>
@@ -48,11 +48,11 @@
                         </button>
                     </subviews>
                     <constraints>
-                        <constraint firstAttribute="bottom" secondItem="WIS-13-SRF" secondAttribute="bottom" constant="3" id="jRx-Hl-vUJ"/>
+                        <constraint firstAttribute="bottom" secondItem="WIS-13-SRF" secondAttribute="bottom" constant="2" id="jRx-Hl-vUJ"/>
                         <constraint firstAttribute="height" constant="21" id="rFO-Oj-39G"/>
                         <constraint firstItem="fDF-zO-1NG" firstAttribute="top" secondItem="bal-0H-T2E" secondAttribute="top" constant="2" id="uM3-cJ-ef5"/>
                         <constraint firstItem="fDF-zO-1NG" firstAttribute="leading" secondItem="bal-0H-T2E" secondAttribute="leading" constant="29" id="w5s-Nd-9eq"/>
-                        <constraint firstAttribute="trailing" secondItem="WIS-13-SRF" secondAttribute="trailing" constant="7" id="wAU-Ym-9kv"/>
+                        <constraint firstAttribute="trailing" secondItem="WIS-13-SRF" secondAttribute="trailing" constant="9" id="wAU-Ym-9kv"/>
                     </constraints>
                 </customView>
                 <scrollView identifier="sourceScroll" focusRingType="none" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="OEf-2G-F4x" userLabel="source scroll" customClass="NoScrollView" customModule="MacClient" customModuleProvider="target">

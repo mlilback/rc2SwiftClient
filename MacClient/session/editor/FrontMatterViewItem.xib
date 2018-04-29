@@ -34,7 +34,7 @@
                             </textFieldCell>
                         </textField>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zm7-LQ-Jiw" userLabel="Add button">
-                            <rect key="frame" x="430" y="2" width="11" height="15"/>
+                            <rect key="frame" x="428" y="2" width="11" height="15"/>
                             <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="Uhn-Y7-XLj">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="system"/>
@@ -46,7 +46,7 @@
                     </subviews>
                     <constraints>
                         <constraint firstItem="X5p-7k-hyf" firstAttribute="leading" secondItem="vPe-76-pWc" secondAttribute="leading" constant="29" id="49I-DF-TX3"/>
-                        <constraint firstAttribute="trailing" secondItem="zm7-LQ-Jiw" secondAttribute="trailing" constant="7" id="agT-yd-B6Y"/>
+                        <constraint firstAttribute="trailing" secondItem="zm7-LQ-Jiw" secondAttribute="trailing" constant="9" id="agT-yd-B6Y"/>
                         <constraint firstItem="X5p-7k-hyf" firstAttribute="top" secondItem="vPe-76-pWc" secondAttribute="top" constant="2" id="cYH-G2-qzO"/>
                         <constraint firstAttribute="bottom" secondItem="zm7-LQ-Jiw" secondAttribute="bottom" constant="2" id="eF6-06-wbU"/>
                         <constraint firstAttribute="height" constant="21" id="uXC-af-fXC"/>
