@@ -62,9 +62,9 @@ public class RmdDocument {
 				lastTextChunk = tchunk
 				lastWasInline = false
 			case .code:
-				let cchunk = CodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange, options: parserChunk.rOps)
+				let cchunk = CodeChunk(parser: parser, contents: parser.textStorage, range: parserChunk.innerRange, options: parserChunk.rOps)
 				if parserChunk.isInline, let lastChunk = lastTextChunk {
-					let achunk = InternalInlineCodeChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange, options: parserChunk.rOps)
+					let achunk = InternalInlineCodeChunk(parser: parser, contents: parser.textStorage, range: parserChunk.innerRange, options: parserChunk.rOps)
 					attach(chunk: achunk, to: lastChunk.textStorage)
 					lastWasInline = true
 					return
@@ -77,12 +77,12 @@ public class RmdDocument {
 				case .none: fatalError()
 				case .inline:
 					guard let lastChunk = lastTextChunk else { throw ParserError.inlineEquationNotInTextChunk }
-					let dchunk = InternalInlineEquation(parser: parser, contents: parser.textStorage.string, range: parserChunk.innerRange)
+					let dchunk = InternalInlineEquation(parser: parser, contents: parser.textStorage, range: parserChunk.innerRange)
 					lastChunk.inlineElements.append(dchunk)
 					attach(chunk: dchunk, to: lastChunk.textStorage)
 					lastWasInline = true
 				case .display:
-					let dchunk = EquationChunk(parser: parser, contents: parser.textStorage.string, range: parserChunk.parsedRange, innerRange: parserChunk.innerRange)
+					let dchunk = EquationChunk(parser: parser, contents: parser.textStorage, range: parserChunk.parsedRange, innerRange: parserChunk.innerRange)
 					append(chunk: dchunk)
 					lastTextChunk = nil
 					lastWasInline = false
@@ -288,6 +288,14 @@ class MarkdownChunk: InternalRmdChunk, TextChunk {
 // MARK: -
 class CodeChunk: InternalRmdChunk, Code {
 	var options: MutableProperty<String>
+	init(parser: SyntaxParser, contents: NSAttributedString, range: NSRange, options: String?) {
+		self.options = MutableProperty<String>(options ?? "")
+		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
+								   range: range, innerRange: range, chunkNumber: 1)
+		super.init(parser: parser, chunk: pchunk)
+		update(text: contents.attributedSubstring(from: range))
+	}
+
 	init(parser: SyntaxParser, contents: String, range: NSRange, options: String?) {
 		self.options = MutableProperty<String>(options ?? "")
 		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
@@ -295,7 +303,7 @@ class CodeChunk: InternalRmdChunk, Code {
 		super.init(parser: parser, chunk: pchunk)
 		update(text: NSAttributedString(string: contents.substring(from: range)!))
 	}
-	
+
 	override var rawText: String {
 		var opts = options.value
 		if opts.count > 0 { opts = " " + opts }
@@ -305,6 +313,16 @@ class CodeChunk: InternalRmdChunk, Code {
 
 // MARK: -
 class EquationChunk: InternalRmdChunk, Equation {
+	init(parser: SyntaxParser, contents: NSAttributedString, range: NSRange, innerRange: NSRange) {
+		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .display,
+								   range: range, innerRange: innerRange, chunkNumber: 1)
+		super.init(parser: parser, chunk: pchunk)
+		// FIXME: notebook was blowing up with attributed equations
+//		let eqstr = contents.attributedSubstring(from: range)
+		let eqstr = NSAttributedString(string: contents.string.substring(from: innerRange)!)
+		update(text: eqstr)
+	}
+
 	init(parser: SyntaxParser, contents: String, range: NSRange, innerRange: NSRange) {
 		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .display,
 								   range: range, innerRange: innerRange, chunkNumber: 1)
@@ -321,22 +339,31 @@ class EquationChunk: InternalRmdChunk, Equation {
 // MARK: -
 
 class InternalInlineEquation: InternalRmdChunk, InlineChunk, Equation {
+	init(parser: SyntaxParser, contents: NSAttributedString, range: NSRange) {
+		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .inline,
+								   range: range, innerRange: range, chunkNumber: 1)
+		super.init(parser: parser, chunk: pchunk)
+		// FIXME: this was breaking things
+//		update(text: contents.attributedSubstring(from: range))
+		update(text: NSAttributedString(string: contents.string.substring(from: range)!))
+	}
+
 	init(parser: SyntaxParser, contents: String, range: NSRange) {
 		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .inline,
 								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
-		textStorage.append(NSAttributedString(string: contents.substring(from: range)!))
+		update(text: NSAttributedString(string: contents.substring(from: range)!))
 	}
 }
 
 class InternalInlineCodeChunk: InternalRmdChunk, InlineChunk, Code {
 	var options: MutableProperty<String>
-	init(parser: SyntaxParser, contents: String, range: NSRange, options: String) {
+	init(parser: SyntaxParser, contents: NSAttributedString, range: NSRange, options: String) {
 		self.options = MutableProperty<String>(options)
 		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
-		textStorage.append(NSAttributedString(string: contents.substring(from: range)!))
+		update(text: contents.attributedSubstring(from: range))
 	}
 }
 
