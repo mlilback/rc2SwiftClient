@@ -21,11 +21,14 @@ public class NotebookItemData: NSObject {
 		}
 	}
 	/// sets to a copy if assigned value is NSMutableAttributedString
-	@objc public var result: NSAttributedString { didSet {
-		if source is NSMutableAttributedString {
-			source = NSAttributedString(attributedString: source)
-		}
-	}}
+	@objc public var result: NSAttributedString
+	
+	// not sure why this was here. Why does changing result require making the source not mutable?
+//	@objc public var result: NSAttributedString { didSet {
+//		if source is NSMutableAttributedString {
+//			source = NSAttributedString(attributedString: source)
+//		}
+//	}}
 
 	public var chunk: RmdChunk
 	/// this is bookkeeping for NotebookViewItem and is meant to be used by it
