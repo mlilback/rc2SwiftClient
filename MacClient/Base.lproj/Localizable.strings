@@ -20,6 +20,9 @@
 "DeleteCodeTemplateWarning" = "Confirm Delete Template";
 "DeleteCodeTemplateWarningInfo" = "This will delete the selected catagory and all templates in it.";
 
+"DeleteChunkWarning" = "Delete selected chunk?";
+"DeleteChunkWarningInfo" = "This action will delete the selected chunk.";
+
 "SyntaxThemeProperty.codeBackground" = "code background";
 "SyntaxThemeProperty.inlineBackground" = "inline equation background";
 "SyntaxThemeProperty.equationBackground" = "equation background";

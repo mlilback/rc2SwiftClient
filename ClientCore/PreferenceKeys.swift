@@ -35,5 +35,6 @@ public extension DefaultsKeys {
 	public static let suppressDeleteFileWarnings = DefaultsKey<Bool>("SuppressDeleteFileWarning")
 	public static let suppressClearWorkspace = DefaultsKey<Bool>("SuppressClearWorkspaceWarning")
 	public static let suppressClearImagesWithConsole = DefaultsKey<Bool>("SuppressClearImagesWithConsole")
-	public static let suppressKeys = [suppressDeleteFileWarnings, suppressClearWorkspace, suppressClearImagesWithConsole, suppressDeleteTemplate]
+	public static let suppressDeleteChunkWarnings = DefaultsKey<Bool>("SuppressDeleteChunkWarning")
+	public static let suppressKeys = [suppressDeleteFileWarnings, suppressClearWorkspace, suppressClearImagesWithConsole, suppressDeleteTemplate, .suppressDeleteChunkWarnings]
 }

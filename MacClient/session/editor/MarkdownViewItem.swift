@@ -20,7 +20,8 @@ class MarkdownViewItem: NotebookViewItem {
 	private var boundsToken: Any?
 	private var sizingTextView: NSTextView?
 	private var ignoreTextChanges = false
-
+	private var originalContents: String?
+	
 	// MARK: methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -34,6 +35,7 @@ class MarkdownViewItem: NotebookViewItem {
 
 	override func prepareForReuse() {
 		super.prepareForReuse()
+		originalContents = nil
 		sourceView.textStorage?.replace(with: "")
 	}
 
@@ -57,6 +59,7 @@ class MarkdownViewItem: NotebookViewItem {
 		{ [weak self] note in
 			self?.collectionView?.collectionViewLayout?.invalidateLayout()
 		}
+		originalContents = data.source.string
 		// use the data's text storage
 		sourceView.textStorage?.replace(with: data.source)
 		sourceView.textStorage!.enumerateAttribute(.attachment, in: sourceView.string.fullNSRange, options: []) { (aValue, aRange, stop) in
@@ -70,6 +73,14 @@ class MarkdownViewItem: NotebookViewItem {
 			}
 		}
 		sourceView.textStorage?.addAttribute(.font, value: context?.editorFont.value as Any, range: sourceView.textStorage!.string.fullNSRange)
+	}
+	
+	override func saveIfDirty() {
+		guard !ignoreTextChanges else { return }
+		ignoreTextChanges = true
+		defer { ignoreTextChanges = false}
+		data?.source = sourceView.textStorage!
+		originalContents = sourceView.string
 	}
 	
 	func size(forWidth width: CGFloat) -> NSSize {

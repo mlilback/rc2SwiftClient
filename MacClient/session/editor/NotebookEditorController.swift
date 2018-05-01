@@ -51,7 +51,13 @@ class NotebookEditorController: AbstractEditorController {
 	
 	override var documentDirty: Bool {
 		guard let saved = context?.currentDocument.value?.savedContents else { return false }
+		selectedViewItem?.saveIfDirty()
 		return saved != cachedCurrentContents
+	}
+	
+	var selectedViewItem: NotebookViewItem? {
+		guard let index = notebookView.selectionIndexPaths.first else { return nil }
+		return notebookView.item(at: index) as? NotebookViewItem
 	}
 	
 	// MARK: - standard
@@ -150,6 +156,8 @@ class NotebookEditorController: AbstractEditorController {
 	func parsedDocumentChanged(_ newDocument: RmdDocument?) {
 		chunksDisposable?.dispose()
 		chunksDisposable = nil
+		let selectedPath = notebookView.selectionIndexPaths.first
+		let oldData = selectedViewItem?.data
 		if let parsed = newDocument {
 			dataArray = parsed.chunks.flatMap { return NotebookItemData(chunk: $0, result: "") }
 			chunksDisposable = parsed.chunksSignal.observeValues { [weak self] cnks in
@@ -160,10 +168,17 @@ class NotebookEditorController: AbstractEditorController {
 		}
 		notebookView.reloadData()
 		notebookView.collectionViewLayout?.invalidateLayout()
+		if let path = selectedPath,
+			let curItem = notebookView.item(at: path) as? NotebookViewItem,
+			oldData?.isEqual(to: curItem.data) ?? false
+		{
+			notebookView.selectItems(at: Set([path]), scrollPosition: .centeredHorizontally)
+		}
 	}
 
 	override func editsNeedSaving() {
 		guard view.window != nil else { return }
+		selectedViewItem?.saveIfDirty()
 		save(edits: currentContents())
 	}
 	
@@ -267,6 +282,17 @@ extension NotebookEditorController: NotebookViewItemDelegate {
 //		addChunkPopupMenu.items.forEach { $0.representedObject = after }
 		activeAddChunkItem = after
 		addChunkPopupMenu.popUp(positioning: nil, at: CGPoint(x: 0, y: button.bounds.maxY), in: button)
+	}
+	
+	func remove(chunk: NotebookViewItem) {
+		confirmAction(message: NSLocalizedString("DeleteChunkWarning", comment: ""), infoText: NSLocalizedString("DeleteChunkWarningInfo", comment: ""), buttonTitle: NSLocalizedString("Delete", comment: ""), cancelTitle: NSLocalizedString("Cancel", comment: ""), defaultToCancel: true, suppressionKey: .suppressDeleteChunkWarnings)
+		{ confirmed in
+			guard confirmed else { return }
+			guard let path = self.notebookView.indexPath(for: chunk) else { Log.error("asked to remove non-existant chunk", .app); return }
+			self.dataArray.remove(at: path.item - 1)
+			self.notebookView.deleteItems(at: Set([path]))
+			self.editsNeedSaving()
+		}
 	}
 	
 	func twiddleAllChunks(hide: Bool) {

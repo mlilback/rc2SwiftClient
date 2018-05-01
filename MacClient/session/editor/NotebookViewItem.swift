@@ -13,6 +13,8 @@ protocol NotebookViewItemDelegate: class {
 	func viewItemLostFocus()
 	/// adds a new chunk
 	func addChunk(after: NotebookViewItem, sender: NSButton?)
+	/// removes a chunk
+	func remove(chunk: NotebookViewItem)
 	/// should call .resultsVisible = hide on all chunks
 	func twiddleAllChunks(hide: Bool)
 
@@ -67,8 +69,11 @@ class NotebookViewItem: NSCollectionViewItem {
 	/// called when the data item has changed
 	func dataChanged() { }
 
+	/// called to save current edits without changing focus
+	func saveIfDirty() { }
+	
 	@IBAction func removeChunk(_ sender: Any?) {
-		
+		delegate?.remove(chunk: self)
 	}
 	
 	func size(forWidth width: CGFloat, data: NotebookItemData) -> NSSize {
