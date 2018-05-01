@@ -12,6 +12,7 @@
                 <outlet property="chunkTypeLabel" destination="fDF-zO-1NG" id="FqC-gX-aiS"/>
                 <outlet property="middleView" destination="y6B-4h-J3F" id="9ju-Cc-nT9"/>
                 <outlet property="optionsField" destination="rTV-st-dDs" id="xLm-75-pWo"/>
+                <outlet property="removeChunkButton" destination="SN9-Cg-UtZ" id="Qca-Ps-nra"/>
                 <outlet property="resultTextView" destination="HRk-gT-qE6" id="NRD-uC-xpA"/>
                 <outlet property="resultTwiddle" destination="Lpr-hw-vve" id="zTY-ym-9a1"/>
                 <outlet property="sourceView" destination="Zng-X6-LSA" id="fr0-0K-Cwg"/>
@@ -38,6 +39,17 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
+                        <button verticalHuggingPriority="750" misplaced="YES" id="SN9-Cg-UtZ" userLabel="remove button">
+                            <rect key="frame" x="437" y="1" width="13" height="21"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                            <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="D1I-KP-kce">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <connections>
+                                <action selector="removeChunk:" target="-2" id="XPG-lp-Naz"/>
+                            </connections>
+                        </button>
                         <button verticalHuggingPriority="750" misplaced="YES" id="WIS-13-SRF" userLabel="Add button">
                             <rect key="frame" x="458" y="2" width="13" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
@@ -50,7 +62,7 @@
                             </connections>
                         </button>
                         <textField verticalHuggingPriority="750" misplaced="YES" id="rTV-st-dDs">
-                            <rect key="frame" x="145" y="3" width="305" height="16"/>
+                            <rect key="frame" x="145" y="3" width="279" height="16"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                             <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" drawsBackground="YES" id="yyq-Cm-WwP">
                                 <font key="font" metaFont="smallSystem"/>
@@ -147,5 +159,6 @@
     </objects>
     <resources>
         <image name="NSAddTemplate" width="11" height="11"/>
+        <image name="NSRemoveTemplate" width="11" height="11"/>
     </resources>
 </document>

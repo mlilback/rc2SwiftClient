@@ -12,6 +12,7 @@
                 <outlet property="chunkTypeLabel" destination="fDF-zO-1NG" id="FqC-gX-aiS"/>
                 <outlet property="equationView" destination="cEr-3b-Q08" id="ywQ-we-gRl"/>
                 <outlet property="middleView" destination="y6B-4h-J3F" id="9ju-Cc-nT9"/>
+                <outlet property="removeChunkButton" destination="ieP-Xx-OHQ" id="0aY-El-AOa"/>
                 <outlet property="resultTwiddle" destination="Lpr-hw-vve" id="zTY-ym-9a1"/>
                 <outlet property="sourceView" destination="Zng-X6-LSA" id="fr0-0K-Cwg"/>
                 <outlet property="topView" destination="bal-0H-T2E" id="odo-YY-6zv"/>
@@ -38,7 +39,7 @@
                             </textFieldCell>
                         </textField>
                         <button verticalHuggingPriority="750" misplaced="YES" id="WIS-13-SRF" userLabel="Add button">
-                            <rect key="frame" x="458" y="2" width="13" height="21"/>
+                            <rect key="frame" x="458" y="0.0" width="13" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                             <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="rWY-fH-PSh">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -46,6 +47,17 @@
                             </buttonCell>
                             <connections>
                                 <action selector="addChunk:" target="-2" id="uC2-RW-M32"/>
+                            </connections>
+                        </button>
+                        <button verticalHuggingPriority="750" misplaced="YES" id="ieP-Xx-OHQ" userLabel="remove button">
+                            <rect key="frame" x="437" y="-1" width="13" height="21"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                            <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="jdd-a2-T2m">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <connections>
+                                <action selector="removeChunk:" target="-2" id="YTk-gU-IPv"/>
                             </connections>
                         </button>
                     </subviews>
@@ -115,5 +127,6 @@
     </objects>
     <resources>
         <image name="NSAddTemplate" width="11" height="11"/>
+        <image name="NSRemoveTemplate" width="11" height="11"/>
     </resources>
 </document>

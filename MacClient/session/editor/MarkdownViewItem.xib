@@ -4,12 +4,14 @@
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="MarkdownViewItem" customModule="MacClient" customModuleProvider="target">
             <connections>
                 <outlet property="addChunkButton" destination="WIS-13-SRF" id="DKl-De-RRy"/>
                 <outlet property="chunkTypeLabel" destination="fDF-zO-1NG" id="FqC-gX-aiS"/>
+                <outlet property="removeChunkButton" destination="FBc-9k-Wx8" id="6B1-V7-njx"/>
                 <outlet property="scrollView" destination="OEf-2G-F4x" id="cxD-Oo-2TE"/>
                 <outlet property="sourceView" destination="Zng-X6-LSA" id="fr0-0K-Cwg"/>
                 <outlet property="topView" destination="bal-0H-T2E" id="odo-YY-6zv"/>
@@ -25,6 +27,42 @@
                 <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bal-0H-T2E" userLabel="topView">
                     <rect key="frame" x="0.0" y="90" width="480" height="21"/>
                     <subviews>
+                        <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iDi-78-AZH">
+                            <rect key="frame" x="441" y="2" width="30" height="15"/>
+                            <subviews>
+                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FBc-9k-Wx8" userLabel="remove button">
+                                    <rect key="frame" x="0.0" y="0.0" width="11" height="15"/>
+                                    <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="D2b-4b-Vcp">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="removeChunk:" target="-2" id="gTe-fb-dqv"/>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WIS-13-SRF" userLabel="Add button">
+                                    <rect key="frame" x="19" y="0.0" width="11" height="15"/>
+                                    <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="rWY-fH-PSh">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="addChunk:" target="-2" id="uC2-RW-M32"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="30" id="apU-vc-3CJ"/>
+                            </constraints>
+                            <visibilityPriorities>
+                                <integer value="1000"/>
+                                <integer value="1000"/>
+                            </visibilityPriorities>
+                            <customSpacing>
+                                <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
+                            </customSpacing>
+                        </stackView>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fDF-zO-1NG">
                             <rect key="frame" x="27" y="2" width="104" height="17"/>
                             <constraints>
@@ -36,23 +74,14 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WIS-13-SRF" userLabel="Add button">
-                            <rect key="frame" x="460" y="2" width="11" height="15"/>
-                            <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="rWY-fH-PSh">
-                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="system"/>
-                            </buttonCell>
-                            <connections>
-                                <action selector="addChunk:" target="-2" id="uC2-RW-M32"/>
-                            </connections>
-                        </button>
                     </subviews>
                     <constraints>
-                        <constraint firstAttribute="bottom" secondItem="WIS-13-SRF" secondAttribute="bottom" constant="2" id="jRx-Hl-vUJ"/>
+                        <constraint firstItem="iDi-78-AZH" firstAttribute="top" secondItem="bal-0H-T2E" secondAttribute="top" constant="4" id="Gnl-kj-f8b"/>
+                        <constraint firstAttribute="trailing" secondItem="iDi-78-AZH" secondAttribute="trailing" constant="9" id="JlU-od-V8W"/>
+                        <constraint firstAttribute="bottom" secondItem="iDi-78-AZH" secondAttribute="bottom" constant="2" id="SRs-Ho-vmU"/>
                         <constraint firstAttribute="height" constant="21" id="rFO-Oj-39G"/>
                         <constraint firstItem="fDF-zO-1NG" firstAttribute="top" secondItem="bal-0H-T2E" secondAttribute="top" constant="2" id="uM3-cJ-ef5"/>
                         <constraint firstItem="fDF-zO-1NG" firstAttribute="leading" secondItem="bal-0H-T2E" secondAttribute="leading" constant="29" id="w5s-Nd-9eq"/>
-                        <constraint firstAttribute="trailing" secondItem="WIS-13-SRF" secondAttribute="trailing" constant="9" id="wAU-Ym-9kv"/>
                     </constraints>
                 </customView>
                 <scrollView identifier="sourceScroll" focusRingType="none" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="OEf-2G-F4x" userLabel="source scroll" customClass="NoScrollView" customModule="MacClient" customModuleProvider="target">
@@ -101,5 +130,6 @@
     </objects>
     <resources>
         <image name="NSAddTemplate" width="11" height="11"/>
+        <image name="NSRemoveTemplate" width="11" height="11"/>
     </resources>
 </document>

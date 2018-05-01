@@ -27,6 +27,7 @@ protocol NotebookViewItemDelegate: class {
 
 class NotebookViewItem: NSCollectionViewItem {
 	@IBOutlet var topView: NSView!
+	@IBOutlet var removeChunkButton: NSButton?
 	
 	weak var delegate: NotebookViewItemDelegate?
 	var data: NotebookItemData? { didSet { dataChanged() } }
@@ -65,6 +66,10 @@ class NotebookViewItem: NSCollectionViewItem {
 	
 	/// called when the data item has changed
 	func dataChanged() { }
+
+	@IBAction func removeChunk(_ sender: Any?) {
+		
+	}
 	
 	func size(forWidth width: CGFloat, data: NotebookItemData) -> NSSize {
 		fatalError("not implemented")
