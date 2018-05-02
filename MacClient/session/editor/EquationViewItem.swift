@@ -47,7 +47,7 @@ class EquationViewItem: ChunkViewItem {
 		NSGraphicsContext.saveGraphicsState()
 		let nscontext = NSGraphicsContext(bitmapImageRep: bitmap)!
 		NSGraphicsContext.current = nscontext
-		NSColor.white.setFill()
+		equationView.backgroundColor.setFill()
 		let eframe = equationView.frame.insetBy(dx: 1, dy: 1)
 		eframe.fill()
 		generateEquationImage(size: eframe.size).draw(in: eframe, from: .zero, operation: .sourceOver, fraction: 1.0)
