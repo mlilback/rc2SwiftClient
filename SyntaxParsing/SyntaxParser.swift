@@ -137,7 +137,7 @@ public class SyntaxParser: NSObject {
 		//>>>TODO: make blocks only work at beginning, skip \n#...
 		var codeBlockPoss = "```{r", codeBlockBegin = "}", codeBlockEnd = "```\n"
 		let codeInlineBegin	= "`r", codeInlineEnd = "`"
-		let eqBlock = "$$\n", eqInline = "$"
+		let eqBlock = "$$", eqInline = "$"
 		// For R-Markdown,
 		if docType == .rmd {
 			// add markdown comment tokens:
