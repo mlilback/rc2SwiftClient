@@ -296,7 +296,7 @@
                                     <rect key="frame" x="1" y="1" width="398" height="511"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" incrementalSearchingEnabled="YES" allowsUndo="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="avy-g3-Ese" customClass="SessionEditor" customModule="MacClient" customModuleProvider="target">
+                                        <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" incrementalSearchingEnabled="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" smartInsertDelete="YES" id="avy-g3-Ese" customClass="SessionEditor" customModule="MacClient" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="398" height="511"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

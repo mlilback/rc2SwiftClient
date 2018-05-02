@@ -52,6 +52,7 @@ class ChunkViewItem: NotebookViewItem {
 		if resultTextView != nil {
 			NotificationCenter.default.addObserver(self, selector: #selector(boundsChanged(_:)), name: NSView.boundsDidChangeNotification, object: resultView)
 		}
+		sourceView.enableLineNumberView()
 		
 		// Set background colors for top and middle views:
 		middleView?.wantsLayer = true
@@ -105,6 +106,7 @@ class ChunkViewItem: NotebookViewItem {
 			self?.adjustSize()
 			Log.debug("resultView.changeCallback", .app)
 		}
+		sourceView.enclosingScrollView?.rulersVisible = data.chunk.chunkType == .code
 		// copy the source string
 		sourceView.textStorage!.replace(with: data.source)
 		highlight(attributedString: sourceView.textStorage!)

@@ -8,6 +8,16 @@ import Cocoa
 import Rc2Common
 import SwiftyUserDefaults
 
+extension NSTextView {
+	/// installs line number view as the vertical ruler
+	func enableLineNumberView() {
+		guard enclosingScrollView!.verticalRulerView == nil else { return }
+		let lnv = NoodleLineNumberView(scrollView: enclosingScrollView)
+		enclosingScrollView!.verticalRulerView = lnv
+		enclosingScrollView!.rulersVisible = true
+	}
+}
+
 class SessionEditor: TextViewWithContextualMenu {
 	var wordWrapEnabled: Bool { return textContainer!.widthTracksTextView }
 	
@@ -25,14 +35,6 @@ class SessionEditor: TextViewWithContextualMenu {
 		textContainer?.widthTracksTextView = true
 		isHorizontallyResizable = true
 		isEditable = false
-	}
-	
-	/// installs line number view as the vertical ruler
-	func enableLineNumberView() {
-		guard enclosingScrollView!.verticalRulerView == nil else { return }
-		let lnv = NoodleLineNumberView(scrollView: enclosingScrollView)
-		enclosingScrollView!.verticalRulerView = lnv
-		enclosingScrollView!.rulersVisible = true
 	}
 	
 	var rangeOfAllText: NSRange {

@@ -71,6 +71,7 @@ class SourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		editor?.textStorage?.delegate = self
 		editor?.enableLineNumberView()
 		editor?.textContainer?.replaceLayoutManager(SourceEditorLayoutManager())
+		editor?.enclosingScrollView?.rulersVisible = true
 	}
 	
 	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
