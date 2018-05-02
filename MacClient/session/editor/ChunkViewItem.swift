@@ -133,6 +133,7 @@ class ChunkViewItem: NotebookViewItem {
 		sizingTextView?.textStorage?.replace(with: data.source)
 		manager.ensureLayout(for: container)
 		var workingSize = manager.usedRect(for: container).size
+		workingSize.width = max(workingSize.width, width)
 		workingSize.height += dividerBarHeight
 		if middleView != nil {
 			workingSize.height += dividerBarHeight
