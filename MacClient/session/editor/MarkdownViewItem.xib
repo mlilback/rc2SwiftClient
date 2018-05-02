@@ -27,8 +27,8 @@
                 <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bal-0H-T2E" userLabel="topView">
                     <rect key="frame" x="0.0" y="90" width="480" height="21"/>
                     <subviews>
-                        <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iDi-78-AZH">
-                            <rect key="frame" x="441" y="2" width="30" height="15"/>
+                        <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iDi-78-AZH">
+                            <rect key="frame" x="441" y="3" width="30" height="15"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FBc-9k-Wx8" userLabel="remove button">
                                     <rect key="frame" x="0.0" y="0.0" width="11" height="15"/>
