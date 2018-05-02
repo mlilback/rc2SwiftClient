@@ -135,9 +135,9 @@ public class SyntaxParser: NSObject {
 		setBaseTokenizer(tok)
 		// Default (rmd) chunk begin & end symbols:
 		//>>>TODO: make blocks only work at beginning, skip \n#...
-		var codeBlockPoss = "```{r", codeBlockBegin = "}", codeBlockEnd = "```"
+		var codeBlockPoss = "```{r", codeBlockBegin = "}", codeBlockEnd = "```\n"
 		let codeInlineBegin	= "`r", codeInlineEnd = "`"
-		let eqBlock = "$$", eqInline = "$"
+		let eqBlock = "$$\n", eqInline = "$"
 		// For R-Markdown,
 		if docType == .rmd {
 			// add markdown comment tokens:
@@ -168,7 +168,7 @@ public class SyntaxParser: NSObject {
 		tok.symbolState.add("<math")	// eqBlock mathML possible
 		tok.symbolState.add(">")		// eqBlock mathML definite
 		tok.symbolState.add("</math>")	// eqBlock mathML end
-		let frontMatterSymbol = "---"
+		let frontMatterSymbol = "---\n"
 		tok.symbolState.add(frontMatterSymbol)
 		// Init Range parameters:
 		var begin:Int = 0, end:Int = 0
@@ -192,12 +192,12 @@ public class SyntaxParser: NSObject {
 			else if state == .frontMatter  {
 				if token.stringValue == frontMatterSymbol {
 					token = tok.nextToken()!
-					end = Int(token.offset)-3
+					end = Int(token.offset) - frontMatterSymbol.count
 					if end > inRange.length { end = inRange.length }
 					if end-begin > 0 {
 						let range = NSMakeRange(begin, end-begin)
 						frontMatter = textStorage.string.substring(from: range)!
-						begin = end+3
+						begin = end + frontMatterSymbol.count
 					}
 					beyondFrontMatter = true
 				}
