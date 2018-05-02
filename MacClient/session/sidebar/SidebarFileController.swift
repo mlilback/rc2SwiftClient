@@ -639,19 +639,22 @@ extension SidebarFileController: FileHandler {
 	func fileSelectionChanged() {
 		guard !selectionChangeInProgress else { return }
 		selectionChangeInProgress = true
-		defer { selectionChangeInProgress = false }
+//		defer { selectionChangeInProgress = false }
 		guard let file = selectedFile else {
 			DispatchQueue.main.async {
 				self.tableView.selectRowIndexes(IndexSet(), byExtendingSelection: false)
+				self.selectionChangeInProgress = false
 			}
 			return
 		}
 		guard let idx = fileDataIndex(fileId: file.fileId) else {
 			Log.info("failed to find file to select", .app)
+			self.selectionChangeInProgress = false
 			return
 		}
 		DispatchQueue.main.async {
 			self.tableView.selectRowIndexes(IndexSet(integer: idx), byExtendingSelection: false)
+			self.selectionChangeInProgress = false
 		}
 	}
 }
