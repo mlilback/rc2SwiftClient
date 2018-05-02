@@ -13,7 +13,7 @@ import Networking
 import Model
 
 /** Handles importing via a save panel or drag and drop. */
-class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
+class MacFileImportSetup: NSObject {
 	
 	var pboardReadOptions: [NSPasteboard.ReadingOptionKey: Any] {
 		return [NSPasteboard.ReadingOptionKey.urlReadingFileURLsOnly: true as AnyObject,
@@ -144,5 +144,11 @@ class MacFileImportSetup: NSObject, NSOpenSavePanelDelegate {
 			i += 1
 		}
 		return useableName
+	}
+}
+
+extension MacFileImportSetup: NSOpenSavePanelDelegate {
+	func panel(_ sender: Any, shouldEnable url: URL) -> Bool {
+		return FileType.fileType(withExtension: url.pathExtension) != nil
 	}
 }
