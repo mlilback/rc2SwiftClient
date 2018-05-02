@@ -319,7 +319,7 @@ class EquationChunk: InternalRmdChunk, Equation {
 		super.init(parser: parser, chunk: pchunk)
 		// FIXME: notebook was blowing up with attributed equations
 //		let eqstr = contents.attributedSubstring(from: range)
-		let eqstr = NSAttributedString(string: contents.string.substring(from: innerRange)!)
+		let eqstr = NSAttributedString(string: contents.string.substring(from: innerRange)!.appending("\n"))
 		update(text: eqstr)
 	}
 
@@ -332,7 +332,8 @@ class EquationChunk: InternalRmdChunk, Equation {
 	}
 	
 	override var rawText: String {
-		return textStorage.string.surroundWithoutAddingNewlines(startText: "$$", endText: "$$")
+		let str = textStorage.string.trimmingCharacters(in: .newlines)
+		return str.surroundWithoutAddingNewlines(startText: "$$", endText: "$$")
 	}
 }
 
