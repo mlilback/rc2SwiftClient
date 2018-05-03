@@ -1,5 +1,17 @@
 # Rc² release notes
 
+## Build 63
+
+* notebook code/equation blocks no longer color backgrounds
+* chunks no longer spuriously add newlines at the top of their content
+* long documents no longer crash the parser, load much faster
+* implemented deletion of chunks
+* notebook trims newlines from block equations which causes problems with knitr
+* equation/code chunks no longer narrow if there isn't a newline at the end
+* equation chunk drag image now has correct background color
+* source editor and code chunks show line numbers
+* imports are now case-sensitive for file extensions
+
 ## Build 61
 
 * changed all notebook insets to 16 px (was 20/8) so scrollbar never overlaps edge of item view

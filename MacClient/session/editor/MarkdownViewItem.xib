@@ -27,7 +27,7 @@
                 <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bal-0H-T2E" userLabel="topView">
                     <rect key="frame" x="0.0" y="90" width="480" height="21"/>
                     <subviews>
-                        <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" misplaced="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iDi-78-AZH">
+                        <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iDi-78-AZH">
                             <rect key="frame" x="441" y="3" width="30" height="15"/>
                             <subviews>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FBc-9k-Wx8" userLabel="remove button">
@@ -76,9 +76,9 @@
                         </textField>
                     </subviews>
                     <constraints>
-                        <constraint firstItem="iDi-78-AZH" firstAttribute="top" secondItem="bal-0H-T2E" secondAttribute="top" constant="4" id="Gnl-kj-f8b"/>
+                        <constraint firstItem="iDi-78-AZH" firstAttribute="top" secondItem="bal-0H-T2E" secondAttribute="top" constant="3" id="Gnl-kj-f8b"/>
                         <constraint firstAttribute="trailing" secondItem="iDi-78-AZH" secondAttribute="trailing" constant="9" id="JlU-od-V8W"/>
-                        <constraint firstAttribute="bottom" secondItem="iDi-78-AZH" secondAttribute="bottom" constant="2" id="SRs-Ho-vmU"/>
+                        <constraint firstAttribute="bottom" secondItem="iDi-78-AZH" secondAttribute="bottom" constant="3" id="SRs-Ho-vmU"/>
                         <constraint firstAttribute="height" constant="21" id="rFO-Oj-39G"/>
                         <constraint firstItem="fDF-zO-1NG" firstAttribute="top" secondItem="bal-0H-T2E" secondAttribute="top" constant="2" id="uM3-cJ-ef5"/>
                         <constraint firstItem="fDF-zO-1NG" firstAttribute="leading" secondItem="bal-0H-T2E" secondAttribute="leading" constant="29" id="w5s-Nd-9eq"/>
