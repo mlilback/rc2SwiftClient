@@ -27,6 +27,7 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 	
 	open var pageTitle: String { return webView?.title ?? "" }
 	
+	// MARK: - methods
 	override open func viewDidLoad() {
 		super.viewDidLoad()
 		let prefs = WKPreferences()
@@ -94,6 +95,11 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 		return url!.deletingLastPathComponent()
 	}
 
+	open func insert(css: String, into webView: WKWebView) {
+		let jsString = "var style = document.createElement('style'); style.innerHTML='\(css)'; document.head.appendChild(style);"
+		webView.evaluateJavaScript(jsString, completionHandler: nil)
+	}
+	
 	//MARK -- WKNavigationDelegate
 	
 	open func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!)
