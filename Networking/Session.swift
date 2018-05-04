@@ -156,7 +156,7 @@ public class Session {
 			script = adjScript
 		}
 		// TODO: need to handle execute type, or remove as parameter
-		let cmdData = SessionCommand.ExecuteParams(sourceCode: script, transactionId: UUID().uuidString, userInitiated: true)
+		let cmdData = SessionCommand.ExecuteParams(sourceCode: script, transactionId: UUID().uuidString, userInitiated: true, contextId: nil)
 		send(command: SessionCommand.execute(cmdData))
 	}
 	
@@ -170,34 +170,34 @@ public class Session {
 	
 	/// clears all variables in the global environment
 	public func clearVariables() {
-		let cmdData = SessionCommand.ExecuteParams(sourceCode: "rm(list=ls())", transactionId: UUID().uuidString, userInitiated: false)
+		let cmdData = SessionCommand.ExecuteParams(sourceCode: "rm(list=ls())", transactionId: UUID().uuidString, userInitiated: false, contextId: nil)
 		send(command: SessionCommand.execute(cmdData))
 	}
 	
 	/// asks the server to delete the named variable
 	public func deleteVariable(name: String) {
 		// TODO: escape name or create new command that escapes on server
-		let cmdData = SessionCommand.ExecuteParams(sourceCode: "rm(\(name))", transactionId: UUID().uuidString, userInitiated: false)
+		let cmdData = SessionCommand.ExecuteParams(sourceCode: "rm(\(name))", transactionId: UUID().uuidString, userInitiated: false, contextId: nil)
 		send(command: SessionCommand.execute(cmdData))
 	}
 	
 	/// asks the server for a refresh of all environment variables
 	public func forceVariableRefresh() {
 		// used to have a watch: true argument.
-		send(command: SessionCommand.watchVariables(true))
+		send(command: SessionCommand.watchVariables(SessionCommand.WatchVariablesParams(watch: true, contextId: nil)))
 	}
 	
 	/// ask the server to send a message with current variable values and delta messages as they change
 	public func startWatchingVariables() {
 		if watchingVariables { return; }
-		send(command: SessionCommand.watchVariables(true))
+		send(command: SessionCommand.watchVariables(SessionCommand.WatchVariablesParams(watch: true, contextId: nil)))
 		watchingVariables = true
 	}
 
 	/// ask the server to stop sending environment delta messages
 	public func stopWatchingVariables() {
 		if !watchingVariables { return }
-		send(command: SessionCommand.watchVariables(false))
+		send(command: SessionCommand.watchVariables(SessionCommand.WatchVariablesParams(watch: false, contextId: nil)))
 		watchingVariables = false
 	}
 	

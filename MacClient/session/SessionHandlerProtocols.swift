@@ -15,7 +15,7 @@ import ClientCore
 /// Abstracts the idea of processing variable messages
 public protocol VariableHandler {
 	/// a variable value has been received
-	func variableUpdated(_ variable: Variable)
+	func variableUpdated(_ update: SessionResponse.VariableValueData)
 	
 	/// the server has returned a variable update
 	func variablesUpdated(_ update: SessionResponse.ListVariablesData)

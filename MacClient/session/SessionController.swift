@@ -236,8 +236,8 @@ extension SessionController {
 	/// actually handle the response by formatting it and sending it to the output handler
 	fileprivate func handle(response: SessionResponse) {
 		switch response {
-		case .variableValue(let aVariable):
-			varHandler.variableUpdated(aVariable)
+		case .variableValue(let varData):
+			varHandler.variableUpdated(varData)
 			return
 		case .variables(let varData):
 			varHandler.variablesUpdated(varData)

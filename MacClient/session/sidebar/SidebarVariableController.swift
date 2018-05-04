@@ -144,11 +144,11 @@ extension SidebarVariableController: NSUserInterfaceValidations {
 
 // MARK: - VariableHandler
 extension SidebarVariableController: VariableHandler {
-	func variableUpdated(_ variable: Variable) {
-		if let curVal = variableNamed(variable.name) {
+	func variableUpdated(_ varData: SessionResponse.VariableValueData) {
+		if let curVal = variableNamed(varData.value.name) {
 			rootVariables[rootVariables.index(of: curVal)!] = curVal
 		} else {
-			rootVariables.append(variable)
+			rootVariables.append(varData.value)
 			rootVariables.sort(by: Variable.compareByName)
 		}
 		variablesChanged()
