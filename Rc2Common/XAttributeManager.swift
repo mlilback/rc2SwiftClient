@@ -75,8 +75,7 @@ public class XAttributeManager: AttributeManager {
 		}
 		let buf = UnsafeMutablePointer<Int8>.allocate(capacity: bufLength)
 		defer {
-			buf.deinitialize()
-			buf.deallocate(capacity: bufLength)
+			buf.deallocate()
 		}
 		let result = listxattr(url.path, buf, bufLength, options.rawValue)
 		if result == -1 {
@@ -105,9 +104,9 @@ public class XAttributeManager: AttributeManager {
 		if bufLength == -1 {
 			throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno), userInfo: nil)
 		}
-		let buffer = UnsafeMutableRawPointer.allocate(bytes: bufLength, alignedTo: MemoryLayout<UInt8>.alignment)
+		let buffer = UnsafeMutableRawPointer.allocate(byteCount: bufLength, alignment: MemoryLayout<UInt8>.alignment)
 		defer {
-			buffer.deallocate(bytes: bufLength, alignedTo: MemoryLayout<UInt8>.alignment)
+			buffer.deallocate()
 		}
 		let result = getxattr(url.path, name, buffer, bufLength, 0, options.rawValue)
 		if result == -1 {

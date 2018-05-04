@@ -209,7 +209,7 @@ public final class DockerManager: NSObject {
 		precondition(imageInfo!.combined.size > 0)
 		Log.enter(.docker); defer { Log.exit(.docker) }
 		var fullSize = 0 //imageInfo!.reduce(0) { val, info in val + info.size }
-		let producers = imageInfo!.flatMap { img -> SignalProducer<PullProgress, DockerError>? in
+		let producers = imageInfo!.compactMap { img -> SignalProducer<PullProgress, DockerError>? in
 			Log.debug("pulling \(img.fullName)", .docker)
 			//skip pull if container already using that image
 			if let ctype = ContainerType(rawValue: img.name), img.id == containers[ctype]?.imageId ?? "" {

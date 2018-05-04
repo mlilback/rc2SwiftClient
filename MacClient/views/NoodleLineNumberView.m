@@ -130,18 +130,12 @@
     _invalidCharacterIndex = MIN(charIndex, _invalidCharacterIndex);
 }
 
-- (void)textStorageDidProcessEditing:(NSNotification *)notification
+- (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta
 {
-    NSTextStorage       *storage;
-    NSRange             range;
-    
-    storage = [notification object];
-
     // Invalidate the line indices. They will be recalculated and re-cached on demand.
-    range = [storage editedRange];
-    if (range.location != NSNotFound)
+    if (editedRange.location != NSNotFound)
     {
-        [self invalidateLineIndicesFromCharacterIndex:range.location];
+        [self invalidateLineIndicesFromCharacterIndex:editedRange.location];
         [self setNeedsDisplay:YES];
     }
 }

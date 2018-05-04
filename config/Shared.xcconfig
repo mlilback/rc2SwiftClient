@@ -11,7 +11,7 @@ SDKROOT = macosx
 
 MACOSX_DEPLOYMENT_TARGET = 10.12
 
-SWIFT_VERSION = 4.0
+SWIFT_VERSION = 4.1
 
 // Misuse of 'nonnull'
 //

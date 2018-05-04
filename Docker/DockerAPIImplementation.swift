@@ -348,7 +348,7 @@ public final class DockerAPIImplementation: DockerAPI {
 					self.jsonCheckHandler(observer: observer, data: data) { json in
 						guard let networks = try? json.getArray() else { return false }
 						//nets is now json cast safely to [JSON]
-						let matches = networks.flatMap { network -> JSON? in
+						let matches = networks.compactMap { network -> JSON? in
 							guard let itemName = try? network.getString(at: "Name") else { return nil }
 							if itemName == name { return network }
 							return nil
@@ -531,7 +531,7 @@ extension DockerAPIImplementation {
 
 	fileprivate func parseImages(json: JSON) -> SignalProducer<[DockerImage], DockerError>
 	{
-		guard let images = try? json.getArray().flatMap({ (imgJson: JSON) -> DockerImage? in
+		guard let images = try? json.getArray().compactMap({ (imgJson: JSON) -> DockerImage? in
 			guard let img = try? DockerImage(json: imgJson) else { return nil }
 			return img
 		}) else {

@@ -200,7 +200,7 @@ public class ConnectionInfo: CustomStringConvertible {
 	private func create(workspace: Workspace, bulkInfo: BulkUserInfo) -> AppWorkspace {
 		let rawFiles = bulkInfo.files[workspace.id] ?? []
 		//only error is if unsupported filetype. that should never happen. if it does, just ignore that file
-		let files: [AppFile] = rawFiles.flatMap {
+		let files: [AppFile] = rawFiles.compactMap {
 			return AppFile(model: $0)
 		}
 		return AppWorkspace(model: workspace, files: files)

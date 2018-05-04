@@ -81,7 +81,7 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 	// MARK: search field delegate
 	func searchFieldDidStartSearching(_ sender: NSSearchField) {
 		if nil == expandedBeforeSearch {
-			let exp = helpPackages.flatMap { outline!.isItemExpanded($0) ? $0 : nil }
+			let exp = helpPackages.compactMap { outline!.isItemExpanded($0) ? $0 : nil }
 			expandedBeforeSearch = exp
 		}
 	}

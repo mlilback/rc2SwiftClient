@@ -148,7 +148,7 @@ class NotebookEditorController: AbstractEditorController {
 	}
 	
 	func chunksChanged(_ chunks: [RmdChunk]) {
-		dataArray = chunks.flatMap { return NotebookItemData(chunk: $0, result: "")}
+		dataArray = chunks.compactMap { return NotebookItemData(chunk: $0, result: "")}
 		notebookView.reloadData()
 		notebookView.collectionViewLayout?.invalidateLayout()
 	}
@@ -159,7 +159,7 @@ class NotebookEditorController: AbstractEditorController {
 		let selectedPath = notebookView.selectionIndexPaths.first
 		let oldData = selectedViewItem?.data
 		if let parsed = newDocument {
-			dataArray = parsed.chunks.flatMap { return NotebookItemData(chunk: $0, result: "") }
+			dataArray = parsed.chunks.compactMap { return NotebookItemData(chunk: $0, result: "") }
 			chunksDisposable = parsed.chunksSignal.observeValues { [weak self] cnks in
 				self?.chunksChanged(cnks)
 			}

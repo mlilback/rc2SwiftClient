@@ -62,9 +62,9 @@ public func dataForXAttributeNamed(_ name: String, atPath path: String) -> (erro
 		return (errnoDescription(), nil)
 	} else {
 //		let buf = malloc(bufLength)
-		let buf = UnsafeMutableRawPointer.allocate(bytes: bufLength, alignedTo: MemoryLayout<UInt8>.alignment)
+		let buf = UnsafeMutableRawPointer.allocate(byteCount: bufLength, alignment: MemoryLayout<UInt8>.alignment)
 		defer {
-			buf.deallocate(bytes: bufLength, alignedTo: MemoryLayout<UInt8>.alignment)
+			buf.deallocate()
 		}
 		if getxattr(path, name, buf, bufLength, 0, 0) == -1 {
 			return (errnoDescription(), nil)
@@ -87,10 +87,7 @@ public func xattributeNamesAtPath(_ path: String) -> (error: String?, names: [St
 		return (errnoDescription(), nil)
 	} else {
 		let buf = UnsafeMutablePointer<Int8>.allocate(capacity: bufLength)
-		defer {
-			buf.deinitialize()
-			buf.deallocate(capacity: bufLength)
-		}
+		defer { buf.deallocate() }
 		if listxattr(path, buf, bufLength, 0) == -1 {
 			return (errnoDescription(), nil)
 		} else {

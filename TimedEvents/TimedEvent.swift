@@ -264,8 +264,7 @@ fileprivate extension DispatchQoS {
 			let priority = dictionary["priority"] as? Int,
 			let qos_class = DispatchQoS.QoSClass(rawValue: qos_class_t(class_t))
 			else { return nil }
-		self.qosClass = qos_class
-		self.relativePriority = priority
+		self.init(qosClass: qos_class, relativePriority: priority)
 	}
 	
 	func serialize() -> Dictionary<String, Any> {

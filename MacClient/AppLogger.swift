@@ -353,7 +353,7 @@ class Rc2LogConfig: LogConfiguration {
 			globalLevel = savedGlobal
 		}
 		if let saved = defaults[.logCategoryLevels] as? [String: Int] {
-			categoryLevels = Dictionary<LogCategory, LogLevel>(uniqueKeysWithValues: saved.flatMap
+			categoryLevels = Dictionary<LogCategory, LogLevel>(uniqueKeysWithValues: saved.compactMap
 				{ k, v in
 					guard let key = LogCategory(rawValue: k), let value = LogLevel(rawValue: v) else { return nil }
 					return (key, value)

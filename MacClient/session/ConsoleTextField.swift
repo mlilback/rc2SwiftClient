@@ -24,7 +24,7 @@ class ConsoleTextField: NSTextField {
 	}
 	
 	func updateContextMenu() {
-		let editor = currentEditor() as NSText!
+		let editor = currentEditor()
 		if let handler = adjustContextualMenu, let menu = editor?.menu {
 			editor?.menu = handler(editor!, menu)
 		}

@@ -28,7 +28,7 @@ class DockerBackupManager {
 		// create backup struct for every sql file that is a properly formatted date
 		do {
 			return try FileManager().contentsOfDirectory(at: backupDirUrl, includingPropertiesForKeys: [], options: .skipsHiddenFiles)
-			.flatMap { aUrl in
+				.compactMap { aUrl in
 				guard let date = dateFormatter.date(from: aUrl.deletingPathExtension().lastPathComponent),
 					aUrl.pathExtension == "sql"
 					else { return nil }

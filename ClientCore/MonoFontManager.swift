@@ -32,7 +32,7 @@ open class MonoFontManager {
 			let aDesc = anObj as! CTFontDescriptor
 			let fname = CTFontDescriptorCopyAttribute(aDesc, kCTFontFamilyNameAttribute)! as! String
 			let face = CTFontDescriptorCopyAttribute(aDesc, kCTFontStyleNameAttribute) as! String
-			let pname = CTFontDescriptorCopyAttribute(aDesc, kCTFontNameAttribute) as! String!
+			let pname = CTFontDescriptorCopyAttribute(aDesc, kCTFontNameAttribute) as! String?
 			let traitDict = (CTFontDescriptorCopyAttribute(aDesc, kCTFontTraitsAttribute) as! NSDictionary) as! [String: AnyObject]
 			let traits = traitDict[kCTFontSymbolicTrait as String] as! Int
 			//exclude symbol and script fonts and any non Regular fonts (which should have been exclulded above, but all styles of SourceCodePro were being returned)

@@ -61,7 +61,7 @@ func addJson(filePath: String, dbQueue: DatabaseQueue) {
 			let topicStatement = try db.makeUpdateStatement(topicSql)
 			for topic in topics {
 				// remove any aliases with invalid characters
-				let aliases = topic.aliases.components(separatedBy: ":").flatMap { if $0.rangeOfCharacter(from: invalidChars) != nil { return nil }
+				let aliases = topic.aliases.components(separatedBy: ":").compactMap { if $0.rangeOfCharacter(from: invalidChars) != nil { return nil }
 					return $0
 				}.joined(separator: ":")
 				let args: StatementArguments = [topic.package, topic.name, topic.title, aliases, topic.desc]
@@ -79,7 +79,7 @@ func findJsonFiles(srcPath: String, destPath: String) -> [String] {
 	let fm = FileManager()
 	do {
 		let paths = try fm .contentsOfDirectory(atPath: srcPath)
-		return paths.flatMap { path in
+		return paths.compactMap { path in
 			if path.hasSuffix(".json") {
 				return srcPath + "/" + path
 			}

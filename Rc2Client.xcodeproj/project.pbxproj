@@ -218,7 +218,6 @@
 		084E93CC201F6DFB00FF50EA /* FileImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086508801E4A431C0067C8CA /* FileImporterTests.swift */; };
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08525E501E204672008A332E /* URLStaleChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E4F1E204672008A332E /* URLStaleChecker.swift */; };
-		08525E731E256A8B008A332E /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E721E256A8B008A332E /* Reachability.swift */; };
 		08525E781E3143C3008A332E /* InputPrompter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E771E3143C3008A332E /* InputPrompter.swift */; };
 		08525E7A1E314558008A332E /* InputPrompter.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08525E791E314558008A332E /* InputPrompter.xib */; };
 		0859A28C2060082A00103924 /* RmdDocumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0859A28B2060082A00103924 /* RmdDocumentTests.swift */; };
@@ -1103,7 +1102,6 @@
 		084FEA7F1D3044E700060A7D /* ObjcConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcConstants.h; sourceTree = "<group>"; };
 		084FEA801D3045D800060A7D /* ObjcConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjcConstants.m; sourceTree = "<group>"; };
 		08525E4F1E204672008A332E /* URLStaleChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = URLStaleChecker.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		08525E721E256A8B008A332E /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		08525E741E2D7D4E008A332E /* Rc².entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Rc².entitlements"; sourceTree = "<group>"; };
 		08525E751E300185008A332E /* rdocs.tgz */ = {isa = PBXFileReference; lastKnownFileType = file; name = rdocs.tgz; path = ClientCore/help/rdocs.tgz; sourceTree = SOURCE_ROOT; };
 		08525E771E3143C3008A332E /* InputPrompter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputPrompter.swift; path = MacClient/InputPrompter.swift; sourceTree = SOURCE_ROOT; };
@@ -2282,7 +2280,6 @@
 				086A40DE1E7D956400AE476B /* PlatformTypeAliases.swift */,
 				089794411D7B6A0F003339EE /* SharedConstants.swift */,
 				081559991DDE83250047B3CE /* Rc2Error.swift */,
-				08525E721E256A8B008A332E /* Reachability.swift */,
 				08765C811DC58AB300F75D8E /* DispatchReader.swift */,
 				08525E4F1E204672008A332E /* URLStaleChecker.swift */,
 				086A40CF1E7AEC5000AE476B /* themes */,
@@ -2928,7 +2925,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = Rc2;
 				TargetAttributes = {
 					080E82C01DCBE31D0048F36C = {
@@ -3688,7 +3685,6 @@
 				086A40D91E7B3F0C00AE476B /* SyntaxTheme.swift in Sources */,
 				08E8366B1D94436D00E26EFE /* UserDefaults+Rc2.swift in Sources */,
 				0868068C200D892000C986A9 /* RecursiveFlatMap.swift in Sources */,
-				08525E731E256A8B008A332E /* Reachability.swift in Sources */,
 				08EDB9D02019527D000663EF /* Set+MJL+update.swift in Sources */,
 				086A40E11E7DAEE300AE476B /* InternalTheme.swift in Sources */,
 				08680683200D892000C986A9 /* ExpiringCache.swift in Sources */,
@@ -4399,7 +4395,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -4443,7 +4439,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -4538,7 +4534,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				LD_RUNPATH_SEARCH_PATHS = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx ${BUILT_PRODUCTS_DIR}";
+				LD_RUNPATH_SEARCH_PATHS = "${TOOLCHAIN_DIR}/usr/lib/swift/macosx ${BUILT_PRODUCTS_DIR}";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -4562,7 +4558,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks ${BUILT_PRODUCTS_DIR} /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks ${BUILT_PRODUCTS_DIR} ${TOOLCHAIN_DIR}/usr/lib/swift/macosx";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -4762,12 +4758,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -4809,11 +4807,13 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
