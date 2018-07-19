@@ -611,8 +611,9 @@ extension MacAppDelegate {
 	
 	private func startupLocalLogin() {
 		let loginFactory = LoginFactory()
-		let host = ServerHost.localHost
-		let pass = NetworkConstants.localServerPassword
+		let host = dockerEnabled ? ServerHost.localHost : ServerHost.devHost
+		// FIXME: hardcoded dev password
+		let pass = dockerEnabled ? NetworkConstants.localServerPassword : "devme"
 		loginFactory.login(to: host, as: host.user, password: pass).observe(on: UIScheduler()).startWithResult { (result) in
 			guard let conInfo = result.value else {
 				self.handleLoginError(result.error!)

@@ -170,8 +170,7 @@ public class Session {
 	
 	/// clears all variables in the global environment
 	public func clearVariables() {
-		let cmdData = SessionCommand.ExecuteParams(sourceCode: "rm(list=ls())", transactionId: UUID().uuidString, userInitiated: false, contextId: nil)
-		send(command: SessionCommand.execute(cmdData))
+		send(command: SessionCommand.clearEnvironment(0))
 	}
 	
 	/// asks the server to delete the named variable
@@ -365,9 +364,9 @@ public class Session {
 			let client = "ios"
 		#endif
 		var components = URLComponents()
-		components.host = "127.0.0.1" //conInfo.host.host
+		components.host = conInfo.host == ServerHost.localHost ? "127.0.0.1" : conInfo.host.host
 		components.port = conInfo.host.port
-		components.path = "/ws/\(workspace.wspaceId)"
+		components.path = "\(conInfo.host.urlPrefix)/ws/\(workspace.wspaceId)"
 		components.scheme = conInfo.host.secure ? "wss" : "ws"
 		components.queryItems = [URLQueryItem(name: "client", value: client),
 		                         URLQueryItem(name: "build", value: "\(AppInfo.buildNumber)")]
