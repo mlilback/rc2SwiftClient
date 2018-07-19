@@ -22,8 +22,6 @@ The following 3rd party frameworks are used (via Carthage or in the vendor direc
 
 * [HockeySDK](https://hockeyapp.net/) used for feedback beta distribution. All files are included in the git repository
 
-* [MessagePackSwift](https://github.com/mlilback/MessagePackSwift.git) a Swift implementation of [MessagePack](http://msgpack.org/)
-
 * [MJLLogger](https://github.com/mlilback/MJLLogger.git) a logging framework that works cross-framework, allows only the application to enable logging, and allows enabling logging per LogCategory.
 
 * [Mockingjay](https://github.com/kylef/Mockingjay) for network unit tests
