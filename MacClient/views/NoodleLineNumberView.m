@@ -109,7 +109,7 @@
     [super setClientView:aView];
     if ((aView != nil) && [aView isKindOfClass:[NSTextView class]])
     {
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textStorageDidProcessEditing:) name:NSTextStorageDidProcessEditingNotification object:[(NSTextView *)aView textStorage]];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textStorageDidProcessEdit:) name:NSTextStorageDidProcessEditingNotification object:[(NSTextView *)aView textStorage]];
 
 		[self invalidateLineIndicesFromCharacterIndex:0];
     }
@@ -130,6 +130,7 @@
     _invalidCharacterIndex = MIN(charIndex, _invalidCharacterIndex);
 }
 
+// this is no longer being called
 - (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSTextStorageEditActions)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta
 {
     // Invalidate the line indices. They will be recalculated and re-cached on demand.
@@ -138,6 +139,17 @@
         [self invalidateLineIndicesFromCharacterIndex:editedRange.location];
         [self setNeedsDisplay:YES];
     }
+}
+
+// now use this for proper handling of text change
+- (void) textStorageDidProcessEdit:(NSNotification *)notification {
+	NSRange editedRange = ((NSTextStorage*)notification.object).editedRange;
+	// Invalidate the line indices. They will be recalculated and re-cached on demand.
+	if (editedRange.location != NSNotFound)
+	{
+		[self invalidateLineIndicesFromCharacterIndex:editedRange.location];
+		[self setNeedsDisplay:YES];
+	}
 }
 
 - (void)calculateLines
