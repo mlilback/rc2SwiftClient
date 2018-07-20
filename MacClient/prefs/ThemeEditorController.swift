@@ -6,7 +6,6 @@
 
 import Rc2Common
 import Cocoa
-import Freddy
 import MJLLogger
 import ReactiveSwift
 import SwiftyUserDefaults

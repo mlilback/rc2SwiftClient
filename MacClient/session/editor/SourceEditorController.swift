@@ -6,7 +6,6 @@
 
 import Cocoa
 import MJLLogger
-import Freddy
 import ReactiveSwift
 import Rc2Common
 import Networking

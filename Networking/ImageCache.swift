@@ -6,7 +6,6 @@
 
 import Rc2Common
 import Dispatch
-import Freddy
 import MJLLogger
 import ReactiveSwift
 import Model

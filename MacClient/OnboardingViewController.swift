@@ -8,7 +8,6 @@ import Cocoa
 import MJLLogger
 import Rc2Common
 import Networking
-import Freddy
 import ReactiveSwift
 import Model
 

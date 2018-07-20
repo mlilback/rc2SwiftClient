@@ -11,7 +11,6 @@
 	import UIKit
 #endif
 import Rc2Common
-import Freddy
 import ReactiveSwift
 import Result
 import Model

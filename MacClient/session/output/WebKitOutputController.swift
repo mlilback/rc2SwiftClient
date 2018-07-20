@@ -6,7 +6,6 @@
 //
 
 import Cocoa
-import Freddy
 import WebKit
 import MJLLogger
 import Rc2Common

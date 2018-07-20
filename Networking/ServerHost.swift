@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Freddy
 import Rc2Common
 
 ///Represents a remote host

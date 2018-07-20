@@ -5,7 +5,6 @@
 //
 
 import Cocoa
-import Freddy
 import Model
 import Networking
 import ClientCore

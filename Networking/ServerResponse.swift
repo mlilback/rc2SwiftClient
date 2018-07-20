@@ -5,7 +5,6 @@
 //
 
 import Foundation
-import Freddy
 import MJLLogger
 import SwiftyUserDefaults
 import Result

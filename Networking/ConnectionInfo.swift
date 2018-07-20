@@ -5,7 +5,6 @@
 //
 
 import Foundation
-import Freddy
 import ReactiveSwift
 import Result
 import Model

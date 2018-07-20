@@ -5,7 +5,6 @@
 //
 
 import Cocoa
-import Freddy
 import Rc2Common
 import SwiftyUserDefaults
 import Networking

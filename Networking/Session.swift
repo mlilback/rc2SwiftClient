@@ -9,7 +9,6 @@
 #endif
 import Rc2Common
 import Foundation
-import Freddy
 import MJLLogger
 import ReactiveSwift
 import Result

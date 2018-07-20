@@ -6,7 +6,6 @@
 
 import Rc2Common
 import Foundation
-import Freddy
 import Networking
 import MJLLogger
 import Model
