@@ -38,7 +38,9 @@ public class Session {
 	public let imageCache: ImageCache
 	///
 	public weak var delegate: SessionDelegate?
-
+	/// status of compute engine
+	public private(set) var computeStatus: SessionResponse.ComputeStatus = .initializing
+	
 	// swiftlint:disable:next force_try
 	public var project: AppProject { return try! conInfo.project(withId: workspace.projectId) }
 	
@@ -477,6 +479,7 @@ private extension Session {
 			return
 		}
 		Log.info("got message \(response)", .session)
+		var informDelegate = false
 		switch response {
 		case .fileOperation(let opData):
 			handleFileOperation(response: opData)
@@ -490,10 +493,16 @@ private extension Session {
 			conInfo.update(sessionInfo: infoData)
 		case .error(let errorData):
 			delegate?.sessionErrorReceived(errorData.error)
+		case .computeStatus(let status):
+			computeStatus = status
+			informDelegate = true
 		case .execComplete(let execData):
 			imageCache.cacheImagesFromServer(execData.images)
-			fallthrough
+			informDelegate = true
 		default:
+			informDelegate = true
+		}
+		if informDelegate {
 			queue.async { self.delegate?.sessionMessageReceived(response) }
 		}
 		if let transId = transactionId(for: response), let trans = pendingTransactions[transId] {
@@ -506,6 +515,8 @@ private extension Session {
 	// swiftlint:disable cyclomatic_complexity
 	private func transactionId(for response: SessionResponse) -> String? {
 		switch response {
+		case .computeStatus(_):
+			return nil
 		case .connected:
 			return nil
 		case .echoExecute(let data):
