@@ -56,7 +56,7 @@ public final class LoginFactory: NSObject {
 			Log.error("json serialization of login info failed", .network)
 			fatalError()
 		}
-		requestUrl = URL(string: "login", relativeTo: destHost.url!)!
+		requestUrl = URL(string: destHost.urlPrefix + "/login", relativeTo: destHost.url!)!
 		return attemptLogin(request: loginRequest(requestUrl: requestUrl, data: reqdata))
 			.map { data -> LoginResponse? in
 				guard let rsp = try? JSONDecoder().decode(LoginResponse.self, from: data) else {
@@ -111,7 +111,7 @@ public final class LoginFactory: NSObject {
 		guard let loginInfo = loginInfo else {
 			return SignalProducer<ConnectionInfo, Rc2Error>(error: Rc2Error(type: .network, explanation: "failed to get login info."))
 		}
-		var request = URLRequest(url: URL(string: "info", relativeTo: host!.url!)!)
+		var request = URLRequest(url: URL(string: host!.urlPrefix +  "/info", relativeTo: host!.url!)!)
 		request.addValue("application/json", forHTTPHeaderField: "Accept")
 		request.addValue("Bearer \(loginInfo.token)", forHTTPHeaderField: "Authorization")
 		return urlSession!.getData(request: request)
