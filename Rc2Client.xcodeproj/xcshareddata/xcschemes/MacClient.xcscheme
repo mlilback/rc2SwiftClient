@@ -185,7 +185,7 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "--disableDocker"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
       <EnvironmentVariables>
