@@ -31,10 +31,12 @@ fileprivate struct Actions {
 	static let backupDatabase = #selector(MacAppDelegate.backupDatabase(_:))
 	static let showLog = #selector(MacAppDelegate.showLogWindow(_:))
 	static let resetLogs = #selector(MacAppDelegate.resetLogs(_:))
+	static let toggleCloud = #selector(MacAppDelegate.toggleCloudUsage(_:))
 }
 
 private extension DefaultsKeys {
 	static let supportDataVersion = DefaultsKey<Int>("currentSupportDataVersion")
+	static let connectToCloud = DefaultsKey<Bool?>("connectToCloud")
 }
 
 @NSApplicationMain
@@ -92,7 +94,11 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		mainStoryboard = NSStoryboard(name: .mainBoard, bundle: nil)
 		precondition(mainStoryboard != nil)
 		//only init dockerManager if not running unit tests or not expressly disabled
-		dockerEnabled = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil && !ProcessInfo.processInfo.arguments.contains("--disableDocker")
+		if let useCloud = UserDefaults.standard[.connectToCloud], useCloud {
+			dockerEnabled = false
+		} else {
+			dockerEnabled = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil && !ProcessInfo.processInfo.arguments.contains("--disableDocker")
+		}
 		if dockerEnabled {
 			let dm = DockerManager()
 			dockerManager = dm
@@ -169,6 +175,9 @@ extension MacAppDelegate {
 			guard let wspaceIdent = menuItem.representedObject as? WorkspaceIdentifier else { return false }
 			return windowController(for: wspaceIdent)?.window?.isMainWindow ?? true
 		case Actions.showLog:
+			return true
+		case Actions.toggleCloud:
+			menuItem.state = (UserDefaults.standard[.connectToCloud] ?? false) ? .on : .off
 			return true
 		default:
 			return false
@@ -416,6 +425,17 @@ extension MacAppDelegate {
 	
 	@IBAction func showLogWindow(_ sender: Any?) {
 		logger.showLogWindow(sender)
+	}
+	
+	@IBAction func toggleCloudUsage(_ sender: Any?) {
+		let currentValue = UserDefaults.standard[.connectToCloud] ?? false
+		UserDefaults.standard[.connectToCloud] = !currentValue
+		// relaunch application
+		let task = Process()
+		task.launchPath = "/bin/sh"
+		task.arguments = ["-c", "sleep 0.5; open \"\(Bundle.main.bundlePath)\""]
+		task.launch()
+		NSApp.terminate(nil)
 	}
 	
 	@IBAction func adjustGlobalLogLevel(_ sender: Any?) {

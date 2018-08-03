@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
         <capability name="system font weights other than Regular or Bold" minToolsVersion="7.0"/>
@@ -625,10 +625,16 @@ DQ
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Debug" id="fK2-IA-Ey6" userLabel="Debug Menu">
                                     <items>
-                                        <menuItem title="Reset Server Install" id="nP0-f3-vsj">
+                                        <menuItem title="Use Cloud Server" id="nP0-f3-vsj">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <binding destination="Voe-Tx-rLC" name="target" keyPath="dockerManager" id="t4l-5f-yXj">
+                                                <action selector="toggleCloudUsage:" target="Voe-Tx-rLC" id="9b9-k8-9Zq"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Reset Server Install" id="sly-2Y-EG6">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <binding destination="Voe-Tx-rLC" name="target" keyPath="dockerManager" id="fw2-Ud-rX7">
                                                     <dictionary key="options">
                                                         <string key="NSSelectorName">resetServerInstall:</string>
                                                     </dictionary>
