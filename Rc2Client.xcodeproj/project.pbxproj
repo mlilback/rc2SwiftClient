@@ -57,7 +57,6 @@
 		081559871DDBB4310047B3CE /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559861DDBB4310047B3CE /* Session.swift */; };
 		081559891DDBD7DA0047B3CE /* Freddy+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */; };
 		081559951DDCCD960047B3CE /* RACSignals+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559941DDCCD960047B3CE /* RACSignals+Rc2.swift */; };
-		081559981DDD06AD0047B3CE /* MessagePackSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559991DDE83250047B3CE /* Rc2Error.swift */; };
 		0815599C1DDF396E0047B3CE /* FileImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815599B1DDF396E0047B3CE /* FileImporter.swift */; };
 		0815599F1DDF9E4F0047B3CE /* Freddy.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -785,7 +784,6 @@
 				080E82F01DCC03810048F36C /* Freddy.framework in CopyFiles */,
 				080E82F31DCC03B40048F36C /* Result.framework in CopyFiles */,
 				081559771DDB854F0047B3CE /* SwiftyUserDefaults.framework in CopyFiles */,
-				081559981DDD06AD0047B3CE /* MessagePackSwift.framework in CopyFiles */,
 				080E82F21DCC038B0048F36C /* Nimble.framework in CopyFiles */,
 				080E82F61DCCCDD60048F36C /* ReactiveSwift.framework in CopyFiles */,
 				080E82F11DCC03890048F36C /* Quick.framework in CopyFiles */,
@@ -1260,7 +1258,6 @@
 		08BCEA3020388D5F004A5F47 /* DocumentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
 		08BCEA34203B0E0B004A5F47 /* bulkInfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bulkInfo.json; sourceTree = "<group>"; };
 		08BE3E112090A3D000EA4DDD /* NSAttributedString+MJL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+MJL.swift"; sourceTree = "<group>"; };
-		08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessagePackSwift.framework; path = Carthage/Build/Mac/MessagePackSwift.framework; sourceTree = "<group>"; };
 		08C2C3C81DF74DE200397DD3 /* Networking.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Networking.strings; sourceTree = "<group>"; };
 		08C2D5E41E719DE20007A02D /* SBInjector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SBInjector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08C2D5E81E71B1FC0007A02D /* Searchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Searchable.swift; sourceTree = "<group>"; };
@@ -2206,7 +2203,6 @@
 				08A01FCD1CC80189001EDFAA /* libsqlite3.tbd */,
 				08678C961DCA78CE00F9F283 /* Freddy.framework */,
 				0833A8211D2D7E770033654B /* HockeySDK.framework */,
-				08BFD3E31C90B55C0041EB1C /* MessagePackSwift.framework */,
 				082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */,
 				089346021C7F661400100CF6 /* PEGKit.framework */,
 				08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */,
