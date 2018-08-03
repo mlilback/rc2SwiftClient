@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="fQV-eD-eaQ">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="fQV-eD-eaQ">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
@@ -15,14 +15,13 @@
                         <tabViewItem label="General" identifier="General" image="prefsGeneral" id="hWp-GB-5HC"/>
                         <tabViewItem label="Editor" identifier="Editor" image="prefsEditor" id="hcP-VA-z8r"/>
                         <tabViewItem label="Docker" identifier="Docker" id="Fv2-QX-RTV" userLabel="Docker"/>
-                        <tabViewItem label="Themes" identifier="Themes" image="theme" id="E4U-7h-jG2"/>
+                        <tabViewItem label="Themes" identifier="Themes" image="prefsThemes" id="E4U-7h-jG2"/>
                         <tabViewItem label="Code Templates" identifier="Templates" image="prefsTemplates" id="f7e-YA-VoD"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="Fpf-ZH-iw5">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <font key="font" metaFont="message"/>
-                        <tabViewItems/>
                         <connections>
                             <outlet property="delegate" destination="mtl-yA-X0u" id="dmS-ix-J6m"/>
                         </connections>
@@ -598,6 +597,6 @@
         <image name="prefsEditor" width="32" height="32"/>
         <image name="prefsGeneral" width="32" height="32"/>
         <image name="prefsTemplates" width="64" height="64"/>
-        <image name="theme" width="48" height="48"/>
+        <image name="prefsThemes" width="48" height="48"/>
     </resources>
 </document>
