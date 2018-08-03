@@ -71,7 +71,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		case #selector(ConsoleOutputController.clearConsole(_:)):
 			return resultsView?.string.count ?? 0 > 0
 		default:
-			return super.validateMenuItem(menuItem)
+			return false
 		}
 	}
 	
