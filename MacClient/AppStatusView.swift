@@ -76,8 +76,8 @@ class AppStatusView: NSView {
 				progress?.isHidden = true
 				determinateProgress?.isHidden = false
 				determinateProgress?.doubleValue = update.value
-				textField?.stringValue = update.message ?? "Starting action…"
 			}
+			textField?.stringValue = update.message ?? "Starting action…"
 		}
 	}
 	
