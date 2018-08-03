@@ -37,6 +37,7 @@ class RootViewController: AbstractSessionViewController
 		editorController = firstChildViewController(self)!
 		sessionController = SessionController(session: session, delegate: self, editor: editorController!, outputHandler: outputHandler!, variableHandler:variableHandler)
 		outputHandler?.sessionController = sessionController
+		sessionController?.appStatus = appStatus
 	}
 	
 	// MARK: - Lifecycle
@@ -134,6 +135,7 @@ class RootViewController: AbstractSessionViewController
 		}
 	}
 	
+	// when the status changes, we show/hide the dimming view to disable interaction
 	override func appStatusChanged() {
 		progressDisposable = appStatus?.progressSignal.observe(on: UIScheduler()).observeValues
 		{ [weak self] progressUpdate in
@@ -146,6 +148,7 @@ class RootViewController: AbstractSessionViewController
 				break
 			}
 		}
+		sessionController?.appStatus = appStatus
 	}
 }
 

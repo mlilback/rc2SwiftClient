@@ -33,10 +33,13 @@ protocol SessionControllerDelegate: class {
 	let outputHandler: OutputHandler
 	let varHandler: VariableHandler
 	let session: Session
+	var appStatus: MacAppStatus?
 
 	var savedStateHash: Data?
 	fileprivate var properlyClosed: Bool = false
 	fileprivate var fileLoadDisposable: Disposable?
+	private var computeStatus: SessionResponse.ComputeStatus?
+	private var computeStatusObserver: Signal<Bool, Rc2Error>.Observer?
 	
 	// MARK: methods
 	
@@ -233,6 +236,26 @@ extension SessionController {
 		}
 	}
 	
+	private func updateCompute(status: SessionResponse.ComputeStatus) {
+		if nil == computeStatus {
+			// start progress for compute setup
+			SignalProducer<Bool, Rc2Error> { observer, _ in
+				self.computeStatusObserver = observer
+			}
+			.updateProgress(status: appStatus!, actionName: "Launching R", converter: { _ in
+				return ProgressUpdate(.start, message: "Launching R")
+			})
+			.start(on: UIScheduler()).startWithCompleted {
+				self.computeStatusObserver?.sendCompleted()
+			}
+		}
+		computeStatus = status
+		if case SessionResponse.ComputeStatus.running = status {
+			/// end compute progress
+			computeStatusObserver?.sendCompleted()
+		}
+	}
+	
 	/// actually handle the response by formatting it and sending it to the output handler
 	fileprivate func handle(response: SessionResponse) {
 		switch response {
@@ -245,6 +268,8 @@ extension SessionController {
 		case .showOutput(let outputData):
 			guard UserDefaults.standard[.openGeneratedFiles] else { break }
 			showFile(outputData.file.id)
+		case .computeStatus(let status):
+			updateCompute(status: status)
 		default:
 			break
 		}
