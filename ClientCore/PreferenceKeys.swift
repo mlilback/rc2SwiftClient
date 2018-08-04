@@ -11,7 +11,6 @@ import Freddy
 import Networking
 
 public extension DefaultsKeys {
-	public static let openSessions = DefaultsKey<JSON?>("OpenSessions")
 	public static let maxCommandHistory = DefaultsKey<Int>("MaxCommandHistorySize")
 	//import
 	public static let lastImportDirectory = DefaultsKey<Data?>("rc2.LastImportDirectory")
