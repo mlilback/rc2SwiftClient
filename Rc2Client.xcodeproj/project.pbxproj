@@ -423,6 +423,7 @@
 		08CCED491EE1DB64004B5ADE /* DockerManagerInjectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CCED481EE1DB64004B5ADE /* DockerManagerInjectable.swift */; };
 		08CCED4B1EE1DDFC004B5ADE /* DockerLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CCED4A1EE1DDFC004B5ADE /* DockerLogController.swift */; };
 		08CCED4D1EE1DF6E004B5ADE /* DockerTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CCED4C1EE1DF6E004B5ADE /* DockerTabViewController.swift */; };
+		08CE59F621152A5100132108 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CE59F521152A5100132108 /* LoginViewController.swift */; };
 		08CFE8CF1E75BA42002A35C1 /* DirectoryWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CFE8CE1E75BA42002A35C1 /* DirectoryWatcher.swift */; };
 		08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
 		08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -1272,6 +1273,7 @@
 		08CCED481EE1DB64004B5ADE /* DockerManagerInjectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerManagerInjectable.swift; sourceTree = "<group>"; };
 		08CCED4A1EE1DDFC004B5ADE /* DockerLogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerLogController.swift; sourceTree = "<group>"; };
 		08CCED4C1EE1DF6E004B5ADE /* DockerTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DockerTabViewController.swift; sourceTree = "<group>"; };
+		08CE59F521152A5100132108 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		08CFE8CE1E75BA42002A35C1 /* DirectoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectoryWatcher.swift; sourceTree = "<group>"; };
 		08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/Mac/ReactiveCocoa.framework; sourceTree = "<group>"; };
 		08D6106E1CD2C53100258D8E /* listvars.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = listvars.json; sourceTree = "<group>"; };
@@ -2150,6 +2152,7 @@
 				083305D81C501B7300E27F66 /* MainWindowController.swift */,
 				086659991CA1F3E5007AC555 /* MainWindow.xib */,
 				0835A07D1E57823500123820 /* OnboardingViewController.swift */,
+				08CE59F521152A5100132108 /* LoginViewController.swift */,
 				086508761E43F27C0067C8CA /* SingleInputViewController.swift */,
 				083382F01C64341C00D40EEB /* AppStatusView.swift */,
 				08A2A2A1200A9B0E00D9807B /* LogViewController.swift */,
@@ -3583,6 +3586,7 @@
 				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,
 				08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */,
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
+				08CE59F621152A5100132108 /* LoginViewController.swift in Sources */,
 				08680692200E415600C986A9 /* AppLogger.swift in Sources */,
 				083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */,
 				08F673D01D020B2700B87049 /* FontManagement.swift in Sources */,
