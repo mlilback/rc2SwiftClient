@@ -11,8 +11,9 @@ import Rc2Common
 ///Represents a remote host
 public struct ServerHost: Codable, CustomStringConvertible, Hashable {
 	public static let localHost: ServerHost = { return ServerHost(name: "Local Server", host: "localhost", port: defaultAppServerPort, user: "local", secure: false) }()
-	public static let devHost: ServerHost = { return ServerHost(name: "devserver", host: "api.rc2.io", port: 443, user: "mlilback", urlPrefix: "/dev", secure: true) }()
-	
+	public static let betaHost: ServerHost = { return ServerHost(name: "Rc² Beta Cloud", host: "api.rc2.io", port: 443, user: "", urlPrefix: "/dev", secure: true) }()
+	public static let cloudHost: ServerHost = { return ServerHost(name: "Rc² Cloud", host: "api.rc2.io", port: 443, user: "", urlPrefix: "", secure: true) }()
+
 	///user-friendly name for the host
 	public let name: String
 	public let host: String

@@ -16,6 +16,8 @@ public class ConnectionManager {
 		set { precondition(_localConnection == nil); _localConnection = newValue }
 	}
 	
+	public var currentConnection: ConnectionInfo?
+	
 //	public var defaultLcoalProject: AppProject? { return _localConnection?.project(withName: NetworkConstants.defaultProjectName) }
 
 	public init() {
