@@ -16,7 +16,7 @@ class LoginViewController: NSViewController {
 	@IBOutlet private weak var progressSpinner: NSProgressIndicator!
 	
 	var initialHost: ServerHost?
-	var enteredPassword: String = ""
+	var enteredPassword: String { get { return passwordField.stringValue } }
 	var selectedHost: ServerHost?
 	
 	var statusMessage: String { get { return statusField.stringValue } set { statusField.stringValue = newValue } }
@@ -24,8 +24,8 @@ class LoginViewController: NSViewController {
 
 	var completionHandler : ((ServerHost?) -> Void)?
 
-	override func viewDidLoad() {
-		super.viewDidLoad()
+	override func viewWillAppear() {
+		super.viewWillAppear()
 		statusField.stringValue = ""
 		userField.stringValue = initialHost?.user ?? ""
 		passwordField.stringValue = ""
@@ -50,5 +50,17 @@ class LoginViewController: NSViewController {
 		let baseHost: ServerHost = serverPopUp.indexOfSelectedItem == 0 ? .cloudHost : .betaHost
 		selectedHost = ServerHost(name: baseHost.name, host: baseHost.host, port: baseHost.port, user: userField.stringValue, urlPrefix: baseHost.urlPrefix, secure: true)
 		completionHandler?(selectedHost)
+	}
+}
+
+extension LoginViewController: NSTextFieldDelegate {
+	func control(_ control: NSControl, isValidObject obj: Any?) -> Bool {
+		guard obj != nil else { return false }
+		let userValid = userField.stringValue.count > 3
+		let passValid = passwordField.stringValue.count > 4
+		loginButon.isEnabled = userValid && passValid
+		if control == userField { return userValid }
+		if control == passwordField { return passValid }
+		return true
 	}
 }
