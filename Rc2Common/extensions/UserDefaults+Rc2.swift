@@ -10,6 +10,25 @@ import SwiftyUserDefaults
 import MJLLogger
 
 public extension UserDefaults {
+	/// work with DefaultsKey for any Codable type
+	public subscript<T>(key: DefaultsKey<T?>) -> T? where T: Codable {
+		get {
+			guard let data = data(forKey: key._key) else { return nil }
+			guard let object: T = try? JSONDecoder().decode(T.self, from: data) else { return nil }
+			return object
+		}
+		set {
+			guard let value = newValue else { remove(key); return }
+			do {
+				
+				let data = try JSONEncoder().encode(value)
+				set(data, forKey: key._key)
+			} catch {
+				Log.warn("error saving \(key._key) to prefs: \(error)", .core)
+			}
+		}
+	}
+	
 	///allow storing JSON objects via SwiftyUserDefaults (serialized as Data)
 	public subscript(key: DefaultsKey<JSON?>) -> JSON? {
 		get {
