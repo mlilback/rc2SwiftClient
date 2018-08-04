@@ -25,7 +25,7 @@ public struct ServerHost: Codable, CustomStringConvertible, Hashable {
 	/// the string used to store the password for this host in the keychain
 	public var keychainKey: String {
 		if self == ServerHost.localHost { return "\(self.user)@\(self.host)" }
-		return "\(self.name):\(self.user)@\(self.host)"
+		return "\(self.host)/\(self.urlPrefix):\(self.user)@\(self.host)"
 	}
 	
 	public init(name: String, host: String, port: Int = defaultAppServerPort, user: String="local", urlPrefix: String="", secure: Bool = false) {

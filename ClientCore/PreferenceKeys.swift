@@ -11,6 +11,8 @@ import Freddy
 import Networking
 
 public extension DefaultsKeys {
+	public static let currentCloudHost = DefaultsKey<ServerHost?>("currentCloudHost")
+	
 	public static let maxCommandHistory = DefaultsKey<Int>("MaxCommandHistorySize")
 	//import
 	public static let lastImportDirectory = DefaultsKey<Data?>("rc2.LastImportDirectory")

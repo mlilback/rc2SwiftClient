@@ -52,6 +52,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	private var backupManager: DockerBackupManager?
 	var startupWindowController: StartupWindowController?
 	var startupController: StartupController?
+	var loginController: LoginViewController?
+	var loginWindowController: NSWindowController?
 	private var onboardingController: OnboardingWindowController?
 	private var dockerWindowController: NSWindowController?
 	private var preferencesWindowController: NSWindowController?
@@ -100,6 +102,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 			dockerEnabled = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil && !ProcessInfo.processInfo.arguments.contains("--disableDocker")
 		}
 		if dockerEnabled {
+			connectionManager.currentConnection = connectionManager.localConnection
 			let dm = DockerManager()
 			dockerManager = dm
 			backupManager = DockerBackupManager(manager: dm)
@@ -583,7 +586,7 @@ extension MacAppDelegate {
 			startupController!.stage = .docker
 		case .docker:
 			startupController!.stage = .localLogin
-			startupLocalLogin()
+			startLoginProcess()
 		case .downloading:
 			break //changes handled via observing pull signal
 		case .localLogin:
@@ -628,27 +631,82 @@ extension MacAppDelegate {
 			handleStartupError(error)
 		}
 	}
-	
-	private func startupLocalLogin() {
+
+	/// attempt login on host. advances to next startup stage if successful. Handles error by fatal error (if local), or re-prompting for login info if remote
+	private func performLogin(host: ServerHost, password: String) {
 		let loginFactory = LoginFactory()
-		let host = dockerEnabled ? ServerHost.localHost : ServerHost.devHost
-		// FIXME: hardcoded dev password
-		let pass = dockerEnabled ? NetworkConstants.localServerPassword : "devme"
-		loginFactory.login(to: host, as: host.user, password: pass).observe(on: UIScheduler()).startWithResult { (result) in
+		loginFactory.login(to: host, as: host.user, password: password).observe(on: UIScheduler()).startWithResult { result in
 			guard let conInfo = result.value else {
-				self.handleLoginError(result.error!)
+				if self.dockerEnabled { fatalError("failed to login to local server") }
+				var message = result.error?.nestedError?.localizedDescription ?? result.error?.localizedDescription
+				let nestederror = result.error!.nestedError as? NetworkingError
+				if nestederror != nil,
+					case let NetworkingError.invalidHttpStatusCode(rsp) = nestederror!,
+					rsp.statusCode == 401
+				{
+					message = "invalid userid or password"
+				}
+				self.promptToLogin(previousErrorMessage: message ?? "unknown error")
 				return
 			}
-			self.connectionManager.localConnection = conInfo
+			UserDefaults.standard[.currentCloudHost] = host
+			// only close login window if it was created/shown
+			if let loginWindowController = self.loginWindowController {
+				self.startupWindowController!.window!.endSheet(loginWindowController.window!)
+				self.loginController = nil
+				self.loginWindowController = nil
+			}
+			self.connectionManager.currentConnection = conInfo
+			do {
+				try Keychain().setString(host.keychainKey, value: password)
+			} catch {
+				Log.error("error saving password to keychain: \(error)", .app)
+			}
 			self.advanceStartupStage()
 		}
+	}
+	
+	/// display UI for login info
+	private func promptToLogin(previousErrorMessage: String? = nil) {
+		if nil == loginWindowController {
+			loginWindowController = mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "LoginWindowController")) as? NSWindowController
+			loginController = loginWindowController?.contentViewController as? LoginViewController
+		}
+		guard let loginWindowController = loginWindowController , let loginController = loginController else { fatalError("failed to load login window") }
+		loginController.initialHost = UserDefaults.standard[.currentCloudHost]
+		loginController.statusMessage = previousErrorMessage ?? ""
+		loginController.completionHandler = { host in
+			guard let host = host else {
+				self.startupWindowController!.window!.endSheet(loginWindowController.window!)
+				NSApp.terminate(nil)
+				return
+			}
+			self.performLogin(host: host, password: loginController.enteredPassword)
+		}
+		startupWindowController!.window!.beginSheet(loginWindowController.window!) { _ in }
+	}
+	
+	/// if dockerEnabled, starts local login. If remote and there is a password in the keychain, attempts to login. Otherise, prompts for login info.
+	private func startLoginProcess() {
+		let keychain = Keychain()
+		if dockerEnabled {
+			performLogin(host: .localHost, password: NetworkConstants.localServerPassword)
+		} else {
+			if let host = UserDefaults.standard[.currentCloudHost], host.user.count > 0 {
+				if let password = keychain.getString(host.keychainKey) {
+					performLogin(host: host, password: password)
+					return
+				}
+			}
+		}
+		promptToLogin()
 	}
 	
 	private func showOnboarding() {
 		if nil == onboardingController {
 			// swiftlint:disable:next force_cast
 			onboardingController = (mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "OnboardingWindowController")) as! OnboardingWindowController)
-			onboardingController?.viewController.conInfo = connectionManager.localConnection
+			onboardingController?.viewController.conInfo = connectionManager.currentConnection
 			onboardingController?.viewController.actionHandler = { message in
 				switch message {
 				case .add:
