@@ -33,6 +33,10 @@ public enum NetworkingError: LocalizedError, Rc2DomainError {
 		}
 	}
 
+	public var localizedDescription: String {
+		return errorDescription ?? "unknown netorking error"
+	}
+	
 	public var errorDescription: String? {
 		switch self {
 			case .unauthorized:
