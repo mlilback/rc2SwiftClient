@@ -254,7 +254,7 @@ extension MacAppDelegate {
 			controller.window?.orderFront(self)
 			return
 		}
-		guard let conInfo = connectionManager.localConnection
+		guard let conInfo = connectionManager.currentConnection
 			else { Log.warn("asked to open session without connection info"); return }
 		let session = Session(connectionInfo: conInfo, workspace: workspace)
 		session.open().observe(on: UIScheduler()).take(during: session.lifetime).start
@@ -286,7 +286,7 @@ extension MacAppDelegate {
 			Log.warn("already opening \(ident)", .app)
 			return
 		}
-		guard let conInfo = connectionManager.localConnection,
+		guard let conInfo = connectionManager.currentConnection,
 			let wspace = conInfo.workspace(withIdentifier: ident)
 		else {
 			Log.warn("failed to find workspace \(ident) that we're supposed to open", .app)
@@ -325,7 +325,7 @@ extension MacAppDelegate: NSMenuDelegate {
 	/// - Parameter menu: menu to update
 	fileprivate func updateOpen(menu: NSMenu) {
 		menu.removeAllItems()
-		guard let projects = connectionManager.localConnection?.projects.value, projects.count > 0 else {
+		guard let projects = connectionManager.currentConnection?.projects.value, projects.count > 0 else {
 			return
 		}
 		guard projects.count > 1 else {
@@ -352,7 +352,7 @@ extension MacAppDelegate {
 	}
 	
 	@IBAction func newWorkspace(_ sender: Any?) {
-		guard let conInfo = connectionManager.localConnection, let project = conInfo.defaultProject else { fatalError() }
+		guard let conInfo = connectionManager.currentConnection, let project = conInfo.defaultProject else { fatalError() }
 		DispatchQueue.main.async {
 			let existingNames = project.workspaces.value.map { $0.name.lowercased() }
 			let prompter = InputPrompter(prompt: "Workspace name:", defaultValue: "new workspace")
@@ -714,7 +714,7 @@ extension MacAppDelegate {
 				case .open(let wspace):
 					self.openLocalSession(for: wspace.identifier)
 				case .remove(let wspace):
-					let client = Rc2RestClient(self.connectionManager.localConnection!)
+					let client = Rc2RestClient(self.connectionManager.currentConnection!)
 					client.remove(workspace: wspace).observe(on: UIScheduler()).startWithResult { result in
 						if let err = result.error {
 							self.appStatus?.presentError(err, session: nil)
