@@ -50,6 +50,9 @@ public class Session {
 		return try! NSRegularExpression(pattern: "(help\\(\\\"?([\\w\\d]+)\\\"?\\))\\s*;?\\s?", options: [.dotMatchesLineSeparators])
 	}()
 	
+	/// sends a websocket ping periodically so it isn't closed
+	var pingRepeater: Repeater?
+	
 	fileprivate var openObserver: Signal<Double, Rc2Error>.Observer?
 	public fileprivate(set) var connectionOpen: Bool = false
 	
@@ -568,6 +571,10 @@ private extension Session {
 			self.connectionOpen = true
 			self.openObserver?.sendCompleted()
 			self.openObserver = nil
+			self.pingRepeater = Repeater.every(.seconds(30)) { [weak self] timer in
+				self?.wsSource.write(ping: Data())
+			}
+			self.pingRepeater?.start()
 		}, value: { (progPercent) in
 			self.openObserver?.send(value: progPercent)
 		}).start()
@@ -582,6 +589,8 @@ private extension Session {
 		wsSource.onDisconnect = { [weak self] (error) in
 			Log.info("websocket closed: \(error?.localizedDescription ?? "unknown")", .session)
 			self?.connectionOpen = false
+			self?.pingRepeater?.pause()
+			self?.pingRepeater = nil
 			self?.delegate?.sessionClosed()
 		}
 		wsSource.onText = { [weak self] message in

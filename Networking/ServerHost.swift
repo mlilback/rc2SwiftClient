@@ -29,7 +29,7 @@ public struct ServerHost: Codable, CustomStringConvertible, Hashable {
 	}
 	
 	public init(name: String, host: String, port: Int = defaultAppServerPort, user: String="local", urlPrefix: String="", secure: Bool = false) {
-		self.name = name
+		self.name = name.lowercased()
 		self.host = host
 		self.user = user
 		self.port = port
