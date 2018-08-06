@@ -13,3 +13,6 @@
 [submodule "vendor/GRDB"]
 	path = vendor/GRDB
 	url = https://github.com/groue/GRDB.swift.git
+[submodule "vendor/Repeat"]
+	path = vendor/Repeat
+	url = https://github.com/malcommac/Repeat.git
