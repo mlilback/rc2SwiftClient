@@ -108,6 +108,7 @@
 		0829E6072118A8EB001883ED /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0829E6042118A8EB001883ED /* Throttler.swift */; };
 		0829E6082118A8EB001883ED /* Repeater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0829E6052118A8EB001883ED /* Repeater.swift */; };
 		0829E6092118A8EB001883ED /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0829E6062118A8EB001883ED /* Debouncer.swift */; };
+		0829E60B2118F7B8001883ED /* SessionWebSocketWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0829E60A2118F7B8001883ED /* SessionWebSocketWorker.swift */; };
 		082BE0921F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; };
 		082BE0991F59D549006CE0B7 /* SyntaxParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0981F59D549006CE0B7 /* SyntaxParsingTests.swift */; };
 		082BE09B1F59D549006CE0B7 /* SyntaxParsing.h in Headers */ = {isa = PBXBuildFile; fileRef = 082BE08B1F59D549006CE0B7 /* SyntaxParsing.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -997,6 +998,7 @@
 		0829E6042118A8EB001883ED /* Throttler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 		0829E6052118A8EB001883ED /* Repeater.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repeater.swift; sourceTree = "<group>"; };
 		0829E6062118A8EB001883ED /* Debouncer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
+		0829E60A2118F7B8001883ED /* SessionWebSocketWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionWebSocketWorker.swift; sourceTree = "<group>"; };
 		082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SyntaxParsing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		082BE08B1F59D549006CE0B7 /* SyntaxParsing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SyntaxParsing.h; sourceTree = "<group>"; };
 		082BE08C1F59D549006CE0B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2062,6 +2064,7 @@
 				0815597C1DDB9F630047B3CE /* ServerResponse.swift */,
 				0815597E1DDBAEB30047B3CE /* SessionResponseFormatter.swift */,
 				081559861DDBB4310047B3CE /* Session.swift */,
+				0829E60A2118F7B8001883ED /* SessionWebSocketWorker.swift */,
 				081559841DDBB3760047B3CE /* SessionDelegate.swift */,
 				08BCEA2E20388B51004A5F47 /* SessionSubProtocols.swift */,
 				08A2A2971FFE97B700D9807B /* SessionState.swift */,
@@ -3384,6 +3387,7 @@
 				08F01E971EFC74690047F397 /* NSData+Hash.m in Sources */,
 				080E82E51DCBF4520048F36C /* xattr.swift in Sources */,
 				08F6ADB01DD8F60200AF0722 /* Rc2RestClient.swift in Sources */,
+				0829E60B2118F7B8001883ED /* SessionWebSocketWorker.swift in Sources */,
 				080E82F81DCCD4620048F36C /* AppFile.swift in Sources */,
 				0881B50E1DCF896500679DB3 /* LoginFactory.swift in Sources */,
 				081559851DDBB3760047B3CE /* SessionDelegate.swift in Sources */,
