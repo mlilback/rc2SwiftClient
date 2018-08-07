@@ -30,9 +30,7 @@ public class Session {
 	public let conInfo: ConnectionInfo
 	//the workspace this session represents
 	public let workspace: AppWorkspace
-	///the WebSocket for communicating with the server
-	// goddamn swift won't let us set a constant that requires invoking a method
-	var wsSource: WebSocket!
+
 	///abstraction of file handling
 	public let fileCache: FileCache
 	public let imageCache: ImageCache
@@ -50,9 +48,7 @@ public class Session {
 		return try! NSRegularExpression(pattern: "(help\\(\\\"?([\\w\\d]+)\\\"?\\))\\s*;?\\s?", options: [.dotMatchesLineSeparators])
 	}()
 	
-	/// sends a websocket ping periodically so it isn't closed
-	var pingRepeater: Repeater?
-	
+	private let webSocketWorker: SessionWebSocketWorker
 	fileprivate var openObserver: Signal<Double, Rc2Error>.Observer?
 	public fileprivate(set) var connectionOpen: Bool = false
 	
@@ -83,18 +79,18 @@ public class Session {
 	// MARK: init/open/close
 	
 	/// without a super class, can't use self in designated initializer. So use a private init, and a convenience init for outside use
-	private init(connectionInfo: ConnectionInfo, workspace: AppWorkspace, fileCache: FileCache, imageCache: ImageCache, webSocket: WebSocket?, queue: DispatchQueue = .main)
+	private init(connectionInfo: ConnectionInfo, workspace: AppWorkspace, fileCache: FileCache, imageCache: ImageCache, wsWorker: SessionWebSocketWorker?, queue: DispatchQueue = .main)
 	{
 		self.workspace = workspace
 		self.conInfo = connectionInfo
 		self.fileCache = fileCache
 		self.imageCache = imageCache
 		self.queue = queue
-		var ws = webSocket
+		var ws = wsWorker
 		if nil == ws {
-			ws = createWebSocket()
+			ws = SessionWebSocketWorker(conInfo: connectionInfo, wspaceId: workspace.wspaceId)
 		}
-		wsSource = ws
+		webSocketWorker = ws!
 	}
 	
 	/// Create a session object
@@ -104,9 +100,9 @@ public class Session {
 	///   - workspace: the workspace to use for the session
 	///   - delegate: a delegate to handle certain tasks
 	///   - fileCache: the file cache to use. Default is to create one
-	///   - webSocket: the websocket to use. Defaults to a sensible implementation
+	///   - wsWorker: the websocket to use. Defaults to a sensible implementation
 	///   - queue: the queue to perform operations on. Defaults to main queue
-	public convenience init(connectionInfo: ConnectionInfo, workspace: AppWorkspace, delegate: SessionDelegate? = nil, fileCache: FileCache? = nil, webSocket: WebSocket? = nil, queue: DispatchQueue? = nil)
+	public convenience init(connectionInfo: ConnectionInfo, workspace: AppWorkspace, delegate: SessionDelegate? = nil, fileCache: FileCache? = nil, wsWorker: SessionWebSocketWorker? = nil, queue: DispatchQueue? = nil)
 	{
 		//create a file cache if one wasn't provided
 		var fc = fileCache
@@ -115,10 +111,15 @@ public class Session {
 		}
 		let rc = Rc2RestClient(connectionInfo, fileManager: fc!.fileManager)
 		let ic = ImageCache(restClient: rc, hostIdentifier: connectionInfo.host.name)
-		self.init(connectionInfo: connectionInfo, workspace: workspace, fileCache: fc!, imageCache: ic, webSocket: webSocket)
+		self.init(connectionInfo: connectionInfo, workspace: workspace, fileCache: fc!, imageCache: ic, wsWorker: wsWorker)
 		ic.workspace = workspace
 		self.delegate = delegate
-		setupWebSocketHandlers()
+		webSocketWorker.status.signal.take(during: sessionLifetime).observeValues { [weak self] value in
+			self?.webSocketStatusChanged(status: value)
+		}
+		webSocketWorker.messageSignal.take(during: sessionLifetime).observeValues { [weak self] data in
+			self?.handleWebSocket(data: data)
+		}
 	}
 	
 	///opens the websocket with the specified request
@@ -130,13 +131,13 @@ public class Session {
 				return
 			}
 			self.openObserver = observer
-			self.wsSource.connect()
+			self.webSocketWorker.openConnection()
 		}.take(during: sessionLifetime)
 	}
 	
 	///closes the websocket, which can not be reopened
 	public func close() {
-		wsSource.disconnect()
+		webSocketWorker.close()
 		fileCache.close()
 	}
 	
@@ -555,7 +556,7 @@ private extension Session {
 	func send(command: SessionCommand) -> Bool {
 		do {
 			let data = try conInfo.encode(command)
-			self.wsSource.write(data: data)
+			self.webSocketWorker.send(data: data)
 		} catch let err as NSError {
 			Log.error("error sending message on websocket: \(err)", .session)
 			return false
@@ -563,51 +564,41 @@ private extension Session {
 		return true
 	}
 	
+	private func webSocketStatusChanged(status: SessionWebSocketWorker.SocketStatus) {
+		switch status {
+		case .uninitialized:
+			fatalError("status should never change to uninitialized")
+		case .connecting:
+			Log.debug("connecdtiong", .session)
+		case .connected:
+			completePostOpenSetup()
+		case .closed:
+			connectionOpen = false
+			delegate?.sessionClosed()
+		case .failed(let err):
+			// TODO: need to report error to delegate to inform user
+			Log.info("websocket error: \(err)")
+			connectionOpen = false
+			delegate?.sessionClosed()
+		}
+	}
+	
+	func handleWebSocket(data: Data) {
+		self.queue.async { [weak self] in
+			self?.handleReceivedMessage(data)
+		}
+	}
+	
 	/// starts file caching and forwards responses to observer from open() call
-	private func websocketOpened() {
+	private func completePostOpenSetup() {
 		fileCache.cacheAllFiles().on(failed: { (cacheError) in
 			self.openObserver?.send(error: cacheError)
 		}, completed: {
 			self.connectionOpen = true
 			self.openObserver?.sendCompleted()
 			self.openObserver = nil
-			self.pingRepeater = Repeater.every(.seconds(30)) { [weak self] timer in
-				self?.wsSource.write(ping: Data())
-			}
-			self.pingRepeater?.start()
 		}, value: { (progPercent) in
 			self.openObserver?.send(value: progPercent)
 		}).start()
-	}
-	
-	func setupWebSocketHandlers() {
-		wsSource.onConnect = { [unowned self] in
-			DispatchQueue.global().async {
-				self.websocketOpened()
-			}
-		}
-		wsSource.onDisconnect = { [weak self] (error) in
-			Log.info("websocket closed: \(error?.localizedDescription ?? "unknown")", .session)
-			self?.connectionOpen = false
-			self?.pingRepeater?.pause()
-			self?.pingRepeater = nil
-			self?.delegate?.sessionClosed()
-		}
-		wsSource.onText = { [weak self] message in
-			Log.debug("websocket message: \(message)", .session)
-			guard let data = message.data(using: .utf8) else {
-				Log.warn("failed to convert ws text to data", .session)
-				return
-			}
-			self?.queue.async {
-				self?.handleReceivedMessage(data)
-			}
-		}
-		wsSource.onData = { [weak self] message in
-			Log.debug("websocket message: <binary>", .session)
-			self?.queue.async {
-				self?.handleReceivedMessage(message)
-			}
-		}
 	}
 }

@@ -14,6 +14,7 @@ import Result
 fileprivate let pingInterval: Double = 30.0
 
 public class SessionWebSocketWorker {
+	/// the status will never revert to uninitialized, connecting, or connected after the first time. Closed and failed are final states.
 	public enum SocketStatus: Equatable {
 		case uninitialized
 		case connecting
@@ -55,6 +56,7 @@ public class SessionWebSocketWorker {
 		(messageSignal, messageObserver) = Signal<Data, NoError>.pipe()
 		status = Property<SocketStatus>(capturing: _status)
 		self.socket = createWebSocket()
+		setupWebSocketHandlers()
 	}
 
 	public func openConnection() {
@@ -65,6 +67,10 @@ public class SessionWebSocketWorker {
 	public func close() {
 		assert(_status.value == .connected, "must be connected to close")
 		socket.disconnect()
+	}
+	
+	public func send(data: Data) {
+		socket.write(data: data)
 	}
 	
 	func webSocketOpened() {
