@@ -140,6 +140,13 @@ public final class Rc2RestClient {
 		}
 	}
 	
+	/// Downloads a SessionImage based on its id, saving to disk in the specified destination
+	///
+	/// - Parameters:
+	///   - imageId: the id of the image to download
+	///   - wspace: the workspace the image belongs to
+	///   - destination: a folder to save the image in, where its name will be imageId.png
+	/// - Returns: a signal producer that will return the file system URL containing the downloaded image
 	public func downloadImage(imageId: Int, from wspace: AppWorkspace, destination: URL) -> SignalProducer<URL, Rc2Error>
 	{
 		return SignalProducer<URL, Rc2Error> { observer, _ in
@@ -164,7 +171,7 @@ public final class Rc2RestClient {
 	}
 	
 	/// returns array of default files to add to any new workspace
-	/// - returns: URL to a zip file with the default files to add
+	/// -Rreturns: URL to a zip file with the default files to add
 	private func defaultWorkspaceFiles() -> URL? {
 		let fm = FileManager()
 		do {
