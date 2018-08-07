@@ -8,6 +8,7 @@ import Foundation
 import Model
 import Rc2Common
 
+/// structure used to save/restore the state of a session/window
 public struct SessionState: Codable {
 	public var outputState: OutputControllerState
 	public var editorState: EditorState

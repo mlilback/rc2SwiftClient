@@ -21,6 +21,7 @@ public class ImageCache {
 	var fileManager: Foundation.FileManager
 	///to allow dependency injection
 	var workspace: AppWorkspace?
+	/// the client used to fetch images from the network
 	let restClient: Rc2RestClient
 	///caching needs to be unique for each server. we don't care what the identifier is, just that it is unique per host
 	///mutable because we need to be able to read it from an archive
@@ -78,6 +79,10 @@ public class ImageCache {
 		state.images = Array(metaCache.values)
 	}
 	
+	/// Returns an image from the cache if it is in memory or on disk. returns nil if not in cache
+	///
+	/// - Parameter imageId: the id of the image to get
+	/// - Returns: the image, or nil if there is no cached image with that id
 	func image(withId imageId: Int) -> PlatformImage? {
 		if let pitem = cache.object(forKey: imageId as AnyObject) as? NSPurgeableData {
 			defer { pitem.endContentAccess() }
@@ -94,7 +99,7 @@ public class ImageCache {
 		return PlatformImage(data: imgData)
 	}
 	
-	///caches to disk and in memory
+	/// caches to disk and in memory
 	private func cacheImageFromServer(_ img: SessionImage) {
 		//cache to disk
 		Log.info("caching image \(img.id)", .cache)
@@ -106,29 +111,36 @@ public class ImageCache {
 		metaCache[img.id] = img
 	}
 	
-	func cacheImagesFromServer(_ images: [SessionImage]) {
-		for anImage in images {
-			cacheImageFromServer(anImage)
-		}
+	/// Stores an array of SessionImage objects
+	///
+	/// - Parameter images: the images to save to the cache
+	func cache(images: [SessionImage]) {
+		images.forEach { cacheImageFromServer($0) }
 		adjustImageArray()
 	}
 	
+	/// Returns the images belonging to a particular batch
+	///
+	/// - Parameter batchId: the batch to get images for
+	/// - Returns: an array of images
 	public func sessionImages(forBatch batchId: Int) -> [SessionImage] {
 		Log.debug("look for batch \(batchId)", .cache)
 		return metaCache.values.filter({ $0.batchId == batchId }).sorted(by: { $0.id < $1.id })
 	}
 	
+	/// Removes all images from the in-memory cache
 	public func clearCache() {
 		cache.removeAllObjects()
 		metaCache.removeAll()
 		_images.value = []
 	}
 	
-	///imageWithId: should have been called at some point to make sure the image is cached
+	/// image(withId:) should have been called at some point to make sure the image is cached
 	public func urlForCachedImage(_ imageId: Int) -> URL {
 		return URL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeTo: self.cacheUrl).absoluteURL
 	}
 	
+	/// Loads an image from memory, disk, or the network based on if it is cached
 	public func image(withId imageId: Int) -> SignalProducer<PlatformImage, ImageCacheError> {
 		assert(workspace != nil, "imageCache.workspace must be set before using")
 		let fileUrl = URL(fileURLWithPath: "\(imageId).png", isDirectory: false, relativeTo: self.cacheUrl)
@@ -152,7 +164,7 @@ public class ImageCache {
 		}
 	}
 	
-	//reset the images property grouped by batch
+	/// reset the images property grouped by batch
 	private func adjustImageArray() {
 		_images.value = metaCache.values.sorted { img1, img2 in
 			guard img1.batchId == img2.batchId else { return img1.batchId < img2.batchId }

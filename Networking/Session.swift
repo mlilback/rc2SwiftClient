@@ -482,7 +482,7 @@ private extension Session {
 			computeStatus = status
 			informDelegate = true
 		case .execComplete(let execData):
-			imageCache.cacheImagesFromServer(execData.images)
+			imageCache.cache(images: execData.images)
 			informDelegate = true
 		default:
 			informDelegate = true
