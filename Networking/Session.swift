@@ -76,7 +76,7 @@ public class Session {
 	///a dictionary of transaction ids mapped to closures called when the server says the transaction is complete
 	private var pendingTransactions: [String: PendingTransaction] = [:]
 
-	// MARK: init/open/close
+	// MARK: - init/open/close
 	
 	/// without a super class, can't use self in designated initializer. So use a private init, and a convenience init for outside use
 	private init(connectionInfo: ConnectionInfo, workspace: AppWorkspace, fileCache: FileCache, imageCache: ImageCache, wsWorker: SessionWebSocketWorker?, queue: DispatchQueue = .main)
@@ -141,7 +141,7 @@ public class Session {
 		fileCache.close()
 	}
 	
-	// MARK: public request methods
+	// MARK: - execute
 	
 	///Sends an execute request to the server
 	/// - parameter srcScript: the script code to send to the server
@@ -173,6 +173,7 @@ public class Session {
 		send(command: SessionCommand.executeFile(cmdData))
 	}
 	
+	// MARK: - environment variables
 	/// clears all variables in the global environment
 	public func clearVariables() {
 		send(command: SessionCommand.clearEnvironment(0))
@@ -204,6 +205,8 @@ public class Session {
 		send(command: SessionCommand.watchVariables(SessionCommand.WatchVariablesParams(watch: false, contextId: nil)))
 		watchingVariables = false
 	}
+	
+	// MARK: - file handling
 	
 	/// Creates a new file on the server
 	///
@@ -357,28 +360,6 @@ public class Session {
 			}
 			self.send(command: command)
 		}
-	}
-	
-	/// Internally used, and useful for creating a mock websocket
-	///
-	/// - Returns: a request to open a websocket for this session
-	func createWebSocket() -> WebSocket {
-		#if os(OSX)
-			let client = "osx"
-		#else
-			let client = "ios"
-		#endif
-		var components = URLComponents()
-		components.host = conInfo.host == ServerHost.localHost ? "127.0.0.1" : conInfo.host.host
-		components.port = conInfo.host.port
-		components.path = "\(conInfo.host.urlPrefix)/ws/\(workspace.wspaceId)"
-		components.scheme = conInfo.host.secure ? "wss" : "ws"
-		components.queryItems = [URLQueryItem(name: "client", value: client),
-		                         URLQueryItem(name: "build", value: "\(AppInfo.buildNumber)")]
-		var request = URLRequest(url: components.url!)
-		request.setValue("Bearer \(conInfo.authToken)", forHTTPHeaderField: "Authorization")
-		let ws = WebSocket(request: request)
-		return ws
 	}
 }
 
