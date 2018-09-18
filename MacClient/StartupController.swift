@@ -6,11 +6,9 @@
 
 import Cocoa
 import Rc2Common
-import Docker
 
 public enum SetupStage {
 	case initial
-	case docker
 	case downloading
 	case localLogin
 	case restoreSessions
@@ -23,7 +21,7 @@ public class StartupController: NSViewController {
 	/// the current stage of the setup process
 	public var stage: SetupStage = .initial { didSet { stateChanged() } }
 	/// the current progress while in the .docker state
-	public var pullProgress: PullProgress? { didSet { updatePullProgress() } }
+//	public var pullProgress: PullProgress? { didSet { updatePullProgress() } }
 	/// the status message being displayed
 	public var statusMesssage: String {
 		get { return statusText.stringValue }
@@ -47,17 +45,17 @@ public class StartupController: NSViewController {
 	
 	private var lastPercent: Double = 0
 
-	private func updatePullProgress() {
-		let percent = Double(pullProgress!.currentSize) / Double(pullProgress!.estSize)
-		lastPercent = percent
-		progressBar.doubleValue = percent
-//		print("per=\(percent), cs=\(pullProgress!.currentSize) est=\(pullProgress!.estSize)")
-		if pullProgress!.extracting {
-			statusText.stringValue = "Extracting…"
-		} else {
-			statusText.stringValue = "Downloading \(pullProgress!.name)…"
-		}
-	}
+//	private func updatePullProgress() {
+//		let percent = Double(pullProgress!.currentSize) / Double(pullProgress!.estSize)
+//		lastPercent = percent
+//		progressBar.doubleValue = percent
+////		print("per=\(percent), cs=\(pullProgress!.currentSize) est=\(pullProgress!.estSize)")
+//		if pullProgress!.extracting {
+//			statusText.stringValue = "Extracting…"
+//		} else {
+//			statusText.stringValue = "Downloading \(pullProgress!.name)…"
+//		}
+//	}
 	
 	private func stateChanged() {
 		guard Thread.isMainThread else {
@@ -69,10 +67,6 @@ public class StartupController: NSViewController {
 			statusMesssage = "Initializing…"
 			progressBar.isIndeterminate = true
 			progressBar.startAnimation(self)
-		case .docker:
-			statusMesssage = "Setting up Docker…"
-			progressBar.startAnimation(self)
-			progressBar.isIndeterminate = true
 		case .downloading:
 			statusMesssage = "Downloading…"
 			progressBar.stopAnimation(nil)

@@ -623,37 +623,7 @@ DQ
                             </menuItem>
                             <menuItem title="Debug" id="cnH-Ve-KTo">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Debug" id="fK2-IA-Ey6" userLabel="Debug Menu">
-                                    <items>
-                                        <menuItem title="Use Cloud Server" id="nP0-f3-vsj">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="toggleCloudUsage:" target="Voe-Tx-rLC" id="9b9-k8-9Zq"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Reset Server Install" id="sly-2Y-EG6">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <binding destination="Voe-Tx-rLC" name="target" keyPath="dockerManager" id="fw2-Ud-rX7">
-                                                    <dictionary key="options">
-                                                        <string key="NSSelectorName">resetServerInstall:</string>
-                                                    </dictionary>
-                                                </binding>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Prompt for Initial Server Install" id="5fM-E3-AbK">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <binding destination="Voe-Tx-rLC" name="target" keyPath="dockerManager" id="XhC-xV-3nI">
-                                                    <dictionary key="options">
-                                                        <string key="NSSelectorName">promptToInstallServer:</string>
-                                                    </dictionary>
-                                                </binding>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="XYr-ap-ltZ"/>
-                                    </items>
-                                </menu>
+                                <menu key="submenu" title="Debug" id="fK2-IA-Ey6" userLabel="Debug Menu"/>
                             </menuItem>
                             <menuItem title="Window" id="aUF-d1-5bR">
                                 <modifierMask key="keyEquivalentModifierMask"/>
@@ -675,12 +645,6 @@ DQ
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="showBookmarkWindow:" target="Voe-Tx-rLC" id="3uS-m6-vDJ"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Docker Manager" id="kSp-wP-GuG">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="showDockerControl" target="Voe-Tx-rLC" id="jLB-MC-ceg"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Log" id="Ps8-2u-AXs">
@@ -715,7 +679,6 @@ DQ
                 </application>
                 <customObject id="Voe-Tx-rLC" customClass="MacAppDelegate" customModule="MacClient" customModuleProvider="target">
                     <connections>
-                        <outlet property="logLevelMenuSeperator" destination="XYr-ap-ltZ" id="OEa-ev-VEV"/>
                         <outlet property="workspaceMenu" destination="nUd-e1-yMd" id="X7B-5H-zZj"/>
                     </connections>
                 </customObject>

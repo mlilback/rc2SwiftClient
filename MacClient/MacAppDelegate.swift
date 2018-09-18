@@ -10,7 +10,6 @@ import Rc2Common
 import ClientCore
 import ReactiveSwift
 import SwiftyUserDefaults
-import Docker
 import Networking
 import SBInjector
 import Model
@@ -25,10 +24,8 @@ let currentSupportDataVersion: Int = 2
 fileprivate struct Actions {
 	static let showPreferences = #selector(MacAppDelegate.showPreferencesWindow(_:))
 	static let showBookmarks = #selector(MacAppDelegate.showBookmarkWindow(_:))
-	static let showDockerControls = #selector(MacAppDelegate.showDockerControl(_:))
 	static let newWorkspace = #selector(MacAppDelegate.newWorkspace(_:))
 	static let showWorkspace = #selector(MacAppDelegate.showWorkspace(_:))
-	static let backupDatabase = #selector(MacAppDelegate.backupDatabase(_:))
 	static let showLog = #selector(MacAppDelegate.showLogWindow(_:))
 	static let resetLogs = #selector(MacAppDelegate.resetLogs(_:))
 	static let toggleCloud = #selector(MacAppDelegate.toggleCloudUsage(_:))
@@ -47,15 +44,11 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	var sessionWindowControllers = Set<MainWindowController>()
 	var bookmarkWindowController: NSWindowController?
 	let bookmarkManager = BookmarkManager()
-	private var dockerEnabled = true
-	@objc dynamic var dockerManager: DockerManager?
-	private var backupManager: DockerBackupManager?
 	var startupWindowController: StartupWindowController?
 	var startupController: StartupController?
 	var loginController: LoginViewController?
 	var loginWindowController: NSWindowController?
 	private var onboardingController: OnboardingWindowController?
-	private var dockerWindowController: NSWindowController?
 	private var preferencesWindowController: NSWindowController?
 	private var appStatus: MacAppStatus?
 	@IBOutlet weak var workspaceMenu: NSMenu!
@@ -95,18 +88,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		checkIfSupportFileResetNeeded()
 		mainStoryboard = NSStoryboard(name: .mainBoard, bundle: nil)
 		precondition(mainStoryboard != nil)
-		//only init dockerManager if not running unit tests or not expressly disabled
-		if let useCloud = UserDefaults.standard[.connectToCloud], useCloud {
-			dockerEnabled = false
-		} else {
-			dockerEnabled = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil && !ProcessInfo.processInfo.arguments.contains("--disableDocker")
-		}
-		if dockerEnabled {
-			connectionManager.currentConnection = connectionManager.localConnection
-			let dm = DockerManager()
-			dockerManager = dm
-			backupManager = DockerBackupManager(manager: dm)
-		}
 		
 		DispatchQueue.global().async {
 			HelpController.shared.verifyDocumentationInstallation()
@@ -130,7 +111,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 
 	func applicationWillTerminate(_ aNotification: Notification) {
 		NotificationCenter.default.removeObserver(self, name: NSWindow.willCloseNotification, object: nil)
-		dockerManager = nil
 	}
 
 	func applicationShouldOpenUntitledFile(_ sender: NSApplication) -> Bool {
@@ -162,13 +142,9 @@ extension MacAppDelegate {
 		guard let action = menuItem.action else { return false }
 		if startupWindowController?.window?.isVisible ?? false { return false } //disable menu items while docker is loading
 		switch action  {
-		case Actions.backupDatabase:
-			return true
 		case Actions.showBookmarks:
 			return true
 		case Actions.newWorkspace:
-			return true
-		case Actions.showDockerControls:
 			return true
 		case Actions.resetLogs:
 			return true
@@ -416,29 +392,19 @@ extension MacAppDelegate {
 //		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
 	}
 	
-	@IBAction func backupDatabase(_ sender: Any?) {
-		// TODO: this should be obvserved in some manner so not run simultaneously 
-		backupManager?.performBackup().observe(on: UIScheduler()).start()
-	}
-	
-	@IBAction func showDockerControl(_ sender: Any?) {
-		if dockerManager == nil { Log.info("docker disabled", .app); return }
-		dockerWindow().makeKeyAndOrderFront(self)
-	}
-	
 	@IBAction func showLogWindow(_ sender: Any?) {
 		logger.showLogWindow(sender)
 	}
 	
 	@IBAction func toggleCloudUsage(_ sender: Any?) {
-		let currentValue = UserDefaults.standard[.connectToCloud] ?? false
-		UserDefaults.standard[.connectToCloud] = !currentValue
-		// relaunch application
-		let task = Process()
-		task.launchPath = "/bin/sh"
-		task.arguments = ["-c", "sleep 0.5; open \"\(Bundle.main.bundlePath)\""]
-		task.launch()
-		NSApp.terminate(nil)
+//		let currentValue = UserDefaults.standard[.connectToCloud] ?? false
+//		UserDefaults.standard[.connectToCloud] = !currentValue
+//		// relaunch application
+//		let task = Process()
+//		task.launchPath = "/bin/sh"
+//		task.arguments = ["-c", "sleep 0.5; open \"\(Bundle.main.bundlePath)\""]
+//		task.launch()
+//		NSApp.terminate(nil)
 	}
 	
 	@IBAction func adjustGlobalLogLevel(_ sender: Any?) {
@@ -482,8 +448,6 @@ extension MacAppDelegate: NSWindowRestoration {
 			me.sessionsBeingRestored[bmark.workspaceIdent] = completionHandler
 		case .logWindow:
 			completionHandler(me.logger.logWindow(show: false), nil)
-		case .dockerWindow:
-			completionHandler(me.dockerWindow(), nil)
 		default:
 			completionHandler(nil, Rc2Error(type: .unknown, nested: nil, explanation: "Unsupported window identifier"))
 		}
@@ -492,28 +456,6 @@ extension MacAppDelegate: NSWindowRestoration {
 
 // MARK: - private
 extension MacAppDelegate {
-	func dockerWindow() -> NSWindow {
-		if let window = dockerWindowController?.window { return window }
-		let icontext = InjectorContext()
-		icontext.register(DockerTabViewController.self) { controller in
-			controller.manager = self.dockerManager
-		}
-		icontext.register(DockerManagerInjectable.self) { controller in
-			controller.manager = self.dockerManager
-		}
-		icontext.register(DockerBackupViewController.self) { controller in
-			controller.backupManager = self.backupManager
-		}
-		let sboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "DockerControl"), bundle: nil)
-		sboard.injectionContext = icontext
-		dockerWindowController = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("DockerWindowController")) as? NSWindowController
-		guard let window = dockerWindowController?.window else { fatalError("failed to load docker window") }
-		window.identifier = .dockerWindow
-		window.isRestorable = true
-		window.restorationClass = MacAppDelegate.self
-		return window
-	}
-
 	func checkIfSupportFileResetNeeded() {
 		let defaults = UserDefaults.standard
 		let lastVersion = defaults[.supportDataVersion]
@@ -556,9 +498,6 @@ extension MacAppDelegate {
 	/// load the setup window and start setup process
 	fileprivate func beginStartup() {
 		precondition(startupController == nil)
-		if dockerEnabled {
-			precondition(dockerManager != nil)
-		}
 		
 		// load window and setupController.
 		startupWindowController = mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "StartupWindowController")) as? StartupWindowController
@@ -569,10 +508,6 @@ extension MacAppDelegate {
 		assert(wc.window!.isVisible)
 		assert(wc.contentViewController?.view.window == wc.window)
 		
-		//skip docker stage if performing unit tests
-		if !dockerEnabled {
-			startupController!.stage = .docker
-		}
 		//move to the next stage
 		advanceStartupStage()
 	}
@@ -582,9 +517,6 @@ extension MacAppDelegate {
 		guard let setupWC = startupWindowController else { fatalError("advanceStartupStage() called without a setup controller") }
 		switch startupController!.stage {
 		case .initial:
-			startupDocker()
-			startupController!.stage = .docker
-		case .docker:
 			startupController!.stage = .localLogin
 			startLoginProcess()
 		case .downloading:
@@ -637,7 +569,6 @@ extension MacAppDelegate {
 		let loginFactory = LoginFactory()
 		loginFactory.login(to: host, as: host.user, password: password).observe(on: UIScheduler()).startWithResult { result in
 			guard let conInfo = result.value else {
-				if self.dockerEnabled { fatalError("failed to login to local server") }
 				var message = result.error?.nestedError?.localizedDescription ?? result.error?.localizedDescription
 				let nestederror = result.error!.nestedError as? NetworkingError
 				if nestederror != nil,
@@ -689,14 +620,10 @@ extension MacAppDelegate {
 	/// if dockerEnabled, starts local login. If remote and there is a password in the keychain, attempts to login. Otherise, prompts for login info.
 	private func startLoginProcess() {
 		let keychain = Keychain()
-		if dockerEnabled {
-			performLogin(host: .localHost, password: NetworkConstants.localServerPassword)
-		} else {
-			if let host = UserDefaults.standard[.currentCloudHost], host.user.count > 0 {
-				if let password = keychain.getString(host.keychainKey) {
-					performLogin(host: host, password: password)
-					return
-				}
+		if let host = UserDefaults.standard[.currentCloudHost], host.user.count > 0 {
+			if let password = keychain.getString(host.keychainKey) {
+				performLogin(host: host, password: password)
+				return
 			}
 		}
 		promptToLogin()
@@ -728,64 +655,12 @@ extension MacAppDelegate {
 		onboardingController!.window?.makeKeyAndOrderFront(self)
 	}
 	
-	/// should be only called after docker manager has initialized
-	private  func startupDocker() {
-		guard let docker = dockerManager else { fatalError() }
-		
-		_ = docker.initialize()
-			.flatMap(.concat, performPullAndPrepareContainers)
-			.flatMap(.concat, { _ in
-				return docker.perform(operation: .start)
-			})
-			//really want to act when complete, but have to map, so we collect all values and pass on a single value
-			.collect().map({ _ in return () })
-			.flatMap(.concat, { _ in return docker.waitUntilRunning() })
-			.flatMap(.concat, { _ in return docker.waitUntilDBRunning() })
-			.observe(on: UIScheduler())
-			.startWithResult { [weak self] result in
-				guard result.error == nil else {
-					Log.error("failed to start docker: \(result.error?.description ?? "-"), \(result.error?.nestedDescription ?? "0")", .app)
-					self!.appStatus?.presentError(result.error!, session: nil)
-					self!.handleStartupError(result.error!) //should never return
-					return
-				}
-				self!.advanceStartupStage()
-			}
-	}
-	
 	private func restoreSessions() {
 		guard sessionsBeingRestored.count > 0 else { advanceStartupStage(); return }
 		for ident in self.sessionsBeingRestored.keys {
 			openLocalSession(for: ident)
 		}
 		//TODO: use startupController for progress, perform async
-	}
-
-	private func performPullAndPrepareContainers(_ needPull: Bool) -> SignalProducer<(), Rc2Error> {
-		Log.debug("pulling: \(needPull)", .app)
-		guard let docker = dockerManager else { fatalError() }
-		guard needPull else {
-			Log.debug("pull not needed, preparing containers", .app)
-			return docker.prepareContainers()
-		}
-		return docker.pullImages()
-			.observe(on: UIScheduler())
-			.on( //inject side-effect to update the progress bar
-				starting: {
-					self.startupController?.updateStatus(message: "Pulling Images…")
-					self.startupController?.stage = .downloading
-			}, completed: {
-				self.startupController?.stage = .docker
-			}, value: { (pprogress) in
-				self.startupController?.pullProgress = pprogress
-			})
-			.collect() // coalesce individual PullProgress values into a single array sent when pullImages is complete
-			.mapError({ (derror) -> Rc2Error in
-				let err = Rc2Error(type: .docker, nested: derror)
-				return err
-			})
-			.map( { (_) -> Void in }) //map [PullProgress] to () as that is the input parameter to prepareContainers
-			.flatMap(.concat) { _ in docker.prepareContainers() }
 	}
 }
 
