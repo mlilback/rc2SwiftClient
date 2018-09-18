@@ -74,12 +74,13 @@ public class FileImporter: NSObject {
 				return ProgressSignalProducer(error: Rc2Error(type: .file, nested: error, explanation: ""))
 			}
 			let destUrl = URL(string: "/file/create/\(workspace.wspaceId)", relativeTo: baseUrl)!
-			let request = NSMutableURLRequest(url: destUrl)
+			var request = URLRequest(url: destUrl)
 			request.httpMethod = "POST"
+			request.setValue(conInfo.authorizationHeaderValue, forHTTPHeaderField: "Authorization")
 			request.setValue(aFileToImport.uniqueFileName, forHTTPHeaderField: "Rc2-Filename")
 			request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
 			request.setValue("application/json", forHTTPHeaderField: "Accept")
-			let task = uploadSession.uploadTask(with: request as URLRequest, fromFile: srcUrl)
+			let task = uploadSession.uploadTask(with: request, fromFile: srcUrl)
 			tasks[index] = ImportData(task: task, srcFile: srcUrl)
 		}
 		return ProgressSignalProducer { observer, lifetime in

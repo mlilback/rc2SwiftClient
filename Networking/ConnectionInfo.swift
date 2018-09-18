@@ -61,6 +61,8 @@ public class ConnectionInfo: CustomStringConvertible {
 		try load(bulkInfo: bulkInfo)
 	}
 	
+	public var authorizationHeaderValue: String { return "Bearer \(authToken)" }
+	
 	//documentation inherited from protocol
 	public var description: String {
 		return "<LoginSession: \(user.login)@\(host.name)>"
