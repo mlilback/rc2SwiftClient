@@ -533,7 +533,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			{ [weak self] event in
 				switch event {
 				case .failed(let error):
-					Log.error("got import error \(error)", .app)
+					var message = error.localizedDescription
+					if let neterror = error.nestedError { message = neterror.localizedDescription }
+					Log.error("got import error \(message)", .app)
 					self?.fileImporter = nil //free up importer
 				case .completed:
 					NotificationCenter.default.post(name: .filesImported, object: self?.fileImporter!)
