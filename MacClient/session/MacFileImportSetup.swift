@@ -149,6 +149,6 @@ class MacFileImportSetup: NSObject {
 
 extension MacFileImportSetup: NSOpenSavePanelDelegate {
 	func panel(_ sender: Any, shouldEnable url: URL) -> Bool {
-		return FileType.fileType(withExtension: url.pathExtension) != nil
+		return FileType.fileType(withExtension: url.pathExtension) != nil || url.directoryExists()
 	}
 }
