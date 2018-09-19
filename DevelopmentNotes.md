@@ -23,6 +23,7 @@ clear undo cache on file change notification from server
 
 if websocket is closed (including fails to connect) need to inform user. currently still marked as opening in MacAppDelegate:274
 
+imported file not selected after import
 
 * updated FrontMatterViewItem to use reactive binding when updated to use ReactiveCocoa 7.1
 
