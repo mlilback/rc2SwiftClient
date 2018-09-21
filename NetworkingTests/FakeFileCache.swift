@@ -20,6 +20,8 @@ struct FakeFileInfo {
 }
 
 class FakeFileCache: FileCache {
+	var fileCacheUrl: URL
+	
 	func cachedUrl(file: File) throws -> URL {
 		if let furl = fileInfo[file.id]?.url {
 			return furl

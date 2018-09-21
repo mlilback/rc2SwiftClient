@@ -55,8 +55,9 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 		// for some reason won't compile if directly setting tabController
 		let controller: NSTabViewController = embedViewController(storyboard: sboard, identifier: .editorTabController, contentView: contentView)
 		tabController = controller
-		sourceEditor = tabController.childViewControllers.first(where: { $0 is SourceEditorController } ) as! SourceEditorController
-		notebookEditor = tabController.childViewControllers.first(where: { $0 is NotebookEditorController } ) as! NotebookEditorController
+		let tabChildren = tabController.childViewControllers
+		sourceEditor = tabChildren.first(where: { $0 is SourceEditorController } ) as? SourceEditorController
+		notebookEditor = tabChildren.first(where: { $0 is NotebookEditorController } ) as? NotebookEditorController
 		currentEditor = sourceEditor
 		// listen for canExecute changes of actual editors
 		observerTokens.append(sourceEditor.observe(\.canExecute, options: [.initial]) { [weak self] object, change in
