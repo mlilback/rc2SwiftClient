@@ -110,8 +110,6 @@
 		083305FA1C519B8500E27F66 /* loginResults.json in Resources */ = {isa = PBXBuildFile; fileRef = 083305F41C519B8500E27F66 /* loginResults.json */; };
 		083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 083306061C51A0B200E27F66 /* CommonDefaults.plist */; };
 		083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083382F01C64341C00D40EEB /* AppStatusView.swift */; };
-		0833A8221D2D7E770033654B /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8211D2D7E770033654B /* HockeySDK.framework */; };
-		0833A8231D2D7EAD0033654B /* HockeySDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8211D2D7E770033654B /* HockeySDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; };
 		0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0835A07E1E57823500123820 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0835A07D1E57823500123820 /* OnboardingViewController.swift */; };
@@ -698,7 +696,6 @@
 				08698FEB1E41051900890092 /* Starscream.framework in Embed Frameworks */,
 				0815599F1DDF9E4F0047B3CE /* Freddy.framework in Embed Frameworks */,
 				0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */,
-				0833A8231D2D7EAD0033654B /* HockeySDK.framework in Embed Frameworks */,
 				08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */,
 				08E836681D94240100E26EFE /* SwiftyUserDefaults.framework in Embed Frameworks */,
 				082BE09F1F59D549006CE0B7 /* SyntaxParsing.framework in Embed Frameworks */,
@@ -1308,7 +1305,6 @@
 				080E82B51DCBB3DD0048F36C /* PEGKit.framework in Frameworks */,
 				08C2D5E51E719DE20007A02D /* SBInjector.framework in Frameworks */,
 				082FF1EE1C7F339400CCC27F /* URITemplate.framework in Frameworks */,
-				0833A8221D2D7E770033654B /* HockeySDK.framework in Frameworks */,
 				080E82D61DCBE31D0048F36C /* Networking.framework in Frameworks */,
 				082BE15D1F5B3682006CE0B7 /* Model.framework in Frameworks */,
 				082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */,
@@ -4358,7 +4354,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
-					"$(PROJECT_DIR)/vendor/HockeySDK-Mac",
 					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MacClient/Info.plist;
@@ -4384,7 +4379,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
-					"$(PROJECT_DIR)/vendor/HockeySDK-Mac",
 					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MacClient/Info.plist;

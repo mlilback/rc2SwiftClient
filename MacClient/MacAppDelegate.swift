@@ -74,15 +74,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 
 	// MARK: - NSApplicationDelegate
 	func applicationWillFinishLaunching(_ notification: Notification) {
-		#if HOCKEYAPP_ENABLED
-			if ProcessInfo.processInfo.environment["DisableHockeyApp"] == nil {
-				BITHockeyManager.shared().configure(withIdentifier: kHockeyAppIdentifier)
-				//BITHockeyManager.sharedHockeyManager().debugLogEnabled = true
-				// Do some additional configuration if needed here
-				BITHockeyManager.shared().delegate = self
-				BITHockeyManager.shared().start()
-			}
-		#endif
 		logger.start()
 		logger.installLoggingUI(addMenusAfter: logLevelMenuSeperator)
 		checkIfSupportFileResetNeeded()
@@ -485,14 +476,6 @@ extension MacAppDelegate {
 	}
 }
 
-// MARK: - HockeyApp
-
-extension MacAppDelegate: BITHockeyManagerDelegate {
-	func applicationLog(for crashManager: BITCrashManager!) -> String! {
-		return logger.jsonLogFromLastLaunch()
-	}
-}
-
 // MARK: - startup
 extension MacAppDelegate {
 	/// load the setup window and start setup process
@@ -663,10 +646,3 @@ extension MacAppDelegate {
 		//TODO: use startupController for progress, perform async
 	}
 }
-
-//extension MacAppDelegate: BITCrashManagerDelegate {
-//	func attachment(for crashManager: BITCrashManager!) -> BITHockeyAttachment! {
-//
-//	}
-//
-//}
