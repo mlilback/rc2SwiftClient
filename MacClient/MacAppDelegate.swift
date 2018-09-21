@@ -505,19 +505,6 @@ extension MacAppDelegate {
 		NSApp.terminate(self)
 	}
 	
-	private func handleLoginError(_ error: Rc2Error) {
-		guard let nestederror = error.nestedError as? NetworkingError,
-			case NetworkingError.invalidHttpStatusCode(let rsp) = nestederror
-		else { handleStartupError(error); return }
-		switch rsp.statusCode {
-		case 401: // unauthorized, login failed
-			Log.warn("login unauthorized", .app)
-			handleStartupError(AppError(.invalidLogin, nestedError: error).rc2Error)
-		default:
-			handleStartupError(error)
-		}
-	}
-
 	/// attempt login on host. advances to next startup stage if successful. Handles error by fatal error (if local), or re-prompting for login info if remote
 	private func performLogin(host: ServerHost, password: String) {
 		let loginFactory = LoginFactory()
