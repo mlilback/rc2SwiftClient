@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		080214891C6A923D008B55D3 /* lognormal.R in Resources */ = {isa = PBXBuildFile; fileRef = 083305F51C519B8500E27F66 /* lognormal.R */; };
-		080314231D2412ED006D668F /* SelectServerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080314221D2412ED006D668F /* SelectServerViewController.swift */; };
 		0803FCBE1C84C47400F17E4A /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		08055E361FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08055E351FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift */; };
 		0807F1611F83DE830018EF61 /* Rc2.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0807F1601F83DE830018EF61 /* Rc2.xcassets */; };
@@ -117,11 +116,6 @@
 		08367BD41E3FCEA800FAFC8A /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; };
 		083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		083A4B041C7F347E0007AC46 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
-		083A566F1D246D85009D3091 /* ProjectManagement.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A566D1D246D85009D3091 /* ProjectManagement.storyboard */; };
-		083A56711D24722C009D3091 /* ProjectManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56701D24722C009D3091 /* ProjectManagerViewController.swift */; };
-		083A56731D247B52009D3091 /* AddBookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56721D247B52009D3091 /* AddBookmarkViewController.swift */; };
-		083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */; };
-		083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */; };
 		083AC0FD2062D01E0054023F /* EquationViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC0FC2062D01E0054023F /* EquationViewItem.swift */; };
 		083AC0FE2062D6270054023F /* mathFonts.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0859A3072062701900103924 /* mathFonts.bundle */; };
 		083AC1022062E9670054023F /* MarkdownViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC1012062E9670054023F /* MarkdownViewItem.swift */; };
@@ -307,7 +301,6 @@
 		088E38091EF40B7B00136CFA /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
 		088E380C1EF410DC00136CFA /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		088F591C1E74BCEA0009A0B1 /* ThemePrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */; };
-		089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189BE1D21938F00866A05 /* BookmarkViewController.swift */; };
 		0890650B1D26F59300C7CA5D /* MacAppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0890650A1D26F59300C7CA5D /* MacAppStatus.swift */; };
 		0892EE5E203F028700207F54 /* Encoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0892EE5D203F028700207F54 /* Encoding.swift */; };
 		0892EE60203F065000207F54 /* XAttributeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0892EE5F203F065000207F54 /* XAttributeManager.swift */; };
@@ -778,7 +771,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		080314221D2412ED006D668F /* SelectServerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectServerViewController.swift; sourceTree = "<group>"; };
 		08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = EmbeddedFrameworkDebug.xcconfig; path = config/EmbeddedFrameworkDebug.xcconfig; sourceTree = "<group>"; };
 		08037C211D7B74A100006E9E /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = App.xcconfig; path = config/App.xcconfig; sourceTree = "<group>"; };
 		08055E2F1FBBC210007419C6 /* VariableFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableFormatter.swift; sourceTree = "<group>"; };
@@ -897,11 +889,6 @@
 		0833A8251D2D87120033654B /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = vendor/Sparkle.framework; sourceTree = "<group>"; };
 		0835A07D1E57823500123820 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OnboardingViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08367BD21E3FCEA800FAFC8A /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/Mac/Starscream.framework; sourceTree = "<group>"; };
-		083A566E1D246D85009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/ProjectManagement.storyboard; sourceTree = "<group>"; };
-		083A56701D24722C009D3091 /* ProjectManagerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectManagerViewController.swift; sourceTree = "<group>"; };
-		083A56721D247B52009D3091 /* AddBookmarkViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddBookmarkViewController.swift; sourceTree = "<group>"; };
-		083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbeddedDialogController.swift; sourceTree = "<group>"; };
-		083A567C1D25AFE7009D3091 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/BookmarkManager.storyboard; sourceTree = "<group>"; };
 		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BookmarkManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		083AC0FC2062D01E0054023F /* EquationViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquationViewItem.swift; sourceTree = "<group>"; };
 		083AC1012062E9670054023F /* MarkdownViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewItem.swift; sourceTree = "<group>"; };
@@ -1145,7 +1132,6 @@
 		08F189AD1D18818700866A05 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Shared.xcconfig; path = config/Shared.xcconfig; sourceTree = "<group>"; };
 		08F189B01D19B0D500866A05 /* ServerHost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ServerHost.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F189B81D216E5400866A05 /* Bookmark.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Bookmark.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		08F189BE1D21938F00866A05 /* BookmarkViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BookmarkViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F42FA11D33F47000A1EE8D /* MockSessionHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockSessionHelpers.swift; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* SourceEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SourceEditorController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F448F61C4E244500C64706 /* SidebarTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarTabController.swift; sourceTree = "<group>"; };
@@ -1825,20 +1811,6 @@
 			name = network;
 			sourceTree = "<group>";
 		};
-		088935801DFF30D100C94B19 /* bookmarks */ = {
-			isa = PBXGroup;
-			children = (
-				083A56761D2572A4009D3091 /* EmbeddedDialogController.swift */,
-				083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */,
-				083A56701D24722C009D3091 /* ProjectManagerViewController.swift */,
-				083A566D1D246D85009D3091 /* ProjectManagement.storyboard */,
-				08F189BE1D21938F00866A05 /* BookmarkViewController.swift */,
-				083A56721D247B52009D3091 /* AddBookmarkViewController.swift */,
-				080314221D2412ED006D668F /* SelectServerViewController.swift */,
-			);
-			name = bookmarks;
-			sourceTree = "<group>";
-		};
 		088CE6601C4B0AF400153414 = {
 			isa = PBXGroup;
 			children = (
@@ -1911,7 +1883,6 @@
 				08A2A2A1200A9B0E00D9807B /* LogViewController.swift */,
 				08F448F31C4E244500C64706 /* session */,
 				08DAF2F11E4D0726005A251E /* preferences */,
-				088935801DFF30D100C94B19 /* bookmarks */,
 				081263141C85D2E0003E37A5 /* generic views */,
 				083305D11C4FC76C00E27F66 /* extensions */,
 				08C2D5EA1E71B3210007A02D /* utility */,
@@ -2817,9 +2788,7 @@
 				08F189A81D0A0E7200866A05 /* static_html in Resources */,
 				0846D3E32017C03900795376 /* FileTemplates in Resources */,
 				086A40D71E7B1E8600AE476B /* ThemeEditorController.xib in Resources */,
-				083A567D1D25AFE7009D3091 /* BookmarkManager.storyboard in Resources */,
 				0807F1611F83DE830018EF61 /* Rc2.xcassets in Resources */,
-				083A566F1D246D85009D3091 /* ProjectManagement.storyboard in Resources */,
 				08F5746D1E4D04A70000956B /* Preferences.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3135,12 +3104,10 @@
 				083305E41C517FC000E27F66 /* SidebarVariableController.swift in Sources */,
 				08A01FDC1CCA8B2F001EDFAA /* WebViewController.swift in Sources */,
 				08F448FB1C4E244500C64706 /* SidebarTabController.swift in Sources */,
-				083A56731D247B52009D3091 /* AddBookmarkViewController.swift in Sources */,
 				083174041C5571D300071408 /* RootViewController.swift in Sources */,
 				0816FD1D1E5226010006FF26 /* SearchBarView.swift in Sources */,
 				0835A07E1E57823500123820 /* OnboardingViewController.swift in Sources */,
 				0816F8A01C6D3A4500A6120B /* SessionHandlerProtocols.swift in Sources */,
-				083A56771D2572A4009D3091 /* EmbeddedDialogController.swift in Sources */,
 				085A1A29205AC6CD00B7EC5F /* NotebookCollectionLayout.swift in Sources */,
 				0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */,
 				08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */,
@@ -3188,7 +3155,6 @@
 				083174141C5828B400071408 /* ResultsView.swift in Sources */,
 				08680690200D892B00C986A9 /* RecursiveFlatMap.swift in Sources */,
 				080AB8DE1E92DA10005452C7 /* MultiImageViewController.swift in Sources */,
-				089065091D26DAC400C7CA5D /* BookmarkViewController.swift in Sources */,
 				08FAE518208111730076F90C /* NSFont+MJL.swift in Sources */,
 				08EE26F9202FA4A5008E008F /* DimmingView.swift in Sources */,
 				083AC106206565720054023F /* FrontMatterViewItem.swift in Sources */,
@@ -3211,11 +3177,9 @@
 				084D33302075619500246CBD /* TemplatesPrefsController.swift in Sources */,
 				084D333220767A7E00246CBD /* DoubleClickEditableTextField.swift in Sources */,
 				088F591C1E74BCEA0009A0B1 /* ThemePrefsController.swift in Sources */,
-				080314231D2412ED006D668F /* SelectServerViewController.swift in Sources */,
 				083382F11C64341C00D40EEB /* AppStatusView.swift in Sources */,
 				08AD13361FCF18D000CFD516 /* FileInfoController.swift in Sources */,
 				083AC1042062EDFB0054023F /* NSImage+Rc2.swift in Sources */,
-				083A56711D24722C009D3091 /* ProjectManagerViewController.swift in Sources */,
 				086508771E43F27C0067C8CA /* SingleInputViewController.swift in Sources */,
 				08F673D21D0214C700B87049 /* AppKitExtensions.swift in Sources */,
 				08525E781E3143C3008A332E /* InputPrompter.swift in Sources */,
@@ -3434,22 +3398,6 @@
 				083305DF1C51571500E27F66 /* Base */,
 			);
 			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-		083A566D1D246D85009D3091 /* ProjectManagement.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				083A566E1D246D85009D3091 /* Base */,
-			);
-			name = ProjectManagement.storyboard;
-			sourceTree = "<group>";
-		};
-		083A567B1D25AFE7009D3091 /* BookmarkManager.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				083A567C1D25AFE7009D3091 /* Base */,
-			);
-			name = BookmarkManager.storyboard;
 			sourceTree = "<group>";
 		};
 		086659991CA1F3E5007AC555 /* MainWindow.xib */ = {

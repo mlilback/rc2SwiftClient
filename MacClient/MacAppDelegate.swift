@@ -23,7 +23,6 @@ let currentSupportDataVersion: Int = 2
 
 fileprivate struct Actions {
 	static let showPreferences = #selector(MacAppDelegate.showPreferencesWindow(_:))
-	static let showBookmarks = #selector(MacAppDelegate.showBookmarkWindow(_:))
 	static let newWorkspace = #selector(MacAppDelegate.newWorkspace(_:))
 	static let showWorkspace = #selector(MacAppDelegate.showWorkspace(_:))
 	static let showLog = #selector(MacAppDelegate.showLogWindow(_:))
@@ -133,8 +132,6 @@ extension MacAppDelegate {
 		guard let action = menuItem.action else { return false }
 		if startupWindowController?.window?.isVisible ?? false { return false } //disable menu items while docker is loading
 		switch action  {
-		case Actions.showBookmarks:
-			return true
 		case Actions.newWorkspace:
 			return true
 		case Actions.resetLogs:
@@ -360,29 +357,6 @@ extension MacAppDelegate {
 		preferencesWindowController?.showWindow(self)
 	}
 	
-	@IBAction func showBookmarkWindow(_ sender: AnyObject?) {
-		showOnboarding()
-//		onboardingController?.window?.makeKeyAndOrderFront(self)
-//		if nil == bookmarkWindowController {
-//			let container = Container()
-//			container.registerForStoryboard(BookmarkViewController.self) { r, c in
-//				c.bookmarkManager = self.bookmarkManager
-//			}
-//			container.registerForStoryboard(AddBookmarkViewController.self) { r, c in
-//				c.bookmarkManager = self.bookmarkManager
-//			}
-//			container.registerForStoryboard(SelectServerViewController.self) { r, c in
-//				c.bookmarkManager = self.bookmarkManager
-//			}
-//
-//			let sboard = SwinjectStoryboard.create(name: "BookmarkManager", bundle: nil, container: container)
-//			bookmarkWindowController = sboard.instantiateController(withIdentifier: "bookmarkWindow") as? NSWindowController
-//			let bvc = bookmarkWindowController!.contentViewController as! BookmarkViewController
-//			bvc.openSessionCallback = openSessionWindow
-//		}
-//		bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
-	}
-	
 	@IBAction func showLogWindow(_ sender: Any?) {
 		logger.showLogWindow(sender)
 	}
@@ -408,9 +382,6 @@ extension MacAppDelegate {
 			let sessionWC = window.windowController as? MainWindowController
 		{
 			sessionWindowControllers.remove(sessionWC)
-			if sessionWindowControllers.count < 1 {
-				perform(Actions.showBookmarks, with: nil, afterDelay: 0.2)
-			}
 		}
 	}
 	
