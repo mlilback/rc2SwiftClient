@@ -41,8 +41,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	let logger = AppLogger()
 	var mainStoryboard: NSStoryboard!
 	var sessionWindowControllers = Set<MainWindowController>()
-	var bookmarkWindowController: NSWindowController?
-	let bookmarkManager = BookmarkManager()
 	var startupWindowController: StartupWindowController?
 	var startupController: StartupController?
 	var loginController: LoginViewController?
