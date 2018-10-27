@@ -35,6 +35,7 @@
 		080E82FC1DCCD56F0048F36C /* NetworkingBaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */; };
 		080E82FE1DCCD77D0048F36C /* bulkInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 080E82FD1DCCD77D0048F36C /* bulkInfo.json */; };
 		080E83001DCD07930048F36C /* NetworkingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82FF1DCD07930048F36C /* NetworkingError.swift */; };
+		081000452184FC7F006856D3 /* HelpOutputController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 081000442184FC7F006856D3 /* HelpOutputController.storyboard */; };
 		0812178E2058805000ED328C /* PEGKitUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812178D2058805000ED328C /* PEGKitUtilities.swift */; };
 		081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */; };
 		0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */; };
@@ -795,6 +796,7 @@
 		080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingBaseSpec.swift; sourceTree = "<group>"; };
 		080E82FD1DCCD77D0048F36C /* bulkInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = bulkInfo.json; sourceTree = "<group>"; };
 		080E82FF1DCD07930048F36C /* NetworkingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingError.swift; sourceTree = "<group>"; };
+		081000442184FC7F006856D3 /* HelpOutputController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = HelpOutputController.storyboard; path = output/HelpOutputController.storyboard; sourceTree = "<group>"; };
 		0812178D2058805000ED328C /* PEGKitUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PEGKitUtilities.swift; sourceTree = "<group>"; };
 		081263151C85D2E0003E37A5 /* NoodleLineNumberMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoodleLineNumberMarker.h; sourceTree = "<group>"; };
 		081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoodleLineNumberMarker.m; sourceTree = "<group>"; };
@@ -2125,6 +2127,7 @@
 			isa = PBXGroup;
 			children = (
 				08F448F81C4E244500C64706 /* MainController.storyboard */,
+				081000442184FC7F006856D3 /* HelpOutputController.storyboard */,
 				08F189A11D09AA0300866A05 /* SessionController.swift */,
 				0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */,
 				083305E71C51812300E27F66 /* AbstractSessionViewController.swift */,
@@ -2771,6 +2774,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				081000452184FC7F006856D3 /* HelpOutputController.storyboard in Resources */,
 				085A1A1F205AC35200B7EC5F /* ChunkViewItem.xib in Resources */,
 				08525E7A1E314558008A332E /* InputPrompter.xib in Resources */,
 				0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */,

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="27P-g4-WPw">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--help browser controller-->
+        <scene sceneID="P8x-gw-iA7">
+            <objects>
+                <viewController title="help browser" id="27P-g4-WPw" userLabel="help browser controller" customClass="HelpOutputController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="TjG-oT-FC4">
+                        <rect key="frame" x="0.0" y="0.0" width="510" height="513"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <box autoresizesSubviews="NO" boxType="custom" borderType="none" title="Box" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="74R-l6-MPl">
+                                <rect key="frame" x="0.0" y="0.0" width="510" height="38"/>
+                                <view key="contentView" id="7tk-dM-CAV">
+                                    <rect key="frame" x="0.0" y="0.0" width="510" height="38"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <stackView distribution="fill" orientation="horizontal" alignment="baseline" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2nv-KZ-Ehe">
+                                            <rect key="frame" x="10" y="11" width="480" height="21"/>
+                                            <subviews>
+                                                <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dkZ-pl-zEh">
+                                                    <rect key="frame" x="-2" y="-2" width="71" height="24"/>
+                                                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="N4j-pj-Dfa">
+                                                        <font key="font" metaFont="system"/>
+                                                        <segments>
+                                                            <segment label="&lt;" toolTip="Back" width="32" enabled="NO"/>
+                                                            <segment label="&gt;" toolTip="Forward" width="32" enabled="NO" tag="1"/>
+                                                        </segments>
+                                                    </segmentedCell>
+                                                    <accessibility description="Navigate"/>
+                                                    <connections>
+                                                        <action selector="navigateWebView:" target="27P-g4-WPw" id="fd3-2f-FfK"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jtL-Of-tte">
+                                                    <rect key="frame" x="73" y="3" width="367" height="18"/>
+                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="left" title="Loading…" id="Cfx-qs-4c1">
+                                                        <font key="font" metaFont="system" size="14"/>
+                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                    <accessibility description="help topic"/>
+                                                </textField>
+                                                <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7Ly-Jh-7LR">
+                                                    <rect key="frame" x="444" y="-2" width="38" height="24"/>
+                                                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="Qpy-ht-wIH">
+                                                        <font key="font" metaFont="system"/>
+                                                        <segments>
+                                                            <segment toolTip="Share" image="NSShareTemplate" width="32"/>
+                                                        </segments>
+                                                    </segmentedCell>
+                                                    <accessibility description="Share"/>
+                                                    <connections>
+                                                        <action selector="showShareSheet:" target="27P-g4-WPw" id="SMy-5z-n1D"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="height" priority="750" constant="21" id="Xlh-BZ-S3e"/>
+                                            </constraints>
+                                            <visibilityPriorities>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                            </visibilityPriorities>
+                                            <customSpacing>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                            </customSpacing>
+                                        </stackView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="2nv-KZ-Ehe" secondAttribute="trailing" constant="20" id="5Sr-k4-O4c"/>
+                                        <constraint firstAttribute="bottom" secondItem="2nv-KZ-Ehe" secondAttribute="bottom" constant="11" id="gnV-zw-1wL"/>
+                                        <constraint firstItem="2nv-KZ-Ehe" firstAttribute="leading" secondItem="7tk-dM-CAV" secondAttribute="leading" constant="10" id="vaq-Tt-uaf"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="38" id="voo-Uj-13h"/>
+                                </constraints>
+                                <color key="fillColor" name="windowBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </box>
+                            <customView identifier="help container" translatesAutoresizingMaskIntoConstraints="NO" id="i0A-Gs-gUk">
+                                <rect key="frame" x="0.0" y="38" width="510" height="444"/>
+                            </customView>
+                            <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="GrC-hV-wDa">
+                                <rect key="frame" x="0.0" y="36" width="510" height="5"/>
+                            </box>
+                            <customView verticalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="dI9-Zy-Yzc" userLabel="FindBar View" customClass="SearchBarView" customModule="MacClient" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="482" width="510" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="31" id="hdz-1K-IhY"/>
+                                </constraints>
+                            </customView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="i0A-Gs-gUk" secondAttribute="trailing" id="HDY-G0-nuU"/>
+                            <constraint firstItem="i0A-Gs-gUk" firstAttribute="top" secondItem="dI9-Zy-Yzc" secondAttribute="bottom" id="LXp-EQ-Lsd"/>
+                            <constraint firstAttribute="bottom" secondItem="i0A-Gs-gUk" secondAttribute="bottom" constant="38" id="O76-v7-rFd"/>
+                            <constraint firstItem="i0A-Gs-gUk" firstAttribute="leading" secondItem="TjG-oT-FC4" secondAttribute="leading" id="PN3-EW-STS"/>
+                            <constraint firstAttribute="trailing" secondItem="dI9-Zy-Yzc" secondAttribute="trailing" id="cXz-7r-iLM"/>
+                            <constraint firstItem="74R-l6-MPl" firstAttribute="leading" secondItem="TjG-oT-FC4" secondAttribute="leading" id="clN-xe-4VX"/>
+                            <constraint firstAttribute="bottom" secondItem="74R-l6-MPl" secondAttribute="bottom" id="hJg-is-VQM"/>
+                            <constraint firstItem="dI9-Zy-Yzc" firstAttribute="leading" secondItem="TjG-oT-FC4" secondAttribute="leading" id="iu3-zD-2ip"/>
+                            <constraint firstItem="GrC-hV-wDa" firstAttribute="leading" secondItem="TjG-oT-FC4" secondAttribute="leading" id="odg-NF-qoe"/>
+                            <constraint firstItem="dI9-Zy-Yzc" firstAttribute="top" secondItem="TjG-oT-FC4" secondAttribute="top" id="ph8-i3-v5w"/>
+                            <constraint firstAttribute="bottom" secondItem="GrC-hV-wDa" secondAttribute="bottom" constant="38" id="ptX-79-lcz"/>
+                            <constraint firstAttribute="trailing" secondItem="74R-l6-MPl" secondAttribute="trailing" id="rT0-Ys-P73"/>
+                            <constraint firstAttribute="trailing" secondItem="GrC-hV-wDa" secondAttribute="trailing" id="s4M-jf-5kE"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="containerView" destination="i0A-Gs-gUk" id="s6R-9B-znl"/>
+                        <outlet property="navButtons" destination="dkZ-pl-zEh" id="jBQ-hm-nYp"/>
+                        <outlet property="searchBar" destination="dI9-Zy-Yzc" id="jgD-61-Aig"/>
+                        <outlet property="searchBarHeightConstraint" destination="hdz-1K-IhY" id="HLU-72-RTs"/>
+                        <outlet property="shareButton" destination="7Ly-Jh-7LR" id="kvB-yp-WX7"/>
+                        <outlet property="titleLabel" destination="jtL-Of-tte" id="fSS-DG-EOZ"/>
+                    </connections>
+                </viewController>
+                <customObject id="rEg-d6-pzJ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3198" y="-41.5"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="NSShareTemplate" width="11" height="16"/>
+    </resources>
+</document>
