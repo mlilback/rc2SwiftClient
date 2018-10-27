@@ -4,6 +4,27 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>io.rc2.rc2d</string>
+			</array>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>rc2d</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>docIcon</string>
+			<key>CFBundleTypeName</key>
+			<string>Rc² Document</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>$(PRODUCT_MODULE_NAME).Rc2Document</string>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconFile</key>
@@ -39,5 +60,27 @@
 	<string>BITCrashExceptionApplication</string>
 	<key>SUFeedURL</key>
 	<string>SPARKLE_FEED_URL</string>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>com.apple.package</string>
+			</array>
+			<key>UTTypeIdentifier</key>
+			<string>io.rc2.rc2d</string>
+			<key>UTTypeDescription</key>
+			<string></string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>rc2d</string>
+				</array>
+			</dict>
+			<key>UTTypeIconFile</key>
+			<string>docIcon</string>
+		</dict>
+	</array>
 </dict>
 </plist>

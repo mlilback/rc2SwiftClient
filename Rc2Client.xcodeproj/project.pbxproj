@@ -283,6 +283,7 @@
 		086A40E11E7DAEE300AE476B /* InternalTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40E01E7DAEE300AE476B /* InternalTheme.swift */; };
 		0873F6001F795AE700265934 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559921DDC889D0047B3CE /* ImageCache.swift */; };
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
+		08790773215AC8CF00978ECD /* Rc2Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08790772215AC8CF00978ECD /* Rc2Document.swift */; };
 		0881B50B1DCF856B00679DB3 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */; };
 		0881B50C1DCF85B500679DB3 /* ServerHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B01D19B0D500866A05 /* ServerHost.swift */; };
 		0881B50E1DCF896500679DB3 /* LoginFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50D1DCF896500679DB3 /* LoginFactory.swift */; };
@@ -1026,6 +1027,7 @@
 		086A40DE1E7D956400AE476B /* PlatformTypeAliases.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlatformTypeAliases.swift; sourceTree = "<group>"; };
 		086A40E01E7DAEE300AE476B /* InternalTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternalTheme.swift; sourceTree = "<group>"; };
 		08765C811DC58AB300F75D8E /* DispatchReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchReader.swift; sourceTree = "<group>"; };
+		08790772215AC8CF00978ECD /* Rc2Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rc2Document.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		087DC36A200F5140001F9560 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionInfo.swift; sourceTree = "<group>"; };
@@ -1869,6 +1871,7 @@
 			children = (
 				082564F220150B4000526957 /* MacAppConstants.swift */,
 				088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */,
+				08790772215AC8CF00978ECD /* Rc2Document.swift */,
 				0846D3E020175DF100795376 /* AppError.swift */,
 				08680691200E415600C986A9 /* AppLogger.swift */,
 				088CE6721C4B0AF400153414 /* Main.storyboard */,
@@ -3132,6 +3135,7 @@
 				08A01FA91CBC07B0001EDFAA /* WebKitOutputController.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
 				08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */,
+				08790773215AC8CF00978ECD /* Rc2Document.swift in Sources */,
 				0865262B1E6E1BE900D75B25 /* GeneralPrefsController.swift in Sources */,
 				083305E61C517FE300E27F66 /* SidebarHelpController.swift in Sources */,
 				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,
