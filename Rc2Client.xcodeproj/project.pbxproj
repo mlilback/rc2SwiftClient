@@ -380,6 +380,7 @@
 		08DA11312092809700A96C7B /* SyntaxParsing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; };
 		08DA11322092809D00A96C7B /* GRDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E8F1A9206995E700F0FF5A /* GRDB.framework */; };
 		08DAF2F31E4D07EF005A251E /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */; };
+		08E55B562188E33A00F63A20 /* LivePreviewEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */; };
 		08E5D2091EAA58FD00374055 /* TimedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E5D2081EAA58FD00374055 /* TimedEvent.swift */; };
 		08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		08E7E0981D8AE926000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
@@ -1108,6 +1109,7 @@
 		08D610731CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAAdaptiveSpaceItemView.h; sourceTree = "<group>"; };
 		08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItemView.m; sourceTree = "<group>"; };
 		08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PreferencesViewController.swift; path = prefs/PreferencesViewController.swift; sourceTree = "<group>"; };
+		08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePreviewEditorController.swift; sourceTree = "<group>"; };
 		08E5D2081EAA58FD00374055 /* TimedEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimedEvent.swift; path = TimedEvents/TimedEvent.swift; sourceTree = SOURCE_ROOT; };
 		08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = Carthage/Build/Mac/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
 		08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Rc2.swift"; sourceTree = "<group>"; };
@@ -1972,6 +1974,7 @@
 				08EE270720335561008E008F /* RootEditorController.swift */,
 				085A1A2A205ACA4600B7EC5F /* AbstractEditorController.swift */,
 				08F448F51C4E244500C64706 /* SourceEditorController.swift */,
+				08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */,
 				08EE270920335B0A008E008F /* NotebookEditorController.swift */,
 				085A1A26205AC62B00B7EC5F /* NotebookDropIndicator.swift */,
 				085A1A28205AC6CD00B7EC5F /* NotebookCollectionLayout.swift */,
@@ -3179,6 +3182,7 @@
 				085A1A21205AC39C00B7EC5F /* SourceTextView.swift in Sources */,
 				086A40D51E7B04F400AE476B /* ThemeEditorController.swift in Sources */,
 				083AC0FD2062D01E0054023F /* EquationViewItem.swift in Sources */,
+				08E55B562188E33A00F63A20 /* LivePreviewEditorController.swift in Sources */,
 				083174101C57B2E200071408 /* CommandHistory.swift in Sources */,
 				085A1A23205AC45600B7EC5F /* NotebookItemData.swift in Sources */,
 				08EB36D21FBBA1640078229A /* TextVariableDetailController.swift in Sources */,

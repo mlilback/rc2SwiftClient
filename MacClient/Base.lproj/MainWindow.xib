@@ -232,27 +232,24 @@
                         <size key="minSize" width="126" height="25"/>
                         <size key="maxSize" width="163" height="126"/>
                         <customView key="view" id="kP9-9R-WRk">
-                            <rect key="frame" x="0.0" y="14" width="128" height="25"/>
+                            <rect key="frame" x="0.0" y="14" width="160" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <subviews>
                                 <segmentedControl focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="eLV-Ee-7gC">
-                                    <rect key="frame" x="0.0" y="0.0" width="71" height="23"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="104" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <segmentedCell key="cell" borderStyle="border" focusRingType="none" alignment="left" style="texturedSquare" trackingMode="selectOne" id="cyY-zG-SNx">
                                         <font key="font" metaFont="system" size="14"/>
                                         <segments>
-                                            <segment toolTip="Console" image="notebook" width="32">
-                                                <nil key="label"/>
-                                            </segment>
-                                            <segment image="source" width="32">
-                                                <nil key="label"/>
-                                            </segment>
+                                            <segment toolTip="Console" image="notebook" width="32"/>
+                                            <segment image="source" width="32"/>
+                                            <segment image="preview-editor-tbar" width="32"/>
                                         </segments>
                                     </segmentedCell>
                                     <accessibility description="editor mode"/>
                                 </segmentedControl>
                                 <segmentedControl toolTip="Search" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="B9S-3j-Jdw">
-                                    <rect key="frame" x="79" y="0.0" width="36" height="23"/>
+                                    <rect key="frame" x="111" y="0.0" width="36" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="BpV-xH-BVR">
                                         <font key="font" metaFont="system" size="14"/>
@@ -298,6 +295,7 @@
         <image name="notebook" width="18" height="20"/>
         <image name="package" width="38" height="38"/>
         <image name="prefsEditor" width="32" height="32"/>
+        <image name="preview-editor-tbar" width="18" height="20"/>
         <image name="preview-tbar" width="35" height="38"/>
         <image name="search" width="18" height="18"/>
         <image name="source" width="18" height="20"/>

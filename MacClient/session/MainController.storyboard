@@ -261,6 +261,7 @@
                     <tabViewItems>
                         <tabViewItem identifier="" id="fc9-GN-Xpe"/>
                         <tabViewItem identifier="" id="ZoW-VJ-qYq"/>
+                        <tabViewItem id="x6l-70-mzL"/>
                     </tabViewItems>
                     <tabView key="tabView" misplaced="YES" type="noTabsNoBorder" id="MmH-Uz-uzf">
                         <rect key="frame" x="0.0" y="0.0" width="400" height="513"/>
@@ -274,6 +275,7 @@
                         <outlet property="tabView" destination="MmH-Uz-uzf" id="pbP-hq-CKP"/>
                         <segue destination="1v9-4m-leU" kind="relationship" relationship="tabItems" id="tRb-Df-2wv"/>
                         <segue destination="PjE-XL-yZ2" kind="relationship" relationship="tabItems" id="2Rh-aa-OqK"/>
+                        <segue destination="RjP-PK-Kpc" kind="relationship" relationship="tabItems" id="hIB-dT-HVc"/>
                     </connections>
                 </tabViewController>
                 <customObject id="P0i-pk-oqt" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1558,6 +1560,30 @@
                 <customObject id="Rf2-UB-igA" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3250" y="-326"/>
+        </scene>
+        <!--Live Preview Editor Controller-->
+        <scene sceneID="9ba-zX-Pn3">
+            <objects>
+                <viewController id="RjP-PK-Kpc" customClass="LivePreviewEditorController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="XnY-4c-21Y">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bx9-Dk-6Cx">
+                                <rect key="frame" x="18" y="263" width="91" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="preview editor" id="Qsj-82-d3d">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                    </view>
+                </viewController>
+                <customObject id="W5R-v4-XYF" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1185" y="1037"/>
         </scene>
     </scenes>
     <resources>
