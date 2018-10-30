@@ -15,7 +15,7 @@ import Result
 import SwiftyUserDefaults
 
 enum OutputTab: Int {
-	 case console = 0, webKit, image, help
+	 case console = 0, preview, webKit, image, help
 }
 
 // to allow parent controller to potentially modify contextual menu of a child controller
@@ -33,6 +33,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	var currentOutputController: OutputController!
 	weak var consoleController: ConsoleOutputController?
+	weak var previewController: LivePreviewController?
 	weak var imageController: ImageOutputController?
 	weak var webController: WebKitOutputController?
 	weak var helpController: HelpOutputController?
@@ -63,6 +64,8 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		consoleController = firstChildViewController(self)
 		consoleController?.viewFileOrImage = { [weak self] (fw) in self?.displayAttachment(fw) }
 		consoleController?.contextualMenuDelegate = self
+		previewController = firstChildViewController(self)
+		previewController?.contextualMenuDelegate = self
 		imageController = firstChildViewController(self)
 		imageController?.imageCache = imageCache
 		imageController?.contextualMenuDelegate = self
@@ -280,6 +283,8 @@ private extension OutputTabController {
 		switch selectedOutputTab.value {
 		case .console:
 			currentOutputController = consoleController
+		case .preview:
+			currentOutputController = previewController
 		case .image:
 			currentOutputController = imageController
 		case .webKit:

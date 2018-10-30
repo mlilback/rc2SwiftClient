@@ -70,6 +70,7 @@
                 <tabViewController identifier="outputTabController" storyboardIdentifier="output" tabStyle="unspecified" id="qFx-32-GX3" userLabel="output controller" customClass="OutputTabController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
                     <tabViewItems>
                         <tabViewItem id="efd-Px-WGZ"/>
+                        <tabViewItem id="HBy-ol-2Ik"/>
                         <tabViewItem id="8vd-Ra-yNB"/>
                         <tabViewItem id="j2a-HV-n5N"/>
                         <tabViewItem id="dfR-En-tlk"/>
@@ -86,6 +87,7 @@
                         <outlet property="additionContextMenuItems" destination="8ub-sG-n4E" id="8h0-MK-Jf2"/>
                         <outlet property="tabView" destination="yzp-ro-Qov" id="jRF-JJ-3jl"/>
                         <segue destination="cmA-J2-3x3" kind="relationship" relationship="tabItems" id="ZGF-RH-jDc"/>
+                        <segue destination="7d2-Rh-ncl" kind="relationship" relationship="tabItems" id="Orj-uc-171"/>
                         <segue destination="q5U-HH-oqN" kind="relationship" relationship="tabItems" id="DYt-ys-YDI"/>
                         <segue destination="cag-VX-0j2" kind="relationship" relationship="tabItems" id="hwK-qM-BN7"/>
                         <segue destination="q9b-1p-BPK" kind="relationship" relationship="tabItems" id="uoN-Vg-Woy"/>
@@ -1548,6 +1550,14 @@
                 <customObject id="VWX-AE-zKJ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3034" y="-324"/>
+        </scene>
+        <!--LivePreviewController-->
+        <scene sceneID="c9p-Eq-zaN">
+            <objects>
+                <controllerPlaceholder storyboardName="LivePreviewController" id="7d2-Rh-ncl" sceneMemberID="viewController"/>
+                <customObject id="Rf2-UB-igA" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3250" y="-326"/>
         </scene>
     </scenes>
     <resources>
