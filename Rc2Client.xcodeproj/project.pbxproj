@@ -381,6 +381,8 @@
 		08DA11322092809D00A96C7B /* GRDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E8F1A9206995E700F0FF5A /* GRDB.framework */; };
 		08DAF2F31E4D07EF005A251E /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */; };
 		08E55B562188E33A00F63A20 /* LivePreviewEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */; };
+		08E55B59219222BD00F63A20 /* Down.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E55B57219222AD00F63A20 /* Down.framework */; };
+		08E55B5A219222BD00F63A20 /* Down.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08E55B57219222AD00F63A20 /* Down.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08E5D2091EAA58FD00374055 /* TimedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E5D2081EAA58FD00374055 /* TimedEvent.swift */; };
 		08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		08E7E0981D8AE926000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
@@ -700,6 +702,7 @@
 				08C2D5E61E719DE20007A02D /* SBInjector.framework in Embed Frameworks */,
 				08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */,
 				08ACDA391FD1F5B90017770B /* MJLLogger.framework in Embed Frameworks */,
+				08E55B5A219222BD00F63A20 /* Down.framework in Embed Frameworks */,
 				082BE15E1F5B3682006CE0B7 /* Model.framework in Embed Frameworks */,
 				0821BDCB1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Embed Frameworks */,
 				084D32FD206D03DD00246CBD /* ClientCore.framework in Embed Frameworks */,
@@ -1110,6 +1113,7 @@
 		08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItemView.m; sourceTree = "<group>"; };
 		08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PreferencesViewController.swift; path = prefs/PreferencesViewController.swift; sourceTree = "<group>"; };
 		08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePreviewEditorController.swift; sourceTree = "<group>"; };
+		08E55B57219222AD00F63A20 /* Down.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Down.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08E5D2081EAA58FD00374055 /* TimedEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimedEvent.swift; path = TimedEvents/TimedEvent.swift; sourceTree = SOURCE_ROOT; };
 		08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = Carthage/Build/Mac/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
 		08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Rc2.swift"; sourceTree = "<group>"; };
@@ -1311,6 +1315,7 @@
 				084D32FC206D03DD00246CBD /* ClientCore.framework in Frameworks */,
 				08E8F1A8206995E700F0FF5A /* GRDB.framework in Frameworks */,
 				0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */,
+				08E55B59219222BD00F63A20 /* Down.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1947,6 +1952,7 @@
 				082FF1C01C7F321B00CCC27F /* Result.framework */,
 				088CE6B91C4C44BD00153414 /* Security.framework */,
 				0833A8251D2D87120033654B /* Sparkle.framework */,
+				08E55B57219222AD00F63A20 /* Down.framework */,
 				08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */,
 				08E8F1A9206995E700F0FF5A /* GRDB.framework */,
 				082FF1ED1C7F339400CCC27F /* URITemplate.framework */,
