@@ -573,13 +573,13 @@
                                             <constraint firstAttribute="bottom" secondItem="W7q-8e-WfZ" secondAttribute="bottom" id="z0c-jz-L0b"/>
                                         </constraints>
                                     </customView>
-                                    <scrollView autohidesScrollers="YES" horizontalLineScroll="23" horizontalPageScroll="10" verticalLineScroll="23" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="txX-n8-tjU">
+                                    <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="txX-n8-tjU">
                                         <rect key="frame" x="0.0" y="29" width="209" height="640"/>
                                         <clipView key="contentView" drawsBackground="NO" id="Xg4-a4-ann">
                                             <rect key="frame" x="1" y="1" width="207" height="638"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <tableView appearanceType="aqua" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="wvl-Kg-cyW" customClass="FileTableView" customModule="MacClient" customModuleProvider="target">
+                                                <tableView appearanceType="aqua" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="18" rowSizeStyle="automatic" viewBased="YES" id="wvl-Kg-cyW" customClass="FileTableView" customModule="MacClient" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="0.0" width="207" height="638"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="6"/>
@@ -600,11 +600,11 @@
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView identifier="string" id="EhU-bH-au5">
-                                                                    <rect key="frame" x="1" y="3" width="200" height="14"/>
+                                                                    <rect key="frame" x="1" y="3" width="200" height="16"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cdI-61-Trg">
-                                                                            <rect key="frame" x="1" y="0.0" width="198" height="14"/>
+                                                                            <rect key="frame" x="1" y="1" width="198" height="14"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="7oD-7f-5Sh">
                                                                                 <font key="font" metaFont="smallSystem"/>
                                                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -622,11 +622,11 @@
                                                                     </connections>
                                                                 </tableCellView>
                                                                 <tableCellView identifier="file" id="dxY-YX-Pua" customClass="EditableTableCellView" customModule="MacClient" customModuleProvider="target">
-                                                                    <rect key="frame" x="1" y="23" width="200" height="17"/>
+                                                                    <rect key="frame" x="1" y="25" width="200" height="18"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KQT-lU-PCw" userLabel="Filename">
-                                                                            <rect key="frame" x="4" y="2" width="188" height="14"/>
+                                                                            <rect key="frame" x="0.0" y="2" width="192" height="14"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Filename" id="JWm-rr-kKp">
                                                                                 <font key="font" metaFont="smallSystem"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -652,11 +652,12 @@
                                                                         </button>
                                                                     </subviews>
                                                                     <constraints>
-                                                                        <constraint firstItem="Yi0-tB-FU7" firstAttribute="centerY" secondItem="dxY-YX-Pua" secondAttribute="centerY" id="EN1-2b-pL3"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="KQT-lU-PCw" secondAttribute="trailing" priority="750" constant="10" id="8Wz-yv-rhK"/>
                                                                         <constraint firstItem="KQT-lU-PCw" firstAttribute="trailing" secondItem="Yi0-tB-FU7" secondAttribute="leading" constant="6" id="LqE-xs-vQW"/>
-                                                                        <constraint firstItem="KQT-lU-PCw" firstAttribute="centerY" secondItem="dxY-YX-Pua" secondAttribute="centerY" id="UCR-tb-KL1"/>
-                                                                        <constraint firstItem="KQT-lU-PCw" firstAttribute="leading" secondItem="dxY-YX-Pua" secondAttribute="leading" constant="6" id="prZ-e5-cFN"/>
-                                                                        <constraint firstAttribute="trailing" secondItem="Yi0-tB-FU7" secondAttribute="trailing" id="vlc-pQ-zmS"/>
+                                                                        <constraint firstItem="KQT-lU-PCw" firstAttribute="top" secondItem="dxY-YX-Pua" secondAttribute="top" constant="2" id="Rx5-8E-jqT"/>
+                                                                        <constraint firstItem="Yi0-tB-FU7" firstAttribute="centerY" secondItem="dxY-YX-Pua" secondAttribute="centerY" id="Y9H-XP-MH5"/>
+                                                                        <constraint firstItem="KQT-lU-PCw" firstAttribute="leading" secondItem="dxY-YX-Pua" secondAttribute="leading" constant="2" id="g9d-H8-R0W"/>
+                                                                        <constraint firstItem="KQT-lU-PCw" firstAttribute="centerY" secondItem="dxY-YX-Pua" secondAttribute="centerY" id="vcA-7e-IjX"/>
                                                                     </constraints>
                                                                     <connections>
                                                                         <outlet property="infoButton" destination="Yi0-tB-FU7" id="7fI-2b-eM0"/>
@@ -1569,21 +1570,41 @@
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bx9-Dk-6Cx">
-                                <rect key="frame" x="18" y="263" width="91" height="17"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="preview editor" id="Qsj-82-d3d">
-                                    <font key="font" usesAppearanceFont="YES"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                            <scrollView appearanceType="aqua" fixedFrame="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MaL-tv-jEs">
+                                <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <clipView key="contentView" ambiguous="YES" drawsBackground="NO" copiesOnScroll="NO" id="QYn-L8-hs4">
+                                    <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textView ambiguous="YES" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" usesInspectorBar="YES" findStyle="bar" allowsDocumentBackgroundColorChange="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="BTo-kx-sgU" customClass="SessionEditor" customModule="MacClient" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <size key="minSize" width="450" height="300"/>
+                                            <size key="maxSize" width="450" height="10000000"/>
+                                            <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <connections>
+                                                <outlet property="delegate" destination="RjP-PK-Kpc" id="a80-yT-3G7"/>
+                                            </connections>
+                                        </textView>
+                                    </subviews>
+                                </clipView>
+                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="ITy-h7-grT">
+                                    <rect key="frame" x="434" y="0.0" width="16" height="300"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                            </scrollView>
                         </subviews>
                     </view>
+                    <connections>
+                        <outlet property="textEditor" destination="BTo-kx-sgU" id="AUd-el-dq0"/>
+                    </connections>
                 </viewController>
                 <customObject id="W5R-v4-XYF" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1185" y="1037"/>
+            <point key="canvasLocation" x="1181" y="1037"/>
         </scene>
     </scenes>
     <resources>

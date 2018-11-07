@@ -484,7 +484,7 @@ extension MacAppDelegate {
 			startupWindowController = nil
 			dockMenu = nil
 			if sessionWindowControllers.count < 1 {
-				showOnboarding()
+				showOnboarding(self)
 			} else {
 				NSApp.mainWindow?.makeKeyAndOrderFront(self)
 			}
@@ -568,7 +568,7 @@ extension MacAppDelegate {
 		promptToLogin()
 	}
 	
-	private func showOnboarding() {
+	@IBAction func showOnboarding(_ sender: Any?) {
 		if nil == onboardingController {
 			// swiftlint:disable:next force_cast
 			onboardingController = (mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "OnboardingWindowController")) as! OnboardingWindowController)
