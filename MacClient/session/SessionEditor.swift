@@ -35,6 +35,9 @@ class SessionEditor: TextViewWithContextualMenu {
 		textContainer?.widthTracksTextView = true
 		isHorizontallyResizable = true
 		isEditable = false
+		if #available(macOS 10.14, *) {
+			self.appearance = NSAppearance(named: .aqua)
+		}
 	}
 	
 	var rangeOfAllText: NSRange {

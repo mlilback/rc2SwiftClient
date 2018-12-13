@@ -52,6 +52,9 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	// MARK: overrides
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		if #available(macOS 10.14, *) {
+			resultsView?.appearance = NSAppearance(named: .aqua)
+		}
 		cmdHistory.target = self
 		consoleTextField?.adjustContextualMenu = { (editor: NSText, theMenu: NSMenu) in
 			return theMenu
