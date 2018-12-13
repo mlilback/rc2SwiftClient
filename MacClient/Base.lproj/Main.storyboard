@@ -1407,7 +1407,7 @@ DQ
                                     <real value="3.4028234663852886e+38"/>
                                 </customSpacing>
                             </stackView>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="dXl-DN-wKp">
+                            <textField horizontalHuggingPriority="251" horizontalCompressionResistancePriority="300" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="dXl-DN-wKp">
                                 <rect key="frame" x="18" y="20" width="272" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Status Message" id="A98-tt-DLn">
                                     <font key="font" metaFont="system"/>
