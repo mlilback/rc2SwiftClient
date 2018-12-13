@@ -3175,6 +3175,7 @@
 				084D33352077D1FD00246CBD /* NSViewController+Alerts.swift in Sources */,
 				08F189A21D09AA0300866A05 /* SessionController.swift in Sources */,
 				085A1A25205AC4CD00B7EC5F /* NotebookEntryView.swift in Sources */,
+				08E55B642194A86700F63A20 /* SourceEditorLayoutManager.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
 				082564F320150B4000526957 /* MacAppConstants.swift in Sources */,
 				08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */,
