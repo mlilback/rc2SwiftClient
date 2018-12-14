@@ -383,6 +383,8 @@
 		08E55B562188E33A00F63A20 /* LivePreviewEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */; };
 		08E55B59219222BD00F63A20 /* Down.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E55B57219222AD00F63A20 /* Down.framework */; };
 		08E55B5A219222BD00F63A20 /* Down.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08E55B57219222AD00F63A20 /* Down.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08E55B622194A59300F63A20 /* BaseSourceEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B612194A59300F63A20 /* BaseSourceEditorController.swift */; };
+		08E55B642194A86700F63A20 /* SourceEditorLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B632194A86700F63A20 /* SourceEditorLayoutManager.swift */; };
 		08E5D2091EAA58FD00374055 /* TimedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E5D2081EAA58FD00374055 /* TimedEvent.swift */; };
 		08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		08E7E0981D8AE926000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
@@ -1114,6 +1116,8 @@
 		08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PreferencesViewController.swift; path = prefs/PreferencesViewController.swift; sourceTree = "<group>"; };
 		08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePreviewEditorController.swift; sourceTree = "<group>"; };
 		08E55B57219222AD00F63A20 /* Down.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Down.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		08E55B612194A59300F63A20 /* BaseSourceEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSourceEditorController.swift; sourceTree = "<group>"; };
+		08E55B632194A86700F63A20 /* SourceEditorLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceEditorLayoutManager.swift; sourceTree = "<group>"; };
 		08E5D2081EAA58FD00374055 /* TimedEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimedEvent.swift; path = TimedEvents/TimedEvent.swift; sourceTree = SOURCE_ROOT; };
 		08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = Carthage/Build/Mac/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
 		08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Rc2.swift"; sourceTree = "<group>"; };
@@ -1980,6 +1984,8 @@
 				08EE270720335561008E008F /* RootEditorController.swift */,
 				085A1A2A205ACA4600B7EC5F /* AbstractEditorController.swift */,
 				08F448F51C4E244500C64706 /* SourceEditorController.swift */,
+				08E55B612194A59300F63A20 /* BaseSourceEditorController.swift */,
+				08E55B632194A86700F63A20 /* SourceEditorLayoutManager.swift */,
 				08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */,
 				08EE270920335B0A008E008F /* NotebookEditorController.swift */,
 				085A1A26205AC62B00B7EC5F /* NotebookDropIndicator.swift */,
@@ -3164,6 +3170,7 @@
 				0865262B1E6E1BE900D75B25 /* GeneralPrefsController.swift in Sources */,
 				083305E61C517FE300E27F66 /* SidebarHelpController.swift in Sources */,
 				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,
+				08E55B622194A59300F63A20 /* BaseSourceEditorController.swift in Sources */,
 				08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */,
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
 				08CE59F621152A5100132108 /* LoginViewController.swift in Sources */,

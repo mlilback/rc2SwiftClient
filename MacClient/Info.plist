@@ -7,10 +7,6 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>io.rc2.rc2d</string>
-			</array>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>rc2d</string>
@@ -21,6 +17,10 @@
 			<string>Rc² Document</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>io.rc2.rc2d</string>
+			</array>
 			<key>NSDocumentClass</key>
 			<string>$(PRODUCT_MODULE_NAME).Rc2Document</string>
 		</dict>
@@ -58,6 +58,8 @@
 	<string>Main</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSRequiresAquaSystemAppearance</key>
+	<false/>
 	<key>SUFeedURL</key>
 	<string>SPARKLE_FEED_URL</string>
 	<key>UTExportedTypeDeclarations</key>
@@ -67,10 +69,12 @@
 			<array>
 				<string>com.apple.package</string>
 			</array>
-			<key>UTTypeIdentifier</key>
-			<string>io.rc2.rc2d</string>
 			<key>UTTypeDescription</key>
 			<string></string>
+			<key>UTTypeIconFile</key>
+			<string>docIcon</string>
+			<key>UTTypeIdentifier</key>
+			<string>io.rc2.rc2d</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -78,8 +82,6 @@
 					<string>rc2d</string>
 				</array>
 			</dict>
-			<key>UTTypeIconFile</key>
-			<string>docIcon</string>
 		</dict>
 	</array>
 </dict>
