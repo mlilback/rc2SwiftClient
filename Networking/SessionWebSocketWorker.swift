@@ -65,6 +65,8 @@ public class SessionWebSocketWorker {
 	}
 	
 	public func close() {
+		// SessionStatus ignores the failed associated value when comparing so we use an arbitrary error
+		guard  _status.value != .failed(Rc2Error.Rc2ErrorType.network) else { return } //don't close if failed
 		assert(_status.value == .connected, "must be connected to close")
 		socket.disconnect()
 	}
