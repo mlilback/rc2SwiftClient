@@ -84,8 +84,8 @@ open class HTMLString {
 		}
 	}
 	
-	fileprivate func parseColorAttrs(_ attrString: NSString) -> [NSAttributedStringKey: AnyObject] {
-		var dict = [NSAttributedStringKey: AnyObject]()
+	fileprivate func parseColorAttrs(_ attrString: NSString) -> [NSAttributedString.Key: AnyObject] {
+		var dict = [NSAttributedString.Key: AnyObject]()
 		HTMLString.argumentRegex.enumerateMatches(in: attrString as String, options: [], range: NSRange(location: 0, length: attrString.length))
 		{ (result, _, _) -> Void in
 			guard let result = result else { return }
@@ -98,7 +98,7 @@ open class HTMLString {
 						Log.warn("Invalid color attribute: \(attrString.substring(with: result.range))", .core)
 						return
 					}
-					dict[NSAttributedStringKey.foregroundColor] = color
+					dict[NSAttributedString.Key.foregroundColor] = color
 				default:
 					Log.warn("unsupport color attribute '\(attrName)'", .core)
 			}

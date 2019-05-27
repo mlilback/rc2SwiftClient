@@ -18,7 +18,7 @@ public enum OutputThemeProperty: String, ThemeProperty {
 }
 
 public final class OutputTheme: BaseTheme {
-	public static let AttributeName = NSAttributedStringKey("rc2.OutputTheme")
+	public static let AttributeName = NSAttributedString.Key("rc2.OutputTheme")
 
 	var colors = [OutputThemeProperty: PlatformColor]()
 
@@ -66,8 +66,8 @@ public final class OutputTheme: BaseTheme {
 //		return [attributeName: property, NSAttributedStringKey.backgroundColor: color(for: prop)]
 //	}
 
-	public func stringAttributes(for property: OutputThemeProperty) -> [NSAttributedStringKey: Any] {
-		return [attributeName: property, NSAttributedStringKey.backgroundColor: color(for: property)]
+	public func stringAttributes(for property: OutputThemeProperty) -> [NSAttributedString.Key: Any] {
+		return [attributeName: property, NSAttributedString.Key.backgroundColor: color(for: property)]
 	}
 
 	public override func update(attributedString: NSMutableAttributedString) {

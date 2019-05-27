@@ -40,7 +40,7 @@ extension Notification.Name {
 public protocol Theme: JSONEncodable, JSONDecodable, CustomStringConvertible {
 	
 	/// implemented in protocol extension to allow using AttributeName w/o the type name
-	var attributeName: NSAttributedStringKey { get }
+	var attributeName: NSAttributedString.Key { get }
 	/// for user-editable themes, the file location of this theme
 	var fileUrl: URL? { get }
 	
@@ -100,7 +100,7 @@ public class BaseTheme: NSObject, Theme {
 	public override var description: String { return "Theme \(name)" }
 	
 	/// map the static AttributeName to a non-static property so type name is not required to reference it
-	public let attributeName: NSAttributedStringKey = NSAttributedStringKey("rc2.BaseTheme")
+	public let attributeName: NSAttributedString.Key = NSAttributedString.Key("rc2.BaseTheme")
 	
 	public var allProperties: [ThemeProperty] {
 		if type(of: self) == SyntaxTheme.self { return SyntaxThemeProperty.allProperties }

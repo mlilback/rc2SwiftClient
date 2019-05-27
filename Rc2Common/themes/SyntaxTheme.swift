@@ -18,7 +18,7 @@ public enum SyntaxThemeProperty: String, ThemeProperty {
 }
 
 public final class SyntaxTheme: BaseTheme {
-	public static let AttributeName = NSAttributedStringKey("rc2.SyntaxTheme")
+	public static let AttributeName = NSAttributedString.Key("rc2.SyntaxTheme")
 	
 	var colors = [SyntaxThemeProperty: PlatformColor]()
 	
@@ -67,8 +67,8 @@ public final class SyntaxTheme: BaseTheme {
 //		return [attributeName: property, NSAttributedStringKey.backgroundColor: color(for: prop)]
 //	}
 
-	public func stringAttributes(for property: SyntaxThemeProperty) -> [NSAttributedStringKey: Any] {
-		return [attributeName: property, NSAttributedStringKey.backgroundColor: color(for: property)]
+	public func stringAttributes(for property: SyntaxThemeProperty) -> [NSAttributedString.Key: Any] {
+		return [attributeName: property, NSAttributedString.Key.backgroundColor: color(for: property)]
 	}
 
 	public override func update(attributedString: NSMutableAttributedString) {
