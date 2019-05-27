@@ -40,7 +40,7 @@ public class HelpController {
 			var all = Set<HelpTopic>()
 			var names = Set<String>()
 			try dbQueue.inDatabase { db in
-				let rawRows = try Row.fetchAll(db, sql: "select rowid,package,name,title,aliases,desc from helptopic where name not like '.%' order by package, name COLLATE nocase ")
+				let rawRows = try Row.fetchAll(db, "select rowid,package,name,title,aliases,desc from helptopic where name not like '.%' order by package, name COLLATE nocase ")
 				for row in rawRows {
 					guard let package: String = row["package"] else { continue }
 					let topic = HelpTopic(id: row["rowid"], name: row["name"], packageName: package, title: row["title"], aliases: row["aliases"], description: row["desc"])
@@ -136,7 +136,7 @@ public class HelpController {
 		var rows: [Row] = []
 		do {
 			try dbQueue.inDatabase { db in
-				rows = try Row.fetchAll(db, sql: "select * from helpidx where helpidx match ?", arguments: [searchString])
+				rows = try Row.fetchAll(db, "select * from helpidx where helpidx match ?", arguments: [searchString])
 			}
 			results = try parse(rows: rows)
 		} catch {

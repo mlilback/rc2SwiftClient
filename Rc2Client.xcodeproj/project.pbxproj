@@ -242,6 +242,7 @@
 		085A1A2B205ACA4600B7EC5F /* AbstractEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A2A205ACA4600B7EC5F /* AbstractEditorController.swift */; };
 		085A1A30205C73FC00B7EC5F /* RmdDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A2F205C73FC00B7EC5F /* RmdDocument.swift */; };
 		08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08604A4D1D9C0C0500DE2A79 /* Named.swift */; };
+		08615B30229BA6A100488BF1 /* helpindex.db in Resources */ = {isa = PBXBuildFile; fileRef = 084D330F206D399E00246CBD /* helpindex.db */; };
 		086413C82013614500116153 /* AppLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086413C620135E1C00116153 /* AppLoggerTests.swift */; };
 		086413CA201392C600116153 /* sampleLog.json in Resources */ = {isa = PBXBuildFile; fileRef = 086413C9201392C600116153 /* sampleLog.json */; };
 		086413CB201394B100116153 /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
@@ -2741,6 +2742,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				084D330B206D380E00246CBD /* rdocs.tgz in Resources */,
+				08615B30229BA6A100488BF1 /* helpindex.db in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2889,7 +2891,7 @@
 		};
 		084D3320206D4E3E00246CBD /* create help index */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
@@ -2897,7 +2899,7 @@
 			name = "create help index";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${BUILT_PRODUCTS_DIR}/HelpIndexTool\" \"${SRCROOT}/tools/help/json\" \"${BUILT_PRODUCTS_DIR}\"\n";
 		};
@@ -2917,7 +2919,7 @@
 		};
 		08A01FCF1CC80928001EDFAA /* create help index */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
@@ -2925,7 +2927,7 @@
 			name = "create help index";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${BUILT_PRODUCTS_DIR}/HelpIndexTool\" \"${SRCROOT}/tools/help/json\" \"${BUILT_PRODUCTS_DIR}\"\n";
 		};
