@@ -31,7 +31,7 @@ fileprivate struct Actions {
 }
 
 private extension DefaultsKeys {
-	static let supportDataVersion = DefaultsKey<Int>("currentSupportDataVersion")
+	static let supportDataVersion = DefaultsKey<Int>("currentSupportDataVersion", defaultValue: currentSupportDataVersion)
 	static let connectToCloud = DefaultsKey<Bool?>("connectToCloud")
 }
 

@@ -11,8 +11,8 @@ import os
 import SwiftyUserDefaults
 
 fileprivate extension DefaultsKeys {
-	static let globalLogVersion = DefaultsKey<Int>("currentSupportDataVersion")
-	static let logCategoryLevels = DefaultsKey<Dictionary<String, Any>>("logLevels")
+	static let globalLogVersion = DefaultsKey<Int>("currentSupportDataVersion", defaultValue: 0)
+	static let logCategoryLevels = DefaultsKey<Dictionary<String, Any>>("logLevels", defaultValue: [:])
 }
 
 // MARK: -

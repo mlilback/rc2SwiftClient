@@ -13,15 +13,15 @@ import MJLLogger
 
 // MARK: - UserDefaults support for saving TemplateType values
 private extension DefaultsKeys {
-	static let lastTemplateType = DefaultsKey<TemplateType>("prefsTemplateType")
+	static let lastTemplateType = DefaultsKey<TemplateType>("prefsTemplateType", defaultValue: .markdown)
 }
 
-extension UserDefaults {
-	subscript(key: DefaultsKey<TemplateType>) -> TemplateType {
-		get { return unarchive(key) ?? .markdown }
-		set { archive(key, newValue) }
-	}
-}
+//extension UserDefaults {
+//	subscript(key: DefaultsKey<TemplateType>) -> TemplateType {
+//		get { return unarchive(key) ?? .markdown }
+//		set { archive(key, newValue) }
+//	}
+//}
 
 // MARK: - outline cell identifiers
 extension NSUserInterfaceItemIdentifier {

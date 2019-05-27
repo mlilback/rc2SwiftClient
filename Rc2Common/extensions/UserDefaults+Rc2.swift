@@ -9,66 +9,65 @@ import Freddy
 import SwiftyUserDefaults
 import MJLLogger
 
-public extension UserDefaults {
-	/// work with DefaultsKey for any Codable type
-	public subscript<T>(key: DefaultsKey<T?>) -> T? where T: Codable {
-		get {
-			guard let data = data(forKey: key._key) else { return nil }
-			guard let object: T = try? JSONDecoder().decode(T.self, from: data) else { return nil }
-			return object
-		}
-		set {
-			guard let value = newValue else { remove(key); return }
-			do {
-				
-				let data = try JSONEncoder().encode(value)
-				set(data, forKey: key._key)
-			} catch {
-				Log.warn("error saving \(key._key) to prefs: \(error)", .core)
-			}
-		}
+public final class DefaultsJSONBridge: DefaultsBridge<JSON> {
+	override public func get(key: String, userDefaults: UserDefaults) -> JSON? {
+		guard let data = userDefaults.data(forKey: key), let json = try? JSON(data: data)
+			else { return nil }
+		return json
 	}
-	
-	///allow storing JSON objects via SwiftyUserDefaults (serialized as Data)
-	public subscript(key: DefaultsKey<JSON?>) -> JSON? {
-		get {
-			guard let data = data(forKey: key._key), let json = try? JSON(data: data) else {
-				return nil
-			}
-			return json
-		}
-		set {
-			do {
-				set(try newValue?.serialize(), forKey: key._key)
-			} catch let err {
-				Log.warn("error saving a JSON object to UserDefaults: \(err)", .core)
-			}
-		}
-	}
-
-	//allow storing font descriptors
-	public subscript(key: DefaultsKey<FontDescriptor?>) -> FontDescriptor? {
-		get {
-			guard let data = data(forKey: key._key), let fdesc = NSUnarchiver.unarchiveObject(with: data) as? FontDescriptor else {
-				return nil
-			}
-			return fdesc
-		}
-		set {
-			guard let fdesc = newValue else {
-				remove(key._key)
+	override public func save(key: String, value: JSON?, userDefaults: UserDefaults) {
+		do {
+			guard let object = value else {
+				userDefaults.set(nil, forKey: key)
 				return
 			}
-			set(NSArchiver.archivedData(withRootObject: fdesc), forKey: key._key)
+			userDefaults.set(try object.serialize(), forKey: key)
+		} catch {
+			Log.warn("error saving JSON to defaults: \(error)", .core)
 		}
 	}
+	public override func isSerialized() -> Bool { return true }
 	
-	public subscript(key: DefaultsKey<CGFloat>) -> CGFloat {
-		get {
-			return CGFloat(double(forKey: key._key))
-		}
-		set {
-			set(Double(newValue), forKey: key._key)
-		}
+	public override func deserialize(_ object: Any) -> JSON? {
+		guard let data = object as? Data, let json = try? JSON(data: data)
+		else { return nil }
+		return json
 	}
+}
+
+public final class DefaultsJSONArrayBridge: DefaultsBridge<[JSON]> {
+	override public func get(key: String, userDefaults: UserDefaults) -> [JSON]? {
+		return userDefaults.array(forKey: key)?
+			.compactMap { $0 as? JSON }
+	}
+
+	override public func save(key: String, value: [JSON]?, userDefaults: UserDefaults) {
+		guard let object = value else {
+			userDefaults.set(nil, forKey: key)
+			return
+		}
+		let array = object
+			.compactMap { try? $0.serialize() }
+		userDefaults.set(array, forKey: key)
+	}
+	public override func isSerialized() -> Bool { return true }
+
+	public override func deserialize(_ object: Any) -> [JSON]? {
+		guard let data = object as? [Data]
+			else { return nil }
+		return data.compactMap { try? JSON(data: $0) }
+	}
+}
+
+extension JSON: DefaultsSerializable {
+	public static var _defaults: DefaultsBridge<JSON> { return DefaultsJSONBridge() }
+	public static var _defaultsArray: DefaultsBridge<[JSON]> { return DefaultsJSONArrayBridge() }
+}
+
+extension FontDescriptor: DefaultsSerializable {
+}
+
+extension CGFloat: DefaultsSerializable {
+	public static var _defaults: DefaultsBridge<Double> { return DefaultsDoubleBridge() }
+	public static var _defaultsArray: DefaultsBridge<[Double]> { return DefaultsArrayBridge() }
 }

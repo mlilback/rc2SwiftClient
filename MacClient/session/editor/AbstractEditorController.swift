@@ -155,7 +155,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		guard UserDefaults.standard[.autosaveEnabled] else { return }
 		autoSaveDisposable.value?.dispose()
 		autoSaveDisposable.value = context?.save(document: doc, isAutoSave: true)
-			.updateProgress(status: self.appStatus!, actionName: "Autosave")
+			.updateProgress(status: self.appStatus, actionName: "Autosave")
 			.observe(on: UIScheduler())
 			.startWithCompleted { [weak self] in
 				self?.autoSaveDisposable.value?.dispose()

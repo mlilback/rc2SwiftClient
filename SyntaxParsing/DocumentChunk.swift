@@ -6,10 +6,10 @@
 
 import Foundation
 
-public let DocTypeKey = NSAttributedStringKey("DocTypeKey")
-public let ChunkTypeKey = NSAttributedStringKey("ChunkTypeKey")
-public let FragmentTypeKey = NSAttributedStringKey("FragmentTypeKey")
-public let EquationTypeKey = NSAttributedStringKey("EquationTypeKey")
+public let DocTypeKey = NSAttributedString.Key("DocTypeKey")
+public let ChunkTypeKey = NSAttributedString.Key("ChunkTypeKey")
+public let FragmentTypeKey = NSAttributedString.Key("FragmentTypeKey")
+public let EquationTypeKey = NSAttributedString.Key("EquationTypeKey")
 
 /// Possible types of documents
 public enum DocType: String {

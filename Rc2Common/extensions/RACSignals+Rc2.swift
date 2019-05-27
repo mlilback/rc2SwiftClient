@@ -9,7 +9,7 @@ import ReactiveSwift
 import SwiftyUserDefaults
 
 public extension DefaultsKeys {
-	public static let reactiveLoggingEnabled = DefaultsKey<Bool>("ReactiveLogging")
+	public static let reactiveLoggingEnabled = DefaultsKey<Bool>("ReactiveLogging", defaultValue: false)
 }
 
 public extension SignalProducer {

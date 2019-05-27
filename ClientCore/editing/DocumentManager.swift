@@ -58,7 +58,7 @@ public class DocumentManager: EditorContext {
 		self.notificationCenter = notificationCenter
 		self.workspaceNotificationCenter = wspaceCenter
 		self.defaults = defaults
-		let defaultSize = defaults[.defaultFontSize]
+		let defaultSize = CGFloat(defaults[.defaultFontSize])
 		// font defaults to user-fixed pitch font
 		var initialFont = PlatformFont.userFixedPitchFont(ofSize: defaultSize)!
 		// try loading a saved font, or if there isn't one, Menlo

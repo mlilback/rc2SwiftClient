@@ -211,7 +211,7 @@ extension SessionController: SessionDelegate {
 			let errorDetails = details ?? "unknown error"
 			let theme = ThemeManager.shared.activeOutputTheme.value
 			var attrs = theme.stringAttributes(for: .error)
-			attrs[NSAttributedStringKey.font] = NSFont.userFixedPitchFont(ofSize: defaults[DefaultsKeys.defaultFontSize])
+			attrs[NSAttributedStringKey.font] = NSFont.userFixedPitchFont(ofSize: CGFloat(defaults[DefaultsKeys.defaultFontSize]))
 			let fstr = NSAttributedString(string: errorDetails, attributes: attrs)
 			let rstring = ResponseString(string: fstr, type: .error)
 			output(responseString: rstring)

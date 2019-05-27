@@ -182,8 +182,9 @@ extension SignalProducer where Error == Rc2Error {
 	///   - actionName: a name for the action taking place, displayed to the user along with " completed" or " canceled"
 	///   - converter: a closure that converts an event stream value to a ProgressUpdate?. Defaults to returning nil which will ignore any value events
 	/// - Returns: self with status attached as an observer
-	func updateProgress(status: MacAppStatus, actionName: String, determinate: Bool = false, converter: ((Value) -> ProgressUpdate?)? = nil) -> SignalProducer<Value, Error>
+	func updateProgress(status: MacAppStatus?, actionName: String, determinate: Bool = false, converter: ((Value) -> ProgressUpdate?)? = nil) -> SignalProducer<Value, Error>
 	{
+		guard let status = status else { return self }
 		var actualConverter = converter
 		// if no converter is supplied, and the value type is a progress update, just pass it along if it is a value event
 		if nil == actualConverter, Value.self == ProgressUpdate.self {

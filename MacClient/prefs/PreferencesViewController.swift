@@ -9,7 +9,7 @@ import SwiftyUserDefaults
 
 
 private extension DefaultsKeys {
-	static let selectedTabIndex = DefaultsKey<Int>("prefsSelectedTabIndex")
+	static let selectedTabIndex = DefaultsKey<Int>("prefsSelectedTabIndex", defaultValue: 0)
 }
 
 class PreferencesViewController: NSTabViewController {

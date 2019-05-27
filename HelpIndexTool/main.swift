@@ -20,10 +20,10 @@ func createIndex() {
 		let files = findJsonFiles(srcPath: srcPath, destPath: destPath)
 		let dbQueue = try DatabaseQueue(path: "\(destPath)/helpindex.db")
 		try dbQueue.inDatabase { db in
-			try db.execute("drop table if exists helpidx")
-			try db.execute("drop table if exists helptopic")
-			try db.execute("create virtual table helpidx using fts4(package,name,title,aliases,desc, tokenize=porter)")
-			try db.execute("create table helptopic (package, name, title, aliases, desc)")
+			try db.execute(sql: "drop table if exists helpidx")
+			try db.execute(sql: "drop table if exists helptopic")
+			try db.execute(sql: "create virtual table helpidx using fts4(package,name,title,aliases,desc, tokenize=porter)")
+			try db.execute(sql: "create table helptopic (package, name, title, aliases, desc)")
 		}
 		for file in files {
 			addJson(filePath: file, dbQueue: dbQueue)
@@ -57,8 +57,8 @@ func addJson(filePath: String, dbQueue: DatabaseQueue) {
 		try dbQueue.inTransaction { db in
 			let idxSql = "insert into helpidx values (?, ?, ?, ?, ?)"
 			let topicSql = "insert into helptopic values (?, ?, ?, ?, ?)"
-			let idxStatement = try db.makeUpdateStatement(idxSql)
-			let topicStatement = try db.makeUpdateStatement(topicSql)
+			let idxStatement = try db.makeUpdateStatement(sql: idxSql)
+			let topicStatement = try db.makeUpdateStatement(sql: topicSql)
 			for topic in topics {
 				// remove any aliases with invalid characters
 				let aliases = topic.aliases.components(separatedBy: ":").compactMap { if $0.rangeOfCharacter(from: invalidChars) != nil { return nil }

@@ -8,14 +8,18 @@ import Foundation
 import Rc2Common
 import MJLLogger
 import SyntaxParsing
+import SwiftyUserDefaults
 
 public extension Notification.Name {
 	public static let codeTemplatesChanged = Notification.Name("CodeTempaltesChanged")
 }
 
-public enum TemplateType: String, Codable {
+public enum TemplateType: String, Codable, DefaultsSerializable {
 	case markdown, rCode, equation
 	public static var allCases: [TemplateType] { return [.markdown, .rCode, .equation] }
+	
+	public static var _defaults: DefaultsBridge<TemplateType> { return DefaultsRawRepresentableBridge() }
+	public static var _defaultsArray: DefaultsBridge<[TemplateType]> { return DefaultsRawRepresentableArrayBridge() }
 
 	/// localized title to use for displaying to user
 	public var title: String {
