@@ -39,8 +39,10 @@ public final class AppFile: CustomStringConvertible, Hashable
 		fileType = instance.fileType
 	}
 	
-	public var hashValue: Int { return ObjectIdentifier(self).hashValue }
-	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(ObjectIdentifier(self))
+	}
+
 	public var eTag: String { return "f/\(fileId)/\(version)" }
 	
 	/// returns the file name w/o a file extension

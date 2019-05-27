@@ -8,5 +8,5 @@ import Foundation
 
 public extension URLResponse {
 	///returns self as HTTPURLResponse to remove casting
-	public var httpResponse: HTTPURLResponse? { return self as? HTTPURLResponse }
+	var httpResponse: HTTPURLResponse? { return self as? HTTPURLResponse }
 }

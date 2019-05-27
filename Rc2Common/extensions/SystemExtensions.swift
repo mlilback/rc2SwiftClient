@@ -28,7 +28,7 @@ public extension NotificationCenter {
 }
 
 public extension NSRange {
-	public func toStringRange(_ str: String) -> Range<String.Index>? {
+	func toStringRange(_ str: String) -> Range<String.Index>? {
 		guard str.count >= length - location && location < str.count else { return nil }
 		let fromIdx = str.index(str.startIndex, offsetBy: self.location)
 		guard let toIdx = str.index(fromIdx, offsetBy: self.length, limitedBy: str.endIndex) else { return nil }

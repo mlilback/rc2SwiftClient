@@ -370,7 +370,7 @@ class InternalInlineCodeChunk: InternalRmdChunk, InlineChunk, Code {
 
 public extension String {
 	/// surrounds self with startText and endText, only adding newlines if none already exist
-	public func surroundWithoutAddingNewlines(startText: String, endText: String) -> String {
+	func surroundWithoutAddingNewlines(startText: String, endText: String) -> String {
 		var contents = ""
 		contents += startText
 		if !self.hasPrefix("\n") { contents += "\n" }

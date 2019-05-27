@@ -150,8 +150,10 @@ public class TimedEvent {
 }
 
 extension TimedEvent: Hashable {
-	public var hashValue: Int { return ObjectIdentifier(self).hashValue }
-	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(ObjectIdentifier(self))
+	}
+
 	public static func == (lhs: TimedEvent, rhs: TimedEvent) -> Bool {
 		return lhs.hashValue == rhs.hashValue
 	}

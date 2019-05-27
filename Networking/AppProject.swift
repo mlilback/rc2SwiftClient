@@ -33,7 +33,9 @@ public final class AppProject: CustomStringConvertible, Hashable
 	}
 	
 	//documentation inherited from protocol
-	public var hashValue: Int { return ObjectIdentifier(self).hashValue }
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(ObjectIdentifier(self))
+	}
 
 	/// searches for a workspace with the specified id
 	/// - Parameter withId: the id to look for

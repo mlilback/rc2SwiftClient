@@ -11,7 +11,7 @@ import SyntaxParsing
 import SwiftyUserDefaults
 
 public extension Notification.Name {
-	public static let codeTemplatesChanged = Notification.Name("CodeTempaltesChanged")
+	static let codeTemplatesChanged = Notification.Name("CodeTempaltesChanged")
 }
 
 public enum TemplateType: String, Codable, DefaultsSerializable {

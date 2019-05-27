@@ -16,7 +16,7 @@ import Starscream
 import Model
 
 public extension Rc2Error {
-	public var isSessionError: Bool { return nestedError is SessionError }
+	var isSessionError: Bool { return nestedError is SessionError }
 }
 
 public enum ExecuteType: String {

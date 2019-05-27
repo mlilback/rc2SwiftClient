@@ -14,7 +14,7 @@ public extension URLSession {
 	/// - Parameters:
 	///   - request: the GET request to perform
 	/// - Returns: SignalProducer with data or an error. Error will be .network with no nested error if a non 2XX status code is returned or no data is returned
-	public func getData(request: URLRequest) -> SignalProducer<Data, Rc2Error> {
+	func getData(request: URLRequest) -> SignalProducer<Data, Rc2Error> {
 		return SignalProducer<Data, Rc2Error> { observer, _ in
 			let task = self.dataTask(with: request, completionHandler: { (data, response, error) in
 				if let error = error {

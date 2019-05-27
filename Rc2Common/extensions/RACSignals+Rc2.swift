@@ -9,7 +9,7 @@ import ReactiveSwift
 import SwiftyUserDefaults
 
 public extension DefaultsKeys {
-	public static let reactiveLoggingEnabled = DefaultsKey<Bool>("ReactiveLogging", defaultValue: false)
+	static let reactiveLoggingEnabled = DefaultsKey<Bool>("ReactiveLogging", defaultValue: false)
 }
 
 public extension SignalProducer {
@@ -25,7 +25,7 @@ public extension SignalProducer {
 	///   - lineNumber: Line number where event was fired.
 	///
 	/// - returns: Signal producer that, when started, logs the fired events.
-	public func optionalLog(_ identifier: String = "", events: Set<LoggingEvent.SignalProducer>? = nil, fileName: String = #file, functionName: String = #function, lineNumber: Int = #line) -> SignalProducer<Value, Error>
+	func optionalLog(_ identifier: String = "", events: Set<LoggingEvent.SignalProducer>? = nil, fileName: String = #file, functionName: String = #function, lineNumber: Int = #line) -> SignalProducer<Value, Error>
 	{
 		guard UserDefaults.standard[.reactiveLoggingEnabled] else { return self }
 		//if events not specified, limit which ones we watch

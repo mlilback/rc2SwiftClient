@@ -8,7 +8,7 @@ import Foundation
 import Result
 
 public extension Result where Value: Equatable, Error: Equatable {
-	static public func == (lhs: Result<Value, Error>, rhs: Result<Value, Error>) -> Bool {
+	static func == (lhs: Result<Value, Error>, rhs: Result<Value, Error>) -> Bool {
 		return lhs.error == rhs.error && lhs.value == rhs.value
 	}
 }

@@ -52,8 +52,10 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 	}
 
 	//documentation inherited from protocol
-	public var hashValue: Int { return ObjectIdentifier(self).hashValue }
-	
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(ObjectIdentifier(self))
+	}
+
 	/// Get a file with a specific fileId
 	///
 	/// - Parameter withId: the id of the file to find

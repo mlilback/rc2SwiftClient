@@ -15,7 +15,6 @@
 		080AB8DE1E92DA10005452C7 /* MultiImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB8DD1E92DA10005452C7 /* MultiImageViewController.swift */; };
 		080AB8E21E92DAE9005452C7 /* MultiImageWindowController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 080AB8E11E92DAE9005452C7 /* MultiImageWindowController.storyboard */; };
 		080AB90D1E991ED4005452C7 /* URLRequest+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB90C1E991ED4005452C7 /* URLRequest+Rc2.swift */; };
-		080C79AD229B536D00178D0E /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080C79AC229B536D00178D0E /* PEGKit.framework */; };
 		080C79AE229B536D00178D0E /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080C79AC229B536D00178D0E /* PEGKit.framework */; };
 		080C79AF229B536D00178D0E /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080C79AC229B536D00178D0E /* PEGKit.framework */; };
 		080C79B5229B8D5500178D0E /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080C79AC229B536D00178D0E /* PEGKit.framework */; };
@@ -422,7 +421,6 @@
 		08F675401F6ADA9C00EC3AC9 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		08F678281F793A2200EC3AC9 /* FileType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE1671F5B36B3006CE0B7 /* FileType.swift */; };
 		08F678291F793A2A00EC3AC9 /* BulkUserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE1631F5B36B3006CE0B7 /* BulkUserInfo.swift */; };
-		08F6782A1F793A2A00EC3AC9 /* CountableClosedRange+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE1641F5B36B3006CE0B7 /* CountableClosedRange+Codable.swift */; };
 		08F6782B1F793A2A00EC3AC9 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE1651F5B36B3006CE0B7 /* File.swift */; };
 		08F6782C1F793A2A00EC3AC9 /* FileOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE1661F5B36B3006CE0B7 /* FileOperation.swift */; };
 		08F6782D1F793A2A00EC3AC9 /* PrimitiveValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE1681F5B36B3006CE0B7 /* PrimitiveValue.swift */; };
@@ -1301,7 +1299,6 @@
 				082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */,
 				08ACDA381FD1F5B90017770B /* MJLLogger.framework in Frameworks */,
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
-				080C79AD229B536D00178D0E /* PEGKit.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				0897942F1D7B68F0003339EE /* Rc2Common.framework in Frameworks */,
 				084D32FC206D03DD00246CBD /* ClientCore.framework in Frameworks */,
@@ -2547,7 +2544,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = Rc2;
 				TargetAttributes = {
 					080E82C01DCBE31D0048F36C = {
@@ -2650,10 +2647,9 @@
 			};
 			buildConfigurationList = 088CE6641C4B0AF400153414 /* Build configuration list for PBXProject "Rc2Client" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 			);
@@ -3028,7 +3024,6 @@
 				08F678341F793A2A00EC3AC9 /* Variable.swift in Sources */,
 				08F678301F793A2A00EC3AC9 /* SessionError.swift in Sources */,
 				08F678331F793A2A00EC3AC9 /* User.swift in Sources */,
-				08F6782A1F793A2A00EC3AC9 /* CountableClosedRange+Codable.swift in Sources */,
 				08F678361F793A2A00EC3AC9 /* Workspace.swift in Sources */,
 				08F6782E1F793A2A00EC3AC9 /* Project.swift in Sources */,
 				08F6782C1F793A2A00EC3AC9 /* FileOperation.swift in Sources */,
@@ -3648,6 +3643,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -3671,6 +3667,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;

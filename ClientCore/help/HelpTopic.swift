@@ -49,7 +49,9 @@ public class HelpTopic: Hashable {
 		self.aliases = aliases.components(separatedBy: ":")
 	}
 
-	public var hashValue: Int { return ObjectIdentifier(self).hashValue }
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(ObjectIdentifier(self))
+	}
 
 	static public func == (lhs: HelpTopic, rhs: HelpTopic) -> Bool {
 		return ObjectIdentifier(lhs).hashValue == ObjectIdentifier(rhs).hashValue

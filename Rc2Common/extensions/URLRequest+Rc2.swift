@@ -9,7 +9,7 @@ import Foundation
 public extension URLRequest {
 	/// converts the request to a CFHTTPMessage.
 	/// - Warning: does not copy httpBodyStream -- there is no equivilent for CFHTTPMessage
-	public var CFHTTPMessage: CFHTTPMessage {
+	var CFHTTPMessage: CFHTTPMessage {
 		let msg = CFHTTPMessageCreateRequest(kCFAllocatorDefault, httpMethod! as CFString, url! as CFURL, kCFHTTPVersion1_1).takeRetainedValue()
 		if let headers = allHTTPHeaderFields {
 			for (aKey, aValue) in headers {
@@ -25,9 +25,9 @@ public extension URLRequest {
 
 public extension CFHTTPMessage {
 	/// the serialized contents of this message
-	public var serialized: Data? { return CFHTTPMessageCopySerializedMessage(self)?.takeRetainedValue() as Data? }
+	var serialized: Data? { return CFHTTPMessageCopySerializedMessage(self)?.takeRetainedValue() as Data? }
 	/// the serialized contents of this message as a string
-	public var serializedString: String? {
+	var serializedString: String? {
 		guard let data = serialized else { return nil }
 		return String(data: data, encoding: .utf8)
 	}
