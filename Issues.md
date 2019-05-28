@@ -1,5 +1,13 @@
 # Known Issues
 
+*This file is over two years old. Should check these things, but for now adding new items.*
+
+## 2019 issues
+
+* if autosave takes a while, window will be closed when completion handler is called and that fails an assert at MacAppStatus.swift:69 started at AbstractEditorController.swift:160 (autosaveCurrentDocument)
+
+---
+
 * Search for TODO: in project
 
 ## general issues
