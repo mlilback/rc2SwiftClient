@@ -129,8 +129,6 @@
 		083AC10D2066E4BB0054023F /* NotebookViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC10C2066E4BB0054023F /* NotebookViewItem.swift */; };
 		083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11931DEE0DF300549268 /* DataRc2Spec.swift */; };
 		084199261D903F7A0089A1AC /* StartupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* StartupController.swift */; };
-		0841993A1D91B0760089A1AC /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
-		0841993D1D91B2B80089A1AC /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0846D3E120175DF100795376 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0846D3E020175DF100795376 /* AppError.swift */; };
 		0846D3E32017C03900795376 /* FileTemplates in Resources */ = {isa = PBXBuildFile; fileRef = 0846D3E22017C03900795376 /* FileTemplates */; };
 		084D32F0206D03DD00246CBD /* ClientCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 084D32E7206D03DD00246CBD /* ClientCore.framework */; };
@@ -629,7 +627,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				08127CDF1DAD5BA9002E0D01 /* ReactiveSwift.framework in CopyFiles */,
-				0841993D1D91B2B80089A1AC /* Mockingjay.framework in CopyFiles */,
 				08678CCE1DCBA90400F9F283 /* Freddy.framework in CopyFiles */,
 				08E8366C1D94500900E26EFE /* SwiftyUserDefaults.framework in CopyFiles */,
 				08E7E0991D8AEC38000C4C87 /* Result.framework in CopyFiles */,
@@ -1335,7 +1332,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				089794231D7B68F0003339EE /* Rc2Common.framework in Frameworks */,
-				0841993A1D91B0760089A1AC /* Mockingjay.framework in Frameworks */,
 				08678CC71DCB9B9100F9F283 /* Freddy.framework in Frameworks */,
 				08E836691D94242A00E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				08E7E0981D8AE926000C4C87 /* Result.framework in Frameworks */,
@@ -4470,7 +4466,6 @@
 				);
 				INFOPLIST_FILE = Rc2CommonTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.Rc2CommonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4478,7 +4473,6 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -4498,13 +4492,11 @@
 				);
 				INFOPLIST_FILE = Rc2CommonTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.Rc2CommonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
