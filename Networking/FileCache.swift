@@ -174,7 +174,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 		}
 		self.mainQueue = queue
 		self.workspace = workspace
-		self.baseUrl = baseUrl
+		self.baseUrl = baseUrl.absoluteURL
 		self.saveQueue = DispatchQueue(label: "rc2.filecache.save.serial")
 		self.taskLockQueue = DispatchQueue(label: "rc2.filecache.tasklock")
 		super.init()
@@ -359,7 +359,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 	
 	fileprivate func makeTask(file: AppFile, partOfDownloadAll: Bool = false) -> DownloadTask {
 		Log.info("preparing to download \(file.fileId)", .cache)
-		let fileUrl = URL(string: "file/\(file.fileId)", relativeTo: baseUrl)!
+		let fileUrl = baseUrl.appendingPathComponent("file/\(file.fileId)")
 		var request = URLRequest(url: fileUrl.absoluteURL)
 		let cacheUrl = cachedUrl(file: file)
 		if (cacheUrl as NSURL).checkResourceIsReachableAndReturnError(nil) {

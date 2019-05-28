@@ -33,8 +33,8 @@ public final class Rc2RestClient {
 	
 	fileprivate func request(_ path: String, method: String) -> URLRequest
 	{
-		let url = URL(string: conInfo.host.urlPrefix + "/" + path, relativeTo: conInfo.host.url!)
-		var request = URLRequest(url: url!)
+		let url = conInfo.host.url!.appendingPathComponent(conInfo.host.urlPrefix + "/" + path)
+		var request = URLRequest(url: url)
 		request.httpMethod = method
 		return request
 	}
