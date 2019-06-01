@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -615,7 +615,11 @@ DQ
                             </menuItem>
                             <menuItem title="Debug" id="cnH-Ve-KTo">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Debug" id="fK2-IA-Ey6" userLabel="Debug Menu"/>
+                                <menu key="submenu" title="Debug" id="fK2-IA-Ey6" userLabel="Debug Menu">
+                                    <items>
+                                        <menuItem isSeparatorItem="YES" id="piF-eC-Pwr"/>
+                                    </items>
+                                </menu>
                             </menuItem>
                             <menuItem title="Window" id="aUF-d1-5bR">
                                 <modifierMask key="keyEquivalentModifierMask"/>
@@ -671,6 +675,7 @@ DQ
                 </application>
                 <customObject id="Voe-Tx-rLC" customClass="MacAppDelegate" customModule="MacClient" customModuleProvider="target">
                     <connections>
+                        <outlet property="logLevelMenuSeperator" destination="piF-eC-Pwr" id="WfB-Zq-91Q"/>
                         <outlet property="workspaceMenu" destination="nUd-e1-yMd" id="X7B-5H-zZj"/>
                     </connections>
                 </customObject>
@@ -1196,8 +1201,8 @@ DQ
                                         <textView editable="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" incrementalSearchingEnabled="YES" allowsCharacterPickerTouchBarItem="NO" textCompletion="NO" id="9gx-ZU-lu3">
                                             <rect key="frame" x="0.0" y="0.0" width="478" height="268"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.89800941780821919" colorSpace="custom" customColorSpace="sRGB"/>
                                             <size key="minSize" width="478" height="268"/>
                                             <size key="maxSize" width="480" height="10000000"/>
                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
