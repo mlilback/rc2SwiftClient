@@ -2546,7 +2546,7 @@
 					080E82C01DCBE31D0048F36C = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					080E82C81DCBE31D0048F36C = {
@@ -2562,7 +2562,7 @@
 					082BE0881F59D549006CE0B7 = {
 						CreatedOnToolsVersion = 9.0;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					082BE0901F59D549006CE0B7 = {
@@ -2573,24 +2573,24 @@
 					082BE1551F5B3682006CE0B7 = {
 						CreatedOnToolsVersion = 9.0;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					084D32E6206D03DD00246CBD = {
 						CreatedOnToolsVersion = 9.2;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					084D32EE206D03DD00246CBD = {
 						CreatedOnToolsVersion = 9.2;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 088CE6681C4B0AF400153414;
 					};
 					084D3315206D3C9E00246CBD = {
 						CreatedOnToolsVersion = 9.2;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					084E93B1201E874900FF50EA = {
@@ -2610,7 +2610,7 @@
 					088CE6681C4B0AF400153414 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
 								enabled = 1;
@@ -2630,13 +2630,13 @@
 					089794191D7B68F0003339EE = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					089794211D7B68F0003339EE = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 				};
