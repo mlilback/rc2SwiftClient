@@ -170,9 +170,9 @@ class ThemeEditorController<T: BaseTheme>: NSViewController, NSTableViewDataSour
 	}
 	
 	@IBAction func duplicateThemeFromTemplate(_ sender: Any?) {
-		guard let menuItem = sender as? NSMenuItem,
-			let template = menuItem.representedObject as? T
+		guard let menuItem = sender as? NSMenuItem
 			else { return }
+		let template: T = (menuItem.representedObject as? T) ?? selectedTheme
 		selectedTheme = ThemeManager.shared.duplicate(theme: template)
 		ThemeManager.shared.setActive(theme: selectedTheme)
 		updateThemesArray()

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="fQV-eD-eaQ">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="fQV-eD-eaQ">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
-        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <scenes>
         <!--Prefs Tab Controller-->
@@ -44,7 +43,7 @@
         <scene sceneID="w2Y-UJ-N8Q">
             <objects>
                 <windowController storyboardIdentifier="Preferences" id="fQV-eD-eaQ" userLabel="Prefs Window Controller" sceneMemberID="viewController">
-                    <window key="window" title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="prefsWindow" animationBehavior="default" tabbingMode="disallowed" id="omV-9X-ZcJ">
+                    <window key="window" title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="prefsWindow" animationBehavior="default" tabbingMode="disallowed" id="omV-9X-ZcJ">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
                         <windowCollectionBehavior key="collectionBehavior" fullScreenNone="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -173,7 +172,7 @@
                                 </tabViewItems>
                             </tabView>
                             <stackView distribution="fill" orientation="horizontal" alignment="top" spacing="32" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IiV-1s-8mL">
-                                <rect key="frame" x="178" y="430" width="113" height="14"/>
+                                <rect key="frame" x="179" y="430" width="113" height="14"/>
                                 <subviews>
                                     <button translatesAutoresizingMaskIntoConstraints="NO" id="0GI-2c-cR2">
                                         <rect key="frame" x="0.0" y="0.0" width="40" height="14"/>
@@ -248,7 +247,7 @@
                                 </connections>
                             </button>
                             <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3aQ-M2-X5E">
-                                <rect key="frame" x="20" y="137" width="194" height="21"/>
+                                <rect key="frame" x="20" y="137" width="195" height="21"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jrh-9r-3Cy">
                                         <rect key="frame" x="-2" y="3" width="124" height="18"/>
@@ -259,7 +258,7 @@
                                         </textFieldCell>
                                     </textField>
                                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Z7J-RR-5VW">
-                                        <rect key="frame" x="126" y="-3" width="71" height="26"/>
+                                        <rect key="frame" x="126" y="-3" width="72" height="25"/>
                                         <popUpButtonCell key="cell" type="push" title="Hour" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="EQx-Ne-KDk" id="GiU-gk-2Wg">
                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="menu"/>
@@ -385,11 +384,11 @@
                                                         </outlineView>
                                                     </subviews>
                                                 </clipView>
-                                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="rEJ-3m-Lal">
+                                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="rEJ-3m-Lal">
                                                     <rect key="frame" x="1" y="248" width="408" height="16"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
-                                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="FUg-UL-236">
+                                                <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="FUg-UL-236">
                                                     <rect key="frame" x="393" y="1" width="16" height="13"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
@@ -470,32 +469,32 @@
                                                 <rect key="frame" x="20" y="199" width="410" height="22"/>
                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" enabled="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="x3g-9e-3dr">
                                                     <font key="font" metaFont="system"/>
-                                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 </textFieldCell>
                                             </textField>
                                             <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dNM-Y3-NHX">
                                                 <rect key="frame" x="20" y="20" width="410" height="171"/>
-                                                <clipView key="contentView" id="cuS-jk-LdS">
+                                                <clipView key="contentView" drawsBackground="NO" id="cuS-jk-LdS">
                                                     <rect key="frame" x="1" y="1" width="408" height="169"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textView toolTip="contents of the selected template" editable="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="qvc-NY-HNF">
                                                             <rect key="frame" x="0.0" y="0.0" width="408" height="169"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <size key="minSize" width="408" height="169"/>
                                                             <size key="maxSize" width="463" height="10000000"/>
-                                                            <color key="insertionPointColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                         </textView>
                                                     </subviews>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </clipView>
-                                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="Ggu-R9-fNW">
+                                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="Ggu-R9-fNW">
                                                     <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
-                                                <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="O59-OR-gPM">
+                                                <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="O59-OR-gPM">
                                                     <rect key="frame" x="393" y="1" width="16" height="169"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
@@ -596,7 +595,7 @@
         <image name="NSRemoveTemplate" width="11" height="11"/>
         <image name="prefsEditor" width="32" height="32"/>
         <image name="prefsGeneral" width="32" height="32"/>
-        <image name="prefsTemplates" width="64" height="64"/>
+        <image name="prefsTemplates" width="32" height="32"/>
         <image name="prefsThemes" width="48" height="48"/>
     </resources>
 </document>
