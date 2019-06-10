@@ -2,12 +2,14 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "history19.png",
+      "filename" : "history.pdf"
+    },
+    {
+      "idiom" : "universal",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "history38.png",
       "scale" : "2x"
     },
     {
@@ -18,5 +20,9 @@
   "info" : {
     "version" : 1,
     "author" : "xcode"
+  },
+  "properties" : {
+    "template-rendering-intent" : "template",
+    "preserves-vector-representation" : true
   }
 }
