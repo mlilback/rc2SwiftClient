@@ -579,7 +579,7 @@
                                             <rect key="frame" x="1" y="1" width="207" height="638"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <tableView appearanceType="aqua" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="18" rowSizeStyle="automatic" viewBased="YES" id="wvl-Kg-cyW" customClass="FileTableView" customModule="MacClient" customModuleProvider="target">
+                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="18" rowSizeStyle="automatic" viewBased="YES" id="wvl-Kg-cyW" customClass="FileTableView" customModule="MacClient" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="0.0" width="207" height="638"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="6"/>
@@ -844,7 +844,7 @@
                                     <rect key="frame" x="1" y="0.0" width="207" height="474"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView appearanceType="aqua" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" typeSelect="NO" autosaveName="sessionVariablesTable" rowSizeStyle="automatic" headerView="Jjn-3C-Hze" viewBased="YES" id="6xa-i9-qGY">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" typeSelect="NO" autosaveName="sessionVariablesTable" rowSizeStyle="automatic" headerView="Jjn-3C-Hze" viewBased="YES" id="6xa-i9-qGY">
                                             <rect key="frame" x="0.0" y="0.0" width="207" height="451"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="3"/>
@@ -1011,7 +1011,7 @@
                                     <rect key="frame" x="1" y="1" width="207" height="473"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <outlineView appearanceType="aqua" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="8" autosaveExpandedItems="YES" autoresizesOutlineColumn="YES" outlineTableColumn="EEe-Mq-QDL" id="r0I-de-3Iv">
+                                        <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="8" autosaveExpandedItems="YES" autoresizesOutlineColumn="YES" outlineTableColumn="EEe-Mq-QDL" id="r0I-de-3Iv">
                                             <rect key="frame" x="0.0" y="0.0" width="207" height="473"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -1154,11 +1154,11 @@
                                             <rect key="frame" x="10" y="8" width="436" height="22"/>
                                             <subviews>
                                                 <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FY8-og-Aex" userLabel="history">
-                                                    <rect key="frame" x="0.0" y="0.0" width="34" height="23"/>
-                                                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="smallSquare" trackingMode="momentary" id="5tK-aL-lQg">
-                                                        <font key="font" metaFont="system" size="14"/>
+                                                    <rect key="frame" x="-2" y="-1" width="38" height="24"/>
+                                                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="5tK-aL-lQg">
+                                                        <font key="font" metaFont="system"/>
                                                         <segments>
-                                                            <segment toolTip="Share" image="history" width="32"/>
+                                                            <segment toolTip="Command history" image="history" width="32"/>
                                                         </segments>
                                                     </segmentedCell>
                                                     <accessibility description="history"/>
@@ -1620,6 +1620,6 @@
         <image name="NSRemoveTemplate" width="11" height="11"/>
         <image name="NSShareTemplate" width="11" height="16"/>
         <image name="clearVariables" width="18" height="18"/>
-        <image name="history" width="19" height="19"/>
+        <image name="history" width="121" height="121"/>
     </resources>
 </document>

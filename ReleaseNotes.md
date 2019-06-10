@@ -1,5 +1,10 @@
 # Rc² release notes
 
+## Build 70
+
+* adjusted file/variable/help views to properly draw in dark mode
+* console history button now a vector, draws like other buttons
+
 ## Build 63
 
 * notebook code/equation blocks no longer color backgrounds
