@@ -23,7 +23,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="1000" height="600"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             </view>
-            <toolbar key="toolbar" implicitIdentifier="A77B95C8-BF1E-487A-B9F3-9BB37B92E7EB" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="GrO-iY-cKz">
+            <toolbar key="toolbar" implicitIdentifier="A77B95C8-BF1E-487A-B9F3-9BB37B92E7EB" centeredItem="FLu-mf-Dta" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="GrO-iY-cKz">
                 <allowedToolbarItems>
                     <toolbarItem implicitItemIdentifier="45A7986F-AECA-4AD3-ACBE-F325C2AB72D7" explicitItemIdentifier="leftView" label="" paletteLabel="Left View" id="DRL-wf-hhl">
                         <nil key="toolTip"/>
@@ -217,7 +217,6 @@
                             <accessibility description="editor search"/>
                         </segmentedControl>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="701F23C2-A60A-4F8E-90C7-635064F66E7A" label="Centering" paletteLabel="Centering Space" tag="-1" id="7AX-AY-0Vz" customClass="TAAdaptiveSpaceItem"/>
                     <toolbarItem implicitItemIdentifier="A80091C4-0706-4569-A310-373F8EDF0879" explicitItemIdentifier="editorFixedSpace" label="Custom View" paletteLabel="Custom View" tag="-1" id="waI-HT-cRP" userLabel="Fixed Editor Spacer">
                         <nil key="toolTip"/>
                         <size key="minSize" width="86" height="24"/>
@@ -268,7 +267,6 @@
                     <toolbarItem reference="DRL-wf-hhl"/>
                     <toolbarItem reference="waI-HT-cRP"/>
                     <toolbarItem reference="CYJ-5l-QhI"/>
-                    <toolbarItem reference="7AX-AY-0Vz"/>
                     <toolbarItem reference="FLu-mf-Dta"/>
                     <toolbarItem reference="XZ3-bl-7lg"/>
                     <toolbarItem reference="UXu-W5-loZ"/>

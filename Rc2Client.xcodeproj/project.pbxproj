@@ -364,8 +364,6 @@
 		08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
 		08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08D6106F1CD2C53100258D8E /* listvars.json in Resources */ = {isa = PBXBuildFile; fileRef = 08D6106E1CD2C53100258D8E /* listvars.json */; };
-		08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */; };
-		08D610761CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */; };
 		08DA11302092808100A96C7B /* GRDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E8F1A9206995E700F0FF5A /* GRDB.framework */; };
 		08DA11312092809700A96C7B /* SyntaxParsing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; };
 		08DA11322092809D00A96C7B /* GRDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E8F1A9206995E700F0FF5A /* GRDB.framework */; };
@@ -1092,10 +1090,6 @@
 		08CFE8CE1E75BA42002A35C1 /* DirectoryWatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectoryWatcher.swift; sourceTree = "<group>"; };
 		08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/Mac/ReactiveCocoa.framework; sourceTree = "<group>"; };
 		08D6106E1CD2C53100258D8E /* listvars.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = listvars.json; sourceTree = "<group>"; };
-		08D610711CE3CA3C00258D8E /* TAAdaptiveSpaceItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAAdaptiveSpaceItem.h; sourceTree = "<group>"; };
-		08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItem.m; sourceTree = "<group>"; };
-		08D610731CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TAAdaptiveSpaceItemView.h; sourceTree = "<group>"; };
-		08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TAAdaptiveSpaceItemView.m; sourceTree = "<group>"; };
 		08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PreferencesViewController.swift; path = prefs/PreferencesViewController.swift; sourceTree = "<group>"; };
 		08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePreviewEditorController.swift; sourceTree = "<group>"; };
 		08E55B57219222AD00F63A20 /* Down.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Down.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1405,7 +1399,6 @@
 				081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */,
 				081263171C85D2E0003E37A5 /* NoodleLineNumberView.h */,
 				081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */,
-				08D610701CE3CA3C00258D8E /* TAAdaptiveSpaceItem */,
 				08AA5F061E5350AA00389089 /* SearchBarField.h */,
 				08AA5F071E5350AA00389089 /* SearchBarField.m */,
 				08EE26F8202FA4A5008E008F /* DimmingView.swift */,
@@ -2080,18 +2073,6 @@
 			);
 			name = utility;
 			sourceTree = "<group>";
-		};
-		08D610701CE3CA3C00258D8E /* TAAdaptiveSpaceItem */ = {
-			isa = PBXGroup;
-			children = (
-				08D610711CE3CA3C00258D8E /* TAAdaptiveSpaceItem.h */,
-				08D610721CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m */,
-				08D610731CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.h */,
-				08D610741CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m */,
-			);
-			name = TAAdaptiveSpaceItem;
-			path = vendor/TAAdaptiveSpaceItem;
-			sourceTree = SOURCE_ROOT;
 		};
 		08DAF2F11E4D0726005A251E /* preferences */ = {
 			isa = PBXGroup;
@@ -3122,7 +3103,6 @@
 				085A1A29205AC6CD00B7EC5F /* NotebookCollectionLayout.swift in Sources */,
 				0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */,
 				08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */,
-				08D610761CE3CA3C00258D8E /* TAAdaptiveSpaceItemView.m in Sources */,
 				081996701E36A78A0000AA0E /* EditableTableCellView.swift in Sources */,
 				08F448FA1C4E244500C64706 /* SourceEditorController.swift in Sources */,
 				0868068F200D892600C986A9 /* ToolbarItemHandler.swift in Sources */,
@@ -3143,7 +3123,6 @@
 				088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */,
 				08A01FA91CBC07B0001EDFAA /* WebKitOutputController.swift in Sources */,
 				083305D91C501B7300E27F66 /* MainWindowController.swift in Sources */,
-				08D610751CE3CA3C00258D8E /* TAAdaptiveSpaceItem.m in Sources */,
 				08790773215AC8CF00978ECD /* Rc2Document.swift in Sources */,
 				0865262B1E6E1BE900D75B25 /* GeneralPrefsController.swift in Sources */,
 				083305E61C517FE300E27F66 /* SidebarHelpController.swift in Sources */,
