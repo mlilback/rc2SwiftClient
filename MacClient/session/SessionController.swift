@@ -238,6 +238,7 @@ extension SessionController {
 	
 	private func updateCompute(status: SessionResponse.ComputeStatus) {
 		if nil == computeStatus {
+			Log.debug("session.updadateCompute with nil status", .session)
 			// start progress for compute setup
 			SignalProducer<Bool, Rc2Error> { observer, _ in
 				self.computeStatusObserver = observer

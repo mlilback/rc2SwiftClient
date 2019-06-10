@@ -139,6 +139,7 @@ class RootViewController: AbstractSessionViewController
 	override func appStatusChanged() {
 		progressDisposable = appStatus?.progressSignal.observe(on: UIScheduler()).observeValues
 		{ [weak self] progressUpdate in
+			Log.debug("appStatusChanged \(progressUpdate.stage)", .app)
 			switch progressUpdate.stage {
 			case .start:
 				self?.adjustDimmingView(hide: !progressUpdate.disableInput)

@@ -219,7 +219,7 @@ extension MacAppDelegate {
 		guard let conInfo = connectionManager.currentConnection
 			else { Log.warn("asked to open session without connection info"); return }
 		let session = Session(connectionInfo: conInfo, workspace: workspace)
-		session.open().observe(on: UIScheduler()).take(during: session.lifetime).start
+		session.open().observe(on: UIScheduler()).take(during: session.lifetime).logEvents(identifier: "open session").start
 			{ [weak self] event in
 				switch event {
 				case .completed:

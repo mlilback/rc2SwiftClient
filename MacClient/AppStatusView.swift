@@ -7,6 +7,7 @@
 import Cocoa
 import Result
 import ReactiveSwift
+import MJLLogger
 
 let messageTimeout: DispatchTimeInterval = .seconds(3)
 let messageLeeway: DispatchTimeInterval = .milliseconds(10)
@@ -67,6 +68,7 @@ class AppStatusView: NSView {
 	}
 	
 	private func handleStart(_ update: ProgressUpdate) {
+		Log.debug("starting progress", .app)
 		_statusQueue.sync {
 			if update.value == -1 {
 				progress?.isHidden = false
@@ -82,6 +84,7 @@ class AppStatusView: NSView {
 	}
 	
 	private func handleCompleted(_ update: ProgressUpdate) {
+		Log.debug("ending progress", .app)
 		_statusQueue.sync {
 			clearStatus()
 			textField?.stringValue = update.message ?? ""

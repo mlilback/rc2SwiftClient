@@ -185,6 +185,7 @@ extension SignalProducer where Error == Rc2Error {
 	func updateProgress(status: MacAppStatus?, actionName: String, determinate: Bool = false, converter: ((Value) -> ProgressUpdate?)? = nil) -> SignalProducer<Value, Error>
 	{
 		guard let status = status else { return self }
+		Log.debug("updateProgress called", .app)
 		var actualConverter = converter
 		// if no converter is supplied, and the value type is a progress update, just pass it along if it is a value event
 		if nil == actualConverter, Value.self == ProgressUpdate.self {
@@ -195,6 +196,7 @@ extension SignalProducer where Error == Rc2Error {
 		}
 		return SignalProducer<Value, Error> { observer, compositeDisposable in
 			self.startWithSignal { signal, disposable in
+				Log.debug("status action starting \(actionName)", .app)
 				status.actionStarting(name: actionName, disposable: disposable, determinate: determinate)
 				compositeDisposable += disposable
 				compositeDisposable += signal
@@ -207,6 +209,7 @@ extension SignalProducer where Error == Rc2Error {
 						case .failed(let err):
 							status.process(Signal<ProgressUpdate, Rc2Error>.Event.failed(err))
 						case .value(let val):
+							Log.debug("status is processing", .app)
 							if let convertedValue = actualConverter?(val) {
 								status.process(Signal<ProgressUpdate, Rc2Error>.Event.value(convertedValue))
 							}
