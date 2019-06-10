@@ -692,7 +692,7 @@ DQ
         <scene sceneID="HW3-Oi-wyR">
             <objects>
                 <windowController storyboardIdentifier="StartupWindowController" id="VvP-Om-ZsH" userLabel="Server Setup Window Controller" customClass="StartupWindowController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
-                    <window key="window" title="Preparing Docker" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" frameAutosaveName="" animationBehavior="default" id="h1V-Fn-Msq">
+                    <window key="window" title="Connecting to Cloud…" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" frameAutosaveName="" animationBehavior="default" id="h1V-Fn-Msq">
                         <windowStyleMask key="styleMask" titled="YES"/>
                         <windowPositionMask key="initialPositionMask" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="934" y="800" width="425" height="83"/>
