@@ -1728,6 +1728,31 @@
 			path = internal;
 			sourceTree = "<group>";
 		};
+		08615B3F22AFDA2F00488BF1 /* Notebook Editor */ = {
+			isa = PBXGroup;
+			children = (
+				08EE270920335B0A008E008F /* NotebookEditorController.swift */,
+				085A1A26205AC62B00B7EC5F /* NotebookDropIndicator.swift */,
+				085A1A28205AC6CD00B7EC5F /* NotebookCollectionLayout.swift */,
+				08B73E8B208952A700DB7339 /* NotebookMiddleView.swift */,
+				083AC10C2066E4BB0054023F /* NotebookViewItem.swift */,
+				085A1A1C205AC35200B7EC5F /* ChunkViewItem.swift */,
+				085A1A1D205AC35200B7EC5F /* ChunkViewItem.xib */,
+				083AC105206565720054023F /* FrontMatterViewItem.swift */,
+				083AC107206565E30054023F /* FrontMatterViewItem.xib */,
+				083AC0FC2062D01E0054023F /* EquationViewItem.swift */,
+				084D33272071576E00246CBD /* EquationViewItem.xib */,
+				083AC1012062E9670054023F /* MarkdownViewItem.swift */,
+				083AC10A2066DEF50054023F /* MarkdownViewItem.xib */,
+				085A1A20205AC39B00B7EC5F /* SourceTextView.swift */,
+				085A1A22205AC45600B7EC5F /* NotebookItemData.swift */,
+				085A1A24205AC4CD00B7EC5F /* NotebookEntryView.swift */,
+				08F8C1812092272E00DFB269 /* InlineEquationEditorController.swift */,
+				08F8C183209228A600DFB269 /* InlineEquationEditorController.xib */,
+			);
+			path = "Notebook Editor";
+			sourceTree = "<group>";
+		};
 		08680675200D892000C986A9 /* MJLCommon */ = {
 			isa = PBXGroup;
 			children = (
@@ -1959,24 +1984,7 @@
 				08E55B612194A59300F63A20 /* BaseSourceEditorController.swift */,
 				08E55B632194A86700F63A20 /* SourceEditorLayoutManager.swift */,
 				08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */,
-				08EE270920335B0A008E008F /* NotebookEditorController.swift */,
-				085A1A26205AC62B00B7EC5F /* NotebookDropIndicator.swift */,
-				085A1A28205AC6CD00B7EC5F /* NotebookCollectionLayout.swift */,
-				08B73E8B208952A700DB7339 /* NotebookMiddleView.swift */,
-				083AC10C2066E4BB0054023F /* NotebookViewItem.swift */,
-				085A1A1C205AC35200B7EC5F /* ChunkViewItem.swift */,
-				085A1A1D205AC35200B7EC5F /* ChunkViewItem.xib */,
-				083AC105206565720054023F /* FrontMatterViewItem.swift */,
-				083AC107206565E30054023F /* FrontMatterViewItem.xib */,
-				083AC0FC2062D01E0054023F /* EquationViewItem.swift */,
-				084D33272071576E00246CBD /* EquationViewItem.xib */,
-				083AC1012062E9670054023F /* MarkdownViewItem.swift */,
-				083AC10A2066DEF50054023F /* MarkdownViewItem.xib */,
-				085A1A20205AC39B00B7EC5F /* SourceTextView.swift */,
-				085A1A22205AC45600B7EC5F /* NotebookItemData.swift */,
-				085A1A24205AC4CD00B7EC5F /* NotebookEntryView.swift */,
-				08F8C1812092272E00DFB269 /* InlineEquationEditorController.swift */,
-				08F8C183209228A600DFB269 /* InlineEquationEditorController.xib */,
+				08615B3F22AFDA2F00488BF1 /* Notebook Editor */,
 			);
 			path = editor;
 			sourceTree = "<group>";
