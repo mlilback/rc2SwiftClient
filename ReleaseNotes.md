@@ -4,6 +4,10 @@
 
 * adjusted file/variable/help views to properly draw in dark mode
 * console history button now a vector, draws like other buttons
+* theme color editing works in prefs
+* replaced 3rd party TAAdaptiveSpaceItem with NSToolbar builtin centering
+* removed notebook editor
+* fullscreen mode seems to work
 
 ## Build 63
 
