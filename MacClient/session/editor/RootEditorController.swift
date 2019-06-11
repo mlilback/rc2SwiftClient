@@ -25,7 +25,7 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 	var tabController: NSTabViewController!
 	var previewEditor: LivePreviewEditorController!
 	var sourceEditor: SourceEditorController!
-	var notebookEditor: NotebookEditorController!
+	var notebookEditor: NotebookEditorController?
 	/// the current editor, either sourceEditor or notebookEditor
 	var currentEditor: AbstractEditorController?
 	/// store for KVO tokens
@@ -74,11 +74,13 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 			me.willChangeValue(forKey: "canExecute")
 			me.didChangeValue(forKey: "canExecute")
 		})
-		observerTokens.append(notebookEditor.observe(\.canExecute, options: [.initial]) { [weak self] object, change in
-			guard let me = self, let current = me.currentEditor, current == object else { return }
-			me.willChangeValue(forKey: "canExecute")
-			me.didChangeValue(forKey: "canExecute")
-		})
+		if let notebookEditor = notebookEditor {
+			observerTokens.append(notebookEditor.observe(\.canExecute, options: [.initial]) { [weak self] object, change in
+				guard let me = self, let current = me.currentEditor, current == object else { return }
+				me.willChangeValue(forKey: "canExecute")
+				me.didChangeValue(forKey: "canExecute")
+			})
+		}
 		observerTokens.append(previewEditor.observe(\.canExecute, options: [.initial]) { [weak self] object, change in
 			guard let me = self, let current = me.currentEditor, current == object else { return }
 			me.willChangeValue(forKey: "canExecute")
@@ -172,7 +174,7 @@ extension RootEditorController: EditorManager {
 	
 	func setContext(context: EditorContext) {
 		sourceEditor.setContext(context: context)
-		notebookEditor.setContext(context: context)
+		notebookEditor?.setContext(context: context)
 		previewEditor.setContext(context: context)
 	}
 	

@@ -259,7 +259,6 @@
             <objects>
                 <tabViewController identifier="editorTabController" storyboardIdentifier="editorTabController" selectedTabViewItemIndex="1" tabStyle="unspecified" id="gf1-zi-Iuo" userLabel="editor tab controller" sceneMemberID="viewController">
                     <tabViewItems>
-                        <tabViewItem identifier="" id="fc9-GN-Xpe"/>
                         <tabViewItem identifier="" id="ZoW-VJ-qYq"/>
                         <tabViewItem id="x6l-70-mzL"/>
                     </tabViewItems>
@@ -273,7 +272,6 @@
                     </tabView>
                     <connections>
                         <outlet property="tabView" destination="MmH-Uz-uzf" id="pbP-hq-CKP"/>
-                        <segue destination="1v9-4m-leU" kind="relationship" relationship="tabItems" id="tRb-Df-2wv"/>
                         <segue destination="PjE-XL-yZ2" kind="relationship" relationship="tabItems" id="2Rh-aa-OqK"/>
                         <segue destination="RjP-PK-Kpc" kind="relationship" relationship="tabItems" id="hIB-dT-HVc"/>
                     </connections>
@@ -372,84 +370,6 @@
                 </menu>
             </objects>
             <point key="canvasLocation" x="554" y="1677"/>
-        </scene>
-        <!--notebook editor controller-->
-        <scene sceneID="G5P-op-VSN">
-            <objects>
-                <viewController id="1v9-4m-leU" userLabel="notebook editor controller" customClass="NotebookEditorController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="Qaq-zm-Wm6">
-                        <rect key="frame" x="0.0" y="0.0" width="400" height="513"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <subviews>
-                            <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RRO-kr-z3C">
-                                <rect key="frame" x="0.0" y="0.0" width="400" height="513"/>
-                                <clipView key="contentView" id="lk2-Jj-coN">
-                                    <rect key="frame" x="1" y="1" width="398" height="511"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <collectionView selectable="YES" allowsEmptySelection="NO" id="lc5-4J-j1N">
-                                            <rect key="frame" x="0.0" y="0.0" width="398" height="158"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
-                                            <collectionViewLayout key="collectionViewLayout" id="pFZ-ZQ-oT6" customClass="NotebookCollectionLayout" customModule="MacClient" customModuleProvider="target"/>
-                                            <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            <accessibility description="Notebook"/>
-                                            <connections>
-                                                <outlet property="dataSource" destination="1v9-4m-leU" id="axZ-c2-aik"/>
-                                                <outlet property="delegate" destination="1v9-4m-leU" id="8O8-NE-QKt"/>
-                                            </connections>
-                                        </collectionView>
-                                    </subviews>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </clipView>
-                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="QpD-Gc-YcO">
-                                    <rect key="frame" x="1" y="144" width="233" height="15"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </scroller>
-                                <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="GTn-oi-BrD">
-                                    <rect key="frame" x="234" y="1" width="15" height="143"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </scroller>
-                            </scrollView>
-                        </subviews>
-                        <constraints>
-                            <constraint firstItem="RRO-kr-z3C" firstAttribute="leading" secondItem="Qaq-zm-Wm6" secondAttribute="leading" id="3pr-mC-Xop"/>
-                            <constraint firstItem="RRO-kr-z3C" firstAttribute="top" secondItem="Qaq-zm-Wm6" secondAttribute="top" id="DdW-yY-FXU"/>
-                            <constraint firstAttribute="trailing" secondItem="RRO-kr-z3C" secondAttribute="trailing" id="ZYD-Hz-WxY"/>
-                            <constraint firstAttribute="bottom" secondItem="RRO-kr-z3C" secondAttribute="bottom" id="laC-Ib-RiO"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="notebookView" destination="lc5-4J-j1N" id="PYS-AP-XvW"/>
-                    </connections>
-                </viewController>
-                <customObject id="lea-Wf-GhM" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <menu autoenablesItems="NO" id="Iv3-h5-TGn">
-                    <items>
-                        <menuItem title="R Code" id="p10-aU-yfK">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="addChunk:" target="1v9-4m-leU" id="oWb-kv-yiw"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Markdown" tag="1" id="O7K-wR-2ns">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="addChunk:" target="1v9-4m-leU" id="P33-Gh-Mee"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Equation" tag="2" id="kHz-FS-MJN">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="addChunk:" target="1v9-4m-leU" id="Wid-ah-8SH"/>
-                            </connections>
-                        </menuItem>
-                    </items>
-                    <connections>
-                        <outlet property="delegate" destination="1v9-4m-leU" id="r1q-1P-YKp"/>
-                    </connections>
-                </menu>
-            </objects>
-            <point key="canvasLocation" x="1073" y="1693.5"/>
         </scene>
         <!--left tab controller-->
         <scene sceneID="Zy7-r2-fPT">
