@@ -7,6 +7,8 @@
 //
 
 import Cocoa
+import Down
+import MJLLogger
 
 class LivePreviewEditorController: AbstractEditorController {
 	@IBOutlet weak var textEditor: SessionEditor!
@@ -17,7 +19,12 @@ class LivePreviewEditorController: AbstractEditorController {
 	}
 
 	override func loaded(content: String) {
-		
+		do {
+			let rendered = try content.toHTML([.normalize, .safe, .sourcePos])
+			textEditor?.string = rendered
+		} catch {
+			Log.warn("preview editor failed to parse markdown")
+		}
 	}
 	
 	/// subclasses should override and save contents via save(edits:). super should not be called
