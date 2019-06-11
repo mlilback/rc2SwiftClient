@@ -25,7 +25,6 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 	var tabController: NSTabViewController!
 	var previewEditor: LivePreviewEditorController!
 	var sourceEditor: SourceEditorController!
-	var notebookEditor: NotebookEditorController?
 	/// the current editor, either sourceEditor or notebookEditor
 	var currentEditor: AbstractEditorController?
 	/// store for KVO tokens
@@ -34,15 +33,8 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 	var toolbarModeButtons: NSSegmentedControl?
 	var toolbarSearchButton: NSSegmentedControl?
 	
-	@objc dynamic private(set) var notebookModeEnabled: Bool = false { didSet {
-		toolbarModeButtons?.setEnabled(notebookModeEnabled, forSegment: 0)
-		if !notebookModeEnabled && currentEditor == notebookEditor {
-			switchMode(.source)
-		}
-	} }
-
 	@objc dynamic private(set) var previewModeEnabled: Bool = false { didSet {
-		toolbarModeButtons?.setEnabled(previewModeEnabled, forSegment: 2)
+		toolbarModeButtons?.setEnabled(previewModeEnabled, forSegment: 1)
 		if !previewModeEnabled && currentEditor != previewEditor {
 			switchMode(.preview)
 		}
@@ -65,27 +57,21 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 		tabController = controller
 		let tabChildren = tabController.childViewControllers
 		sourceEditor = tabChildren.first(where: { $0 is SourceEditorController } ) as? SourceEditorController
-		notebookEditor = tabChildren.first(where: { $0 is NotebookEditorController } ) as? NotebookEditorController
 		previewEditor = tabChildren.first(where: { $0 is LivePreviewEditorController } ) as? LivePreviewEditorController
 		currentEditor = sourceEditor
 		// listen for canExecute changes of actual editors
-		observerTokens.append(sourceEditor.observe(\.canExecute, options: [.initial]) { [weak self] object, change in
-			guard let me = self, let current = me.currentEditor, current == object else { return }
-			me.willChangeValue(forKey: "canExecute")
-			me.didChangeValue(forKey: "canExecute")
-		})
-		if let notebookEditor = notebookEditor {
-			observerTokens.append(notebookEditor.observe(\.canExecute, options: [.initial]) { [weak self] object, change in
+		for anEditor in [sourceEditor, previewEditor] {
+			observerTokens.append(anEditor?.observe(\.canExecute, options: [.initial]) { [weak self] object, change in
 				guard let me = self, let current = me.currentEditor, current == object else { return }
 				me.willChangeValue(forKey: "canExecute")
 				me.didChangeValue(forKey: "canExecute")
-			})
+				} as Any)
 		}
-		observerTokens.append(previewEditor.observe(\.canExecute, options: [.initial]) { [weak self] object, change in
-			guard let me = self, let current = me.currentEditor, current == object else { return }
-			me.willChangeValue(forKey: "canExecute")
-			me.didChangeValue(forKey: "canExecute")
-		})
+//		observerTokens.append(previewEditor.observe(\.canExecute, options: [.initial]) { [weak self] object, change in
+//			guard let me = self, let current = me.currentEditor, current == object else { return }
+//			me.willChangeValue(forKey: "canExecute")
+//			me.didChangeValue(forKey: "canExecute")
+//		})
 	}
 
 	override func viewDidAppear() {
@@ -124,7 +110,7 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 	}
 	
 	func switchMode(_ mode: EditorMode) {
-		currentEditor = mode == .notebook ? notebookEditor : (mode == .source ? sourceEditor : previewEditor)
+		currentEditor = (mode == .source ? sourceEditor : previewEditor)
 		tabController.selectedTabViewItemIndex = mode.rawValue
 		toolbarModeButtons?.selectedSegment = mode.rawValue
 	}
@@ -146,7 +132,6 @@ extension RootEditorController: Searchable {
 extension RootEditorController: EditorManager {
 	@objc dynamic var documentLoaded: Bool { return documentManager.currentDocument.value?.isLoaded ?? false }
 	@objc dynamic var canExecute: Bool { return currentEditor?.canExecute ?? false }
-	@objc dynamic var canSwitchToNotebookMode: Bool { return notebookModeEnabled && currentEditor != notebookEditor }
 	@objc dynamic var canSwitchToSourceMode: Bool { return currentEditor != sourceEditor }
 	@objc dynamic var canSwitchToPreviewMode: Bool { return currentEditor != previewEditor }
 
@@ -174,7 +159,6 @@ extension RootEditorController: EditorManager {
 	
 	func setContext(context: EditorContext) {
 		sourceEditor.setContext(context: context)
-		notebookEditor?.setContext(context: context)
 		previewEditor.setContext(context: context)
 	}
 	
@@ -185,12 +169,10 @@ extension RootEditorController: EditorManager {
 				return
 			}
 			self.willChangeValue(forKey: "canExecute")
-//			sourceEditor.fileChanged(file: file)
-//			self.notebookEditor.fileChanged(file: file)
 			self.didChangeValue(forKey: "canExecute")
 			self.fileNameField?.stringValue = file == nil ? "" : file!.name
-			self.notebookModeEnabled = file?.fileType.fileExtension ?? "" == "Rmd"
-			self.toolbarModeButtons?.selectedSegment = self.currentEditor == self.notebookEditor ? 0 : 1
+			self.previewModeEnabled = file?.fileType.fileExtension ?? "" == "Rmd"
+			self.toolbarModeButtons?.selectedSegment = self.currentEditor == self.previewEditor ? 0 : 1
 		}
 	}
 }

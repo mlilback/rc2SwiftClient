@@ -235,14 +235,13 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <subviews>
                                 <segmentedControl focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="eLV-Ee-7gC">
-                                    <rect key="frame" x="0.0" y="0.0" width="104" height="23"/>
+                                    <rect key="frame" x="17" y="0.0" width="71" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <segmentedCell key="cell" borderStyle="border" focusRingType="none" alignment="left" style="texturedSquare" trackingMode="selectOne" id="cyY-zG-SNx">
                                         <font key="font" metaFont="system" size="14"/>
                                         <segments>
-                                            <segment toolTip="Console" image="notebook" width="32"/>
-                                            <segment image="source" width="32"/>
-                                            <segment image="preview-editor-tbar" width="32"/>
+                                            <segment toolTip="Live Preview Editor" image="preview-editor-tbar" width="32" tag="1"/>
+                                            <segment toolTip="Editor" image="source" width="32"/>
                                         </segments>
                                     </segmentedCell>
                                     <accessibility description="editor mode"/>
@@ -253,7 +252,7 @@
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="BpV-xH-BVR">
                                         <font key="font" metaFont="system" size="14"/>
                                         <segments>
-                                            <segment image="search" width="34"/>
+                                            <segment image="search" width="34" tag="2"/>
                                         </segments>
                                     </segmentedCell>
                                     <accessibility description="editor search"/>

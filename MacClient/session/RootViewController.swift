@@ -97,8 +97,6 @@ class RootViewController: AbstractSessionViewController
 			return splitController?.validateMenuItem(menuItem) ?? false
 		case #selector(clearConsole(_:)), #selector(clearImageCache(_:)), #selector(exportAllFiles(_:)):
 			return true
-		case #selector(switchToNotebookMode(_:)):
-			return sessionController?.codeEditor.canSwitchToNotebookMode ?? false
 		case #selector(switchToSourceMode(_:)):
 			return sessionController?.codeEditor.canSwitchToSourceMode ?? false
 		default:
@@ -195,8 +193,8 @@ extension RootViewController {
 		splitController?.switchOutputTab(sender)
 	}
 	
-	@IBAction func switchToNotebookMode(_ sender: Any?) {
-		sessionController?.codeEditor.switchTo(mode: .notebook)
+	@IBAction func switchToPreviewMode(_ sender: Any?) {
+		sessionController?.codeEditor.switchTo(mode: .preview)
 	}
 	
 	@IBAction func switchToSourceMode(_ sender: Any?) {

@@ -11,8 +11,7 @@ import ReactiveSwift
 import SyntaxParsing
 
 public enum EditorMode: Int {
-	case notebook = 0
-	case source
+	case source = 0
 	case preview
 }
 
@@ -23,7 +22,6 @@ public protocol CodeEditor: class {
 }
 
 public protocol EditorManager: CodeEditor {
-	var canSwitchToNotebookMode: Bool { get }
 	var canSwitchToSourceMode: Bool { get }
 	var canSwitchToPreviewMode: Bool { get }
 	func switchTo(mode: EditorMode)

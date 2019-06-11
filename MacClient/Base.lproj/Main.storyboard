@@ -478,10 +478,10 @@ CA
                                                             <action selector="switchToSourceMode:" target="Ady-hI-5gd" id="J6j-Pp-5td"/>
                                                         </connections>
                                                     </menuItem>
-                                                    <menuItem title="Notebook Editor" id="97I-Jh-Hrm">
+                                                    <menuItem title="Preview Editor" id="97I-Jh-Hrm">
                                                         <modifierMask key="keyEquivalentModifierMask"/>
                                                         <connections>
-                                                            <action selector="switchToNotebookMode:" target="Ady-hI-5gd" id="CL0-XT-Ljk"/>
+                                                            <action selector="switchToPreviewMode:" target="Ady-hI-5gd" id="hnc-Lf-qjo"/>
                                                         </connections>
                                                     </menuItem>
                                                 </items>
