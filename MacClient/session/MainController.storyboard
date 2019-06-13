@@ -1523,7 +1523,7 @@
                         </subviews>
                     </view>
                     <connections>
-                        <outlet property="textEditor" destination="BTo-kx-sgU" id="AUd-el-dq0"/>
+                        <outlet property="editor" destination="BTo-kx-sgU" id="IU2-Wb-4ND"/>
                     </connections>
                 </viewController>
                 <customObject id="W5R-v4-XYF" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
