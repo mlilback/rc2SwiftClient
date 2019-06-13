@@ -34,9 +34,13 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 	var toolbarSearchButton: NSSegmentedControl?
 	
 	@objc dynamic private(set) var previewModeEnabled: Bool = false { didSet {
-		toolbarModeButtons?.setEnabled(previewModeEnabled, forSegment: 1)
-		if !previewModeEnabled && currentEditor != previewEditor {
+		if previewModeEnabled {
+			toolbarModeButtons?.setEnabled(previewModeEnabled, forSegment: 1)
+		}
+		if previewModeEnabled && currentEditor != previewEditor {
 			switchMode(.preview)
+		} else {
+			switchMode(.source)
 		}
 	} }
 
@@ -113,6 +117,7 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 		currentEditor = (mode == .source ? sourceEditor : previewEditor)
 		tabController.selectedTabViewItemIndex = mode.rawValue
 		toolbarModeButtons?.selectedSegment = mode.rawValue
+		toolbarModeButtons?.setEnabled(previewModeEnabled, forSegment: 1)
 	}
 	
 	@IBAction func runQuery(_ sender: Any?) {
@@ -172,7 +177,7 @@ extension RootEditorController: EditorManager {
 			self.didChangeValue(forKey: "canExecute")
 			self.fileNameField?.stringValue = file == nil ? "" : file!.name
 			self.previewModeEnabled = file?.fileType.fileExtension ?? "" == "Rmd"
-			self.toolbarModeButtons?.selectedSegment = self.currentEditor == self.previewEditor ? 0 : 1
+			self.toolbarModeButtons?.selectedSegment = self.currentEditor == self.sourceEditor ? 0 : 1
 		}
 	}
 }
