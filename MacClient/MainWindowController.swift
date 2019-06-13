@@ -79,6 +79,10 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 			let sview = item.view as? AppStatusView
 		{
 			statusView = sview
+			//centering only available on 10.14 or later
+			if #available(macOS 10.14, *) {
+				item.toolbar?.centeredItemIdentifier = item.itemIdentifier
+			}
 		}
 	}
 }

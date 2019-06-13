@@ -23,7 +23,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="1000" height="600"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             </view>
-            <toolbar key="toolbar" implicitIdentifier="A77B95C8-BF1E-487A-B9F3-9BB37B92E7EB" centeredItem="FLu-mf-Dta" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="GrO-iY-cKz">
+            <toolbar key="toolbar" implicitIdentifier="A77B95C8-BF1E-487A-B9F3-9BB37B92E7EB" explicitIdentifier="main1" centeredItem="FLu-mf-Dta" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="GrO-iY-cKz">
                 <allowedToolbarItems>
                     <toolbarItem implicitItemIdentifier="45A7986F-AECA-4AD3-ACBE-F325C2AB72D7" explicitItemIdentifier="leftView" label="" paletteLabel="Left View" id="DRL-wf-hhl">
                         <nil key="toolTip"/>
@@ -137,7 +137,7 @@
                     <toolbarItem implicitItemIdentifier="D673F222-EFB0-4C48-868F-162E54249040" explicitItemIdentifier="status" label="" paletteLabel="Status" tag="-1" id="FLu-mf-Dta">
                         <nil key="toolTip"/>
                         <size key="minSize" width="163" height="22"/>
-                        <size key="maxSize" width="220" height="96"/>
+                        <size key="maxSize" width="260" height="96"/>
                         <customView key="view" id="XT5-ai-z8C" customClass="AppStatusView" customModule="MacClient" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="14" width="220" height="22"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
