@@ -1,5 +1,12 @@
 # Rc² release notes
 
+## Build 71
+
+* fixed crashing bug when switching between editor tabs too fast
+* removed last remaining interace referring to notebook mode
+* editor switching bugs fixed, buttons properly enabled
+* preview editor now has basic editing like source editor
+
 ## Build 70
 
 * adjusted file/variable/help views to properly draw in dark mode
