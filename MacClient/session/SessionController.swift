@@ -23,7 +23,7 @@ protocol SessionControllerDelegate: class {
 }
 
 // MARK: -
-/// manages a Session object
+/// The SessionController is the owner/delgate of the session. It aggregates functionality/properties needed throughout the view heirarchy
 @objc class SessionController: NSObject {
 	// MARK: properties
 	fileprivate weak var delegate: SessionControllerDelegate?

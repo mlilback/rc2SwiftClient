@@ -9,6 +9,7 @@ import Rc2Common
 import Networking
 import SwiftyUserDefaults
 
+/// Base class for views that need access to the session
 class AbstractSessionViewController: NSViewController {
 	weak var sessionOptional: Session? { didSet { sessionChanged() } }
 	///convience accessor so don't have to constantly unwrap optional
@@ -29,10 +30,11 @@ class AbstractSessionViewController: NSViewController {
 		super.viewDidLoad()
 	}
 	
-	///for subclasses
+	/// allows subclasses to take action when the session has been set
 	func sessionChanged() {
 	}
 	
+	/// allows subclasses to take action when the MacAppStatus has been set
 	func appStatusChanged() {
 	}
 	
