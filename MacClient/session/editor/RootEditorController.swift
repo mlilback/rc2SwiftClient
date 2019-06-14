@@ -33,6 +33,10 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 	var toolbarModeButtons: NSSegmentedControl?
 	var toolbarSearchButton: NSSegmentedControl?
 	
+	var currentEditorMode: EditorMode {
+		return currentEditor == previewEditor ? .preview : .source
+	}
+	
 	@objc dynamic private(set) var previewModeEnabled: Bool = false { didSet {
 		if previewModeEnabled {
 			toolbarModeButtons?.setEnabled(previewModeEnabled, forSegment: 1)

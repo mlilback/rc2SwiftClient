@@ -317,6 +317,7 @@ extension RootViewController: FileViewControllerDelegate {
 			self.outputHandler?.show(file: nil)
 		} else if file!.fileType.isSource || (forEditing && file!.fileSize <= MaxEditableFileSize) {
 			editorController?.fileChanged(file: file)
+			outputHandler?.considerTabChange(editorMode: editorController!.currentEditorMode)
 		} else {
 			outputHandler?.show(file: file)
 //			if let editingFile = editor?.currentDocument?.file {

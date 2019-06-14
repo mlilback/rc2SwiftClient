@@ -12,13 +12,13 @@ import ClientCore
 import ReactiveSwift
 import Down
 
-protocol LiveContentSource {
-	var context: Property<EditorContext?> { get }
+protocol LivePreviewOutputHandler {
+	var webView: WKWebView { get }
 }
 
 class LivePreviewController: AbstractSessionViewController, OutputController {
 	var contextualMenuDelegate: ContextualMenuDelegate?
-	var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil) { didSet { contextChanged() }}
+	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil) { didSet { contextChanged() }}
 	private var contextDisposable: Disposable? = nil
 	private var contentsDisposable: Disposable? = nil
 	

@@ -38,6 +38,7 @@ protocol OutputHandler: SearchResponder {
 	func initialFirstResponder() -> NSResponder
 	func show(file: AppFile?)
 	func showHelp(_ topics: [HelpTopic])
+	func considerTabChange(editorMode: EditorMode)
 	//action event forwarding
 	func clearConsole(_ sender: AnyObject?)
 	func toggleSearchBar()

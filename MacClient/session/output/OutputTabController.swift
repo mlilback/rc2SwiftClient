@@ -234,6 +234,19 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			break
 		}
 	}
+	
+	/// This is called when the current file in the editor has changed.
+	/// It should decide if the output view should be changed to match the editor document.
+	///
+	/// - Parameter editorMode: the mode of the editor
+	func considerTabChange(editorMode: EditorMode) {
+		switch editorMode {
+			case .preview:
+				switchTo(tab: .preview)
+			case .source:
+				switchTo(tab: .console)
+		}
+	}
 
 	func handleSearch(action: NSTextFinder.Action) {
 		currentOutputController.performFind(action: action)
