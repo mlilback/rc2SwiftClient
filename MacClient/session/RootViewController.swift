@@ -54,6 +54,8 @@ class RootViewController: AbstractSessionViewController
 		super.viewDidAppear()
 		NotificationCenter.default.addObserver(self, selector: #selector(windowWillClose(_:)), name: NSWindow.willCloseNotification, object:view.window!)
 		NotificationCenter.default.addObserver(self, selector: #selector(receivedImportNotification(_:)), name: .filesImported, object: nil)
+		// link up the preview editor/output controllers
+		editorController?.previewEditor.outputController = outputHandler?.previewOutputController
 		//create dimming view
 		dimmingView = DimmingView(frame: view.bounds)
 		view.addSubview(dimmingView!)

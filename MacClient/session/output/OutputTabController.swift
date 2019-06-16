@@ -33,11 +33,12 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	var currentOutputController: OutputController!
 	weak var consoleController: ConsoleOutputController?
-	weak var previewController: LivePreviewController?
+	weak var previewController: LivePreviewDisplayController?
 	weak var imageController: ImageOutputController?
 	weak var webController: WebKitOutputController?
 	weak var helpController: HelpOutputController?
 	weak var searchButton: NSSegmentedControl?
+	var previewOutputController: LivePreviewOutputController? { return previewController }
 	var imageCache: ImageCache? { return sessionController?.session.imageCache }
 	weak var sessionController: SessionController? { didSet { sessionControllerUpdated() } }
 	weak var displayedFile: AppFile?

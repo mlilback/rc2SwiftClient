@@ -12,15 +12,26 @@ import ClientCore
 import ReactiveSwift
 import Down
 
-protocol LivePreviewOutputHandler {
-	var webView: WKWebView { get }
+protocol LivePreviewOutputController {
+	/// might not need to be accessible
+//	var webView: WKWebView { get }
+	/// 
+//	var sessionController: SessionController? { get set }
+	/// alows preview editor to tell display controller what the current context is so it can monitor the current document
+	var editorContext: EditorContext? { get set }
 }
 
-class LivePreviewDisplayController: AbstractSessionViewController, OutputController {
+class LivePreviewDisplayController: AbstractSessionViewController, OutputController, LivePreviewOutputController {
 	var contextualMenuDelegate: ContextualMenuDelegate?
+	var sessionController: SessionController?
 	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil) { didSet { contextChanged() }}
 	private var contextDisposable: Disposable? = nil
 	private var contentsDisposable: Disposable? = nil
+	
+	var editorContext: EditorContext? {
+		get { return context.value }
+		set { context.value = newValue }
+	}
 	
 	@IBOutlet weak var outputView: WKWebView!
 	

@@ -13,6 +13,8 @@ import ClientCore
 import WebKit
 
 class LivePreviewEditorController: BaseSourceEditorController {
+	var outputController: LivePreviewOutputController? { didSet { outputControllerChanged() } }
+	
 	private var webView: WKWebView?
 	
 	override func viewDidLoad() {
@@ -24,8 +26,9 @@ class LivePreviewEditorController: BaseSourceEditorController {
 		super.setContext(context: context)
 	}
 	
-	@objc func outputViewChanged(notification: Notification) {
-		webView = notification.userInfo?["WebView"] as? WKWebView
+	func outputControllerChanged() {
+		outputController?.editorContext = self.context
+		// need to update with current generated contents
 	}
 	
 //	override func loaded(content: String) {

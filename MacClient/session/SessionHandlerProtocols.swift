@@ -31,6 +31,7 @@ extension SearchResponder {
 
 protocol OutputHandler: SearchResponder {
 	var sessionController: SessionController? { get set }
+	var previewOutputController: LivePreviewOutputController? { get }
 	func append(responseString: ResponseString)
 	func save(state: inout SessionState.OutputControllerState)
 	func restore(state: SessionState.OutputControllerState)
