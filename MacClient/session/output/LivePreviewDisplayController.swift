@@ -16,7 +16,7 @@ protocol LivePreviewOutputHandler {
 	var webView: WKWebView { get }
 }
 
-class LivePreviewController: AbstractSessionViewController, OutputController {
+class LivePreviewDisplayController: AbstractSessionViewController, OutputController {
 	var contextualMenuDelegate: ContextualMenuDelegate?
 	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil) { didSet { contextChanged() }}
 	private var contextDisposable: Disposable? = nil
