@@ -31,6 +31,7 @@ extension SearchResponder {
 
 protocol OutputHandler: SearchResponder {
 	var sessionController: SessionController? { get set }
+	var previewOutputController: LivePreviewOutputController? { get }
 	func append(responseString: ResponseString)
 	func save(state: inout SessionState.OutputControllerState)
 	func restore(state: SessionState.OutputControllerState)
@@ -38,6 +39,7 @@ protocol OutputHandler: SearchResponder {
 	func initialFirstResponder() -> NSResponder
 	func show(file: AppFile?)
 	func showHelp(_ topics: [HelpTopic])
+	func considerTabChange(editorMode: EditorMode)
 	//action event forwarding
 	func clearConsole(_ sender: AnyObject?)
 	func toggleSearchBar()

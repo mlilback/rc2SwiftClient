@@ -33,11 +33,12 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	
 	var currentOutputController: OutputController!
 	weak var consoleController: ConsoleOutputController?
-	weak var previewController: LivePreviewController?
+	weak var previewController: LivePreviewDisplayController?
 	weak var imageController: ImageOutputController?
 	weak var webController: WebKitOutputController?
 	weak var helpController: HelpOutputController?
 	weak var searchButton: NSSegmentedControl?
+	var previewOutputController: LivePreviewOutputController? { return previewController }
 	var imageCache: ImageCache? { return sessionController?.session.imageCache }
 	weak var sessionController: SessionController? { didSet { sessionControllerUpdated() } }
 	weak var displayedFile: AppFile?
@@ -232,6 +233,19 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			}
 		default:
 			break
+		}
+	}
+	
+	/// This is called when the current file in the editor has changed.
+	/// It should decide if the output view should be changed to match the editor document.
+	///
+	/// - Parameter editorMode: the mode of the editor
+	func considerTabChange(editorMode: EditorMode) {
+		switch editorMode {
+			case .preview:
+				switchTo(tab: .preview)
+			case .source:
+				switchTo(tab: .console)
 		}
 	}
 

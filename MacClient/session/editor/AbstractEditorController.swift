@@ -36,6 +36,9 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		return context?.currentDocument.value?.currentContents?.count ?? 0 > 0
 	}
 	
+	// block a parent can set to be called when a document has been loaded
+	var onDocumentLoaded: ((EditorDocument) -> Void)?
+	
 	/// for subclasses to override
 	var documentDirty: Bool { return false }
 	

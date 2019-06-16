@@ -9,14 +9,28 @@
 import Cocoa
 import Down
 import MJLLogger
+import ClientCore
+import WebKit
 
 class LivePreviewEditorController: BaseSourceEditorController {
+	var outputController: LivePreviewOutputController? { didSet { outputControllerChanged() } }
+	
+	private var webView: WKWebView?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		editor?.isEditable = true
 	}
 
+	override func setContext(context: EditorContext) {
+		super.setContext(context: context)
+	}
+	
+	func outputControllerChanged() {
+		outputController?.editorContext = self.context
+		// need to update with current generated contents
+	}
+	
 //	override func loaded(content: String) {
 //		do {
 //			let rendered = try content.toHTML([.normalize, .safe, .sourcePos])

@@ -151,6 +151,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 				editor.enclosingScrollView?.contentView.scroll(to: point.origin)
 			}
 		}
+		onDocumentLoaded?(document)
 		self.updateUIForCurrentDocument()
 	}
 	
