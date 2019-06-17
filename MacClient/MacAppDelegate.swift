@@ -558,14 +558,15 @@ extension MacAppDelegate {
 	
 	/// if dockerEnabled, starts local login. If remote and there is a password in the keychain, attempts to login. Otherise, prompts for login info.
 	private func startLoginProcess() {
-		let keychain = Keychain()
-		if let host = UserDefaults.standard[.currentCloudHost], host.user.count > 0 {
-			if let password = keychain.getString(host.keychainKey) {
-				performLogin(host: host, password: password)
-				return
-			}
-		}
-		promptToLogin()
+		performLogin(host: .localHost, password: "local")
+//		let keychain = Keychain()
+//		if let host = UserDefaults.standard[.currentCloudHost], host.user.count > 0 {
+//			if let password = keychain.getString(host.keychainKey) {
+//				performLogin(host: host, password: password)
+//				return
+//			}
+//		}
+//		promptToLogin()
 	}
 	
 	@IBAction func showOnboarding(_ sender: Any?) {
