@@ -183,6 +183,19 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		willChangeValue(forKey: "canExecute")
 		didChangeValue(forKey: "canExecute")
 	}
+	
+	
+	/// Called when the contents of the editor have changed due to user action. By default, this parses and highlights the entire contents
+	///
+	/// - Parameters:
+	///   - contents: The contents of the editor that was changed
+	///   - range: the range of the original text that changed
+	///   - delta: the length delta for the edited change
+	func contentsChanged(_ contents: NSTextStorage, range: NSRange, changeLength delta: Int) {
+		let range = contents.string.fullNSRange
+		parser?.parseAndAttribute(attributedString: contents, docType: context!.docType, inRange: range, makeChunks: true)
+		highlight(attributedString: contents, inRange: range)
+	}
 }
 
 // MARK: Actions
@@ -227,9 +240,7 @@ extension BaseSourceEditorController: NSTextStorageDelegate {
 		guard !ignoreTextStorageNotifications else { return }
 		ignoreTextStorageNotifications = true
 		defer { ignoreTextStorageNotifications = false }
-		let range = textStorage.string.fullNSRange
-		parser?.parseAndAttribute(attributedString: textStorage, docType: context!.docType, inRange: range, makeChunks: true)
-		highlight(attributedString: textStorage, inRange: range)
+		contentsChanged(textStorage, range: editedRange, changeLength: delta)
 	}
 }
 
@@ -237,9 +248,9 @@ extension BaseSourceEditorController: NSTextStorageDelegate {
 extension BaseSourceEditorController: NSTextViewDelegate {
 	func undoManager(for view: NSTextView) -> UndoManager? {
 		if let currentDocument = context?.currentDocument.value {
-			print("here \(currentDocument)");
-			return nil
-		} //return currentDocument.undoManager }
+			Log.info("undoManager asked for with no current document", .app)
+			return currentDocument.undoManager
+		}
 		return editor?.undoManager
 	}
 	
