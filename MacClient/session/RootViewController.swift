@@ -38,6 +38,8 @@ class RootViewController: AbstractSessionViewController
 		sessionController = SessionController(session: session, delegate: self, editor: editorController!, outputHandler: outputHandler!, variableHandler:variableHandler)
 		outputHandler?.sessionController = sessionController
 		sessionController?.appStatus = appStatus
+		// link up the preview editor/output controllers
+		editorController?.previewEditor.outputController = outputHandler?.previewOutputController
 	}
 	
 	// MARK: - Lifecycle
@@ -54,8 +56,6 @@ class RootViewController: AbstractSessionViewController
 		super.viewDidAppear()
 		NotificationCenter.default.addObserver(self, selector: #selector(windowWillClose(_:)), name: NSWindow.willCloseNotification, object:view.window!)
 		NotificationCenter.default.addObserver(self, selector: #selector(receivedImportNotification(_:)), name: .filesImported, object: nil)
-		// link up the preview editor/output controllers
-		editorController?.previewEditor.outputController = outputHandler?.previewOutputController
 		//create dimming view
 		dimmingView = DimmingView(frame: view.bounds)
 		view.addSubview(dimmingView!)
