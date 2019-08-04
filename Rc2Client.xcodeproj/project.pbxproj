@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		080214891C6A923D008B55D3 /* lognormal.R in Resources */ = {isa = PBXBuildFile; fileRef = 083305F51C519B8500E27F66 /* lognormal.R */; };
+		0803F9DB22F3BFEB00F26D84 /* customRmdFooter.html in Resources */ = {isa = PBXBuildFile; fileRef = 0803F9D722F3BFEB00F26D84 /* customRmdFooter.html */; };
+		0803F9DC22F3BFEB00F26D84 /* customRmdHeader.html in Resources */ = {isa = PBXBuildFile; fileRef = 0803F9D922F3BFEB00F26D84 /* customRmdHeader.html */; };
 		0803FCBE1C84C47400F17E4A /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		08055E361FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08055E351FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift */; };
 		0807F1611F83DE830018EF61 /* Rc2.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0807F1601F83DE830018EF61 /* Rc2.xcassets */; };
@@ -764,6 +766,8 @@
 /* Begin PBXFileReference section */
 		08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = EmbeddedFrameworkDebug.xcconfig; path = config/EmbeddedFrameworkDebug.xcconfig; sourceTree = "<group>"; };
 		08037C211D7B74A100006E9E /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = App.xcconfig; path = config/App.xcconfig; sourceTree = "<group>"; };
+		0803F9D822F3BFEB00F26D84 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = MacClient/Base.lproj/customRmdFooter.html; sourceTree = SOURCE_ROOT; };
+		0803F9DA22F3BFEB00F26D84 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = MacClient/Base.lproj/customRmdHeader.html; sourceTree = SOURCE_ROOT; };
 		08055E2F1FBBC210007419C6 /* VariableFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableFormatter.swift; sourceTree = "<group>"; };
 		08055E311FBC810D007419C6 /* SpreadsheetDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetDataSource.swift; sourceTree = "<group>"; };
 		08055E351FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetVariableDetailController.swift; sourceTree = "<group>"; };
@@ -2053,6 +2057,8 @@
 				0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */,
 				08100048218791D5006856D3 /* LivePreviewDisplayController.swift */,
 				0810004A21879239006856D3 /* LivePreviewController.storyboard */,
+				0803F9D722F3BFEB00F26D84 /* customRmdFooter.html */,
+				0803F9D922F3BFEB00F26D84 /* customRmdHeader.html */,
 			);
 			path = output;
 			sourceTree = "<group>";
@@ -2781,10 +2787,12 @@
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
 				0825658C2016BB9200526957 /* OnboardingContent.rtfd in Resources */,
 				083AC108206565E30054023F /* FrontMatterViewItem.xib in Resources */,
+				0803F9DC22F3BFEB00F26D84 /* customRmdHeader.html in Resources */,
 				084D33282071576F00246CBD /* EquationViewItem.xib in Resources */,
 				08EE26FC202FA995008E008F /* FileInfoController.xib in Resources */,
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
 				0816FD1F1E5226760006FF26 /* SearchBarView.xib in Resources */,
+				0803F9DB22F3BFEB00F26D84 /* customRmdFooter.html in Resources */,
 				083AC10B2066DEF60054023F /* MarkdownViewItem.xib in Resources */,
 				08F189A81D0A0E7200866A05 /* static_html in Resources */,
 				0846D3E32017C03900795376 /* FileTemplates in Resources */,
@@ -3387,6 +3395,22 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		0803F9D722F3BFEB00F26D84 /* customRmdFooter.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0803F9D822F3BFEB00F26D84 /* Base */,
+			);
+			name = customRmdFooter.html;
+			sourceTree = "<group>";
+		};
+		0803F9D922F3BFEB00F26D84 /* customRmdHeader.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0803F9DA22F3BFEB00F26D84 /* Base */,
+			);
+			name = customRmdHeader.html;
+			sourceTree = "<group>";
+		};
 		0825658A2016BB9200526957 /* OnboardingContent.rtfd */ = {
 			isa = PBXVariantGroup;
 			children = (
