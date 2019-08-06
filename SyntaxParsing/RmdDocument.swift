@@ -332,8 +332,7 @@ class EquationChunk: InternalRmdChunk, Equation {
 	}
 	
 	override var rawText: String {
-		let str = textStorage.string.trimmingCharacters(in: .newlines)
-		return str.surroundWithoutAddingNewlines(startText: "$$", endText: "$$")
+		return "$$ \(textStorage.string.trimmingCharacters(in: .newlines)) $$\n"
 	}
 }
 
