@@ -28,7 +28,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 	/// contents are disposed when the document changes
 	private(set) var compositeDisposable = CompositeDisposable()
 	/// used internally to prevent responding to a change made by self
-	private var ignoreContentChanges = false
+	private(set) var ignoreContentChanges = false
 	
 	/// checks if document is loaded and is not empty
 	@objc dynamic var canExecute: Bool {
@@ -97,12 +97,15 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 	}
 	
 	/// for subclasses to call to save edits. loaded will not be called, which would happen if a subclass set the document's editedContents directly
-	func save(edits: String) {
+	func save(edits: String, reload: Bool = false) {
 		// prevent recursion
 		guard !ignoreContentChanges else { return }
+		defer { ignoreContentChanges = false }
 		ignoreContentChanges = true
 		context?.currentDocument.value?.editedContents.value = edits
-		ignoreContentChanges = false
+		if reload {
+			loaded(content: edits)
+		}
 	}
 	
 	/// called after view loaded with injected data
