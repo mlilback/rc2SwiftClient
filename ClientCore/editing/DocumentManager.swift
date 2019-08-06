@@ -231,7 +231,8 @@ public class DocumentManager: EditorContext {
 		}
 	}
 	
-	private func parseCurrentDocument() {
+	/// reparses the document with current(edited) contents
+	public func parseCurrentDocument() {
 		guard let document = currentDocument.value, document.parsable else {
 			_parsedDocument.value = nil
 			return

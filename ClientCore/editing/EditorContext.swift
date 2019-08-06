@@ -46,6 +46,9 @@ public protocol EditorContext: class {
 	
 	/// Reverts the current document to last saved contents
 	func revertCurrentDocument()
+	
+	/// Reparses the current document using the currentContents
+	func parseCurrentDocument()
 }
 
 public extension EditorContext {
