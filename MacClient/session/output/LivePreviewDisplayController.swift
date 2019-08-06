@@ -8,10 +8,14 @@
 
 import Cocoa
 import WebKit
+import Rc2Common
 import ClientCore
 import SyntaxParsing
 import ReactiveSwift
 import Down
+import MJLLogger
+
+// code to extract a zip file with preview_support locally is commented out because of a bug where WKWebView tries to load with %20 in app support url, which fails
 
 protocol LivePreviewOutputController {
 	/// might not need to be accessible
@@ -29,12 +33,22 @@ protocol LivePreviewOutputController {
 	func contentsEdited(range: NSRange, delta: Int) -> Bool
 }
 
-class LivePreviewDisplayController: AbstractSessionViewController, OutputController, LivePreviewOutputController {
+class LivePreviewDisplayController: AbstractSessionViewController, OutputController, LivePreviewOutputController, WKUIDelegate, WKNavigationDelegate
+{
 	var contextualMenuDelegate: ContextualMenuDelegate?
 	var sessionController: SessionController?
 	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil) { didSet { contextChanged() }}
 	private let contextDisposables = CompositeDisposable()
 	private var contentsDisposable: Disposable?
+	private var lineContiuationRegex: NSRegularExpression!
+	private var openDoubleDollarRegex: NSRegularExpression!
+	private var closeDoubleDollarRegex: NSRegularExpression!
+	private var documentRoot: URL?
+	private var initialDocumentLoaded = false
+	private var needToLoadDocumentOnLoad = false
+	private var resourcesExtracted = false
+	private var readyForContent: Bool { return resourcesExtracted && needToLoadDocumentOnLoad }
+	private var parseInProgress = false
 	
 	var editorContext: EditorContext? {
 		get { return context.value }
@@ -48,18 +62,25 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		do {
-			guard let headerUrl = Bundle.main.url(forResource: "customRmdHeader", withExtension: "html"),
-				let footerUrl = Bundle.main.url(forResource: "customRmdFooter", withExtension: "html")
-			else {
-				fatalError("failed to load live preview template file")
-			}
-			let header = try String(contentsOf: headerUrl)
-			let footer = try String(contentsOf: footerUrl)
-			outputView?.loadHTMLString("\(header) Body <span id\"foobar\">Goes</span> Here \(footer)", baseURL: nil)
-		} catch {
-			fatalError("failed to load live preview template file: \(error.localizedDescription)")
-		}
+		guard let regex = try? NSRegularExpression(pattern: "\\s+\\\\$", options: [.anchorsMatchLines]),
+			let openRegex = try? NSRegularExpression(pattern: "^\\$\\$", options: []),
+			let closeRegex = try? NSRegularExpression(pattern: "\\$\\$(\\s*)$", options: [])
+			else { fatalError("regex failed to compile")}
+
+		lineContiuationRegex = regex
+		openDoubleDollarRegex = openRegex
+		closeDoubleDollarRegex = closeRegex
+		documentRoot = Bundle.main.url(forResource: "preview_support", withExtension: nil)
+//		do {
+//			documentRoot = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "preview_support")
+//			documentRoot = URL(fileURLWithPath: documentRoot!.path.removingPercentEncoding!)
+//			loadInitialPage()
+//		} catch {
+//			fatalError("failed to load live preview template file: \(error.localizedDescription)")
+//		}
+		ensureResourcesLoaded()
+		outputView?.uiDelegate = self
+		outputView?.navigationDelegate = self
 	}
 	
 	/// called by the editor when the user has made an edit, resulting in a change of what is displayed
@@ -70,9 +91,25 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	func contentsEdited(range: NSRange, delta: Int) -> Bool {
 		/// FIXME: implement
 		// need to update the changed chunk if possible. If not, then reparse document
-		return false
+		parseContent()
+		return true
 	}
 	
+	private func loadInitialPage() {
+		guard resourcesExtracted, needToLoadDocumentOnLoad,
+			let headerUrl = Bundle.main.url(forResource: "customRmdHeader", withExtension: "html"),
+			let footerUrl = Bundle.main.url(forResource: "customRmdFooter", withExtension: "html")
+			else { return }
+		do {
+			let header = try String(contentsOf: headerUrl)
+			let footer = try String(contentsOf: footerUrl)
+			outputView?.loadHTMLString("\(header) \(footer)", baseURL: documentRoot)
+		} catch {
+			fatalError("failed to load initial preview content: \(error)")
+		}
+	}
+
+	/// called when the context property has been set
 	private func contextChanged() {
 		contextDisposables.dispose()
 		contentsDisposable?.dispose()
@@ -87,6 +124,10 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			}
 			me.documentChanged()
 		}
+		guard outputView != nil else {
+			needToLoadDocumentOnLoad = true
+			return
+		}
 		documentChanged()
 	}
 	
@@ -98,21 +139,63 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			guard let me = self else { return }
 			me.parseContent()
 		}
+		parseContent()
 	}
 	
+	/// parses the parsed document and loads it via javascript
 	private func parseContent() {
-		guard let curDoc = context.value?.currentDocument.value,
-			let newText = curDoc.currentContents
-		else {
+		guard !parseInProgress else { return }
+		guard let curDoc = context.value?.parsedDocument.value else {
 			outputView?.loadHTMLString("", baseURL: nil)
 			return
 		}
-		let content = """
-			document.getElementById('foobar').innerText = <b>blow me</b>;
-		"""
-		outputView?.evaluateJavaScript(content, completionHandler: nil)
-		// TODO: send file directory as baseURL
-		//outputView.loadHTMLString(newText, baseURL: nil)
+		parseInProgress = true
+		defer { parseInProgress = false }
+		var html = ""
+		let allChunks = curDoc.chunks
+		for (chunkNumber, chunk) in allChunks.enumerated() {
+			html += "<section index=\"\(chunkNumber)\">\n"
+			html += htmlFor(chunk: chunk)
+			html += "\n</section>\n"
+		}
+		html = escapeForJavascript(html)
+		let command = "document.getElementsByTagName('body')[0].innerHTML = '\(html)'; MathJax.Hub.Queue([\"Typeset\",MathJax.Hub]);"
+		outputView?.evaluateJavaScript(command, completionHandler: nil)
+	}
+	
+	private func htmlFor(chunk: RmdChunk) -> String {
+		switch chunk.chunkType {
+		case .code:
+			return htmlFor(code: chunk)
+		case .docs:
+			return htmlFor(markdown: chunk.rawText)
+		case .equation:
+			return htmlForEquation(chunk: chunk)
+		}
+	}
+	
+	private func htmlFor(markdown: String) -> String {
+		let options: DownOptions = [.sourcePos, .unsafe]
+		do {
+			return try markdown.toHTML(options)
+		} catch {
+			Log.error("Failed to convert markdown to HTML: \(error)", .app)
+		}
+		return "<p>failed to parse markdown</p>\n"
+	}
+	
+	private func htmlFor(code: RmdChunk) -> String {
+		return "<p>R code/results will go here</p>\n"
+	}
+	
+	private func htmlForEquation(chunk: RmdChunk) -> String {
+		var equationText = chunk.rawText
+		equationText = lineContiuationRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "")
+		equationText = openDoubleDollarRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "\\\\[")
+		equationText = closeDoubleDollarRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "\\\\]")
+		equationText = equationText.addingUnicodeEntities
+		return "\n<p>\(equationText)</p>\n"
+
 	}
 	
 	private func escapeForJavascript(_ source: String) -> String {
@@ -125,5 +208,43 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		// swift does not recognize this as a valid sequence needing escape
 		// string = string.replacingOccurrences(of: "\f", with: "\\f")
 		return string
+	}
+	
+	private func ensureResourcesLoaded() {
+		resourcesExtracted = true
+		loadInitialPage()
+//		guard let tarball = Bundle.main.url(forResource: "previewResources", withExtension: "tgz"), tarball.fileExists()
+//			else { fatalError("failed to find previewResources in app bundle")
+//		}
+//
+//		let tar = Process()
+//		tar.currentDirectoryPath = documentRoot!.deletingLastPathComponent().path
+//		tar.arguments = ["zxf", tarball.path]
+//		tar.launchPath = "/usr/bin/tar"
+//		tar.terminationHandler = { process in
+//			guard process.terminationStatus == 0 else {
+//				fatalError("help extraction failed: \(process.terminationReason.rawValue)")
+//			}
+//			DispatchQueue.main.async {
+//				Log.info("preview resources loaded", .app)
+//				self.resourcesExtracted = true
+//				self.loadInitialPage()
+//			}
+//		}
+//		tar.launch()
+	}
+
+	func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+		Log.info("did finish webView load")
+		needToLoadDocumentOnLoad = false
+//		if readyForContent {
+			documentChanged()
+//		}
+	}
+	
+	func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void)
+	{
+		Log.info("An error from web view: \(message)", .app)
+		completionHandler()
 	}
 }
