@@ -8,8 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		080214891C6A923D008B55D3 /* lognormal.R in Resources */ = {isa = PBXBuildFile; fileRef = 083305F51C519B8500E27F66 /* lognormal.R */; };
-		0803F9DB22F3BFEB00F26D84 /* customRmdFooter.html in Resources */ = {isa = PBXBuildFile; fileRef = 0803F9D722F3BFEB00F26D84 /* customRmdFooter.html */; };
-		0803F9DC22F3BFEB00F26D84 /* customRmdHeader.html in Resources */ = {isa = PBXBuildFile; fileRef = 0803F9D922F3BFEB00F26D84 /* customRmdHeader.html */; };
+		0803F9E222F7761E00F26D84 /* Mappings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0803F9DF22F7761E00F26D84 /* Mappings.swift */; };
+		0803F9E322F7761E00F26D84 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0803F9E022F7761E00F26D84 /* HTMLString.swift */; };
+		0803F9E422F7761E00F26D84 /* NSString+HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0803F9E122F7761E00F26D84 /* NSString+HTMLString.swift */; };
+		0803F9EE22F7875F00F26D84 /* customRmdFooter.html in Resources */ = {isa = PBXBuildFile; fileRef = 0803F9EC22F7875E00F26D84 /* customRmdFooter.html */; };
+		0803F9EF22F7875F00F26D84 /* customRmdHeader.html in Resources */ = {isa = PBXBuildFile; fileRef = 0803F9ED22F7875F00F26D84 /* customRmdHeader.html */; };
+		0803F9F422F9E23000F26D84 /* preview_support in Resources */ = {isa = PBXBuildFile; fileRef = 0803F9EA22F785FD00F26D84 /* preview_support */; };
 		0803FCBE1C84C47400F17E4A /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		08055E361FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08055E351FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift */; };
 		0807F1611F83DE830018EF61 /* Rc2.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0807F1601F83DE830018EF61 /* Rc2.xcassets */; };
@@ -766,8 +770,12 @@
 /* Begin PBXFileReference section */
 		08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = EmbeddedFrameworkDebug.xcconfig; path = config/EmbeddedFrameworkDebug.xcconfig; sourceTree = "<group>"; };
 		08037C211D7B74A100006E9E /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = App.xcconfig; path = config/App.xcconfig; sourceTree = "<group>"; };
-		0803F9D822F3BFEB00F26D84 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = MacClient/Base.lproj/customRmdFooter.html; sourceTree = SOURCE_ROOT; };
-		0803F9DA22F3BFEB00F26D84 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = MacClient/Base.lproj/customRmdHeader.html; sourceTree = SOURCE_ROOT; };
+		0803F9DF22F7761E00F26D84 /* Mappings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mappings.swift; sourceTree = "<group>"; };
+		0803F9E022F7761E00F26D84 /* HTMLString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLString.swift; sourceTree = "<group>"; };
+		0803F9E122F7761E00F26D84 /* NSString+HTMLString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSString+HTMLString.swift"; sourceTree = "<group>"; };
+		0803F9EA22F785FD00F26D84 /* preview_support */ = {isa = PBXFileReference; lastKnownFileType = folder; name = preview_support; path = resources/preview_support; sourceTree = "<group>"; };
+		0803F9EC22F7875E00F26D84 /* customRmdFooter.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = customRmdFooter.html; path = resources/customRmdFooter.html; sourceTree = "<group>"; };
+		0803F9ED22F7875F00F26D84 /* customRmdHeader.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = customRmdHeader.html; path = resources/customRmdHeader.html; sourceTree = "<group>"; };
 		08055E2F1FBBC210007419C6 /* VariableFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableFormatter.swift; sourceTree = "<group>"; };
 		08055E311FBC810D007419C6 /* SpreadsheetDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetDataSource.swift; sourceTree = "<group>"; };
 		08055E351FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetVariableDetailController.swift; sourceTree = "<group>"; };
@@ -1342,6 +1350,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0803F9DE22F7761E00F26D84 /* HTMLString */ = {
+			isa = PBXGroup;
+			children = (
+				0803F9DF22F7761E00F26D84 /* Mappings.swift */,
+				0803F9E022F7761E00F26D84 /* HTMLString.swift */,
+				0803F9E122F7761E00F26D84 /* NSString+HTMLString.swift */,
+			);
+			name = HTMLString;
+			path = vendor/HTMLString/Sources/HTMLString;
+			sourceTree = SOURCE_ROOT;
+		};
 		080AB8DA1E92D8DF005452C7 /* multi image */ = {
 			isa = PBXGroup;
 			children = (
@@ -1598,6 +1617,7 @@
 				084D32DC206AFAD900246CBD /* editing */,
 				084D3311206D3A6F00246CBD /* help */,
 				08E8F1A420698F7500F0FF5A /* CodeTemplates */,
+				0803F9DE22F7761E00F26D84 /* HTMLString */,
 				08055E2F1FBBC210007419C6 /* VariableFormatter.swift */,
 				08055E311FBC810D007419C6 /* SpreadsheetDataSource.swift */,
 				08F5CDD41FCAE3F7009665AD /* DataFrameDataSource.swift */,
@@ -1974,6 +1994,9 @@
 				084FEA801D3045D800060A7D /* ObjcConstants.m */,
 				088F59231E7578B80009A0B1 /* OutputThemes.json */,
 				086A40DA1E7B4B2300AE476B /* SyntaxThemes.json */,
+				0803F9EC22F7875E00F26D84 /* customRmdFooter.html */,
+				0803F9ED22F7875F00F26D84 /* customRmdHeader.html */,
+				0803F9EA22F785FD00F26D84 /* preview_support */,
 				08F189A71D0A0E7200866A05 /* static_html */,
 			);
 			path = shared;
@@ -2057,8 +2080,6 @@
 				0814CB731CF8A3D00008DE6B /* MacConsoleAttachment.swift */,
 				08100048218791D5006856D3 /* LivePreviewDisplayController.swift */,
 				0810004A21879239006856D3 /* LivePreviewController.storyboard */,
-				0803F9D722F3BFEB00F26D84 /* customRmdFooter.html */,
-				0803F9D922F3BFEB00F26D84 /* customRmdHeader.html */,
 			);
 			path = output;
 			sourceTree = "<group>";
@@ -2778,6 +2799,7 @@
 				0810004B21879239006856D3 /* LivePreviewController.storyboard in Resources */,
 				08525E7A1E314558008A332E /* InputPrompter.xib in Resources */,
 				0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */,
+				0803F9F422F9E23000F26D84 /* preview_support in Resources */,
 				080AB8E21E92DAE9005452C7 /* MultiImageWindowController.storyboard in Resources */,
 				088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */,
 				08EE26FF202FAC08008E008F /* VariableDetails.storyboard in Resources */,
@@ -2787,18 +2809,18 @@
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
 				0825658C2016BB9200526957 /* OnboardingContent.rtfd in Resources */,
 				083AC108206565E30054023F /* FrontMatterViewItem.xib in Resources */,
-				0803F9DC22F3BFEB00F26D84 /* customRmdHeader.html in Resources */,
 				084D33282071576F00246CBD /* EquationViewItem.xib in Resources */,
+				0803F9EE22F7875F00F26D84 /* customRmdFooter.html in Resources */,
 				08EE26FC202FA995008E008F /* FileInfoController.xib in Resources */,
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
 				0816FD1F1E5226760006FF26 /* SearchBarView.xib in Resources */,
-				0803F9DB22F3BFEB00F26D84 /* customRmdFooter.html in Resources */,
 				083AC10B2066DEF60054023F /* MarkdownViewItem.xib in Resources */,
 				08F189A81D0A0E7200866A05 /* static_html in Resources */,
 				0846D3E32017C03900795376 /* FileTemplates in Resources */,
 				086A40D71E7B1E8600AE476B /* ThemeEditorController.xib in Resources */,
 				0807F1611F83DE830018EF61 /* Rc2.xcassets in Resources */,
 				08F5746D1E4D04A70000956B /* Preferences.storyboard in Resources */,
+				0803F9EF22F7875F00F26D84 /* customRmdHeader.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3027,12 +3049,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0803F9E422F7761E00F26D84 /* NSString+HTMLString.swift in Sources */,
+				0803F9E222F7761E00F26D84 /* Mappings.swift in Sources */,
 				084D3306206D042500246CBD /* MonoFontManager.swift in Sources */,
 				084D3308206D042500246CBD /* HelpController.swift in Sources */,
 				084D3305206D042500246CBD /* DataFrameDataSource.swift in Sources */,
 				08B73E8D208A133F00DB7339 /* EditorDocument.swift in Sources */,
 				08B73E90208A135400DB7339 /* CodeEditor.swift in Sources */,
 				08B73E8E208A134900DB7339 /* DocumentManager.swift in Sources */,
+				0803F9E322F7761E00F26D84 /* HTMLString.swift in Sources */,
 				084D330A206D053700246CBD /* VariableFormatter.swift in Sources */,
 				08B73E8F208A134F00DB7339 /* EditorContext.swift in Sources */,
 				084D332D20752C7D00246CBD /* CodeTemplate.swift in Sources */,
@@ -3395,22 +3420,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		0803F9D722F3BFEB00F26D84 /* customRmdFooter.html */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0803F9D822F3BFEB00F26D84 /* Base */,
-			);
-			name = customRmdFooter.html;
-			sourceTree = "<group>";
-		};
-		0803F9D922F3BFEB00F26D84 /* customRmdHeader.html */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0803F9DA22F3BFEB00F26D84 /* Base */,
-			);
-			name = customRmdHeader.html;
-			sourceTree = "<group>";
-		};
 		0825658A2016BB9200526957 /* OnboardingContent.rtfd */ = {
 			isa = PBXVariantGroup;
 			children = (
