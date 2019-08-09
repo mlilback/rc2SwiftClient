@@ -151,7 +151,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 		parseInProgress = true
 		defer { parseInProgress = false }
-		var html = ""
+		var html = curDoc.frontMatter.value + "\n"
 		let allChunks = curDoc.chunks
 		for (chunkNumber, chunk) in allChunks.enumerated() {
 			html += "<section index=\"\(chunkNumber)\">\n"
@@ -168,20 +168,55 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		case .code:
 			return htmlFor(code: chunk)
 		case .docs:
-			return htmlFor(markdown: chunk.rawText)
+			return htmlFor(markdownChunk: chunk)
 		case .equation:
 			return htmlForEquation(chunk: chunk)
 		}
 	}
 	
-	private func htmlFor(markdown: String) -> String {
+	private func htmlFor(markdownChunk: RmdChunk) -> String {
+		guard let chunk = markdownChunk as? TextChunk else { preconditionFailure("invalid chunk type") }
 		let options: DownOptions = [.sourcePos, .unsafe]
+		var adjustedText = chunk.rawText
+		var inlineMap: [Int : String] = [:]
+		var allChunks = chunk.inlineElements
 		do {
-			return try markdown.toHTML(options)
+			// store output strings for each chunk keyed on index
+			for (inlineIdx, inlineChunk) in chunk.inlineElements.enumerated() {
+				inlineMap[inlineIdx] = textFor(inlineChunk: inlineChunk, parent: chunk)
+			}
+			// replace those values with markers so they won't be converted to markdown
+			for index in (0..<chunk.inlineElements.count).reversed() {
+				guard let range = allChunks[index].chunkRange.toStringRange(adjustedText)
+					else { preconditionFailure("failed to get range for chunk \(index)") }
+				adjustedText = adjustedText.replacingCharacters(in: range, with: "🖍\(index)🖍")
+			}
+			// convert markdown to html
+			adjustedText = try adjustedText.toHTML(options)
+			// replace markers with inline text
+			for  index in 0..<allChunks.count {
+				adjustedText = adjustedText.replacingOccurrences(of: "🖍\(index)🖍", with: inlineMap[index]!)
+			}
+			return adjustedText
 		} catch {
 			Log.error("Failed to convert markdown to HTML: \(error)", .app)
 		}
 		return "<p>failed to parse markdown</p>\n"
+	}
+	
+	private func textFor(inlineChunk: InlineChunk, parent: TextChunk) -> String {
+		guard let inlineText = parent.contents.string.substring(from: inlineChunk.range)
+			else { preconditionFailure("failed to get substring for inline chunk") }
+		var icText = inlineText
+		switch inlineChunk.chunkType {
+		case .code:
+			icText = inlineChunk.rawText
+		case .equation:
+			icText = "\\(\(inlineText)\\)"
+		case .docs:
+			preconditionFailure("inline chunk can't be markdown")
+		}
+		return icText
 	}
 	
 	private func htmlFor(code: RmdChunk) -> String {
@@ -196,6 +231,15 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		equationText = equationText.addingUnicodeEntities
 		return "\n<p>\(equationText)</p>\n"
 
+	}
+	
+	private func markdownFor(inlineEquation: InlineEquationChunk, parent: TextChunk) -> String {
+		guard var code = parent.rawText.substring(from: inlineEquation.range) else {
+			fatalError("invalid range for inline chunk")
+		}
+		code = code.replacingOccurrences(of: "^\\$", with: "\\(", options: .regularExpression)
+		code = code.replacingOccurrences(of: "\\$$\\s", with: "\\) ", options: .regularExpression)
+		return code
 	}
 	
 	private func escapeForJavascript(_ source: String) -> String {
