@@ -7,13 +7,13 @@
 import Cocoa
 
 extension NSStoryboard.Name {
-	static let mainBoard = NSStoryboard.Name(rawValue: "Main")
-	static let mainController = NSStoryboard.Name(rawValue: "MainController")
-	static let prefs = NSStoryboard.Name(rawValue: "Preferences")
+	static let mainBoard = "Main"
+	static let mainController = "MainController"
+	static let prefs = "Preferences"
 }
 
 extension NSStoryboard.SceneIdentifier {
-	static let logWindowController = NSStoryboard.SceneIdentifier(rawValue: "LogWindowController")
+	static let logWindowController = "LogWindowController"
 }
 
 extension NSUserInterfaceItemIdentifier {

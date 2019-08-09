@@ -28,7 +28,7 @@ extension NSViewController {
 	{
 		guard let childController = storyboard.instantiateController(withIdentifier: identifier) as? ControllerType
 			else { fatalError("failed to load \(identifier)") }
-		addChildViewController(childController)
+		addChild(childController)
 		let childView = childController.view
 		contentView.addSubview(childView)
 		childView.translatesAutoresizingMaskIntoConstraints = false

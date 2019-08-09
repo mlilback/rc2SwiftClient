@@ -68,8 +68,8 @@ class TemplatesPrefsController: NSViewController {
 		codeEditView.delegate = self
 		switchTo(type: UserDefaults.standard[.lastTemplateType])
 		// setup add template icon
-		let folderImage = NSImage(named: .folder)!
-		let addImage = NSImage(named: .addTemplate)!
+		let folderImage = NSImage(named: NSImage.folderName)!
+		let addImage = NSImage(named: NSImage.actionTemplateName)!
 		folderImage.overlay(image: addImage)
 		addCategoryButton.image = folderImage
 		codeOutlineView.registerForDraggedTypes([templatePasteboardType])
@@ -81,8 +81,8 @@ class TemplatesPrefsController: NSViewController {
 		_ = try? templateManager.saveAll()
 	}
 	
-	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
-		guard let action = menuItem.action else { return super.validateMenuItem(menuItem) }
+	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+		guard let action = menuItem.action else { return false }
 		switch action {
 		case #selector(addTemplate(_:)),
 			 #selector(duplicateSelection(_:)),
@@ -91,7 +91,7 @@ class TemplatesPrefsController: NSViewController {
 		case #selector(addCategory(_:)):
 			return true
 		default:
-			return super.validateMenuItem(menuItem)
+			return false
 		}
 	}
 	
@@ -236,13 +236,13 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 	
 	func outlineView(_ outlineView: NSOutlineView, validateDrop info: NSDraggingInfo, proposedItem parentItem: Any?, proposedChildIndex index: Int) -> NSDragOperation
 	{
-		guard let wrapperData = info.draggingPasteboard().data(forType: templatePasteboardType),
+		guard let wrapperData = info.draggingPasteboard.data(forType: templatePasteboardType),
 			let wrapper = try? JSONDecoder().decode(DragData.self, from: wrapperData)
 			else { print("asked to validate invalid drag data"); return [] }
 		// { Log.warn("asked to validate invalid drag data", .app); } // return [] }
 		let targetObj = parentItem as? CodeTemplateObject
 		let fromPath = wrapper.indexPath
-		let dropOperation = (info.draggingSourceOperationMask() == .copy) ? NSDragOperation.copy : NSDragOperation.move
+		let dropOperation = (info.draggingSourceOperationMask == .copy) ? NSDragOperation.copy : NSDragOperation.move
 //		print("validate drop of \(wrapper.indexPath) to \(destObj?.description ?? "root") @ \(index)")
 
 		// If we're dragging a Category:
@@ -286,13 +286,13 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 	func outlineView(_ outlineView: NSOutlineView, acceptDrop info: NSDraggingInfo, item parentItem: Any?, childIndex index: Int) -> Bool
 	{
 		// wrapper is not identical object
-		guard let wrapperData = info.draggingPasteboard().data(forType: templatePasteboardType),
+		guard let wrapperData = info.draggingPasteboard.data(forType: templatePasteboardType),
 			let wrapper = try? JSONDecoder().decode(DragData.self, from: wrapperData)
 			else { print("asked to acceptDrop invalid drag data"); return false }
 //		let srcIndex = outlineView.childIndex(forItem: wrapper.item)
 //		let targetObj = parentItem as? CodeTemplateCategory
 		let fromPath = wrapper.indexPath
-		let isCopy = info.draggingSourceOperationMask() == .copy
+		let isCopy = info.draggingSourceOperationMask == .copy
 		
 		let op = isCopy ? "copy" : "move"
 		let out = op + " from \(fromPath), to \(index), parent: " + String(describing: parentItem)
@@ -428,7 +428,7 @@ extension TemplatesPrefsController: NSSplitViewDelegate {
 
 // MARK: - NSTextFieldDelegate
 extension TemplatesPrefsController: NSTextFieldDelegate {
-	override func controlTextDidEndEditing(_ obj: Notification) {
+	func controlTextDidEndEditing(_ obj: Notification) {
 		_ = try? templateManager.save(type: currentType)
 	}
 }

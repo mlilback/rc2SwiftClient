@@ -68,7 +68,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		}
 	}
 	
-	@objc override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action  {
 		case #selector(ConsoleOutputController.clearConsole(_:)):
@@ -97,7 +97,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	func themeChanged() {
 		let theme = ThemeManager.shared.activeOutputTheme.value
 		let fullRange = resultsView!.textStorage!.string.fullNSRange
-		let fontAttrs: [NSAttributedStringKey: Any] = [.font: outputFont, .foregroundColor: theme.color(for: .text)]
+		let fontAttrs: [NSAttributedString.Key: Any] = [.font: outputFont, .foregroundColor: theme.color(for: .text)]
 		resultsView?.textStorage?.addAttributes(fontAttrs, range: fullRange)
 		theme.update(attributedString: resultsView!.textStorage!)
 		resultsView?.backgroundColor = theme.color(for: .background)

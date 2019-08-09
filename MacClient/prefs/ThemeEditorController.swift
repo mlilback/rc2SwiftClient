@@ -56,7 +56,7 @@ class ThemeEditorController<T: BaseTheme>: NSViewController, NSTableViewDataSour
 	
 	/// factory function since swift won't let us override init() and call another init method
 	static func createInstance<TType>(userUrl: URL, builtinUrl: URL) -> ThemeEditorController<TType>? {
-		let controller = ThemeEditorController<TType>(nibName: NSNib.Name(rawValue: "ThemeEditorController"), bundle: nil)
+		let controller = ThemeEditorController<TType>(nibName: "ThemeEditorController", bundle: nil)
 		controller.wrapper = ThemeWrapper<TType>()
 		controller.userThemeUrl = userUrl
 		controller.builtinThemeUrl = builtinUrl

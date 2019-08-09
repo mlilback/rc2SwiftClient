@@ -22,13 +22,13 @@ extension NSFont {
 	func font(for string: String, maxWidth: CGFloat, minFontSize: CGFloat = 9.0) -> NSFont {
 		let increment: CGFloat = 0.2
 		var curSize: CGFloat = 14.0
-		var sz = string.size(withAttributes: [NSAttributedStringKey.font: self])
+		var sz = string.size(withAttributes: [NSAttributedString.Key.font: self])
 		if sz.width < maxWidth { return self }
 		var curFont = self
 		while sz.width > maxWidth && (curSize - increment) > minFontSize {
 			curSize -= increment
 			curFont = NSFont(name: fontName, size: curSize)!
-			sz = string.size(withAttributes: [NSAttributedStringKey.font: curFont])
+			sz = string.size(withAttributes: [NSAttributedString.Key.font: curFont])
 		}
 		return curFont
 	}

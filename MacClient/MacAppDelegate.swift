@@ -126,7 +126,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 
 // MARK: - basic functionality
 extension MacAppDelegate {
-	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		if startupWindowController?.window?.isVisible ?? false { return false } //disable menu items while docker is loading
 		switch action  {
@@ -186,10 +186,10 @@ extension MacAppDelegate {
 			controller.templateManager = self.templateManager
 		}
 		
-		let sboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "MainController"), bundle: nil)
+		let sboard = NSStoryboard(name: "MainController", bundle: nil)
 		sboard.injectionContext = icontext
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window
-		let root = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "rootController")) as? RootViewController
+		let root = sboard.instantiateController(withIdentifier: "rootController") as? RootViewController
 		wc.contentViewController = root
 		wc.window?.identifier = NSUserInterfaceItemIdentifier(rawValue: "session")
 		wc.window?.restorationClass = type(of: self)
@@ -350,7 +350,7 @@ extension MacAppDelegate {
 			let sboard = NSStoryboard(name: .prefs, bundle: nil)
 			sboard.injectionContext = icontext
 			preferencesWindowController = sboard.instantiateInitialController() as? NSWindowController
-			preferencesWindowController?.window?.setFrameAutosaveName(NSWindow.FrameAutosaveName(rawValue: "PrefsWindow"))
+			preferencesWindowController?.window?.setFrameAutosaveName("PrefsWindow")
 		}
 		preferencesWindowController?.showWindow(self)
 	}
@@ -452,7 +452,7 @@ extension MacAppDelegate {
 		precondition(startupController == nil)
 		
 		// load window and setupController.
-		startupWindowController = mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "StartupWindowController")) as? StartupWindowController
+		startupWindowController = mainStoryboard.instantiateController(withIdentifier: "StartupWindowController") as? StartupWindowController
 		guard let wc = startupWindowController else { fatalError("failed to load startup window controller") }
 		startupController = startupWindowController!.contentViewController as? StartupController
 		assert(startupController != nil)
@@ -539,7 +539,7 @@ extension MacAppDelegate {
 	/// display UI for login info
 	private func promptToLogin(previousErrorMessage: String? = nil) {
 		if nil == loginWindowController {
-			loginWindowController = mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "LoginWindowController")) as? NSWindowController
+			loginWindowController = mainStoryboard.instantiateController(withIdentifier: "LoginWindowController") as? NSWindowController
 			loginController = loginWindowController?.contentViewController as? LoginViewController
 		}
 		guard let loginWindowController = loginWindowController , let loginController = loginController else { fatalError("failed to load login window") }
@@ -572,7 +572,7 @@ extension MacAppDelegate {
 	@IBAction func showOnboarding(_ sender: Any?) {
 		if nil == onboardingController {
 			// swiftlint:disable:next force_cast
-			onboardingController = (mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "OnboardingWindowController")) as! OnboardingWindowController)
+			onboardingController = (mainStoryboard.instantiateController(withIdentifier: "OnboardingWindowController") as! OnboardingWindowController)
 			onboardingController?.viewController.conInfo = connectionManager.currentConnection
 			onboardingController?.viewController.actionHandler = { message in
 				switch message {

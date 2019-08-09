@@ -70,7 +70,7 @@ class NotebookEditorController: AbstractEditorController {
 		notebookView.register(EquationViewItem.self, forItemWithIdentifier: equationItemId)
 		notebookView.register(MarkdownViewItem.self, forItemWithIdentifier: markdownItemId)
 		notebookView.register(FrontMatterViewItem.self, forItemWithIdentifier: frontMatterItemId)
-		notebookView.register(NotebookDropIndicator.self, forSupplementaryViewOfKind: .interItemGapIndicator, withIdentifier: dropIndicatorId)
+		notebookView.register(NotebookDropIndicator.self, forSupplementaryViewOfKind: NSCollectionView.elementKindInterItemGapIndicator, withIdentifier: dropIndicatorId)
 		// setup dummy sizing views
 		sizingItems[viewItemId] = ChunkViewItem(nibName: nil, bundle: nil)
 		sizingItems[equationItemId] = EquationViewItem(nibName: nil, bundle: nil)
@@ -360,7 +360,7 @@ extension NotebookEditorController: NSCollectionViewDataSource {
 	// Inits the horizontal line used to highlight where the drop will go:
 	func collectionView(_ collectionView: NSCollectionView, viewForSupplementaryElementOfKind kind: NSCollectionView.SupplementaryElementKind, at indexPath: IndexPath) -> NSView
 	{
-		if kind == .interItemGapIndicator {
+		if kind == NSCollectionView.elementKindInterItemGapIndicator {
 			return collectionView.makeSupplementaryView(ofKind: kind, withIdentifier: dropIndicatorId, for: indexPath)
 		}
 		// All other supplementary views go here (like footers), which are currently none:

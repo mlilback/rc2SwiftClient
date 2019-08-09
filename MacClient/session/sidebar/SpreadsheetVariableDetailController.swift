@@ -28,7 +28,7 @@ class SpreadsheetVariableDetailController: NSViewController {
 		ssheetTable.tableColumns.forEach { ssheetTable.removeTableColumn($0) }
 		var estWidth: CGFloat = 0
 		let font = NSFont.userFont(ofSize: 14.0)
-		let fontAttrs: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: font as Any]
+		let fontAttrs: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: font as Any]
 		// create row header column
 		if source.rowNames != nil {
 			let headColumn = NSTableColumn(identifier: .rowHeaderColumn)

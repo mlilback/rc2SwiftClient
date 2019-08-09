@@ -37,7 +37,7 @@ class InputPrompter: NSObject {
 		self.stringValue = defaultValue
 		requiredSuffix = suffix
 		super.init()
-		guard let nib = NSNib(nibNamed: NSNib.Name(rawValue: "InputPrompter"), bundle: nil) else { fatalError() }
+		guard let nib = NSNib(nibNamed: "InputPrompter", bundle: nil) else { fatalError() }
 		nib.instantiate(withOwner: self, topLevelObjects: nil)
 		assert(window != nil)
 		assert(textField != nil)

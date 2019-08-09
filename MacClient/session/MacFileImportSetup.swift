@@ -76,9 +76,9 @@ class MacFileImportSetup: NSObject {
 		returns: the drag operation to perform
 	*/
 	func validateTableViewDrop(_ info: NSDraggingInfo) -> NSDragOperation {
-		guard info.draggingSource() == nil else  { return NSDragOperation() } //don't allow local drags
+		guard info.draggingSource == nil else  { return NSDragOperation() } //don't allow local drags
 		// swiftlint:disable:next force_cast
-		guard let urls = info.draggingPasteboard().readObjects(forClasses: [NSURL.self], options: pboardReadOptions) as? [URL],
+		guard let urls = info.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: pboardReadOptions) as? [URL],
 			urls.count > 0
 			else { return NSDragOperation() } //must have a url
 		let acceptableTypes = FileType.importableFileTypes.map { $0.fileExtension }
@@ -99,7 +99,7 @@ class MacFileImportSetup: NSObject {
 	func acceptTableViewDrop(_ info: NSDraggingInfo, workspace: AppWorkspace, window: NSWindow, handler:@escaping ([FileImporter.FileToImport]) -> Void)
 	{
 		assert(validateTableViewDrop(info) != NSDragOperation(), "validate wasn't called on drag info")
-		guard let urls = info.draggingPasteboard().readObjects(forClasses: [NSURL.self], options: pboardReadOptions) as? [URL], urls.count > 0 else { return }
+		guard let urls = info.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: pboardReadOptions) as? [URL], urls.count > 0 else { return }
 		let existingNames: [String] = workspace.files.map { $0.name }
 		if urls.first(where: { aUrl in existingNames.contains(aUrl.lastPathComponent) }) != nil {
 			let alert = NSAlert()

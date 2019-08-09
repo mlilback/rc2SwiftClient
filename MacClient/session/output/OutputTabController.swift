@@ -96,7 +96,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		}
 	}
 	
-	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action {
 		case #selector(switchToSubView(_:)):

@@ -48,7 +48,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		autosaveCurrentDocument()
 	}
 	
-	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action {
 		case #selector(save(_:)):

@@ -50,7 +50,7 @@ public class SearchBarView: NSView {
 	public override func awakeAfter(using aDecoder: NSCoder) -> Any? {
 		var topObjects: NSArray? = NSArray()
 		self.translatesAutoresizingMaskIntoConstraints = false
-		guard Bundle(for: type(of: self)).loadNibNamed(NSNib.Name(rawValue: "SearchBarView"), owner: self, topLevelObjects: &topObjects), let fetchedTopObjects = topObjects else { fatalError("failed to load search xib") }
+		guard Bundle(for: type(of: self)).loadNibNamed("SearchBarView", owner: self, topLevelObjects: &topObjects), let fetchedTopObjects = topObjects else { fatalError("failed to load search xib") }
 		self.topLevelView = fetchedTopObjects.first(where: { $0 is NSView }) as? NSView
 		topLevelView?.translatesAutoresizingMaskIntoConstraints = false
 		self.addSubview(self.topLevelView!)
@@ -105,7 +105,7 @@ public class SearchBarView: NSView {
 }
 
 extension SearchBarView: NSMenuDelegate {
-	override public func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+	public func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		var enable = false
 		if menuItem.tag == SearchOptionTags.caseSensitive.rawValue {
 			menuItem.state = caseSensitiveOption ? .on : .off

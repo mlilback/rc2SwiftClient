@@ -23,7 +23,7 @@ extension NSStoryboard {
 	}
 	
 	convenience init(storyboard: Storyboard, bundle: Bundle? = nil) {
-		self.init(name:NSStoryboard.Name(rawValue: storyboard.rawValue), bundle:bundle)
+		self.init(name: storyboard.rawValue, bundle:bundle)
 	}
 
 	func instantiateViewController<T: NSViewController>() -> T {

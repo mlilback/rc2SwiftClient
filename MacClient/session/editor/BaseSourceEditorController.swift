@@ -25,7 +25,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	
 	var parser: SyntaxParser?
 	
-	var defaultAttributes: [NSAttributedStringKey: Any] = [:]
+	var defaultAttributes: [NSAttributedString.Key: Any] = [:]
 	var currentChunkIndex: Int = 0
 	
 	var searchableTextView: NSTextView? { return editor }

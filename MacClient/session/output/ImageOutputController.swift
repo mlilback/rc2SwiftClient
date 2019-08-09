@@ -253,7 +253,7 @@ extension ImageOutputController: NSPageControllerDelegate {
 	func pageController(_ pageController: NSPageController, identifierFor object: Any) -> NSPageController.ObjectIdentifier
 	{
 		guard let image = object as? SessionImage else { return emptyIdentifier }
-		return NSPageController.ObjectIdentifier(rawValue: "\(image.id)")
+		return "\(image.id)"
 	}
 	
 	func pageController(_ pageController: NSPageController, viewControllerForIdentifier identifier: NSPageController.ObjectIdentifier) -> NSViewController
@@ -264,7 +264,7 @@ extension ImageOutputController: NSPageControllerDelegate {
 		iv.setContentHuggingPriority(NSLayoutConstraint.Priority(rawValue: 200), for: .horizontal)
 		iv.setContentCompressionResistancePriority(NSLayoutConstraint.Priority(rawValue: 200), for: .horizontal)
 		iv.imageScaling = .scaleProportionallyDown
-		if let imageId = Int(identifier.rawValue) {
+		if let imageId = Int(identifier) {
 			vc.setImage(producer: imageCache!.image(withId: imageId))
 		}
 		vc.view = iv

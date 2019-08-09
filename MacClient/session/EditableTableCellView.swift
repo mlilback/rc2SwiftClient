@@ -29,7 +29,7 @@ public class EditableTableCellView: NSTableCellView {
 }
 
 extension EditableTableCellView: NSTextFieldDelegate {
-	public override func controlTextDidEndEditing(_ obj: Notification) {
+	public func controlTextDidEndEditing(_ obj: Notification) {
 		guard let text = textField?.stringValue, text.count > 0, !canceled else {
 			currentCallback?(nil)
 			return

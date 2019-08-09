@@ -42,7 +42,7 @@ private enum OtherLogLevel: Int {
 				.fontDescriptor
 				.withSymbolicTraits(.italic)
 			let font = NSFont(descriptor: fontDesc, size: baseFont.pointSize)!
-			menuItem.attributedTitle =  NSAttributedString(string: "default", attributes: [NSAttributedStringKey.font: font])
+			menuItem.attributedTitle =  NSAttributedString(string: "default", attributes: [NSAttributedString.Key.font: font])
 		case .error:
 			menuItem.title = "error"
 		case .warn:
@@ -317,7 +317,7 @@ extension AppLogger: NSMenuDelegate {
 		}
 	}
 	
-	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		if menuItem.action == #selector(AppLogger.resetAllCategoriesToDefault(_:)) {
 			return config.categoryLevelCount > 0
 		}

@@ -41,7 +41,6 @@ class AbstractSessionViewController: NSViewController {
 }
 
 func firstChildViewController<T>(_ rootController: NSViewController) -> T? {
-	return firstRecursiveDescendent(rootController,
-		children: { return $0.childViewControllers },
+	return firstRecursiveDescendent(rootController, children: { return $0.children },
 		filter: { return $0 is T }) as? T
 }

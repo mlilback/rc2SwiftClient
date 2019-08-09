@@ -23,7 +23,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 	fileprivate var toolbarSetupScheduled = false
 	
 	class func createFromNib() -> Self {
-		let winc = self.init(windowNibName: NSNib.Name(rawValue: "MainWindow"))
+		let winc = self.init(windowNibName: "MainWindow")
 		return winc
 	}
 	
@@ -46,7 +46,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 			}
 		}
 		// recursively find every instance of AbstractSessionViewController and inject the session
-		let viewControllers = recursiveFlatMap(rootVC, children: { $0.childViewControllers }, transform: { $0 as? AbstractSessionViewController })
+		let viewControllers = recursiveFlatMap(rootVC, children: { $0.children }, transform: { $0 as? AbstractSessionViewController })
 		for aController in viewControllers {
 			aController.sessionOptional = session
 		}

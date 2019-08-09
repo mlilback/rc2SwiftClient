@@ -72,7 +72,7 @@ class RootViewController: AbstractSessionViewController
 	}
 
 	// swiftlint:disable:next cyclomatic_complexity
-	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action {
 		case #selector(promptToImportFiles(_:)), #selector(editFile(_:)):
@@ -223,7 +223,7 @@ extension RootViewController: ManageFontMenu {
 		}
 		//prompt for size to use
 		let sboard = NSStoryboard.init(name: .mainBoard, bundle: nil)
-		guard let wc = sboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "FontSizeWindowController")) as? NSWindowController, let vc = wc.contentViewController as? SingleInputViewController else
+		guard let wc = sboard.instantiateController(withIdentifier: "FontSizeWindowController") as? NSWindowController, let vc = wc.contentViewController as? SingleInputViewController else
 		{
 			fatalError()
 		}
@@ -240,7 +240,7 @@ extension RootViewController: ManageFontMenu {
 			return ival >= 9 && ival <= 64
 		}
 		vc.textField!.objectValue = currentFontUser(view.window!.firstResponder)?.currentFontDescriptor.pointSize
-		presentViewControllerAsSheet(vc)
+		presentAsSheet(vc)
 	}
 	
 	func updateFontFaceMenu(_ menu: NSMenu, fontUser: UsesAdjustableFont) {

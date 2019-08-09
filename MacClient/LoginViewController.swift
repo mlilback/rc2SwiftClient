@@ -54,7 +54,7 @@ class LoginViewController: NSViewController {
 }
 
 extension LoginViewController: NSTextFieldDelegate {
-	override func controlTextDidChange(_ obj: Notification) {
+	func controlTextDidChange(_ obj: Notification) {
 		let userValid = userField.stringValue.count > 3
 		let passValid = passwordField.stringValue.count > 4
 		loginButon.isEnabled = userValid && passValid

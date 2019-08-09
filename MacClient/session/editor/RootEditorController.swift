@@ -63,7 +63,7 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 		// for some reason won't compile if directly setting tabController
 		let controller: NSTabViewController = embedViewController(storyboard: sboard, identifier: .editorTabController, contentView: contentView)
 		tabController = controller
-		let tabChildren = tabController.childViewControllers
+		let tabChildren = tabController.children
 		sourceEditor = tabChildren.first(where: { $0 is SourceEditorController } ) as? SourceEditorController
 		previewEditor = tabChildren.first(where: { $0 is LivePreviewEditorController } ) as? LivePreviewEditorController
 		currentEditor = sourceEditor

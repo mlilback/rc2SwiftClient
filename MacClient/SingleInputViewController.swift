@@ -16,12 +16,12 @@ class SingleInputViewController: NSViewController {
 	var saveAction: ((SingleInputViewController) -> Void)?
 	
 	@IBAction func save(_ sender: AnyObject?) {
-		presenting!.dismissViewController(self)
+		presentingViewController!.dismiss(self)
 		saveAction?(self)
 	}
 	
 	@IBAction func cancel(_ sender: AnyObject?) {
-		presenting!.dismissViewController(self)
+		presentingViewController!.dismiss(self)
 	}
 }
 

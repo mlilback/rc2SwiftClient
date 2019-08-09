@@ -39,8 +39,8 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 		fullContentSearch = UserDefaults.standard[.helpTopicSearchSummaries]
 	}
 
-	override func validateMenuItem(_ item: NSMenuItem) -> Bool {
-		guard item.action == #selector(adjustSearchOption(_:)) else { return super.validateMenuItem(item) }
+	@objc func validateMenuItem(_ item: NSMenuItem) -> Bool {
+		guard item.action == #selector(adjustSearchOption(_:)) else { return false }
 		switch item.tag {
 		case 1:
 			item.state = fullContentSearch ? .off : .on

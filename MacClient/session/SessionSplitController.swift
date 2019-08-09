@@ -64,8 +64,8 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 		}
 	}
 	
-	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
-		guard let action = menuItem.action else { return super.validateMenuItem(menuItem) }
+	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+		guard let action = menuItem.action else { return false }
 		switch action {
 		case #selector(switchSidebarTab(_:)):
 			if sidebarSplitItem().isCollapsed {
@@ -161,14 +161,14 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	
 	func sidebarTabController() -> NSTabViewController {
 		// swiftlint:disable:next force_cast
-		let scontroller = self.childViewControllers.first(where: { $0.identifier == .sidebarController }) as! SidebarController
+		let scontroller = self.children.first(where: { $0.identifier == .sidebarController }) as! SidebarController
 		let _ = scontroller.view
 		return scontroller.tabController
 	}
 	
 	func outputTabController() -> OutputTabController {
 		// swiftlint:disable:next force_cast
-		return self.childViewControllers.first(where: { $0.identifier?.rawValue == "outputTabController" }) as! OutputTabController
+		return self.children.first(where: { $0.identifier?.rawValue == "outputTabController" }) as! OutputTabController
 	}
 	
 	override func splitView(_ splitView: NSSplitView, shouldHideDividerAt dividerIndex: Int) -> Bool

@@ -18,7 +18,7 @@ class EquationViewItem: ChunkViewItem {
 		super.viewDidLoad()
 	}
 	
-	override var nibName: NSNib.Name? { return NSNib.Name(rawValue: "EquationViewItem") }
+	override var nibName: NSNib.Name? { return "EquationViewItem" }
 	override var resultView: NSView { return equationView }
 	override var resultOuterView: NSView { return equationView }
 	

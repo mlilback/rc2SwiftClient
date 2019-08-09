@@ -17,7 +17,7 @@ class PreferencesViewController: NSTabViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		var image = NSImage(named: .preferencesGeneral)
+		var image = NSImage(named: NSImage.preferencesGeneralName)
 		if let appPath = NSWorkspace.shared.absolutePathForApplication(withBundleIdentifier: "com.docker.docker")
 		{
 			image = NSWorkspace.shared.icon(forFile: appPath)
