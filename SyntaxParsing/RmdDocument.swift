@@ -17,7 +17,7 @@ public enum ParserError: Error {
 public typealias HasHelpCallback = (String) -> Bool
 public typealias ParserErrorHandler = (ParserError) -> Void
 
-public class RmdDocument {
+public class RmdDocument: CustomDebugStringConvertible {
 	/// Chunks comprising this document:
 	public var chunks: [RmdChunk] { return _chunks.value }
 	/// A Property of a protocol (RmdChunk) can't observer changes to a mutableproperty
@@ -30,6 +30,8 @@ public class RmdDocument {
 	private let _chunks = MutableProperty<[InternalRmdChunk]>([])
 	private var textStorage = NSTextStorage()
 	private var parser: SyntaxParser
+	
+	public var debugDescription: String { return "RmdDocument with \(_chunks.value.count) chunks" }
 	
 	/// Creates a structure document.
 	///
@@ -57,6 +59,7 @@ public class RmdDocument {
 					lastWasInline = false
 					return
 				}
+				// since markdown has no delimiter, parsedRange == innerRange
 				let tchunk = MarkdownChunk(parser: parser, contents: parser.textStorage, range: parserChunk.innerRange)
 				append(chunk: tchunk)
 				lastTextChunk = tchunk
@@ -64,8 +67,9 @@ public class RmdDocument {
 			case .code:
 				let cchunk = CodeChunk(parser: parser, contents: parser.textStorage, range: parserChunk.innerRange, options: parserChunk.rOps)
 				if parserChunk.isInline, let lastChunk = lastTextChunk {
-					let achunk = InternalInlineCodeChunk(parser: parser, contents: parser.textStorage, range: parserChunk.innerRange, options: parserChunk.rOps)
+					let achunk = InternalInlineCodeChunk(parser: parser, parserChunk: parserChunk, parentRange: lastChunk.range)
 					attach(chunk: achunk, to: lastChunk.textStorage)
+					lastChunk.append(inlineChunk: achunk, from: parser.textStorage)
 					lastWasInline = true
 					return
 				}
@@ -77,8 +81,8 @@ public class RmdDocument {
 				case .none: fatalError()
 				case .inline:
 					guard let lastChunk = lastTextChunk else { throw ParserError.inlineEquationNotInTextChunk }
-					let dchunk = InternalInlineEquation(parser: parser, contents: parser.textStorage, range: parserChunk.innerRange)
-					lastChunk.inlineElements.append(dchunk)
+					let dchunk = InternalInlineEquation(parser: parser, parserChunk: parserChunk, parentRange: lastChunk.range)
+					lastChunk.append(inlineChunk: dchunk, from: parser.textStorage)
 					attach(chunk: dchunk, to: lastChunk.textStorage)
 					lastWasInline = true
 				case .display:
@@ -164,16 +168,26 @@ public protocol Code: class {
 	var options: MutableProperty<String> { get }
 }
 
-public protocol RmdChunk: class {
+public protocol RmdChunk: class, CustomStringConvertible {
 	var contents: NSAttributedString { get set }
 	var chunkType: ChunkType { get }
 	var rawText: String { get }
 }
 
-public protocol InlineChunk: RmdChunk {}
+public protocol InlineChunk: RmdChunk {
+	/// the range of the content in the parent chunk (excluding delimiters)
+	var range: NSRange { get }
+	/// the range of this chunk in the parent chunk (including delimiters)
+	var chunkRange: NSRange { get }
+	/// the range of this chunk in the document
+	var documentRange: NSRange { get }
+}
 
 public protocol TextChunk: RmdChunk {
+	/// inline code and equation chunks. Their text is still a part of this chunk
 	var inlineElements: [InlineChunk] { get }
+	/// the range of this chunk in the containing document
+	var range: NSRange { get }
 }
 
 public typealias InlineEquationChunk = InlineChunk & Equation
@@ -208,6 +222,8 @@ class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate
 	}
 	
 	var rawText: String { return textStorage.string }
+
+	public override var description: String { return "RmdChunk type \(chunkType) of length \(textStorage.length)" }
 	
 	init(parser: SyntaxParser, chunk: DocumentChunk) {
 		self.parser = parser
@@ -241,47 +257,42 @@ class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate
 // MARK: -
 class MarkdownChunk: InternalRmdChunk, TextChunk {
 	var inlineElements: [InlineChunk]
-	let origText: String
+	private(set) var range: NSRange
 	
+	public override var description: String { return "\(super.description) with \(inlineElements.count) inline" }
+
 	init(parser: SyntaxParser, contents: NSAttributedString, range: NSRange) {
+		self.range = range
 		// Use a fake chunk to create from contents.
 		let pchunk = DocumentChunk(chunkType: .docs, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
 		inlineElements = []
-		origText = contents.string.substring(from: range)!
 		super.init(parser: parser, chunk: pchunk)
 		update(text: contents.attributedSubstring(from: range))
 	}
 	
 	init(parser: SyntaxParser, contents: String, range: NSRange) {
+		self.range = range
 		// Use a fake chunk to create from contents.
 		let pchunk = DocumentChunk(chunkType: .docs, docType: .rmd, equationType: .none,
 								   range: range, innerRange: range, chunkNumber: 1)
 		inlineElements = []
-		origText = contents.substring(from: range)!
 		super.init(parser: parser, chunk: pchunk)
 		update(text: NSAttributedString(string: contents.substring(from: range)!))
 		highlight(attributedString: textStorage, inRange: pchunk.innerRange)
 	}
 	
+	func append(inlineChunk: InlineChunk, from fullText: NSTextStorage) {
+		inlineElements.append(inlineChunk)
+		// range doesn't include space after r code close `. where is it being added?
+		let newRange = NSRange(location: range.location, length: inlineChunk.documentRange.upperBound - range.location)
+		self.range = newRange
+		update(text: fullText.attributedSubstring(from: self.range))
+		highlight(attributedString: fullText, inRange: range)
+	}
+
 	override var rawText: String {
-		// Need to replace attachments with their rawText.
-		let tmpAttrStr = NSMutableAttributedString(attributedString: textStorage)
-		// FIXME: needs to handle code chunks, likely via method on inline attachment class that returns the equiv of iContents
-		tmpAttrStr.enumerateAttribute(.attachment, in: tmpAttrStr.string.fullNSRange, options: [])
-		{ (attrValue, attrRange, stop) in
-			guard attrValue != nil else { return }
-			guard let iAttach = attrValue as? InlineAttachment,
-				let iChunk = iAttach.chunk
-				else { tmpAttrStr.deleteCharacters(in: attrRange); return }
-			let iContents = NSMutableAttributedString(attributedString: iChunk.contents)
-			let dollar = NSAttributedString(string: "$")
-			iContents.insert(dollar, at: 0)
-			iContents.append(dollar)
-			tmpAttrStr.replaceCharacters(in: attrRange, with: iContents)
-		}
-		let val = tmpAttrStr.string
-		return val
+		return textStorage.string
 	}
 }
 
@@ -339,31 +350,36 @@ class EquationChunk: InternalRmdChunk, Equation {
 // MARK: -
 
 class InternalInlineEquation: InternalRmdChunk, InlineChunk, Equation {
-	init(parser: SyntaxParser, contents: NSAttributedString, range: NSRange) {
+	var range: NSRange
+	let documentRange: NSRange
+	let chunkRange: NSRange
+	
+	init(parser: SyntaxParser, parserChunk: DocumentChunk, parentRange: NSRange) {
+		range = NSRange(location: parserChunk.innerRange.location - parentRange.location, length: parserChunk.innerRange.length)
+		documentRange = parserChunk.parsedRange
+		chunkRange = NSRange(location: documentRange.location - parentRange.location, length: documentRange.length)
 		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .inline,
-								   range: range, innerRange: range, chunkNumber: 1)
+								   range: documentRange, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
-		// FIXME: this was breaking things
-//		update(text: contents.attributedSubstring(from: range))
-		update(text: NSAttributedString(string: contents.string.substring(from: range)!))
-	}
-
-	init(parser: SyntaxParser, contents: String, range: NSRange) {
-		let pchunk = DocumentChunk(chunkType: .equation, docType: .latex, equationType: .inline,
-								   range: range, innerRange: range, chunkNumber: 1)
-		super.init(parser: parser, chunk: pchunk)
-		update(text: NSAttributedString(string: contents.substring(from: range)!))
+		update(text: parser.textStorage.attributedSubstring(from: documentRange))
 	}
 }
 
 class InternalInlineCodeChunk: InternalRmdChunk, InlineChunk, Code {
+	var range: NSRange
+	let documentRange: NSRange
+	let chunkRange: NSRange
 	var options: MutableProperty<String>
-	init(parser: SyntaxParser, contents: NSAttributedString, range: NSRange, options: String) {
-		self.options = MutableProperty<String>(options)
+
+	init(parser: SyntaxParser, parserChunk: DocumentChunk, parentRange: NSRange) {
+		range = NSRange(location: parserChunk.innerRange.location - parentRange.location, length: parserChunk.innerRange.length)
+		documentRange = parserChunk.parsedRange
+		chunkRange = NSRange(location: documentRange.location - parentRange.location, length: documentRange.length)
+		self.options = MutableProperty<String>(parserChunk.rOps)
 		let pchunk = DocumentChunk(chunkType: .code, docType: .rmd, equationType: .none,
-								   range: range, innerRange: range, chunkNumber: 1)
+								   range: documentRange, innerRange: range, chunkNumber: 1)
 		super.init(parser: parser, chunk: pchunk)
-		update(text: contents.attributedSubstring(from: range))
+		update(text: parser.textStorage.attributedSubstring(from: documentRange))
 	}
 }
 
