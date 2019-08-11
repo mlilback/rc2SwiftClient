@@ -130,8 +130,7 @@ public class ConnectionInfo: CustomStringConvertible {
 	/// - Parameter identifier: the workspace identifier to lookup
 	/// - Returns: the matching workspace, or nil if no such workspace exists
 	public func workspace(withIdentifier identifier: WorkspaceIdentifier) -> AppWorkspace? {
-		guard let optWspace = try? project(withId: identifier.projectId).workspace(withId: identifier.wspaceId),
-			let wspace = optWspace
+		guard let wspace = try? project(withId: identifier.projectId).workspace(withId: identifier.wspaceId)
 			else { return nil }
 		return wspace
 	}
