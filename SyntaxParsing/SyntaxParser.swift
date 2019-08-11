@@ -67,7 +67,7 @@ public class SyntaxParser: NSObject {
 	public func indexOfChunk(inRange: NSRange) -> Int {
 		guard chunks.count > 0,
 			let firstChunkInRange = chunksForRange(inRange).first,
-			let chunkIndex = chunks.index(of: firstChunkInRange)
+			let chunkIndex = chunks.firstIndex(of: firstChunkInRange)
 			else { return 0 }
 		return chunkIndex
 	}
