@@ -49,6 +49,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private var resourcesExtracted = false
 	private var readyForContent: Bool { return resourcesExtracted && needToLoadDocumentOnLoad }
 	private var parseInProgress = false
+	private var emptyNavigations: Set<WKNavigation> = []
 	
 	var editorContext: EditorContext? {
 		get { return context.value }
@@ -103,7 +104,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		do {
 			let header = try String(contentsOf: headerUrl)
 			let footer = try String(contentsOf: footerUrl)
-			outputView?.loadHTMLString("\(header) \(footer)", baseURL: documentRoot)
+			let nav = outputView?.loadHTMLString("\(header) \(footer)", baseURL: documentRoot)
+			if let realNav = nav { emptyNavigations.insert(realNav) }
 		} catch {
 			fatalError("failed to load initial preview content: \(error)")
 		}
@@ -123,6 +125,13 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 				me.documentChanged()
 			}
 			me.documentChanged()
+		}
+		if let context = context.value {
+			contextDisposables += context.parsedDocument.signal.observeValues { [weak self] _ in
+				guard let me = self else { return }
+				// document changed, re-observe contents
+				me.documentChanged()
+			}
 		}
 		guard outputView != nil else {
 			needToLoadDocumentOnLoad = true
@@ -146,7 +155,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private func parseContent() {
 		guard !parseInProgress else { return }
 		guard let curDoc = context.value?.parsedDocument.value else {
-			outputView?.loadHTMLString("", baseURL: nil)
+			let curNav = outputView?.loadHTMLString("", baseURL: nil)
+			if let realNave = curNav { emptyNavigations.insert(realNave)}
 			return
 		}
 		parseInProgress = true
@@ -166,7 +176,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private func htmlFor(chunk: RmdChunk) -> String {
 		switch chunk.chunkType {
 		case .code:
-			return htmlFor(code: chunk)
+			let code = htmlFor(code: chunk)
+			return code
 		case .docs:
 			return htmlFor(markdownChunk: chunk)
 		case .equation:
@@ -220,7 +231,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 	
 	private func htmlFor(code: RmdChunk) -> String {
-		return "<p>R code/results will go here</p>\n"
+		return "<pre class=\"r\"><code>\(code.contents.string.addingUnicodeEntities)</code></pre>\n"
 	}
 	
 	private func htmlForEquation(chunk: RmdChunk) -> String {
@@ -239,7 +250,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 		code = code.replacingOccurrences(of: "^\\$", with: "\\(", options: .regularExpression)
 		code = code.replacingOccurrences(of: "\\$$\\s", with: "\\) ", options: .regularExpression)
-		return code
+		return "<span class\"math inline\">\n\(code)</span>"
 	}
 	
 	private func escapeForJavascript(_ source: String) -> String {
@@ -279,8 +290,19 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 
 	func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+		if emptyNavigations.contains(navigation) {
+			emptyNavigations.remove(navigation)
+			return
+		}
 		Log.info("did finish webView load")
-		needToLoadDocumentOnLoad = false
+		if needToLoadDocumentOnLoad {
+			contextDisposables += context.value?.parsedDocument.signal.observeValues { [weak self] _ in
+				guard let me = self else { return }
+				// document changed, re-observe contents
+				me.documentChanged()
+			}
+			needToLoadDocumentOnLoad = false
+		}
 //		if readyForContent {
 			documentChanged()
 //		}
