@@ -3672,7 +3672,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -3697,7 +3696,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -3795,7 +3793,6 @@
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -3828,7 +3825,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -3871,7 +3867,6 @@
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -3906,7 +3901,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -3936,7 +3930,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rc².app/Contents/MacOS/Rc²";
 			};
 			name = Debug;
@@ -3962,7 +3955,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.ClientCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rc².app/Contents/MacOS/Rc²";
 			};
 			name = Release;
@@ -4237,7 +4229,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -4283,7 +4275,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -4308,6 +4300,7 @@
 				PRODUCT_MODULE_NAME = MacClient;
 				PRODUCT_NAME = "Rc²";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -4332,6 +4325,7 @@
 				PRODUCT_MODULE_NAME = MacClient;
 				PRODUCT_NAME = "Rc²";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -4423,7 +4417,6 @@
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -4459,7 +4452,6 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -4492,7 +4484,6 @@
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -4516,7 +4507,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -4530,7 +4520,7 @@
 				080E82DA1DCBE31D0048F36C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		080E82DB1DCBE31D0048F36C /* Build configuration list for PBXNativeTarget "NetworkingTests" */ = {
 			isa = XCConfigurationList;
@@ -4539,7 +4529,7 @@
 				080E82DD1DCBE31D0048F36C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		08127CDA1DAD2434002E0D01 /* Build configuration list for PBXNativeTarget "Rc2CommonIntegrationTests" */ = {
 			isa = XCConfigurationList;
@@ -4548,7 +4538,7 @@
 				08127CDC1DAD2434002E0D01 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		082BE0A41F59D549006CE0B7 /* Build configuration list for PBXNativeTarget "SyntaxParsing" */ = {
 			isa = XCConfigurationList;
@@ -4557,7 +4547,7 @@
 				082BE0A11F59D549006CE0B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		082BE0A51F59D549006CE0B7 /* Build configuration list for PBXNativeTarget "SyntaxParsingTests" */ = {
 			isa = XCConfigurationList;
@@ -4566,7 +4556,7 @@
 				082BE0A31F59D549006CE0B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		082BE1611F5B3682006CE0B7 /* Build configuration list for PBXNativeTarget "Model" */ = {
 			isa = XCConfigurationList;
@@ -4575,7 +4565,7 @@
 				082BE1601F5B3682006CE0B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		084D32FE206D03DD00246CBD /* Build configuration list for PBXNativeTarget "ClientCore" */ = {
 			isa = XCConfigurationList;
@@ -4584,7 +4574,7 @@
 				084D3300206D03DD00246CBD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		084D3301206D03DD00246CBD /* Build configuration list for PBXNativeTarget "ClientCoreTests" */ = {
 			isa = XCConfigurationList;
@@ -4593,7 +4583,7 @@
 				084D3303206D03DD00246CBD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		084D331A206D3C9E00246CBD /* Build configuration list for PBXNativeTarget "HelpIndexTool" */ = {
 			isa = XCConfigurationList;
@@ -4602,7 +4592,7 @@
 				084D331C206D3C9E00246CBD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		084E93BA201E874900FF50EA /* Build configuration list for PBXNativeTarget "ModelTests" */ = {
 			isa = XCConfigurationList;
@@ -4611,7 +4601,7 @@
 				084E93BC201E874900FF50EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		0859A30A2062701900103924 /* Build configuration list for PBXNativeTarget "mathFonts" */ = {
 			isa = XCConfigurationList;
@@ -4620,7 +4610,7 @@
 				0859A30C2062701900103924 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		0859A3622062726700103924 /* Build configuration list for PBXNativeTarget "iosMath" */ = {
 			isa = XCConfigurationList;
@@ -4629,7 +4619,7 @@
 				0859A3642062726700103924 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		088CE6641C4B0AF400153414 /* Build configuration list for PBXProject "Rc2Client" */ = {
 			isa = XCConfigurationList;
@@ -4638,7 +4628,7 @@
 				088CE6821C4B0AF500153414 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		088CE6831C4B0AF500153414 /* Build configuration list for PBXNativeTarget "MacClient" */ = {
 			isa = XCConfigurationList;
@@ -4647,7 +4637,7 @@
 				088CE6851C4B0AF500153414 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		088CE6861C4B0AF500153414 /* Build configuration list for PBXNativeTarget "MacClientTests" */ = {
 			isa = XCConfigurationList;
@@ -4656,7 +4646,7 @@
 				088CE6881C4B0AF500153414 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		089794311D7B68F0003339EE /* Build configuration list for PBXNativeTarget "Rc2Common" */ = {
 			isa = XCConfigurationList;
@@ -4665,7 +4655,7 @@
 				089794331D7B68F0003339EE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		089794341D7B68F0003339EE /* Build configuration list for PBXNativeTarget "Rc2CommonTests" */ = {
 			isa = XCConfigurationList;
@@ -4674,7 +4664,7 @@
 				089794361D7B68F0003339EE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
