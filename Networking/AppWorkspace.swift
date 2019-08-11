@@ -30,7 +30,7 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 
 	public var identifier: WorkspaceIdentifier { return WorkspaceIdentifier(projectId: model.projectId, wspaceId: model.id) }
 	
-	public private(set) var model: Workspace
+	public internal(set) var model: Workspace
 	
 	public var wspaceId: Int { return model.id }
 	public var projectId: Int { return model.projectId }

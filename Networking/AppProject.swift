@@ -12,7 +12,7 @@ import MJLLogger
 
 public final class AppProject: CustomStringConvertible, Hashable
 {
-	public private(set) var model: Project
+	public internal(set) var model: Project
 	public var projectId: Int { return model.id }
 	public var userId: Int { return model.userId }
 	public var name: String { return model.name }
