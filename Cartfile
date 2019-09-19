@@ -6,6 +6,6 @@ github "ReactiveCocoa/ReactiveCocoa" ~> 9.0.0
 github "mlilback/Freddy" "master"
 github "ZipArchive/ZipArchive"
 github "evgenyneu/SigmaSwiftStatistics" ~> 7.0
-#github "krzyzanowskim/CryptoSwift" "develop"
+#github "krzyzanowskim/CryptoSwift" ~> 1.0.0
 #github "sebskuse/Mockingjay" "d47440a3518297a53914dc179c95bb6799c444a6"
 #github "sebskuse/URITemplate.swift" "395dc704b4a3479e1b517b92132ac8a2b81db9d8"
