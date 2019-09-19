@@ -18,6 +18,7 @@ public final class Rc2RestClient {
 	let sessionConfig: URLSessionConfiguration
 	fileprivate var urlSession: URLSession?
 	let fileManager: Rc2FileManager
+	private let infoLock = DispatchSemaphore(value: 1)
 	
 	public init(_ conInfo: ConnectionInfo, fileManager: Rc2FileManager = Rc2DefaultFileManager())
 	{
@@ -37,6 +38,26 @@ public final class Rc2RestClient {
 		var request = URLRequest(url: url)
 		request.httpMethod = method
 		return request
+	}
+	
+	public func updateConnectInfo() {
+		infoLock.wait()
+		var request = URLRequest(url: URL(string: conInfo.host.urlPrefix +  "/info", relativeTo: conInfo.host.url!)!)
+		request.addValue("application/json", forHTTPHeaderField: "Accept")
+		request.addValue("Bearer \(conInfo.authToken)", forHTTPHeaderField: "Authorization")
+		let handler = { (data: Data?, response: URLResponse?, error: Error?) in
+			defer { self.infoLock.signal() }
+			guard let httpResponse = response as? HTTPURLResponse,
+				let infoData = data,
+				httpResponse.statusCode == 200,
+				let bulkInfo: BulkUserInfo = try? self.conInfo.decode(data: infoData)
+			else {
+				Log.warn("failed to reload /info: \(error?.localizedDescription ?? "-")", .network)
+				return
+			}
+			self.conInfo.update(bulkInfo: bulkInfo)
+		}
+		self.urlSession!.dataTask(with: request, completionHandler: handler).resume()
 	}
 	
 	/// creates a workspace on the server
