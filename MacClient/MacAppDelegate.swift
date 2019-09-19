@@ -85,6 +85,8 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		// swiftlint:disable:next force_cast (swift value types don't support dictionaries from files)
 		UserDefaults.standard.register(defaults: NSDictionary(contentsOf: cdUrl!)! as! [String : AnyObject])
 		
+		// without cloud, we now force to be local
+		UserDefaults.standard[.currentCloudHost] = ServerHost.localHost
 		NotificationCenter.default.addObserver(self, selector: #selector(MacAppDelegate.windowWillClose(_:)), name: NSWindow.willCloseNotification, object: nil)
 		
 		DispatchQueue.main.async {
