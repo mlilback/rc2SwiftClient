@@ -61,7 +61,7 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 	/// - Parameter withId: the id of the file to find
 	/// - Returns: the file with the specified id, or nil
 	public func file(withId: Int) -> AppFile? {
-		guard let idx = _files.value.index(where: { $0.fileId == withId }) else {
+		guard let idx = _files.value.firstIndex(where: { $0.fileId == withId }) else {
 			return nil
 		}
 		return _files.value[idx]
@@ -72,7 +72,7 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 	/// - Parameter withName: the name of the file to find
 	/// - Returns: the matching file or nil
 	public func file(withName: String) -> AppFile? {
-		guard let idx = _files.value.index(where: { $0.name.caseInsensitiveCompare(withName) == .orderedSame }) else { return nil }
+		guard let idx = _files.value.firstIndex(where: { $0.name.caseInsensitiveCompare(withName) == .orderedSame }) else { return nil }
 		return _files.value[idx]
 	}
 	
@@ -197,7 +197,7 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 				throw Rc2Error(type: .updateFailed)
 			}
 			//can force because guard above says it must exist
-			_files.value.remove(at: _files.value.index(of: ourFile)!)
+			_files.value.remove(at: _files.value.firstIndex(of: ourFile)!)
 			fileChangeObserver.send(value: [FileChange(type: .remove, file: ourFile)])
 		}
 		

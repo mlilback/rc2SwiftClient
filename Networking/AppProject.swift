@@ -41,7 +41,7 @@ public final class AppProject: CustomStringConvertible, Hashable
 	/// - Parameter withId: the id to look for
 	/// - returns: a matching workspace or nil if not found
 	public func workspace(withId: Int) -> AppWorkspace? {
-		guard let idx = _workspaces.value.index(where: { $0.wspaceId == withId }) else {
+		guard let idx = _workspaces.value.firstIndex(where: { $0.wspaceId == withId }) else {
 			return nil
 		}
 		return _workspaces.value[idx]
@@ -51,7 +51,7 @@ public final class AppProject: CustomStringConvertible, Hashable
 	/// - Parameter withName: the name to look for
 	/// - returns: a matching workspace or nil if not found
 	public func workspace(withName: String) -> AppWorkspace? {
-		guard let idx = _workspaces.value.index(where: { $0.name == withName }) else {
+		guard let idx = _workspaces.value.firstIndex(where: { $0.name == withName }) else {
 			return nil
 		}
 		return _workspaces.value[idx]
@@ -101,7 +101,7 @@ public final class AppProject: CustomStringConvertible, Hashable
 	///
 	/// - Parameter workspace: workspace that was deleted
 	internal func removed(workspace: AppWorkspace) {
-		guard let index = _workspaces.value.index(of: workspace) else { Log.warn("removed workspace didn't exist \(workspace.wspaceId)", .model); return }
+		guard let index = _workspaces.value.firstIndex(of: workspace) else { Log.warn("removed workspace didn't exist \(workspace.wspaceId)", .model); return }
 		_workspaces.value.remove(at: index)
 	}
 //	public func addWorkspaceObserver(identifier: String, observer: @escaping (AppWorkspace) -> Disposable?) {
