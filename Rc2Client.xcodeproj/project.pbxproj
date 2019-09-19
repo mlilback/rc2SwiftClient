@@ -304,7 +304,6 @@
 		088F591C1E74BCEA0009A0B1 /* ThemePrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088F591B1E74BCEA0009A0B1 /* ThemePrefsController.swift */; };
 		0890650B1D26F59300C7CA5D /* MacAppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0890650A1D26F59300C7CA5D /* MacAppStatus.swift */; };
 		0892EE5E203F028700207F54 /* Encoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0892EE5D203F028700207F54 /* Encoding.swift */; };
-		0892EE60203F065000207F54 /* XAttributeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0892EE5F203F065000207F54 /* XAttributeManager.swift */; };
 		089794231D7B68F0003339EE /* Rc2Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; };
 		0897942F1D7B68F0003339EE /* Rc2Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; };
 		089794301D7B68F0003339EE /* Rc2Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -1055,7 +1054,6 @@
 		088F59231E7578B80009A0B1 /* OutputThemes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = OutputThemes.json; path = resources/OutputThemes.json; sourceTree = "<group>"; };
 		0890650A1D26F59300C7CA5D /* MacAppStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacAppStatus.swift; sourceTree = "<group>"; };
 		0892EE5D203F028700207F54 /* Encoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Encoding.swift; sourceTree = "<group>"; };
-		0892EE5F203F065000207F54 /* XAttributeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XAttributeManager.swift; sourceTree = "<group>"; };
 		0892EE61203F6DE700207F54 /* DevelopmentNotes.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = DevelopmentNotes.md; sourceTree = "<group>"; };
 		0897941A1D7B68F0003339EE /* Rc2Common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Rc2Common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0897941D1D7B68F0003339EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2026,7 +2024,6 @@
 				0816F8991C6D0F7D00A6120B /* HTMLString.swift */,
 				08604A4D1D9C0C0500DE2A79 /* Named.swift */,
 				0892EE5D203F028700207F54 /* Encoding.swift */,
-				0892EE5F203F065000207F54 /* XAttributeManager.swift */,
 				086A40DE1E7D956400AE476B /* PlatformTypeAliases.swift */,
 				089794411D7B6A0F003339EE /* SharedConstants.swift */,
 				081559991DDE83250047B3CE /* Rc2Error.swift */,
@@ -3275,7 +3272,6 @@
 				0892EE5E203F028700207F54 /* Encoding.swift in Sources */,
 				080AB90D1E991ED4005452C7 /* URLRequest+Rc2.swift in Sources */,
 				0868068B200D892000C986A9 /* PlatformColor.swift in Sources */,
-				0892EE60203F065000207F54 /* XAttributeManager.swift in Sources */,
 				0868068D200D892000C986A9 /* ShellCommands.swift in Sources */,
 				08F6783A1F79422400EC3AC9 /* URLSession+Rc2.swift in Sources */,
 				08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */,
