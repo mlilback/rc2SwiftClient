@@ -73,7 +73,7 @@ public class FileImporter: NSObject {
 				Log.error("failed to create link for upload: \(error)", .network)
 				return ProgressSignalProducer(error: Rc2Error(type: .file, nested: error, explanation: ""))
 			}
-			let destUrl = URL(string: "\(conInfo.host.urlPrefix)/file/create/\(workspace.wspaceId)", relativeTo: baseUrl)!
+			let destUrl = URL(string: "\(conInfo.host.urlPrefix)/file/\(workspace.wspaceId)", relativeTo: baseUrl)!
 			var request = URLRequest(url: destUrl)
 			request.httpMethod = "POST"
 			request.setValue(conInfo.authorizationHeaderValue, forHTTPHeaderField: "Authorization")

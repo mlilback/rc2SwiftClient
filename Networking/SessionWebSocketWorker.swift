@@ -126,12 +126,13 @@ public class SessionWebSocketWorker {
 		var components = URLComponents()
 		components.host = conInfo.host == ServerHost.localHost ? "127.0.0.1" : conInfo.host.host
 		components.port = conInfo.host.port
-		components.path = "\(conInfo.host.urlPrefix)/ws/\(wspaceId)"
+		components.path = "\(conInfo.host.urlPrefix)/ws"
 		components.scheme = conInfo.host.secure ? "wss" : "ws"
 		components.queryItems = [URLQueryItem(name: "client", value: client),
 								 URLQueryItem(name: "build", value: "\(AppInfo.buildNumber)")]
 		var request = URLRequest(url: components.url!)
 		request.setValue("Bearer \(conInfo.authToken)", forHTTPHeaderField: "Authorization")
+		request.setValue("\(wspaceId)", forHTTPHeaderField: "Rc2-WorkspaceId")
 		let ws = WebSocket(request: request)
 		return ws
 	}

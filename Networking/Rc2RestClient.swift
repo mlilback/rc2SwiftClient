@@ -115,7 +115,7 @@ public final class Rc2RestClient {
 	public func create(fileName: String, workspace: AppWorkspace, contentUrl: URL?) -> SignalProducer<File, Rc2Error>
 	{
 		return SignalProducer<File, Rc2Error> { observer, _ in
-			var req = self.request("file/create/\(workspace.wspaceId)", method: "POST")
+			var req = self.request("file/\(workspace.wspaceId)", method: "POST")
 			req.addValue("0", forHTTPHeaderField: "Content-Length")
 			req.addValue("application/octet-string", forHTTPHeaderField: "Content-Encoding")
 			req.addValue(fileName, forHTTPHeaderField: "Rc2-Filename")
