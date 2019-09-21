@@ -7,7 +7,6 @@
 import Rc2Common
 import Foundation
 import SwiftyUserDefaults
-import Freddy
 import Networking
 
 extension ServerHost: DefaultsSerializable {}

@@ -25,7 +25,7 @@ public struct Rc2Error: LocalizedError, CustomStringConvertible, CustomDebugStri
 		case alreadyInProgress
 		/// network destination was unreachable
 		case networkDown
-		/// problem parsing json, Freddy error is nested
+		/// problem parsing json, parsing error is nested
 		case invalidJson
 		/// an invalid argument was passed (or parsed from json)
 		case invalidArgument

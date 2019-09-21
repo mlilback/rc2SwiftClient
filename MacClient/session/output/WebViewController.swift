@@ -7,7 +7,6 @@
 import Foundation
 import WebKit
 import MJLLogger
-import Freddy
 
 class WebViewController: AbstractSessionViewController, OutputController, WKNavigationDelegate, ContextualMenuDelegate {
 	var webView: Rc2WebView?
@@ -141,10 +140,16 @@ extension WebViewController: SearchBarViewDelegate {
 		webView?.evaluateJavaScript("clearSearch()")
 	}
 	
+	private struct SearchParams: Codable {
+		let term: String
+		let options: [String:String] = [:]
+	}
+	
 	public func performSearch(searchBar: SearchBarView, string: String) {
-		let json: JSON = .dictionary(["term": .string(string), "options": .dictionary([:])])
+		let encoder = JSONEncoder()
+		let params = SearchParams(term: string)
 		do {
-			let data = try json.serialize()
+			let data = try encoder.encode(params)
 			let encoded = data.base64EncodedString()
 			let script = "doSearch('\(encoded)')"
 			webView?.evaluateJavaScript(script) { (value, _) in
