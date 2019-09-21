@@ -6,7 +6,7 @@
 
 import Rc2Common
 import Foundation
-import Freddy
+import Model
 
 public enum NetworkingError: LocalizedError, Rc2DomainError {
 	case unauthorized
@@ -16,18 +16,14 @@ public enum NetworkingError: LocalizedError, Rc2DomainError {
 	case canceled
 	case uploadFailed(Error)
 	case invalidHttpStatusCode(HTTPURLResponse)
-	case restError(code: Int, message: String)
+	case restError(DetailedError)
 	
 	static func errorFor(response: HTTPURLResponse, data: Data) -> NetworkingError {
 		switch response.statusCode {
 		case 500:
-			guard let json = try? JSON(data: data),
-				let code = try? json.getInt(at: 0, "errorCode"),
-				let message = try? json.getString(at: 0, "message") else
-			{
-				return .invalidHttpStatusCode(response)
-			}
-			return .restError(code: code, message: message)
+			guard let error = try? JSONDecoder().decode(DetailedError.self, from: data)
+				else { return .invalidHttpStatusCode(response) }
+			return .restError(error)
 		default:
 			return .invalidHttpStatusCode(response)
 		}
@@ -43,8 +39,8 @@ public enum NetworkingError: LocalizedError, Rc2DomainError {
 				return localizedNetworkString("unauthorized")
 			case .unsupportedFileType:
 				return localizedNetworkString("unsupportedFileType")
-			case .restError(_, let message):
-				return message
+			case .restError(let derror):
+				return derror.details
 			case .invalidHttpStatusCode(let rsp):
 				return localizedNetworkString("server returned \(rsp.statusCode)")
 			default:

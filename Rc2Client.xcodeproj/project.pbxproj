@@ -333,6 +333,7 @@
 		08B184D71E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
 		08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
 		08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08B19F8E233671FB00EE2E30 /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; };
 		08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
 		08B73E8C208952A700DB7339 /* NotebookMiddleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B73E8B208952A700DB7339 /* NotebookMiddleView.swift */; };
 		08B73E8D208A133F00DB7339 /* EditorDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812631E1C862F4B003E37A5 /* EditorDocument.swift */; };
@@ -1168,6 +1169,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08B19F8E233671FB00EE2E30 /* Model.framework in Frameworks */,
 				08ACDA3B1FD1F6D90017770B /* MJLLogger.framework in Frameworks */,
 				08F6ADBC1DD914F800AF0722 /* Rc2Common.framework in Frameworks */,
 				08367BD41E3FCEA800FAFC8A /* Starscream.framework in Frameworks */,
@@ -1552,7 +1554,7 @@
 				082BE1711F5B36B3006CE0B7 /* Workspace.swift */,
 			);
 			name = Rc2Model;
-			path = ../../appModelSwift/Sources/Rc2Model;
+			path = ../../appmodel2/Sources/Rc2Model;
 			sourceTree = "<group>";
 		};
 		083305D11C4FC76C00E27F66 /* extensions */ = {

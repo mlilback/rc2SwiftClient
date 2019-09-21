@@ -14,7 +14,7 @@ public protocol SessionDelegate: class {
 	///called when a server response is received and not handled internally by the session
 	func sessionMessageReceived(_ response: SessionResponse)
 	///called when the server has returned an error. Delegate needs to associate it with the cause and error.
-	func sessionErrorReceived(_ error: SessionError)
+	func sessionErrorReceived(_ error: SessionError, details: String?)
 	///called when the initial caching/loading of files is complete
 	func sessionFilesLoaded(_ session: Session)
 	///a script/file had a call to help with the passed in arguments

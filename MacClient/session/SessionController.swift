@@ -204,10 +204,10 @@ extension SessionController: SessionDelegate {
 		handle(response: response)
 	}
 	
-	func sessionErrorReceived(_ error: SessionError) {
+	func sessionErrorReceived(_ error: SessionError, details: String?) {
 		let defaults = UserDefaults.standard
 		switch error {
-		case .compute(_, let details, _):
+		case .compute:
 			let errorDetails = details ?? "unknown error"
 			let theme = ThemeManager.shared.activeOutputTheme.value
 			var attrs = theme.stringAttributes(for: .error)

@@ -16,7 +16,7 @@ import Model
 @testable import Networking
 
 class FakeSessionDelegate: SessionDelegate {
-	func sessionErrorReceived(_ error: SessionError) {
+	func sessionErrorReceived(_ error: SessionError, details: String?) {
 		print("session error rcvd")
 	}
 	///called when the session is closed. Called when explicity or remotely closed. Not called on application termination

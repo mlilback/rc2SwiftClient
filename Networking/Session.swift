@@ -345,7 +345,7 @@ public class Session {
 				guard case let SessionResponse.save(saveData) = response else { return }
 				if let err = error {
 					if let sessionError = err.nestedError as? SessionError {
-						self.delegate?.sessionErrorReceived(sessionError)
+						self.delegate?.sessionErrorReceived(sessionError, details: nil)
 					}
 					observer.send(error: err)
 					return
@@ -477,7 +477,7 @@ private extension Session {
 		case .info(let infoData):
 			conInfo.update(sessionInfo: infoData)
 		case .error(let errorData):
-			delegate?.sessionErrorReceived(errorData.error)
+			delegate?.sessionErrorReceived(errorData.error, details: nil)
 		case .computeStatus(let status):
 			computeStatus = status
 			informDelegate = true
