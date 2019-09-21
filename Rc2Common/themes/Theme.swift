@@ -10,7 +10,6 @@
 	import UIKit
 #endif
 import Foundation
-import Freddy
 import MJLLogger
 
 enum ThemeType: String {
@@ -37,7 +36,7 @@ extension Notification.Name {
 	static let OutputThemeModified = Notification.Name(rawValue: "OutputThemeModified")
 }
 
-public protocol Theme: JSONEncodable, JSONDecodable, CustomStringConvertible {
+public protocol Theme: Codable, CustomStringConvertible {
 	
 	/// implemented in protocol extension to allow using AttributeName w/o the type name
 	var attributeName: NSAttributedString.Key { get }
@@ -58,11 +57,13 @@ public protocol Theme: JSONEncodable, JSONDecodable, CustomStringConvertible {
 }
 
 public class BaseTheme: NSObject, Theme {
+	static let encoder = JSONEncoder()
+	static let decoder = JSONDecoder()
 	
 	var themeType: ThemeType { return self is SyntaxTheme ? .syntax : .output }
 	
-	public func toJSON() -> JSON {
-		fatalError("subclass must implement and write ThemeName")
+	private enum MyKeys: String, CodingKey {
+		case name
 	}
 	
 	public init(name: String) {
@@ -74,11 +75,20 @@ public class BaseTheme: NSObject, Theme {
 		saveIngoringError()
 	}
 	
+	public required init(from decoder: Decoder) throws {
+		let container = try decoder.container(keyedBy: MyKeys.self)
+		name = try container.decode(String.self, forKey: .name)
+	}
+	
+	public func encode(to encoder: Encoder) throws {
+		// all properties should be encoded by subclass
+	}
+	
 	/// saves user editable theme to disk.
 	public func save() throws {
 		guard !isBuiltin else { throw ThemeError.notEditable }
 		guard let url = fileUrl else { fatalError("why is there no url?") }
-		let data = try toJSON().serialize()
+		let data = try BaseTheme.encoder.encode(self)
 		try data.write(to: url)
 		dirty = false
 	}
@@ -89,12 +99,6 @@ public class BaseTheme: NSObject, Theme {
 		} catch {
 			Log.error("error saving theme: \(error)", .core)
 		}
-	}
-	
-	// really don't want to be public, but JSONDecodable requires it
-	public required init(json: JSON) throws {
-		name = try json.getString(at: "ThemeName")
-		super.init()
 	}
 	
 	public override var description: String { return "Theme \(name)" }
@@ -177,8 +181,7 @@ public class BaseTheme: NSObject, Theme {
 			guard aFile.pathExtension == "json" else { return }
 			do {
 				let data = try Data(contentsOf: aFile)
-				let json = try JSON(data: data)
-				let theme: T = try json.decode()
+				let theme: T = try decoder.decode(T.self, from: data)
 				theme.isBuiltin = false
 				theme.fileUrl = aFile
 				themes.append(theme)
@@ -192,8 +195,7 @@ public class BaseTheme: NSObject, Theme {
 	static func loadBuiltinThemes<T: BaseTheme>(from url: URL) -> [T] {
 		do {
 			let data = try Data(contentsOf: url)
-			let json = try JSON(data: data)
-			let themes: [T] = try json.decodedArray().sorted(by: { $0.name < $1.name })
+			let themes: [T] = try decoder.decode([T].self, from: data).sorted(by: { $0.name < $1.name })
 			themes.forEach { $0.isBuiltin = true }
 			return themes
 		} catch {

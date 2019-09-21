@@ -281,7 +281,6 @@
 		086A40D91E7B3F0C00AE476B /* SyntaxTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D81E7B3F0C00AE476B /* SyntaxTheme.swift */; };
 		086A40DD1E7B578400AE476B /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40DC1E7B578400AE476B /* ThemeManager.swift */; };
 		086A40DF1E7D956400AE476B /* PlatformTypeAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40DE1E7D956400AE476B /* PlatformTypeAliases.swift */; };
-		086A40E11E7DAEE300AE476B /* InternalTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40E01E7DAEE300AE476B /* InternalTheme.swift */; };
 		0873F6001F795AE700265934 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559921DDC889D0047B3CE /* ImageCache.swift */; };
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
 		08790773215AC8CF00978ECD /* Rc2Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08790772215AC8CF00978ECD /* Rc2Document.swift */; };
@@ -334,6 +333,7 @@
 		08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
 		08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08B19F8E233671FB00EE2E30 /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; };
+		08B19F8F23367DE500EE2E30 /* UserDefaults+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */; };
 		08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
 		08B73E8C208952A700DB7339 /* NotebookMiddleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B73E8B208952A700DB7339 /* NotebookMiddleView.swift */; };
 		08B73E8D208A133F00DB7339 /* EditorDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812631E1C862F4B003E37A5 /* EditorDocument.swift */; };
@@ -387,7 +387,6 @@
 		08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
 		08E836681D94240100E26EFE /* SwiftyUserDefaults.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08E836691D94242A00E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
-		08E8366B1D94436D00E26EFE /* UserDefaults+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */; };
 		08E8366C1D94500900E26EFE /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08E8F1A8206995E700F0FF5A /* GRDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E8F1A9206995E700F0FF5A /* GRDB.framework */; };
 		08E8F1B22069982900F0FF5A /* GRDB.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08E8F1A9206995E700F0FF5A /* GRDB.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -1031,7 +1030,6 @@
 		086A40DA1E7B4B2300AE476B /* SyntaxThemes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = SyntaxThemes.json; path = resources/SyntaxThemes.json; sourceTree = "<group>"; };
 		086A40DC1E7B578400AE476B /* ThemeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		086A40DE1E7D956400AE476B /* PlatformTypeAliases.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlatformTypeAliases.swift; sourceTree = "<group>"; };
-		086A40E01E7DAEE300AE476B /* InternalTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InternalTheme.swift; sourceTree = "<group>"; };
 		08765C811DC58AB300F75D8E /* DispatchReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchReader.swift; sourceTree = "<group>"; };
 		08790772215AC8CF00978ECD /* Rc2Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rc2Document.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -1811,7 +1809,6 @@
 		086A40CF1E7AEC5000AE476B /* themes */ = {
 			isa = PBXGroup;
 			children = (
-				086A40E01E7DAEE300AE476B /* InternalTheme.swift */,
 				086A40D01E7AEC5000AE476B /* OutputTheme.swift */,
 				086A40D81E7B3F0C00AE476B /* SyntaxTheme.swift */,
 				086A40D21E7B048B00AE476B /* Theme.swift */,
@@ -3247,6 +3244,7 @@
 				086A40D11E7AEC5000AE476B /* OutputTheme.swift in Sources */,
 				0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */,
 				0829E6092118A8EB001883ED /* Debouncer.swift in Sources */,
+				08B19F8F23367DE500EE2E30 /* UserDefaults+Rc2.swift in Sources */,
 				0897944E1D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift in Sources */,
 				08BE3E122090A3D000EA4DDD /* NSAttributedString+MJL.swift in Sources */,
 				08680689200D892000C986A9 /* GenericError.swift in Sources */,
@@ -3261,10 +3259,8 @@
 				08680687200D892000C986A9 /* String+MJL.swift in Sources */,
 				086A40D31E7B048B00AE476B /* Theme.swift in Sources */,
 				086A40D91E7B3F0C00AE476B /* SyntaxTheme.swift in Sources */,
-				08E8366B1D94436D00E26EFE /* UserDefaults+Rc2.swift in Sources */,
 				0868068C200D892000C986A9 /* RecursiveFlatMap.swift in Sources */,
 				08EDB9D02019527D000663EF /* Set+MJL+update.swift in Sources */,
-				086A40E11E7DAEE300AE476B /* InternalTheme.swift in Sources */,
 				08680683200D892000C986A9 /* ExpiringCache.swift in Sources */,
 				0829E6082118A8EB001883ED /* Repeater.swift in Sources */,
 				08B184D41E5F384800F4A6D6 /* AppInfo.swift in Sources */,

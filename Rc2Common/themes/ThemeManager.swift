@@ -5,15 +5,19 @@
 //
 
 import Foundation
-import Freddy
 import ReactiveSwift
 import SwiftyUserDefaults
 import MJLLogger
 
 fileprivate extension DefaultsKeys {
-	static let activeOutputTheme = DefaultsKey<JSON?>("rc2.activeOutputTheme")
-	static let activeSyntaxTheme = DefaultsKey<JSON?>("rc2.activeSyntaxTheme")
+	static let activeOutputTheme = DefaultsKey<OutputTheme?>("rc2.activeOutputTheme")
+	static let activeSyntaxTheme = DefaultsKey<SyntaxTheme?>("rc2.activeSyntaxTheme")
 }
+
+enum ThemeError: Error {
+	case notEditable
+}
+
 
 /// wraps the information about a type of theme to allow it to be used generically
 public class ThemeWrapper<T: Theme> {
@@ -129,31 +133,35 @@ public class ThemeManager {
 	private init() {
 		_syntaxThemes = BaseTheme.loadThemes()
 		_outputThemes = BaseTheme.loadThemes()
-		let activeSyntax = ThemeManager.findDefaultTheme(in: _syntaxThemes, key: .activeSyntaxTheme)
+		let activeSyntax = ThemeManager.findDefaultSyntaxTheme(in: _syntaxThemes)
 		activeSyntaxTheme = MutableProperty(activeSyntax)
-		let activeOutput = ThemeManager.findDefaultTheme(in: _outputThemes, key: .activeOutputTheme)
+		let activeOutput = ThemeManager.findDefaultOutputTheme(in: _outputThemes)
 		activeOutputTheme = MutableProperty(activeOutput)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(syntaxThemeChanged(_:)), name: .SyntaxThemeModified, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(outputThemeChanged(_:)), name: .OutputThemeModified, object: nil)
 	}
 	
-	private static func findDefaultTheme<T: BaseTheme>(in array: [T], key: DefaultsKey<JSON?>) -> T {
-		if let json = UserDefaults.standard[key],
-			let theme = try? json.decode(type: T.self)
-		{
+	private static func findDefaultOutputTheme(in array: [OutputTheme]) -> OutputTheme {
+		if let theme:OutputTheme = Defaults[.activeOutputTheme] {
 			return theme
 		}
 		//look for one named default
 		if let defaultTheme = array.first(where: { $0.name == "Default" }) {
 			return defaultTheme
 		}
-		if T.self == SyntaxTheme.self {
-			return SyntaxTheme.defaultTheme as! T
-		} else if T.self == OutputTheme.self {
-			return OutputTheme.defaultTheme as! T
-		}
-		fatalError()
+		return OutputTheme.defaultTheme as! OutputTheme
 	}
-	
+
+	private static func findDefaultSyntaxTheme(in array: [SyntaxTheme]) -> SyntaxTheme {
+		if let theme:SyntaxTheme = Defaults[.activeSyntaxTheme] {
+			return theme
+		}
+		//look for one named default
+		if let defaultTheme = array.first(where: { $0.name == "Default" }) {
+			return defaultTheme
+		}
+		return SyntaxTheme.defaultTheme as! SyntaxTheme
+	}
+
 }

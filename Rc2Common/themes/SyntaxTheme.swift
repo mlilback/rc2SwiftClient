@@ -5,9 +5,9 @@
 //
 
 import Foundation
-import Freddy
+import SwiftyUserDefaults
 
-public enum SyntaxThemeProperty: String, ThemeProperty {
+public enum SyntaxThemeProperty: String, ThemeProperty, CaseIterable {
 	
 	case background, text, codeBackground, inlineBackground, equationBackground, comment, quote, keyword, function, symbol
 	
@@ -17,8 +17,22 @@ public enum SyntaxThemeProperty: String, ThemeProperty {
 	public static var foregroundProperties: [SyntaxThemeProperty] { return [.text, .comment, .quote, .keyword, .function, .symbol] }
 }
 
-public final class SyntaxTheme: BaseTheme {
+public final class SyntaxTheme: BaseTheme, DefaultsSerializable {
 	public static let AttributeName = NSAttributedString.Key("rc2.SyntaxTheme")
+	
+	private enum MyKeys: String, CodingKey {
+		case name
+		case background
+		case text
+		case codeBackground
+		case inlineBackground
+		case equationBackground
+		case comment
+		case quote
+		case keyword
+		case function
+		case symbol
+	}
 	
 	var colors = [SyntaxThemeProperty: PlatformColor]()
 	
@@ -26,15 +40,44 @@ public final class SyntaxTheme: BaseTheme {
 	
 	public override var description: String { return "SyntaxTheme \(name)" }
 	
-	public required init(json: JSON) throws {
-		try super.init(json: json)
-		try SyntaxThemeProperty.allProperties.forEach { property in
-			colors[property] = PlatformColor(hexString: try json.getString(at: property.rawValue))
-		}
+	public required init(from decoder: Decoder) throws {
+		try super.init(from: decoder)
+		let container = try decoder.container(keyedBy: MyKeys.self)
+		name = try container.decode(String.self, forKey: .name)
+		colors[.background] = PlatformColor(hexString: try container.decode(String.self, forKey: .background))
+		colors[.text] = PlatformColor(hexString: try container.decode(String.self, forKey: .text))
+		colors[.codeBackground] = PlatformColor(hexString: try container.decode(String.self, forKey: .codeBackground))
+		colors[.inlineBackground] = PlatformColor(hexString: try container.decode(String.self, forKey: .inlineBackground))
+		colors[.equationBackground] = PlatformColor(hexString: try container.decode(String.self, forKey: .equationBackground))
+		colors[.comment] = PlatformColor(hexString: try container.decode(String.self, forKey: .comment))
+		colors[.quote] = PlatformColor(hexString: try container.decode(String.self, forKey: .quote))
+		colors[.keyword] = PlatformColor(hexString: try container.decode(String.self, forKey: .keyword))
+		colors[.function] = PlatformColor(hexString: try container.decode(String.self, forKey: .function))
+		colors[.symbol] = PlatformColor(hexString: try container.decode(String.self, forKey: .symbol))
+
 	}
 	
 	public override init(name: String) {
 		super.init(name: name)
+	}
+	
+	public override func encode(to encoder: Encoder) throws {
+		//make sure hve all colors
+		for aProp in SyntaxThemeProperty.allCases {
+			guard colors[aProp] != nil else { fatalError("theme \(name) is missing value for \(aProp.rawValue)") }
+		}
+		var container = encoder.container(keyedBy: MyKeys.self)
+		try container.encode(name, forKey: .name)
+		try container.encode(colors[.background]?.hexString, forKey: .background)
+		try container.encode(colors[.text]?.hexString, forKey: .text)
+		try container.encode(colors[.codeBackground]?.hexString, forKey: .codeBackground)
+		try container.encode(colors[.inlineBackground]?.hexString, forKey: .inlineBackground)
+		try container.encode(colors[.equationBackground]?.hexString, forKey: .equationBackground)
+		try container.encode(colors[.comment]?.hexString, forKey: .comment)
+		try container.encode(colors[.quote]?.hexString, forKey: .quote)
+		try container.encode(colors[.keyword]?.hexString, forKey: .keyword)
+		try container.encode(colors[.function]?.hexString, forKey: .function)
+		try container.encode(colors[.symbol]?.hexString, forKey: .symbol)
 	}
 	
 	public func color(for property: SyntaxThemeProperty) -> PlatformColor {
@@ -51,15 +94,6 @@ public final class SyntaxTheme: BaseTheme {
 			guard let newValue = newValue else { fatalError("theme colors cannot be nil") }
 			colors[key] = newValue
 		}
-	}
-	
-	public override func toJSON() -> JSON {
-		var props = [String: JSON]()
-		props["ThemeName"] = .string(name)
-		for (key, value) in colors {
-			props[key.rawValue] = .string(value.hexString)
-		}
-		return .dictionary(props)
 	}
 	
 //	public override func stringAttributes<T: ThemeProperty>(for property: T) -> [NSAttributedStringKey: Any] {
