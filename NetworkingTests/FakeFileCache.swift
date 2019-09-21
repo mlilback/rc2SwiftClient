@@ -52,6 +52,7 @@ class FakeFileCache: FileCache {
 		self.baseUrl = baseUrl
 		fileManager = Rc2DefaultFileManager()
 		self.workspace = workspace
+		self.fileCacheUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString)
 	}
 	
 	func isFileCached(_ file:AppFile) -> Bool {

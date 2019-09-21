@@ -7,7 +7,6 @@
 
 import XCTest
 @testable import MacClient
-import Freddy
 import Networking
 
 class BaseTest: XCTestCase {
@@ -29,14 +28,6 @@ class BaseTest: XCTestCase {
 	override func tearDown() {
 //		mockFM = nil
 		super.tearDown()
-	}
-	
-	func workspaceForTesting() -> AppWorkspace {
-		let path : String = Bundle(for: type(of: self)).path(forResource: "createWorkspace", ofType: "json")!
-		let json = try! String(contentsOfFile: path)
-		let parsedJson = try! JSON(jsonString: json)
-		let project: AppProject = try! parsedJson.decode(at: "projects", 0)
-		return project.workspaces.first!
 	}
 	
 	func fileUrlsForTesting() -> [URL] {

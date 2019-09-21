@@ -1,9 +1,7 @@
 github "daltoniam/Starscream" ~> 3.1.0
 github "mlilback/pegkit" ~> 0.4.4
-github "postmates/PMKVObserver" ~> 4.1.2
 github "radex/SwiftyUserDefaults" ~> 4.0.0
 github "ReactiveCocoa/ReactiveCocoa" ~> 9.0.0
-github "mlilback/Freddy" "master"
 github "ZipArchive/ZipArchive"
 github "evgenyneu/SigmaSwiftStatistics" ~> 7.0
 #github "krzyzanowskim/CryptoSwift" ~> 1.0.0

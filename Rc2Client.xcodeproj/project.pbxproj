@@ -29,12 +29,10 @@
 		080E82D31DCBE31D0048F36C /* Networking.h in Headers */ = {isa = PBXBuildFile; fileRef = 080E82C31DCBE31D0048F36C /* Networking.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		080E82D61DCBE31D0048F36C /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; };
 		080E82D71DCBE31D0048F36C /* Networking.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		080E82DE1DCBE3590048F36C /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
 		080E82E31DCBEF830048F36C /* AppProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82E21DCBEF830048F36C /* AppProject.swift */; };
 		080E82E51DCBF4520048F36C /* xattr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82E41DCBF4520048F36C /* xattr.swift */; };
 		080E82E91DCBFFBA0048F36C /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; };
 		080E82EA1DCBFFBE0048F36C /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; };
-		080E82F01DCC03810048F36C /* Freddy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		080E82F11DCC03890048F36C /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		080E82F21DCC038B0048F36C /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		080E82F31DCC03B40048F36C /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -63,11 +61,9 @@
 		081559811DDBAF030047B3CE /* ConsoleAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559801DDBAF030047B3CE /* ConsoleAttachment.swift */; };
 		081559851DDBB3760047B3CE /* SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559841DDBB3760047B3CE /* SessionDelegate.swift */; };
 		081559871DDBB4310047B3CE /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559861DDBB4310047B3CE /* Session.swift */; };
-		081559891DDBD7DA0047B3CE /* Freddy+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */; };
 		081559951DDCCD960047B3CE /* RACSignals+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559941DDCCD960047B3CE /* RACSignals+Rc2.swift */; };
 		0815599A1DDE83250047B3CE /* Rc2Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559991DDE83250047B3CE /* Rc2Error.swift */; };
 		0815599C1DDF396E0047B3CE /* FileImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0815599B1DDF396E0047B3CE /* FileImporter.swift */; };
-		0815599F1DDF9E4F0047B3CE /* Freddy.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0816F8A01C6D3A4500A6120B /* SessionHandlerProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F89F1C6D3A4500A6120B /* SessionHandlerProtocols.swift */; };
 		0816FD1D1E5226010006FF26 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816FD1C1E5226010006FF26 /* SearchBarView.swift */; };
 		0816FD1F1E5226760006FF26 /* SearchBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0816FD1E1E5226760006FF26 /* SearchBarView.xib */; };
@@ -255,8 +251,6 @@
 		0865087F1E4940E20067C8CA /* xattrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0865087E1E4940E20067C8CA /* xattrTests.swift */; };
 		0865262B1E6E1BE900D75B25 /* GeneralPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0865262A1E6E1BE900D75B25 /* GeneralPrefsController.swift */; };
 		0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 086659991CA1F3E5007AC555 /* MainWindow.xib */; };
-		08678C971DCA78CE00F9F283 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
-		08678C981DCA78CE00F9F283 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
 		08678CC71DCB9B9100F9F283 /* Freddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; };
 		08678CCE1DCBA90400F9F283 /* Freddy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08680683200D892000C986A9 /* ExpiringCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08680676200D892000C986A9 /* ExpiringCache.swift */; };
@@ -287,8 +281,6 @@
 		0881B50B1DCF856B00679DB3 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */; };
 		0881B50C1DCF85B500679DB3 /* ServerHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B01D19B0D500866A05 /* ServerHost.swift */; };
 		0881B50E1DCF896500679DB3 /* LoginFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50D1DCF896500679DB3 /* LoginFactory.swift */; };
-		0881B5111DCFAFB000679DB3 /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		0881B5121DCFAFB600679DB3 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		088935861E00530C00C94B19 /* TestingWebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935851E00530C00C94B19 /* TestingWebSocket.swift */; };
 		088CE66D1C4B0AF400153414 /* MacAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */; };
 		088CE6711C4B0AF400153414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
@@ -667,8 +659,6 @@
 				088E38061EF4024100136CFA /* ZipArchive.framework in CopyFiles */,
 				0865087D1E49360A0067C8CA /* Starscream.framework in CopyFiles */,
 				081559701DDA763A0047B3CE /* Rc2Common.framework in CopyFiles */,
-				0881B5111DCFAFB000679DB3 /* Mockingjay.framework in CopyFiles */,
-				080E82F01DCC03810048F36C /* Freddy.framework in CopyFiles */,
 				080E82F31DCC03B40048F36C /* Result.framework in CopyFiles */,
 				081559771DDB854F0047B3CE /* SwiftyUserDefaults.framework in CopyFiles */,
 				080E82F21DCC038B0048F36C /* Nimble.framework in CopyFiles */,
@@ -686,7 +676,6 @@
 				080C79B6229B8D5500178D0E /* PEGKit.framework in Embed Frameworks */,
 				08E8F1B22069982900F0FF5A /* GRDB.framework in Embed Frameworks */,
 				08698FEB1E41051900890092 /* Starscream.framework in Embed Frameworks */,
-				0815599F1DDF9E4F0047B3CE /* Freddy.framework in Embed Frameworks */,
 				0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */,
 				08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */,
 				08E836681D94240100E26EFE /* SwiftyUserDefaults.framework in Embed Frameworks */,
@@ -817,7 +806,6 @@
 		081559801DDBAF030047B3CE /* ConsoleAttachment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsoleAttachment.swift; sourceTree = "<group>"; };
 		081559841DDBB3760047B3CE /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
 		081559861DDBB4310047B3CE /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Session.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Freddy+Rc2.swift"; sourceTree = "<group>"; };
 		081559921DDC889D0047B3CE /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		081559941DDCCD960047B3CE /* RACSignals+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RACSignals+Rc2.swift"; sourceTree = "<group>"; };
 		081559961DDCFEB00047B3CE /* FileCacheSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCacheSpec.swift; sourceTree = "<group>"; };
@@ -1171,7 +1159,6 @@
 				08ACDA3B1FD1F6D90017770B /* MJLLogger.framework in Frameworks */,
 				08F6ADBC1DD914F800AF0722 /* Rc2Common.framework in Frameworks */,
 				08367BD41E3FCEA800FAFC8A /* Starscream.framework in Frameworks */,
-				080E82DE1DCBE3590048F36C /* Freddy.framework in Frameworks */,
 				08B184D71E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1184,7 +1171,6 @@
 				080E82E91DCBFFBA0048F36C /* Quick.framework in Frameworks */,
 				080E82F41DCC03BB0048F36C /* Result.framework in Frameworks */,
 				080E82EA1DCBFFBE0048F36C /* Nimble.framework in Frameworks */,
-				0881B5121DCFAFB600679DB3 /* Mockingjay.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1293,7 +1279,6 @@
 				08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */,
 				0821BDCA1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Frameworks */,
 				08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */,
-				08678C971DCA78CE00F9F283 /* Freddy.framework in Frameworks */,
 				08C2D5E51E719DE20007A02D /* SBInjector.framework in Frameworks */,
 				080E82D61DCBE31D0048F36C /* Networking.framework in Frameworks */,
 				082BE15D1F5B3682006CE0B7 /* Model.framework in Frameworks */,
@@ -1324,7 +1309,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				08ACDA3A1FD1F64F0017770B /* MJLLogger.framework in Frameworks */,
-				08678C981DCA78CE00F9F283 /* Freddy.framework in Frameworks */,
 				08E836661D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */,
 				08127CC71DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
@@ -2050,7 +2034,6 @@
 		089794431D7B6A8F003339EE /* extensions */ = {
 			isa = PBXGroup;
 			children = (
-				081559881DDBD7DA0047B3CE /* Freddy+Rc2.swift */,
 				089794471D7B6A8F003339EE /* NSTextCheckingResult+Rc2.swift */,
 				0897944A1D7B6A8F003339EE /* SystemExtensions.swift */,
 				08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */,
@@ -3254,7 +3237,6 @@
 				08F675401F6ADA9C00EC3AC9 /* (null) in Sources */,
 				08CFE8CF1E75BA42002A35C1 /* DirectoryWatcher.swift in Sources */,
 				08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */,
-				081559891DDBD7DA0047B3CE /* Freddy+Rc2.swift in Sources */,
 				08525E501E204672008A332E /* URLStaleChecker.swift in Sources */,
 				08680687200D892000C986A9 /* String+MJL.swift in Sources */,
 				086A40D31E7B048B00AE476B /* Theme.swift in Sources */,
@@ -3568,7 +3550,6 @@
 				);
 				INFOPLIST_FILE = NetworkingTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.NetworkingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3595,7 +3576,6 @@
 				);
 				INFOPLIST_FILE = NetworkingTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.NetworkingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;

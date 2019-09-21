@@ -12,7 +12,8 @@ import Model
 @testable import Networking
 
 class ConnectionInfoSpec: NetworkingBaseSpec {
-	let fakeHost = ServerHost(name: "faketest", host: "festus.rc2.io")
+	let fakeHost = ServerHost(name: "faketest", host: "festus.rc2.io", user: "testuser")
+	
 	override func spec() {
 		let bulkData = self.loadFileData("bulkInfo", fileExtension: "json")!
 		let conInfo = try! ConnectionInfo(host: fakeHost, bulkInfoData: bulkData, authToken: "xcgvdsfsfsF")
