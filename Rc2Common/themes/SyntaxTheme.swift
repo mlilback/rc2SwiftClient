@@ -21,7 +21,7 @@ public final class SyntaxTheme: BaseTheme, DefaultsSerializable {
 	public static let AttributeName = NSAttributedString.Key("rc2.SyntaxTheme")
 	
 	private enum MyKeys: String, CodingKey {
-		case name
+		case name = "ThemeName"
 		case background
 		case text
 		case codeBackground
@@ -124,9 +124,15 @@ public final class SyntaxTheme: BaseTheme, DefaultsSerializable {
 	
 	public static let defaultTheme: Theme = {
 		var theme = SyntaxTheme(name: "builtin")
-		theme.colors[.text] = PlatformColor.black
+		// system was giving values from greyspace, not rgb. force rgb.
+		let white = PlatformColor.init(hexString: "FFFFFF")
+		let black = PlatformColor.init(hexString: "000000")
+		theme.colors[.text] = black
 		for prop in SyntaxThemeProperty.backgroundProperties {
-			theme.colors[prop] = PlatformColor.white
+			theme.colors[prop] = white
+		}
+		for prop in SyntaxThemeProperty.foregroundProperties {
+			theme.colors[prop] = black
 		}
 		return theme
 	}()

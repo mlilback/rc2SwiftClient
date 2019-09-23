@@ -72,12 +72,13 @@ public class BaseTheme: NSObject, Theme {
 		fileUrl = BaseTheme.themesPath(type: themeType, builtin: false)
 			.appendingPathComponent(UUID().uuidString)
 			.appendingPathExtension("json")
-		saveIngoringError()
+		DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(1000), execute: { self.saveIngoringError() })
 	}
 	
 	public required init(from decoder: Decoder) throws {
-		let container = try decoder.container(keyedBy: MyKeys.self)
-		name = try container.decode(String.self, forKey: .name)
+		name = ""
+//		let container = try decoder.container(keyedBy: MyKeys.self)
+//		name = try container.decode(String.self, forKey: .name)
 	}
 	
 	public func encode(to encoder: Encoder) throws {
@@ -162,7 +163,10 @@ public class BaseTheme: NSObject, Theme {
 		case .output: dirName = "OutputThemes"
 		}
 		if builtin {
-			return Bundle(for: ThemeManager.self).url(forResource: dirName, withExtension: "json")!
+			/// at some point in Mojhave Budle.url(forResource) started percent encoding the superscript in the app title. This fixes that
+			guard let rawPath =  Bundle(for: ThemeManager.self).url(forResource: dirName, withExtension: "json"), let path = rawPath.path.removingPercentEncoding
+			else { fatalError("failed to find themes") }
+			return URL(fileURLWithPath: path)
 		}
 		return try! AppInfo.subdirectory(type: .applicationSupportDirectory, named: dirName)
 	}
@@ -193,8 +197,10 @@ public class BaseTheme: NSObject, Theme {
 	}
 
 	static func loadBuiltinThemes<T: BaseTheme>(from url: URL) -> [T] {
+		print("theme = \(T.self)")
 		do {
-			let data = try Data(contentsOf: url)
+			guard let path = url.path.removingPercentEncoding, let str = try? String(contentsOfFile: path), let data = str.data(using: .utf8)
+				else { fatalError() }
 			let themes: [T] = try decoder.decode([T].self, from: data).sorted(by: { $0.name < $1.name })
 			themes.forEach { $0.isBuiltin = true }
 			return themes

@@ -190,7 +190,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		let options: DownOptions = [.sourcePos, .unsafe]
 		var adjustedText = chunk.rawText
 		var inlineMap: [Int : String] = [:]
-		var allChunks = chunk.inlineElements
+		let allChunks = chunk.inlineElements
 		do {
 			// store output strings for each chunk keyed on index
 			for (inlineIdx, inlineChunk) in chunk.inlineElements.enumerated() {
