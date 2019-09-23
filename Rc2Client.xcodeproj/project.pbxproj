@@ -39,7 +39,6 @@
 		080E82F41DCC03BB0048F36C /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		080E82F61DCCCDD60048F36C /* ReactiveSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		080E82F81DCCD4620048F36C /* AppFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82F71DCCD4620048F36C /* AppFile.swift */; };
-		080E82FC1DCCD56F0048F36C /* NetworkingBaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82FB1DCCD56F0048F36C /* NetworkingBaseSpec.swift */; };
 		080E82FE1DCCD77D0048F36C /* bulkInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 080E82FD1DCCD77D0048F36C /* bulkInfo.json */; };
 		080E83001DCD07930048F36C /* NetworkingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82FF1DCD07930048F36C /* NetworkingError.swift */; };
 		081000452184FC7F006856D3 /* HelpOutputController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 081000442184FC7F006856D3 /* HelpOutputController.storyboard */; };
@@ -82,7 +81,6 @@
 		0829E6092118A8EB001883ED /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0829E6062118A8EB001883ED /* Debouncer.swift */; };
 		0829E60B2118F7B8001883ED /* SessionWebSocketWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0829E60A2118F7B8001883ED /* SessionWebSocketWorker.swift */; };
 		082BE0921F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; };
-		082BE0991F59D549006CE0B7 /* SyntaxParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0981F59D549006CE0B7 /* SyntaxParsingTests.swift */; };
 		082BE09B1F59D549006CE0B7 /* SyntaxParsing.h in Headers */ = {isa = PBXBuildFile; fileRef = 082BE08B1F59D549006CE0B7 /* SyntaxParsing.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; };
 		082BE09F1F59D549006CE0B7 /* SyntaxParsing.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -156,7 +154,6 @@
 		084D33332076B18000246CBD /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		084D33352077D1FD00246CBD /* NSViewController+Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D33342077D1FD00246CBD /* NSViewController+Alerts.swift */; };
 		084E93A9201A313900FF50EA /* FakeFileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935871E00AA5700C94B19 /* FakeFileCache.swift */; };
-		084E93AC201A352200FF50EA /* ConnectionInfoSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084E93AB201A352200FF50EA /* ConnectionInfoSpec.swift */; };
 		084E93B7201E874900FF50EA /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; };
 		084E93BD201E877800FF50EA /* FileTypeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080E82EB1DCC001E0048F36C /* FileTypeSpec.swift */; };
 		084E93BE201E87DC00FF50EA /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; };
@@ -165,10 +162,7 @@
 		084E93C2201E898E00FF50EA /* MJLLogger.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		084E93C3201E899100FF50EA /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		084E93C4201E899300FF50EA /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		084E93C5201E8A7200FF50EA /* SessionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935831E004FF500C94B19 /* SessionSpec.swift */; };
-		084E93C6201F635F00FF50EA /* FileCacheSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559961DDCFEB00047B3CE /* FileCacheSpec.swift */; };
 		084E93C9201F6A7000FF50EA /* variables.json in Resources */ = {isa = PBXBuildFile; fileRef = 084E93C7201F6A6F00FF50EA /* variables.json */; };
-		084E93CB201F6B5400FF50EA /* LoginSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50F1DCFA99A00679DB3 /* LoginSpec.swift */; };
 		084E93CC201F6DFB00FF50EA /* FileImporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086508801E4A431C0067C8CA /* FileImporterTests.swift */; };
 		084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 084FEA801D3045D800060A7D /* ObjcConstants.m */; };
 		08525E501E204672008A332E /* URLStaleChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E4F1E204672008A332E /* URLStaleChecker.swift */; };
@@ -278,6 +272,7 @@
 		0873F6001F795AE700265934 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559921DDC889D0047B3CE /* ImageCache.swift */; };
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
 		08790773215AC8CF00978ECD /* Rc2Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08790772215AC8CF00978ECD /* Rc2Document.swift */; };
+		08817B51233838A000194228 /* PEGKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 080C79AC229B536D00178D0E /* PEGKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0881B50B1DCF856B00679DB3 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */; };
 		0881B50C1DCF85B500679DB3 /* ServerHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B01D19B0D500866A05 /* ServerHost.swift */; };
 		0881B50E1DCF896500679DB3 /* LoginFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50D1DCF896500679DB3 /* LoginFactory.swift */; };
@@ -742,6 +737,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				08817B51233838A000194228 /* PEGKit.framework in CopyFiles */,
 				085A197A2049E2A800B7EC5F /* Rc2Common.framework in CopyFiles */,
 				085A19792049E2A000B7EC5F /* Networking.framework in CopyFiles */,
 				085A19742049E1F400B7EC5F /* ReactiveSwift.framework in CopyFiles */,
@@ -2535,7 +2531,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1100;
 				ORGANIZATIONNAME = Rc2;
 				TargetAttributes = {
 					080E82C01DCBE31D0048F36C = {
@@ -2962,12 +2958,7 @@
 			files = (
 				088935861E00530C00C94B19 /* TestingWebSocket.swift in Sources */,
 				084E93CC201F6DFB00FF50EA /* FileImporterTests.swift in Sources */,
-				084E93C6201F635F00FF50EA /* FileCacheSpec.swift in Sources */,
-				084E93AC201A352200FF50EA /* ConnectionInfoSpec.swift in Sources */,
 				084E93A9201A313900FF50EA /* FakeFileCache.swift in Sources */,
-				084E93C5201E8A7200FF50EA /* SessionSpec.swift in Sources */,
-				080E82FC1DCCD56F0048F36C /* NetworkingBaseSpec.swift in Sources */,
-				084E93CB201F6B5400FF50EA /* LoginSpec.swift in Sources */,
 				0865087F1E4940E20067C8CA /* xattrTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2997,7 +2988,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0859A28C2060082A00103924 /* RmdDocumentTests.swift in Sources */,
-				082BE0991F59D549006CE0B7 /* SyntaxParsingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3699,7 +3689,6 @@
 					"$(inherited)",
 					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks/Swift",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.SyntaxParsingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -3728,7 +3717,6 @@
 					"$(inherited)",
 					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks/Swift",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.SyntaxParsingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -4263,6 +4251,7 @@
 				CODE_SIGN_ENTITLEMENTS = "MacClient/Rc².entitlements";
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
@@ -4288,6 +4277,7 @@
 				CODE_SIGN_ENTITLEMENTS = "MacClient/Rc².entitlements";
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
