@@ -173,9 +173,11 @@ extension RootEditorController: EditorManager {
 	
 	func fileChanged(file: AppFile?) {
 		documentManager.load(file: file).observe(on: UIScheduler()).startWithResult { result in
-			guard result.error == nil else {
-				self.appStatus?.presentError(result.error!, session: self.session)
-				return
+			switch result {
+			case .failure(let rerror):
+				self.appStatus?.presentError(rerror, session: self.session)
+			case .success(_):
+				break
 			}
 			self.willChangeValue(forKey: "canExecute")
 			self.didChangeValue(forKey: "canExecute")

@@ -266,14 +266,15 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				self.session.duplicate(file: file, to: newName)
 					.updateProgress(status: self.appStatus!, actionName: "Duplicate \(file.name)")
 					.startWithResult { result in
-					// the id of the file that was created
-					guard let fid = result.value else {
-						Log.error("error duplicating file: \(result.error!)", .app)
-						self.appStatus?.presentError(result.error!, session: self.session)
-						return
+						// the id of the file that was created
+						switch result {
+						case .failure(let rerror):
+							Log.error("error duplicating file: \(rerror)", .app)
+							self.appStatus?.presentError(rerror, session: self.session)
+						case .success(let fid):
+							self.select(fileId: fid)
+						}
 					}
-					self.select(fileId: fid)
-				}
 			}
 		}
 	}
@@ -301,13 +302,13 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			self.session.rename(file: file, to: name)
 				.updateProgress(status: self.appStatus!, actionName: "Rename \(file.name)")
 				.startWithResult { result in
-				guard let error = result.error else {
+					if case .failure(let error) = result {
+						Log.error("error duplicating file: \(error)",.app)
+						self.appStatus?.presentError(error, session: self.session)
+						return
+					}
 					self.select(fileId: file.fileId)
-					return
 				}
-				Log.error("error duplicating file: \(error)",.app)
-				self.appStatus?.presentError(error, session: self.session)
-			}
 		}
 	}
 	
@@ -467,13 +468,14 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			.updateProgress(status: self.appStatus!, actionName: "Delete \(file.name)")
 			.startWithResult { result in
 				DispatchQueue.main.async {
-					if let error = result.error {
+					switch result {
+					case .failure(let error):
 						self.appStatus?.presentError(error, session: self.session)
-					} else {
+					case .success(_):
 						self.delegate?.fileSelectionChanged(nil, forEditing: false)
 					}
 				}
-		}
+			}
 	}
 	
 	/// prompts for a filename

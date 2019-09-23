@@ -115,7 +115,7 @@ class RootViewController: AbstractSessionViewController
 		guard let importer = note.object as? FileImporter else { return }
 		sessionOptional?.workspace.whenFilesExist(withIds: importer.importedFileIds, within: 1.0)
 			.startWithResult { result in
-			guard let files = result.value else { return }
+			guard case .success(let files) = result else { return }
 			guard let file = files.first(where: { $0.fileType.isSource }) else { return }
 			Log.info("selecting imported file", .app)
 			self.fileHandler?.selectedFile = file

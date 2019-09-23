@@ -41,11 +41,11 @@ public class SessionWebSocketWorker {
 	public let queue: DispatchQueue
 	public let status: Property<SocketStatus>
 	/// signal that sends a value every time data is received
-	public let messageSignal: Signal<Data, NoError>
+	public let messageSignal: Signal<Data, Never>
 
 	private var socket: WebSocket! // use IUO so that it can be created in a func called during init
 	private let _status = MutableProperty<SocketStatus>(.uninitialized)
-	private let messageObserver: Signal<Data, NoError>.Observer
+	private let messageObserver: Signal<Data, Never>.Observer
 	
 	private var pingRepeater: Repeater?
 	
@@ -53,7 +53,7 @@ public class SessionWebSocketWorker {
 		self.conInfo = conInfo
 		self.wspaceId = wspaceId
 		self.queue = queue
-		(messageSignal, messageObserver) = Signal<Data, NoError>.pipe()
+		(messageSignal, messageObserver) = Signal<Data, Never>.pipe()
 		status = Property<SocketStatus>(capturing: _status)
 		self.socket = createWebSocket()
 		setupWebSocketHandlers()

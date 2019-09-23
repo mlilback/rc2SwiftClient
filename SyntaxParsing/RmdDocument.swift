@@ -22,8 +22,8 @@ public class RmdDocument: CustomDebugStringConvertible {
 	public var chunks: [RmdChunk] { return _chunks.value }
 	/// A Property of a protocol (RmdChunk) can't observer changes to a mutableproperty
 	/// of a concrete type. Instead, this signal is mapped to changes in the chunks array:
-	public let chunksSignal: Signal<[RmdChunk], NoError>
-	private let chunksObserver: Signal<[RmdChunk], NoError>.Observer
+	public let chunksSignal: Signal<[RmdChunk], Never>
+	private let chunksObserver: Signal<[RmdChunk], Never>.Observer
 	/// Front matter:
 	public let frontMatter = MutableProperty("")
 	// Private:
@@ -39,7 +39,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 	///   - contents: initial contents of the document
 	///   - helpCallback: callback that returns true if a term should be highlighted as a help term
 	public init(contents: String, helpCallback: @escaping  HasHelpCallback) throws {
-		(chunksSignal, chunksObserver) = Signal<[RmdChunk], NoError>.pipe()
+		(chunksSignal, chunksObserver) = Signal<[RmdChunk], Never>.pipe()
 		textStorage.append(NSAttributedString(string: contents))
 		let filetype = FileType.fileType(withExtension: "Rmd")!
 		parser = SyntaxParser(storage: textStorage, fileType: filetype, helpCallback: helpCallback)

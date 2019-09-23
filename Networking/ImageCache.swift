@@ -154,7 +154,7 @@ public class ImageCache {
 			//need to fetch from server
 			let sp = self.restClient.downloadImage(imageId: imageId, from: self.workspace!, destination: fileUrl)
 			sp.startWithResult { result in
-				if let imgUrl = result.value, let pimg = PlatformImage(contentsOf: imgUrl) {
+				if case .success(let imgUrl) = result, let pimg = PlatformImage(contentsOf: imgUrl) {
 					observer.send(value: pimg)
 					observer.sendCompleted()
 				} else {

@@ -218,7 +218,8 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 				}))
 		}
 		imageCache?.image(withId: img.id).observe(on: UIScheduler()).startWithResult { result in
-			let picker = NSSharingServicePicker(items: [result.value!])
+			guard case .success(let rvalue) = result else { fatalError("error is type Never,should never happen") }
+			let picker = NSSharingServicePicker(items: [rvalue])
 			picker.delegate = self
 			picker.show(relativeTo: (self.shareButton?.bounds)!, of: self.shareButton!, preferredEdge: .maxY)
 		}
@@ -311,12 +312,13 @@ class ImageViewController: NSViewController {
 	func setImage(producer: SignalProducer<PlatformImage, ImageCacheError>) {
 		imageLoadDisposable?.dispose() //dispose of any currently loading image
 		producer.startWithResult { result in
-			guard let newImage = result.value else {
-				Log.warn("failed to load image: \(result.error!)", .app)
-				return
+			switch result {
+			case .success(let newImage):
+				self.imageLoadDisposable = nil
+				self.imageView?.image = newImage
+			case .failure(let imageError):
+				Log.warn("failed to load image: \(imageError)", .app)
 			}
-			self.imageLoadDisposable = nil
-			self.imageView?.image = newImage
 		}
 	}
 }

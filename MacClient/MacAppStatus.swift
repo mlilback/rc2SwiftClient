@@ -40,9 +40,9 @@ struct ProgressUpdate {
 /// represents the status of a session/window pair
 class MacAppStatus {
 	/// a signal to observe to receive progress updates
-	let progressSignal: Signal<ProgressUpdate, NoError>
+	let progressSignal: Signal<ProgressUpdate, Never>
 	/// a signal to know if the status is busy
-	let busySignal: Signal<Bool, NoError>
+	let busySignal: Signal<Bool, Never>
 	/// callback to get the window for a particular session
 	public let getWindow: (Session?) -> NSWindow?
 	/// queue used for changes to the current operation
@@ -61,9 +61,9 @@ class MacAppStatus {
 	/// tne name of the current action to display in completed/canceled status messages
 	private var currentActionName: String?
 	/// observer for sending progress updates
-	private let progressObserver: Signal<ProgressUpdate, NoError>.Observer
+	private let progressObserver: Signal<ProgressUpdate, Never>.Observer
 	/// observer for sending busy events
-	private let busyObserver: Signal<Bool, NoError>.Observer
+	private let busyObserver: Signal<Bool, Never>.Observer
 	
 	@objc dynamic var busy: Bool {
 		var result = false
@@ -73,8 +73,8 @@ class MacAppStatus {
 	
 	init(windowAccessor: @escaping (Session?) -> NSWindow?) {
 		getWindow = windowAccessor
-		(progressSignal, progressObserver) = Signal<ProgressUpdate, NoError>.pipe()
-		(busySignal, busyObserver) = Signal<Bool, NoError>.pipe()
+		(progressSignal, progressObserver) = Signal<ProgressUpdate, Never>.pipe()
+		(busySignal, busyObserver) = Signal<Bool, Never>.pipe()
 	}
 	
 	/// called when a signal producer to display progress is started

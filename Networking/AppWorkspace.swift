@@ -42,13 +42,13 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 	/// changes to should be monitored via fileChangeSignal. order is undefined and can change when signal is fired
 	public var files: [AppFile] { return _files.value }
 
-	public let fileChangeSignal: Signal<[FileChange], NoError> // { return _files.changeSignal }
-	private let fileChangeObserver: Signal<[FileChange], NoError>.Observer
+	public let fileChangeSignal: Signal<[FileChange], Never> // { return _files.changeSignal }
+	private let fileChangeObserver: Signal<[FileChange], Never>.Observer
 	
 	public init(model: Workspace, files rawFiles: [AppFile]) {
 		self.model = model
 		_files.value = rawFiles
-		(fileChangeSignal, fileChangeObserver) = Signal<[FileChange], NoError>.pipe()
+		(fileChangeSignal, fileChangeObserver) = Signal<[FileChange], Never>.pipe()
 	}
 
 	//documentation inherited from protocol

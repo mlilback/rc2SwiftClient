@@ -7,7 +7,6 @@
 import Foundation
 import Quick
 import Nimble
-import Result
 import ReactiveSwift
 import Rc2Common
 import Networking
@@ -78,7 +77,7 @@ class NetworkingBaseSpec: QuickSpec {
 	/// - Returns: a result with true if completed, error if failed
 	func makeCompletedRequest<T>(producer: SignalProducer<T, Rc2Error>, queue: DispatchQueue = .global()) -> Result<Bool, Rc2Error>
 	{
-		var result = Result<Bool, Rc2Error>(false)
+		var result = Result<Bool, Rc2Error>(catching: { true })
 		let group = DispatchGroup()
 		group.enter()
 		queue.async(group: group) {

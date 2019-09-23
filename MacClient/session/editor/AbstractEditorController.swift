@@ -63,9 +63,9 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 	// MARK: - actions
 	@IBAction func save(_ sender: Any?) {
 		saveWithProgress().startWithResult { result in
-			if let innerError = result.error {
+			if case .failure(let innerError) = result {
 				let appError = AppError(.saveFailed, nestedError: innerError)
-				Log.info("save for execute returned an error: \(result.error!)", .app)
+				Log.info("save for execute returned an error: \(innerError)", .app)
 				self.appStatus?.presentError(appError.rc2Error, session: self.session)
 				return
 			}
@@ -138,14 +138,16 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			return
 		}
 		saveWithProgress().startWithResult { result in
-			if let innerError = result.error {
+			switch result {
+			case .failure(let innerError):
 				let appError = AppError(.saveFailed, nestedError: innerError)
-				Log.info("save for execute returned an error: \(result.error!)", .app)
+				Log.info("save for execute returned an error: \(innerError)", .app)
 				self.appStatus?.presentError(appError.rc2Error, session: self.session)
 				return
+			case .success(_):
+				Log.info("executeQuery saved file, now executing", .app)
+				self.session.execute(file: file, type: type)
 			}
-			Log.info("executeQuery saved file, now executing", .app)
-			self.session.execute(file: file, type: type)
 		}
 	}
 	
@@ -200,14 +202,15 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			loaded(content: document.currentContents ?? "")
 		} else {
 			session.fileCache.contents(of: document.file).observe(on: UIScheduler()).startWithResult { result in
-				guard let data = result.value else  {
-					self.appStatus?.presentError(result.error!, session: self.session)
-					return
+				switch result {
+				case .failure(let rerror):
+					self.appStatus?.presentError(rerror, session: self.session)
+				case .success(let data):
+					self.compositeDisposable += document.editedContents.signal.observeValues { [weak self] contents in
+						self?.editedContentsChanged(updatedContents: contents ?? "")
+					}
+					self.loaded(content: String(data: data, encoding: .utf8)!)
 				}
-				self.compositeDisposable += document.editedContents.signal.observeValues { [weak self] contents in
-					self?.editedContentsChanged(updatedContents: contents ?? "")
-				}
-				self.loaded(content: String(data: data, encoding: .utf8)!)
 			}
 		}
 	}

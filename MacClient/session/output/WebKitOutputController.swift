@@ -76,11 +76,12 @@ class WebKitOutputController: WebViewController {
 	private func loadLocalFile(_ producer: SignalProducer<URL, Rc2Error>) {
 		loadDisposable?.dispose()
 		loadDisposable = producer.startWithResult { result in
-			guard let url = result.value else {
-				Log.warn("failed to load file for viewing: \(result.error!)", .app)
-				return
+			switch result {
+			case .failure(let rerror):
+				Log.warn("failed to load file for viewing: \(rerror)", .app)
+			case .success(let url):
+				self.loadLocalFile(url)
 			}
-			self.loadLocalFile(url)
 		}
 	}
 

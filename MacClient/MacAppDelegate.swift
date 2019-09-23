@@ -508,17 +508,21 @@ extension MacAppDelegate {
 	private func performLogin(host: ServerHost, password: String) {
 		let loginFactory = LoginFactory()
 		loginFactory.login(to: host, as: host.user, password: password).observe(on: UIScheduler()).startWithResult { result in
-			guard let conInfo = result.value else {
-				var message = result.error?.nestedError?.localizedDescription ?? result.error?.localizedDescription
-				let nestederror = result.error!.nestedError as? NetworkingError
+			let conInfo: ConnectionInfo
+			switch result {
+			case .failure(let rerror):
+				var message = rerror.nestedError?.localizedDescription ?? rerror.localizedDescription
+				let nestederror = rerror.nestedError as? NetworkingError
 				if nestederror != nil,
 					case let NetworkingError.invalidHttpStatusCode(rsp) = nestederror!,
 					rsp.statusCode == 401
 				{
 					message = "invalid userid or password"
 				}
-				self.promptToLogin(previousErrorMessage: message ?? "unknown error")
+				self.promptToLogin(previousErrorMessage: message)
 				return
+			case .success(let cinfo):
+				conInfo = cinfo
 			}
 			UserDefaults.standard[.currentCloudHost] = host
 			// only close login window if it was created/shown
@@ -584,11 +588,12 @@ extension MacAppDelegate {
 				case .remove(let wspace):
 					let client = Rc2RestClient(self.connectionManager.currentConnection!)
 					client.remove(workspace: wspace).observe(on: UIScheduler()).startWithResult { result in
-						if let err = result.error {
+						switch result {
+						case .failure(let err):
 							self.appStatus?.presentError(err, session: nil)
-							return
+						case .success(_):
+							Log.info("workspace \(wspace.wspaceId) removed")
 						}
-						Log.info("workspace \(wspace.wspaceId) removed")
 					}
 				}
 			}

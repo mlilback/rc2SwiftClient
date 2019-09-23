@@ -444,11 +444,12 @@ extension DefaultFileCache {
 		//for some unknown reason the cached file could be empty and cause a crash
 		guard fileUrl.fileExists() && fileUrl.fileSize() > 0 else {
 			self.recache(file: file).startWithResult { result in
-				guard result.error == nil else {
-					observer.send(error: result.error!)
-					return
+				switch result {
+				case .success(_):
+					self.readDataFromFile(file: file, observer: observer)
+				case .failure(let rerr):
+					observer.send(error: rerr)
 				}
-				self.readDataFromFile(file: file, observer: observer)
 			}
 			return
 		}

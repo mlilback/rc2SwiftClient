@@ -117,7 +117,8 @@ public class Session {
 		webSocketWorker.status.signal.take(during: sessionLifetime).observeValues { [weak self] value in
 			self?.webSocketStatusChanged(status: value)
 		}
-		webSocketWorker.messageSignal.take(during: sessionLifetime).observeValues { [weak self] data in
+		webSocketWorker.messageSignal.take(during: sessionLifetime).observeResult { [weak self] result in
+			guard case .success(let data) = result else { fatalError("error is type Never,should never happen") }
 			self?.handleWebSocket(data: data)
 		}
 	}
@@ -221,8 +222,12 @@ public class Session {
 		imageCache.restClient.create(fileName: fileName, workspace: workspace, contentUrl: contentUrl)
 			.observe(on: UIScheduler()).startWithResult
 		{ result in
-			guard let file = result.value else {
-				completionHandler?(Result<Int, Rc2Error>(error: result.error!))
+			let file: File
+			switch result {
+			case .success(let rfile):
+				file = rfile
+			case .failure(let rerror):
+				completionHandler?(Result<Int, Rc2Error>(error: rerror))
 				return
 			}
 			//file is on the server, but not necessarily local yet. Pre-cache the data for it
