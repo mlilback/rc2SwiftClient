@@ -94,8 +94,6 @@
 		082BE15A1F5B3682006CE0B7 /* Model.h in Headers */ = {isa = PBXBuildFile; fileRef = 082BE1581F5B3682006CE0B7 /* Model.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		082BE15D1F5B3682006CE0B7 /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; };
 		082BE15E1F5B3682006CE0B7 /* Model.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
-		082FF1CE1C7F321B00CCC27F /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		083174041C5571D300071408 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174031C5571D300071408 /* RootViewController.swift */; };
 		083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083174051C56BE7B00071408 /* SessionSplitController.swift */; };
 		0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0831740D1C577A2500071408 /* ConsoleTextField.swift */; };
@@ -366,7 +364,6 @@
 		08E55B622194A59300F63A20 /* BaseSourceEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B612194A59300F63A20 /* BaseSourceEditorController.swift */; };
 		08E55B642194A86700F63A20 /* SourceEditorLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B632194A86700F63A20 /* SourceEditorLayoutManager.swift */; };
 		08E5D2091EAA58FD00374055 /* TimedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E5D2081EAA58FD00374055 /* TimedEvent.swift */; };
-		08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		08E7E0981D8AE926000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		08E7E0991D8AEC38000C4C87 /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08E836661D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
@@ -679,7 +676,6 @@
 				084D32FD206D03DD00246CBD /* ClientCore.framework in Embed Frameworks */,
 				08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */,
 				080E82D71DCBE31D0048F36C /* Networking.framework in Embed Frameworks */,
-				082FF1CE1C7F321B00CCC27F /* Result.framework in Embed Frameworks */,
 				0859A3612062726700103924 /* iosMath.framework in Embed Frameworks */,
 				089794301D7B68F0003339EE /* Rc2Common.framework in Embed Frameworks */,
 			);
@@ -1276,7 +1272,6 @@
 				08817B5B23391CB100194228 /* Down in Frameworks */,
 				082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */,
 				08ACDA381FD1F5B90017770B /* MJLLogger.framework in Frameworks */,
-				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				0897942F1D7B68F0003339EE /* Rc2Common.framework in Frameworks */,
 				084D32FC206D03DD00246CBD /* ClientCore.framework in Frameworks */,
@@ -1300,7 +1295,6 @@
 			files = (
 				08ACDA3A1FD1F64F0017770B /* MJLLogger.framework in Frameworks */,
 				08E836661D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
-				08E7E0971D8AE8B0000C4C87 /* Result.framework in Frameworks */,
 				08127CC71DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
