@@ -13,9 +13,6 @@
 [submodule "vendor/Repeat"]
 	path = vendor/Repeat
 	url = https://github.com/malcommac/Repeat.git
-[submodule "vendor/Down"]
-	path = vendor/Down
-	url = https://github.com/iwasrobbed/Down.git
 [submodule "vendor/HTMLString"]
 	path = vendor/HTMLString
 	url = https://github.com/alexaubry/HTMLString

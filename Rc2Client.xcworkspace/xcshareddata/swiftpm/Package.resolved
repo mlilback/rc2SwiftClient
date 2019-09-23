@@ -11,6 +11,15 @@
         }
       },
       {
+        "package": "Down",
+        "repositoryURL": "https://github.com/iwasrobbed/Down.git",
+        "state": {
+          "branch": null,
+          "revision": "2e2a8f2f0c0c13b747c48c032ea54a9d0d4dd0bc",
+          "version": "0.8.6"
+        }
+      },
+      {
         "package": "GRDB",
         "repositoryURL": "https://github.com/groue/GRDB.swift.git",
         "state": {

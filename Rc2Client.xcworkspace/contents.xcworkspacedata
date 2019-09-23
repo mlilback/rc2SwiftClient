@@ -8,9 +8,6 @@
       location = "group:vendor/MJLLogger/MJLLogger.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:vendor/Down/Down.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:vendor/SBInjector/SBInjector.xcodeproj">
    </FileRef>
 </Workspace>

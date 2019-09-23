@@ -276,6 +276,7 @@
 		08817B54233918B500194228 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 08817B53233918B500194228 /* GRDB */; };
 		08817B56233918F100194228 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 08817B55233918F100194228 /* GRDB */; };
 		08817B582339196600194228 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 08817B572339196600194228 /* GRDB */; };
+		08817B5B23391CB100194228 /* Down in Frameworks */ = {isa = PBXBuildFile; productRef = 08817B5A23391CB100194228 /* Down */; };
 		0881B50B1DCF856B00679DB3 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */; };
 		0881B50C1DCF85B500679DB3 /* ServerHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B01D19B0D500866A05 /* ServerHost.swift */; };
 		0881B50E1DCF896500679DB3 /* LoginFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50D1DCF896500679DB3 /* LoginFactory.swift */; };
@@ -362,8 +363,6 @@
 		08DA11312092809700A96C7B /* SyntaxParsing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; };
 		08DAF2F31E4D07EF005A251E /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */; };
 		08E55B562188E33A00F63A20 /* LivePreviewEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */; };
-		08E55B59219222BD00F63A20 /* Down.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E55B57219222AD00F63A20 /* Down.framework */; };
-		08E55B5A219222BD00F63A20 /* Down.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08E55B57219222AD00F63A20 /* Down.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08E55B622194A59300F63A20 /* BaseSourceEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B612194A59300F63A20 /* BaseSourceEditorController.swift */; };
 		08E55B642194A86700F63A20 /* SourceEditorLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B632194A86700F63A20 /* SourceEditorLayoutManager.swift */; };
 		08E5D2091EAA58FD00374055 /* TimedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E5D2081EAA58FD00374055 /* TimedEvent.swift */; };
@@ -675,7 +674,6 @@
 				08C2D5E61E719DE20007A02D /* SBInjector.framework in Embed Frameworks */,
 				08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */,
 				08ACDA391FD1F5B90017770B /* MJLLogger.framework in Embed Frameworks */,
-				08E55B5A219222BD00F63A20 /* Down.framework in Embed Frameworks */,
 				082BE15E1F5B3682006CE0B7 /* Model.framework in Embed Frameworks */,
 				0821BDCB1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Embed Frameworks */,
 				084D32FD206D03DD00246CBD /* ClientCore.framework in Embed Frameworks */,
@@ -1275,6 +1273,7 @@
 				080E82D61DCBE31D0048F36C /* Networking.framework in Frameworks */,
 				082BE15D1F5B3682006CE0B7 /* Model.framework in Frameworks */,
 				08817B54233918B500194228 /* GRDB in Frameworks */,
+				08817B5B23391CB100194228 /* Down in Frameworks */,
 				082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */,
 				08ACDA381FD1F5B90017770B /* MJLLogger.framework in Frameworks */,
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
@@ -1282,7 +1281,6 @@
 				0897942F1D7B68F0003339EE /* Rc2Common.framework in Frameworks */,
 				084D32FC206D03DD00246CBD /* ClientCore.framework in Frameworks */,
 				0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */,
-				08E55B59219222BD00F63A20 /* Down.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2466,6 +2464,7 @@
 			name = MacClient;
 			packageProductDependencies = (
 				08817B53233918B500194228 /* GRDB */,
+				08817B5A23391CB100194228 /* Down */,
 			);
 			productName = MacClient;
 			productReference = 088CE6691C4B0AF400153414 /* Rc².app */;
@@ -2649,6 +2648,7 @@
 			mainGroup = 088CE6601C4B0AF400153414;
 			packageReferences = (
 				08817B52233918B500194228 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+				08817B5923391CB100194228 /* XCRemoteSwiftPackageReference "Down" */,
 			);
 			productRefGroup = 088CE66A1C4B0AF400153414 /* Products */;
 			projectDirPath = "";
@@ -4781,6 +4781,14 @@
 				minimumVersion = 4.4.0;
 			};
 		};
+		08817B5923391CB100194228 /* XCRemoteSwiftPackageReference "Down" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/iwasrobbed/Down.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.8.6;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -4798,6 +4806,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 08817B52233918B500194228 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
+		};
+		08817B5A23391CB100194228 /* Down */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 08817B5923391CB100194228 /* XCRemoteSwiftPackageReference "Down" */;
+			productName = Down;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
