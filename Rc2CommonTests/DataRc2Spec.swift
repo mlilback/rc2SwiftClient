@@ -11,9 +11,9 @@ import Nimble
 
 class DataRc2Spec: QuickSpec {
 	override func spec() {
-		let newline = Data(bytes: [UInt8(10)])
+		let newline = Data([UInt8(10)])
 		let data1Array: [UInt8] = [31, 33, 35, 59]
-		let data1 = Data(bytes: data1Array)
+		let data1 = Data(data1Array)
 		
 		describe("enumerateComponentsSeparated") {
 			it("handles empty data") {

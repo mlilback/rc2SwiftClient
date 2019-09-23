@@ -10,6 +10,8 @@ import XCTest
 import Networking
 import Model
 
+// FIXME: not updated for revised framework. not included in target anymore.
+
 class SyntaxParsingTests: XCTestCase {
 	var storage: NSTextStorage!
 	var parser: BaseSyntaxParser!

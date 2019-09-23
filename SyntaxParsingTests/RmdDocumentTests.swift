@@ -30,12 +30,12 @@ class RmdDocumentTests: XCTestCase {
 		XCTAssertNoThrow(document = try RmdDocument(contents: source, helpCallback: { _ in return false }))
 		XCTAssertEqual(document.chunks.count, 1)
 		guard let textChunk = document.chunks.first as? TextChunk else { XCTFail("not text chunk"); return }
-		XCTAssertTrue(textChunk.contents.hasSuffix("here"))
+		XCTAssertTrue(textChunk.contents.string.hasSuffix("here"))
 		XCTAssertEqual(textChunk.inlineElements.count, 1)
-		guard let inlineChunk = textChunk.inlineElements.first, let inlineEq = inlineChunk as? Equation else { XCTFail("failed to get inline chunk"); return }
+		guard let inlineChunk = textChunk.inlineElements.first, let inlineEq = inlineChunk as? InternalInlineEquation else { XCTFail("failed to get inline chunk"); return }
 		XCTAssertTrue(inlineEq.textStorage.string.starts(with: "\\f"))
 		let strContents = textChunk.contents
-		XCTAssertEqual(strContents, source)
+		XCTAssertEqual(strContents.string, source)
 	}
 
 }

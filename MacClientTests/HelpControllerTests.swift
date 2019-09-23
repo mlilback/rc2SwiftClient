@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import MacClient
+@testable import ClientCore
 
 class HelpControllerTests: XCTestCase {
 	
