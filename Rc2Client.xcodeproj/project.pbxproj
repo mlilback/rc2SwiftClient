@@ -197,7 +197,7 @@
 		0859A39D2062729B00103924 /* MTMathListDisplayInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 0859A37A2062729B00103924 /* MTMathListDisplayInternal.h */; };
 		0859A39E2062729B00103924 /* MTFontMathTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 0859A37B2062729B00103924 /* MTFontMathTable.m */; };
 		0859A39F2062729B00103924 /* MTFont+Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 0859A37C2062729B00103924 /* MTFont+Internal.h */; };
-		0859A3A02062729B00103924 /* MTTypesetter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0859A37D2062729B00103924 /* MTTypesetter.m */; };
+		0859A3A02062729B00103924 /* MTTypesetter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0859A37D2062729B00103924 /* MTTypesetter.m */; settings = {COMPILER_FLAGS = "-Wno-nullability-completeness"; }; };
 		0859A3A12062729B00103924 /* MTFontMathTable.h in Headers */ = {isa = PBXBuildFile; fileRef = 0859A37E2062729B00103924 /* MTFontMathTable.h */; };
 		0859A3A22062729B00103924 /* MTFontManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0859A37F2062729B00103924 /* MTFontManager.m */; };
 		0859A3A32062729B00103924 /* UIColor+HexString.h in Headers */ = {isa = PBXBuildFile; fileRef = 0859A3802062729B00103924 /* UIColor+HexString.h */; };
@@ -205,7 +205,7 @@
 		0859A3A52062729B00103924 /* NSView+backgroundColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 0859A3822062729B00103924 /* NSView+backgroundColor.m */; };
 		0859A3A62062729B00103924 /* NSBezierPath+addLineToPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 0859A3832062729B00103924 /* NSBezierPath+addLineToPoint.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0859A3A72062729B00103924 /* NSColor+HexString.m in Sources */ = {isa = PBXBuildFile; fileRef = 0859A3842062729B00103924 /* NSColor+HexString.m */; };
-		0859A3A82062729B00103924 /* MTMathListDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = 0859A3852062729B00103924 /* MTMathListDisplay.m */; };
+		0859A3A82062729B00103924 /* MTMathListDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = 0859A3852062729B00103924 /* MTMathListDisplay.m */; settings = {COMPILER_FLAGS = "-Wno-nullability-completeness"; }; };
 		0859A3A92062729B00103924 /* MTFont.m in Sources */ = {isa = PBXBuildFile; fileRef = 0859A3862062729B00103924 /* MTFont.m */; };
 		0859A3AA2062729B00103924 /* MTLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0859A3872062729B00103924 /* MTLabel.m */; };
 		0859A3AB2062729B00103924 /* MTMathUILabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 0859A3882062729B00103924 /* MTMathUILabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
