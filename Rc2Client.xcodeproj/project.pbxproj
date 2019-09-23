@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -273,6 +273,9 @@
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
 		08790773215AC8CF00978ECD /* Rc2Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08790772215AC8CF00978ECD /* Rc2Document.swift */; };
 		08817B51233838A000194228 /* PEGKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 080C79AC229B536D00178D0E /* PEGKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08817B54233918B500194228 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 08817B53233918B500194228 /* GRDB */; };
+		08817B56233918F100194228 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 08817B55233918F100194228 /* GRDB */; };
+		08817B582339196600194228 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 08817B572339196600194228 /* GRDB */; };
 		0881B50B1DCF856B00679DB3 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */; };
 		0881B50C1DCF85B500679DB3 /* ServerHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B01D19B0D500866A05 /* ServerHost.swift */; };
 		0881B50E1DCF896500679DB3 /* LoginFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50D1DCF896500679DB3 /* LoginFactory.swift */; };
@@ -299,7 +302,6 @@
 		089794541D7B6C91003339EE /* Rc2Common.h in Headers */ = {isa = PBXBuildFile; fileRef = 089794531D7B6C91003339EE /* Rc2Common.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089FF3271C58E771002A3227 /* NSStoryboard+TypeSaftey.swift */; };
 		08A01FA91CBC07B0001EDFAA /* WebKitOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FA81CBC07B0001EDFAA /* WebKitOutputController.swift */; };
-		08A01FD01CC81315001EDFAA /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A01FCD1CC80189001EDFAA /* libsqlite3.tbd */; };
 		08A01FD81CC965F8001EDFAA /* HelpControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FD71CC965F8001EDFAA /* HelpControllerTests.swift */; };
 		08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FD91CC9692C001EDFAA /* BasicOutlineDataSource.swift */; };
 		08A01FDC1CCA8B2F001EDFAA /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A01FDB1CCA8B2F001EDFAA /* WebViewController.swift */; };
@@ -357,9 +359,7 @@
 		08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
 		08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08D6106F1CD2C53100258D8E /* listvars.json in Resources */ = {isa = PBXBuildFile; fileRef = 08D6106E1CD2C53100258D8E /* listvars.json */; };
-		08DA11302092808100A96C7B /* GRDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E8F1A9206995E700F0FF5A /* GRDB.framework */; };
 		08DA11312092809700A96C7B /* SyntaxParsing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; };
-		08DA11322092809D00A96C7B /* GRDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E8F1A9206995E700F0FF5A /* GRDB.framework */; };
 		08DAF2F31E4D07EF005A251E /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */; };
 		08E55B562188E33A00F63A20 /* LivePreviewEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */; };
 		08E55B59219222BD00F63A20 /* Down.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E55B57219222AD00F63A20 /* Down.framework */; };
@@ -375,8 +375,6 @@
 		08E836681D94240100E26EFE /* SwiftyUserDefaults.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08E836691D94242A00E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
 		08E8366C1D94500900E26EFE /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		08E8F1A8206995E700F0FF5A /* GRDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E8F1A9206995E700F0FF5A /* GRDB.framework */; };
-		08E8F1B22069982900F0FF5A /* GRDB.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08E8F1A9206995E700F0FF5A /* GRDB.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08EB36CE1FBB7CF90078229A /* VariableDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36CD1FBB7CF90078229A /* VariableDetailsViewController.swift */; };
 		08EB36D01FBB9E480078229A /* ValuesVariableDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36CF1FBB9E480078229A /* ValuesVariableDetailController.swift */; };
 		08EB36D21FBBA1640078229A /* TextVariableDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36D11FBBA1640078229A /* TextVariableDetailController.swift */; };
@@ -669,7 +667,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				080C79B6229B8D5500178D0E /* PEGKit.framework in Embed Frameworks */,
-				08E8F1B22069982900F0FF5A /* GRDB.framework in Embed Frameworks */,
 				08698FEB1E41051900890092 /* Starscream.framework in Embed Frameworks */,
 				0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */,
 				08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */,
@@ -1214,8 +1211,8 @@
 			files = (
 				08DA11312092809700A96C7B /* SyntaxParsing.framework in Frameworks */,
 				08F8C1802091226B00DFB269 /* iosMath.framework in Frameworks */,
-				08DA11322092809D00A96C7B /* GRDB.framework in Frameworks */,
 				084D330E206D387800246CBD /* Rc2Common.framework in Frameworks */,
+				08817B56233918F100194228 /* GRDB in Frameworks */,
 				084D33332076B18000246CBD /* ReactiveSwift.framework in Frameworks */,
 				08B73E91208A14A100DB7339 /* SwiftyUserDefaults.framework in Frameworks */,
 			);
@@ -1233,7 +1230,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08DA11302092808100A96C7B /* GRDB.framework in Frameworks */,
+				08817B582339196600194228 /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1267,7 +1264,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				080C79B5229B8D5500178D0E /* PEGKit.framework in Frameworks */,
-				08A01FD01CC81315001EDFAA /* libsqlite3.tbd in Frameworks */,
 				08367BD31E3FCEA800FAFC8A /* Starscream.framework in Frameworks */,
 				08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
 				0859A3602062726700103924 /* iosMath.framework in Frameworks */,
@@ -1278,13 +1274,13 @@
 				08C2D5E51E719DE20007A02D /* SBInjector.framework in Frameworks */,
 				080E82D61DCBE31D0048F36C /* Networking.framework in Frameworks */,
 				082BE15D1F5B3682006CE0B7 /* Model.framework in Frameworks */,
+				08817B54233918B500194228 /* GRDB in Frameworks */,
 				082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */,
 				08ACDA381FD1F5B90017770B /* MJLLogger.framework in Frameworks */,
 				082FF1CD1C7F321B00CCC27F /* Result.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				0897942F1D7B68F0003339EE /* Rc2Common.framework in Frameworks */,
 				084D32FC206D03DD00246CBD /* ClientCore.framework in Frameworks */,
-				08E8F1A8206995E700F0FF5A /* GRDB.framework in Frameworks */,
 				0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */,
 				08E55B59219222BD00F63A20 /* Down.framework in Frameworks */,
 			);
@@ -2341,6 +2337,9 @@
 				084D3322206D4E5400246CBD /* PBXTargetDependency */,
 			);
 			name = ClientCore;
+			packageProductDependencies = (
+				08817B55233918F100194228 /* GRDB */,
+			);
 			productName = ClientCore;
 			productReference = 084D32E7206D03DD00246CBD /* ClientCore.framework */;
 			productType = "com.apple.product-type.framework";
@@ -2377,6 +2376,9 @@
 			dependencies = (
 			);
 			name = HelpIndexTool;
+			packageProductDependencies = (
+				08817B572339196600194228 /* GRDB */,
+			);
 			productName = HelpIndexTool;
 			productReference = 084D3316206D3C9E00246CBD /* HelpIndexTool */;
 			productType = "com.apple.product-type.tool";
@@ -2462,6 +2464,9 @@
 				084D32FB206D03DD00246CBD /* PBXTargetDependency */,
 			);
 			name = MacClient;
+			packageProductDependencies = (
+				08817B53233918B500194228 /* GRDB */,
+			);
 			productName = MacClient;
 			productReference = 088CE6691C4B0AF400153414 /* Rc².app */;
 			productType = "com.apple.product-type.application";
@@ -2537,13 +2542,13 @@
 					080E82C01DCBE31D0048F36C = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1020;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 					};
 					080E82C81DCBE31D0048F36C = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 					};
 					08127CD11DAD2434002E0D01 = {
@@ -2553,24 +2558,25 @@
 					082BE0881F59D549006CE0B7 = {
 						CreatedOnToolsVersion = 9.0;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1030;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 					};
 					082BE0901F59D549006CE0B7 = {
 						CreatedOnToolsVersion = 9.0;
 						DevelopmentTeam = V97NV337TR;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 					};
 					082BE1551F5B3682006CE0B7 = {
 						CreatedOnToolsVersion = 9.0;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1030;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 					};
 					084D32E6206D03DD00246CBD = {
 						CreatedOnToolsVersion = 9.2;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1030;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 					};
 					084D32EE206D03DD00246CBD = {
@@ -2601,7 +2607,7 @@
 					088CE6681C4B0AF400153414 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1020;
+						LastSwiftMigration = 1100;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
 								enabled = 1;
@@ -2614,20 +2620,20 @@
 					088CE6791C4B0AF500153414 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 088CE6681C4B0AF400153414;
 					};
 					089794191D7B68F0003339EE = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = "";
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 					};
 					089794211D7B68F0003339EE = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = "";
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -2641,6 +2647,9 @@
 				Base,
 			);
 			mainGroup = 088CE6601C4B0AF400153414;
+			packageReferences = (
+				08817B52233918B500194228 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+			);
 			productRefGroup = 088CE66A1C4B0AF400153414 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
@@ -3472,7 +3481,11 @@
 				);
 				INFOPLIST_FILE = Networking/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.Networking;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3509,7 +3522,11 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = Networking/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.Networking;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -3539,7 +3556,12 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = NetworkingTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+					"$(project_dir)/Carthage/Build/Mac",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.NetworkingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3565,7 +3587,12 @@
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				INFOPLIST_FILE = NetworkingTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+					"$(project_dir)/Carthage/Build/Mac",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.NetworkingTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -3585,7 +3612,11 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Rc2CommonIntegrationTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lilback.Rc2CommonIntegrationTests;
@@ -3605,7 +3636,11 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Rc2CommonIntegrationTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lilback.Rc2CommonIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3631,7 +3666,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SyntaxParsing/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.SyntaxParsing;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
@@ -3655,7 +3694,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SyntaxParsing/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.SyntaxParsing;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
@@ -3684,7 +3727,11 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SyntaxParsingTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks/Swift",
@@ -3712,7 +3759,11 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SyntaxParsingTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks/Swift",
@@ -3749,7 +3800,11 @@
 				);
 				INFOPLIST_FILE = Model/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.Model;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
@@ -3782,7 +3837,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = Model/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.Model;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
@@ -3822,7 +3881,11 @@
 				);
 				INFOPLIST_FILE = ClientCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.ClientCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -3857,7 +3920,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = ClientCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.ClientCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -3886,7 +3953,11 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = ClientCoreTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.ClientCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3912,7 +3983,11 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = ClientCoreTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.ClientCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3924,7 +3999,6 @@
 		084D331B206D3C9E00246CBD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -3937,7 +4011,10 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				LD_RUNPATH_SEARCH_PATHS = "${TOOLCHAIN_DIR}/usr/lib/swift/macosx ${BUILT_PRODUCTS_DIR}";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"${TOOLCHAIN_DIR}/usr/lib/swift/macosx",
+					"${BUILT_PRODUCTS_DIR}",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -3948,7 +4025,6 @@
 		084D331C206D3C9E00246CBD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -3959,7 +4035,13 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks ${BUILT_PRODUCTS_DIR} ${TOOLCHAIN_DIR}/usr/lib/swift/macosx";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+					"${BUILT_PRODUCTS_DIR}",
+					"${TOOLCHAIN_DIR}/usr/lib/swift/macosx",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -3987,7 +4069,12 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = ModelTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+					"$(project_dir)/Carthage/Build/Mac",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lilback.MacClient.ModelTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4012,7 +4099,12 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = ModelTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+					"$(project_dir)/Carthage/Build/Mac",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lilback.MacClient.ModelTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4100,7 +4192,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				INFOPLIST_FILE = iosMath/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.iosMath;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -4134,7 +4230,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				INFOPLIST_FILE = iosMath/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.iosMath;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -4235,7 +4335,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				SWIFT_VERSION = 5.0;
 			};
@@ -4258,7 +4359,11 @@
 					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MacClient/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient;
 				PRODUCT_MODULE_NAME = MacClient;
 				PRODUCT_NAME = "Rc²";
@@ -4284,7 +4389,11 @@
 					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MacClient/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient;
 				PRODUCT_MODULE_NAME = MacClient;
 				PRODUCT_NAME = "Rc²";
@@ -4309,7 +4418,12 @@
 					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MacClientTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(BUILT_PRODUCTS_DIR)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+					"$(BUILT_PRODUCTS_DIR)",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClientTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4335,11 +4449,17 @@
 					"$(PROJECT_DIR)/vendor",
 				);
 				INFOPLIST_FILE = MacClientTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(BUILT_PRODUCTS_DIR)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+					"$(BUILT_PRODUCTS_DIR)",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClientTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rc².app/Contents/MacOS/Rc²";
 			};
@@ -4372,7 +4492,11 @@
 				);
 				INFOPLIST_FILE = Rc2Common/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.Rc2Common;
@@ -4408,14 +4532,19 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = Rc2Common/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.Rc2Common;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -4441,7 +4570,12 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Rc2CommonTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+					"$(project_dir)/Carthage/Build/Mac",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.Rc2CommonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -4466,11 +4600,17 @@
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				INFOPLIST_FILE = Rc2CommonTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(project_dir)/Carthage/Build/Mac";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+					"$(project_dir)/Carthage/Build/Mac",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.Rc2CommonTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;
 		};
@@ -4631,6 +4771,35 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		08817B52233918B500194228 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		08817B53233918B500194228 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 08817B52233918B500194228 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+		08817B55233918F100194228 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 08817B52233918B500194228 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+		08817B572339196600194228 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 08817B52233918B500194228 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 088CE6611C4B0AF400153414 /* Project object */;
 }
