@@ -27,9 +27,10 @@ private enum OtherLogLevel: Int {
 	static let allCases: [OtherLogLevel] = [.default, .error, .warn, .info, .debug]
 	
 	/// return appropriate OtherLogLevel for a LogLevel
-	static func from(_ level: LogLevel) -> OtherLogLevel {
+	static func from(_ level: MJLLogLevel) -> OtherLogLevel {
 		if let llevel = OtherLogLevel(rawValue: level.rawValue) { return llevel }
-		if level == .exit || level == .enter { return .debug }
+		if level == .notice { return .info }
+		if level == .trace { return .debug }
 		return .default
 	}
 
@@ -55,7 +56,7 @@ private enum OtherLogLevel: Int {
 	}
 	
 	/// returns the represented LogLevel, or nil for default
-	var logLevel: LogLevel? { return LogLevel(rawValue: rawValue) }
+	var logLevel: MJLLogLevel? { return MJLLogLevel(rawValue: rawValue) }
 }
 
 // MARK: -
@@ -100,7 +101,7 @@ class AppLogger: NSObject {
 	/// starts/configures logging
 	func start() {
 		guard Log.logger == nil else { fatalError("logging already enabled") }
-		let logger = Logger(config: config)
+		let logger = MJLLogger(config: config)
 
 		let plainFormatter = TokenizedLogFormatter(config: config, formatString: fmtString.attributedString(), dateFormatter: config.dateFormatter)
 		logger.append(handler: StdErrHandler(config: config, formatter: plainFormatter))
@@ -124,7 +125,7 @@ class AppLogger: NSObject {
 		categoryMenuItem?.submenu = NSMenu(title: "Log Categories")
 		globalLevelMenu?.delegate = self
 		categoryMenuItem?.submenu?.delegate = self
-		for aLevel in [LogLevel.error, .warn, .info, .debug] {
+		for aLevel in [MJLLogLevel.error, .warn, .info, .debug] {
 			let mitem = menuItem(for: OtherLogLevel.from(aLevel))
 			mitem.action = #selector(AppLogger.adjustGlobalLogLevel(_:))
 			menu.addItem(mitem)
@@ -178,7 +179,7 @@ extension AppLogger {
 			else { Log.warn("action only callable from menu item", .app); return }
 		guard let category = item.parent?.representedObject as? LogCategory
 			else { Log.warn("failed to get category for log level"); return }
-		guard let newLevel = LogLevel(rawValue: item.tag) else {
+		guard let newLevel = MJLLogLevel(rawValue: item.tag) else {
 			Log.debug("can't set \(category) to \(item.tag). setting to nil", .app)
 			config.set(level: nil, forCategory: category)
 			return
@@ -191,7 +192,7 @@ extension AppLogger {
 	@objc func adjustGlobalLogLevel(_ sender: Any?) {
 		guard let item = sender as? NSMenuItem, item.parent?.submenu == globalLevelMenu
 			else { Log.warn("action only callable from debug menu", .app); return }
-		guard let newLevel = LogLevel(rawValue: item.tag)
+		guard let newLevel = MJLLogLevel(rawValue: item.tag)
 			else { Log.warn("tag not convertable to log level", .app); return }
 		Log.info("changing log level to \(newLevel)", .app)
 		config.globalLevel = newLevel
@@ -252,7 +253,7 @@ extension AppLogger {
 	}
 	
 	/// sets logger to save logs to a file in ~/Library/Logs/
-	func addJsonLogger(logger: Logger) {
+	func addJsonLogger(logger: MJLLogger) {
 		guard let logUrl = jsonOutputURL else { return }
 		do {
 			if !FileManager.default.fileExists(atPath: logUrl.path) {
@@ -295,7 +296,7 @@ extension AppLogger: NSMenuDelegate {
 	func menuNeedsUpdate(_ menu: NSMenu) {
 		if menu == globalLevelMenu {
 			for anItem in menu.items {
-				guard let itemLevel = LogLevel(rawValue: anItem.tag) else { continue }
+				guard let itemLevel = MJLLogLevel(rawValue: anItem.tag) else { continue }
 				anItem.state = config.globalLevel == itemLevel ? .on : .off
 				anItem.isEnabled = itemLevel != config.globalLevel
 			}
@@ -328,11 +329,11 @@ extension AppLogger: NSMenuDelegate {
 // MARK: -
 class Rc2LogConfig: LogConfiguration {
 	let dateFormatter: DateFormatterProtocol
-	private var categoryLevels = [LogCategory: LogLevel]()
-	var globalLevel: LogLevel = .warn { didSet {
+	private var categoryLevels = [LogCategory: MJLLogLevel]()
+	var globalLevel: MJLLogLevel = .warn { didSet {
 			UserDefaults.standard[.globalLogVersion] = globalLevel.rawValue
 		}}
-	let levelDescriptions: [LogLevel: NSAttributedString]
+	let levelDescriptions: [MJLLogLevel: NSAttributedString]
 
 	var categoryLevelCount: Int { return categoryLevels.count }
 	init() {
@@ -341,36 +342,39 @@ class Rc2LogConfig: LogConfiguration {
 		dformatter.dateFormat = "HH:mm:ss.SSS"
 		dateFormatter = dformatter
 		levelDescriptions = [
+			.critical: NSAttributedString(string: "‼️ CRITICAL"),
+			.notice: NSAttributedString(string: "📝 NOTICE"),
+			.trace: NSAttributedString(string: "🧵 TRACE"),
 			.debug: NSAttributedString(string: "🐞"),
 			.error: NSAttributedString(string: "🛑"),
 			.warn: NSAttributedString(string: "⚠️"),
 			.info: NSAttributedString(string: "ℹ️"),
-			.enter: NSAttributedString(string: "→"),
-			.exit: NSAttributedString(string: "←")
+//			.enter: NSAttributedString(string: "→"),
+//			.exit: NSAttributedString(string: "←")
 		]
 		let defaults = UserDefaults.standard
-		if let savedGlobal = LogLevel(rawValue: defaults[.globalLogVersion]) {
+		if let savedGlobal = MJLLogLevel(rawValue: defaults[.globalLogVersion]) {
 			globalLevel = savedGlobal
 		}
 		if let saved = defaults[.logCategoryLevels] as? [String: Int] {
-			categoryLevels = Dictionary<LogCategory, LogLevel>(uniqueKeysWithValues: saved.compactMap
+			categoryLevels = Dictionary<LogCategory, MJLLogLevel>(uniqueKeysWithValues: saved.compactMap
 				{ k, v in
-					guard let key = LogCategory(rawValue: k), let value = LogLevel(rawValue: v) else { return nil }
+					guard let key = LogCategory(rawValue: k), let value = MJLLogLevel(rawValue: v) else { return nil }
 					return (key, value)
 				})
 		}
 	}
 	
-	func loggingEnabled(level: LogLevel, category: LogCategory) -> Bool {
+	func loggingEnabled(level: MJLLogLevel, category: LogCategory) -> Bool {
 		if let catLevel = categoryLevels[category] { return level <= catLevel }
 		return level <= globalLevel
 	}
 	
-	func logLevel(for category: LogCategory) -> LogLevel? {
+	func logLevel(for category: LogCategory) -> MJLLogLevel? {
 		return categoryLevels[category]
 	}
 	
-	func set(level: LogLevel?, forCategory category: LogCategory) {
+	func set(level: MJLLogLevel?, forCategory category: LogCategory) {
 		categoryLevels[category] = level
 		let saveDict = Dictionary(uniqueKeysWithValues: categoryLevels.map { k, v in (k.rawValue, v.rawValue)})
 		UserDefaults.standard[.logCategoryLevels] = saveDict
@@ -380,7 +384,7 @@ class Rc2LogConfig: LogConfiguration {
 		categoryLevels.removeAll()
 	}
 	
-	func description(logLevel: LogLevel) -> NSAttributedString {
+	func description(logLevel: MJLLogLevel) -> NSAttributedString {
 		if let desc = levelDescriptions[logLevel] { return desc }
 		return NSAttributedString(string: logLevel.description)
 	}
