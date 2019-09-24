@@ -4,9 +4,6 @@
 [submodule "vendor/MJLCommon"]
 	path = vendor/MJLCommon
 	url = https://github.com/mlilback/MJLCommon.git
-[submodule "vendor/MJLLogger"]
-	path = vendor/MJLLogger
-	url = https://github.com/mlilback/MJLLogger.git
 [submodule "vendor/iosMath"]
 	path = vendor/iosMath
 	url = https://github.com/mlilback/iosMath.git
