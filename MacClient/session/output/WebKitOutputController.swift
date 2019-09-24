@@ -11,7 +11,6 @@ import MJLLogger
 import Rc2Common
 import Networking
 import ReactiveSwift
-import Result
 
 class WebKitOutputController: WebViewController {
 	private var loadDisposable: Disposable?

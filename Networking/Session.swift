@@ -11,7 +11,6 @@ import Rc2Common
 import Foundation
 import MJLLogger
 import ReactiveSwift
-import Result
 import Starscream
 import Model
 
@@ -227,7 +226,7 @@ public class Session {
 			case .success(let rfile):
 				file = rfile
 			case .failure(let rerror):
-				completionHandler?(Result<Int, Rc2Error>(error: rerror))
+				completionHandler?(Result<Int, Rc2Error>.failure(rerror))
 				return
 			}
 			//file is on the server, but not necessarily local yet. Pre-cache the data for it
@@ -240,10 +239,10 @@ public class Session {
 			sp.start { (event) in
 				switch event {
 					case .failed(let err):
-						completionHandler?(Result<Int, Rc2Error>(error: err))
+						completionHandler?(Result<Int, Rc2Error>.failure(err))
 					case .completed:
 						self.workspace.whenFileExists(fileId: file.id, within: 2.0).startWithCompleted {
-							completionHandler?(Result<Int, Rc2Error>(value: file.id))
+							completionHandler?(Result<Int, Rc2Error>.success(file.id))
 						}
 					default:
 						Log.warn("invalid event from fileCache call", .session)

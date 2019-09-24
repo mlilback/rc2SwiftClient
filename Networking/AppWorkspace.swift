@@ -6,7 +6,6 @@
 
 import Foundation
 import ReactiveSwift
-import Result
 import Rc2Common
 import MJLLogger
 import Model

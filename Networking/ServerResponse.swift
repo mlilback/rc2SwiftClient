@@ -7,7 +7,6 @@
 import Foundation
 import MJLLogger
 import SwiftyUserDefaults
-import Result
 import Rc2Common
 import Model
 

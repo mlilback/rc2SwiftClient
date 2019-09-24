@@ -9,7 +9,6 @@ import MJLLogger
 import Rc2Common
 import Starscream
 import ReactiveSwift
-import Result
 
 fileprivate let pingInterval: Double = 30.0
 

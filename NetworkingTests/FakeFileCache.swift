@@ -5,7 +5,6 @@
 //
 
 import Foundation
-import Result
 import Rc2Common
 import ReactiveSwift
 import Model

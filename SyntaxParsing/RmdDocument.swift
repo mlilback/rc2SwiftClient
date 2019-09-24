@@ -8,7 +8,6 @@ import Foundation
 import Model
 import MJLLogger
 import ReactiveSwift
-import Result
 
 public enum ParserError: Error {
 	case failedToParse

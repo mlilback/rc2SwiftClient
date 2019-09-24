@@ -11,7 +11,6 @@ import ClientCore
 import SwiftyUserDefaults
 import ReactiveSwift
 import ReactiveCocoa
-import Result
 import Rc2Common
 import Model
 

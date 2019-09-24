@@ -12,7 +12,6 @@
 #endif
 import Rc2Common
 import ReactiveSwift
-import Result
 import Model
 
 // MARK: Response Formatting -

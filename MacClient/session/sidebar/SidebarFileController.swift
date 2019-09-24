@@ -7,7 +7,6 @@
 import Cocoa
 import MJLLogger
 import ReactiveSwift
-import Result
 import SwiftyUserDefaults
 import Rc2Common
 import Networking
@@ -96,7 +95,6 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	override func sessionChanged() {
-		Log.enter(.app)
 		fileChangeDisposable?.dispose()
 		fileChangeDisposable = session.workspace.fileChangeSignal.take(during: session.lifetime).observeValues(filesRefreshed)
 		loadData()
@@ -203,12 +201,13 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				guard let newName = name else { return }
 				self.session.create(fileName: newName, contentUrl: self.fileTemplate(forType: fileType)) { result in
 					// the id of the file that was created
-					guard let fid = result.value else {
-						Log.error("error creating empty file: \(result.error!)", .app)
-						self.appStatus?.presentError(result.error!, session: self.session)
-						return
+					switch result {
+					case .failure(let err):
+						Log.error("error creating empty file: \(err)", .app)
+						self.appStatus?.presentError(err, session: self.session)
+					case .success(let fid):
+						self.select(fileId: fid)
 					}
-					self.select(fileId: fid)
 				}
 			}
 		}

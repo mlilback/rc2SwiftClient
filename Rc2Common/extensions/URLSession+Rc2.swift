@@ -6,7 +6,6 @@
 
 import Foundation
 import ReactiveSwift
-import Result
 
 public extension URLSession {
 	/// Performs a dataTask on session with request

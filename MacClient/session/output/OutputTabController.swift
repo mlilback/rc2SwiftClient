@@ -11,7 +11,6 @@ import Networking
 import ClientCore
 import ReactiveSwift
 import ReactiveCocoa
-import Result
 import SwiftyUserDefaults
 
 enum OutputTab: Int {

@@ -5,7 +5,6 @@
 //
 
 import Cocoa
-import Result
 import ReactiveSwift
 import MJLLogger
 
