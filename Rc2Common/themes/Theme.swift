@@ -197,7 +197,6 @@ public class BaseTheme: NSObject, Theme {
 	}
 
 	static func loadBuiltinThemes<T: BaseTheme>(from url: URL) -> [T] {
-		print("theme = \(T.self)")
 		do {
 			guard let path = url.path.removingPercentEncoding, let str = try? String(contentsOfFile: path), let data = str.data(using: .utf8)
 				else { fatalError() }
