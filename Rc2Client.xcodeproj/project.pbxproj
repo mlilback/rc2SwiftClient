@@ -320,6 +320,12 @@
 		08A7E802233BB12600946F34 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E801233BB12600946F34 /* Starscream */; };
 		08A7E807233BB2ED00946F34 /* SwiftyUserDefaults in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E806233BB2ED00946F34 /* SwiftyUserDefaults */; };
 		08A7E80A233BB43200946F34 /* SigmaSwiftStatistics in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E809233BB43200946F34 /* SigmaSwiftStatistics */; };
+		08A7E80E233BF8F200946F34 /* AppCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80B233BF8F100946F34 /* AppCenter.framework */; };
+		08A7E80F233BF8F200946F34 /* AppCenter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80B233BF8F100946F34 /* AppCenter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08A7E810233BF8F200946F34 /* AppCenterAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80C233BF8F100946F34 /* AppCenterAnalytics.framework */; };
+		08A7E811233BF8F200946F34 /* AppCenterAnalytics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80C233BF8F100946F34 /* AppCenterAnalytics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08A7E812233BF8F200946F34 /* AppCenterCrashes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80D233BF8F100946F34 /* AppCenterCrashes.framework */; };
+		08A7E813233BF8F200946F34 /* AppCenterCrashes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80D233BF8F100946F34 /* AppCenterCrashes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 08AA5F071E5350AA00389089 /* SearchBarField.m */; };
 		08AD13361FCF18D000CFD516 /* FileInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AD13351FCF18D000CFD516 /* FileInfoController.swift */; };
 		08B184D21E5F36E800F4A6D6 /* defaultWorkspaceFiles in Resources */ = {isa = PBXBuildFile; fileRef = 08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */; };
@@ -708,9 +714,11 @@
 			dstSubfolderSpec = 10;
 			files = (
 				080C79B6229B8D5500178D0E /* PEGKit.framework in Embed Frameworks */,
+				08A7E813233BF8F200946F34 /* AppCenterCrashes.framework in Embed Frameworks */,
 				0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */,
 				08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */,
 				08817B82233AB2B800194228 /* Logging.framework in Embed Frameworks */,
+				08A7E811233BF8F200946F34 /* AppCenterAnalytics.framework in Embed Frameworks */,
 				082BE09F1F59D549006CE0B7 /* SyntaxParsing.framework in Embed Frameworks */,
 				08C2D5E61E719DE20007A02D /* SBInjector.framework in Embed Frameworks */,
 				08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */,
@@ -718,6 +726,7 @@
 				084D32FD206D03DD00246CBD /* ClientCore.framework in Embed Frameworks */,
 				08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */,
 				080E82D71DCBE31D0048F36C /* Networking.framework in Embed Frameworks */,
+				08A7E80F233BF8F200946F34 /* AppCenter.framework in Embed Frameworks */,
 				0859A3612062726700103924 /* iosMath.framework in Embed Frameworks */,
 				089794301D7B68F0003339EE /* Rc2Common.framework in Embed Frameworks */,
 			);
@@ -1148,6 +1157,9 @@
 		08A2A2971FFE97B700D9807B /* SessionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionState.swift; sourceTree = "<group>"; };
 		08A2A29E2009602700D9807B /* HTMLStringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLStringTests.swift; sourceTree = "<group>"; };
 		08A2A2A1200A9B0E00D9807B /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
+		08A7E80B233BF8F100946F34 /* AppCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenter.framework; path = Carthage/Build/Mac/Static/AppCenter.framework; sourceTree = "<group>"; };
+		08A7E80C233BF8F100946F34 /* AppCenterAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenterAnalytics.framework; path = Carthage/Build/Mac/Static/AppCenterAnalytics.framework; sourceTree = "<group>"; };
+		08A7E80D233BF8F100946F34 /* AppCenterCrashes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenterCrashes.framework; path = Carthage/Build/Mac/Static/AppCenterCrashes.framework; sourceTree = "<group>"; };
 		08AA5F061E5350AA00389089 /* SearchBarField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchBarField.h; sourceTree = "<group>"; };
 		08AA5F071E5350AA00389089 /* SearchBarField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchBarField.m; sourceTree = "<group>"; };
 		08ACDA371FD1F5B90017770B /* MJLLogger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MJLLogger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1369,12 +1381,15 @@
 			files = (
 				080C79B5229B8D5500178D0E /* PEGKit.framework in Frameworks */,
 				08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
+				08A7E80E233BF8F200946F34 /* AppCenter.framework in Frameworks */,
 				0859A3602062726700103924 /* iosMath.framework in Frameworks */,
+				08A7E810233BF8F200946F34 /* AppCenterAnalytics.framework in Frameworks */,
 				08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */,
 				08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */,
 				08817B81233AB2B800194228 /* Logging.framework in Frameworks */,
 				08C2D5E51E719DE20007A02D /* SBInjector.framework in Frameworks */,
 				080E82D61DCBE31D0048F36C /* Networking.framework in Frameworks */,
+				08A7E812233BF8F200946F34 /* AppCenterCrashes.framework in Frameworks */,
 				082BE15D1F5B3682006CE0B7 /* Model.framework in Frameworks */,
 				08817B5B23391CB100194228 /* Down in Frameworks */,
 				082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */,
@@ -2040,6 +2055,9 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				08A7E80B233BF8F100946F34 /* AppCenter.framework */,
+				08A7E80C233BF8F100946F34 /* AppCenterAnalytics.framework */,
+				08A7E80D233BF8F100946F34 /* AppCenterCrashes.framework */,
 				085A19832049E3C000B7EC5F /* Cocoa.framework */,
 				085A19812049E2FA00B7EC5F /* CoreLocation.framework */,
 				085A197F2049E2E700B7EC5F /* libswiftCoreLocation.tbd */,
@@ -4655,6 +4673,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 					"$(PROJECT_DIR)/vendor",
+					"$(PROJECT_DIR)/Carthage/Build/Mac/Static",
 				);
 				INFOPLIST_FILE = MacClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -4685,6 +4704,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 					"$(PROJECT_DIR)/vendor",
+					"$(PROJECT_DIR)/Carthage/Build/Mac/Static",
 				);
 				INFOPLIST_FILE = MacClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

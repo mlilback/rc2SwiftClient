@@ -14,6 +14,9 @@ import SBInjector
 import Model
 import os
 import MJLLogger
+import AppCenter
+import AppCenterAnalytics
+import AppCenterCrashes
 
 // swiftlint:disable file_length
 
@@ -95,9 +98,14 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		//skip startup actions if running unit tests
-		guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
+		guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil,
+			ProcessInfo.processInfo.environment["HOCKEYAPP_ENABLED"] == nil
+			else { return }
+		#if HOCKEYAPP_ENABLED
+		setupAppCenter()
+		#endif
 	}
-
+	
 	func applicationWillTerminate(_ aNotification: Notification) {
 		NotificationCenter.default.removeObserver(self, name: NSWindow.willCloseNotification, object: nil)
 	}
@@ -417,6 +425,18 @@ extension MacAppDelegate: NSWindowRestoration {
 
 // MARK: - private
 extension MacAppDelegate {
+	private func setupAppCenter() {
+		guard let key = Bundle.main.object(forInfoDictionaryKey: "AppCenterKey") as? String else {
+			Log.error("failed to find API key", .app)
+			return
+		}
+		// disable built-in support for not crashing on exceptions that reach the event loop. Let AppCenter handle them
+		UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": true])
+		// also disable mach handlers, letting them pass up to MSCrashes
+		MSCrashes.disableMachExceptionHandler()
+		MSAppCenter.start(key, withServices: [MSAnalytics.self, MSCrashes.self])
+	}
+	
 	func checkIfSupportFileResetNeeded() {
 		let defaults = UserDefaults.standard
 		let lastVersion = defaults[.supportDataVersion]
