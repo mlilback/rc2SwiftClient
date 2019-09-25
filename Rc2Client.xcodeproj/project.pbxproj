@@ -113,8 +113,6 @@
 		0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; };
 		0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0835A07E1E57823500123820 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0835A07D1E57823500123820 /* OnboardingViewController.swift */; };
-		08367BD31E3FCEA800FAFC8A /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; };
-		08367BD41E3FCEA800FAFC8A /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; };
 		083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		083A4B041C7F347E0007AC46 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		083AC0FD2062D01E0054023F /* EquationViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC0FC2062D01E0054023F /* EquationViewItem.swift */; };
@@ -258,7 +256,6 @@
 		0868068F200D892600C986A9 /* ToolbarItemHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08680682200D892000C986A9 /* ToolbarItemHandler.swift */; };
 		08680690200D892B00C986A9 /* RecursiveFlatMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08680680200D892000C986A9 /* RecursiveFlatMap.swift */; };
 		08680692200E415600C986A9 /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08680691200E415600C986A9 /* AppLogger.swift */; };
-		08698FEB1E41051900890092 /* Starscream.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		086A40D11E7AEC5000AE476B /* OutputTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D01E7AEC5000AE476B /* OutputTheme.swift */; };
 		086A40D31E7B048B00AE476B /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D21E7B048B00AE476B /* Theme.swift */; };
 		086A40D51E7B04F400AE476B /* ThemeEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086A40D41E7B04F400AE476B /* ThemeEditorController.swift */; };
@@ -322,6 +319,7 @@
 		08A2A29B1FFEA29700D9807B /* SessionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2971FFE97B700D9807B /* SessionState.swift */; };
 		08A2A29F2009602700D9807B /* HTMLStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A29E2009602700D9807B /* HTMLStringTests.swift */; };
 		08A2A2A2200A9B0E00D9807B /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2A1200A9B0E00D9807B /* LogViewController.swift */; };
+		08A7E802233BB12600946F34 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E801233BB12600946F34 /* Starscream */; };
 		08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 08AA5F071E5350AA00389089 /* SearchBarField.m */; };
 		08AD13361FCF18D000CFD516 /* FileInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AD13351FCF18D000CFD516 /* FileInfoController.swift */; };
 		08B184D21E5F36E800F4A6D6 /* defaultWorkspaceFiles in Resources */ = {isa = PBXBuildFile; fileRef = 08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */; };
@@ -714,7 +712,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				080C79B6229B8D5500178D0E /* PEGKit.framework in Embed Frameworks */,
-				08698FEB1E41051900890092 /* Starscream.framework in Embed Frameworks */,
 				0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */,
 				08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */,
 				08817B82233AB2B800194228 /* Logging.framework in Embed Frameworks */,
@@ -1253,9 +1250,9 @@
 			files = (
 				08B19F8E233671FB00EE2E30 /* Model.framework in Frameworks */,
 				08F6ADBC1DD914F800AF0722 /* Rc2Common.framework in Frameworks */,
-				08367BD41E3FCEA800FAFC8A /* Starscream.framework in Frameworks */,
 				08817B94233AB47300194228 /* Logging.framework in Frameworks */,
 				08B184D71E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */,
+				08A7E802233BB12600946F34 /* Starscream in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1378,7 +1375,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				080C79B5229B8D5500178D0E /* PEGKit.framework in Frameworks */,
-				08367BD31E3FCEA800FAFC8A /* Starscream.framework in Frameworks */,
 				08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
 				0859A3602062726700103924 /* iosMath.framework in Frameworks */,
 				08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
@@ -2354,6 +2350,7 @@
 			);
 			name = Networking;
 			packageProductDependencies = (
+				08A7E801233BB12600946F34 /* Starscream */,
 			);
 			productName = Networking;
 			productReference = 080E82C11DCBE31D0048F36C /* Networking.framework */;
@@ -2825,6 +2822,7 @@
 				08817B5923391CB100194228 /* XCRemoteSwiftPackageReference "Down" */,
 				08817B61233AA0D900194228 /* XCRemoteSwiftPackageReference "swift-log" */,
 				08817B64233AA18800194228 /* XCRemoteSwiftPackageReference "MJLLogger" */,
+				08A7E800233BB12600946F34 /* XCRemoteSwiftPackageReference "Starscream" */,
 			);
 			productRefGroup = 088CE66A1C4B0AF400153414 /* Products */;
 			projectDirPath = "";
@@ -5118,6 +5116,14 @@
 				minimumVersion = 0.4.1;
 			};
 		};
+		08A7E800233BB12600946F34 /* XCRemoteSwiftPackageReference "Starscream" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/daltoniam/Starscream.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -5145,6 +5151,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 08817B64233AA18800194228 /* XCRemoteSwiftPackageReference "MJLLogger" */;
 			productName = MJLLogger;
+		};
+		08A7E801233BB12600946F34 /* Starscream */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 08A7E800233BB12600946F34 /* XCRemoteSwiftPackageReference "Starscream" */;
+			productName = Starscream;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
