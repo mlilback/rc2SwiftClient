@@ -22,6 +22,25 @@ public enum ExecuteType: String {
 	case run = "run", source = "source", none = ""
 }
 
+/// for interested parties to observe when these events happen
+public struct SessionEvent: Codable, Hashable {
+	public enum EventType: String, Codable, CaseIterable, CustomStringConvertible {
+		case execScript
+		case execRmd
+		case sessionError
+		
+		public var description: String { return rawValue }
+	}
+	
+	public let type: EventType
+	public let properties: [String:String]
+	
+	init(_ type: EventType, props: [String:String] = [:]) {
+		self.type = type
+		self.properties = props
+	}
+}
+
 public class Session {
 	// MARK: properties
 
@@ -51,6 +70,9 @@ public class Session {
 	fileprivate var openObserver: Signal<Double, Rc2Error>.Observer?
 	public fileprivate(set) var connectionOpen: Bool = false
 	
+	public let eventSignal: Signal<SessionEvent, Never>
+	private let eventObserver: Signal<SessionEvent, Never>.Observer
+
 	///if we are getting variable updates from the server
 	fileprivate var watchingVariables: Bool = false
 	///queue used for async operations
@@ -90,6 +112,7 @@ public class Session {
 			ws = SessionWebSocketWorker(conInfo: connectionInfo, wspaceId: workspace.wspaceId)
 		}
 		webSocketWorker = ws!
+		(eventSignal, eventObserver) = Signal<SessionEvent, Never>.pipe()
 	}
 	
 	/// Create a session object
@@ -160,6 +183,7 @@ public class Session {
 			}
 			script = adjScript
 		}
+		eventObserver.send(value: SessionEvent(.execScript, props: ["userInitited": true.description]))
 		// TODO: need to handle execute type, or remove as parameter
 		let cmdData = SessionCommand.ExecuteParams(sourceCode: script, transactionId: UUID().uuidString, userInitiated: true, contextId: nil)
 		send(command: SessionCommand.execute(cmdData))
@@ -169,6 +193,9 @@ public class Session {
 	/// - parameter fileId: the id of the file to execute
 	/// - parameter type: whether to run or source the file
 	public func execute(file: AppFile, type: ExecuteType = .run) {
+		if file.model.name.hasSuffix(".Rmd") {
+			eventObserver.send(value: SessionEvent(.execRmd))
+		}
 		let cmdData = SessionCommand.ExecuteFileParams(file: file.model, transactionId: UUID().uuidString, range: nil, echo: type == .source)
 		send(command: SessionCommand.executeFile(cmdData))
 	}
@@ -481,6 +508,7 @@ private extension Session {
 		case .info(let infoData):
 			conInfo.update(sessionInfo: infoData)
 		case .error(let errorData):
+			eventObserver.send(value: SessionEvent(.sessionError, props: ["error": errorData.error.localizedDescription]))
 			delegate?.sessionErrorReceived(errorData.error, details: nil)
 		case .computeStatus(let status):
 			computeStatus = status
