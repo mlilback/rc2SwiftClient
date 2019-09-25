@@ -320,6 +320,7 @@
 		08A2A29F2009602700D9807B /* HTMLStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A29E2009602700D9807B /* HTMLStringTests.swift */; };
 		08A2A2A2200A9B0E00D9807B /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2A1200A9B0E00D9807B /* LogViewController.swift */; };
 		08A7E802233BB12600946F34 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E801233BB12600946F34 /* Starscream */; };
+		08A7E807233BB2ED00946F34 /* SwiftyUserDefaults in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E806233BB2ED00946F34 /* SwiftyUserDefaults */; };
 		08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 08AA5F071E5350AA00389089 /* SearchBarField.m */; };
 		08AD13361FCF18D000CFD516 /* FileInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AD13351FCF18D000CFD516 /* FileInfoController.swift */; };
 		08B184D21E5F36E800F4A6D6 /* defaultWorkspaceFiles in Resources */ = {isa = PBXBuildFile; fileRef = 08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */; };
@@ -335,7 +336,6 @@
 		08B73E8E208A134900DB7339 /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BCEA3020388D5F004A5F47 /* DocumentManager.swift */; };
 		08B73E8F208A134F00DB7339 /* EditorContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE270520334470008E008F /* EditorContext.swift */; };
 		08B73E90208A135400DB7339 /* CodeEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D32DD206C30B500246CBD /* CodeEditor.swift */; };
-		08B73E91208A14A100DB7339 /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
 		08B73E92208A14E800DB7339 /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086526281E6E1B0100D75B25 /* PreferenceKeys.swift */; };
 		08BCEA2F20388B51004A5F47 /* SessionSubProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BCEA2E20388B51004A5F47 /* SessionSubProtocols.swift */; };
 		08BCEA33203B0BD9004A5F47 /* DocumentManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081263201C87A9E8003E37A5 /* DocumentManagerTests.swift */; };
@@ -373,9 +373,6 @@
 		08E5D2091EAA58FD00374055 /* TimedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E5D2081EAA58FD00374055 /* TimedEvent.swift */; };
 		08E7E0981D8AE926000C4C87 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
 		08E7E0991D8AEC38000C4C87 /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		08E836661D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
-		08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
-		08E836681D94240100E26EFE /* SwiftyUserDefaults.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08E836691D94242A00E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
 		08E8366C1D94500900E26EFE /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08EB36CE1FBB7CF90078229A /* VariableDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36CD1FBB7CF90078229A /* VariableDetailsViewController.swift */; };
@@ -715,7 +712,6 @@
 				0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */,
 				08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */,
 				08817B82233AB2B800194228 /* Logging.framework in Embed Frameworks */,
-				08E836681D94240100E26EFE /* SwiftyUserDefaults.framework in Embed Frameworks */,
 				082BE09F1F59D549006CE0B7 /* SyntaxParsing.framework in Embed Frameworks */,
 				08C2D5E61E719DE20007A02D /* SBInjector.framework in Embed Frameworks */,
 				08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */,
@@ -1316,7 +1312,6 @@
 				08817B9E233AB4FB00194228 /* Logging.framework in Frameworks */,
 				08817B56233918F100194228 /* GRDB in Frameworks */,
 				084D33332076B18000246CBD /* ReactiveSwift.framework in Frameworks */,
-				08B73E91208A14A100DB7339 /* SwiftyUserDefaults.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1377,7 +1372,6 @@
 				080C79B5229B8D5500178D0E /* PEGKit.framework in Frameworks */,
 				08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
 				0859A3602062726700103924 /* iosMath.framework in Frameworks */,
-				08E836671D94240100E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */,
 				0821BDCA1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Frameworks */,
 				08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */,
@@ -1408,8 +1402,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08E836661D9423E900E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				08127CC71DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
+				08A7E807233BB2ED00946F34 /* SwiftyUserDefaults in Frameworks */,
 				08817B8A233AB2F500194228 /* Logging.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2671,6 +2665,7 @@
 			);
 			name = Rc2Common;
 			packageProductDependencies = (
+				08A7E806233BB2ED00946F34 /* SwiftyUserDefaults */,
 			);
 			productName = Rc2Common;
 			productReference = 0897941A1D7B68F0003339EE /* Rc2Common.framework */;
@@ -2823,6 +2818,7 @@
 				08817B61233AA0D900194228 /* XCRemoteSwiftPackageReference "swift-log" */,
 				08817B64233AA18800194228 /* XCRemoteSwiftPackageReference "MJLLogger" */,
 				08A7E800233BB12600946F34 /* XCRemoteSwiftPackageReference "Starscream" */,
+				08A7E803233BB28400946F34 /* XCRemoteSwiftPackageReference "SwiftyUserDefaults" */,
 			);
 			productRefGroup = 088CE66A1C4B0AF400153414 /* Products */;
 			projectDirPath = "";
@@ -5124,6 +5120,14 @@
 				minimumVersion = 3.1.0;
 			};
 		};
+		08A7E803233BB28400946F34 /* XCRemoteSwiftPackageReference "SwiftyUserDefaults" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sunshinejr/SwiftyUserDefaults.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -5156,6 +5160,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 08A7E800233BB12600946F34 /* XCRemoteSwiftPackageReference "Starscream" */;
 			productName = Starscream;
+		};
+		08A7E806233BB2ED00946F34 /* SwiftyUserDefaults */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 08A7E803233BB28400946F34 /* XCRemoteSwiftPackageReference "SwiftyUserDefaults" */;
+			productName = SwiftyUserDefaults;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

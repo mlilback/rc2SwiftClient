@@ -1,5 +1,4 @@
 github "mlilback/pegkit" ~> 0.4.4
-github "radex/SwiftyUserDefaults" ~> 4.0.0
 github "ReactiveCocoa/ReactiveCocoa" "7bbb79e"
 github "ZipArchive/ZipArchive"
 github "evgenyneu/SigmaSwiftStatistics" ~> 7.0
