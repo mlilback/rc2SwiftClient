@@ -67,8 +67,6 @@
 		0816FD1D1E5226010006FF26 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816FD1C1E5226010006FF26 /* SearchBarView.swift */; };
 		0816FD1F1E5226760006FF26 /* SearchBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0816FD1E1E5226760006FF26 /* SearchBarView.xib */; };
 		081996701E36A78A0000AA0E /* EditableTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0819966F1E36A78A0000AA0E /* EditableTableCellView.swift */; };
-		0821BDCA1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */; };
-		0821BDCB1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082564F320150B4000526957 /* MacAppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082564F220150B4000526957 /* MacAppConstants.swift */; };
 		0825658C2016BB9200526957 /* OnboardingContent.rtfd in Resources */ = {isa = PBXBuildFile; fileRef = 0825658A2016BB9200526957 /* OnboardingContent.rtfd */; };
 		0826108F1DB02FC300C03422 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -321,6 +319,7 @@
 		08A2A2A2200A9B0E00D9807B /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2A1200A9B0E00D9807B /* LogViewController.swift */; };
 		08A7E802233BB12600946F34 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E801233BB12600946F34 /* Starscream */; };
 		08A7E807233BB2ED00946F34 /* SwiftyUserDefaults in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E806233BB2ED00946F34 /* SwiftyUserDefaults */; };
+		08A7E80A233BB43200946F34 /* SigmaSwiftStatistics in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E809233BB43200946F34 /* SigmaSwiftStatistics */; };
 		08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 08AA5F071E5350AA00389089 /* SearchBarField.m */; };
 		08AD13361FCF18D000CFD516 /* FileInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AD13351FCF18D000CFD516 /* FileInfoController.swift */; };
 		08B184D21E5F36E800F4A6D6 /* defaultWorkspaceFiles in Resources */ = {isa = PBXBuildFile; fileRef = 08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */; };
@@ -716,7 +715,6 @@
 				08C2D5E61E719DE20007A02D /* SBInjector.framework in Embed Frameworks */,
 				08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */,
 				082BE15E1F5B3682006CE0B7 /* Model.framework in Embed Frameworks */,
-				0821BDCB1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Embed Frameworks */,
 				084D32FD206D03DD00246CBD /* ClientCore.framework in Embed Frameworks */,
 				08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */,
 				080E82D71DCBE31D0048F36C /* Networking.framework in Embed Frameworks */,
@@ -1373,7 +1371,6 @@
 				08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
 				0859A3602062726700103924 /* iosMath.framework in Frameworks */,
 				08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */,
-				0821BDCA1FCB83B6008DCFC5 /* SigmaSwiftStatistics.framework in Frameworks */,
 				08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */,
 				08817B81233AB2B800194228 /* Logging.framework in Frameworks */,
 				08C2D5E51E719DE20007A02D /* SBInjector.framework in Frameworks */,
@@ -1383,6 +1380,7 @@
 				082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */,
 				088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */,
 				0897942F1D7B68F0003339EE /* Rc2Common.framework in Frameworks */,
+				08A7E80A233BB43200946F34 /* SigmaSwiftStatistics in Frameworks */,
 				084D32FC206D03DD00246CBD /* ClientCore.framework in Frameworks */,
 				0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */,
 			);
@@ -2622,6 +2620,7 @@
 			name = MacClient;
 			packageProductDependencies = (
 				08817B5A23391CB100194228 /* Down */,
+				08A7E809233BB43200946F34 /* SigmaSwiftStatistics */,
 			);
 			productName = MacClient;
 			productReference = 088CE6691C4B0AF400153414 /* Rc².app */;
@@ -2819,6 +2818,7 @@
 				08817B64233AA18800194228 /* XCRemoteSwiftPackageReference "MJLLogger" */,
 				08A7E800233BB12600946F34 /* XCRemoteSwiftPackageReference "Starscream" */,
 				08A7E803233BB28400946F34 /* XCRemoteSwiftPackageReference "SwiftyUserDefaults" */,
+				08A7E808233BB43200946F34 /* XCRemoteSwiftPackageReference "SigmaSwiftStatistics" */,
 			);
 			productRefGroup = 088CE66A1C4B0AF400153414 /* Products */;
 			projectDirPath = "";
@@ -5128,6 +5128,14 @@
 				minimumVersion = 4.0.0;
 			};
 		};
+		08A7E808233BB43200946F34 /* XCRemoteSwiftPackageReference "SigmaSwiftStatistics" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evgenyneu/SigmaSwiftStatistics.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -5165,6 +5173,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 08A7E803233BB28400946F34 /* XCRemoteSwiftPackageReference "SwiftyUserDefaults" */;
 			productName = SwiftyUserDefaults;
+		};
+		08A7E809233BB43200946F34 /* SigmaSwiftStatistics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 08A7E808233BB43200946F34 /* XCRemoteSwiftPackageReference "SigmaSwiftStatistics" */;
+			productName = SigmaSwiftStatistics;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
