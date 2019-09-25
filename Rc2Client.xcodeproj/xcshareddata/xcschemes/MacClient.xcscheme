@@ -167,6 +167,7 @@
       debugDocumentVersioning = "YES"
       migratedStopOnEveryIssue = "YES"
       debugServiceExtension = "internal"
+      enableGPUValidationMode = "1"
       allowLocationSimulation = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
@@ -178,12 +179,6 @@
             ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "--disableDocker"
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "CFNETWORK_DIAGNOSTICS"
@@ -198,7 +193,7 @@
          <EnvironmentVariable
             key = "DMSkipUpdateCache"
             value = "1"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "ImageInfoBaseUrl"
@@ -213,7 +208,7 @@
          <EnvironmentVariable
             key = "CA_DEBUG_TRANSACTIONS"
             value = "1"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>
