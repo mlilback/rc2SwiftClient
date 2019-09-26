@@ -40,7 +40,7 @@ The following packages/frameworks are used (mostly by SPM, a few require Carthag
 
 * [SwiftyUserDefaults](https://github.com/sunshinejr/SwiftyUserDefaults.git) swifty wrapper around UserDefaults
 
-* [ZipArchive](https://github.com/ZipArchive/ZipArchive) for compressing files
+* [ZipFoundation](https://github.com/weichsel/ZIPFoundation.git) for compressing files
 
 # Preparing to build
 

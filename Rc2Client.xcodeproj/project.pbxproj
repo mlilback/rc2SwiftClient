@@ -216,7 +216,6 @@
 		085A19792049E2A000B7EC5F /* Networking.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		085A197A2049E2A800B7EC5F /* Rc2Common.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		085A197B2049E2AE00B7EC5F /* Freddy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		085A197C2049E2B900B7EC5F /* ZipArchive.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		085A197E2049E2C800B7EC5F /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		085A19842049E3C000B7EC5F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 085A19832049E3C000B7EC5F /* Cocoa.framework */; };
 		085A1A1E205AC35200B7EC5F /* ChunkViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A1C205AC35200B7EC5F /* ChunkViewItem.swift */; };
@@ -293,7 +292,6 @@
 		088CE6741C4B0AF400153414 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6721C4B0AF400153414 /* Main.storyboard */; };
 		088CE6B61C4B71F300153414 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088CE6B51C4B71F300153414 /* Constants.swift */; };
 		088CE6BA1C4C44BE00153414 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 088CE6B91C4C44BD00153414 /* Security.framework */; };
-		088E38061EF4024100136CFA /* ZipArchive.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		088E38071EF4025700136CFA /* ReactiveCocoa.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		088E38081EF40B7700136CFA /* Bookmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B81D216E5400866A05 /* Bookmark.swift */; };
 		088E38091EF40B7B00136CFA /* BookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083A567E1D25B818009D3091 /* BookmarkManager.swift */; };
@@ -326,13 +324,11 @@
 		08A7E811233BF8F200946F34 /* AppCenterAnalytics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80C233BF8F100946F34 /* AppCenterAnalytics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08A7E812233BF8F200946F34 /* AppCenterCrashes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80D233BF8F100946F34 /* AppCenterCrashes.framework */; };
 		08A7E813233BF8F200946F34 /* AppCenterCrashes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80D233BF8F100946F34 /* AppCenterCrashes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		08A7E816233D159E00946F34 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E815233D159E00946F34 /* ZIPFoundation */; };
 		08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */ = {isa = PBXBuildFile; fileRef = 08AA5F071E5350AA00389089 /* SearchBarField.m */; };
 		08AD13361FCF18D000CFD516 /* FileInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AD13351FCF18D000CFD516 /* FileInfoController.swift */; };
 		08B184D21E5F36E800F4A6D6 /* defaultWorkspaceFiles in Resources */ = {isa = PBXBuildFile; fileRef = 08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */; };
 		08B184D41E5F384800F4A6D6 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B184D31E5F384800F4A6D6 /* AppInfo.swift */; };
-		08B184D71E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
-		08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
-		08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08B19F8E233671FB00EE2E30 /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; };
 		08B19F8F23367DE500EE2E30 /* UserDefaults+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */; };
 		08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
@@ -348,7 +344,6 @@
 		08BCEA38203B1997004A5F47 /* Starscream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; };
 		08BCEA39203B19D0004A5F47 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; };
 		08BCEA3A203B19D2004A5F47 /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108E1DB02FC300C03422 /* Quick.framework */; };
-		08BCEA3B203B19E4004A5F47 /* ZipArchive.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */; };
 		08BCEA3C203B19E7004A5F47 /* SBInjector.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08C2D5E41E719DE20007A02D /* SBInjector.framework */; };
 		08BCEA3D203B19EA004A5F47 /* MJLLogger.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
 		08BCEA3E203B19F4004A5F47 /* ReactiveSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
@@ -677,7 +672,6 @@
 			dstSubfolderSpec = 16;
 			files = (
 				08BCEA38203B1997004A5F47 /* Starscream.framework in CopyFiles */,
-				08BCEA3B203B19E4004A5F47 /* ZipArchive.framework in CopyFiles */,
 				08BCEA3D203B19EA004A5F47 /* MJLLogger.framework in CopyFiles */,
 				08BCEA39203B19D0004A5F47 /* Nimble.framework in CopyFiles */,
 				08BCEA3C203B19E7004A5F47 /* SBInjector.framework in CopyFiles */,
@@ -696,7 +690,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				088E38071EF4025700136CFA /* ReactiveCocoa.framework in CopyFiles */,
-				088E38061EF4024100136CFA /* ZipArchive.framework in CopyFiles */,
 				0865087D1E49360A0067C8CA /* Starscream.framework in CopyFiles */,
 				081559701DDA763A0047B3CE /* Rc2Common.framework in CopyFiles */,
 				080E82F31DCC03B40048F36C /* Result.framework in CopyFiles */,
@@ -724,7 +717,6 @@
 				08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */,
 				082BE15E1F5B3682006CE0B7 /* Model.framework in Embed Frameworks */,
 				084D32FD206D03DD00246CBD /* ClientCore.framework in Embed Frameworks */,
-				08B184D91E5F480400F4A6D6 /* ZipArchive.framework in Embed Frameworks */,
 				080E82D71DCBE31D0048F36C /* Networking.framework in Embed Frameworks */,
 				08A7E80F233BF8F200946F34 /* AppCenter.framework in Embed Frameworks */,
 				0859A3612062726700103924 /* iosMath.framework in Embed Frameworks */,
@@ -784,7 +776,6 @@
 				085A19792049E2A000B7EC5F /* Networking.framework in CopyFiles */,
 				085A19742049E1F400B7EC5F /* ReactiveSwift.framework in CopyFiles */,
 				085A197E2049E2C800B7EC5F /* SwiftyUserDefaults.framework in CopyFiles */,
-				085A197C2049E2B900B7EC5F /* ZipArchive.framework in CopyFiles */,
 				085A197B2049E2AE00B7EC5F /* Freddy.framework in CopyFiles */,
 				085A19772049E28F00B7EC5F /* Starscream.framework in CopyFiles */,
 				085A19752049E1F700B7EC5F /* Result.framework in CopyFiles */,
@@ -1166,7 +1157,6 @@
 		08AD13351FCF18D000CFD516 /* FileInfoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInfoController.swift; sourceTree = "<group>"; };
 		08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; name = defaultWorkspaceFiles; path = shared/resources/defaultWorkspaceFiles; sourceTree = SOURCE_ROOT; };
 		08B184D31E5F384800F4A6D6 /* AppInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
-		08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZipArchive.framework; path = Carthage/Build/Mac/ZipArchive.framework; sourceTree = "<group>"; };
 		08B73E8B208952A700DB7339 /* NotebookMiddleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookMiddleView.swift; sourceTree = "<group>"; };
 		08BCEA2E20388B51004A5F47 /* SessionSubProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSubProtocols.swift; sourceTree = "<group>"; };
 		08BCEA3020388D5F004A5F47 /* DocumentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
@@ -1257,8 +1247,8 @@
 				08B19F8E233671FB00EE2E30 /* Model.framework in Frameworks */,
 				08F6ADBC1DD914F800AF0722 /* Rc2Common.framework in Frameworks */,
 				08817B94233AB47300194228 /* Logging.framework in Frameworks */,
-				08B184D71E5F47D000F4A6D6 /* ZipArchive.framework in Frameworks */,
 				08A7E802233BB12600946F34 /* Starscream in Frameworks */,
+				08A7E816233D159E00946F34 /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1385,7 +1375,6 @@
 				0859A3602062726700103924 /* iosMath.framework in Frameworks */,
 				08A7E810233BF8F200946F34 /* AppCenterAnalytics.framework in Frameworks */,
 				08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */,
-				08B184D81E5F480400F4A6D6 /* ZipArchive.framework in Frameworks */,
 				08817B81233AB2B800194228 /* Logging.framework in Frameworks */,
 				08C2D5E51E719DE20007A02D /* SBInjector.framework in Frameworks */,
 				080E82D61DCBE31D0048F36C /* Networking.framework in Frameworks */,
@@ -2065,7 +2054,6 @@
 				0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */,
 				0823F2321EE742B100A8F8C6 /* libz.tbd */,
 				08C2D5E41E719DE20007A02D /* SBInjector.framework */,
-				08B184D51E5F47D000F4A6D6 /* ZipArchive.framework */,
 				08367BD21E3FCEA800FAFC8A /* Starscream.framework */,
 				0826108D1DB02FC300C03422 /* Nimble.framework */,
 				0826108E1DB02FC300C03422 /* Quick.framework */,
@@ -2361,6 +2349,7 @@
 			name = Networking;
 			packageProductDependencies = (
 				08A7E801233BB12600946F34 /* Starscream */,
+				08A7E815233D159E00946F34 /* ZIPFoundation */,
 			);
 			productName = Networking;
 			productReference = 080E82C11DCBE31D0048F36C /* Networking.framework */;
@@ -2837,6 +2826,7 @@
 				08A7E800233BB12600946F34 /* XCRemoteSwiftPackageReference "Starscream" */,
 				08A7E803233BB28400946F34 /* XCRemoteSwiftPackageReference "SwiftyUserDefaults" */,
 				08A7E808233BB43200946F34 /* XCRemoteSwiftPackageReference "SigmaSwiftStatistics" */,
+				08A7E814233D159E00946F34 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			productRefGroup = 088CE66A1C4B0AF400153414 /* Products */;
 			projectDirPath = "";
@@ -5156,6 +5146,14 @@
 				minimumVersion = 9.0.2;
 			};
 		};
+		08A7E814233D159E00946F34 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.9;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -5198,6 +5196,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 08A7E808233BB43200946F34 /* XCRemoteSwiftPackageReference "SigmaSwiftStatistics" */;
 			productName = SigmaSwiftStatistics;
+		};
+		08A7E815233D159E00946F34 /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 08A7E814233D159E00946F34 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

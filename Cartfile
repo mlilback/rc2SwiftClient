@@ -1,6 +1,5 @@
 github "mlilback/pegkit" ~> 0.4.4
 github "ReactiveCocoa/ReactiveCocoa" "7bbb79e"
-github "ZipArchive/ZipArchive"
 github "microsoft/appcenter-sdk-apple" ~> 2.4.0
 
 #github "krzyzanowskim/CryptoSwift" ~> 1.0.0

@@ -8,7 +8,7 @@ import Rc2Common
 import Foundation
 import MJLLogger
 import ReactiveSwift
-import ZipArchive
+import ZIPFoundation
 import Model
 
 private let wspaceDirName = "defaultWorkspaceFiles"
@@ -207,12 +207,13 @@ public final class Rc2RestClient {
 				}
 			}
 			let destUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("\(UUID().uuidString).zip")
-			guard SSZipArchive.createZipFile(atPath: destUrl.path, withContentsOfDirectory: defaultDirectoryUrl.path, keepParentDirectory: false) else
-			{
-				Log.warn("failed to create zip file to upload", .network)
-				return nil
+			do {
+				try fm.zipItem(at: defaultDirectoryUrl, to: destUrl, shouldKeepParent: false)
+				return destUrl
+			} catch {
+				Log.warn("failed to create zip file to upload: \(error)", .network)
+
 			}
-			return destUrl
 		} catch {
 			Log.warn("error loading default workspace files: \(error)", .network)
 		}
