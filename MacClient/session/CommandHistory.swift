@@ -50,6 +50,7 @@ class CommandHistory {
 			menuItem.target = target
 			menuItem.representedObject = aCommand //store full command in case cropped above
 			historyMenu.addItem(menuItem)
+			menuItem.isEnabled = true
 		}
 	}
 }

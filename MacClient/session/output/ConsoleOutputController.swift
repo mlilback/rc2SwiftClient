@@ -73,6 +73,10 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		switch action  {
 		case #selector(ConsoleOutputController.clearConsole(_:)):
 			return resultsView?.string.count ?? 0 > 0
+		case #selector(ConsoleOutputController.historyClicked(_:)):
+			return true
+		case #selector(displayHistoryItem(_:)):
+			return true
 		default:
 			return false
 		}
