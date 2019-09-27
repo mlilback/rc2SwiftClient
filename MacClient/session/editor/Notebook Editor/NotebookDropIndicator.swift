@@ -4,7 +4,7 @@
 //  Copyright ©2017 Mark Lilback. This file is licensed under the ISC license.
 //
 
-import Foundation
+import Cocoa
 
 // The highlighted line where the dropped item will go:
 class NotebookDropIndicator: NSView, NSCollectionViewElement {

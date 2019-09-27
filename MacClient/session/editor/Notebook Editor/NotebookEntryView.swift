@@ -4,7 +4,7 @@
 //  Copyright ©2017 Mark Lilback. This file is licensed under the ISC license.
 //
 
-import Foundation
+import Cocoa
 
 class NotebookEntryView: NSView {
 	@IBOutlet var sourceView: SourceTextView!
