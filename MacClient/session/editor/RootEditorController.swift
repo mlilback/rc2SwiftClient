@@ -75,6 +75,7 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 				me.didChangeValue(forKey: "canExecute")
 				} as Any)
 		}
+		fileNameField?.stringValue = "" //clear fake title from storyboard
 //		observerTokens.append(previewEditor.observe(\.canExecute, options: [.initial]) { [weak self] object, change in
 //			guard let me = self, let current = me.currentEditor, current == object else { return }
 //			me.willChangeValue(forKey: "canExecute")
