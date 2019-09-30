@@ -68,6 +68,8 @@ public class SessionWebSocketWorker {
 		guard  _status.value != .failed(Rc2Error.Rc2ErrorType.network) else { return } //don't close if failed
 		assert(_status.value == .connected, "must be connected to close")
 		socket.disconnect()
+		pingRepeater?.pause()
+		pingRepeater = nil
 	}
 	
 	public func send(data: Data) {
@@ -130,6 +132,7 @@ public class SessionWebSocketWorker {
 		components.queryItems = [URLQueryItem(name: "client", value: client),
 								 URLQueryItem(name: "build", value: "\(AppInfo.buildNumber)")]
 		var request = URLRequest(url: components.url!)
+		request.timeoutInterval = 5 // 5 seconds is really too long
 		request.setValue("Bearer \(conInfo.authToken)", forHTTPHeaderField: "Authorization")
 		request.setValue("\(wspaceId)", forHTTPHeaderField: "Rc2-WorkspaceId")
 		let ws = WebSocket(request: request)
