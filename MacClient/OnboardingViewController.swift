@@ -83,6 +83,7 @@ class OnboardingViewController: NSViewController {
 	}
 	
 	@IBAction func openWorkspace(_ sender: Any?) {
+		guard wspaceTableView.clickedRow >= 0 else { return } //they clicked where there is no row
 		guard let wspace = project?.workspaces.value[wspaceTableView.clickedRow] else { return } //should never happend
 		actionHandler?(.open(wspace))
 	}
