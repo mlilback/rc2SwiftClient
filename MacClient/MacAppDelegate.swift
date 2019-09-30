@@ -389,11 +389,18 @@ extension MacAppDelegate {
 	}
 	
 	@objc func windowWillClose(_ note: Notification) {
-		//if no windows will be visible, acitvate/show bookmark window
 		if let window = note.object as? NSWindow,
 			let sessionWC = window.windowController as? MainWindowController
 		{
 			sessionWindowControllers.remove(sessionWC)
+		}
+		if sessionWindowControllers.count < 1 {
+			// if nothing visible, show onboarding window
+			onboardingController?.window?.makeKeyAndOrderFront(self)
+		}
+		if sessionWindowControllers.count < 1 {
+			// if nothing visible, show onboarding window
+			onboardingController?.window?.makeKeyAndOrderFront(self)
 		}
 	}
 	
