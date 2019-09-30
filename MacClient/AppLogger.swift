@@ -19,10 +19,10 @@ fileprivate extension DefaultsKeys {
 /// internal enum mapped to LogLevel for the limited set of options we offer in UI. Also allows default value.
 private enum OtherLogLevel: Int {
 	case `default` = 0
-	case error
-	case warn
-	case info
-	case debug
+	case error = 2
+	case warn = 3
+	case info = 5
+	case debug = 6
 	
 	static let allCases: [OtherLogLevel] = [.default, .error, .warn, .info, .debug]
 	
@@ -184,7 +184,7 @@ extension AppLogger {
 			config.set(level: nil, forCategory: category)
 			return
 		}
-		print("setting \(category) to \(newLevel)")
+		Log.info("setting \(category) to \(newLevel)", .app)
 		config.set(level: newLevel, forCategory: category)
 	}
 	
