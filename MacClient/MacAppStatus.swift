@@ -161,7 +161,9 @@ class MacAppStatus {
 		alert.alertStyle = isCritical ? .critical : .warning
 		if let parentWindow = getWindow(session) {
 			alert.beginSheetModal(for: parentWindow, completionHandler: { (rsp) in
-				guard buttons.count > 1 else { return }
+				// makes no sense. why isn't the handler going to be called if there is only a default button?
+				// guard buttons.count > 1 else { return }
+				alert.window.orderOut(nil)
 				queue.async {
 					//convert rsp to an index to buttons
 					handler?(rsp)
