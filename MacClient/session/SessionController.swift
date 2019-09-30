@@ -16,7 +16,7 @@ import Model
 
 protocol SessionControllerDelegate: class {
 	func filesRefreshed()
-	func sessionClosed()
+	func sessionClosed(details: String?)
 	func save(state: inout SessionState)
 	func restore(state: SessionState)
 }
@@ -183,8 +183,8 @@ extension SessionController: SessionDelegate {
 		
 	}
 	
-	func sessionClosed() {
-		delegate?.sessionClosed()
+	func sessionClosed(reason: String?) {
+		delegate?.sessionClosed(details: reason)
 	}
 	
 	func sessionFilesLoaded(_ session: Session) {

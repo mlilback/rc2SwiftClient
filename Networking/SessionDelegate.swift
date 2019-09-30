@@ -10,7 +10,7 @@ import Model
 
 public protocol SessionDelegate: class {
 	///called when the session is closed. Called when explicity or remotely closed. Not called on application termination
-	func sessionClosed()
+	func sessionClosed(reason: String?)
 	///called when a server response is received and not handled internally by the session
 	func sessionMessageReceived(_ response: SessionResponse)
 	///called when the server has returned an error. Delegate needs to associate it with the cause and error.

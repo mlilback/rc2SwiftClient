@@ -41,6 +41,13 @@ public struct SessionEvent: Codable, Hashable {
 	}
 }
 
+private enum CloseSource: String {
+	case websocket
+	case websocketError
+	case error
+	case server
+}
+
 public class Session {
 	// MARK: properties
 
@@ -482,6 +489,14 @@ private extension Session {
 		}
 	}
 	
+	func handleClosed(source: CloseSource, data: SessionResponse.CloseData? = nil, error: Error? = nil) {
+		Log.info("got closed message from \(source)", .session)
+		connectionOpen = false
+		delegate?.sessionClosed(reason: (source == .error ? error?.localizedDescription : data?.details) ?? "unknown reason")
+
+	}
+	
+	/// The following will not be passed to the delegate: .fileOperation, .fileChnaged, .save, .showOutput, .info, .error, .closed
 	func handleReceivedMessage(_ messageData: Data) {
 		let response: SessionResponse
 		do {
@@ -494,7 +509,7 @@ private extension Session {
 			Log.info("failed to parse received json: \(String(data: messageData, encoding: .utf8) ?? "<invalid>")", .session)
 			return
 		}
-		Log.info("got message \(response)", .session)
+		Log.info("got message update:  \(response)", .session)
 		var informDelegate = false
 		switch response {
 		case .fileOperation(let opData):
@@ -507,6 +522,8 @@ private extension Session {
 			handleShowOutput(response: response, data: outputData)
 		case .info(let infoData):
 			conInfo.update(sessionInfo: infoData)
+		case .closed(let closeData):
+			handleClosed(source: .server, data: closeData)
 		case .error(let errorData):
 			eventObserver.send(value: SessionEvent(.sessionError, props: ["error": errorData.error.localizedDescription]))
 			delegate?.sessionErrorReceived(errorData.error, details: nil)
@@ -535,6 +552,8 @@ private extension Session {
 		case .computeStatus(_):
 			return nil
 		case .connected:
+			return nil
+		case .closed:
 			return nil
 		case .echoExecute(let data):
 			return data.transactionId
@@ -586,13 +605,9 @@ private extension Session {
 		case .connected:
 			completePostOpenSetup()
 		case .closed:
-			connectionOpen = false
-			delegate?.sessionClosed()
+			handleClosed(source: .websocket)
 		case .failed(let err):
-			// TODO: need to report error to delegate to inform user
-			Log.info("websocket error: \(err)")
-			connectionOpen = false
-			delegate?.sessionClosed()
+			handleClosed(source: .websocketError, error: err)
 		}
 	}
 	

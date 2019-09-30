@@ -288,8 +288,16 @@ extension RootViewController: ManageFontMenu {
 
 // MARK: - SessionControllerDelegate
 extension RootViewController: SessionControllerDelegate {
-	func sessionClosed() {
-		self.sessionClosedHandler?()
+	// need to inform user that the connection was closed, then inform our close handler (which is responsible for closing us)
+	func sessionClosed(details: String?) {
+		let strDetails = details ?? ""
+		if let status = appStatus {
+			status.presentAlert(session, message: NSLocalizedString("Connection Closed", comment: "title for connection closed alert"), details: strDetails) { _ in
+				self.sessionClosedHandler?()
+			}
+		} else {
+			self.sessionClosedHandler?()
+		}
 	}
 	
 	func filesRefreshed() {
