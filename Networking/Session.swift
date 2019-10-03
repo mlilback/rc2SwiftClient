@@ -581,6 +581,8 @@ private extension Session {
 			return nil
 		case .info:
 			return nil
+		case .environmentCreated:
+			return nil
 		}
 	}
 	
