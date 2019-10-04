@@ -10,7 +10,6 @@ import Networking
 import ClientCore
 import SwiftyUserDefaults
 import ReactiveSwift
-import ReactiveCocoa
 import Rc2Common
 import Model
 

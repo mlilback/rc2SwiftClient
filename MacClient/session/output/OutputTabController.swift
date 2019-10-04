@@ -10,7 +10,6 @@ import MJLLogger
 import Networking
 import ClientCore
 import ReactiveSwift
-import ReactiveCocoa
 import SwiftyUserDefaults
 
 enum OutputTab: Int {
