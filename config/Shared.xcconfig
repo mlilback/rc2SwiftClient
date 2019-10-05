@@ -45,7 +45,7 @@ CLANG_WARN_SUSPICIOUS_MOVES = YES
 // C++, or Objective-C++, and by the linker for frameworks used by the product. Paths are
 // delimited by whitespace, so any paths with spaces in them need to be properly quoted.
 
-FRAMEWORK_SEARCH_PATHS = $(inherited) $(PROJECT_DIR)/Carthage/Build/Mac
+FRAMEWORK_SEARCH_PATHS = $(inherited) $(PROJECT_DIR)/Carthage/Build/Mac $(PROJECT_DIR)/vendor $(PROJECT_DIR)/Carthage/Build/Mac/Static
 
 // Runpath Search Paths
 //

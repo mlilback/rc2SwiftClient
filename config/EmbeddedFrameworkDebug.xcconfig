@@ -6,6 +6,7 @@
 //
 
 #include "Debug.xcconfig"
+#include "Shared.xcconfig"
 
 SWIFT_OBJC_BRIDGING_HEADER =
 

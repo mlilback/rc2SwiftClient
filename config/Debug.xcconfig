@@ -5,9 +5,6 @@
 //  Copyright © 2016 Mark Lilback. This file is licensed under the ISC license.
 //
 
-#include "Shared.xcconfig"
-#include "App.xcconfig"
-
 ONLY_ACTIVE_ARCH = YES
 
 SWIFT_OPTIMIZATION_LEVEL = -Owholemodule
