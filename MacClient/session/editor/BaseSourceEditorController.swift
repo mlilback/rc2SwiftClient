@@ -14,6 +14,10 @@ import Networking
 import SyntaxParsing
 import ClientCore
 
+protocol FontUser {
+	var font: NSFont { get set }
+}
+
 class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 {
 	// MARK: properties
@@ -27,6 +31,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	
 	var defaultAttributes: [NSAttributedString.Key: Any] = [:]
 	var currentChunkIndex: Int = 0
+	var fontUser: FontUser?
 	
 	var searchableTextView: NSTextView? { return editor }
 	
@@ -60,8 +65,13 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	override func setContext(context: EditorContext) {
 		super.setContext(context: context)
 		context.editorFont.signal.observeValues { [weak self] newFont in
-			self?.editor?.font = newFont
+			self?.fontChanged(newFont)
 		}
+	}
+	
+	func fontChanged(_ newFont: NSFont) {
+		editor?.font = newFont
+		fontUser?.font = newFont
 	}
 	
 	override func viewDidLoad() {
@@ -70,7 +80,10 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		editor?.menuDelegate = self
 		fileNameField?.stringValue = ""
 		editor?.textStorage?.delegate = self
-		editor?.enableLineNumberView()
+		fontUser = editor?.enableLineNumberView(ignoreHandler: { [weak self] in self?.ignoreTextStorageNotifications ?? false })
+		if let currentFont = context?.editorFont.value {
+			fontUser?.font = currentFont
+		}
 		editor?.textContainer?.replaceLayoutManager(SourceEditorLayoutManager())
 		editor?.enclosingScrollView?.rulersVisible = true
 	}

@@ -10,11 +10,14 @@ import SwiftyUserDefaults
 
 extension NSTextView {
 	/// installs line number view as the vertical ruler
-	func enableLineNumberView() {
-		guard enclosingScrollView!.verticalRulerView == nil else { return }
-		let lnv = NoodleLineNumberView(scrollView: enclosingScrollView)
+	func enableLineNumberView(ignoreHandler: (() -> Bool)? = nil) -> FontUser? {
+		guard enclosingScrollView!.verticalRulerView == nil else { return nil }
+		let lnv = LineNumberRulerView(scrollView: enclosingScrollView, orientation: .verticalRuler)
 		enclosingScrollView!.verticalRulerView = lnv
 		enclosingScrollView!.rulersVisible = true
+		lnv.clientView = self
+		lnv.shouldIgnoreNotifications = ignoreHandler
+		return lnv
 	}
 }
 
@@ -22,7 +25,7 @@ class SessionEditor: TextViewWithContextualMenu {
 	var wordWrapEnabled: Bool { return textContainer!.widthTracksTextView }
 	
 	private var didSetup = false
-	
+		
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		guard !didSetup else { return }
@@ -69,16 +72,12 @@ class SessionEditor: TextViewWithContextualMenu {
 		guard str == ")" else { return }
 		let openLoc = findMatchingParenthesis(selectedRange().location - 2, str: str)
 		guard openLoc != NSNotFound else { return }
-//		let curLoc = selectedRange()
 		//flash the inserted character and matching opening character
-//		let closeRange = NSMakeRange(curLoc.location, 1)
 		let openRange = NSRange(location: openLoc, length: 1)
 		let color = PlatformColor(hexString: "888888")!
-//		layoutManager?.addTemporaryAttribute(NSBackgroundColorAttributeName, value: color, forCharacterRange: closeRange)
 		layoutManager?.addTemporaryAttribute(.backgroundColor, value: color, forCharacterRange: openRange)
 		//FIXME: code smell
 		delay(0.1) {
-//			self.layoutManager?.removeTemporaryAttribute(NSBackgroundColorAttributeName, forCharacterRange: closeRange)
 			self.layoutManager?.removeTemporaryAttribute(.backgroundColor, forCharacterRange: openRange)
 		}
 	}

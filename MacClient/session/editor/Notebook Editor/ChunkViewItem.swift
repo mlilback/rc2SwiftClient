@@ -52,7 +52,7 @@ class ChunkViewItem: NotebookViewItem {
 		if resultTextView != nil {
 			NotificationCenter.default.addObserver(self, selector: #selector(boundsChanged(_:)), name: NSView.boundsDidChangeNotification, object: resultView)
 		}
-		sourceView.enableLineNumberView()
+		_ = sourceView.enableLineNumberView()
 		
 		// Set background colors for top and middle views:
 		middleView?.wantsLayer = true

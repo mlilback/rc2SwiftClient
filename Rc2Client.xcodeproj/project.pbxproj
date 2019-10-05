@@ -45,8 +45,6 @@
 		08100049218791D5006856D3 /* LivePreviewDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08100048218791D5006856D3 /* LivePreviewDisplayController.swift */; };
 		0810004B21879239006856D3 /* LivePreviewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0810004A21879239006856D3 /* LivePreviewController.storyboard */; };
 		0812178E2058805000ED328C /* PEGKitUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812178D2058805000ED328C /* PEGKitUtilities.swift */; };
-		081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */; };
-		0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */; };
 		08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		08127CC71DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -315,6 +313,7 @@
 		08A2A29B1FFEA29700D9807B /* SessionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2971FFE97B700D9807B /* SessionState.swift */; };
 		08A2A29F2009602700D9807B /* HTMLStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A29E2009602700D9807B /* HTMLStringTests.swift */; };
 		08A2A2A2200A9B0E00D9807B /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2A1200A9B0E00D9807B /* LogViewController.swift */; };
+		08A3042723478BEA0051EC0D /* LineNumberRulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A3042623478BEA0051EC0D /* LineNumberRulerView.swift */; };
 		08A7E802233BB12600946F34 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E801233BB12600946F34 /* Starscream */; };
 		08A7E807233BB2ED00946F34 /* SwiftyUserDefaults in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E806233BB2ED00946F34 /* SwiftyUserDefaults */; };
 		08A7E80A233BB43200946F34 /* SigmaSwiftStatistics in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E809233BB43200946F34 /* SigmaSwiftStatistics */; };
@@ -1148,6 +1147,7 @@
 		08A2A2971FFE97B700D9807B /* SessionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionState.swift; sourceTree = "<group>"; };
 		08A2A29E2009602700D9807B /* HTMLStringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLStringTests.swift; sourceTree = "<group>"; };
 		08A2A2A1200A9B0E00D9807B /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
+		08A3042623478BEA0051EC0D /* LineNumberRulerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LineNumberRulerView.swift; path = MacClient/views/LineNumberRulerView.swift; sourceTree = SOURCE_ROOT; };
 		08A7E80B233BF8F100946F34 /* AppCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenter.framework; path = Carthage/Build/Mac/Static/AppCenter.framework; sourceTree = "<group>"; };
 		08A7E80C233BF8F100946F34 /* AppCenterAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenterAnalytics.framework; path = Carthage/Build/Mac/Static/AppCenterAnalytics.framework; sourceTree = "<group>"; };
 		08A7E80D233BF8F100946F34 /* AppCenterCrashes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenterCrashes.framework; path = Carthage/Build/Mac/Static/AppCenterCrashes.framework; sourceTree = "<group>"; };
@@ -1517,6 +1517,7 @@
 				083174131C5828B400071408 /* ResultsView.swift */,
 				08F189A91D109A4F00866A05 /* TextViewWithContextualMenu.swift */,
 				0819966F1E36A78A0000AA0E /* EditableTableCellView.swift */,
+				08A3042623478BEA0051EC0D /* LineNumberRulerView.swift */,
 			);
 			name = "session views";
 			sourceTree = "<group>";
@@ -3305,6 +3306,7 @@
 				08F8C1822092272E00DFB269 /* InlineEquationEditorController.swift in Sources */,
 				08A2A2A2200A9B0E00D9807B /* LogViewController.swift in Sources */,
 				08ED575D1C723CC3002B2558 /* TargetActionBlock.swift in Sources */,
+				08A3042723478BEA0051EC0D /* LineNumberRulerView.swift in Sources */,
 				08F189A61D09EE4000866A05 /* NSViewController+Rc2.swift in Sources */,
 				083305E41C517FC000E27F66 /* SidebarVariableController.swift in Sources */,
 				08A01FDC1CCA8B2F001EDFAA /* WebViewController.swift in Sources */,
@@ -3329,7 +3331,6 @@
 				08CB55521C5C06B2002CB7EE /* OutputTabController.swift in Sources */,
 				08100049218791D5006856D3 /* LivePreviewDisplayController.swift in Sources */,
 				0846D3E120175DF100795376 /* AppError.swift in Sources */,
-				0812631A1C85D2E0003E37A5 /* NoodleLineNumberView.m in Sources */,
 				08055E361FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift in Sources */,
 				08EB36CE1FBB7CF90078229A /* VariableDetailsViewController.swift in Sources */,
 				0890650B1D26F59300C7CA5D /* MacAppStatus.swift in Sources */,
@@ -3339,7 +3340,6 @@
 				08790773215AC8CF00978ECD /* Rc2Document.swift in Sources */,
 				0865262B1E6E1BE900D75B25 /* GeneralPrefsController.swift in Sources */,
 				083305E61C517FE300E27F66 /* SidebarHelpController.swift in Sources */,
-				081263191C85D2E0003E37A5 /* NoodleLineNumberMarker.m in Sources */,
 				08E55B622194A59300F63A20 /* BaseSourceEditorController.swift in Sources */,
 				08CB55501C5AC727002CB7EE /* SessionEditor.swift in Sources */,
 				083174061C56BE7B00071408 /* SessionSplitController.swift in Sources */,
