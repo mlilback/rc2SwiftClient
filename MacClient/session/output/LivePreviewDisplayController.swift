@@ -91,9 +91,10 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	///   - range: the range of the text in the original string
 	///   - delta: the change made
 	func contentsEdited(range: NSRange, delta: Int) -> Bool {
+		// TODO: this might not even be needed, as we get notification when changed so don't need change notice from editor, however the editor uses the return value to decide to save, which triggers the actual update
 		/// FIXME: implement
 		// need to update the changed chunk if possible. If not, then reparse document
-		parseContent()
+//		parseContent()
 		return true
 	}
 	
@@ -112,28 +113,18 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 	}
 
+	@objc private func parsedDocChanged(_ note: Notification) {
+		documentChanged()
+	}
+	
 	/// called when the context property has been set
 	private func contextChanged() {
 		contextDisposables.dispose()
 		contentsDisposable?.dispose()
 		contentsDisposable = nil
-		// need to listen for currentDocument changes, then observe content changes of that document
-		contextDisposables += context.signal.observeValues { [weak self] _ in
-			guard let me = self, let context = me.context.value else { return }
-			me.contextDisposables += context.parsedDocument.signal.observeValues { [weak self] _ in
-				guard let me = self else { return }
-				// document changed, re-observe contents
-				me.documentChanged()
-			}
-			me.documentChanged()
-		}
-		if let context = context.value {
-			contextDisposables += context.parsedDocument.signal.observeValues { [weak self] _ in
-				guard let me = self else { return }
-				// document changed, re-observe contents
-				me.documentChanged()
-			}
-		}
+		// don't want to observe twice
+		NotificationCenter.default.removeObserver(self, name: .parsedDocumentChanged, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(parsedDocChanged(_:)), name: .parsedDocumentChanged, object: nil)
 		guard outputView != nil else {
 			needToLoadDocumentOnLoad = true
 			return
@@ -149,7 +140,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			guard let me = self else { return }
 			me.parseContent()
 		}
-		parseContent()
+//		parseContent()
 	}
 	
 	/// parses the parsed document and loads it via javascript
@@ -162,6 +153,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 		parseInProgress = true
 		defer { parseInProgress = false }
+		// TODO: Need to only reload chunks that changed
 		var html = curDoc.frontMatter.value + "\n"
 		let allChunks = curDoc.chunks
 		for (chunkNumber, chunk) in allChunks.enumerated() {

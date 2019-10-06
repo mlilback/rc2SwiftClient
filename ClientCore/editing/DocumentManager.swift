@@ -16,6 +16,8 @@ import iosMath
 public extension Notification.Name {
 	/// sent before the currentDocument will be saved. object will be the EditorContext/DocummentManager
 	static let willSaveDocument = Notification.Name(rawValue: "DocumentWillSaveNotification")
+	/// sent after the parsed document has changed. object will be the editorContext
+	static let parsedDocumentChanged = Notification.Name(rawValue: "ParsedDocumentChangedNotification")
 }
 
 /// Manages open documents and the current document. Provides common properties to editor components via the EditorContext protocol.
@@ -243,6 +245,7 @@ public class DocumentManager: EditorContext {
 			}
 			Log.info("parsed \(document.file.name) with \(newParsed.chunks.count) chunks", .core)
 			_parsedDocument.value = newParsed
+			notificationCenter.post(name: .parsedDocumentChanged, object: self)
 		} catch {
 			Log.info("failed to parse document \(document.file.name)", .core)
 		}

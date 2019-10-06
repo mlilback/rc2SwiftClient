@@ -45,9 +45,7 @@ class LivePreviewEditorController: BaseSourceEditorController {
 					let newContents = self.editor?.string
 				{
 					if self.ignoreContentChanges { return }
-						self.save(edits: newContents, reload: true)
-						// FIXME: should be updating the current chunk, or the entire document
-						self.context?.parseCurrentDocument()
+					self.save(edits: newContents, reload: true)
 				}
 			}
 		}
