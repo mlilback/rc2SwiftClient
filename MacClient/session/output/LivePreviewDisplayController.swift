@@ -24,6 +24,7 @@ protocol LivePreviewOutputController {
 //	var sessionController: SessionController? { get set }
 	/// allows preview editor to tell display controller what the current context is so it can monitor the current document
 	var editorContext: EditorContext? { get set }
+	
 	/// allows editor that the user has made a change to the contents of the current document
 	///
 	/// - Parameters:

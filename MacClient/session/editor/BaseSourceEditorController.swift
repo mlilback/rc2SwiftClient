@@ -14,6 +14,7 @@ import Networking
 import SyntaxParsing
 import ClientCore
 
+/// pfrotocol to allow setting the font of something without knowing anything else about it.
 protocol FontUser {
 	var font: NSFont { get set }
 }
@@ -261,7 +262,6 @@ extension BaseSourceEditorController: NSTextStorageDelegate {
 extension BaseSourceEditorController: NSTextViewDelegate {
 	func undoManager(for view: NSTextView) -> UndoManager? {
 		if let currentDocument = context?.currentDocument.value {
-			Log.info("undoManager asked for with no current document", .app)
 			return currentDocument.undoManager
 		}
 		return editor?.undoManager

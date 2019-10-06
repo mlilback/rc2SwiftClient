@@ -11,6 +11,18 @@
       "codeBackground" : "eeeeee",
       "text" : "000000",
       "comment" : "1735ff"
+   },
+   {
+      "quote" : "fdcc5a",
+      "keyword" : "50c7d8",
+      "inlineBackground" : "293739",
+      "background" : "282c36",
+      "ThemeName" : "Default Dark",
+      "equationBackground" : "673743",
+      "function" : "a18bd3",
+      "symbol" : "fb7da7",
+      "codeBackground" : "2a4439",
+      "text" : "f0eeea",
+      "comment" : "4c8072"
    }
 ]
-
