@@ -38,7 +38,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 {
 	var contextualMenuDelegate: ContextualMenuDelegate?
 	var sessionController: SessionController?
-	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil) { didSet { contextChanged() }}
+	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil)
 	private let contextDisposables = CompositeDisposable()
 	private var contentsDisposable: Disposable?
 	private var lineContiuationRegex: NSRegularExpression!
@@ -51,10 +51,14 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private var readyForContent: Bool { return resourcesExtracted && needToLoadDocumentOnLoad }
 	private var parseInProgress = false
 	private var emptyNavigations: Set<WKNavigation> = []
+	private var headerContents = ""
+	private var footerContents = ""
 	
 	var editorContext: EditorContext? {
 		get { return context.value }
 		set {
+			// do nothing if same as existing context
+			if let c1 = context.value, let c2 = newValue, c1.id == c2.id { return }
 			context.value = newValue
 			contextChanged()
 		}
@@ -104,10 +108,13 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			let footerUrl = Bundle.main.url(forResource: "customRmdFooter", withExtension: "html")
 			else { return }
 		do {
-			let header = try String(contentsOf: headerUrl)
-			let footer = try String(contentsOf: footerUrl)
-			let nav = outputView?.loadHTMLString("\(header) \(footer)", baseURL: documentRoot)
-			if let realNav = nav { emptyNavigations.insert(realNav) }
+			headerContents = try String(contentsOf: headerUrl)
+			footerContents = try String(contentsOf: footerUrl)
+			if let _ = context.value?.parsedDocument.value {
+				parseContent()
+			} else {
+				load(html: "\(headerContents)\n\(footerContents)")
+			}
 		} catch {
 			fatalError("failed to load initial preview content: \(error)")
 		}
@@ -140,15 +147,14 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			guard let me = self else { return }
 			me.parseContent()
 		}
-//		parseContent()
+		parseContent()
 	}
 	
 	/// parses the parsed document and loads it via javascript
 	private func parseContent() {
 		guard !parseInProgress else { return }
 		guard let curDoc = context.value?.parsedDocument.value else {
-			let curNav = outputView?.loadHTMLString("", baseURL: nil)
-			if let realNave = curNav { emptyNavigations.insert(realNave)}
+			load(html: "")
 			return
 		}
 		parseInProgress = true
@@ -161,9 +167,11 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			html += htmlFor(chunk: chunk)
 			html += "\n</section>\n"
 		}
-		html = escapeForJavascript(html)
-		let command = "document.getElementsByTagName('body')[0].innerHTML = '\(html)'; MathJax.Hub.Queue([\"Typeset\",MathJax.Hub]);"
-		outputView?.evaluateJavaScript(command, completionHandler: nil)
+		// if laoding the whole bod, might as well reload the whole page
+		load(html: "\(headerContents)\n\(html)\n\(footerContents)")
+//		html = escapeForJavascript(html)
+//		let command = "document.getElementsByTagName('body')[0].innerHTML = '\(html)'; MathJax.Hub.Queue([\"Typeset\",MathJax.Hub]);"
+//		outputView?.evaluateJavaScript(command, completionHandler: nil)
 	}
 	
 	private func htmlFor(chunk: RmdChunk) -> String {
@@ -246,6 +254,13 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		return "<span class\"math inline\">\n\(code)</span>"
 	}
 	
+	/// replaces the visible html document
+	/// - Parameter html: the new html to display
+	private func load(html: String)  {
+		let nav = outputView?.loadHTMLString(html, baseURL: documentRoot)
+		if let realNav = nav { emptyNavigations.insert(realNav) }
+	}
+	
 	private func escapeForJavascript(_ source: String) -> String {
 		var string = source
 		string = string.replacingOccurrences(of: "\\", with: "\\\\")
@@ -282,6 +297,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 //		tar.launch()
 	}
 
+	// MARK: - WebKit Delegate(s) methods
+	
 	func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
 		if emptyNavigations.contains(navigation) {
 			emptyNavigations.remove(navigation)
