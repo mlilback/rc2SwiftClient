@@ -63,7 +63,9 @@ class LivePreviewEditorController: BaseSourceEditorController {
 		guard !inOutputChange else { return }
 		inOutputChange = true
 		defer { inOutputChange = false }
-		outputController?.editorContext = self.context
+		if let ctx = context {
+			outputController?.editorContext = ctx
+		}
 		// need to update with current generated contents
 	}
 	
