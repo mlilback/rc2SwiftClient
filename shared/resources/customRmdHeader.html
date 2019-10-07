@@ -47,7 +47,12 @@ hljs.initHighlightingOnLoad();
 <!-- MathJax scripts -->
 <script>
   MathJax = {
-    tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+    tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]},
+    options: {
+      renderActions: {
+        addMenu: [0, '', '']
+      }
+    }
   };
 </script>
 <script id="MathJax-script" src="mathjax/tex-chtml.js"></script>
