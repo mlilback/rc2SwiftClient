@@ -209,12 +209,8 @@
 		085A196F2049E19C00B7EC5F /* Rc2Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; };
 		085A19702049E1B000B7EC5F /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; };
 		085A19742049E1F400B7EC5F /* ReactiveSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		085A19752049E1F700B7EC5F /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		085A19772049E28F00B7EC5F /* Starscream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		085A19792049E2A000B7EC5F /* Networking.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		085A197A2049E2A800B7EC5F /* Rc2Common.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		085A197B2049E2AE00B7EC5F /* Freddy.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08678C961DCA78CE00F9F283 /* Freddy.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		085A197E2049E2C800B7EC5F /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		085A19842049E3C000B7EC5F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 085A19832049E3C000B7EC5F /* Cocoa.framework */; };
 		085A1A1E205AC35200B7EC5F /* ChunkViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A1C205AC35200B7EC5F /* ChunkViewItem.swift */; };
 		085A1A1F205AC35200B7EC5F /* ChunkViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 085A1A1D205AC35200B7EC5F /* ChunkViewItem.xib */; };
@@ -314,6 +310,7 @@
 		08A2A29F2009602700D9807B /* HTMLStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A29E2009602700D9807B /* HTMLStringTests.swift */; };
 		08A2A2A2200A9B0E00D9807B /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2A1200A9B0E00D9807B /* LogViewController.swift */; };
 		08A3042723478BEA0051EC0D /* LineNumberRulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A3042623478BEA0051EC0D /* LineNumberRulerView.swift */; };
+		08A3042B234BE3BC0051EC0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
 		08A7E802233BB12600946F34 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E801233BB12600946F34 /* Starscream */; };
 		08A7E807233BB2ED00946F34 /* SwiftyUserDefaults in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E806233BB2ED00946F34 /* SwiftyUserDefaults */; };
 		08A7E80A233BB43200946F34 /* SigmaSwiftStatistics in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E809233BB43200946F34 /* SigmaSwiftStatistics */; };
@@ -774,10 +771,6 @@
 				085A197A2049E2A800B7EC5F /* Rc2Common.framework in CopyFiles */,
 				085A19792049E2A000B7EC5F /* Networking.framework in CopyFiles */,
 				085A19742049E1F400B7EC5F /* ReactiveSwift.framework in CopyFiles */,
-				085A197E2049E2C800B7EC5F /* SwiftyUserDefaults.framework in CopyFiles */,
-				085A197B2049E2AE00B7EC5F /* Freddy.framework in CopyFiles */,
-				085A19772049E28F00B7EC5F /* Starscream.framework in CopyFiles */,
-				085A19752049E1F700B7EC5F /* Result.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2898,6 +2891,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				082BE0C01F59E3C8006CE0B7 /* syntax1.Rnw in Resources */,
+				08A3042B234BE3BC0051EC0D /* Assets.xcassets in Resources */,
 				082BE0BF1F59E3C8006CE0B7 /* syntax2.Rmd in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
