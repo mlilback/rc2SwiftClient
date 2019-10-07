@@ -13,6 +13,8 @@ import Rc2Common
 
 /// object passed to UI controllers that take part in editing a document. Any values that might need to be observed for changes are declared as ReactiveSwift Properties.
 public protocol EditorContext: class {
+	/// unique id for comparision of implementations
+	var id: UUID { get }
 	/// the current EditorDocument. Signals are processed synchronously on the calling thread
 	var currentDocument: Property<EditorDocument?> { get }
 	/// the parsed version of the currentDocument. This property is updated on a main loop cycle after the currentDocument

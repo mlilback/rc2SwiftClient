@@ -25,6 +25,7 @@ public class DocumentManager: EditorContext {
 	let minTimeBetweenAutoSaves: TimeInterval = 2
 	
 	// MARK: properties
+	public let id = UUID()
 	// when changed, should use .updateProgress() while loading file contents
 	private let _currentDocument = MutableProperty<EditorDocument?>(nil)
 	public let currentDocument: Property<EditorDocument?>
