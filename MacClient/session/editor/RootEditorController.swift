@@ -172,19 +172,24 @@ extension RootEditorController: EditorManager {
 		previewEditor.setContext(context: context)
 	}
 	
-	func fileChanged(file: AppFile?) {
+	/// Informs the editor controller that the selected file has changed, and it should load the new one. Becausing loading is asynchronous, the callback allows the caller to to perform acdtions once loaded
+	/// - Parameter file: The file that should be displayed in the edtior
+	/// - Parameter onComplete: called when the file has loaded
+	func fileChanged(file: AppFile?, onComplete: ((Bool) -> Void)? = nil) {
 		documentManager.load(file: file).observe(on: UIScheduler()).startWithResult { result in
+			var success = false
 			switch result {
 			case .failure(let rerror):
 				self.appStatus?.presentError(rerror, session: self.session)
 			case .success(_):
-				break
+				success = true
 			}
 			self.willChangeValue(forKey: "canExecute")
 			self.didChangeValue(forKey: "canExecute")
 			self.fileNameField?.stringValue = file == nil ? "" : file!.name
 			self.previewModeEnabled = file?.fileType.fileExtension ?? "" == "Rmd"
 			self.toolbarModeButtons?.selectedSegment = self.currentEditor == self.sourceEditor ? 0 : 1
+			onComplete?(success)
 		}
 	}
 }

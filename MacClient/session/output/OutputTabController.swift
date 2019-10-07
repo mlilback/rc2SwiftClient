@@ -194,6 +194,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			if let image = attachment.image {
 				imageController?.display(image: image)
 				selectedOutputTab.value = .image
+				// This might not be necessary
 				tabView.window?.toolbar?.validateVisibleItems()
 			}
 		}
@@ -241,9 +242,9 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	func considerTabChange(editorMode: EditorMode) {
 		switch editorMode {
 			case .preview:
-				switchTo(tab: .preview)
+				selectedOutputTab.value = .preview
 			case .source:
-				switchTo(tab: .console)
+				selectedOutputTab.value = .console
 		}
 	}
 
@@ -290,6 +291,7 @@ extension OutputTabController: ContextualMenuDelegate {
 
 // MARK: - private methods
 private extension OutputTabController {
+	/// should only ever be called via the closure for selectedOutputTab.signal.observeValues set in viewDidLoad.
 	func switchTo(tab: OutputTab) {
 		selectedTabViewItemIndex = tab.rawValue
 		switch selectedOutputTab.value {
