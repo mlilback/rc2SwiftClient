@@ -1934,19 +1934,7 @@
 			children = (
 				082564F220150B4000526957 /* MacAppConstants.swift */,
 				088CE66C1C4B0AF400153414 /* MacAppDelegate.swift */,
-				08790772215AC8CF00978ECD /* Rc2Document.swift */,
-				0846D3E020175DF100795376 /* AppError.swift */,
-				08680691200E415600C986A9 /* AppLogger.swift */,
-				088CE6721C4B0AF400153414 /* Main.storyboard */,
-				0890650A1D26F59300C7CA5D /* MacAppStatus.swift */,
-				084199251D903F7A0089A1AC /* StartupController.swift */,
-				083305D81C501B7300E27F66 /* MainWindowController.swift */,
-				086659991CA1F3E5007AC555 /* MainWindow.xib */,
-				0835A07D1E57823500123820 /* OnboardingViewController.swift */,
-				08CE59F521152A5100132108 /* LoginViewController.swift */,
-				086508761E43F27C0067C8CA /* SingleInputViewController.swift */,
-				083382F01C64341C00D40EEB /* AppStatusView.swift */,
-				08A2A2A1200A9B0E00D9807B /* LogViewController.swift */,
+				08A24B85234D34C400C20A88 /* App-TopLevel */,
 				08F448F31C4E244500C64706 /* session */,
 				08DAF2F11E4D0726005A251E /* preferences */,
 				081263141C85D2E0003E37A5 /* generic views */,
@@ -2092,6 +2080,25 @@
 			path = extensions;
 			sourceTree = "<group>";
 		};
+		08A24B85234D34C400C20A88 /* App-TopLevel */ = {
+			isa = PBXGroup;
+			children = (
+				08790772215AC8CF00978ECD /* Rc2Document.swift */,
+				0846D3E020175DF100795376 /* AppError.swift */,
+				08680691200E415600C986A9 /* AppLogger.swift */,
+				088CE6721C4B0AF400153414 /* Main.storyboard */,
+				0890650A1D26F59300C7CA5D /* MacAppStatus.swift */,
+				084199251D903F7A0089A1AC /* StartupController.swift */,
+				083305D81C501B7300E27F66 /* MainWindowController.swift */,
+				0835A07D1E57823500123820 /* OnboardingViewController.swift */,
+				08CE59F521152A5100132108 /* LoginViewController.swift */,
+				086508761E43F27C0067C8CA /* SingleInputViewController.swift */,
+				083382F01C64341C00D40EEB /* AppStatusView.swift */,
+				08A2A2A1200A9B0E00D9807B /* LogViewController.swift */,
+			);
+			path = "App-TopLevel";
+			sourceTree = "<group>";
+		};
 		08BCD3F81E69BA1A00B86BB4 /* output */ = {
 			isa = PBXGroup;
 			children = (
@@ -2112,6 +2119,7 @@
 		08C2D5E71E71B1B60007A02D /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				086659991CA1F3E5007AC555 /* MainWindow.xib */,
 				083306061C51A0B200E27F66 /* CommonDefaults.plist */,
 				0846D3E22017C03900795376 /* FileTemplates */,
 				0825658A2016BB9200526957 /* OnboardingContent.rtfd */,
@@ -3562,7 +3570,8 @@
 				0866599A1CA1F3E5007AC555 /* Base */,
 			);
 			name = MainWindow.xib;
-			sourceTree = "<group>";
+			path = MacClient;
+			sourceTree = SOURCE_ROOT;
 		};
 		088CE6721C4B0AF400153414 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
