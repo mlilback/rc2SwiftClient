@@ -18,19 +18,51 @@ public typealias ParserErrorHandler = (ParserError) -> Void
 
 public class RmdDocument: CustomDebugStringConvertible {
 	/// Chunks comprising this document:
-	public var chunks: [RmdChunk] { return _chunks.value }
-	/// A Property of a protocol (RmdChunk) can't observer changes to a mutableproperty
-	/// of a concrete type. Instead, this signal is mapped to changes in the chunks array:
-	public let chunksSignal: Signal<[RmdChunk], Never>
-	private let chunksObserver: Signal<[RmdChunk], Never>.Observer
+	public private(set) var chunks: [RmdChunk] = []
 	/// Front matter:
 	public let frontMatter = MutableProperty("")
 	// Private:
-	private let _chunks = MutableProperty<[InternalRmdChunk]>([])
 	private var textStorage = NSTextStorage()
 	private var parser: SyntaxParser
 	
-	public var debugDescription: String { return "RmdDocument with \(_chunks.value.count) chunks" }
+	public var debugDescription: String { return "RmdDocument with \(chunks.count) chunks" }
+	
+	/// Updates document with contents.
+	/// If a code chunks changes and there are code chunks after it, the document will be completely refreshed
+	///
+	/// - Parameter document: The document to update
+	/// - Parameter with: The updated content
+	///
+	/// - Returns: If nil, consider the doucment completely refreshed. Otherwise, the indexes of chunks that just changed content
+	/// - Throws: any exception raised while creating a new document
+	public class func update(document: RmdDocument, with content: String) throws -> [Int]? {
+		guard let helpCallback = document.parser.helpCallback else { fatalError("document has no help callback") }
+		let newDoc = try RmdDocument(contents: content, helpCallback: helpCallback)
+
+		defer {
+			document.chunks = newDoc.chunks
+			document.parser = newDoc.parser
+			// do the ones that trigger signals/notifications last
+			document.frontMatter.value = newDoc.frontMatter.value
+			document.textStorage.replace(with: newDoc.textStorage)
+		}
+		
+		// if number of chunks changed, we can't list indexes that changed
+		guard newDoc.chunks.count == document.chunks.count else { return nil }
+
+		var changed = [Int]()
+		let firstCodeIndex = document.chunks.firstIndex(where: {$0.chunkType == .code}) ?? -1
+		for idx in 0..<newDoc.chunks.count {
+			// compare if chunks are similar
+			guard let oldChunk = document.chunks[idx] as? InternalRmdChunk,
+				let newChunk = newDoc.chunks[idx] as? InternalRmdChunk,
+				oldChunk.matchesForUpdate(chunk: newChunk)
+			else { return nil }
+			if newChunk.chunkType == .code && idx < firstCodeIndex { return nil }
+			if newChunk.rawText != oldChunk.rawText { changed.append(idx) }
+		}
+		return changed
+	}
 	
 	/// Creates a structure document.
 	///
@@ -38,11 +70,9 @@ public class RmdDocument: CustomDebugStringConvertible {
 	///   - contents: initial contents of the document
 	///   - helpCallback: callback that returns true if a term should be highlighted as a help term
 	public init(contents: String, helpCallback: @escaping  HasHelpCallback) throws {
-		(chunksSignal, chunksObserver) = Signal<[RmdChunk], Never>.pipe()
 		textStorage.append(NSAttributedString(string: contents))
 		let filetype = FileType.fileType(withExtension: "Rmd")!
 		parser = SyntaxParser(storage: textStorage, fileType: filetype, helpCallback: helpCallback)
-		_chunks.signal.observeValues { [weak self] val in self?.chunksObserver.send(value: val) }
 		parser.parse()
 		frontMatter.value = parser.frontMatter
 		var lastTextChunk: MarkdownChunk?
@@ -60,7 +90,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 				}
 				// since markdown has no delimiter, parsedRange == innerRange
 				let tchunk = MarkdownChunk(parser: parser, contents: parser.textStorage, range: parserChunk.innerRange)
-				append(chunk: tchunk)
+				chunks.append(tchunk)
 				lastTextChunk = tchunk
 				lastWasInline = false
 			case .code:
@@ -72,7 +102,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 					lastWasInline = true
 					return
 				}
-				append(chunk: cchunk)
+				chunks.append(cchunk)
 				lastWasInline = parserChunk.isInline
 				if !lastWasInline { lastTextChunk = nil }
 			case .equation:
@@ -86,7 +116,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 					lastWasInline = true
 				case .display:
 					let dchunk = EquationChunk(parser: parser, contents: parser.textStorage, range: parserChunk.parsedRange, innerRange: parserChunk.innerRange)
-					append(chunk: dchunk)
+					chunks.append(dchunk)
 					lastTextChunk = nil
 					lastWasInline = false
 				case .mathML:
@@ -107,58 +137,6 @@ public class RmdDocument: CustomDebugStringConvertible {
 			attach.attachmentCell = acell
 		}
 		storage.append(NSAttributedString(attachment: attach))
-	}
-	
-	private func append(chunk: InternalRmdChunk) {
-		_chunks.value.append(chunk)
-	}
-	
-	public func moveChunk(from startIndex: Int, to endIndex: Int) {
-		assert(startIndex >= 0)
-		assert(endIndex >= 0) //don't check high constraint because anything larger than count will move to end
-		guard startIndex != endIndex else { return }
-		var tmpChunks = _chunks.value
-		defer { _chunks.value = tmpChunks }
-		if endIndex >= tmpChunks.count {
-			let elem = tmpChunks[startIndex]
-			tmpChunks.remove(at: startIndex)
-			tmpChunks.append(elem)
-		} else if endIndex > startIndex {
-			let elem = tmpChunks.remove(at: startIndex)
-			tmpChunks.insert(elem, at: endIndex - 1)
-		} else {
-			let elem = tmpChunks.remove(at: startIndex)
-			tmpChunks.insert(elem, at: endIndex)
-		}
-	}
-	
-	public func insertChunk(type: ChunkType, contents: String, at index: Int) {
-		let chunk: InternalRmdChunk
-		switch type {
-		case .code:
-			chunk = CodeChunk(parser: parser, contents: contents, range: contents.fullNSRange, options: nil)
-		case .docs:
-			chunk = MarkdownChunk(parser: parser, contents: contents, range: contents.fullNSRange)
-		case .equation:
-			let fullContents = "$$\n\(contents)\n$$\n"
-			chunk = EquationChunk(parser: parser, contents: fullContents, range: contents.fullNSRange, innerRange: NSRange(location: 3, length: contents.count))
-		}
-		_chunks.value.insert(chunk, at: index)
-	}
-	
-	public func insertTextChunk(initalContents: String, at index: Int) {
-		let chunk = MarkdownChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange)
-		_chunks.value.insert(chunk, at: index)
-	}
-
-	public func insertCodeChunk(initalContents: String, at index: Int) {
-		let chunk = CodeChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange, options: nil)
-		_chunks.value.insert(chunk, at: index)
-	}
-
-	public func insertEquationChunk(initalContents: String, at index: Int) {
-		let chunk = EquationChunk(parser: parser, contents: initalContents, range: initalContents.fullNSRange, innerRange: initalContents.fullNSRange)
-		_chunks.value.insert(chunk, at: index)
 	}
 }
 
@@ -246,6 +224,14 @@ class InternalRmdChunk: NSObject, RmdChunk, ChunkProtocol, NSTextStorageDelegate
 		defer { ignoreTextChanges = false }
 		textStorage.replace(with: text)
 		highlight(attributedString: textStorage)
+	}
+	
+	// subclasses should override if they need to consider other factors
+	func matchesForUpdate(chunk: InternalRmdChunk) -> Bool {
+		guard type(of: self) == type(of: chunk), self.chunkType == chunk.chunkType,
+			self.docType == chunk.docType, self.equationType == chunk.equationType
+			else { return false }
+		return true
 	}
 	
 	// Called when text editing has ended:
