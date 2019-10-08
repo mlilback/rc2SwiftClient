@@ -9,32 +9,35 @@ import Model
 import MJLLogger
 import ReactiveSwift
 
+/// Errors that can be thrown while working with SyntaxParsing.
 public enum ParserError: Error {
 	case failedToParse
 	case inlineEquationNotInTextChunk
 }
+
 public typealias HasHelpCallback = (String) -> Bool
 public typealias ParserErrorHandler = (ParserError) -> Void
 
+/// A document that represents a parsed Rmd document.
 public class RmdDocument: CustomDebugStringConvertible {
-	/// Chunks comprising this document:
+	/// Chunks comprising this document.
 	public private(set) var chunks: [RmdChunk] = []
-	/// Front matter:
+	/// Text included at the top of the document in FrontMatter format..
 	public let frontMatter = MutableProperty("")
-	// Private:
+
 	private var textStorage = NSTextStorage()
 	private var parser: SyntaxParser
 	
 	public var debugDescription: String { return "RmdDocument with \(chunks.count) chunks" }
 	
 	/// Updates document with contents.
-	/// If a code chunks changes and there are code chunks after it, the document will be completely refreshed
+	/// If a code chunks changes and there are code chunks after it, the document will be completely refreshed.
 	///
-	/// - Parameter document: The document to update
-	/// - Parameter with: The updated content
+	/// - Parameter document: The document to update.
+	/// - Parameter with: The updated content.
 	///
-	/// - Returns: If nil, consider the doucment completely refreshed. Otherwise, the indexes of chunks that just changed content
-	/// - Throws: any exception raised while creating a new document
+	/// - Returns: If nil, consider the doucment completely refreshed. Otherwise, the indexes of chunks that just changed content.
+	/// - Throws: any exception raised while creating a new document.
 	public class func update(document: RmdDocument, with content: String) throws -> [Int]? {
 		guard let helpCallback = document.parser.helpCallback else { fatalError("document has no help callback") }
 		let newDoc = try RmdDocument(contents: content, helpCallback: helpCallback)
@@ -67,8 +70,8 @@ public class RmdDocument: CustomDebugStringConvertible {
 	/// Creates a structure document.
 	///
 	/// - Parameters:
-	///   - contents: initial contents of the document
-	///   - helpCallback: callback that returns true if a term should be highlighted as a help term
+	///   - contents: Initial contents of the document.
+	///   - helpCallback: Callback that returns true if a term should be highlighted as a help term.
 	public init(contents: String, helpCallback: @escaping  HasHelpCallback) throws {
 		textStorage.append(NSAttributedString(string: contents))
 		let filetype = FileType.fileType(withExtension: "Rmd")!
@@ -142,38 +145,49 @@ public class RmdDocument: CustomDebugStringConvertible {
 
 // MARK: - protocols
 
+/// Marker protocol to denote equations.
 public protocol Equation: class {}
 
+/// Adds properties required for Code chunks.
 public protocol Code: class {
 	var options: MutableProperty<String> { get }
 }
 
+/// A base chunk of a document.
 public protocol RmdChunk: class, CustomStringConvertible {
+	/// The attributed textual contents of the chunk.
 	var contents: NSAttributedString { get set }
+	/// The type of chunk this is.
 	var chunkType: ChunkType { get }
+	/// The raw text version of this.
+	/// - Warning: Should always be used over contents.string. It removes certain hidden characters (attachment placeholders) that will mess up string comparisons.
 	var rawText: String { get }
 }
 
+/// A chunk that is embedded inside a TextChunk.
 public protocol InlineChunk: RmdChunk {
-	/// the range of the content in the parent chunk (excluding delimiters)
+	/// The range of the content in the parent chunk (excluding delimiters).
 	var range: NSRange { get }
-	/// the range of this chunk in the parent chunk (including delimiters)
+	/// The range of this chunk in the parent chunk (including delimiters).
 	var chunkRange: NSRange { get }
-	/// the range of this chunk in the document
+	/// The range of this chunk in the document.
 	var documentRange: NSRange { get }
 }
 
+/// A textual chunk that normally contains Markdown.
 public protocol TextChunk: RmdChunk {
-	/// inline code and equation chunks. Their text is still a part of this chunk
+	/// Inline code and equation chunks. Their text is still a part of this chunk.
 	var inlineElements: [InlineChunk] { get }
-	/// the range of this chunk in the containing document
+	/// The range of this chunk in the containing document.
 	var range: NSRange { get }
 }
 
 public typealias InlineEquationChunk = InlineChunk & Equation
 
 // MARK: - attachments
+/// NSTextAttachment subclass to hold inline code and equations.
 public class InlineAttachment: NSTextAttachment {
+	/// The inline chunk contained in this attachment.
 	public internal(set) weak var chunk: InlineChunk?
 }
 
