@@ -111,14 +111,8 @@
 		0835A07E1E57823500123820 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0835A07D1E57823500123820 /* OnboardingViewController.swift */; };
 		083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		083A4B041C7F347E0007AC46 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1C01C7F321B00CCC27F /* Result.framework */; };
-		083AC0FD2062D01E0054023F /* EquationViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC0FC2062D01E0054023F /* EquationViewItem.swift */; };
 		083AC0FE2062D6270054023F /* mathFonts.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0859A3072062701900103924 /* mathFonts.bundle */; };
-		083AC1022062E9670054023F /* MarkdownViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC1012062E9670054023F /* MarkdownViewItem.swift */; };
 		083AC1042062EDFB0054023F /* NSImage+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC1032062EDFB0054023F /* NSImage+Rc2.swift */; };
-		083AC106206565720054023F /* FrontMatterViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC105206565720054023F /* FrontMatterViewItem.swift */; };
-		083AC108206565E30054023F /* FrontMatterViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 083AC107206565E30054023F /* FrontMatterViewItem.xib */; };
-		083AC10B2066DEF60054023F /* MarkdownViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 083AC10A2066DEF50054023F /* MarkdownViewItem.xib */; };
-		083AC10D2066E4BB0054023F /* NotebookViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC10C2066E4BB0054023F /* NotebookViewItem.swift */; };
 		083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11931DEE0DF300549268 /* DataRc2Spec.swift */; };
 		084199261D903F7A0089A1AC /* StartupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* StartupController.swift */; };
 		0846D3E120175DF100795376 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0846D3E020175DF100795376 /* AppError.swift */; };
@@ -138,7 +132,6 @@
 		084D330B206D380E00246CBD /* rdocs.tgz in Resources */ = {isa = PBXBuildFile; fileRef = 08525E751E300185008A332E /* rdocs.tgz */; };
 		084D330E206D387800246CBD /* Rc2Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; };
 		084D3319206D3C9E00246CBD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D3318206D3C9E00246CBD /* main.swift */; };
-		084D33282071576F00246CBD /* EquationViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 084D33272071576E00246CBD /* EquationViewItem.xib */; };
 		084D332D20752C7D00246CBD /* CodeTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D332C20752C7D00246CBD /* CodeTemplate.swift */; };
 		084D332E20752E8800246CBD /* CodeTemplateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8F1A520698F8500F0FF5A /* CodeTemplateManager.swift */; };
 		084D33302075619500246CBD /* TemplatesPrefsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D332F2075619500246CBD /* TemplatesPrefsController.swift */; };
@@ -212,13 +205,6 @@
 		085A19792049E2A000B7EC5F /* Networking.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		085A197A2049E2A800B7EC5F /* Rc2Common.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		085A19842049E3C000B7EC5F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 085A19832049E3C000B7EC5F /* Cocoa.framework */; };
-		085A1A1E205AC35200B7EC5F /* ChunkViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A1C205AC35200B7EC5F /* ChunkViewItem.swift */; };
-		085A1A1F205AC35200B7EC5F /* ChunkViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 085A1A1D205AC35200B7EC5F /* ChunkViewItem.xib */; };
-		085A1A21205AC39C00B7EC5F /* SourceTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A20205AC39B00B7EC5F /* SourceTextView.swift */; };
-		085A1A23205AC45600B7EC5F /* NotebookItemData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A22205AC45600B7EC5F /* NotebookItemData.swift */; };
-		085A1A25205AC4CD00B7EC5F /* NotebookEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A24205AC4CD00B7EC5F /* NotebookEntryView.swift */; };
-		085A1A27205AC62B00B7EC5F /* NotebookDropIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A26205AC62B00B7EC5F /* NotebookDropIndicator.swift */; };
-		085A1A29205AC6CD00B7EC5F /* NotebookCollectionLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A28205AC6CD00B7EC5F /* NotebookCollectionLayout.swift */; };
 		085A1A2B205ACA4600B7EC5F /* AbstractEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A2A205ACA4600B7EC5F /* AbstractEditorController.swift */; };
 		085A1A30205C73FC00B7EC5F /* RmdDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A2F205C73FC00B7EC5F /* RmdDocument.swift */; };
 		08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08604A4D1D9C0C0500DE2A79 /* Named.swift */; };
@@ -328,7 +314,6 @@
 		08B19F8E233671FB00EE2E30 /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; };
 		08B19F8F23367DE500EE2E30 /* UserDefaults+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */; };
 		08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816F8991C6D0F7D00A6120B /* HTMLString.swift */; };
-		08B73E8C208952A700DB7339 /* NotebookMiddleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B73E8B208952A700DB7339 /* NotebookMiddleView.swift */; };
 		08B73E8D208A133F00DB7339 /* EditorDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812631E1C862F4B003E37A5 /* EditorDocument.swift */; };
 		08B73E8E208A134900DB7339 /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BCEA3020388D5F004A5F47 /* DocumentManager.swift */; };
 		08B73E8F208A134F00DB7339 /* EditorContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE270520334470008E008F /* EditorContext.swift */; };
@@ -382,7 +367,6 @@
 		08EE26FF202FAC08008E008F /* VariableDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 08EE26FD202FAC08008E008F /* VariableDetails.storyboard */; };
 		08EE27012030A0BC008E008F /* SidebarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE27002030A0BC008E008F /* SidebarController.swift */; };
 		08EE270820335561008E008F /* RootEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE270720335561008E008F /* RootEditorController.swift */; };
-		08EE270A20335B0A008E008F /* NotebookEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EE270920335B0A008E008F /* NotebookEditorController.swift */; };
 		08F01E961EFC74690047F397 /* NSData+Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F01E941EFC74690047F397 /* NSData+Hash.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		08F01E971EFC74690047F397 /* NSData+Hash.m in Sources */ = {isa = PBXBuildFile; fileRef = 08F01E951EFC74690047F397 /* NSData+Hash.m */; };
 		08F03E431DE3323100D02153 /* NetworkingConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F03E421DE3323100D02153 /* NetworkingConstants.swift */; };
@@ -960,13 +944,7 @@
 		0835A07D1E57823500123820 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OnboardingViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08367BD21E3FCEA800FAFC8A /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/Mac/Starscream.framework; sourceTree = "<group>"; };
 		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BookmarkManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		083AC0FC2062D01E0054023F /* EquationViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquationViewItem.swift; sourceTree = "<group>"; };
-		083AC1012062E9670054023F /* MarkdownViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewItem.swift; sourceTree = "<group>"; };
 		083AC1032062EDFB0054023F /* NSImage+Rc2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Rc2.swift"; sourceTree = "<group>"; };
-		083AC105206565720054023F /* FrontMatterViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrontMatterViewItem.swift; sourceTree = "<group>"; };
-		083AC107206565E30054023F /* FrontMatterViewItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FrontMatterViewItem.xib; sourceTree = "<group>"; };
-		083AC10A2066DEF50054023F /* MarkdownViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MarkdownViewItem.xib; sourceTree = "<group>"; };
-		083AC10C2066E4BB0054023F /* NotebookViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookViewItem.swift; sourceTree = "<group>"; };
 		083D11821DE8C24C00549268 /* BuildInfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = BuildInfo.xcconfig; path = config/BuildInfo.xcconfig; sourceTree = "<group>"; };
 		083D11931DEE0DF300549268 /* DataRc2Spec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRc2Spec.swift; sourceTree = "<group>"; };
 		084199251D903F7A0089A1AC /* StartupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartupController.swift; sourceTree = "<group>"; };
@@ -984,7 +962,6 @@
 		084D330F206D399E00246CBD /* helpindex.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = helpindex.db; sourceTree = BUILT_PRODUCTS_DIR; };
 		084D3316206D3C9E00246CBD /* HelpIndexTool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HelpIndexTool; sourceTree = BUILT_PRODUCTS_DIR; };
 		084D3318206D3C9E00246CBD /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		084D33272071576E00246CBD /* EquationViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EquationViewItem.xib; sourceTree = "<group>"; };
 		084D332C20752C7D00246CBD /* CodeTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeTemplate.swift; sourceTree = "<group>"; };
 		084D332F2075619500246CBD /* TemplatesPrefsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TemplatesPrefsController.swift; path = prefs/TemplatesPrefsController.swift; sourceTree = "<group>"; };
 		084D333120767A7E00246CBD /* DoubleClickEditableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleClickEditableTextField.swift; sourceTree = "<group>"; };
@@ -1052,13 +1029,6 @@
 		085A197F2049E2E700B7EC5F /* libswiftCoreLocation.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftCoreLocation.tbd; path = System/Library/PrivateFrameworks/Swift/libswiftCoreLocation.tbd; sourceTree = SDKROOT; };
 		085A19812049E2FA00B7EC5F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		085A19832049E3C000B7EC5F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		085A1A1C205AC35200B7EC5F /* ChunkViewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChunkViewItem.swift; sourceTree = "<group>"; };
-		085A1A1D205AC35200B7EC5F /* ChunkViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChunkViewItem.xib; sourceTree = "<group>"; };
-		085A1A20205AC39B00B7EC5F /* SourceTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceTextView.swift; sourceTree = "<group>"; };
-		085A1A22205AC45600B7EC5F /* NotebookItemData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookItemData.swift; sourceTree = "<group>"; };
-		085A1A24205AC4CD00B7EC5F /* NotebookEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookEntryView.swift; sourceTree = "<group>"; };
-		085A1A26205AC62B00B7EC5F /* NotebookDropIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookDropIndicator.swift; sourceTree = "<group>"; };
-		085A1A28205AC6CD00B7EC5F /* NotebookCollectionLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookCollectionLayout.swift; sourceTree = "<group>"; };
 		085A1A2A205ACA4600B7EC5F /* AbstractEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractEditorController.swift; sourceTree = "<group>"; };
 		085A1A2F205C73FC00B7EC5F /* RmdDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RmdDocument.swift; sourceTree = "<group>"; };
 		08604A4D1D9C0C0500DE2A79 /* Named.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Named.swift; sourceTree = "<group>"; };
@@ -1150,7 +1120,6 @@
 		08AD13351FCF18D000CFD516 /* FileInfoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInfoController.swift; sourceTree = "<group>"; };
 		08B184D11E5F36E800F4A6D6 /* defaultWorkspaceFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; name = defaultWorkspaceFiles; path = shared/resources/defaultWorkspaceFiles; sourceTree = SOURCE_ROOT; };
 		08B184D31E5F384800F4A6D6 /* AppInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
-		08B73E8B208952A700DB7339 /* NotebookMiddleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookMiddleView.swift; sourceTree = "<group>"; };
 		08BCEA2E20388B51004A5F47 /* SessionSubProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSubProtocols.swift; sourceTree = "<group>"; };
 		08BCEA3020388D5F004A5F47 /* DocumentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
 		08BCEA34203B0E0B004A5F47 /* bulkInfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = bulkInfo.json; sourceTree = "<group>"; };
@@ -1191,7 +1160,6 @@
 		08EE27002030A0BC008E008F /* SidebarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarController.swift; sourceTree = "<group>"; };
 		08EE270520334470008E008F /* EditorContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorContext.swift; sourceTree = "<group>"; };
 		08EE270720335561008E008F /* RootEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootEditorController.swift; sourceTree = "<group>"; };
-		08EE270920335B0A008E008F /* NotebookEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotebookEditorController.swift; sourceTree = "<group>"; };
 		08EFF6041C7BCBA300AAF1D4 /* MultipartInputStreamTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartInputStreamTest.swift; sourceTree = "<group>"; };
 		08F01E941EFC74690047F397 /* NSData+Hash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Hash.h"; sourceTree = "<group>"; };
 		08F01E951EFC74690047F397 /* NSData+Hash.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+Hash.m"; sourceTree = "<group>"; };
@@ -1824,31 +1792,6 @@
 			path = internal;
 			sourceTree = "<group>";
 		};
-		08615B3F22AFDA2F00488BF1 /* Notebook Editor */ = {
-			isa = PBXGroup;
-			children = (
-				08EE270920335B0A008E008F /* NotebookEditorController.swift */,
-				085A1A26205AC62B00B7EC5F /* NotebookDropIndicator.swift */,
-				085A1A28205AC6CD00B7EC5F /* NotebookCollectionLayout.swift */,
-				08B73E8B208952A700DB7339 /* NotebookMiddleView.swift */,
-				083AC10C2066E4BB0054023F /* NotebookViewItem.swift */,
-				085A1A1C205AC35200B7EC5F /* ChunkViewItem.swift */,
-				085A1A1D205AC35200B7EC5F /* ChunkViewItem.xib */,
-				083AC105206565720054023F /* FrontMatterViewItem.swift */,
-				083AC107206565E30054023F /* FrontMatterViewItem.xib */,
-				083AC0FC2062D01E0054023F /* EquationViewItem.swift */,
-				084D33272071576E00246CBD /* EquationViewItem.xib */,
-				083AC1012062E9670054023F /* MarkdownViewItem.swift */,
-				083AC10A2066DEF50054023F /* MarkdownViewItem.xib */,
-				085A1A20205AC39B00B7EC5F /* SourceTextView.swift */,
-				085A1A22205AC45600B7EC5F /* NotebookItemData.swift */,
-				085A1A24205AC4CD00B7EC5F /* NotebookEntryView.swift */,
-				08F8C1812092272E00DFB269 /* InlineEquationEditorController.swift */,
-				08F8C183209228A600DFB269 /* InlineEquationEditorController.xib */,
-			);
-			path = "Notebook Editor";
-			sourceTree = "<group>";
-		};
 		08680675200D892000C986A9 /* MJLCommon */ = {
 			isa = PBXGroup;
 			children = (
@@ -2095,7 +2038,8 @@
 				08E55B612194A59300F63A20 /* BaseSourceEditorController.swift */,
 				08E55B632194A86700F63A20 /* SourceEditorLayoutManager.swift */,
 				08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */,
-				08615B3F22AFDA2F00488BF1 /* Notebook Editor */,
+				08F8C1812092272E00DFB269 /* InlineEquationEditorController.swift */,
+				08F8C183209228A600DFB269 /* InlineEquationEditorController.xib */,
 			);
 			path = editor;
 			sourceTree = "<group>";
@@ -2960,7 +2904,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				081000452184FC7F006856D3 /* HelpOutputController.storyboard in Resources */,
-				085A1A1F205AC35200B7EC5F /* ChunkViewItem.xib in Resources */,
 				0810004B21879239006856D3 /* LivePreviewController.storyboard in Resources */,
 				08525E7A1E314558008A332E /* InputPrompter.xib in Resources */,
 				0866599B1CA1F3E5007AC555 /* MainWindow.xib in Resources */,
@@ -2973,13 +2916,10 @@
 				08F448FD1C4E244500C64706 /* MainController.storyboard in Resources */,
 				083306071C51A0B200E27F66 /* CommonDefaults.plist in Resources */,
 				0825658C2016BB9200526957 /* OnboardingContent.rtfd in Resources */,
-				083AC108206565E30054023F /* FrontMatterViewItem.xib in Resources */,
-				084D33282071576F00246CBD /* EquationViewItem.xib in Resources */,
 				0803F9EE22F7875F00F26D84 /* customRmdFooter.html in Resources */,
 				08EE26FC202FA995008E008F /* FileInfoController.xib in Resources */,
 				088CE6741C4B0AF400153414 /* Main.storyboard in Resources */,
 				0816FD1F1E5226760006FF26 /* SearchBarView.xib in Resources */,
-				083AC10B2066DEF60054023F /* MarkdownViewItem.xib in Resources */,
 				08F189A81D0A0E7200866A05 /* static_html in Resources */,
 				0846D3E32017C03900795376 /* FileTemplates in Resources */,
 				086A40D71E7B1E8600AE476B /* ThemeEditorController.xib in Resources */,
@@ -3309,19 +3249,16 @@
 				0816FD1D1E5226010006FF26 /* SearchBarView.swift in Sources */,
 				0835A07E1E57823500123820 /* OnboardingViewController.swift in Sources */,
 				0816F8A01C6D3A4500A6120B /* SessionHandlerProtocols.swift in Sources */,
-				085A1A29205AC6CD00B7EC5F /* NotebookCollectionLayout.swift in Sources */,
 				0831740E1C577A2500071408 /* ConsoleTextField.swift in Sources */,
 				08CB55541C5C096E002CB7EE /* ImageOutputController.swift in Sources */,
 				081996701E36A78A0000AA0E /* EditableTableCellView.swift in Sources */,
 				08F448FA1C4E244500C64706 /* SourceEditorController.swift in Sources */,
 				0868068F200D892600C986A9 /* ToolbarItemHandler.swift in Sources */,
 				08EE270820335561008E008F /* RootEditorController.swift in Sources */,
-				08EE270A20335B0A008E008F /* NotebookEditorController.swift in Sources */,
 				08F448FC1C4E244500C64706 /* ConsoleOutputController.swift in Sources */,
 				083305E81C51812300E27F66 /* AbstractSessionViewController.swift in Sources */,
 				08A01FDE1CCA8BD0001EDFAA /* HelpOutputController.swift in Sources */,
 				084199261D903F7A0089A1AC /* StartupController.swift in Sources */,
-				083AC10D2066E4BB0054023F /* NotebookViewItem.swift in Sources */,
 				08CB55521C5C06B2002CB7EE /* OutputTabController.swift in Sources */,
 				08100049218791D5006856D3 /* LivePreviewDisplayController.swift in Sources */,
 				0846D3E120175DF100795376 /* AppError.swift in Sources */,
@@ -3341,16 +3278,13 @@
 				08680692200E415600C986A9 /* AppLogger.swift in Sources */,
 				083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */,
 				08F673D01D020B2700B87049 /* FontManagement.swift in Sources */,
-				08B73E8C208952A700DB7339 /* NotebookMiddleView.swift in Sources */,
 				084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */,
 				084D33352077D1FD00246CBD /* NSViewController+Alerts.swift in Sources */,
 				08F189A21D09AA0300866A05 /* SessionController.swift in Sources */,
-				085A1A25205AC4CD00B7EC5F /* NotebookEntryView.swift in Sources */,
 				08E55B642194A86700F63A20 /* SourceEditorLayoutManager.swift in Sources */,
 				08F449001C4EBEF100C64706 /* MacSplitter.swift in Sources */,
 				082564F320150B4000526957 /* MacAppConstants.swift in Sources */,
 				08AA5F081E5350AA00389089 /* SearchBarField.m in Sources */,
-				085A1A27205AC62B00B7EC5F /* NotebookDropIndicator.swift in Sources */,
 				08DAF2F31E4D07EF005A251E /* PreferencesViewController.swift in Sources */,
 				080AB8DC1E92D9D7005452C7 /* MultiImageWindowController.swift in Sources */,
 				083174141C5828B400071408 /* ResultsView.swift in Sources */,
@@ -3358,21 +3292,15 @@
 				080AB8DE1E92DA10005452C7 /* MultiImageViewController.swift in Sources */,
 				08FAE518208111730076F90C /* NSFont+MJL.swift in Sources */,
 				08EE26F9202FA4A5008E008F /* DimmingView.swift in Sources */,
-				083AC106206565720054023F /* FrontMatterViewItem.swift in Sources */,
 				088CE6B61C4B71F300153414 /* Constants.swift in Sources */,
 				08EB36D01FBB9E480078229A /* ValuesVariableDetailController.swift in Sources */,
-				085A1A21205AC39C00B7EC5F /* SourceTextView.swift in Sources */,
 				086A40D51E7B04F400AE476B /* ThemeEditorController.swift in Sources */,
-				083AC0FD2062D01E0054023F /* EquationViewItem.swift in Sources */,
 				08E55B562188E33A00F63A20 /* LivePreviewEditorController.swift in Sources */,
 				083174101C57B2E200071408 /* CommandHistory.swift in Sources */,
-				085A1A23205AC45600B7EC5F /* NotebookItemData.swift in Sources */,
 				08EB36D21FBBA1640078229A /* TextVariableDetailController.swift in Sources */,
 				089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */,
-				085A1A1E205AC35200B7EC5F /* ChunkViewItem.swift in Sources */,
 				085A1A2B205ACA4600B7EC5F /* AbstractEditorController.swift in Sources */,
 				08A01FDA1CC9692C001EDFAA /* BasicOutlineDataSource.swift in Sources */,
-				083AC1022062E9670054023F /* MarkdownViewItem.swift in Sources */,
 				08EE27012030A0BC008E008F /* SidebarController.swift in Sources */,
 				08C2D5E91E71B1FC0007A02D /* Searchable.swift in Sources */,
 				0814CB741CF8A3D00008DE6B /* MacConsoleAttachment.swift in Sources */,

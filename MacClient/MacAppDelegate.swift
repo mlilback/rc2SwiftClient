@@ -191,9 +191,6 @@ extension MacAppDelegate {
 		icontext.register(AbstractSessionViewController.self) { controller in
 			controller.appStatus = self.appStatus
 		}
-		icontext.register(NotebookEditorController.self) { controller in
-			controller.templateManager = self.templateManager
-		}
 		
 		let sboard = NSStoryboard(name: "MainController", bundle: nil)
 		sboard.injectionContext = icontext
