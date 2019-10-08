@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14868"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -147,7 +147,7 @@
                                         <rect key="frame" x="8" y="9" width="384" height="21"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="200" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ucc-Ba-B6V">
-                                                <rect key="frame" x="-2" y="2" width="231" height="17"/>
+                                                <rect key="frame" x="-2" y="3" width="231" height="16"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="118" id="inG-58-OdY"/>
                                                 </constraints>
@@ -1071,10 +1071,10 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <stackView distribution="fill" orientation="horizontal" alignment="top" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yCP-oo-1VS">
-                                            <rect key="frame" x="10" y="8" width="436" height="22"/>
+                                            <rect key="frame" x="10" y="8" width="436" height="21"/>
                                             <subviews>
                                                 <segmentedControl horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FY8-og-Aex" userLabel="history">
-                                                    <rect key="frame" x="-2" y="-1" width="38" height="24"/>
+                                                    <rect key="frame" x="-2" y="-2" width="38" height="24"/>
                                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="5tK-aL-lQg">
                                                         <font key="font" metaFont="system"/>
                                                         <segments>
@@ -1087,7 +1087,7 @@
                                                     </connections>
                                                 </segmentedControl>
                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="500" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Y6X-8g-t8y" customClass="ConsoleTextField" customModule="MacClient" customModuleProvider="target">
-                                                    <rect key="frame" x="42" y="0.0" width="309" height="22"/>
+                                                    <rect key="frame" x="42" y="0.0" width="309" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="563" constant="50" id="Xik-b7-zR2"/>
                                                     </constraints>
@@ -1376,7 +1376,7 @@
                                                     </connections>
                                                 </segmentedControl>
                                                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wi0-ZF-Par">
-                                                    <rect key="frame" x="73" y="3" width="367" height="18"/>
+                                                    <rect key="frame" x="73" y="4" width="367" height="17"/>
                                                     <textFieldCell key="cell" lineBreakMode="truncatingHead" sendsActionOnEndEditing="YES" alignment="center" title="Loading…" id="G82-68-MnS">
                                                         <font key="font" metaFont="system" size="14"/>
                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1497,7 +1497,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textView ambiguous="YES" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" allowsDocumentBackgroundColorChange="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="BTo-kx-sgU" customClass="SessionEditor" customModule="MacClient" customModuleProvider="target">
+                                        <textView ambiguous="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" allowsDocumentBackgroundColorChange="YES" allowsUndo="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="BTo-kx-sgU" customClass="SessionEditor" customModule="MacClient" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
