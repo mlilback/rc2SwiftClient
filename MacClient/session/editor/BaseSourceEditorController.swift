@@ -148,6 +148,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		guard let editor = self.editor, let lm = editor.layoutManager, let storage = editor.textStorage, let txtContainer = editor.textContainer, let document = context!.currentDocument.value
 			else { fatalError("editor missing required pieces") }
 		ignoreTextStorageNotifications = true
+		let origCursorRange = editor.selectedRange()
 		storage.deleteCharacters(in: editor.rangeOfAllText)
 		parser = SyntaxParser(storage: storage, fileType: document.file.fileType, helpCallback: { (topic) -> Bool in
 			HelpController.shared.hasTopic(topic) })
@@ -164,6 +165,11 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 			DispatchQueue.main.async {
 				editor.enclosingScrollView?.contentView.scroll(to: point.origin)
 			}
+		}
+		// restore selection/cursor to same point
+		if origCursorRange.upperBound < storage.length {
+			// TODO: does this take into account how much was added/deleted before the cursor (via paste?) and adjust location so the same selection is there? Seems like it does, but need to confirm in solid testing.
+			editor.setSelectedRange(origCursorRange)
 		}
 		onDocumentLoaded?(document)
 		self.updateUIForCurrentDocument()
