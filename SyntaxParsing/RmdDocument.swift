@@ -11,12 +11,11 @@ import ReactiveSwift
 
 /// Errors that can be thrown while working with SyntaxParsing.
 public enum ParserError: Error {
-	case failedToParse
+	/// an inline equation was found outside a text chunk. This should not be possible
 	case inlineEquationNotInTextChunk
 }
 
 public typealias HasHelpCallback = (String) -> Bool
-public typealias ParserErrorHandler = (ParserError) -> Void
 
 /// A document that represents a parsed Rmd document.
 public class RmdDocument: CustomDebugStringConvertible {
