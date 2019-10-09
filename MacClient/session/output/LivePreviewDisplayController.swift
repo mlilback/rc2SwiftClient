@@ -53,6 +53,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private var emptyNavigations: Set<WKNavigation> = []
 	private var headerContents = ""
 	private var footerContents = ""
+	private var didLoadView = false
 	
 	var emptyContents: String { "\(headerContents) \(footerContents)" }
 	
@@ -86,6 +87,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 //		} catch {
 //			fatalError("failed to load live preview template file: \(error.localizedDescription)")
 //		}
+		didLoadView = true
 		ensureResourcesLoaded()
 		outputView?.uiDelegate = self
 		outputView?.navigationDelegate = self
@@ -151,6 +153,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	/// parses the parsed document and loads it via javascript
 	private func updatePreview(updatedContents: String? = nil) {
 		guard !parseInProgress else { return }
+		guard didLoadView else { return }
 		var updateParse = true
 		var clearLastContents = false
 		defer { if clearLastContents { self.lastContents = nil} }
@@ -178,20 +181,22 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		defer { parseInProgress = false }
 		let changedChunkIndexes = try! RmdDocument.update(document: curDoc, with: contents) ?? []
 		if changedChunkIndexes.count > 0 {
-			// TODO: only need to update the chunks that changed
+			Log.info("udpating just chunks \(changedChunkIndexes)")
+			for chunkNumber in changedChunkIndexes {
+				let chunk = curDoc.chunks[chunkNumber]
+				let html = escapeForJavascript(htmlFor(chunk: chunk))
+				let command = "$(\"section[index='\(chunkNumber)']\").html('\(html)'); MathJax.typeset()"
+				outputView?.evaluateJavaScript(command, completionHandler: nil)
+			}
+		} else {
+			var html =  ""
+			for (chunkNumber, chunk) in curDoc.chunks.enumerated() {
+				html += "<section index=\"\(chunkNumber)\">\n"
+				html += htmlFor(chunk: chunk)
+				html += "\n</section>\n"
+			}
+			load(html: "\(headerContents)\n\(html)\n\(footerContents)")
 		}
-		var html = "<div class=\"frontMatter\">\(curDoc.frontMatter.value)</div>\n"
-		let allChunks = curDoc.chunks
-		for (chunkNumber, chunk) in allChunks.enumerated() {
-			html += "<section index=\"\(chunkNumber)\">\n"
-			html += htmlFor(chunk: chunk)
-			html += "\n</section>\n"
-		}
-		// if laoding the whole bod, might as well reload the whole page
-		load(html: "\(headerContents)\n\(html)\n\(footerContents)")
-//		html = escapeForJavascript(html)
-//		let command = "document.getElementsByTagName('body')[0].innerHTML = '\(html)'; MathJax.Hub.Queue([\"Typeset\",MathJax.Hub]);"
-//		outputView?.evaluateJavaScript(command, completionHandler: nil)
 	}
 	
 	private func htmlFor(chunk: RmdChunk) -> String {
@@ -294,6 +299,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 	
 	private func ensureResourcesLoaded() {
+		guard didLoadView else { return }
 		resourcesExtracted = true
 		loadInitialPage()
 //		guard let tarball = Bundle.main.url(forResource: "previewResources", withExtension: "tgz"), tarball.fileExists()

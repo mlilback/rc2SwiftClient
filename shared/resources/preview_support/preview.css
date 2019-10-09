@@ -1,0 +1,25 @@
+.frontMatter {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	line-height: 1.2;
+	word-break: break-all;
+	font-family: monospace;
+	border: 1px hidden DarkGrey;
+	border-bottom-style: outset;
+	background-color: #f8f8f8;
+	padding: 2px;
+	width: 300px;
+}
+
+.frontMatter tr { border-bottom: 1px dotted;}
+.frontMatter tr td { background-color: inherit; }
+.frontMatter tr th { width: 30px; text-align: right; white-space: nowrap; padding-left: 4px; }
+
+.frontMatter caption { text-align: left; background-color: inherit; font-family: "Rockwell", serif; font-size: 0.80em;}
+.title {
+	position: relative;
+	font-size: 24px;
+	font-weight: bold;
+	z-index: 20;
+	opacity: 0.3;
+}

@@ -61,7 +61,10 @@ public class RmdDocument: CustomDebugStringConvertible {
 				oldChunk.matchesForUpdate(chunk: newChunk)
 			else { return nil }
 			if newChunk.chunkType == .code && idx < firstCodeIndex { return nil }
-			if newChunk.rawText != oldChunk.rawText { changed.append(idx) }
+			if newChunk.rawText != oldChunk.rawText {
+				changed.append(idx)
+				document.chunks[idx] = newChunk
+			}
 		}
 		return changed
 	}

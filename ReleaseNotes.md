@@ -1,5 +1,10 @@
 # Rc² release notes
 
+## Build 78
+
+* removed lots of potentially buggy code with parsing documents for preview mode
+* live preview updates only the modified chunk when possible, isntead of reloading whole page
+
 ## Build 71
 
 * fixed crashing bug when switching between editor tabs too fast
