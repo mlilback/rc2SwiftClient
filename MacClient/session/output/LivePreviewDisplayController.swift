@@ -28,31 +28,33 @@ protocol LivePreviewOutputController {
 	/// allows editor that the user has made a change to the contents of the current document
 	///
 	/// - Parameters:
+	///   - contents: the propsed updated contents
 	///   - range: the range of the text in the original string
 	///   - delta: the change made
 	/// - Returns: true if the changes should be saved to the current document's editedContents causing a reparse
-	func contentsEdited(range: NSRange, delta: Int) -> Bool
+	func contentsEdited(contents: String, range: NSRange, delta: Int) -> Bool
 }
 
 class LivePreviewDisplayController: AbstractSessionViewController, OutputController, LivePreviewOutputController, WKUIDelegate, WKNavigationDelegate
 {
 	var contextualMenuDelegate: ContextualMenuDelegate?
 	var sessionController: SessionController?
+	private var parsedDocument: RmdDocument? = nil
 	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil)
-	private let contextDisposables = CompositeDisposable()
+	private var curDocDisposable: Disposable?
 	private var contentsDisposable: Disposable?
+	private var lastContents: String?
 	private var lineContiuationRegex: NSRegularExpression!
 	private var openDoubleDollarRegex: NSRegularExpression!
 	private var closeDoubleDollarRegex: NSRegularExpression!
 	private var documentRoot: URL?
-	private var initialDocumentLoaded = false
-	private var needToLoadDocumentOnLoad = false
 	private var resourcesExtracted = false
-	private var readyForContent: Bool { return resourcesExtracted && needToLoadDocumentOnLoad }
 	private var parseInProgress = false
 	private var emptyNavigations: Set<WKNavigation> = []
 	private var headerContents = ""
 	private var footerContents = ""
+	
+	var emptyContents: String { "\(headerContents) \(footerContents)" }
 	
 	var editorContext: EditorContext? {
 		get { return context.value }
@@ -94,73 +96,91 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	/// - Parameters:
 	///   - range: the range of the text in the original string
 	///   - delta: the change made
-	func contentsEdited(range: NSRange, delta: Int) -> Bool {
-		// TODO: this might not even be needed, as we get notification when changed so don't need change notice from editor, however the editor uses the return value to decide to save, which triggers the actual update
-		/// FIXME: implement
-		// need to update the changed chunk if possible. If not, then reparse document
-//		parseContent()
+	func contentsEdited(contents: String, range: NSRange, delta: Int) -> Bool {
+		updatePreview(updatedContents: contents)
 		return true
 	}
 	
+	/// called when the currentDocument of the EditorContext has changed
+	private func documentChanged() {
+		parsedDocument = nil
+		lastContents = nil
+		contentsDisposable?.dispose()
+		contentsDisposable = context.value?.currentDocument.value?.editedContents.signal.observeValues { [weak self] _ in
+			self?.contentsChanged()
+		}
+		updatePreview()
+	}
+	
+	/// called when the editedContexts of the current document changed
+	private func contentsChanged() {
+//		updatePreview()
+	}
+	
 	private func loadInitialPage() {
-		guard resourcesExtracted, needToLoadDocumentOnLoad,
-			let headerUrl = Bundle.main.url(forResource: "customRmdHeader", withExtension: "html"),
+		guard headerContents.count == 0 else { return }
+		guard let headerUrl = Bundle.main.url(forResource: "customRmdHeader", withExtension: "html"),
 			let footerUrl = Bundle.main.url(forResource: "customRmdFooter", withExtension: "html")
-			else { return }
+			else { fatalError("failed to find preview header/footer") }
 		do {
 			headerContents = try String(contentsOf: headerUrl)
 			footerContents = try String(contentsOf: footerUrl)
-			if let _ = context.value?.parsedDocument.value {
-				parseContent()
-			} else {
-				load(html: "\(headerContents)\n\(footerContents)")
-			}
+			updatePreview()
 		} catch {
 			fatalError("failed to load initial preview content: \(error)")
 		}
 	}
 
-	@objc private func parsedDocChanged(_ note: Notification) {
-		documentChanged()
-	}
-	
 	/// called when the context property has been set
 	private func contextChanged() {
-		contextDisposables.dispose()
+		lastContents = nil
+		parsedDocument = nil
+		curDocDisposable?.dispose()
+		curDocDisposable = nil
 		contentsDisposable?.dispose()
 		contentsDisposable = nil
-		// don't want to observe twice
-		NotificationCenter.default.removeObserver(self, name: .parsedDocumentChanged, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(parsedDocChanged(_:)), name: .parsedDocumentChanged, object: nil)
-		guard outputView != nil else {
-			needToLoadDocumentOnLoad = true
-			return
+		curDocDisposable = editorContext?.currentDocument.signal.observeValues({ [weak self] newDoc in
+			self?.documentChanged()
+		})
+		if !resourcesExtracted {
+			ensureResourcesLoaded()
 		}
 		documentChanged()
-	}
-	
-	private func documentChanged() {
-		contentsDisposable?.dispose()
-		contentsDisposable = nil
-		guard let context = editorContext else { return }
-		contentsDisposable = context.parsedDocument.signal.observeValues { [weak self] _ in
-			guard let me = self else { return }
-			me.parseContent()
-		}
-		parseContent()
 	}
 	
 	/// parses the parsed document and loads it via javascript
-	private func parseContent() {
+	private func updatePreview(updatedContents: String? = nil) {
 		guard !parseInProgress else { return }
-		guard let curDoc = context.value?.parsedDocument.value else {
-			load(html: "")
+		var updateParse = true
+		var clearLastContents = false
+		defer { if clearLastContents { self.lastContents = nil} }
+		if parsedDocument == nil {
+			// need to do initial load. might be no contents if called before document loaded
+			guard let contents = context.value?.currentDocument.value?.currentContents
+				else { return }
+			do {
+				parsedDocument = try RmdDocument(contents: contents)
+				updateParse = false
+				clearLastContents = true
+			} catch {
+				Log.warn("error during initial parse: \(error)")
+				return
+			}
+		}
+		guard let curDoc = parsedDocument else {
+			load(html: emptyContents)
 			return
 		}
+		guard let contents = updatedContents ?? context.value?.currentDocument.value?.currentContents
+			else { Log.warn("current doc has no contents??"); return }
+		if contents == lastContents { return }
 		parseInProgress = true
 		defer { parseInProgress = false }
-		// TODO: Need to only reload chunks that changed
-		var html = curDoc.frontMatter.value + "\n"
+		let changedChunkIndexes = try! RmdDocument.update(document: curDoc, with: contents) ?? []
+		if changedChunkIndexes.count > 0 {
+			// TODO: only need to update the chunks that changed
+		}
+		var html = "<div class=\"frontMatter\">\(curDoc.frontMatter.value)</div>\n"
 		let allChunks = curDoc.chunks
 		for (chunkNumber, chunk) in allChunks.enumerated() {
 			html += "<section index=\"\(chunkNumber)\">\n"
@@ -305,17 +325,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			return
 		}
 		Log.info("did finish webView load")
-		if needToLoadDocumentOnLoad {
-			contextDisposables += context.value?.parsedDocument.signal.observeValues { [weak self] _ in
-				guard let me = self else { return }
-				// document changed, re-observe contents
-				me.documentChanged()
-			}
-			needToLoadDocumentOnLoad = false
-		}
-//		if readyForContent {
-			documentChanged()
-//		}
+		guard let _ = parsedDocument else { return }
+		updatePreview()
 	}
 	
 	func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void)

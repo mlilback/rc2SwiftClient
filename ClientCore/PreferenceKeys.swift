@@ -32,7 +32,8 @@ public extension DefaultsKeys {
 	static let consoleOutputFont = DefaultsKey<FontDescriptor?>("rc2.console.font")
 	static let clearImagesWithConsole = DefaultsKey<Bool>("clearImagesWithConsole", defaultValue: false)
 	
-	static let inNotebookView = DefaultsKey<Bool>("editorInNotebookView", defaultValue: false)
+	static let previewUpdateDelay = DefaultsKey<Double>("PreviewUpdateDelay", defaultValue: 0.2)
+
 	static let suppressDeleteTemplate = DefaultsKey<Bool>("suppressDeleteTemplate", defaultValue: false)
 	static let suppressDeleteFileWarnings = DefaultsKey<Bool>("SuppressDeleteFileWarning", defaultValue: false)
 	static let suppressClearWorkspace = DefaultsKey<Bool>("SuppressClearWorkspaceWarning", defaultValue: false)

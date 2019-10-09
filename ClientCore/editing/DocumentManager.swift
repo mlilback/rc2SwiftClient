@@ -29,8 +29,6 @@ public class DocumentManager: EditorContext {
 	// when changed, should use .updateProgress() while loading file contents
 	private let _currentDocument = MutableProperty<EditorDocument?>(nil)
 	public let currentDocument: Property<EditorDocument?>
-	private let _parsedDocument = MutableProperty<RmdDocument?>(nil)
-	public var parsedDocument: Property<RmdDocument?>
 	
 	public let editorFont: MutableProperty<PlatformFont>
 	public var errorHandler: Rc2ErrorHandler { return self }
@@ -39,7 +37,6 @@ public class DocumentManager: EditorContext {
 	public var workspaceNotificationCenter: NotificationCenter
 	public let lifetime: Lifetime
 	var defaults: UserDefaults
-	private var contentsChangedDisposable: Disposable?
 	private var lastParsed: TimeInterval = 0
 	private var equationLabel: MTMathUILabel?
 
@@ -54,7 +51,6 @@ public class DocumentManager: EditorContext {
 	public init(fileSaver: FileSaver, fileCache: FileCache, lifetime: Lifetime, notificationCenter: NotificationCenter = .default, wspaceCenter: NotificationCenter = NSWorkspace.shared.notificationCenter, defaults: UserDefaults = .standard)
 	{
 		currentDocument = Property<EditorDocument?>(_currentDocument)
-		parsedDocument = Property<RmdDocument?>(_parsedDocument)
 		self.fileSaver = fileSaver
 		self.fileCache = fileCache
 		self.lifetime = lifetime
@@ -223,33 +219,7 @@ public class DocumentManager: EditorContext {
 	// the only function that should change _currentDocument, so that parsedDocument is updated appropriately
 	private func switchTo(document: EditorDocument?) {
 		// parsed is updated on a later cycle of the main thread
-		contentsChangedDisposable?.dispose()
 		_currentDocument.value = document
-		contentsChangedDisposable = document?.editedContents.signal.observeValues { [weak self] _ in
-			// if contents changed, need to reparse
-			self?.parseCurrentDocument()
-		}
-		DispatchQueue.main.async {
-			self.parseCurrentDocument()
-		}
-	}
-	
-	/// reparses the document with current(edited) contents
-	public func parseCurrentDocument() {
-		guard let document = currentDocument.value, document.parsable else {
-			_parsedDocument.value = nil
-			return
-		}
-		do {
-			let newParsed = try RmdDocument(contents: document.currentContents ?? "") { (topic) in
-				return HelpController.shared.hasTopic(topic)
-			}
-			Log.info("parsed \(document.file.name) with \(newParsed.chunks.count) chunks", .core)
-			_parsedDocument.value = newParsed
-			notificationCenter.post(name: .parsedDocumentChanged, object: self)
-		} catch {
-			Log.info("failed to parse document \(document.file.name)", .core)
-		}
 	}
 	
 	// returns SP to return the specified document, creating and inserting into openDocuments if necessary

@@ -11,8 +11,7 @@ import Down
 import MJLLogger
 import ClientCore
 import WebKit
-
-let typingDelayBeforeUpdatingPreview: TimeInterval = 0.4
+import SwiftyUserDefaults
 
 class LivePreviewEditorController: BaseSourceEditorController {
 	var outputController: LivePreviewOutputController? { didSet { outputControllerChanged() } }
@@ -35,17 +34,16 @@ class LivePreviewEditorController: BaseSourceEditorController {
 		lastChangeTimer = DispatchSource.makeTimerSource(queue: .main)
 		lastChangeTimer.schedule(deadline: .now() + .milliseconds(500), repeating: .milliseconds(500), leeway: .milliseconds(100))
 		lastChangeTimer.setEventHandler {
-			guard let lastRange = self.lastChangeRange else { return }
+			guard let lastRange = self.lastChangeRange, let editor = self.editor else { return }
 			let curTime = Date.timeIntervalSinceReferenceDate
-			if (curTime - self.lastTextChange) > typingDelayBeforeUpdatingPreview {
+			if (curTime - self.lastTextChange) > Defaults[.previewUpdateDelay] {
 				self.lastTextChange = curTime
 				defer { self.lastChangeRange = nil }
 				if let oc = self.outputController,
-					oc.contentsEdited(range: lastRange, delta: self.lastChangeDelta),
-					let newContents = self.editor?.string
+					oc.contentsEdited(contents: editor.string, range: lastRange, delta: self.lastChangeDelta)
 				{
 					if self.ignoreContentChanges { return }
-					self.save(edits: newContents, reload: true)
+					self.save(edits: editor.string, reload: true)
 				}
 			}
 		}
