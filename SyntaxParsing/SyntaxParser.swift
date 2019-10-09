@@ -32,7 +32,7 @@ public class SyntaxParser: NSObject {
 		case sea, codeBlock, codeBlockPoss, codeIn, eqBlock, eqIn, eqPoss, frontMatter
 	}
 	
-	public init(storage: NSTextStorage, fileType: FileType, helpCallback: @escaping HasHelpCallback)
+	public init(storage: NSTextStorage, fileType: FileType, helpCallback: HasHelpCallback?)
 	{
 		self.textStorage = storage
 		self.keywords = SyntaxParser.rKeywords

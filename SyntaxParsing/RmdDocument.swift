@@ -38,7 +38,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 	/// - Returns: If nil, consider the doucment completely refreshed. Otherwise, the indexes of chunks that just changed content.
 	/// - Throws: any exception raised while creating a new document.
 	public class func update(document: RmdDocument, with content: String) throws -> [Int]? {
-		guard let helpCallback = document.parser.helpCallback else { fatalError("document has no help callback") }
+		let helpCallback = document.parser.helpCallback
 		let newDoc = try RmdDocument(contents: content, helpCallback: helpCallback)
 
 		defer {
@@ -71,7 +71,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 	/// - Parameters:
 	///   - contents: Initial contents of the document.
 	///   - helpCallback: Callback that returns true if a term should be highlighted as a help term.
-	public init(contents: String, helpCallback: @escaping  HasHelpCallback) throws {
+	public init(contents: String, helpCallback: HasHelpCallback? = nil) throws {
 		textStorage.append(NSAttributedString(string: contents))
 		let filetype = FileType.fileType(withExtension: "Rmd")!
 		parser = SyntaxParser(storage: textStorage, fileType: filetype, helpCallback: helpCallback)
