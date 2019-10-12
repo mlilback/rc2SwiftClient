@@ -13,3 +13,6 @@
 [submodule "vendor/HTMLString"]
 	path = vendor/HTMLString
 	url = https://github.com/alexaubry/HTMLString
+[submodule "vendor/cmark-gfm"]
+	path = vendor/cmark-gfm
+	url = https://github.com/github/cmark-gfm.git

@@ -65,6 +65,23 @@
 		0816FD1D1E5226010006FF26 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816FD1C1E5226010006FF26 /* SearchBarView.swift */; };
 		0816FD1F1E5226760006FF26 /* SearchBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0816FD1E1E5226760006FF26 /* SearchBarView.xib */; };
 		081996701E36A78A0000AA0E /* EditableTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0819966F1E36A78A0000AA0E /* EditableTableCellView.swift */; };
+		081A58A72352875E001B8AFC /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 08635598235258030005E477 /* config.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58A82352875E001B8AFC /* syntax_extension.h in Headers */ = {isa = PBXBuildFile; fileRef = 08635596235257910005E477 /* syntax_extension.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58A92352875E001B8AFC /* parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58A423528647001B8AFC /* parser.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58AA2352875E001B8AFC /* cmark-gfm-core-extensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 08635586235257200005E477 /* cmark-gfm-core-extensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58AB2352875E001B8AFC /* plugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 08635587235257200005E477 /* plugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58AC2352875E001B8AFC /* cmark-gfm-extension_api.h in Headers */ = {isa = PBXBuildFile; fileRef = 08635588235257200005E477 /* cmark-gfm-extension_api.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58AD2352875E001B8AFC /* cmark-gfm_version.h in Headers */ = {isa = PBXBuildFile; fileRef = 08635589235257200005E477 /* cmark-gfm_version.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58AE2352875E001B8AFC /* cmark-gfm-extensions_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 0863558A235257200005E477 /* cmark-gfm-extensions_export.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58AF2352875E001B8AFC /* registry.h in Headers */ = {isa = PBXBuildFile; fileRef = 0863558B235257200005E477 /* registry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58B02352875E001B8AFC /* cmark-gfm_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 0863558C235257200005E477 /* cmark-gfm_export.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58B12352875E001B8AFC /* cmark-gfm.h in Headers */ = {isa = PBXBuildFile; fileRef = 0863558D235257200005E477 /* cmark-gfm.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58B4235287C9001B8AFC /* node.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58B2235287C8001B8AFC /* node.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58B5235287C9001B8AFC /* references.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58B3235287C9001B8AFC /* references.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58B7235287F7001B8AFC /* map.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58B6235287F7001B8AFC /* map.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58B92352881A001B8AFC /* chunk.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58B82352881A001B8AFC /* chunk.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58BB23528843001B8AFC /* buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58BA23528842001B8AFC /* buffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		081A58BD23528869001B8AFC /* cmark_ctype.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58BC23528869001B8AFC /* cmark_ctype.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		082564F320150B4000526957 /* MacAppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082564F220150B4000526957 /* MacAppConstants.swift */; };
 		0825658C2016BB9200526957 /* OnboardingContent.rtfd in Resources */ = {isa = PBXBuildFile; fileRef = 0825658A2016BB9200526957 /* OnboardingContent.rtfd */; };
 		0826108F1DB02FC300C03422 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -209,6 +226,10 @@
 		085A1A30205C73FC00B7EC5F /* RmdDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A2F205C73FC00B7EC5F /* RmdDocument.swift */; };
 		08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08604A4D1D9C0C0500DE2A79 /* Named.swift */; };
 		08615B30229BA6A100488BF1 /* helpindex.db in Resources */ = {isa = PBXBuildFile; fileRef = 084D330F206D399E00246CBD /* helpindex.db */; };
+		086355A7235270130005E477 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 086355A5235270130005E477 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib */; };
+		086355A8235270130005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 086355A6235270130005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib */; };
+		086355A9235270700005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086355A6235270130005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		086355AA2352708C0005E477 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086355A5235270130005E477 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		086413C82013614500116153 /* AppLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086413C620135E1C00116153 /* AppLoggerTests.swift */; };
 		086413CA201392C600116153 /* sampleLog.json in Resources */ = {isa = PBXBuildFile; fileRef = 086413C9201392C600116153 /* sampleLog.json */; };
 		086413CB201394B100116153 /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
@@ -689,6 +710,7 @@
 				080C79B6229B8D5500178D0E /* PEGKit.framework in Embed Frameworks */,
 				08A7E813233BF8F200946F34 /* AppCenterCrashes.framework in Embed Frameworks */,
 				0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */,
+				086355AA2352708C0005E477 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib in Embed Frameworks */,
 				08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */,
 				08817B82233AB2B800194228 /* Logging.framework in Embed Frameworks */,
 				08A7E811233BF8F200946F34 /* AppCenterAnalytics.framework in Embed Frameworks */,
@@ -701,6 +723,7 @@
 				08A7E80F233BF8F200946F34 /* AppCenter.framework in Embed Frameworks */,
 				0859A3612062726700103924 /* iosMath.framework in Embed Frameworks */,
 				089794301D7B68F0003339EE /* Rc2Common.framework in Embed Frameworks */,
+				086355A9235270700005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -876,6 +899,13 @@
 		0816FD1C1E5226010006FF26 /* SearchBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		0816FD1E1E5226760006FF26 /* SearchBarView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchBarView.xib; sourceTree = "<group>"; };
 		0819966F1E36A78A0000AA0E /* EditableTableCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableTableCellView.swift; sourceTree = "<group>"; };
+		081A58A423528647001B8AFC /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parser.h; sourceTree = "<group>"; };
+		081A58B2235287C8001B8AFC /* node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = node.h; sourceTree = "<group>"; };
+		081A58B3235287C9001B8AFC /* references.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = references.h; sourceTree = "<group>"; };
+		081A58B6235287F7001B8AFC /* map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = map.h; sourceTree = "<group>"; };
+		081A58B82352881A001B8AFC /* chunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunk.h; sourceTree = "<group>"; };
+		081A58BA23528842001B8AFC /* buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = buffer.h; sourceTree = "<group>"; };
+		081A58BC23528869001B8AFC /* cmark_ctype.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmark_ctype.h; sourceTree = "<group>"; };
 		0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SigmaSwiftStatistics.framework; path = Carthage/Build/Mac/SigmaSwiftStatistics.framework; sourceTree = "<group>"; };
 		0823F2321EE742B100A8F8C6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		082564F220150B4000526957 /* MacAppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppConstants.swift; sourceTree = "<group>"; };
@@ -1032,6 +1062,18 @@
 		085A1A2A205ACA4600B7EC5F /* AbstractEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractEditorController.swift; sourceTree = "<group>"; };
 		085A1A2F205C73FC00B7EC5F /* RmdDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RmdDocument.swift; sourceTree = "<group>"; };
 		08604A4D1D9C0C0500DE2A79 /* Named.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Named.swift; sourceTree = "<group>"; };
+		08635586235257200005E477 /* cmark-gfm-core-extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm-core-extensions.h"; sourceTree = "<group>"; };
+		08635587235257200005E477 /* plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plugin.h; sourceTree = "<group>"; };
+		08635588235257200005E477 /* cmark-gfm-extension_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm-extension_api.h"; sourceTree = "<group>"; };
+		08635589235257200005E477 /* cmark-gfm_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm_version.h"; sourceTree = "<group>"; };
+		0863558A235257200005E477 /* cmark-gfm-extensions_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm-extensions_export.h"; sourceTree = "<group>"; };
+		0863558B235257200005E477 /* registry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = registry.h; sourceTree = "<group>"; };
+		0863558C235257200005E477 /* cmark-gfm_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm_export.h"; sourceTree = "<group>"; };
+		0863558D235257200005E477 /* cmark-gfm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm.h"; sourceTree = "<group>"; };
+		08635596235257910005E477 /* syntax_extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = syntax_extension.h; sourceTree = "<group>"; };
+		08635598235258030005E477 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		086355A5235270130005E477 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcmark-gfm-extensions.0.29.0.gfm.0.dylib"; path = "vendor/cmark-gfm/build/installed/lib/libcmark-gfm-extensions.0.29.0.gfm.0.dylib"; sourceTree = "<group>"; };
+		086355A6235270130005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcmark-gfm.0.29.0.gfm.0.dylib"; path = "vendor/cmark-gfm/build/installed/lib/libcmark-gfm.0.29.0.gfm.0.dylib"; sourceTree = "<group>"; };
 		086413C620135E1C00116153 /* AppLoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggerTests.swift; sourceTree = "<group>"; };
 		086413C9201392C600116153 /* sampleLog.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sampleLog.json; sourceTree = "<group>"; };
 		086508761E43F27C0067C8CA /* SingleInputViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleInputViewController.swift; sourceTree = "<group>"; };
@@ -1330,9 +1372,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */,
 				080C79B5229B8D5500178D0E /* PEGKit.framework in Frameworks */,
 				08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
 				08A7E80E233BF8F200946F34 /* AppCenter.framework in Frameworks */,
+				086355A8235270130005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib in Frameworks */,
 				0859A3602062726700103924 /* iosMath.framework in Frameworks */,
 				08A7E810233BF8F200946F34 /* AppCenterAnalytics.framework in Frameworks */,
 				08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */,
@@ -1347,6 +1391,7 @@
 				0897942F1D7B68F0003339EE /* Rc2Common.framework in Frameworks */,
 				08A7E80A233BB43200946F34 /* SigmaSwiftStatistics in Frameworks */,
 				084D32FC206D03DD00246CBD /* ClientCore.framework in Frameworks */,
+				086355A7235270130005E477 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib in Frameworks */,
 				0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1537,6 +1582,7 @@
 		082BE08A1F59D549006CE0B7 /* SyntaxParsing */ = {
 			isa = PBXGroup;
 			children = (
+				08635585235257200005E477 /* cmark-gfm */,
 				085A1A2F205C73FC00B7EC5F /* RmdDocument.swift */,
 				082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */,
 				0812178D2058805000ED328C /* PEGKitUtilities.swift */,
@@ -1792,6 +1838,31 @@
 			path = internal;
 			sourceTree = "<group>";
 		};
+		08635585235257200005E477 /* cmark-gfm */ = {
+			isa = PBXGroup;
+			children = (
+				08635598235258030005E477 /* config.h */,
+				081A58BC23528869001B8AFC /* cmark_ctype.h */,
+				081A58BA23528842001B8AFC /* buffer.h */,
+				08635596235257910005E477 /* syntax_extension.h */,
+				081A58A423528647001B8AFC /* parser.h */,
+				08635586235257200005E477 /* cmark-gfm-core-extensions.h */,
+				08635587235257200005E477 /* plugin.h */,
+				08635588235257200005E477 /* cmark-gfm-extension_api.h */,
+				08635589235257200005E477 /* cmark-gfm_version.h */,
+				0863558A235257200005E477 /* cmark-gfm-extensions_export.h */,
+				0863558B235257200005E477 /* registry.h */,
+				081A58B82352881A001B8AFC /* chunk.h */,
+				081A58B2235287C8001B8AFC /* node.h */,
+				081A58B6235287F7001B8AFC /* map.h */,
+				081A58B3235287C9001B8AFC /* references.h */,
+				0863558C235257200005E477 /* cmark-gfm_export.h */,
+				0863558D235257200005E477 /* cmark-gfm.h */,
+			);
+			name = "cmark-gfm";
+			path = "vendor/cmark-gfm/build/installed/cmark-gfm";
+			sourceTree = SOURCE_ROOT;
+		};
 		08680675200D892000C986A9 /* MJLCommon */ = {
 			isa = PBXGroup;
 			children = (
@@ -1969,6 +2040,8 @@
 		088CE6931C4B144800153414 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				086355A5235270130005E477 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib */,
+				086355A6235270130005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib */,
 				08A7E80B233BF8F100946F34 /* AppCenter.framework */,
 				08A7E80C233BF8F100946F34 /* AppCenterAnalytics.framework */,
 				08A7E80D233BF8F100946F34 /* AppCenterCrashes.framework */,
@@ -2208,7 +2281,24 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				081A58B4235287C9001B8AFC /* node.h in Headers */,
+				081A58AA2352875E001B8AFC /* cmark-gfm-core-extensions.h in Headers */,
+				081A58AB2352875E001B8AFC /* plugin.h in Headers */,
+				081A58A72352875E001B8AFC /* config.h in Headers */,
+				081A58B5235287C9001B8AFC /* references.h in Headers */,
+				081A58AD2352875E001B8AFC /* cmark-gfm_version.h in Headers */,
+				081A58B92352881A001B8AFC /* chunk.h in Headers */,
+				081A58AC2352875E001B8AFC /* cmark-gfm-extension_api.h in Headers */,
+				081A58AE2352875E001B8AFC /* cmark-gfm-extensions_export.h in Headers */,
+				081A58B12352875E001B8AFC /* cmark-gfm.h in Headers */,
+				081A58B02352875E001B8AFC /* cmark-gfm_export.h in Headers */,
 				082BE09B1F59D549006CE0B7 /* SyntaxParsing.h in Headers */,
+				081A58A82352875E001B8AFC /* syntax_extension.h in Headers */,
+				081A58B7235287F7001B8AFC /* map.h in Headers */,
+				081A58BB23528843001B8AFC /* buffer.h in Headers */,
+				081A58BD23528869001B8AFC /* cmark_ctype.h in Headers */,
+				081A58A92352875E001B8AFC /* parser.h in Headers */,
+				081A58AF2352875E001B8AFC /* registry.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3823,6 +3913,7 @@
 				);
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/vendor/cmark-gfm/build/installed/cmark-gfm";
 				INFOPLIST_FILE = SyntaxParsing/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3830,6 +3921,11 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vendor/cmark-gfm/build/installed/lib",
+				);
+				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.SyntaxParsing;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
@@ -3856,6 +3952,7 @@
 				);
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/vendor/cmark-gfm/build/installed/cmark-gfm";
 				INFOPLIST_FILE = SyntaxParsing/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3863,6 +3960,11 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vendor/cmark-gfm/build/installed/lib",
+				);
+				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.SyntaxParsing;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
@@ -4606,16 +4708,22 @@
 					"$(PROJECT_DIR)/vendor",
 					"$(PROJECT_DIR)/Carthage/Build/Mac/Static",
 				);
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/vendor/cmark-gfm/build/installed/cmark-gfm";
 				INFOPLIST_FILE = MacClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vendor/cmark-gfm/build/installed/lib",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient;
 				PRODUCT_MODULE_NAME = MacClient;
 				PRODUCT_NAME = "Rc²";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "MacClient/MacClient-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
@@ -4631,16 +4739,26 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac/Static",
+				);
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/vendor/cmark-gfm/buuild/installed";
 				INFOPLIST_FILE = MacClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vendor/cmark-gfm/build/installed/lib",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.MacClient;
 				PRODUCT_MODULE_NAME = MacClient;
 				PRODUCT_NAME = "Rc²";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "MacClient/MacClient-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 			};
 			name = Release;

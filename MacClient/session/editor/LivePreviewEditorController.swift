@@ -7,7 +7,6 @@
 //
 
 import Cocoa
-import Down
 import MJLLogger
 import ClientCore
 import WebKit

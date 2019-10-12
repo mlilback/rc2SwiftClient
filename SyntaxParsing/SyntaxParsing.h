@@ -18,3 +18,15 @@ FOUNDATION_EXPORT const unsigned char SyntaxParsingVersionString[];
 // using statements like #import <SyntaxParsing/PublicHeader.h>
 
 #import "PEGKIT/PEGKIT.h"
+#import "AppCenter/AppCenter.h"
+#import "AppCenterAnalytics/AppCenterAnalytics.h"
+#import "AppCenterCrashes/AppCenterCrashes.h"
+
+#include "cmark-gfm.h"
+#include "registry.h"
+#include "cmark-gfm-extension_api.h"
+#include "registry.h"
+#include "syntax_extension.h"
+#include "cmark-gfm-extensions_export.h"
+#include "cmark-gfm-core-extensions.h"
+#include "parser.h"

@@ -12,7 +12,6 @@ import Rc2Common
 import ClientCore
 import SyntaxParsing
 import ReactiveSwift
-import Down
 import MJLLogger
 
 // code to extract a zip file with preview_support locally is commented out because of a bug where WKWebView tries to load with %20 in app support url, which fails
@@ -40,6 +39,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	var contextualMenuDelegate: ContextualMenuDelegate?
 	var sessionController: SessionController?
 	private var parsedDocument: RmdDocument? = nil
+	private let mdownParser = MarkdownParser()
 	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil)
 	private var curDocDisposable: Disposable?
 	private var contentsDisposable: Disposable?
@@ -54,6 +54,13 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private var headerContents = ""
 	private var footerContents = ""
 	private var didLoadView = false
+	
+	private let dataSourceRegex: NSRegularExpression = {
+		let posPattern = #"""
+		(?xi)data-sourcepos="(\d+):
+		"""#
+		return try! NSRegularExpression(pattern: posPattern, options: .caseInsensitive)
+	}()
 	
 	var emptyContents: String { "\(headerContents) \(footerContents)" }
 	
@@ -184,7 +191,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			Log.info("udpating just chunks \(changedChunkIndexes)")
 			for chunkNumber in changedChunkIndexes {
 				let chunk = curDoc.chunks[chunkNumber]
-				let html = escapeForJavascript(htmlFor(chunk: chunk))
+				let html = escapeForJavascript(htmlFor(chunk: chunk, index: chunkNumber))
 				let command = "$(\"section[index='\(chunkNumber)']\").html('\(html)'); MathJax.typeset()"
 				outputView?.evaluateJavaScript(command, completionHandler: nil)
 			}
@@ -192,53 +199,30 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			var html =  ""
 			for (chunkNumber, chunk) in curDoc.chunks.enumerated() {
 				html += "<section index=\"\(chunkNumber)\">\n"
-				html += htmlFor(chunk: chunk)
+				html += htmlFor(chunk: chunk, index: chunkNumber)
 				html += "\n</section>\n"
 			}
 			load(html: "\(headerContents)\n\(html)\n\(footerContents)")
 		}
 	}
 	
-	private func htmlFor(chunk: RmdChunk) -> String {
+	private func htmlFor(chunk: RmdChunk, index: Int) -> String {
 		switch chunk.chunkType {
 		case .code:
 			let code = htmlFor(code: chunk)
 			return code
 		case .docs:
-			return htmlFor(markdownChunk: chunk)
+			return htmlFor(markdownChunk: chunk, index: index)
 		case .equation:
 			return htmlForEquation(chunk: chunk)
 		}
 	}
 	
-	private func htmlFor(markdownChunk: RmdChunk) -> String {
+	private func htmlFor(markdownChunk: RmdChunk, index: Int) -> String {
 		guard let chunk = markdownChunk as? TextChunk else { preconditionFailure("invalid chunk type") }
-		let options: DownOptions = [.sourcePos, .unsafe]
-		var adjustedText = chunk.rawText
-		var inlineMap: [Int : String] = [:]
-		let allChunks = chunk.inlineElements
-		do {
-			// store output strings for each chunk keyed on index
-			for (inlineIdx, inlineChunk) in chunk.inlineElements.enumerated() {
-				inlineMap[inlineIdx] = textFor(inlineChunk: inlineChunk, parent: chunk)
-			}
-			// replace those values with markers so they won't be converted to markdown
-			for index in (0..<chunk.inlineElements.count).reversed() {
-				guard let range = allChunks[index].chunkRange.toStringRange(adjustedText)
-					else { preconditionFailure("failed to get range for chunk \(index)") }
-				adjustedText = adjustedText.replacingCharacters(in: range, with: "🖍\(index)🖍")
-			}
-			// convert markdown to html
-			adjustedText = try adjustedText.toHTML(options)
-			// replace markers with inline text
-			for  index in 0..<allChunks.count {
-				adjustedText = adjustedText.replacingOccurrences(of: "🖍\(index)🖍", with: inlineMap[index]!)
-			}
-			return adjustedText
-		} catch {
-			Log.error("Failed to convert markdown to HTML: \(error)", .app)
-		}
-		return "<p>failed to parse markdown</p>\n"
+		let html = mdownParser.htmlFor(markdown: chunk.rawText)
+		_ = dataSourceRegex.replaceMatches(in: html, range: NSRange(location: 0, length: html.length), withTemplate: "data-sourcepos=\"\(index).$2")
+		return html as String
 	}
 	
 	private func textFor(inlineChunk: InlineChunk, parent: TextChunk) -> String {
@@ -340,4 +324,36 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		Log.info("An error from web view: \(message)", .app)
 		completionHandler()
 	}
+
+	private class MarkdownParser {
+		let allocator: UnsafeMutablePointer<cmark_mem>
+		let cmarkOptions = CMARK_OPT_SOURCEPOS | CMARK_OPT_FOOTNOTES
+		let parser: UnsafeMutablePointer<cmark_parser>?
+		let extensions: UnsafeMutablePointer<cmark_llist>? = nil
+
+		init() {
+			allocator = cmark_get_default_mem_allocator()
+			parser = cmark_parser_new(cmarkOptions)
+			let tableExtension = cmark_find_syntax_extension("table")
+			let strikeExtension = cmark_find_syntax_extension("strikethrough")
+			cmark_llist_append(allocator, extensions, tableExtension)
+			cmark_llist_append(allocator, extensions, strikeExtension)
+		}
+		
+		func htmlFor(markdown: String) -> NSMutableString {
+			markdown.withCString( { chars in
+				cmark_parser_feed(parser, chars, strlen(chars))
+			})
+			let htmlDoc = cmark_parser_finish(parser)
+			let html = NSMutableString(cString: cmark_render_html_with_mem(htmlDoc, cmarkOptions, extensions, allocator), encoding: String.Encoding.utf8.rawValue)!
+			return html
+		}
+		
+		deinit {
+			cmark_llist_free(allocator, extensions)
+			cmark_parser_free(parser)
+		}
+	}
 }
+
+
