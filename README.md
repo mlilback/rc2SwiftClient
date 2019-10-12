@@ -94,6 +94,26 @@ OTHER_SWIFT_FLAGS = $(inherited) -DHOCKEYAPP_ENABLED
  
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) HOCKEYAPP_ENABLED=1 HOCKEY_IDENTIFIER='@"7574682489924a239272b421546d00f8"'
 ```
+# Github Flavored Markdown
+
+The repository is a submodule in vendor. Follow these steps to build it (if not already built).
+
+```
+cd vendor/cmark-gfm
+mkdir build; cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=./installed
+make install
+cp ../src/registry.h installed/cmark-gfm/
+cp ../src/plugin.h installed/cmark-gfm/
+cp ../src/syntax_extension.h /installed/cmark-gfm/
+rm build/installed/lib/*.dylib
+```
+
+The additional header files are necessary to call some functions defined in cmark-gfm.h
+
+The build directory is in .gitignore, so there should never be any issues with git and unkown files.
+
+ld on macOS will link to dylibs if they are in the same directory as static libraries, even if they aren't in the project settings. So they need to be removed.
 
 # Process arguments
 
