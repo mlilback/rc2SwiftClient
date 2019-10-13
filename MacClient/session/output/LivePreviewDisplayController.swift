@@ -36,32 +36,39 @@ protocol LivePreviewOutputController {
 
 class LivePreviewDisplayController: AbstractSessionViewController, OutputController, LivePreviewOutputController, WKUIDelegate, WKNavigationDelegate
 {
+	// required by OutputController, should use at some point
 	var contextualMenuDelegate: ContextualMenuDelegate?
 	var sessionController: SessionController?
-	private var parsedDocument: RmdDocument? = nil
-	private let mdownParser = MarkdownParser()
 	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil)
 	private var curDocDisposable: Disposable?
-	private var contentsDisposable: Disposable?
-	private var lastContents: String?
+	private var didLoadView = false
+
+	private var parsedDocument: RmdDocument? = nil
+	private let mdownParser = MarkdownParser()
+	private var parseInProgress = false
+
+	// regular expressions
 	private var lineContiuationRegex: NSRegularExpression!
 	private var openDoubleDollarRegex: NSRegularExpression!
 	private var closeDoubleDollarRegex: NSRegularExpression!
-	private var documentRoot: URL?
-	private var resourcesExtracted = false
-	private var parseInProgress = false
-	private var emptyNavigations: Set<WKNavigation> = []
-	private var headerContents = ""
-	private var footerContents = ""
-	private var didLoadView = false
-	
 	private let dataSourceRegex: NSRegularExpression = {
 		let posPattern = #"""
 		(?xi)data-sourcepos="(\d+):
 		"""#
 		return try! NSRegularExpression(pattern: posPattern, options: .caseInsensitive)
 	}()
+
+	/// true if packaged resources have been extracted into the app support folder
+	private var resourcesExtracted = false
+	/// stores navigation items that shouldn't have any effect
+	private var emptyNavigations: Set<WKNavigation> = []
 	
+	private var documentRoot: URL?
+	private var headerContents = ""
+	private var footerContents = ""
+	private var lastContents: String?
+
+
 	var emptyContents: String { "\(headerContents) \(footerContents)" }
 	
 	var editorContext: EditorContext? {
@@ -75,6 +82,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 	
 	@IBOutlet weak var outputView: WKWebView?
+	
+	// MARK: - standard overrides
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -100,6 +109,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		outputView?.navigationDelegate = self
 	}
 	
+	// MARK: - notification handlers
+	
 	/// called by the editor when the user has made an edit, resulting in a change of what is displayed
 	///
 	/// - Parameters:
@@ -114,17 +125,24 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private func documentChanged() {
 		parsedDocument = nil
 		lastContents = nil
-		contentsDisposable?.dispose()
-		contentsDisposable = context.value?.currentDocument.value?.editedContents.signal.observeValues { [weak self] _ in
-			self?.contentsChanged()
-		}
 		updatePreview()
 	}
-	
-	/// called when the editedContexts of the current document changed
-	private func contentsChanged() {
-//		updatePreview()
+		
+	/// called when the context property has been set
+	private func contextChanged() {
+		lastContents = nil
+		parsedDocument = nil
+		curDocDisposable?.dispose()
+		curDocDisposable = editorContext?.currentDocument.signal.observeValues({ [weak self] newDoc in
+			self?.documentChanged()
+		})
+		if !resourcesExtracted {
+			ensureResourcesLoaded()
+		}
+		documentChanged()
 	}
+	
+	// MARK: - content presentation
 	
 	private func loadInitialPage() {
 		guard headerContents.count == 0 else { return }
@@ -139,31 +157,18 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			fatalError("failed to load initial preview content: \(error)")
 		}
 	}
-
-	/// called when the context property has been set
-	private func contextChanged() {
-		lastContents = nil
-		parsedDocument = nil
-		curDocDisposable?.dispose()
-		curDocDisposable = nil
-		contentsDisposable?.dispose()
-		contentsDisposable = nil
-		curDocDisposable = editorContext?.currentDocument.signal.observeValues({ [weak self] newDoc in
-			self?.documentChanged()
-		})
-		if !resourcesExtracted {
-			ensureResourcesLoaded()
-		}
-		documentChanged()
-	}
 	
 	/// parses the parsed document and loads it via javascript
 	private func updatePreview(updatedContents: String? = nil) {
 		guard !parseInProgress else { return }
 		guard didLoadView else { return }
 		var updateParse = true
+		
+		// if a new document was generated, need to clear old contents after webview is updated
 		var clearLastContents = false
 		defer { if clearLastContents { self.lastContents = nil} }
+		
+		// handle initial parsing
 		if parsedDocument == nil {
 			// need to do initial load. might be no contents if called before document loaded
 			guard let contents = context.value?.currentDocument.value?.currentContents
@@ -177,6 +182,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 				return
 			}
 		}
+		
+		// handle empty content
 		guard let curDoc = parsedDocument else {
 			load(html: emptyContents)
 			return
@@ -184,6 +191,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		guard let contents = updatedContents ?? context.value?.currentDocument.value?.currentContents
 			else { Log.warn("current doc has no contents??"); return }
 		if contents == lastContents { return }
+		
+		// update the parsed document, update the webview
 		parseInProgress = true
 		defer { parseInProgress = false }
 		let changedChunkIndexes = try! RmdDocument.update(document: curDoc, with: contents) ?? []
@@ -221,6 +230,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private func htmlFor(markdownChunk: RmdChunk, index: Int) -> String {
 		guard let chunk = markdownChunk as? TextChunk else { preconditionFailure("invalid chunk type") }
 		let html = mdownParser.htmlFor(markdown: chunk.rawText)
+		// modify source position to include chunk number
 		_ = dataSourceRegex.replaceMatches(in: html, range: NSRange(location: 0, length: html.length), withTemplate: "data-sourcepos=\"\(index).$2")
 		return html as String
 	}
@@ -250,7 +260,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		equationText = openDoubleDollarRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "\\\\[")
 		equationText = closeDoubleDollarRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "\\\\]")
 		equationText = equationText.addingUnicodeEntities
-		return "\n<p>\(equationText)</p>\n"
+		return "\n<div class=\"equation\">\(equationText)</div>\n"
 
 	}
 	
@@ -270,6 +280,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		if let realNav = nav { emptyNavigations.insert(realNav) }
 	}
 	
+	// MARK: - utility
+	
 	private func escapeForJavascript(_ source: String) -> String {
 		var string = source
 		string = string.replacingOccurrences(of: "\\", with: "\\\\")
@@ -282,10 +294,12 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		return string
 	}
 	
+	/// verifies that all necessary steps have been taken before loading the initial page. Also extracts compressed resources into application support
 	private func ensureResourcesLoaded() {
 		guard didLoadView else { return }
 		resourcesExtracted = true
 		loadInitialPage()
+		// were having problems with old zip method. Need to decide if need to expand.
 //		guard let tarball = Bundle.main.url(forResource: "previewResources", withExtension: "tgz"), tarball.fileExists()
 //			else { fatalError("failed to find previewResources in app bundle")
 //		}
@@ -325,6 +339,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		completionHandler()
 	}
 
+	// MARK: - embedded types
+	
 	private class MarkdownParser {
 		let allocator: UnsafeMutablePointer<cmark_mem>
 		let cmarkOptions = CMARK_OPT_SOURCEPOS | CMARK_OPT_FOOTNOTES
