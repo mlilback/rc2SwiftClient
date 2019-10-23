@@ -38,7 +38,10 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 {
 	// required by OutputController, should use at some point
 	var contextualMenuDelegate: ContextualMenuDelegate?
-	var sessionController: SessionController?
+	var sessionController: SessionController? { didSet {
+		guard let session = sessionController else { codeHandler = nil; return }
+		codeHandler = PreviewCodeHandler(sessionController: session)
+	}}
 	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil)
 	private var curDocDisposable: Disposable?
 	private var didLoadView = false
@@ -46,6 +49,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private var parsedDocument: RmdDocument? = nil
 	private let mdownParser = MarkdownParser()
 	private var parseInProgress = false
+	private var codeHandler: PreviewCodeHandler?
 
 	// regular expressions
 	private var lineContiuationRegex: NSRegularExpression!
@@ -195,7 +199,11 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		// update the parsed document, update the webview
 		parseInProgress = true
 		defer { parseInProgress = false }
-		let changedChunkIndexes = try! RmdDocument.update(document: curDoc, with: contents) ?? []
+		var changedChunkIndexes = try! RmdDocument.update(document: curDoc, with: contents) ?? []
+		// TODO: cacheCode needs to be async
+		// add to changedChunkIndexes any chunks that need to udpated because of changes to R code
+		codeHandler?.cacheCode(changedChunks: &changedChunkIndexes, in: curDoc)
+		// handle changes
 		if changedChunkIndexes.count > 0 {
 			Log.info("udpating just chunks \(changedChunkIndexes)")
 			for chunkNumber in changedChunkIndexes {
@@ -204,7 +212,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 				let command = "$(\"section[index='\(chunkNumber)']\").html('\(html)'); MathJax.typeset()"
 				outputView?.evaluateJavaScript(command, completionHandler: nil)
 			}
-		} else {
+		} else { // no changes, so just refresh everything
 			var html =  ""
 			for (chunkNumber, chunk) in curDoc.chunks.enumerated() {
 				html += "<section index=\"\(chunkNumber)\">\n"
@@ -218,7 +226,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private func htmlFor(chunk: RmdChunk, index: Int) -> String {
 		switch chunk.chunkType {
 		case .code:
-			let code = htmlFor(code: chunk)
+			let code = rHtmlFor(code: chunk, index: index)
 			return code
 		case .docs:
 			return htmlFor(markdownChunk: chunk, index: index)
@@ -250,8 +258,13 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		return icText
 	}
 	
-	private func htmlFor(code: RmdChunk) -> String {
-		return "<pre class=\"r\"><code>\(code.contents.string.addingUnicodeEntities)</code></pre>\n"
+	private func rHtmlFor(code chunk: RmdChunk, index: Int) -> String {
+		guard let rHandler = codeHandler else {
+			Log.warn("asked to generate R code w/o context");
+			return "<pre class=\"r\"><code>\(chunk.contents.string.addingUnicodeEntities)</code></pre>\n"
+		}
+		let html = rHandler.htmlForChunk(number: index)
+		return html
 	}
 	
 	private func htmlForEquation(chunk: RmdChunk) -> String {
