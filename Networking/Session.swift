@@ -59,7 +59,7 @@ public class Session {
 	///abstraction of file handling
 	public let fileCache: FileCache
 	public let imageCache: ImageCache
-	///
+	/// all calls to the delegate will be made on the main thread
 	public weak var delegate: SessionDelegate?
 	/// status of compute engine
 	public private(set) var computeStatus: SessionResponse.ComputeStatus = .initializing
@@ -82,7 +82,7 @@ public class Session {
 
 	///if we are getting variable updates from the server
 	fileprivate var watchingVariables: Bool = false
-	///queue used for async operations
+	///queue used for delegate calls
 	fileprivate let queue: DispatchQueue
 	private let (sessionLifetime, sessionToken) = Lifetime.make()
 	public var lifetime: Lifetime { return sessionLifetime }
@@ -107,7 +107,7 @@ public class Session {
 	// MARK: - init/open/close
 	
 	/// without a super class, can't use self in designated initializer. So use a private init, and a convenience init for outside use
-	private init(connectionInfo: ConnectionInfo, workspace: AppWorkspace, fileCache: FileCache, imageCache: ImageCache, wsWorker: SessionWebSocketWorker?, queue: DispatchQueue = .main)
+	private init(connectionInfo: ConnectionInfo, workspace: AppWorkspace, fileCache: FileCache, imageCache: ImageCache, wsWorker: SessionWebSocketWorker?, queue: DispatchQueue)
 	{
 		self.workspace = workspace
 		self.conInfo = connectionInfo
@@ -130,7 +130,7 @@ public class Session {
 	///   - delegate: a delegate to handle certain tasks
 	///   - fileCache: the file cache to use. Default is to create one
 	///   - wsWorker: the websocket to use. Defaults to a sensible implementation
-	///   - queue: the queue to perform operations on. Defaults to main queue
+	///   - queue: the queue to perform delegate calls on. If not a serial queue, activites aren't guaranted to be in order. Defaults to main queue
 	public convenience init(connectionInfo: ConnectionInfo, workspace: AppWorkspace, delegate: SessionDelegate? = nil, fileCache: FileCache? = nil, wsWorker: SessionWebSocketWorker? = nil, queue: DispatchQueue? = nil)
 	{
 		//create a file cache if one wasn't provided
@@ -140,7 +140,7 @@ public class Session {
 		}
 		let rc = Rc2RestClient(connectionInfo, fileManager: fc!.fileManager)
 		let ic = ImageCache(restClient: rc, hostIdentifier: connectionInfo.host.name)
-		self.init(connectionInfo: connectionInfo, workspace: workspace, fileCache: fc!, imageCache: ic, wsWorker: wsWorker)
+		self.init(connectionInfo: connectionInfo, workspace: workspace, fileCache: fc!, imageCache: ic, wsWorker: wsWorker, queue: queue ?? .main)
 		ic.workspace = workspace
 		self.delegate = delegate
 		webSocketWorker.status.signal.take(during: sessionLifetime).observeValues { [weak self] value in
@@ -184,10 +184,8 @@ public class Session {
 		if helpCheck?.numberOfRanges == 3 {
 			let topic = String(script[(helpCheck?.range(at: 2).toStringRange(script))!])
 			let adjScript = script.replacingCharacters(in: (helpCheck?.range.toStringRange(script))!, with: "")
-			delegate?.respondToHelp(topic)
-			guard !adjScript.utf16.isEmpty else {
-				return
-			}
+			queue.async { self.delegate?.respondToHelp(topic) }
+			guard !adjScript.isEmpty else { return }
 			script = adjScript
 		}
 		eventObserver.send(value: SessionEvent(.execScript, props: ["userInitited": true.description]))
@@ -383,7 +381,7 @@ public class Session {
 				guard case let SessionResponse.save(saveData) = response else { return }
 				if let err = error {
 					if let sessionError = err.nestedError as? SessionError {
-						self.delegate?.sessionErrorReceived(sessionError, details: nil)
+						self.queue.async { self.delegate?.sessionErrorReceived(sessionError, details: nil) }
 					}
 					observer.send(error: err)
 					return
@@ -476,24 +474,25 @@ private extension Session {
 			guard let fileData = data.fileData else {
 				// the file was too large to send via websocket. need to recache and then call delegate
 				fileCache.recache(file: ofile).startWithCompleted {
-					self.delegate?.sessionMessageReceived(response)
+					self.queue.async { self.delegate?.sessionMessageReceived(response) }
 				}
 				return
 			}
 			fileCache.cache(file: ofile.model, withData: fileData).startWithCompleted {
-				self.delegate?.sessionMessageReceived(response)
+				self.queue.async {self.delegate?.sessionMessageReceived(response) }
 			}
 		} else {
 			Log.warn("got show output without file downloaded", .session)
-			delegate?.sessionMessageReceived(response)
+			queue.async { self.delegate?.sessionMessageReceived(response) }
 		}
 	}
 	
 	func handleClosed(source: CloseSource, data: SessionResponse.CloseData? = nil, error: Error? = nil) {
 		Log.info("got closed message from \(source)", .session)
 		connectionOpen = false
-		delegate?.sessionClosed(reason: (source == .error ? error?.localizedDescription : data?.details) ?? "unknown reason")
-
+		queue.async {
+			self.delegate?.sessionClosed(reason: (source == .error ? error?.localizedDescription : data?.details) ?? "unknown reason")
+		}
 	}
 	
 	/// The following will not be passed to the delegate: .fileOperation, .fileChnaged, .save, .showOutput, .info, .error, .closed
@@ -526,7 +525,7 @@ private extension Session {
 			handleClosed(source: .server, data: closeData)
 		case .error(let errorData):
 			eventObserver.send(value: SessionEvent(.sessionError, props: ["error": errorData.error.localizedDescription]))
-			delegate?.sessionErrorReceived(errorData.error, details: nil)
+			queue.async { self.delegate?.sessionErrorReceived(errorData.error, details: nil) }
 		case .computeStatus(let status):
 			computeStatus = status
 			informDelegate = true
@@ -614,7 +613,7 @@ private extension Session {
 	}
 	
 	func handleWebSocket(data: Data) {
-		self.queue.async { [weak self] in
+		DispatchQueue.global(qos: .userInitiated).async { [weak self] in
 			self?.handleReceivedMessage(data)
 		}
 	}
