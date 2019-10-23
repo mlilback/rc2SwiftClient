@@ -185,6 +185,7 @@ public protocol TextChunk: RmdChunk {
 }
 
 public typealias InlineEquationChunk = InlineChunk & Equation
+public typealias InlineCodeChunk = InlineChunk & Code
 
 // MARK: - attachments
 /// NSTextAttachment subclass to hold inline code and equations.
