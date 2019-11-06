@@ -190,7 +190,7 @@ public class Session {
 		}
 		eventObserver.send(value: SessionEvent(.execScript, props: ["userInitited": true.description]))
 		// TODO: need to handle execute type, or remove as parameter
-		let cmdData = SessionCommand.ExecuteParams(sourceCode: script, transactionId: UUID().uuidString, userInitiated: true, contextId: nil)
+		let cmdData = SessionCommand.ExecuteParams(sourceCode: script, transactionId: UUID().uuidString, userInitiated: true, environmentId: nil)
 		send(command: SessionCommand.execute(cmdData))
 	}
 	
@@ -214,27 +214,27 @@ public class Session {
 	/// asks the server to delete the named variable
 	public func deleteVariable(name: String) {
 		// TODO: escape name or create new command that escapes on server
-		let cmdData = SessionCommand.ExecuteParams(sourceCode: "rm(\(name))", transactionId: UUID().uuidString, userInitiated: false, contextId: nil)
+		let cmdData = SessionCommand.ExecuteParams(sourceCode: "rm(\(name))", transactionId: UUID().uuidString, userInitiated: false, environmentId: nil)
 		send(command: SessionCommand.execute(cmdData))
 	}
 	
 	/// asks the server for a refresh of all environment variables
 	public func forceVariableRefresh() {
 		// used to have a watch: true argument.
-		send(command: SessionCommand.watchVariables(SessionCommand.WatchVariablesParams(watch: true, contextId: nil)))
+		send(command: SessionCommand.watchVariables(SessionCommand.WatchVariablesParams(watch: true, environmentId: nil)))
 	}
 	
 	/// ask the server to send a message with current variable values and delta messages as they change
 	public func startWatchingVariables() {
 		if watchingVariables { return; }
-		send(command: SessionCommand.watchVariables(SessionCommand.WatchVariablesParams(watch: true, contextId: nil)))
+		send(command: SessionCommand.watchVariables(SessionCommand.WatchVariablesParams(watch: true, environmentId: nil)))
 		watchingVariables = true
 	}
 
 	/// ask the server to stop sending environment delta messages
 	public func stopWatchingVariables() {
 		if !watchingVariables { return }
-		send(command: SessionCommand.watchVariables(SessionCommand.WatchVariablesParams(watch: false, contextId: nil)))
+		send(command: SessionCommand.watchVariables(SessionCommand.WatchVariablesParams(watch: false, environmentId: nil)))
 		watchingVariables = false
 	}
 	
