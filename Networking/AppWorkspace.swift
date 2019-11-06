@@ -14,7 +14,7 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 {
 //	public typealias UElement = AppWorkspace
 
-	public enum FileChangeType: String, Equatable {
+	public enum FileChangeType: String, Hashable {
 		case add, modify, remove
 		static public func == (lhs: FileChangeType, rhs: FileChangeType) -> Bool {
 			return lhs.rawValue == rhs.rawValue

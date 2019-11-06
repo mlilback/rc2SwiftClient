@@ -117,15 +117,13 @@ public class DocumentChunk: ChunkProtocol {
 	
 }
 
-extension DocumentChunk: Equatable {
+extension DocumentChunk: Hashable {
 	public static func ==(lhs: DocumentChunk, rhs: DocumentChunk) -> Bool {
 		return lhs.chunkNumber == rhs.chunkNumber && lhs.chunkType == rhs.chunkType
 			&& lhs.docType == rhs.docType && lhs.equationType == rhs.equationType
 			&& lhs.name == rhs.name && NSEqualRanges(lhs.parsedRange, rhs.parsedRange)
 	}
-}
 
-extension DocumentChunk: Hashable {
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(ObjectIdentifier(self))
 	}

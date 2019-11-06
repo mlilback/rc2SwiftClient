@@ -20,7 +20,7 @@ public enum FileOperation: String {
 	case Remove = "rm", Rename = "rename", Duplicate = "duplicate"
 }
 
-public enum ServerResponse: Equatable {
+public enum ServerResponse: Hashable {
 	case error(queryId: Int, error: String)
 	case echoQuery(queryId: Int, fileId: Int, query: String)
 	case execComplete(queryId: Int, batchId: Int, images: [SessionImage])
