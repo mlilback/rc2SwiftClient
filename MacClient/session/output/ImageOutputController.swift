@@ -83,7 +83,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 		if allImages == nil {
 			allImages = MutableProperty([])
 			allImages! <~ icache.images
-			allImages?.signal.observeValues { [weak self] _ in
+			allImages?.signal.observe(on: UIScheduler()).observeValues { [weak self] _ in
 				self?.imageArrayChanged()
 				self?.adjustImagePopup()
 			}
