@@ -215,7 +215,7 @@ extension SignalProducer where Error == Rc2Error {
 								status.process(Signal<ProgressUpdate, Rc2Error>.Event.value(convertedValue))
 							}
 						}
-					})
+					}).observe(on: UIScheduler())
 					.observe(observer)
 			}
 		}
