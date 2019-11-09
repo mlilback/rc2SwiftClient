@@ -1,5 +1,12 @@
 # Rc² release notes
 
+## Build 79
+
+* no longer sandboxed
+* switched markdown parser to cmark-gfm
+* more implementation of live preview
+* numerous bug fixes
+
 ## Build 78
 
 * removed lots of potentially buggy code with parsing documents for preview mode
