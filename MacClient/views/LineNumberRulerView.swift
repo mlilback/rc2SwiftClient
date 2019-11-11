@@ -130,7 +130,7 @@ class LineNumberRulerView: NSRulerView, FontUser {
 		let substr = contents[visibleCharRange]
 		
 		var charIdx = substr.startIndex
-		while charIdx != substr.endIndex {
+		while charIdx < substr.endIndex {
 			// if there is no line for the character, something is seriously wrong
 			guard let lineNumber = try? lineIndexFor(characterIndex: charIdx)
 			else {
@@ -138,12 +138,13 @@ class LineNumberRulerView: NSRulerView, FontUser {
 				charIdx = substr.endIndex
 				break
 			}
+			let docVisibleRect = scrollView!.documentVisibleRect;
 			let grange = lm.glyphRange(forCharacterRange: NSRange(lineRanges[lineNumber], in: contents), actualCharacterRange: nil)
 			let brect = lm.boundingRect(forGlyphRange: grange, in: container)
 			let lineStr = String(lineNumber + 1) as NSString
 			let lineStrSize = lineStr.size(withAttributes: textAttributes)
 			let lineStrRect = NSRect(x: rightMostDrawableLocation - lineStrSize.width - 2.0,
-									 y: brect.minY + inset.height,
+									 y: brect.minY + inset.height  - docVisibleRect.origin.y,
 									 width: lineStrSize.width,
 									 height: lineStrSize.height)
 			if needsToDraw(lineStrRect.insetBy(dx: -4.0, dy: -4.0)) && lineStrRect.minY != lastLinePositionY {
