@@ -121,7 +121,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		ncenter.addObserver(self, selector: autoSave, name: NSApplication.willTerminateNotification, object: NSApp)
 		ncenter.addObserver(self, selector: #selector(documentWillSave(_:)), name: .willSaveDocument, object: nil)
 		context.workspaceNotificationCenter.addObserver(self, selector: autoSave, name: NSWorkspace.willSleepNotification, object: context.workspaceNotificationCenter)
-		context.currentDocument.signal.observeValues { [weak self] newDoc in
+		context.currentDocument.signal.observe(on: UIScheduler()).observeValues { [weak self] newDoc in
 			self?.documentChanged(newDocument: newDoc)
 		}
 	}
