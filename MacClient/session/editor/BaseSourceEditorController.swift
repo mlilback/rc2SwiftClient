@@ -140,6 +140,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		super.documentChanged(newDocument: newDocument)
 		if nil == newDocument {
 			editor.textStorage?.deleteCharacters(in: editor.rangeOfAllText)
+			fileNameField?.stringValue = ""
 		}
 		updateUIForCurrentDocument()
 	}

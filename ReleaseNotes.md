@@ -1,5 +1,10 @@
 # Rc² release notes
 
+## Build 80
+
+* fixed editor line number bugs 
+* file name field clears when a file is deleted
+
 ## Build 79
 
 * no longer sandboxed

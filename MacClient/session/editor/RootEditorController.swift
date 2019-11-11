@@ -66,6 +66,11 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 		let tabChildren = tabController.children
 		sourceEditor = tabChildren.first(where: { $0 is SourceEditorController } ) as? SourceEditorController
 		previewEditor = tabChildren.first(where: { $0 is LivePreviewEditorController } ) as? LivePreviewEditorController
+		for anEditor in [sourceEditor, previewEditor] {
+			anEditor?.fileNameField = fileNameField
+			anEditor?.runButton = runButton
+			anEditor?.sourceButton = sourceButton
+		}
 		currentEditor = sourceEditor
 		// listen for canExecute changes of actual editors
 		for anEditor in [sourceEditor, previewEditor] {
