@@ -318,7 +318,7 @@ extension AppLogger: NSMenuDelegate {
 		}
 	}
 	
-	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		if menuItem.action == #selector(AppLogger.resetAllCategoriesToDefault(_:)) {
 			return config.categoryLevelCount > 0
 		}

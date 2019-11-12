@@ -89,7 +89,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		editor?.enclosingScrollView?.rulersVisible = true
 	}
 	
-	override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+	@objc override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action  {
 		case Selector.runQuery, Selector.sourceQuery:

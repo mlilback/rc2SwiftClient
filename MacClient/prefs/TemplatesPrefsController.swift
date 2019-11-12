@@ -82,7 +82,7 @@ class TemplatesPrefsController: NSViewController {
 		_ = try? templateManager.saveAll()
 	}
 	
-	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action {
 		case #selector(addTemplate(_:)),

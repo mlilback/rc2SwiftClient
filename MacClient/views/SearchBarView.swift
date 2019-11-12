@@ -105,7 +105,7 @@ public class SearchBarView: NSView {
 }
 
 extension SearchBarView: NSMenuDelegate {
-	public func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+	@objc public func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		var enable = false
 		if menuItem.tag == SearchOptionTags.caseSensitive.rawValue {
 			menuItem.state = caseSensitiveOption ? .on : .off

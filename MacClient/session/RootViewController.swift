@@ -72,7 +72,7 @@ class RootViewController: AbstractSessionViewController
 	}
 
 	// swiftlint:disable:next cyclomatic_complexity
-	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action {
 		case #selector(promptToImportFiles(_:)), #selector(editFile(_:)):

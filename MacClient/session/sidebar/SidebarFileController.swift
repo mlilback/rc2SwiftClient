@@ -145,7 +145,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		addRemoveButtons?.setEnabled(selectedFile != nil, forSegment: removeFileSegmentIndex)
 	}
 	
-	func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else {
 			return false
 		}
