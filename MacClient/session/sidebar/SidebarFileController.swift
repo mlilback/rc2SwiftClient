@@ -398,7 +398,28 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	@IBAction func exportZippedFiles(_ sender: Any?) {
-		
+		let defaults = UserDefaults.standard
+		let panel = NSSavePanel()
+		panel.isExtensionHidden = false
+		panel.allowedFileTypes = ["zip"]
+		panel.nameFieldStringValue = session.workspace.name + ".zip"
+		if let bmarkData = defaults[.lastExportDirectory] {
+			do {
+				panel.directoryURL = try (NSURL(resolvingBookmarkData: bmarkData, options: [], relativeTo: nil, bookmarkDataIsStale: nil) as URL)
+			} catch {
+			}
+		}
+		panel.beginSheetModal(for: view.window!) { response in
+			do {
+				let urlbmark = try (panel.directoryURL as NSURL?)?.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
+				defaults[.lastExportDirectory] = urlbmark
+			} catch let err as NSError {
+				Log.warn("why did we get error creating export bookmark: \(err)", .app)
+			}
+			panel.close()
+			guard response == .OK, let destination = panel.url else { return }
+			self.exportAll(to: destination)
+		}
 	}
 	
 	@IBAction func exportAllFiles(_ sender: Any?) {
@@ -428,9 +449,24 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	}
 	
 	// MARK: - private methods
-
+	
 	private func exportAll(to destination: URL) {
 		let fm = FileManager()
+		let zip = destination.pathExtension == "zip"
+		var tmpDir: URL?
+		let folderDest: URL
+		if zip {
+			do {
+				tmpDir = try fm.createTemporaryDirectory()
+				folderDest = tmpDir!.appendingPathComponent(destination.deletingPathExtension().lastPathComponent)
+				try fm.createDirectory(at: folderDest, withIntermediateDirectories: true)
+			} catch {
+				appStatus?.presentError(Rc2Error(type: .cocoa, nested: nil, severity: .error, explanation: "Failed to create temporary directory"), session: session)
+				return
+			}
+		} else {
+			folderDest = destination
+		}
 		let urls = self.session.workspace.files.map { (self.session.fileCache.cachedUrl(file: $0), $0.name) }
 		// use a producer to allow updating of progress
 		let producer = SignalProducer<ProgressUpdate, Rc2Error> { observer, _ in
@@ -439,15 +475,30 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				observer.send(value: ProgressUpdate(.start))
 				for (aUrl, fileName) in urls {
 					observer.send(value: ProgressUpdate(.value, message: "Exporting \(fileName)", value: copiedCount / Double(urls.count), error: nil, disableInput: true))
-					let destUrl = destination.appendingPathComponent(fileName)
-					try? fm.removeItem(at: destUrl)
+					let destUrl = folderDest.appendingPathComponent(fileName)
+					if destUrl.fileExists() { try? fm.removeItem(at: destUrl) }
 					try fm.copyItem(at: aUrl, to: destUrl)
 					copiedCount += 1.0
 				}
+				if zip {
+					// need to compress destFolder to a zip file
+					// TODO: map progress: argument to a Progress object that will be updating observer
+					do {
+						try fm.zipItem(at: folderDest, to: destination, shouldKeepParent: true, compressionMethod: .deflate, progress: nil)
+					} catch {
+						Log.error("error zipping export: \(error)")
+						throw Rc2Error(type: .application, nested: error, severity: .error, explanation: "failed to zip files")
+					}
+				}
 				observer.sendCompleted()
 			} catch let error as NSError {
-				observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "Error exporting file"))
+				observer.send(error: Rc2Error(type: .cocoa, nested: error, explanation: "Error exporting file: \(error)"))
 				Log.error("failed to copy file for export: \(error)", .app)
+			} catch let rc2error as Rc2Error {
+				observer.send(error: rc2error)
+			}
+			if let tdir = tmpDir {
+				do { try fm.removeItem(at: tdir) } catch { Log.warn("failed to delete temporary directory") }
 			}
 		}
 		DispatchQueue.global(qos: .userInitiated).async {
