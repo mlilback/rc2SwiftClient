@@ -131,6 +131,7 @@
 		083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		083AC0FE2062D6270054023F /* mathFonts.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0859A3072062701900103924 /* mathFonts.bundle */; };
 		083AC1042062EDFB0054023F /* NSImage+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC1032062EDFB0054023F /* NSImage+Rc2.swift */; };
+		083B500B237A38D600A3C8E6 /* NSResponder+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083B500A237A38D600A3C8E6 /* NSResponder+MJL.swift */; };
 		083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11931DEE0DF300549268 /* DataRc2Spec.swift */; };
 		084199261D903F7A0089A1AC /* StartupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* StartupController.swift */; };
 		0846D3E120175DF100795376 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0846D3E020175DF100795376 /* AppError.swift */; };
@@ -956,6 +957,7 @@
 		08367BD21E3FCEA800FAFC8A /* Starscream.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Starscream.framework; path = Carthage/Build/Mac/Starscream.framework; sourceTree = "<group>"; };
 		083A567E1D25B818009D3091 /* BookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = BookmarkManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		083AC1032062EDFB0054023F /* NSImage+Rc2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+Rc2.swift"; sourceTree = "<group>"; };
+		083B500A237A38D600A3C8E6 /* NSResponder+MJL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "NSResponder+MJL.swift"; path = "vendor/MJLCommon/Sources/MJLCommon/extensions/NSResponder+MJL.swift"; sourceTree = SOURCE_ROOT; };
 		083D11821DE8C24C00549268 /* BuildInfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = BuildInfo.xcconfig; path = config/BuildInfo.xcconfig; sourceTree = "<group>"; };
 		083D11931DEE0DF300549268 /* DataRc2Spec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRc2Spec.swift; sourceTree = "<group>"; };
 		084199251D903F7A0089A1AC /* StartupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartupController.swift; sourceTree = "<group>"; };
@@ -1626,6 +1628,7 @@
 				083AC1032062EDFB0054023F /* NSImage+Rc2.swift */,
 				084D33342077D1FD00246CBD /* NSViewController+Alerts.swift */,
 				08FAE517208111730076F90C /* NSFont+MJL.swift */,
+				083B500A237A38D600A3C8E6 /* NSResponder+MJL.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -3348,6 +3351,7 @@
 				083305E21C517F8900E27F66 /* SidebarFileController.swift in Sources */,
 				08F673D01D020B2700B87049 /* FontManagement.swift in Sources */,
 				084FEA811D3045D800060A7D /* ObjcConstants.m in Sources */,
+				083B500B237A38D600A3C8E6 /* NSResponder+MJL.swift in Sources */,
 				084D33352077D1FD00246CBD /* NSViewController+Alerts.swift in Sources */,
 				08F189A21D09AA0300866A05 /* SessionController.swift in Sources */,
 				08E55B642194A86700F63A20 /* SourceEditorLayoutManager.swift in Sources */,
