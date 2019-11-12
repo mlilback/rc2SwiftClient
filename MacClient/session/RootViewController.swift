@@ -180,7 +180,7 @@ extension RootViewController {
 	}
 	
 	@IBAction func exportZippedFiles(_ sender: Any?) {
-		
+		fileHandler?.exportZippedFiles(sender)
 	}
 	
 	@IBAction func exportAllFiles(_ sender: Any?) {

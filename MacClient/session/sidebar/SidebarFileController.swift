@@ -150,18 +150,18 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			return false
 		}
 		switch action {
-			case #selector(editFile(_:)):
+		case #selector(editFile(_:)):
 				let fileName = selectedFile?.name ?? ""
 				menuItem.title = String.localizedStringWithFormat(NSLocalizedString("Edit File", comment: ""), fileName)
 				guard let file = selectedFile, file.fileSize <= MaxEditableFileSize else { return false }
 				return file.fileType.isEditable
 		case #selector(promptToImportFiles(_:)):
 				return true
-			case #selector(exportSelectedFile(_:)):
+		case #selector(exportSelectedFile(_:)):
 				return selectedFile != nil
-			case #selector(exportAllFiles(_:)):
+		case #selector(exportAllFiles(_:)), #selector(exportZippedFiles(_:)):
 				return true
-			default:
+		default:
 				return false
 		}
 	}
@@ -395,6 +395,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				}
 			}
 		}
+	}
+	
+	@IBAction func exportZippedFiles(_ sender: Any?) {
+		
 	}
 	
 	@IBAction func exportAllFiles(_ sender: Any?) {
