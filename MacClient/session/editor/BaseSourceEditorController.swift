@@ -33,7 +33,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	var defaultAttributes: [NSAttributedString.Key: Any] = [:]
 	var currentChunkIndex: Int = 0
 	var fontUser: FontUser?
-	
+
 	var searchableTextView: NSTextView? { return editor }
 	
 	/// true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
@@ -271,7 +271,7 @@ extension BaseSourceEditorController: NSTextViewDelegate {
 		if let currentDocument = context?.currentDocument.value {
 			return currentDocument.undoManager
 		}
-		return editor?.undoManager
+		return nil
 	}
 	
 	func textViewDidChangeSelection(_ notification: Notification) {
