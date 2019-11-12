@@ -112,7 +112,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	}
 	
 	// MARK: actions
-	@IBAction func executeQuery(_ sender: AnyObject?) {
+	@IBAction func executeQuery(_ sender: Any?) {
 		guard consoleInputText.count > 0 else { return }
 		session.executeScript(consoleInputText)
 		cmdHistory.addToCommandHistory(consoleInputText)
@@ -186,14 +186,14 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	}
 	
 	// MARK: command history
-	@IBAction func historyClicked(_ sender: AnyObject?) {
+	@IBAction func historyClicked(_ sender: Any?) {
 		cmdHistory.adjustCommandHistoryMenu()
 		let hframe = historyButton?.superview?.convert((historyButton?.frame)!, to: nil)
 		let rect = view.window?.convertToScreen(hframe!)
 		cmdHistory.historyMenu.popUp(positioning: nil, at: (rect?.origin)!, in: nil)
 	}
 
-	@IBAction func displayHistoryItem(_ sender: AnyObject?) {
+	@IBAction func displayHistoryItem(_ sender: Any?) {
 		guard let mi = sender as? NSMenuItem, let historyString = mi.representedObject as? String else {
 			Log.warn("displayHistoryItem only supported from menu item", .app)
 			return
@@ -205,7 +205,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		view.window?.makeFirstResponder(consoleTextField)
 	}
 	
-	@IBAction func clearConsole(_ sender: AnyObject?) {
+	@IBAction func clearConsole(_ sender: Any?) {
 		let defaults = UserDefaults.standard
 		guard !defaults[.suppressClearImagesWithConsole] else {
 			actuallyClearConsole()

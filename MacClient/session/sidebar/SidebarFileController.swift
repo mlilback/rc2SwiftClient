@@ -231,7 +231,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		//        messageView?.isHidden = true
 	}
 	
-	@IBAction func deleteFile(_ sender: AnyObject?) {
+	@IBAction func deleteFile(_ sender: Any?) {
 		guard let file = selectedFile else {
 			Log.error("deleteFile should never be called without selected file", .app)
 			return
@@ -252,7 +252,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 	
-	@IBAction func duplicateFile(_ sender: AnyObject?) {
+	@IBAction func duplicateFile(_ sender: Any?) {
 		guard let file = selectedFile else {
 			Log.error("duplicateFile should never be called without selected file", .app)
 			return
@@ -278,7 +278,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 
-	@IBAction func renameFile(_ sender: AnyObject?) {
+	@IBAction func renameFile(_ sender: Any?) {
 		guard let cellView = tableView.view(atColumn: 0, row: tableView.selectedRow, makeIfNecessary: false) as? EditableTableCellView else
 		{
 			Log.warn("renameFile: failed to get tableViewCell", .app)
@@ -341,7 +341,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	@IBAction func addDocumentOfType(_ menuItem: NSMenuItem) {
 	}
 	
-	@IBAction func segButtonClicked(_ sender: AnyObject?) {
+	@IBAction func segButtonClicked(_ sender: Any?) {
 		switch addRemoveButtons!.selectedSegment {
 			case addFileSegmentIndex:
 				//should never be called since a menu is attached
@@ -363,7 +363,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 
-	@IBAction func exportSelectedFile(_ sender: AnyObject?) {
+	@IBAction func exportSelectedFile(_ sender: Any?) {
 		let defaults = UserDefaults.standard
 		let savePanel = NSSavePanel()
 		savePanel.isExtensionHidden = false
@@ -397,7 +397,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 	
-	@IBAction func exportAllFiles(_ sender: AnyObject?) {
+	@IBAction func exportAllFiles(_ sender: Any?) {
 		let defaults = UserDefaults.standard
 		let panel = NSOpenPanel()
 		panel.allowsMultipleSelection = false

@@ -104,7 +104,7 @@ class AppStatusView: NSView {
 		}
 	}
 	
-	@IBAction func cancel(_ sender: AnyObject?) {
+	@IBAction func cancel(_ sender: Any?) {
 		
 	}
 

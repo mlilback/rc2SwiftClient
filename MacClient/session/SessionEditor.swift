@@ -117,7 +117,7 @@ class SessionEditor: TextViewWithContextualMenu {
 		return NSNotFound
 	}
 	
-	@IBAction func toggleWordWrap(_ sender: AnyObject?) {
+	@IBAction func toggleWordWrap(_ sender: Any?) {
 		let wordWrap = !wordWrapEnabled
 		let defaults = UserDefaults.standard
 		defaults[.wordWrapEnabled] = wordWrap

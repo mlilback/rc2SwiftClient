@@ -187,7 +187,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 	}
 	
 	// MARK: - actions
-	@IBAction func navigateClicked(_ sender: AnyObject?) {
+	@IBAction func navigateClicked(_ sender: Any?) {
 		switch (navigateButton?.selectedSegment)! {
 		case 0:
 			pageController?.navigateBack(self)
@@ -198,7 +198,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 		}
 	}
 	
-	@IBAction func shareImage(_ sender: AnyObject?) {
+	@IBAction func shareImage(_ sender: Any?) {
 		guard let img = selectedImage else { fatalError("shouldn't be able to share w/o an image") }
 		let imgUrl = imageCache?.urlForCachedImage(img.id)
 		myShareServices.removeAll()

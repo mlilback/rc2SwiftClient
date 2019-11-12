@@ -41,7 +41,7 @@ protocol OutputHandler: SearchResponder {
 	func showHelp(_ topics: [HelpTopic])
 	func considerTabChange(editorMode: EditorMode)
 	//action event forwarding
-	func clearConsole(_ sender: AnyObject?)
+	func clearConsole(_ sender: Any?)
 	func toggleSearchBar()
 }
 

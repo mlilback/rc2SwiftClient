@@ -69,7 +69,7 @@ class SidebarVariableController: AbstractSessionViewController {
 		session.deleteVariable(name: rootVariables[selRow].name)
 	}
 	
-	@IBAction func copy(_ sender: AnyObject?) {
+	@IBAction func copy(_ sender: Any?) {
 		guard let row = varTableView?.selectedRow, row >= 0 else { return }
 		let pasteboard = NSPasteboard.general
 		pasteboard.clearContents()

@@ -81,11 +81,11 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		}
 	}
 	
-	@IBAction func runQuery(_ sender: AnyObject?) {
+	@IBAction func runQuery(_ sender: Any?) {
 		executeSource(type: .run)
 	}
 	
-	@IBAction func sourceQuery(_ sender: AnyObject?) {
+	@IBAction func sourceQuery(_ sender: Any?) {
 		executeSource(type: .source)
 	}
 	

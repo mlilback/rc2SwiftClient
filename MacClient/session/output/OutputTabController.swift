@@ -163,7 +163,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		currentOutputController.performFind(action: action)
 	}
 	
-	@IBAction func clearConsole(_ sender: AnyObject?) {
+	@IBAction func clearConsole(_ sender: Any?) {
 		consoleController?.clearConsole(sender)
 		imageCache?.clearCache()
 	}

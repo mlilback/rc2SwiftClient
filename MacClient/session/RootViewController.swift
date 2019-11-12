@@ -77,6 +77,10 @@ class RootViewController: AbstractSessionViewController
 		switch action {
 		case #selector(promptToImportFiles(_:)), #selector(editFile(_:)):
 			return fileHandler!.validateMenuItem(menuItem)
+		case #selector(exportSelectedFile(_:)):
+			return fileHandler!.selectedFile != nil
+		case #selector(exportZippedFiles(_:)), #selector(exportAllFiles(_:)):
+			return session.workspace.files.count > 0
 		case Selector.showFonts:
 			if let fontHandler = currentFontUser(view.window?.firstResponder) {
 				guard fontHandler.fontsEnabled() else { return false }
@@ -155,7 +159,7 @@ class RootViewController: AbstractSessionViewController
 
 // MARK: - actions
 extension RootViewController {
-	@IBAction func clearFileCache(_ sender: AnyObject?) {
+	@IBAction func clearFileCache(_ sender: Any?) {
 		sessionController?.clearFileCache()
 	}
 	
@@ -163,15 +167,23 @@ extension RootViewController {
 		sessionController?.clearImageCache()
 	}
 	
-	@IBAction func clearConsole(_ sender: AnyObject?) {
+	@IBAction func clearConsole(_ sender: Any?) {
 		outputHandler?.clearConsole(sender)
 	}
 	
-	@IBAction func promptToImportFiles(_ sender: AnyObject?) {
+	@IBAction func promptToImportFiles(_ sender: Any?) {
 		fileHandler?.promptToImportFiles(sender)
 	}
 	
-	@IBAction func exportAllFiles(_ sender: AnyObject?) {
+	@IBAction func exportSelectedFile(_ sender: Any?) {
+		fileHandler?.exportSelectedFile(sender)
+	}
+	
+	@IBAction func exportZippedFiles(_ sender: Any?) {
+		
+	}
+	
+	@IBAction func exportAllFiles(_ sender: Any?) {
 		fileHandler?.exportAllFiles(sender)
 	}
 	
@@ -179,11 +191,11 @@ extension RootViewController {
 		fileHandler?.editFile(sender)
 	}
 	
-	@IBAction func runQuery(_ sender: AnyObject?) {
+	@IBAction func runQuery(_ sender: Any?) {
 		sessionController?.codeEditor.executeSource(type: .run)
 	}
 	
-	@IBAction func sourceQuery(_ sender: AnyObject?) {
+	@IBAction func sourceQuery(_ sender: Any?) {
 		sessionController?.codeEditor.executeSource(type: .source)
 	}
 	
@@ -206,11 +218,11 @@ extension RootViewController {
 
 // MARK: - fonts
 extension RootViewController: ManageFontMenu {
-	@IBAction func showFonts(_ sender: AnyObject?) {
+	@IBAction func showFonts(_ sender: Any?) {
 		//do nothing, just a place holder for menu validation
 	}
 	
-	@IBAction func showFontSizes(_ sender: AnyObject?) {
+	@IBAction func showFontSizes(_ sender: Any?) {
 		//do nothing. just placeholder for menu validation
 	}
 	

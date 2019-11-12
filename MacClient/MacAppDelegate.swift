@@ -351,7 +351,7 @@ extension MacAppDelegate {
 		openLocalSession(for: ident)
 	}
 	
-	@IBAction func showPreferencesWindow(_ sender: AnyObject?) {
+	@IBAction func showPreferencesWindow(_ sender: Any?) {
 		if nil == preferencesWindowController {
 			let icontext = InjectorContext()
 			icontext.register(TemplatesPrefsController.self) { controller in

@@ -234,7 +234,7 @@ extension BaseSourceEditorController {
 	}
 	
 	/// if there is a selection, executes the selection. Otherwise, executes the current line.
-	@IBAction func executeCurrentLine(_ sender: AnyObject?) {
+	@IBAction func executeCurrentLine(_ sender: Any?) {
 		guard let editor = self.editor else { fatalError() }
 		let sourceString = editor.string
 		let selRange = editor.selectedRange()
