@@ -35,16 +35,26 @@ public class SessionWebSocketWorker {
 		}
 	}
 	
+	public enum DataFormat: String, CaseIterable {
+		case text
+		case binary
+	}
+	
+	public struct MessageData {
+		let format: DataFormat
+		let data: Data
+	}
+	
 	public let conInfo: ConnectionInfo
 	public let wspaceId: Int
 	public let queue: DispatchQueue
 	public let status: Property<SocketStatus>
 	/// signal that sends a value every time data is received
-	public let messageSignal: Signal<Data, Never>
+	public let messageSignal: Signal<MessageData, Never>
 
 	private var socket: WebSocket! // use IUO so that it can be created in a func called during init
 	private let _status = MutableProperty<SocketStatus>(.uninitialized)
-	private let messageObserver: Signal<Data, Never>.Observer
+	private let messageObserver: Signal<MessageData, Never>.Observer
 	
 	private var pingRepeater: Repeater?
 	
@@ -52,7 +62,7 @@ public class SessionWebSocketWorker {
 		self.conInfo = conInfo
 		self.wspaceId = wspaceId
 		self.queue = queue
-		(messageSignal, messageObserver) = Signal<Data, Never>.pipe()
+		(messageSignal, messageObserver) = Signal<MessageData, Never>.pipe()
 		status = Property<SocketStatus>(capturing: _status)
 		self.socket = createWebSocket()
 		setupWebSocketHandlers()
@@ -107,13 +117,13 @@ public class SessionWebSocketWorker {
 				return
 			}
 			self?.queue.async {
-				self?.messageObserver.send(value: data)
+				self?.messageObserver.send(value: MessageData(format: .text, data: data))
 			}
 		}
 		socket.onData = { [weak self] data in
 			Log.debug("received data", .network)
 			self?.queue.async {
-				self?.messageObserver.send(value: data)
+				self?.messageObserver.send(value: MessageData(format: .binary, data: data))
 			}
 		}
 	}

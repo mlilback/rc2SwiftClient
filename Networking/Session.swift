@@ -496,16 +496,17 @@ private extension Session {
 	}
 	
 	/// The following will not be passed to the delegate: .fileOperation, .fileChnaged, .save, .showOutput, .info, .error, .closed
-	func handleReceivedMessage(_ messageData: Data) {
+	func handleReceivedMessage(_ messageData: SessionWebSocketWorker.MessageData) {
 		let response: SessionResponse
 		do {
-			if Log.isLogging(.debug, category: .session) {
-				let dmsg = "incoming: " + String(data: messageData, encoding: .utf8)!
+			// TODO: handle .binary message differently
+			if Log.isLogging(.debug, category: .session), messageData.format == .text {
+				let dmsg = "incoming: " + String(data: messageData.data, encoding: .utf8)!
 				Log.debug(dmsg, .session)
 			}
-			response = try conInfo.decode(data: messageData)
+			response = try conInfo.decode(data: messageData.data)
 		} catch {
-			Log.info("failed to parse received json: \(String(data: messageData, encoding: .utf8) ?? "<invalid>")", .session)
+			Log.info("failed to parse received json: \(String(data: messageData.data, encoding: .utf8) ?? "<invalid>")", .session)
 			return
 		}
 		Log.info("got message update:  \(response)", .session)
@@ -614,7 +615,7 @@ private extension Session {
 		}
 	}
 	
-	func handleWebSocket(data: Data) {
+	func handleWebSocket(data: SessionWebSocketWorker.MessageData) {
 		DispatchQueue.global(qos: .userInitiated).async { [weak self] in
 			self?.handleReceivedMessage(data)
 		}
