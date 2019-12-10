@@ -44,13 +44,6 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		return parser.chunks[currentChunkIndex]
 	}
 	
-	var currentChunkHasPreviousExecutableChunks: Bool {
-		guard let parser = self.parser, parser.executableChunks.count > 0, let curChunk = currentChunk, curChunk.isExecutable
-			else { return false }
-		// return true if not the first executable chunk
-		return parser.executableChunks.index(of: curChunk) ?? 0 > 0
-	}
-	
 	override var documentDirty: Bool {
 		guard let edited = editor?.string, let original = context?.currentDocument.value?.savedContents else { return false }
 		return edited != original

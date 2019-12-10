@@ -83,6 +83,15 @@
         }
       },
       {
+        "package": "Antlr4",
+        "repositoryURL": "https://github.com/mlilback/SwiftAntlr4Runtime.git",
+        "state": {
+          "branch": null,
+          "revision": "e677d5a5a9609127c548bc2d5c1b15303d2cda93",
+          "version": "0.1.0"
+        }
+      },
+      {
         "package": "SwiftyUserDefaults",
         "repositoryURL": "https://github.com/sunshinejr/SwiftyUserDefaults.git",
         "state": {

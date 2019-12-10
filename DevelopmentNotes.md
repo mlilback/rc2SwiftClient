@@ -30,6 +30,30 @@ clear undo cache on file change notification from server
  * rcode
  * section.index
  
+ ### rmarkdown render
+ 
+ * inject a span around inline R code so it can be found later: `<span id="Rinline-1">``2 + 2``</span>`"
+ *  create a directory to story working files (tmp1 below)
+ * create a unique environment
+ 
+ set options:
+ `myopts <- output_format(knitr=knitr_options(opts_chunk=list(class.output="rc2-Routput", highlight=TRUE, cache=TRUE, cache.path="tmp1/cache/", autodep=TRUE, fig.path="tmp1/images/")), pandoc=pandoc_options(to="html5", args=c("--section-divs","--mathml", "--wrap=preserve", "--id-prefix=rc2-", "--log=tmp1/pd.txt", "--standalone", "
+ --number-sections")))`
+
+execute:
+ * run in working directory
+ *  `render("foobar.Rmd", output_format=myopts, output_file="fbar.html", output_dir="tmp1", clean=FALSE, quiet=TRUE)`
+
+tmp1 should be an absolute path to the location where intermediate files should be stored. Use a UUID per preview document.
+
+#### output 
+ * will have `<pre class="rc2-Routput">` around all output. 
+ * Source code will have `<div class="sourceCode" id="rc2-cbX"` where X is an incrementing number. 
+ * Each source line will be surrounded by `<a class="sourceLine" id="cbX" data-line-number="1">`
+ * image src tags will have an absolute path. The path should be `${tmp1}/${fnameprefix}_files/figure-html5/___.png"`
+
+#### check
+* what happens to css/javascript links in the original rmarkdown? Are they still referenced absolute, or downloaded and given a local path?
 
 ### pandoc
 

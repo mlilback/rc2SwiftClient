@@ -4,6 +4,8 @@
 
 * fixed editor line number bugs 
 * file name field clears when a file is deleted
+* fixed bugs where menu validation wasn't happening
+* moved export all to export submenu, added items to export selected file and all files to a zip file
 
 ## Build 79
 
