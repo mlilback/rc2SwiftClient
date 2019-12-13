@@ -16,8 +16,6 @@ import iosMath
 public extension Notification.Name {
 	/// sent before the currentDocument will be saved. object will be the EditorContext/DocummentManager
 	static let willSaveDocument = Notification.Name(rawValue: "DocumentWillSaveNotification")
-	/// sent after the parsed document has changed. object will be the editorContext
-	static let parsedDocumentChanged = Notification.Name(rawValue: "ParsedDocumentChangedNotification")
 }
 
 /// Manages open documents and the current document. Provides common properties to editor components via the EditorContext protocol.
@@ -27,6 +25,7 @@ public class DocumentManager: EditorContext {
 	// MARK: properties
 	public let id = UUID()
 	// when changed, should use .updateProgress() while loading file contents
+	// use the double property paradigm to prevent any edits from publc property
 	private let _currentDocument = MutableProperty<EditorDocument?>(nil)
 	public let currentDocument: Property<EditorDocument?>
 	
@@ -39,7 +38,7 @@ public class DocumentManager: EditorContext {
 	var defaults: UserDefaults
 	private var lastParsed: TimeInterval = 0
 	private var equationLabel: MTMathUILabel?
-
+	/// object that actually saves the file to disk, has a workspace reference
 	let fileSaver: FileSaver
 	let fileCache: FileCache
 	let loading = Atomic<Bool>(false)
@@ -48,7 +47,19 @@ public class DocumentManager: EditorContext {
 	
 	// MARK: methods
 	
-	public init(fileSaver: FileSaver, fileCache: FileCache, lifetime: Lifetime, notificationCenter: NotificationCenter = .default, wspaceCenter: NotificationCenter = NSWorkspace.shared.notificationCenter, defaults: UserDefaults = .standard)
+	/// Creates a new DocumentManager. Should only be a need for one.
+	/// - Parameter fileSaver: The object that will do the actually saving of contents to disk
+	/// - Parameter fileCache: Used to load files
+	/// - Parameter lifetime: A lifetime to use when binding to a property via ReactiveSwift
+	/// - Parameter notificationCenter: The notification center to use. Defaults to NotificationCenter.default
+	/// - Parameter wspaceCenter: The notification to use for NSWorkspace notifications. Defaults to NSWorkspace.shared.notificationCenter
+	/// - Parameter defaults: The UserDefaults to use. Defualts to NSNotifcationCenter.default
+	public init(fileSaver: FileSaver,
+				fileCache: FileCache,
+				lifetime: Lifetime,
+				notificationCenter: NotificationCenter = .default,
+				wspaceCenter: NotificationCenter = NSWorkspace.shared.notificationCenter,
+				defaults: UserDefaults = .standard)
 	{
 		currentDocument = Property<EditorDocument?>(_currentDocument)
 		self.fileSaver = fileSaver
@@ -88,7 +99,7 @@ public class DocumentManager: EditorContext {
 		}
 	}
 	
-	/// returns a SP that will save the current document and load the document for file
+	/// returns a SP that will save the current document and then load the document for file
 	public func load(file: AppFile?) -> SignalProducer<String?, Rc2Error> {
 		if loading.value {
 			Log.warn("load called while already loading", .app)
@@ -116,6 +127,7 @@ public class DocumentManager: EditorContext {
 			.on(starting: { self.loading.value = true }, completed: { self.loading.value = false })
 	}
 	
+	/// discards all changes to the current document
 	public func revertCurrentDocument() {
 		guard let doc = currentDocument.value else { return }
 		// clear autosave document if exists
@@ -163,6 +175,7 @@ public class DocumentManager: EditorContext {
 			return nil
 		}
 		let size = equationLabel!.intrinsicContentSize
+	#if os(macOS)
 		let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(size.width), pixelsHigh: Int(size.height), bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .calibratedRGB, bytesPerRow: 0, bitsPerPixel: 0)!
 		let nscontext = NSGraphicsContext(bitmapImageRep: rep)!
 		NSGraphicsContext.saveGraphicsState()
@@ -172,12 +185,15 @@ public class DocumentManager: EditorContext {
 		let image = NSImage(size: size)
 		image.addRepresentation(rep)
 		return image
+	#else
+		#error("inlineImageFor not implemented for non-macOS platforms")
+	#endif
 	}
 	
 	// MARK: - private methods
 	/// actually autosaves a file
 	private func autosave(document: EditorDocument) -> SignalProducer<(), Rc2Error> {
-		guard UserDefaults.standard[.autosaveEnabled] else {
+		guard defaults[.autosaveEnabled] else {
 			Log.info("skipping autosave", .app)
 			return SignalProducer<(), Rc2Error>(value: ())
 		}
@@ -216,9 +232,8 @@ public class DocumentManager: EditorContext {
 			.on(started: { self.switchTo(document: nil) })
 	}
 	
-	// the only function that should change _currentDocument, so that parsedDocument is updated appropriately
+	// the only function that should change _currentDocument
 	private func switchTo(document: EditorDocument?) {
-		// parsed is updated on a later cycle of the main thread
 		_currentDocument.value = document
 	}
 	
