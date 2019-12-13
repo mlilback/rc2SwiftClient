@@ -5139,6 +5139,14 @@
 				minimumVersion = 0.4.1;
 			};
 		};
+		08A63E4B23A01AE000FD472E /* XCRemoteSwiftPackageReference "Rc2Parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rc2server/Rc2Parser.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.4;
+			};
+		};
 		08A7E800233BB12600946F34 /* XCRemoteSwiftPackageReference "Starscream" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/daltoniam/Starscream.git";
@@ -5193,6 +5201,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 08817B64233AA18800194228 /* XCRemoteSwiftPackageReference "MJLLogger" */;
 			productName = MJLLogger;
+		};
+		08A63E4C23A01AE000FD472E /* Rc2Parser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 08A63E4B23A01AE000FD472E /* XCRemoteSwiftPackageReference "Rc2Parser" */;
+			productName = Rc2Parser;
 		};
 		08A7E801233BB12600946F34 /* Starscream */ = {
 			isa = XCSwiftPackageProductDependency;
