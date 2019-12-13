@@ -224,7 +224,7 @@ public class DocumentManager: EditorContext {
 	
 	// returns SP to return the specified document, creating and inserting into openDocuments if necessary
 	private func getDocumentFor(file: AppFile) -> SignalProducer<EditorDocument, Rc2Error> {
-		let doc = openDocuments[file.fileId] ?? EditorDocument(file: file, fileUrl: fileCache.cachedUrl(file: file))
+		let doc = openDocuments[file.fileId] ?? EditorDocument(file: file)
 		openDocuments[file.fileId] = doc
 		guard doc.isLoaded else {
 			return fileCache.contents(of: file)

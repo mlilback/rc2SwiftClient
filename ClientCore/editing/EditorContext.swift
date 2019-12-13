@@ -49,6 +49,7 @@ public protocol EditorContext: class {
 }
 
 public extension EditorContext {
+	/// default implementation that uses the fileExtension to figure out what kind of document it is
 	var docType: DocType {
 		guard let fileExt = currentDocument.value?.file.fileType.fileExtension else { return .none }
 		switch fileExt {

@@ -12,45 +12,38 @@ import Rc2Common
 
 fileprivate let minTimeBetweenAutoSaves: TimeInterval = 2
 
-/// used for the notebook to save its state for a document
-public struct NotebookState: Codable {
-	public let selectionPath: IndexPath
-	/// nil if frontmatter and indexPath is zero
-	public let selectionType: TemplateType?
-	
-	public init(path: IndexPath, type: TemplateType?) {
-		self.selectionPath = path
-		self.selectionType = type
-	}
-}
-
+/// An EditorDocument wraps a AppFile, UndoManager, and contents as a String
 public class EditorDocument: NSObject {
 	public private(set) var file: AppFile
-	private var fileUrl: URL
 	public let undoManager: UndoManager
 	/// index of contents at top of scroll view
 	public var topVisibleIndex: Int = 0
 	/// state of the notebook when this document was last used
-	public var notebookState: NotebookState?
 	public private(set) var lastSaveTime: TimeInterval = 0
+	/// the contents the last time it was saved
 	public private(set) var savedContents: String?
+	/// contents with changes that haven't been saved
 	public let editedContents = MutableProperty<String?>("")
 	public private(set) var isLoaded: Bool = false
 
+	/// only returns true for Rmd files
 	public var parsable: Bool { return file.fileType.fileExtension == "Rmd" }
 	
+	/// If the document has been edited, the editedContents. Otherwise, the saved Contents
 	public var currentContents: String? {
 		return editedContents.value == nil ? savedContents : editedContents.value
 	}
 	
+	/// true if the editedContents are differernt from the savedContent
 	public var isDirty: Bool {
 		if nil == editedContents.value { return false }
 		return editedContents.value != savedContents
 	}
 	
-	public init(file: AppFile, fileUrl: URL) {
+	/// Initialize a new EditorDocument
+	/// - Parameter file: The file whose content this document represents
+	public init(file: AppFile) {
 		self.file = file
-		self.fileUrl = fileUrl
 		self.undoManager = UndoManager()
 		super.init()
 	}
