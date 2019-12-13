@@ -133,6 +133,7 @@
 		083AC1042062EDFB0054023F /* NSImage+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC1032062EDFB0054023F /* NSImage+Rc2.swift */; };
 		083B500B237A38D600A3C8E6 /* NSResponder+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083B500A237A38D600A3C8E6 /* NSResponder+MJL.swift */; };
 		083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11931DEE0DF300549268 /* DataRc2Spec.swift */; };
+		083E3D3123A01527007DFCB8 /* RmdDocument2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083E3D3023A01527007DFCB8 /* RmdDocument2.swift */; };
 		084199261D903F7A0089A1AC /* StartupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* StartupController.swift */; };
 		0846D3E120175DF100795376 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0846D3E020175DF100795376 /* AppError.swift */; };
 		0846D3E32017C03900795376 /* FileTemplates in Resources */ = {isa = PBXBuildFile; fileRef = 0846D3E22017C03900795376 /* FileTemplates */; };
@@ -316,6 +317,7 @@
 		08A2A2A2200A9B0E00D9807B /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2A1200A9B0E00D9807B /* LogViewController.swift */; };
 		08A3042723478BEA0051EC0D /* LineNumberRulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A3042623478BEA0051EC0D /* LineNumberRulerView.swift */; };
 		08A3042B234BE3BC0051EC0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
+		08A63E4D23A01AE000FD472E /* Rc2Parser in Frameworks */ = {isa = PBXBuildFile; productRef = 08A63E4C23A01AE000FD472E /* Rc2Parser */; };
 		08A7E802233BB12600946F34 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E801233BB12600946F34 /* Starscream */; };
 		08A7E807233BB2ED00946F34 /* SwiftyUserDefaults in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E806233BB2ED00946F34 /* SwiftyUserDefaults */; };
 		08A7E80A233BB43200946F34 /* SigmaSwiftStatistics in Frameworks */ = {isa = PBXBuildFile; productRef = 08A7E809233BB43200946F34 /* SigmaSwiftStatistics */; };
@@ -960,6 +962,7 @@
 		083B500A237A38D600A3C8E6 /* NSResponder+MJL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "NSResponder+MJL.swift"; path = "vendor/MJLCommon/Sources/MJLCommon/extensions/NSResponder+MJL.swift"; sourceTree = SOURCE_ROOT; };
 		083D11821DE8C24C00549268 /* BuildInfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = BuildInfo.xcconfig; path = config/BuildInfo.xcconfig; sourceTree = "<group>"; };
 		083D11931DEE0DF300549268 /* DataRc2Spec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRc2Spec.swift; sourceTree = "<group>"; };
+		083E3D3023A01527007DFCB8 /* RmdDocument2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RmdDocument2.swift; sourceTree = "<group>"; };
 		084199251D903F7A0089A1AC /* StartupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartupController.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* MockFileManagers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManagers.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
@@ -1292,6 +1295,7 @@
 			files = (
 				08DA11312092809700A96C7B /* SyntaxParsing.framework in Frameworks */,
 				08F8C1802091226B00DFB269 /* iosMath.framework in Frameworks */,
+				08A63E4D23A01AE000FD472E /* Rc2Parser in Frameworks */,
 				084D330E206D387800246CBD /* Rc2Common.framework in Frameworks */,
 				08817B9E233AB4FB00194228 /* Logging.framework in Frameworks */,
 				08817B56233918F100194228 /* GRDB in Frameworks */,
@@ -1649,6 +1653,14 @@
 			name = "test resources";
 			sourceTree = "<group>";
 		};
+		083E3D2F23A014C0007DFCB8 /* Parsing */ = {
+			isa = PBXGroup;
+			children = (
+				083E3D3023A01527007DFCB8 /* RmdDocument2.swift */,
+			);
+			path = Parsing;
+			sourceTree = "<group>";
+		};
 		084199331D9179C60089A1AC /* xcconfig */ = {
 			isa = PBXGroup;
 			children = (
@@ -1681,6 +1693,7 @@
 				084D3311206D3A6F00246CBD /* help */,
 				08E8F1A420698F7500F0FF5A /* CodeTemplates */,
 				0803F9F522F9E7C000F26D84 /* HTMLString */,
+				083E3D2F23A014C0007DFCB8 /* Parsing */,
 				08055E2F1FBBC210007419C6 /* VariableFormatter.swift */,
 				08055E311FBC810D007419C6 /* SpreadsheetDataSource.swift */,
 				08F5CDD41FCAE3F7009665AD /* DataFrameDataSource.swift */,
@@ -2488,6 +2501,7 @@
 			name = ClientCore;
 			packageProductDependencies = (
 				08817B55233918F100194228 /* GRDB */,
+				08A63E4C23A01AE000FD472E /* Rc2Parser */,
 			);
 			productName = ClientCore;
 			productReference = 084D32E7206D03DD00246CBD /* ClientCore.framework */;
@@ -2837,6 +2851,7 @@
 				08A7E803233BB28400946F34 /* XCRemoteSwiftPackageReference "SwiftyUserDefaults" */,
 				08A7E808233BB43200946F34 /* XCRemoteSwiftPackageReference "SigmaSwiftStatistics" */,
 				08A7E814233D159E00946F34 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+				08A63E4B23A01AE000FD472E /* XCRemoteSwiftPackageReference "Rc2Parser" */,
 			);
 			productRefGroup = 088CE66A1C4B0AF400153414 /* Products */;
 			projectDirPath = "";
@@ -3232,6 +3247,7 @@
 				0803F9FA22F9E7C000F26D84 /* HTMLString.swift in Sources */,
 				084D330A206D053700246CBD /* VariableFormatter.swift in Sources */,
 				08B73E8F208A134F00DB7339 /* EditorContext.swift in Sources */,
+				083E3D3123A01527007DFCB8 /* RmdDocument2.swift in Sources */,
 				084D332D20752C7D00246CBD /* CodeTemplate.swift in Sources */,
 				084D3307206D042500246CBD /* HelpTopic.swift in Sources */,
 				08B73E92208A14E800DB7339 /* PreferenceKeys.swift in Sources */,

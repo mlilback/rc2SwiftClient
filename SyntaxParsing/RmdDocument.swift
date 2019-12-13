@@ -83,6 +83,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 		var lastTextChunk: MarkdownChunk?
 		var lastWasInline: Bool = false
 		try parser.chunks.forEach { parserChunk in
+			print("chunk:\(parserChunk.chunkNumber) pRange:\(parserChunk.parsedRange) iRange:\(parserChunk.innerRange) inline:\(parserChunk.isInline ? "yes" : "no")")
 			switch parserChunk.chunkType {
 			case .docs:
 				let chunkContents = parser.textStorage.attributedSubstring(from: parserChunk.innerRange)

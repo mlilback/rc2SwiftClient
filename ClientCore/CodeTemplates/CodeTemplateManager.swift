@@ -7,7 +7,8 @@
 import Foundation
 import Rc2Common
 import MJLLogger
-import SyntaxParsing
+import Rc2Parser
+//import SyntaxParsing
 import SwiftyUserDefaults
 
 public extension Notification.Name {
@@ -34,7 +35,7 @@ public enum TemplateType: String, Codable, DefaultsSerializable {
 	public init(chunkType: ChunkType) {
 		switch chunkType {
 		case .code: self = .rCode
-		case .docs: self = .markdown
+		case .markdown: self = .markdown
 		case .equation: self = .equation
 		}
 	}
@@ -42,7 +43,7 @@ public enum TemplateType: String, Codable, DefaultsSerializable {
 	/// return the SyntaxParser ChunkType equivelent of this TemplateType
 	public var chunkType: ChunkType {
 		switch self {
-		case .markdown: return .docs
+		case .markdown: return .markdown
 		case .rCode: return .code
 		case .equation: return .equation
 		}
