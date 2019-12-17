@@ -97,8 +97,6 @@
 		0829E60B2118F7B8001883ED /* SessionWebSocketWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0829E60A2118F7B8001883ED /* SessionWebSocketWorker.swift */; };
 		082BE0921F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; };
 		082BE09B1F59D549006CE0B7 /* SyntaxParsing.h in Headers */ = {isa = PBXBuildFile; fileRef = 082BE08B1F59D549006CE0B7 /* SyntaxParsing.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; };
-		082BE09F1F59D549006CE0B7 /* SyntaxParsing.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		082BE0AF1F59D5BB006CE0B7 /* SyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0A81F59D5BB006CE0B7 /* SyntaxParser.swift */; };
 		082BE0B01F59D5BB006CE0B7 /* DocumentChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */; };
 		082BE0B81F59D766006CE0B7 /* Rc2Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; };
@@ -465,13 +463,6 @@
 			remoteGlobalIDString = 082BE0881F59D549006CE0B7;
 			remoteInfo = SyntaxParsing;
 		};
-		082BE09C1F59D549006CE0B7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 082BE0881F59D549006CE0B7;
-			remoteInfo = SyntaxParsing;
-		};
 		082BE0B61F59D75F006CE0B7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
@@ -700,7 +691,6 @@
 				086355AA2352708C0005E477 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib in Embed Frameworks */,
 				08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */,
 				08817B82233AB2B800194228 /* Logging.framework in Embed Frameworks */,
-				082BE09F1F59D549006CE0B7 /* SyntaxParsing.framework in Embed Frameworks */,
 				08C2D5E61E719DE20007A02D /* SBInjector.framework in Embed Frameworks */,
 				08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */,
 				082BE15E1F5B3682006CE0B7 /* Model.framework in Embed Frameworks */,
@@ -1357,7 +1347,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				082BE09E1F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */,
 				080C79B5229B8D5500178D0E /* PEGKit.framework in Frameworks */,
 				081A58BE23528BC3001B8AFC /* AppCenter.framework in Frameworks */,
 				08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */,
@@ -2643,7 +2632,6 @@
 				0859A31A206270F800103924 /* PBXTargetDependency */,
 				0897942E1D7B68F0003339EE /* PBXTargetDependency */,
 				080E82D51DCBE31D0048F36C /* PBXTargetDependency */,
-				082BE09D1F59D549006CE0B7 /* PBXTargetDependency */,
 				082BE15C1F5B3682006CE0B7 /* PBXTargetDependency */,
 				0859A35F2062726700103924 /* PBXTargetDependency */,
 				084D32FB206D03DD00246CBD /* PBXTargetDependency */,
@@ -3501,11 +3489,6 @@
 			isa = PBXTargetDependency;
 			target = 082BE0881F59D549006CE0B7 /* SyntaxParsing */;
 			targetProxy = 082BE0931F59D549006CE0B7 /* PBXContainerItemProxy */;
-		};
-		082BE09D1F59D549006CE0B7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 082BE0881F59D549006CE0B7 /* SyntaxParsing */;
-			targetProxy = 082BE09C1F59D549006CE0B7 /* PBXContainerItemProxy */;
 		};
 		082BE0B71F59D75F006CE0B7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
