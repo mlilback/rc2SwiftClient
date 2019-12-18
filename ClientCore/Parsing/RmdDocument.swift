@@ -1,5 +1,5 @@
 //
-//  RmdDocument2.swift
+//  RmdDocument.swift
 //  ClientCore
 //
 //  Created by Mark Lilback on 12/10/19.
@@ -21,9 +21,6 @@ fileprivate extension Array {
 	}
 }
 
-/// a callback that recieves a parsed keyword. returns true if a help URL should be included for it
-public typealias HelpCallback = (String) -> Bool
-
 public enum ChunkType: String {
 	case markdown, code, equation
 	
@@ -42,9 +39,48 @@ public enum ChunkType: String {
 }
 
 /// A parsed representation of an .Rmd file
-public class RmdDocument2: CustomDebugStringConvertible {
+public class RmdDocument: CustomDebugStringConvertible {
+	/// Updates document with contents.
+	/// If a code chunks changes and there are code chunks after it, the document will be completely refreshed.
+	///
+	/// - Parameter document: The document to update.
+	/// - Parameter with: The updated content.
+	///
+	/// - Returns: If nil, consider the doucment completely refreshed. Otherwise, the indexes of chunks that just changed content.
+	/// - Throws: any exception raised while creating a new document.
+	public class func update(document: RmdDocument, with content: String) throws -> [Int]? {
+		let newDoc = try RmdDocument(contents: content, parser: document.parser)
+		
+		defer {
+			document.chunks = newDoc.chunks
+			// do the ones that trigger signals/notifications last
+			document.frontMatter = newDoc.frontMatter
+			document.textStorage.replace(with: newDoc.textStorage)
+		}
+		
+		// if number of chunks changed, we can't list indexes that changed
+		guard newDoc.chunks.count == document.chunks.count else { return nil }
+		
+		var changed = [Int]()
+		let firstCodeIndex = document.chunks.firstIndex(where: {$0.chunkType == .code}) ?? -1
+		for idx in 0..<newDoc.chunks.count {
+			// compare if chunks are similar
+			guard let oldChunk = document.chunks[idx] as? RmdDocChunk,
+				let newChunk = newDoc.chunks[idx] as? RmdDocChunk,
+				oldChunk == newChunk
+				else { return nil }
+			if newChunk.chunkType == .code && idx < firstCodeIndex { return nil }
+			if newDoc.string(for: newChunk) != document.string(for: oldChunk) {
+				changed.append(idx)
+				document.chunks[idx] = newChunk
+			}
+		}
+		return changed
+	}
+	
+	
 	private var textStorage = NSTextStorage()
-	private var parser = RmdParser()
+	private let parser: Rc2RmdParser
 	/// the chunks in this document
 	public private(set) var chunks = [RmdDocumentChunk]()
 	/// any frontmatter that exists in the document
@@ -70,8 +106,8 @@ public class RmdDocument2: CustomDebugStringConvertible {
 	///
 	/// - Parameters:
 	///   - contents: Initial contents of the document.
-	///   - helpCallback: Callback that returns true if a term should be highlighted as a help term.
-	public init(contents: String, helpCallback: HelpCallback? = nil) throws {
+	public init(contents: String, parser: Rc2RmdParser) throws {
+		self.parser = parser
 		textStorage.append(NSAttributedString(string: contents))
 		let pchunks = try parser.parse(input: contents)
 		for (idx, aChunk) in pchunks.enumerated() {

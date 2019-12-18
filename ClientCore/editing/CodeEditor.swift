@@ -8,7 +8,6 @@ import Cocoa
 import Rc2Common
 import Networking
 import ReactiveSwift
-import SyntaxParsing
 
 /// The current mode the editor is in
 public enum EditorMode: Int {

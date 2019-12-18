@@ -131,7 +131,7 @@
 		083AC1042062EDFB0054023F /* NSImage+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC1032062EDFB0054023F /* NSImage+Rc2.swift */; };
 		083B500B237A38D600A3C8E6 /* NSResponder+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083B500A237A38D600A3C8E6 /* NSResponder+MJL.swift */; };
 		083D11941DEE0DF300549268 /* DataRc2Spec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083D11931DEE0DF300549268 /* DataRc2Spec.swift */; };
-		083E3D3123A01527007DFCB8 /* RmdDocument2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083E3D3023A01527007DFCB8 /* RmdDocument2.swift */; };
+		083E3D3123A01527007DFCB8 /* RmdDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083E3D3023A01527007DFCB8 /* RmdDocument.swift */; };
 		084199261D903F7A0089A1AC /* StartupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084199251D903F7A0089A1AC /* StartupController.swift */; };
 		0846D3E120175DF100795376 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0846D3E020175DF100795376 /* AppError.swift */; };
 		0846D3E32017C03900795376 /* FileTemplates in Resources */ = {isa = PBXBuildFile; fileRef = 0846D3E22017C03900795376 /* FileTemplates */; };
@@ -316,6 +316,7 @@
 		08A3042723478BEA0051EC0D /* LineNumberRulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A3042623478BEA0051EC0D /* LineNumberRulerView.swift */; };
 		08A3042B234BE3BC0051EC0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
 		08A63E4D23A01AE000FD472E /* Rc2Parser in Frameworks */ = {isa = PBXBuildFile; productRef = 08A63E4C23A01AE000FD472E /* Rc2Parser */; };
+		08A63E4F23A956CB00FD472E /* Rc2RmdParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A63E4E23A956CB00FD472E /* Rc2RmdParser.swift */; };
 		08A63E6223A9783200FD472E /* cmark-gfm-core-extensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 08A63E5123A96D7D00FD472E /* cmark-gfm-core-extensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		08A63E6323A9783200FD472E /* plugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 08A63E5223A96D7D00FD472E /* plugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		08A63E6423A9783200FD472E /* cmark-gfm-extension_api.h in Headers */ = {isa = PBXBuildFile; fileRef = 08A63E5323A96D7D00FD472E /* cmark-gfm-extension_api.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -376,7 +377,6 @@
 		08CFE8D21E760076002A35C1 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; };
 		08CFE8D31E760076002A35C1 /* ReactiveCocoa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08CFE8D01E760066002A35C1 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08D6106F1CD2C53100258D8E /* listvars.json in Resources */ = {isa = PBXBuildFile; fileRef = 08D6106E1CD2C53100258D8E /* listvars.json */; };
-		08DA11312092809700A96C7B /* SyntaxParsing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; };
 		08DAF2F31E4D07EF005A251E /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08DAF2F21E4D07EF005A251E /* PreferencesViewController.swift */; };
 		08E55B562188E33A00F63A20 /* LivePreviewEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */; };
 		08E55B622194A59300F63A20 /* BaseSourceEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B612194A59300F63A20 /* BaseSourceEditorController.swift */; };
@@ -967,7 +967,7 @@
 		083B500A237A38D600A3C8E6 /* NSResponder+MJL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "NSResponder+MJL.swift"; path = "vendor/MJLCommon/Sources/MJLCommon/extensions/NSResponder+MJL.swift"; sourceTree = SOURCE_ROOT; };
 		083D11821DE8C24C00549268 /* BuildInfo.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = BuildInfo.xcconfig; path = config/BuildInfo.xcconfig; sourceTree = "<group>"; };
 		083D11931DEE0DF300549268 /* DataRc2Spec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRc2Spec.swift; sourceTree = "<group>"; };
-		083E3D3023A01527007DFCB8 /* RmdDocument2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RmdDocument2.swift; sourceTree = "<group>"; };
+		083E3D3023A01527007DFCB8 /* RmdDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RmdDocument.swift; sourceTree = "<group>"; };
 		084199251D903F7A0089A1AC /* StartupController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartupController.swift; sourceTree = "<group>"; };
 		0845CB1D1C616E060090267C /* MockFileManagers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFileManagers.swift; sourceTree = "<group>"; };
 		0845CB1F1C6173CC0090267C /* DownloadRestFileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadRestFileTests.swift; sourceTree = "<group>"; };
@@ -1143,6 +1143,7 @@
 		08A2A29E2009602700D9807B /* HTMLStringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLStringTests.swift; sourceTree = "<group>"; };
 		08A2A2A1200A9B0E00D9807B /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
 		08A3042623478BEA0051EC0D /* LineNumberRulerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LineNumberRulerView.swift; path = MacClient/views/LineNumberRulerView.swift; sourceTree = SOURCE_ROOT; };
+		08A63E4E23A956CB00FD472E /* Rc2RmdParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rc2RmdParser.swift; sourceTree = "<group>"; };
 		08A63E5123A96D7D00FD472E /* cmark-gfm-core-extensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm-core-extensions.h"; sourceTree = "<group>"; };
 		08A63E5223A96D7D00FD472E /* plugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = plugin.h; sourceTree = "<group>"; };
 		08A63E5323A96D7D00FD472E /* cmark-gfm-extension_api.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm-extension_api.h"; sourceTree = "<group>"; };
@@ -1313,7 +1314,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08DA11312092809700A96C7B /* SyntaxParsing.framework in Frameworks */,
 				08F8C1802091226B00DFB269 /* iosMath.framework in Frameworks */,
 				08A63E4D23A01AE000FD472E /* Rc2Parser in Frameworks */,
 				084D330E206D387800246CBD /* Rc2Common.framework in Frameworks */,
@@ -1673,7 +1673,8 @@
 		083E3D2F23A014C0007DFCB8 /* Parsing */ = {
 			isa = PBXGroup;
 			children = (
-				083E3D3023A01527007DFCB8 /* RmdDocument2.swift */,
+				083E3D3023A01527007DFCB8 /* RmdDocument.swift */,
+				08A63E4E23A956CB00FD472E /* Rc2RmdParser.swift */,
 				08A63E5023A96D7D00FD472E /* cmark-gfm */,
 			);
 			path = Parsing;
@@ -3304,10 +3305,11 @@
 				0803F9FA22F9E7C000F26D84 /* HTMLString.swift in Sources */,
 				084D330A206D053700246CBD /* VariableFormatter.swift in Sources */,
 				08B73E8F208A134F00DB7339 /* EditorContext.swift in Sources */,
-				083E3D3123A01527007DFCB8 /* RmdDocument2.swift in Sources */,
+				083E3D3123A01527007DFCB8 /* RmdDocument.swift in Sources */,
 				084D332D20752C7D00246CBD /* CodeTemplate.swift in Sources */,
 				084D3307206D042500246CBD /* HelpTopic.swift in Sources */,
 				08B73E92208A14E800DB7339 /* PreferenceKeys.swift in Sources */,
+				08A63E4F23A956CB00FD472E /* Rc2RmdParser.swift in Sources */,
 				084D3309206D046E00246CBD /* Copyable.swift in Sources */,
 				084D3304206D042500246CBD /* SpreadsheetDataSource.swift in Sources */,
 				084D332E20752E8800246CBD /* CodeTemplateManager.swift in Sources */,
