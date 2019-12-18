@@ -160,15 +160,23 @@ extension RootEditorController: EditorManager {
 	
 	func save(state: inout SessionState.EditorState) {
 		let fontDesc = documentManager.editorFont.value.fontDescriptor
-		state.editorFontDescriptor = NSKeyedArchiver.archivedData(withRootObject: fontDesc)
+		do {
+			state.editorFontDescriptor = try NSKeyedArchiver.archivedData(withRootObject: fontDesc, requiringSecureCoding: false)
+		} catch {
+			Log.warn("failed to save font descriptor", .app)
+		}
 	}
 	
 	func restore(state: SessionState.EditorState) {
-		if let fontData = state.editorFontDescriptor,
-			let fontDesc = NSKeyedUnarchiver.unarchiveObject(with: fontData) as? NSFontDescriptor,
-			let font = NSFont(descriptor: fontDesc, size: fontDesc.pointSize)
-		{
-			documentManager.editorFont.value = font
+		do {
+			if let fontData = state.editorFontDescriptor,
+				let fontDesc = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSFontDescriptor.self, from: fontData),
+				let font = NSFont(descriptor: fontDesc, size: fontDesc.pointSize)
+			{
+				documentManager.editorFont.value = font
+			}
+		} catch {
+			Log.warn("error restoring font \(error)", .app)
 		}
 	}
 	
