@@ -6,7 +6,6 @@
 
 import Cocoa
 import ClientCore
-import SyntaxParsing
 import iosMath
 
 class InlineEquationEditorController: NSViewController {
@@ -14,7 +13,8 @@ class InlineEquationEditorController: NSViewController {
 	@IBOutlet private var editor: NSTextView!
 	@IBOutlet private var cancelButton: NSButton!
 	
-	var chunk: InlineEquationChunk?
+	var document: RmdDocument?
+	var chunk: RmdDocumentChunk?
 	var font: NSFont?
 	
 	var saveAction: ((InlineEquationEditorController, Bool) -> Void)?
@@ -34,9 +34,11 @@ class InlineEquationEditorController: NSViewController {
 	
 	override func viewWillAppear() {
 		super.viewWillAppear()
-		assert(chunk != nil)
-		equationView.latex = chunk!.rawText
-		editor.textStorage?.replace(with: chunk!.rawText)
+		precondition(chunk != nil)
+		guard let content = document?.string(for: chunk!, type: .inner)
+			else { fatalError("equation editor loaded without document") }
+		equationView.latex = content
+		editor.textStorage?.replace(with: content)
 		if let editorFont = font {
 			editor.font = editorFont
 		}
@@ -46,7 +48,8 @@ class InlineEquationEditorController: NSViewController {
 		super.viewWillDisappear()
 		if !canceled {
 			print("saving latex: \(editor.string)")
-			chunk?.contents = NSAttributedString(string: editor.string)
+			// FIXME: how do we do this now?
+//			chunk?.contents = NSAttributedString(string: editor.string)
 			saveAction?(self, true)
 		}
 	}

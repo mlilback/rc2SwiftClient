@@ -27,10 +27,10 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	@IBOutlet var fileNameField: NSTextField?
 	@IBOutlet var contextualMenuAdditions: NSMenu?
 	
-	var parser: SyntaxParser?
+	var parser: Rc2RmdParser?
 	
 	var defaultAttributes: [NSAttributedString.Key: Any] = [:]
-	var currentChunkIndex: Int = 0
+//	var currentChunkIndex: Int = 0
 	var fontUser: FontUser?
 
 	var searchableTextView: NSTextView? { return editor }
@@ -38,10 +38,10 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	/// true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
 	var ignoreTextStorageNotifications = false
 	
-	var currentChunk: DocumentChunk? {
-		guard let parser = self.parser, parser.chunks.count > 0 else { return nil }
-		return parser.chunks[currentChunkIndex]
-	}
+//	var currentChunk: RmdDocumentChunk? {
+//		guard let parser = self.parser, parser.children.count > 0 else { return nil }
+//		return parser.chunks[currentChunkIndex]
+//	}
 	
 	override var documentDirty: Bool {
 		guard let edited = editor?.string, let original = context?.currentDocument.value?.savedContents else { return false }
@@ -69,16 +69,18 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		guard editor != nil else { return }
-		editor?.menuDelegate = self
+		guard let editor = editor, let storage = editor.textStorage else { return }
+		editor.menuDelegate = self
 		fileNameField?.stringValue = ""
-		editor?.textStorage?.delegate = self
-		fontUser = editor?.enableLineNumberView(ignoreHandler: { [weak self] in self?.ignoreTextStorageNotifications ?? false })
+		storage.delegate = self
+		fontUser = editor.enableLineNumberView(ignoreHandler: { [weak self] in self?.ignoreTextStorageNotifications ?? false })
 		if let currentFont = context?.editorFont.value {
 			fontUser?.font = currentFont
 		}
-		editor?.textContainer?.replaceLayoutManager(SourceEditorLayoutManager())
-		editor?.enclosingScrollView?.rulersVisible = true
+		editor.textContainer?.replaceLayoutManager(SourceEditorLayoutManager())
+		editor.enclosingScrollView?.rulersVisible = true
+		parser = Rc2RmdParser(contents: storage, help: { (topic) -> Bool in
+			HelpController.shared.hasTopic(topic) })
 	}
 	
 	@objc override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
@@ -143,12 +145,11 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		ignoreTextStorageNotifications = true
 		let origCursorRange = editor.selectedRange()
 		storage.deleteCharacters(in: editor.rangeOfAllText)
-		parser = SyntaxParser(storage: storage, fileType: document.file.fileType, helpCallback: { (topic) -> Bool in
-			HelpController.shared.hasTopic(topic) })
 		storage.setAttributedString(NSAttributedString(string: content, attributes: self.defaultAttributes))
 		let range = storage.string.fullNSRange
-		parser?.parseAndAttribute(attributedString: storage, docType: context!.docType, inRange: range, makeChunks: true)
-		highlight(attributedString: storage, inRange: range)
+		parser?.highlight(text: storage, range: range)
+//		parser?.parseAndAttribute(attributedString: storage, docType: context!.docType, inRange: range, makeChunks: true)
+//		highlight(attributedString: storage, inRange: range)
 		ignoreTextStorageNotifications = false
 		if let index = context?.currentDocument.value?.topVisibleIndex, index > 0 {
 			//restore the scroll point to the saved character index
@@ -205,9 +206,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	///   - range: the range of the original text that changed
 	///   - delta: the length delta for the edited change
 	func contentsChanged(_ contents: NSTextStorage, range: NSRange, changeLength delta: Int) {
-		let range = contents.string.fullNSRange
-		parser?.parseAndAttribute(attributedString: contents, docType: context!.docType, inRange: range, makeChunks: true)
-		highlight(attributedString: contents, inRange: range)
+		parser?.contentsChanged(range: range, changeLength: delta)
 	}
 }
 
@@ -268,7 +267,8 @@ extension BaseSourceEditorController: NSTextViewDelegate {
 	
 	func textViewDidChangeSelection(_ notification: Notification) {
 		guard let parser = parser else { return }
-		currentChunkIndex = parser.indexOfChunk(inRange: editor!.selectedRange())
+		parser.selectionChanged(range: editor!.selectedRange())
+//		currentChunkIndex = parser.indexOfChunk(inRange: editor!.selectedRange())
 	}
 	
 	func textView(_ textView: NSTextView, clickedOnLink link: Any, at charIndex: Int) -> Bool {

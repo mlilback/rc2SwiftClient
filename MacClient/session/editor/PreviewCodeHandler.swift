@@ -8,7 +8,7 @@
 
 import Foundation
 import ReactiveSwift
-import SyntaxParsing
+import ClientCore
 import MJLLogger
 
 class PreviewCodeHandler {
@@ -23,10 +23,13 @@ class PreviewCodeHandler {
 	}
 	
 	var sessionController: SessionController
+	let parsedDoc: MutableProperty<RmdDocument?>
 	private var chunkInfo: [ChunkInfo?] = []
 	
-	init(sessionController: SessionController) {
+	init(sessionController: SessionController, docSignal: Signal<RmdDocument?, Never>) {
 		self.sessionController = sessionController
+		parsedDoc = MutableProperty<RmdDocument?>(nil)
+		parsedDoc <~ docSignal
 	}
 	
 	/// generates the html for all code chunks and any markdown chunks that contain inline code
@@ -38,13 +41,13 @@ class PreviewCodeHandler {
 		}
 		// generate html for each chunk.
 		for (chunkNumber, chunk) in document.chunks.enumerated() {
-			if let mdChunk = chunk as? TextChunk, mdChunk.inlineElements.count > 0 {
+			if chunk.chunkType == .markdown, chunk.children.count > 0 {
 				// need to generate inline html
 				var inline = [String]()
-				for (inlineIndex, inlineChunk) in mdChunk.inlineElements.enumerated() {
-					inline[inlineIndex] = inlineHtmlFor(chunk: inlineChunk, parent: mdChunk)
+				for (inlineIndex, inlineChunk) in chunk.children.enumerated() {
+					inline[inlineIndex] = inlineHtmlFor(chunk: inlineChunk, parent: chunk)
 				}
-				chunkInfo[chunkNumber] = ChunkInfo(chunkNumber: chunkNumber, type:.docs, inlineHtml: inline)
+				chunkInfo[chunkNumber] = ChunkInfo(chunkNumber: chunkNumber, type:.markdown, inlineHtml: inline)
 				break // exit this loop
 			}
 			guard chunk.chunkType == .code else { continue }
@@ -60,11 +63,13 @@ class PreviewCodeHandler {
 		changedChunks.sort()
 	}
 	
-	private func inlineHtmlFor(chunk: InlineChunk, parent: TextChunk) -> String {
+	private func inlineHtmlFor(chunk: RmdDocumentChunk, parent: RmdDocumentChunk) -> String {
+		precondition(parsedDoc.value != nil)
 		// just return nothing if not code
-		guard chunk is InlineCodeChunk else { return "" }
+		guard chunk.isInline else { return "" }
 		// TODO: generate actual code
-		return parent.contents.string.substring(from: chunk.chunkRange) ?? "<span class=\"internalError\">invalid inline data</span>"
+		return parsedDoc.value!.string(for: chunk, type: .outer)
+//		return  parent.contents.string.substring(from: chunk.chunkRange) ?? "<span class=\"internalError\">invalid inline data</span>"
 	}
 	
 	/// returns the html for the specified chunk.

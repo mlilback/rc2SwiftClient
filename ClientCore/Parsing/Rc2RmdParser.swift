@@ -13,6 +13,7 @@ import ReactiveSwift
 /// a callback that recieves a parsed keyword. returns true if a help URL should be included for it
 public typealias HelpCallback = (String) -> Bool
 
+/// for  instances where write access is not needed
 public protocol ParserContext {
 	var parsedDocument: Property<RmdDocument?> { get }
 }

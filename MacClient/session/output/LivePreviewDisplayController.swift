@@ -10,19 +10,16 @@ import Cocoa
 import WebKit
 import Rc2Common
 import ClientCore
-import SyntaxParsing
 import ReactiveSwift
 import MJLLogger
 
 // code to extract a zip file with preview_support locally is commented out because of a bug where WKWebView tries to load with %20 in app support url, which fails
 
 protocol LivePreviewOutputController {
-	/// might not need to be accessible
-//	var webView: WKWebView { get }
-	/// 
-//	var sessionController: SessionController? { get set }
 	/// allows preview editor to tell display controller what the current context is so it can monitor the current document
-	var editorContext: EditorContext? { get set }
+//	var editorContext: EditorContext? { get set }
+	
+	var parserContext: ParserContext? { get set }
 	
 	/// allows editor that the user has made a change to the contents of the current document
 	///
@@ -39,14 +36,22 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	// required by OutputController, should use at some point
 	var contextualMenuDelegate: ContextualMenuDelegate?
 	var sessionController: SessionController? { didSet {
-		guard let session = sessionController else { codeHandler = nil; return }
-		codeHandler = PreviewCodeHandler(sessionController: session)
+		guard let session = sessionController, let pcontext = parserContext else { codeHandler = nil; return }
+		// chicken/egg problem with parserContext didSet. this is conditionally done in both
+		codeHandler = PreviewCodeHandler(sessionController: session, docSignal: pcontext.parsedDocument.signal)
 	}}
 	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil)
 	private var curDocDisposable: Disposable?
 	private var didLoadView = false
 
-	private var parsedDocument: RmdDocument? = nil
+	internal var parserContext: ParserContext? { didSet {
+		curDocDisposable?.dispose()
+		curDocDisposable = parserContext?.parsedDocument.signal.observeValues(documentChanged)
+		// chicken/egg problem with sessionController didSet. this is conditionally done in both
+		guard let sessionc = sessionController, let pcontext = parserContext else { return }
+		codeHandler = PreviewCodeHandler(sessionController: sessionc, docSignal: pcontext.parsedDocument.signal)
+	} }
+	private var parsedDocument: RmdDocument? { return parserContext?.parsedDocument.value }
 	private let mdownParser = MarkdownParser()
 	private var parseInProgress = false
 	private var codeHandler: PreviewCodeHandler?
@@ -70,20 +75,18 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private var documentRoot: URL?
 	private var headerContents = ""
 	private var footerContents = ""
-	private var lastContents: String?
-
 
 	var emptyContents: String { "\(headerContents) \(footerContents)" }
 	
-	var editorContext: EditorContext? {
-		get { return context.value }
-		set {
-			// do nothing if same as existing context
-			if let c1 = context.value, let c2 = newValue, c1.id == c2.id { return }
-			context.value = newValue
-			contextChanged()
-		}
-	}
+//	var editorContext: EditorContext? {
+//		get { return context.value }
+//		set {
+//			// do nothing if same as existing context
+//			if let c1 = context.value, let c2 = newValue, c1.id == c2.id { return }
+//			context.value = newValue
+//			contextChanged()
+//		}
+//	}
 	
 	@IBOutlet weak var outputView: WKWebView?
 	
@@ -95,7 +98,6 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			let openRegex = try? NSRegularExpression(pattern: "^\\$\\$", options: []),
 			let closeRegex = try? NSRegularExpression(pattern: "\\$\\$(\\s*)$", options: [])
 			else { fatalError("regex failed to compile")}
-
 		lineContiuationRegex = regex
 		openDoubleDollarRegex = openRegex
 		closeDoubleDollarRegex = closeRegex
@@ -126,24 +128,20 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 	
 	/// called when the currentDocument of the EditorContext has changed
-	private func documentChanged() {
-		parsedDocument = nil
-		lastContents = nil
+	private func documentChanged(newDocument: RmdDocument?) {
 		updatePreview()
 	}
 		
 	/// called when the context property has been set
 	private func contextChanged() {
-		lastContents = nil
-		parsedDocument = nil
-		curDocDisposable?.dispose()
-		curDocDisposable = editorContext?.currentDocument.signal.observeValues({ [weak self] newDoc in
-			self?.documentChanged()
-		})
+//		curDocDisposable?.dispose()
+//		curDocDisposable = context.value?.currentDocument.signal.observeValues({ [weak self] newDoc in
+//			self?.documentChanged(newDocument: newDoc)
+//		})
 		if !resourcesExtracted {
 			ensureResourcesLoaded()
 		}
-		documentChanged()
+//		documentChanged()
 	}
 	
 	// MARK: - content presentation
@@ -164,28 +162,28 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	
 	/// parses the parsed document and loads it via javascript
 	private func updatePreview(updatedContents: String? = nil) {
-		guard !parseInProgress else { return }
+//		guard !parseInProgress else { return }
 		guard didLoadView else { return }
-		var updateParse = true
-		
-		// if a new document was generated, need to clear old contents after webview is updated
-		var clearLastContents = false
-		defer { if clearLastContents { self.lastContents = nil} }
-		
-		// handle initial parsing
-		if parsedDocument == nil {
-			// need to do initial load. might be no contents if called before document loaded
-			guard let contents = context.value?.currentDocument.value?.currentContents
-				else { return }
-			do {
-				parsedDocument = try RmdDocument(contents: contents)
-				updateParse = false
-				clearLastContents = true
-			} catch {
-				Log.warn("error during initial parse: \(error)")
-				return
-			}
-		}
+//		var updateParse = true
+//
+//		// if a new document was generated, need to clear old contents after webview is updated
+//		var clearLastContents = false
+//		defer { if clearLastContents { self.lastContents = nil} }
+//
+//		// handle initial parsing
+//		if parsedDocument == nil {
+//			// need to do initial load. might be no contents if called before document loaded
+//			guard let contents = context.value?.currentDocument.value?.currentContents
+//				else { return }
+//			do {
+//				parsedDocument.value = try RmdDocument(contents: contents, parser: rmdParser)
+//				updateParse = false
+//				clearLastContents = true
+//			} catch {
+//				Log.warn("error during initial parse: \(error)")
+//				return
+//			}
+//		}
 		
 		// handle empty content
 		guard let curDoc = parsedDocument else {
@@ -194,7 +192,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 		guard let contents = updatedContents ?? context.value?.currentDocument.value?.currentContents
 			else { Log.warn("current doc has no contents??"); return }
-		if contents == lastContents { return }
+//		if contents == lastContents { return }
 		
 		// update the parsed document, update the webview
 		parseInProgress = true
@@ -223,52 +221,53 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 	}
 	
-	private func htmlFor(chunk: RmdChunk, index: Int) -> String {
+	private func htmlFor(chunk: RmdDocumentChunk, index: Int) -> String {
 		switch chunk.chunkType {
 		case .code:
 			let code = rHtmlFor(code: chunk, index: index)
 			return code
-		case .docs:
+		case .markdown:
 			return htmlFor(markdownChunk: chunk, index: index)
 		case .equation:
 			return htmlForEquation(chunk: chunk)
 		}
 	}
 	
-	private func htmlFor(markdownChunk: RmdChunk, index: Int) -> String {
-		guard let chunk = markdownChunk as? TextChunk else { preconditionFailure("invalid chunk type") }
-		let html = mdownParser.htmlFor(markdown: chunk.rawText)
+	private func htmlFor(markdownChunk: RmdDocumentChunk, index: Int) -> String {
+		let html = mdownParser.htmlFor(markdown: parsedDocument!.string(for: markdownChunk))
 		// modify source position to include chunk number
 		_ = dataSourceRegex.replaceMatches(in: html, range: NSRange(location: 0, length: html.length), withTemplate: "data-sourcepos=\"\(index).$2")
 		return html as String
 	}
 	
-	private func textFor(inlineChunk: InlineChunk, parent: TextChunk) -> String {
-		guard let inlineText = parent.contents.string.substring(from: inlineChunk.range)
-			else { preconditionFailure("failed to get substring for inline chunk") }
+	private func textFor(inlineChunk: RmdDocumentChunk, parent: RmdDocumentChunk) -> String {
+		guard let doc = parsedDocument else { fatalError("textFor called w/o a document") }
+		let inlineText = doc.string(for: inlineChunk, type: .inner)
 		var icText = inlineText
 		switch inlineChunk.chunkType {
 		case .code:
-			icText = inlineChunk.rawText
+			icText = doc.string(for: inlineChunk, type: .outer)
 		case .equation:
 			icText = "\\(\(inlineText)\\)"
-		case .docs:
+		case .markdown:
 			preconditionFailure("inline chunk can't be markdown")
 		}
 		return icText
 	}
 	
-	private func rHtmlFor(code chunk: RmdChunk, index: Int) -> String {
+	private func rHtmlFor(code chunk: RmdDocumentChunk, index: Int) -> String {
+		guard let doc = parsedDocument else { fatalError("htmlFor called w/o a document") }
 		guard let rHandler = codeHandler else {
 			Log.warn("asked to generate R code w/o context");
-			return "<pre class=\"r\"><code>\(chunk.contents.string.addingUnicodeEntities)</code></pre>\n"
+			return "<pre class=\"r\"><code>\(doc.string(for: chunk, type: .inner).addingUnicodeEntities)</code></pre>\n"
 		}
 		let html = rHandler.htmlForChunk(number: index)
 		return html
 	}
 	
-	private func htmlForEquation(chunk: RmdChunk) -> String {
-		var equationText = chunk.rawText
+	private func htmlForEquation(chunk: RmdDocumentChunk) -> String {
+		guard let doc = parsedDocument else { fatalError("htmlForEquationi called w/o a document") }
+		var equationText = doc.string(for: chunk)
 		equationText = lineContiuationRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "")
 		equationText = openDoubleDollarRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "\\\\[")
 		equationText = closeDoubleDollarRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "\\\\]")
@@ -277,10 +276,9 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 
 	}
 	
-	private func markdownFor(inlineEquation: InlineEquationChunk, parent: TextChunk) -> String {
-		guard var code = parent.rawText.substring(from: inlineEquation.range) else {
-			fatalError("invalid range for inline chunk")
-		}
+	private func markdownFor(inlineEquation: RmdDocumentChunk) -> String {
+		guard let doc = parsedDocument else { fatalError("textFor called w/o a document") }
+		var code = doc.string(for: inlineEquation, type: .inner)
 		code = code.replacingOccurrences(of: "^\\$", with: "\\(", options: .regularExpression)
 		code = code.replacingOccurrences(of: "\\$$\\s", with: "\\) ", options: .regularExpression)
 		return "<span class\"math inline\">\n\(code)</span>"

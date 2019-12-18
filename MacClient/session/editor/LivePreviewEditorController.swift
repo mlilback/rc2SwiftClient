@@ -13,7 +13,7 @@ import WebKit
 import SwiftyUserDefaults
 
 class LivePreviewEditorController: BaseSourceEditorController {
-	var outputController: LivePreviewOutputController? { didSet { outputControllerChanged() } }
+	var outputController: LivePreviewOutputController?
 	
 	private var webView: WKWebView?
 	
@@ -48,22 +48,6 @@ class LivePreviewEditorController: BaseSourceEditorController {
 		}
 		lastChangeTimer.activate()
 		lastChangeTimer.suspend()
-	}
-
-	override func setContext(context: EditorContext) {
-		super.setContext(context: context)
-		outputController?.editorContext = context
-	}
-	
-	// outputControllerChanged was being called recursively. Use inChange flag to prevent that
-	func outputControllerChanged() {
-		guard !inOutputChange else { return }
-		inOutputChange = true
-		defer { inOutputChange = false }
-		if let ctx = context {
-			outputController?.editorContext = ctx
-		}
-		// need to update with current generated contents
 	}
 	
 //	override func loaded(content: String) {
