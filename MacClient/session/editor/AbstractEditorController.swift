@@ -8,7 +8,6 @@ import Cocoa
 import Rc2Common
 import ClientCore
 import Networking
-import SyntaxParsing
 import MJLLogger
 import ReactiveSwift
 

@@ -147,7 +147,7 @@ extension SessionController {
 		do {
 			try session.imageCache.save(state: &state.imageCacheState)
 			let data = try state.serialize()
-			let hash = (data as NSData).sha256()
+			let hash = data.sha256()
 			if hash != savedStateHash, let furl = try? stateFileUrl() {
 				try? data.write(to: furl)
 				savedStateHash = hash
@@ -168,7 +168,7 @@ extension SessionController {
 				outputHandler.restore(state: state.outputState)
 				delegate?.restore(state: state)
 				try session.imageCache.restore(state: state.imageCacheState)
-				savedStateHash = (data as NSData).sha256()
+				savedStateHash = data.sha256()
 			}
 		} catch {
 			Log.error("error restoring session state: \(error)", .session)

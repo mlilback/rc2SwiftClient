@@ -11,7 +11,6 @@ import MJLLogger
 import ReactiveSwift
 import Rc2Common
 import Networking
-import SyntaxParsing
 import ClientCore
 
 /// pfrotocol to allow setting the font of something without knowing anything else about it.
