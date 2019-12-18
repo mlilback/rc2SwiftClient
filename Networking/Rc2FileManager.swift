@@ -146,7 +146,7 @@ public extension AppFile {
 		setXAttributeWithName(FileAttrVersion, data: versionData!, atURL: toUrl)
 		if let fileData = try? Data(contentsOf: toUrl)
 		{
-			let shaData = (fileData as NSData).sha1hash()
+			let shaData = fileData.sha256()
 			setXAttributeWithName(FileAttrChecksum, data: shaData, atURL: toUrl)
 		} else {
 			Log.error("failed to create sha256 checksum for \(toUrl.path)", .network)
