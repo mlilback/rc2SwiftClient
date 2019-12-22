@@ -32,17 +32,23 @@ class LivePreviewEditorController: BaseSourceEditorController {
 		editor?.isEditable = true
 		lastChangeTimer = DispatchSource.makeTimerSource(queue: .main)
 		lastChangeTimer.schedule(deadline: .now() + .milliseconds(500), repeating: .milliseconds(500), leeway: .milliseconds(100))
-		lastChangeTimer.setEventHandler {
-			guard let lastRange = self.lastChangeRange, let editor = self.editor else { return }
+		lastChangeTimer.setEventHandler { [weak self] in
+			guard let me = self else { return }
+			guard let lastRange = me.lastChangeRange, let editor = me.editor else { return }
 			let curTime = Date.timeIntervalSinceReferenceDate
-			if (curTime - self.lastTextChange) > Defaults[.previewUpdateDelay] {
-				self.lastTextChange = curTime
-				defer { self.lastChangeRange = nil }
-				if let oc = self.outputController,
-					oc.contentsEdited(contents: editor.string, range: lastRange, delta: self.lastChangeDelta)
+			if (curTime - me.lastTextChange) > Defaults[.previewUpdateDelay] {
+				me.lastTextChange = curTime
+				defer { me.lastChangeRange = nil }
+				if let oc = me.outputController,
+					oc.contentsEdited(contents: editor.string, range: lastRange, delta: me.lastChangeDelta)
 				{
-					if self.ignoreContentChanges { return }
-					self.save(edits: editor.string, reload: true)
+					if me.ignoreContentChanges { return }
+					me.save(edits: editor.string, reload: true)
+					do {
+						try me.parser?.reparse()
+					} catch {
+						Log.warn("error reparsing document: \(error)", .app)
+					}
 				}
 			}
 		}

@@ -1002,8 +1002,11 @@ DQ
                                                                             <rect key="frame" x="1" y="1" width="202" height="48"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
-                                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="DST-VO-9r9">
+                                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="755" translatesAutoresizingMaskIntoConstraints="NO" id="DST-VO-9r9">
                                                                                     <rect key="frame" x="2" y="24" width="198" height="19"/>
+                                                                                    <constraints>
+                                                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="19" id="7WQ-ki-cU4"/>
+                                                                                    </constraints>
                                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="5XC-MP-ahA">
                                                                                         <font key="font" metaFont="systemSemibold" size="15"/>
                                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1012,6 +1015,9 @@ DQ
                                                                                 </textField>
                                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EiC-Pn-IVG">
                                                                                     <rect key="frame" x="2" y="4" width="63" height="16"/>
+                                                                                    <constraints>
+                                                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="8LH-xO-ekE"/>
+                                                                                    </constraints>
                                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="last used:" id="8l7-na-V1b">
                                                                                         <font key="font" metaFont="system"/>
                                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1020,6 +1026,9 @@ DQ
                                                                                 </textField>
                                                                                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mIl-fZ-J6v">
                                                                                     <rect key="frame" x="69" y="4" width="133" height="16"/>
+                                                                                    <constraints>
+                                                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="FeS-no-3d4"/>
+                                                                                    </constraints>
                                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="i2i-Hi-rJS">
                                                                                         <dateFormatter key="formatter" dateStyle="short" timeStyle="short" doesRelativeDateFormatting="YES" id="i2o-9P-95n"/>
                                                                                         <font key="font" metaFont="system"/>

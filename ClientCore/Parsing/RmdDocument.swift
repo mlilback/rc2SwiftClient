@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import Rc2Parser
+import Parsing
 import Logging
 import ReactiveSwift
 
@@ -21,10 +21,10 @@ fileprivate extension Array {
 	}
 }
 
-public enum ChunkType: String {
+public enum RootChunkType: String {
 	case markdown, code, equation
 	
-	init(_ pctype: Rc2Parser.ChunkType) {
+	public init(_ pctype: ChunkType) {
 		switch pctype {
 		case .markdown:
 			self = .markdown
@@ -38,6 +38,11 @@ public enum ChunkType: String {
 	}
 }
 
+public enum ParserError: Error {
+	case parseFailed
+	case invalidParser
+}
+
 /// A parsed representation of an .Rmd file
 public class RmdDocument: CustomDebugStringConvertible {
 	/// Updates document with contents.
@@ -49,7 +54,8 @@ public class RmdDocument: CustomDebugStringConvertible {
 	/// - Returns: If nil, consider the doucment completely refreshed. Otherwise, the indexes of chunks that just changed content.
 	/// - Throws: any exception raised while creating a new document.
 	public class func update(document: RmdDocument, with content: String) throws -> [Int]? {
-		let newDoc = try RmdDocument(contents: content, parser: document.parser)
+		guard let parser = document.parser else { throw ParserError.invalidParser }
+		let newDoc = try RmdDocument(contents: content, parser: parser)
 		
 		defer {
 			document.chunks = newDoc.chunks
@@ -80,7 +86,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 	
 	
 	private var textStorage = NSTextStorage()
-	private let parser: Rc2RmdParser
+	private weak var parser: Rc2RmdParser?
 	/// the chunks in this document
 	public private(set) var chunks = [RmdDocumentChunk]()
 	/// any frontmatter that exists in the document
@@ -142,7 +148,9 @@ public class RmdDocument: CustomDebugStringConvertible {
 		if chunk.isExecutable {
 			let baseStr = NSMutableAttributedString(attributedString: desiredString)
 			do {
-				try parser.highlight(content: baseStr)
+				if let parser = parser {
+					try parser.highlight(content: baseStr)
+				}
 			} catch {
 				parserLog.info("error highligthing R code: \(error.localizedDescription)")
 			}
@@ -171,7 +179,7 @@ internal class RmdDocChunk: RmdDocumentChunk {
 	public private(set) var children = [RmdDocumentChunk]()
 	
 	init(rawChunk: AnyChunk, number: Int, parentRange: NSRange) {
-		chunkType = ChunkType(rawChunk.type)
+		chunkType = rawChunk.type
 		parserChunk = rawChunk
 		chunkNumber = number
 		parsedRange = rawChunk.range

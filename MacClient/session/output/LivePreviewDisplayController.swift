@@ -222,7 +222,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 	
 	private func htmlFor(chunk: RmdDocumentChunk, index: Int) -> String {
-		switch chunk.chunkType {
+		switch RootChunkType(chunk.chunkType) {
 		case .code:
 			let code = rHtmlFor(code: chunk, index: index)
 			return code
@@ -244,7 +244,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		guard let doc = parsedDocument else { fatalError("textFor called w/o a document") }
 		let inlineText = doc.string(for: inlineChunk, type: .inner)
 		var icText = inlineText
-		switch inlineChunk.chunkType {
+		switch RootChunkType(inlineChunk.chunkType) {
 		case .code:
 			icText = doc.string(for: inlineChunk, type: .outer)
 		case .equation:

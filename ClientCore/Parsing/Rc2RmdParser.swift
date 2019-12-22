@@ -7,8 +7,9 @@
 //
 
 import Foundation
-import Rc2Parser
+import Parsing
 import ReactiveSwift
+import MJLLogger
 
 /// a callback that recieves a parsed keyword. returns true if a help URL should be included for it
 public typealias HelpCallback = (String) -> Bool
@@ -31,10 +32,15 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 		self.contents = contents
 		helpCallback = help
 		parsedDocument = Property<RmdDocument?>(_parsedDocument)
+		super.init()
+	}
+	
+	public func reparse() throws {
+		_parsedDocument.value = try RmdDocument(contents: contents.string, parser: self)
 	}
 	
 	public func highlight(text: NSMutableAttributedString, range: NSRange? = nil, delta: Int? = nil) {
-		
+		Log.info("highlighting", .parser)
 	}
 
 	public func selectionChanged(range: NSRange) {

@@ -81,6 +81,11 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		editor.enclosingScrollView?.rulersVisible = true
 		parser = Rc2RmdParser(contents: storage, help: { (topic) -> Bool in
 			HelpController.shared.hasTopic(topic) })
+		do {
+			try parser?.reparse()
+		} catch {
+			Log.warn("error during initial parse: \(error)", .parser)
+		}
 	}
 	
 	@objc override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {

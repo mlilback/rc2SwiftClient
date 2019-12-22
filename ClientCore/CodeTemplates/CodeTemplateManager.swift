@@ -7,7 +7,7 @@
 import Foundation
 import Rc2Common
 import MJLLogger
-import Rc2Parser
+import Parsing
 //import SyntaxParsing
 import SwiftyUserDefaults
 
@@ -32,7 +32,7 @@ public enum TemplateType: String, Codable, DefaultsSerializable {
 	}
 	
 	/// create from a ChunkType from the syntax parser
-	public init(chunkType: ChunkType) {
+	public init(chunkType: RootChunkType) {
 		switch chunkType {
 		case .code: self = .rCode
 		case .markdown: self = .markdown

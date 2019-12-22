@@ -17,7 +17,7 @@ class PreviewCodeHandler {
 	}
 	private struct ChunkInfo: Hashable {
 		let chunkNumber: Int
-		let type: ChunkType
+		let type: RootChunkType
 		var currentHtml: String = ""
 		var inlineHtml: [String] = []
 	}
