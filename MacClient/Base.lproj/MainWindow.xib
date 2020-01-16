@@ -17,13 +17,13 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="267" y="346" width="1000" height="600"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2048" height="1129"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <value key="minSize" type="size" width="900" height="600"/>
             <view key="contentView" id="e8q-bP-54d">
                 <rect key="frame" x="0.0" y="0.0" width="1000" height="600"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             </view>
-            <toolbar key="toolbar" implicitIdentifier="A77B95C8-BF1E-487A-B9F3-9BB37B92E7EB" explicitIdentifier="main1" centeredItem="FLu-mf-Dta" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="GrO-iY-cKz">
+            <toolbar key="toolbar" implicitIdentifier="A77B95C8-BF1E-487A-B9F3-9BB37B92E7EB" explicitIdentifier="main2" centeredItem="FLu-mf-Dta" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="GrO-iY-cKz">
                 <allowedToolbarItems>
                     <toolbarItem implicitItemIdentifier="45A7986F-AECA-4AD3-ACBE-F325C2AB72D7" explicitItemIdentifier="leftView" label="" paletteLabel="Left View" id="DRL-wf-hhl">
                         <nil key="toolTip"/>
@@ -118,8 +118,7 @@
                             <accessibility description="cclear"/>
                         </segmentedControl>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="334E0D12-33E6-4F0F-9904-D75C6D9961A3" explicitItemIdentifier="search" label="Search" paletteLabel="Search" id="UXu-W5-loZ" customClass="ValidatingToolbarItem" customModule="MacClient" customModuleProvider="target">
-                        <nil key="toolTip"/>
+                    <toolbarItem implicitItemIdentifier="334E0D12-33E6-4F0F-9904-D75C6D9961A3" explicitItemIdentifier="search" label="Search" paletteLabel="Search" toolTip="Output Search" id="UXu-W5-loZ" customClass="ValidatingToolbarItem" customModule="MacClient" customModuleProvider="target">
                         <size key="minSize" width="34" height="24"/>
                         <size key="maxSize" width="38" height="25"/>
                         <segmentedControl key="view" toolTip="Search" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" id="q3U-FQ-qgP">
@@ -128,7 +127,7 @@
                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="sxw-jS-yGw">
                                 <font key="font" metaFont="system" size="14"/>
                                 <segments>
-                                    <segment image="search" width="32"/>
+                                    <segment toolTip="Output Search" image="search" width="32"/>
                                 </segments>
                             </segmentedCell>
                             <accessibility description="output search"/>
@@ -138,7 +137,7 @@
                         <nil key="toolTip"/>
                         <size key="minSize" width="163" height="22"/>
                         <size key="maxSize" width="260" height="96"/>
-                        <customView key="view" id="XT5-ai-z8C" customClass="AppStatusView" customModule="MacClient" customModuleProvider="target">
+                        <customView key="view" toolTip="Status" id="XT5-ai-z8C" customClass="AppStatusView" customModule="MacClient" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="14" width="220" height="22"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <subviews>
@@ -189,8 +188,10 @@
                             </subviews>
                             <constraints>
                                 <constraint firstAttribute="trailing" secondItem="zH3-I4-AdV" secondAttribute="trailing" constant="4" id="1JH-OT-9RN"/>
+                                <constraint firstAttribute="bottom" secondItem="zH3-I4-AdV" secondAttribute="bottom" constant="3" id="McN-PP-mMs"/>
                                 <constraint firstItem="zH3-I4-AdV" firstAttribute="centerY" secondItem="XT5-ai-z8C" secondAttribute="centerY" id="eW6-1A-W6T"/>
                                 <constraint firstItem="zH3-I4-AdV" firstAttribute="leading" secondItem="XT5-ai-z8C" secondAttribute="leading" constant="4" id="fwZ-R5-52H"/>
+                                <constraint firstItem="zH3-I4-AdV" firstAttribute="top" secondItem="XT5-ai-z8C" secondAttribute="top" constant="3" id="qnp-Ib-HhL"/>
                             </constraints>
                             <accessibility description="current status"/>
                             <connections>
@@ -201,8 +202,7 @@
                             </connections>
                         </customView>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="75967C17-C5AE-4630-A64D-24E6DACCF4C3" explicitItemIdentifier="editorSearch" label="Editor Search" paletteLabel="Editor Search" id="rX7-OM-UAe" customClass="ValidatingToolbarItem" customModule="MacClient" customModuleProvider="target">
-                        <nil key="toolTip"/>
+                    <toolbarItem implicitItemIdentifier="75967C17-C5AE-4630-A64D-24E6DACCF4C3" explicitItemIdentifier="editorSearch" label="Editor Search" paletteLabel="Editor Search" toolTip="Editor Search" id="rX7-OM-UAe" customClass="ValidatingToolbarItem" customModule="MacClient" customModuleProvider="target">
                         <size key="minSize" width="34" height="23"/>
                         <size key="maxSize" width="40" height="25"/>
                         <segmentedControl key="view" toolTip="Search" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" id="ROF-z3-mny">
@@ -211,7 +211,7 @@
                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="2tj-MW-m1W">
                                 <font key="font" metaFont="system" size="14"/>
                                 <segments>
-                                    <segment image="search" width="34"/>
+                                    <segment toolTip="Editor Search" image="search" width="34"/>
                                 </segments>
                             </segmentedCell>
                             <accessibility description="editor search"/>
@@ -230,7 +230,7 @@
                         <nil key="toolTip"/>
                         <size key="minSize" width="126" height="25"/>
                         <size key="maxSize" width="163" height="126"/>
-                        <customView key="view" id="kP9-9R-WRk">
+                        <customView key="view" toolTip="Editor Controls" id="kP9-9R-WRk">
                             <rect key="frame" x="0.0" y="14" width="160" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <subviews>
@@ -246,13 +246,13 @@
                                     </segmentedCell>
                                     <accessibility description="editor mode"/>
                                 </segmentedControl>
-                                <segmentedControl toolTip="Search" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="B9S-3j-Jdw">
+                                <segmentedControl toolTip="Editor Search" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="B9S-3j-Jdw">
                                     <rect key="frame" x="110" y="0.0" width="40" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="BpV-xH-BVR">
                                         <font key="font" metaFont="system" size="14"/>
                                         <segments>
-                                            <segment image="search" width="34" tag="2"/>
+                                            <segment toolTip="Editor Search" image="search" width="34" tag="2"/>
                                         </segments>
                                     </segmentedCell>
                                     <accessibility description="editor search"/>
