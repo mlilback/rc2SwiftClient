@@ -10,6 +10,7 @@ import Cocoa
 import WebKit
 import Rc2Common
 import ClientCore
+import Networking
 import ReactiveSwift
 import MJLLogger
 
@@ -35,11 +36,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 {
 	// required by OutputController, should use at some point
 	var contextualMenuDelegate: ContextualMenuDelegate?
-	var sessionController: SessionController? { didSet {
-		guard let session = sessionController, let pcontext = parserContext else { codeHandler = nil; return }
-		// chicken/egg problem with parserContext didSet. this is conditionally done in both
-		codeHandler = PreviewCodeHandler(sessionController: session, docSignal: pcontext.parsedDocument.signal)
-	}}
+
 	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil)
 	private var curDocDisposable: Disposable?
 	private var didLoadView = false
@@ -47,9 +44,6 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	internal var parserContext: ParserContext? { didSet {
 		curDocDisposable?.dispose()
 		curDocDisposable = parserContext?.parsedDocument.signal.observeValues(documentChanged)
-		// chicken/egg problem with sessionController didSet. this is conditionally done in both
-		guard let sessionc = sessionController, let pcontext = parserContext else { return }
-		codeHandler = PreviewCodeHandler(sessionController: sessionc, docSignal: pcontext.parsedDocument.signal)
 	} }
 	private var parsedDocument: RmdDocument? { return parserContext?.parsedDocument.value }
 	private let mdownParser = MarkdownParser()
@@ -75,18 +69,9 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private var documentRoot: URL?
 	private var headerContents = ""
 	private var footerContents = ""
+	private var docHtmlLoaded = false
 
 	var emptyContents: String { "\(headerContents) \(footerContents)" }
-	
-//	var editorContext: EditorContext? {
-//		get { return context.value }
-//		set {
-//			// do nothing if same as existing context
-//			if let c1 = context.value, let c2 = newValue, c1.id == c2.id { return }
-//			context.value = newValue
-//			contextChanged()
-//		}
-//	}
 	
 	@IBOutlet weak var outputView: WKWebView?
 	
@@ -115,6 +100,14 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		outputView?.navigationDelegate = self
 	}
 	
+	override func sessionChanged() {
+		super.sessionChanged()
+		guard sessionOptional != nil, let pcontext = parserContext else { codeHandler = nil; return }
+		// chicken/egg problem with parserContext didSet. this is conditionally done in both
+		codeHandler = PreviewCodeHandler(session: session, docSignal: pcontext.parsedDocument.signal)
+
+	}
+	
 	// MARK: - notification handlers
 	
 	/// called by the editor when the user has made an edit, resulting in a change of what is displayed
@@ -129,21 +122,13 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	
 	/// called when the currentDocument of the EditorContext has changed
 	private func documentChanged(newDocument: RmdDocument?) {
-		updatePreview()
+		guard !docHtmlLoaded || newDocument != parsedDocument  else { return }
+		if  nil == codeHandler, let pcontext = parserContext {
+			codeHandler = PreviewCodeHandler(session: session, docSignal: pcontext.parsedDocument.signal)
+		}
+		refreshContent()
 	}
 		
-	/// called when the context property has been set
-	private func contextChanged() {
-//		curDocDisposable?.dispose()
-//		curDocDisposable = context.value?.currentDocument.signal.observeValues({ [weak self] newDoc in
-//			self?.documentChanged(newDocument: newDoc)
-//		})
-		if !resourcesExtracted {
-			ensureResourcesLoaded()
-		}
-//		documentChanged()
-	}
-	
 	// MARK: - content presentation
 	
 	private func loadInitialPage() {
@@ -164,43 +149,27 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private func updatePreview(updatedContents: String? = nil) {
 //		guard !parseInProgress else { return }
 		guard didLoadView else { return }
-//		var updateParse = true
-//
-//		// if a new document was generated, need to clear old contents after webview is updated
-//		var clearLastContents = false
-//		defer { if clearLastContents { self.lastContents = nil} }
-//
-//		// handle initial parsing
-//		if parsedDocument == nil {
-//			// need to do initial load. might be no contents if called before document loaded
-//			guard let contents = context.value?.currentDocument.value?.currentContents
-//				else { return }
-//			do {
-//				parsedDocument.value = try RmdDocument(contents: contents, parser: rmdParser)
-//				updateParse = false
-//				clearLastContents = true
-//			} catch {
-//				Log.warn("error during initial parse: \(error)")
-//				return
-//			}
-//		}
-		
+
 		// handle empty content
 		guard let curDoc = parsedDocument else {
 			load(html: emptyContents)
 			return
 		}
-		guard let contents = updatedContents ?? context.value?.currentDocument.value?.currentContents
+		if updatedContents == nil, curDoc.attributedString.length > 0 { return }
+		guard let contents = updatedContents ?? parserContext?.parsedDocument.value?.rawString
 			else { Log.warn("current doc has no contents??"); return }
-//		if contents == lastContents { return }
-		
+		guard curDoc.attributedString.string != updatedContents else { return }
 		// update the parsed document, update the webview
 		parseInProgress = true
 		defer { parseInProgress = false }
 		var changedChunkIndexes = try! RmdDocument.update(document: curDoc, with: contents) ?? []
 		// TODO: cacheCode needs to be async
 		// add to changedChunkIndexes any chunks that need to udpated because of changes to R code
-		codeHandler?.cacheCode(changedChunks: &changedChunkIndexes, in: curDoc)
+		if changedChunkIndexes.count > 0 {
+			codeHandler?.cacheCode(changedChunks: &changedChunkIndexes, in: curDoc)
+		} else {
+			codeHandler?.cacheAllCode(in: curDoc)
+		}
 		// handle changes
 		if changedChunkIndexes.count > 0 {
 			Log.info("udpating just chunks \(changedChunkIndexes)")
@@ -211,14 +180,26 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 				outputView?.evaluateJavaScript(command, completionHandler: nil)
 			}
 		} else { // no changes, so just refresh everything
-			var html =  ""
-			for (chunkNumber, chunk) in curDoc.chunks.enumerated() {
-				html += "<section index=\"\(chunkNumber)\">\n"
-				html += htmlFor(chunk: chunk, index: chunkNumber)
-				html += "\n</section>\n"
-			}
-			load(html: "\(headerContents)\n\(html)\n\(footerContents)")
+			refreshContent()
 		}
+	}
+	
+	func refreshContent() {
+		guard let curDoc = parsedDocument else {
+			load(html: emptyContents)
+			return
+		}
+		if !codeHandler!.contentCached {
+			codeHandler!.cacheAllCode(in: curDoc)
+		}
+		var html =  ""
+		for (chunkNumber, chunk) in curDoc.chunks.enumerated() {
+			html += "<section index=\"\(chunkNumber)\">\n"
+			html += htmlFor(chunk: chunk, index: chunkNumber)
+			html += "\n</section>\n"
+		}
+		docHtmlLoaded = true
+		load(html: "\(headerContents)\n\(html)\n\(footerContents)")
 	}
 	
 	private func htmlFor(chunk: RmdDocumentChunk, index: Int) -> String {

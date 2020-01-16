@@ -13,7 +13,7 @@ import WebKit
 import SwiftyUserDefaults
 
 class LivePreviewEditorController: BaseSourceEditorController {
-	var outputController: LivePreviewOutputController?
+	var outputController: LivePreviewOutputController? { didSet { outputController?.parserContext = parser }}
 	
 	private var webView: WKWebView?
 	
@@ -28,6 +28,7 @@ class LivePreviewEditorController: BaseSourceEditorController {
 	private var timerRunning = false
 	
 	override func viewDidLoad() {
+		useParser = true
 		super.viewDidLoad()
 		editor?.isEditable = true
 		lastChangeTimer = DispatchSource.makeTimerSource(queue: .main)

@@ -1,5 +1,7 @@
 # rc2SwiftClient TODO
 
+* Parser is way too slow. Need to optimize or background
+
 * don't allow two windows to same session
 
 * don't try to open a session that is already being opened

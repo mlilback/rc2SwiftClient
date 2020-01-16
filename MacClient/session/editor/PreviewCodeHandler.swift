@@ -9,6 +9,7 @@
 import Foundation
 import ReactiveSwift
 import ClientCore
+import Networking
 import MJLLogger
 
 class PreviewCodeHandler {
@@ -22,33 +23,53 @@ class PreviewCodeHandler {
 		var inlineHtml: [String] = []
 	}
 	
-	var sessionController: SessionController
-	let parsedDoc: MutableProperty<RmdDocument?>
+	var session: Session
+//	let parsedDoc: MutableProperty<RmdDocument?>
 	private var chunkInfo: [ChunkInfo?] = []
+	public var contentCached: Bool { return chunkInfo.count > 0 }
 	
-	init(sessionController: SessionController, docSignal: Signal<RmdDocument?, Never>) {
-		self.sessionController = sessionController
-		parsedDoc = MutableProperty<RmdDocument?>(nil)
-		parsedDoc <~ docSignal
+	init(session: Session, docSignal: Signal<RmdDocument?, Never>) {
+		self.session = session
+//		parsedDoc = MutableProperty<RmdDocument?>(nil)
+//		parsedDoc <~ docSignal
+//		parsedDoc.signal.observeValues { [weak self] (doc) in
+//			guard let me = self else { return }
+//			guard let theDoc = doc else { me.chunkInfo.removeAll(); return }
+//			guard !me.contentCached else { return }
+//			var indexes = [Int](0..<theDoc.chunks.count)
+//			me.cacheCode(changedChunks: &indexes, in: theDoc)
+//		}
+	}
+	/// caches the html for all code chunks and any markdown chunks that contain inline code
+	/// - Parameter document: the document to cache
+	func cacheAllCode(in document: RmdDocument) {
+		var changedChunkIndexes = [Int](0..<document.chunks.count)
+		cacheCode(changedChunks: &changedChunkIndexes, in: document)
 	}
 	
-	/// generates the html for all code chunks and any markdown chunks that contain inline code
+	/// caches the html for all code chunks and any markdown chunks that contain inline code
 	// TODO: this needs to return a SignalHandler so the code can be executed async
+	/// - Parameter changedChunks: array of chunkNumbers that caller thinks changed.
+	///  Any chunk where the output did not change is removed. Ones not included where the output did change are added.
+	/// - Parameter document: the document to cache
 	func cacheCode(changedChunks: inout [Int], in document: RmdDocument) {
 		// if not the same size as last time, then all code is dirty
 		if document.chunks.count != chunkInfo.count {
-			chunkInfo = Array<ChunkInfo?>(repeating: nil, count: document.chunks.count)
+			chunkInfo = [ChunkInfo?]()
+			for i in 0..<document.chunks.count {
+				chunkInfo.append(ChunkInfo(chunkNumber: i, type: RootChunkType(document.chunks[i].chunkType)))
+			}
 		}
 		// generate html for each chunk.
 		for (chunkNumber, chunk) in document.chunks.enumerated() {
 			if chunk.chunkType == .markdown, chunk.children.count > 0 {
 				// need to generate inline html
 				var inline = [String]()
-				for (inlineIndex, inlineChunk) in chunk.children.enumerated() {
-					inline[inlineIndex] = inlineHtmlFor(chunk: inlineChunk, parent: chunk)
+				for inlineChunk in chunk.children {
+					inline.append(inlineHtmlFor(chunk: inlineChunk, parent: chunk, document: document))
 				}
-				chunkInfo[chunkNumber] = ChunkInfo(chunkNumber: chunkNumber, type:.markdown, inlineHtml: inline)
-				break // exit this loop
+				chunkInfo[chunkNumber]?.inlineHtml = inline
+				continue
 			}
 			guard chunk.chunkType == .code else { continue }
 			let currentHtml = htmlForChunk(number: chunkNumber)
@@ -63,13 +84,12 @@ class PreviewCodeHandler {
 		changedChunks.sort()
 	}
 	
-	private func inlineHtmlFor(chunk: RmdDocumentChunk, parent: RmdDocumentChunk) -> String {
-		precondition(parsedDoc.value != nil)
+	private func inlineHtmlFor(chunk: RmdDocumentChunk, parent: RmdDocumentChunk, document: RmdDocument) -> String {
 		// just return nothing if not code
 		guard chunk.isInline else { return "" }
 		// TODO: generate actual code
-		return parsedDoc.value!.string(for: chunk, type: .outer)
-//		return  parent.contents.string.substring(from: chunk.chunkRange) ?? "<span class=\"internalError\">invalid inline data</span>"
+		let parHTML = document.string(for: chunk, type: .outer)
+		return parHTML
 	}
 	
 	/// returns the html for the specified chunk.

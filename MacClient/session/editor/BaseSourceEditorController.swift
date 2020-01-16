@@ -28,6 +28,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	@IBOutlet var contextualMenuAdditions: NSMenu?
 	
 	var parser: Rc2RmdParser?
+	var useParser = false
 	
 	var defaultAttributes: [NSAttributedString.Key: Any] = [:]
 //	var currentChunkIndex: Int = 0
@@ -79,12 +80,16 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		}
 		editor.textContainer?.replaceLayoutManager(SourceEditorLayoutManager())
 		editor.enclosingScrollView?.rulersVisible = true
-		parser = Rc2RmdParser(contents: storage, help: { (topic) -> Bool in
-			HelpController.shared.hasTopic(topic) })
-		do {
-			try parser?.reparse()
-		} catch {
-			Log.warn("error during initial parse: \(error)", .parser)
+		if useParser {
+			parser = Rc2RmdParser(contents: storage, help: { (topic) -> Bool in
+				HelpController.shared.hasTopic(topic) })
+			do {
+				if storage.length > 0 {
+					try parser?.reparse()
+				}
+			} catch {
+				Log.warn("error during initial parse: \(error)", .parser)
+			}
 		}
 	}
 	
@@ -182,7 +187,9 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		var partial: CGFloat = 1.0
 		let idx = lm.characterIndex(for: bnds.origin, in: editor.textContainer!, fractionOfDistanceBetweenInsertionPoints: &partial)
 		document.topVisibleIndex = idx
-		save(edits: editor.string)
+		if document.isDirty {
+			save(edits: editor.string)
+		}
 	}
 	
 	func updateUIForCurrentDocument() {
@@ -271,8 +278,9 @@ extension BaseSourceEditorController: NSTextViewDelegate {
 	}
 	
 	func textViewDidChangeSelection(_ notification: Notification) {
-		guard let parser = parser else { return }
-		parser.selectionChanged(range: editor!.selectedRange())
+		guard let editor = editor  else { fatalError("recvd selection changed with no editor") }
+		guard let parser = parser, editor.textStorage!.length > 0 else { return }
+		parser.selectionChanged(range: editor.selectedRange())
 //		currentChunkIndex = parser.indexOfChunk(inRange: editor!.selectedRange())
 	}
 	

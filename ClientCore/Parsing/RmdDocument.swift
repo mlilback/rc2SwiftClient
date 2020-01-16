@@ -55,6 +55,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 	/// - Throws: any exception raised while creating a new document.
 	public class func update(document: RmdDocument, with content: String) throws -> [Int]? {
 		guard let parser = document.parser else { throw ParserError.invalidParser }
+		guard document.attributedString.string != content else { return [] }
 		let newDoc = try RmdDocument(contents: content, parser: parser)
 		
 		defer {
@@ -126,6 +127,10 @@ public class RmdDocument: CustomDebugStringConvertible {
 	/// - Parameter type: Which range should be used. Defaults to .outer
 	/// - Returns: the requested contents
 	public func string(for chunk: RmdDocumentChunk, type: RangeType = .outer) -> String {
+		if chunk.isInline {
+			guard let child = chunk as? RmdDocChunk else { fatalError("can't have inline without parent") }
+			return textStorage.attributedSubstring(from: type == .outer ? child.parsedRange : child.innerRange).string
+		}
 		return attrString(for: chunk, rangeType: type).string.replacingOccurrences(of: "\u{0ffe}", with: "")
 	}
 	
@@ -157,6 +162,12 @@ public class RmdDocument: CustomDebugStringConvertible {
 			return baseStr
 		}
 		return desiredString
+	}
+}
+
+extension RmdDocument: Equatable {
+	public static func == (lhs: RmdDocument, rhs: RmdDocument) -> Bool {
+		return lhs.textStorage == rhs.textStorage
 	}
 }
 

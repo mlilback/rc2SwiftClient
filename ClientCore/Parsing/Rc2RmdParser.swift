@@ -9,6 +9,7 @@
 import Foundation
 import Parsing
 import ReactiveSwift
+import Rc2Common
 import MJLLogger
 
 /// a callback that recieves a parsed keyword. returns true if a help URL should be included for it
@@ -26,7 +27,7 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 	// offers read-only version of _parsedDocument
 	public let parsedDocument: Property<RmdDocument?>
 	private let _parsedDocument = MutableProperty<RmdDocument?>(nil)
-	
+	private var lastHash: Data?
 	
 	public init(contents: NSTextStorage, help: @escaping HelpCallback) {
 		self.contents = contents
@@ -36,6 +37,10 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 	}
 	
 	public func reparse() throws {
+		guard contents.length > 0 else { _parsedDocument.value = nil; lastHash = nil; return }
+		if _parsedDocument.value?.attributedString.string == contents.string { return }
+		guard let newHash = contents.string.data(using: .utf8)?.sha256(), lastHash != newHash else { return }
+		lastHash = newHash
 		_parsedDocument.value = try RmdDocument(contents: contents.string, parser: self)
 	}
 	
@@ -44,7 +49,7 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 	}
 
 	public func selectionChanged(range: NSRange) {
-		
+		try! reparse()
 	}
 	
 	/// Called when the contents of the editor have changed due to user action. By default, this parses and highlights the entire contents
