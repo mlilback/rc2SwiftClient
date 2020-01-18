@@ -14,9 +14,37 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "082BE0881F59D549006CE0B7"
-               BuildableName = "SyntaxParsing.framework"
-               BlueprintName = "SyntaxParsing"
+               BlueprintIdentifier = "DC3773F219C8CBB3004FCF85"
+               BuildableName = "GRDB.framework"
+               BlueprintName = "GRDBOSX"
+               ReferencedContainer = "container:vendor/GRDB/GRDB.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "084D3315206D3C9E00246CBD"
+               BuildableName = "HelpIndexTool"
+               BlueprintName = "HelpIndexTool"
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "084D32E6206D03DD00246CBD"
+               BuildableName = "ClientCore.framework"
+               BlueprintName = "ClientCore"
                ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -30,23 +58,13 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "082BE0881F59D549006CE0B7"
-            BuildableName = "SyntaxParsing.framework"
-            BlueprintName = "SyntaxParsing"
+            BlueprintIdentifier = "084D32E6206D03DD00246CBD"
+            BuildableName = "ClientCore.framework"
+            BlueprintName = "ClientCore"
             ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "082BE0901F59D549006CE0B7"
-               BuildableName = "SyntaxParsingTests.xctest"
-               BlueprintName = "SyntaxParsingTests"
-               ReferencedContainer = "container:Rc2Client.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -62,9 +80,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "082BE0881F59D549006CE0B7"
-            BuildableName = "SyntaxParsing.framework"
-            BlueprintName = "SyntaxParsing"
+            BlueprintIdentifier = "084D32E6206D03DD00246CBD"
+            BuildableName = "ClientCore.framework"
+            BlueprintName = "ClientCore"
             ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -78,9 +96,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "082BE0881F59D549006CE0B7"
-            BuildableName = "SyntaxParsing.framework"
-            BlueprintName = "SyntaxParsing"
+            BlueprintIdentifier = "084D32E6206D03DD00246CBD"
+            BuildableName = "ClientCore.framework"
+            BlueprintName = "ClientCore"
             ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

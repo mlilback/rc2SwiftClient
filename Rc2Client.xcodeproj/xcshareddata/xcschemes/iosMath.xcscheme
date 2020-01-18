@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "082BE0881F59D549006CE0B7"
-               BuildableName = "SyntaxParsing.framework"
-               BlueprintName = "SyntaxParsing"
+               BlueprintIdentifier = "0859A3582062726700103924"
+               BuildableName = "iosMath.framework"
+               BlueprintName = "iosMath"
                ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -27,26 +27,7 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "082BE0881F59D549006CE0B7"
-            BuildableName = "SyntaxParsing.framework"
-            BlueprintName = "SyntaxParsing"
-            ReferencedContainer = "container:Rc2Client.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "082BE0901F59D549006CE0B7"
-               BuildableName = "SyntaxParsingTests.xctest"
-               BlueprintName = "SyntaxParsingTests"
-               ReferencedContainer = "container:Rc2Client.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -62,9 +43,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "082BE0881F59D549006CE0B7"
-            BuildableName = "SyntaxParsing.framework"
-            BlueprintName = "SyntaxParsing"
+            BlueprintIdentifier = "0859A3582062726700103924"
+            BuildableName = "iosMath.framework"
+            BlueprintName = "iosMath"
             ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -78,9 +59,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "082BE0881F59D549006CE0B7"
-            BuildableName = "SyntaxParsing.framework"
-            BlueprintName = "SyntaxParsing"
+            BlueprintIdentifier = "0859A3582062726700103924"
+            BuildableName = "iosMath.framework"
+            BlueprintName = "iosMath"
             ReferencedContainer = "container:Rc2Client.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
