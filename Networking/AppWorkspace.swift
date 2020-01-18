@@ -92,7 +92,7 @@ public final class AppWorkspace: CustomStringConvertible, Hashable
 		let sig = fileChangeSignal
 			.promoteError(Rc2Error.self)
 			// we filter on not-removed because file is added via create call before data is saved. get edit once saved
-			.filterMap({ changes in changes.first(where: { $0.type != .remove && $0.file.fileId == fileId }) })
+			.compactMap({ changes in changes.first(where: { $0.type != .remove && $0.file.fileId == fileId }) })
 			.map( { $0.file })
 			.timeout(after: timeout, raising: Rc2Error(type: .timeout), on: QueueScheduler.main)
 		return SignalProducer<AppFile, Rc2Error>(sig)
