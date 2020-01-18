@@ -1,7 +1,12 @@
 # Rc² release notes
 
+## Build 81
+
+* window title more descriptive
+
 ## Build 80
 
+* uses new parser
 * fixed editor line number bugs 
 * file name field clears when a file is deleted
 * fixed bugs where menu validation wasn't happening

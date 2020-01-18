@@ -14,7 +14,11 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 	weak var appStatus: MacAppStatus?
 	
 	//TODO: window title needs to eventually include  host and project name
-	weak var session: Session? { didSet { window?.title = session?.workspace.name ?? "remote connection" } }
+	weak var session: Session? { didSet {
+		guard let wsname = session?.workspace.name else { window?.title = "remote connection"; return }
+		window?.title = "\(NSLocalizedString("Workspace", comment: "")): \(wsname)"
+		
+	} }
 	
 	///Custom view that shows the status of the application: progress, message, cancel button
 	var statusView: AppStatusView?
