@@ -10,7 +10,7 @@ The wiki contains more details on specific topics.
 
 ## Dependencies
 
-The macOS client requires 10.13 High Sierra. Development is being done with Xcode 11, swift version 5.1.
+The macOS client requires 10.14 Mojhave. Development is being done with Xcode 11.3, swift version 5.1.
 
 The rc2server and mlilback packages are split out so they can also be used by the AppServer, which is also written in Swift.
 
