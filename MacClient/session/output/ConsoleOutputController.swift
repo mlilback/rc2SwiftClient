@@ -18,7 +18,7 @@ enum SessionStateKey: String {
 ///ViewController whose view contains the text view showing the results, and the text field for entering short queries
 class ConsoleOutputController: AbstractSessionViewController, OutputController, NSTextViewDelegate, NSTextFieldDelegate, TextViewMenuDelegate
 {
-	// MARK: properties
+	// MARK: - properties
 	@IBOutlet var resultsView: ResultsView?
 	@IBOutlet var consoleTextField: ConsoleTextField?
 	@IBOutlet var historyButton: NSSegmentedControl?
@@ -49,7 +49,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		super.init(coder: coder)
 	}
 	
-	// MARK: overrides
+	// MARK: - overrides
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		if #available(macOS 10.14, *) {
@@ -82,7 +82,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		}
 	}
 	
-	// MARK: internal
+	// MARK: - internal
 	private func restoreFont() {
 		var fdesc: FontDescriptor? = UserDefaults.standard[.consoleOutputFont]
 		//pick a default font
@@ -111,7 +111,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		resultsView?.textStorage?.deleteCharacters(in: NSRange(location: 0, length: (resultsView?.textStorage?.length)!))
 	}
 	
-	// MARK: actions
+	// MARK: - actions
 	@IBAction func executeQuery(_ sender: Any?) {
 		guard consoleInputText.count > 0 else { return }
 		session.executeScript(consoleInputText)
@@ -119,7 +119,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		consoleTextField?.stringValue = ""
 	}
 	
-	// MARK: SessionOutputHandler
+	// MARK: - SessionOutputHandler
 	func append(responseString: ResponseString) {
 		// swiftlint:disable:next force_cast
 		let mutStr = responseString.string.mutableCopy() as! NSMutableAttributedString
@@ -185,7 +185,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		return NSTextAttachmentCell(imageCell: img)
 	}
 	
-	// MARK: command history
+	// MARK: - command history
 	@IBAction func historyClicked(_ sender: Any?) {
 		cmdHistory.adjustCommandHistoryMenu()
 		let hframe = historyButton?.superview?.convert((historyButton?.frame)!, to: nil)
@@ -225,7 +225,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		}
 	}
 	
-	// MARK: textfield delegate
+	// MARK: - textfield delegate
 	func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
 		if commandSelector == #selector(NSResponder.insertNewline(_:)) {
 			executeQuery(control)
@@ -234,7 +234,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		return false
 	}
 	
-	// MARK: textview delegate
+	// MARK: - textview delegate
 	func textView(_ textView: NSTextView, clickedOn cell: NSTextAttachmentCellProtocol, in cellFrame: NSRect, at charIndex: Int)
 	{
 		let attach = cell.attachment
@@ -267,7 +267,7 @@ extension ConsoleOutputController: Searchable {
 	}
 }
 
-// MARK: UsesAdjustableFont
+// MARK: - UsesAdjustableFont
 extension ConsoleOutputController: UsesAdjustableFont {
 	
 	func fontsEnabled() -> Bool {
