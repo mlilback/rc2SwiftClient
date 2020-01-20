@@ -5,6 +5,7 @@
 * window title more descriptive
 * console commands work
 * fixed crasher loading document at startup
+* document switching from Rmd to Rmd keeps output ini preview mode
 
 ## Build 80
 

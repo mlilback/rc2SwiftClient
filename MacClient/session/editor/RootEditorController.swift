@@ -41,8 +41,10 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 		if previewModeEnabled {
 			toolbarModeButtons?.setEnabled(previewModeEnabled, forSegment: 1)
 		}
-		if previewModeEnabled && currentEditor != previewEditor {
-			switchMode(.preview)
+		if previewModeEnabled {
+			if  currentEditor != previewEditor {
+				switchMode(.preview)
+			}
 		} else {
 			switchMode(.source)
 		}
