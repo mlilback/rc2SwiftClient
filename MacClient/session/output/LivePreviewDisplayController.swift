@@ -43,11 +43,12 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 
 	internal var parserContext: ParserContext? { didSet {
 		curDocDisposable?.dispose()
+		loadRegexes() // viewDidLoad might not have been called yet
 		curDocDisposable = parserContext?.parsedDocument.signal.observeValues(documentChanged)
 	} }
 	private var parsedDocument: RmdDocument? { return parserContext?.parsedDocument.value }
 	private let mdownParser = MarkdownParser()
-	private var parseInProgress = false
+//	private var parseInProgress = false
 	private var codeHandler: PreviewCodeHandler?
 
 	// regular expressions
@@ -79,25 +80,14 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		guard let regex = try? NSRegularExpression(pattern: "\\s+\\\\$", options: [.anchorsMatchLines]),
-			let openRegex = try? NSRegularExpression(pattern: "^\\$\\$", options: []),
-			let closeRegex = try? NSRegularExpression(pattern: "\\$\\$(\\s*)$", options: [])
-			else { fatalError("regex failed to compile")}
-		lineContiuationRegex = regex
-		openDoubleDollarRegex = openRegex
-		closeDoubleDollarRegex = closeRegex
-		documentRoot = Bundle.main.url(forResource: "preview_support", withExtension: nil)
-//		do {
-//			documentRoot = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "preview_support")
-//			documentRoot = URL(fileURLWithPath: documentRoot!.path.removingPercentEncoding!)
-//			loadInitialPage()
-//		} catch {
-//			fatalError("failed to load live preview template file: \(error.localizedDescription)")
-//		}
+		loadRegexes()
+		// for some reason the debugger show documentRoot as nil after this, even though po documentRoot?.absoluteString returns output
+		documentRoot = Bundle.main.url(forResource: "FileTemplates", withExtension: nil)
 		didLoadView = true
-		ensureResourcesLoaded()
+		docHtmlLoaded = false
 		outputView?.uiDelegate = self
 		outputView?.navigationDelegate = self
+		ensureResourcesLoaded()
 	}
 	
 	override func sessionChanged() {
@@ -122,7 +112,10 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	
 	/// called when the currentDocument of the EditorContext has changed
 	private func documentChanged(newDocument: RmdDocument?) {
-		guard !docHtmlLoaded || newDocument != parsedDocument  else { return }
+		guard didLoadView else { return } //don't parse if view not loaded
+		if docHtmlLoaded || newDocument == parsedDocument  {
+			Log.info("document changed with possiblel duplicate", .app)
+		}
 		if  nil == codeHandler, let pcontext = parserContext {
 			codeHandler = PreviewCodeHandler(session: session, docSignal: pcontext.parsedDocument.signal)
 		}
@@ -155,13 +148,13 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			load(html: emptyContents)
 			return
 		}
-		if updatedContents == nil, curDoc.attributedString.length > 0 { return }
+		if docHtmlLoaded, updatedContents == nil, curDoc.attributedString.length > 0 { return }
 		guard let contents = updatedContents ?? parserContext?.parsedDocument.value?.rawString
 			else { Log.warn("current doc has no contents??"); return }
 		guard curDoc.attributedString.string != updatedContents else { return }
 		// update the parsed document, update the webview
-		parseInProgress = true
-		defer { parseInProgress = false }
+//		parseInProgress = true
+//		defer { parseInProgress = false }
 		var changedChunkIndexes = try! RmdDocument.update(document: curDoc, with: contents) ?? []
 		// TODO: cacheCode needs to be async
 		// add to changedChunkIndexes any chunks that need to udpated because of changes to R code
@@ -273,6 +266,17 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 	
 	// MARK: - utility
+	
+	private func loadRegexes() {
+		guard lineContiuationRegex == nil else { return }
+		guard let regex = try? NSRegularExpression(pattern: "\\s+\\\\$", options: [.anchorsMatchLines]),
+			let openRegex = try? NSRegularExpression(pattern: "^\\$\\$", options: []),
+			let closeRegex = try? NSRegularExpression(pattern: "\\$\\$(\\s*)$", options: [])
+			else { fatalError("regex failed to compile")}
+		lineContiuationRegex = regex
+		openDoubleDollarRegex = openRegex
+		closeDoubleDollarRegex = closeRegex
+	}
 	
 	private func escapeForJavascript(_ source: String) -> String {
 		var string = source

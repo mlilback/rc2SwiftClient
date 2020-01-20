@@ -3,6 +3,8 @@
 ## Build 81
 
 * window title more descriptive
+* console commands work
+* fixed crasher loading document at startup
 
 ## Build 80
 
