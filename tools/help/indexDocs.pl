@@ -19,7 +19,7 @@ sub check_if_interested {
 		push(@docPaths, $File::Find::name);
 	}
 }
-find(\&check_if_interested, "/Users/mlilback/working/rc2/doc-generation/R-3.3.1/src/library");
+find(\&check_if_interested, "/Users/mlilback/working/rc2/R-3.6.1/src/library");
 
 my @json = qw();
 my $R = Statistics::R->new();
