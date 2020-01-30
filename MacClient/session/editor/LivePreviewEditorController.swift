@@ -67,10 +67,14 @@ class LivePreviewEditorController: BaseSourceEditorController {
 //	}
 	
 	override func contentsChanged(_ contents: NSTextStorage, range: NSRange, changeLength delta: Int) {
+		// really does nothing, but call to be safe
 		super.contentsChanged(contents, range: range, changeLength: delta)
 		lastTextChange = Date.timeIntervalSinceReferenceDate
 		lastChangeRange = range
 		lastChangeDelta = delta
+		
+		// FIXME: the following needs to be called for any chunks that changed and we can highlight
+//		parser?.contentsChanged(range: range, changeLength: delta)
 	}
 	
 	/// subclasses should override and save contents via save(edits:). super should not be called

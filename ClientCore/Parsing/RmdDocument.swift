@@ -11,6 +11,9 @@ import Parsing
 import Logging
 import ReactiveSwift
 
+// liikely don't need to do R highlighting here. Output is html, and editor uses without parrsing.
+// editor needs to use without chunks
+
 internal let parserLog = Logger(label: "io.rc2.rc2parser")
 
 fileprivate extension Array {
@@ -154,7 +157,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 			let baseStr = NSMutableAttributedString(attributedString: desiredString)
 			do {
 				if let parser = parser {
-					try parser.highlight(content: baseStr)
+					try parser.highlightR(contents: baseStr, range: NSRange(location: 0, length: baseStr.length))
 				}
 			} catch {
 				parserLog.info("error highligthing R code: \(error.localizedDescription)")
@@ -185,7 +188,7 @@ public protocol RmdDocumentChunk {
 
 internal class RmdDocChunk: RmdDocumentChunk {
 	let chunkType: ChunkType
-	private let parserChunk: AnyChunk
+	let parserChunk: AnyChunk
 	let chunkNumber: Int
 	public private(set) var children = [RmdDocumentChunk]()
 	

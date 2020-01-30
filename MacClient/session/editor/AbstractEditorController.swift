@@ -7,6 +7,7 @@
 import Cocoa
 import Rc2Common
 import ClientCore
+import Parsing
 import Networking
 import MJLLogger
 import ReactiveSwift
@@ -40,6 +41,9 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 	
 	/// for subclasses to override
 	var documentDirty: Bool { return false }
+	
+	/// subclasses should override if necessary. defaults to false
+	var isRDocument: Bool { return false }
 	
 	// MARK: - standard
 	override func viewWillDisappear() {
@@ -238,23 +242,21 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 //		}
 //	}
 //
-//	/// updates the style attributes for a fragment in an attributed string
-//-	private func style(fragmentType: FragmentType, in text: NSMutableAttributedString, range: NSRange, theme: SyntaxTheme) {
-//		switch fragmentType {
-//		case .none:
-//			break
-//		case .quote:
-//			text.addAttribute(.foregroundColor, value: theme.color(for: .quote), range: range)
-//		case .comment:
-//			text.addAttribute(.foregroundColor, value: theme.color(for: .comment), range: range)
-//		case .keyword:
-//			text.addAttribute(.foregroundColor, value: theme.color(for: .keyword), range: range)
-//		case .symbol:
-//			text.addAttribute(.foregroundColor, value: theme.color(for: .symbol), range: range)
-//		case .number:
-//			break
-//		}
-//	}
+	/// updates the style attributes for a fragment in an attributed string
+	internal func style(fragmentType: SyntaxElement, in text: NSMutableAttributedString, range: NSRange, theme: SyntaxTheme) {
+		switch fragmentType {
+		case .string:
+			text.addAttribute(.foregroundColor, value: theme.color(for: .quote), range: range)
+		case .comment:
+			text.addAttribute(.foregroundColor, value: theme.color(for: .comment), range: range)
+		case .number:
+			text.addAttribute(.foregroundColor, value: theme.color(for: .symbol), range: range)
+		case .symbol:
+			text.addAttribute(.foregroundColor, value: theme.color(for: .keyword), range: range)
+		case .functonName:
+			text.addAttribute(.foregroundColor, value: theme.color(for: .function), range: range)
+		}
+	}
 	
 	/// called after the current document has changed. called by documentChanged() after the contents have been loaded from disk/network. Subclasses must override.
 	func loaded(content: String) {

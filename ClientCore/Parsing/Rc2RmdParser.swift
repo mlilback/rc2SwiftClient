@@ -44,8 +44,20 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 		_parsedDocument.value = try RmdDocument(contents: contents.string, parser: self)
 	}
 	
-	public func highlight(text: NSMutableAttributedString, range: NSRange? = nil, delta: Int? = nil) {
+	/// Highlights the R code of text in range.
+	/// - Parameters:
+	///   - text: The mutable attributed string to update highlight of
+	///   - range: The range to update, niil updates the entire text
+	public func highlight(text: NSMutableAttributedString, range: NSRange? = nil) {
 		Log.info("highlighting", .parser)
+		// FIXME: need to figure out what chunks changed, and rehighlight any  code chunks that changed
+		
+		let rng = range ?? NSRange(location: 0, length: text.length)
+		do {
+			try super.highlightR(contents: text, range: rng)
+		} catch {
+			Log.warn("error message highlighting code", .app)
+		}
 	}
 
 	public func selectionChanged(range: NSRange) {
@@ -59,6 +71,6 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 	///   - range: the range of the original text that changed
 	///   - delta: the length delta for the edited change
 	public func contentsChanged(range: NSRange, changeLength delta: Int) {
-		highlight(text: contents, range: range, delta: delta)
+		highlight(text: contents, range: range)
 	}
 }

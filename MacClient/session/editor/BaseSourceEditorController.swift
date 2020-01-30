@@ -12,6 +12,7 @@ import ReactiveSwift
 import Rc2Common
 import Networking
 import ClientCore
+import Parsing
 
 /// pfrotocol to allow setting the font of something without knowing anything else about it.
 protocol FontUser {
@@ -49,7 +50,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		return edited != original
 	}
 	
-	// MARK: init/deinit
+	// MARK: - init/deinit
 	deinit {
 		context?.workspaceNotificationCenter.removeObserver(self)
 		context?.notificationCenter.removeObserver(self)
@@ -80,13 +81,12 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		}
 		editor.textContainer?.replaceLayoutManager(SourceEditorLayoutManager())
 		editor.enclosingScrollView?.rulersVisible = true
-		if useParser {
-			parser = Rc2RmdParser(contents: storage, help: { (topic) -> Bool in
-				HelpController.shared.hasTopic(topic) })
+		// even if not using parser, need it for syntax highlighting
+		parser = Rc2RmdParser(contents: storage, help: { (topic) -> Bool in
+			HelpController.shared.hasTopic(topic) })
+		if useParser, storage.length > 0 {
 			do {
-				if storage.length > 0 {
-					try parser?.reparse()
-				}
+				try parser?.reparse()
 			} catch {
 				Log.warn("error during initial parse: \(error)", .parser)
 			}
@@ -137,7 +137,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		return items
 	}
 	
-	// MARK: private methods
+	// MARK: - private methods
 	
 	override func documentChanged(newDocument: EditorDocument?) {
 		guard let editor = self.editor else { Log.error("can't adjust document without editor", .app); return }
@@ -157,7 +157,9 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		storage.deleteCharacters(in: editor.rangeOfAllText)
 		storage.setAttributedString(NSAttributedString(string: content, attributes: self.defaultAttributes))
 		let range = storage.string.fullNSRange
-		parser?.highlight(text: storage, range: range)
+		if isRDocument {
+			parser?.highlight(text: storage, range: range)
+		}
 //		parser?.parseAndAttribute(attributedString: storage, docType: context!.docType, inRange: range, makeChunks: true)
 //		highlight(attributedString: storage, inRange: range)
 		ignoreTextStorageNotifications = false
@@ -211,18 +213,36 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	}
 	
 	
-	/// Called when the contents of the editor have changed due to user action. By default, this parses and highlights the entire contents
+	/// Called when the contents of the editor have changed due to user action. Should be orverriden to parse and highlight the changed contents
 	///
 	/// - Parameters:
 	///   - contents: The contents of the editor that was changed
 	///   - range: the range of the original text that changed
 	///   - delta: the length delta for the edited change
 	func contentsChanged(_ contents: NSTextStorage, range: NSRange, changeLength delta: Int) {
-		parser?.contentsChanged(range: range, changeLength: delta)
+	}
+	
+	
+	/// Changes any SyntaxElement tags the appropriate style
+	/// - Parameter range: The range to change, defaults to all.
+	func colorizeHighlightAttributes(range: NSRange? = nil) {
+		guard let edit = editor, let storage = edit.textStorage else { return }
+		let rng = range ?? NSRange(location: 0, length: storage.length)
+		// remove all existing colors
+
+		let theme = ThemeManager.shared.activeSyntaxTheme.value
+		storage.addAttribute(.font, value: context!.editorFont.value, range: rng)
+		storage.removeAttribute(.foregroundColor, range: rng)
+		storage.removeAttribute(.backgroundColor, range: rng)
+		storage.enumerateAttributes(in: rng, options: []) { (keyValues, attrRange, stop) in
+			if let fragmentType = keyValues[SyntaxKey] as? SyntaxElement {
+				self.style(fragmentType: fragmentType, in: storage, range: attrRange, theme: theme)
+			}
+		}
 	}
 }
 
-// MARK: Actions
+// MARK: - Actions
 extension BaseSourceEditorController {
 	@IBAction func showFindInterface(_ sender: Any?) {
 		let menuItem = NSMenuItem(title: "foo", action: .findPanelAction, keyEquivalent: "")
@@ -256,11 +276,12 @@ extension BaseSourceEditorController {
 	}
 }
 
-// MARK: NSTextStorageDelegate
+// MARK: - NSTextStorageDelegate
 extension BaseSourceEditorController: NSTextStorageDelegate {
 	//called when text editing has ended
 	func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
 	{
+		guard isRDocument else { return }
 		guard !ignoreTextStorageNotifications else { return }
 		ignoreTextStorageNotifications = true
 		defer { ignoreTextStorageNotifications = false }
@@ -268,7 +289,7 @@ extension BaseSourceEditorController: NSTextStorageDelegate {
 	}
 }
 
-// MARK: NSTextViewDelegate methods
+// MARK: - NSTextViewDelegate methods
 extension BaseSourceEditorController: NSTextViewDelegate {
 	func undoManager(for view: NSTextView) -> UndoManager? {
 		if let currentDocument = context?.currentDocument.value {
@@ -279,7 +300,7 @@ extension BaseSourceEditorController: NSTextViewDelegate {
 	
 	func textViewDidChangeSelection(_ notification: Notification) {
 		guard let editor = editor  else { fatalError("recvd selection changed with no editor") }
-		guard let parser = parser, editor.textStorage!.length > 0 else { return }
+		guard let parser = parser, useParser, editor.textStorage!.length > 0 else { return }
 		parser.selectionChanged(range: editor.selectedRange())
 //		currentChunkIndex = parser.indexOfChunk(inRange: editor!.selectedRange())
 	}
