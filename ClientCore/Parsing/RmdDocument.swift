@@ -125,6 +125,17 @@ public class RmdDocument: CustomDebugStringConvertible {
 		}
 	}
 	
+	/// Get array of chunks that intersect with range
+	/// - Parameters:
+	///   - range: The range to check for
+	///   - delta: The change in the range. Currently unused
+	public func chunks(in range: NSRange, delta: Int = 0) -> [RmdDocumentChunk] {
+		return chunks.compactMap {
+			guard $0.parsedRange.contains(range.lowerBound) || $0.parsedRange.contains(range.upperBound) else { return nil }
+			return $0
+		}
+	}
+	
 	/// Returns the contents of chunk as a String
 	/// - Parameter chunk: The chunk whose ccntent will be returned
 	/// - Parameter type: Which range should be used. Defaults to .outer
@@ -182,6 +193,13 @@ public protocol RmdDocumentChunk {
 	var isInline: Bool { get }
 	/// trrue if it is a code module that can be executed
 	var isExecutable: Bool { get }
+	/// the range of this chunk in the document
+	/// - Tag: parsedRange
+	var parsedRange: NSRange { get }
+	/// the range of this chunk in the document excluding delimiters e.q. (```, $$)
+	var innerRange: NSRange { get }
+	/// if isInline, the range of this chunk in its parent chunk. Otherwise, same as [parsedRange](x-source-tag://parsedRange)
+	var chunkRange: NSRange { get }
 	/// for .markdown chunks, any inline chunks. an empty arrary for other chunk types
 	var children: [RmdDocumentChunk] { get }
 }

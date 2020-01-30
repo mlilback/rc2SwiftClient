@@ -242,21 +242,6 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 //		}
 //	}
 //
-	/// updates the style attributes for a fragment in an attributed string
-	internal func style(fragmentType: SyntaxElement, in text: NSMutableAttributedString, range: NSRange, theme: SyntaxTheme) {
-		switch fragmentType {
-		case .string:
-			text.addAttribute(.foregroundColor, value: theme.color(for: .quote), range: range)
-		case .comment:
-			text.addAttribute(.foregroundColor, value: theme.color(for: .comment), range: range)
-		case .number:
-			text.addAttribute(.foregroundColor, value: theme.color(for: .symbol), range: range)
-		case .symbol:
-			text.addAttribute(.foregroundColor, value: theme.color(for: .keyword), range: range)
-		case .functonName:
-			text.addAttribute(.foregroundColor, value: theme.color(for: .function), range: range)
-		}
-	}
 	
 	/// called after the current document has changed. called by documentChanged() after the contents have been loaded from disk/network. Subclasses must override.
 	func loaded(content: String) {

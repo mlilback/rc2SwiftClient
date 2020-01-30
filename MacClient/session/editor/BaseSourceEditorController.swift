@@ -28,6 +28,10 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	@IBOutlet var fileNameField: NSTextField?
 	@IBOutlet var contextualMenuAdditions: NSMenu?
 	
+	// used so observations are removed when deallocated
+	private let (_editorLifetime, _editorToken) = Lifetime.make()
+	var editorLifetime: Lifetime { return _editorLifetime }
+	
 	var parser: Rc2RmdParser?
 	var useParser = false
 	
@@ -81,6 +85,9 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		}
 		editor.textContainer?.replaceLayoutManager(SourceEditorLayoutManager())
 		editor.enclosingScrollView?.rulersVisible = true
+		// adjust link color when theme changes
+		ThemeManager.shared.activeSyntaxTheme.signal.take(during: editorLifetime).observeValues { [weak self] _ in self?.adjustLinkColor() }
+		adjustLinkColor()
 		// even if not using parser, need it for syntax highlighting
 		parser = Rc2RmdParser(contents: storage, help: { (topic) -> Bool in
 			HelpController.shared.hasTopic(topic) })
@@ -222,6 +229,35 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	func contentsChanged(_ contents: NSTextStorage, range: NSRange, changeLength delta: Int) {
 	}
 	
+	
+	func adjustLinkColor() {
+//		let theme = ThemeManager.shared.activeSyntaxTheme.value
+//		var dict = [NSAttributedString.Key: Any]()
+//		dict[.foregroundColor] = theme.color(for: .keyword)
+//		editor?.linkTextAttributes = dict
+	}
+	
+	/// updates the style attributes for a fragment in an attributed string
+	func style(fragmentType: SyntaxElement, in text: NSMutableAttributedString, range: NSRange, theme: SyntaxTheme) {
+		switch fragmentType {
+		case .string:
+			text.addAttribute(.foregroundColor, value: theme.color(for: .quote), range: range)
+		case .comment:
+			text.addAttribute(.foregroundColor, value: theme.color(for: .comment), range: range)
+		case .number:
+			text.addAttribute(.foregroundColor, value: theme.color(for: .symbol), range: range)
+		case .symbol:
+			text.addAttribute(.foregroundColor, value: theme.color(for: .keyword), range: range)
+		case .functonName:
+//			text.addAttribute(.foregroundColor, value: theme.color(for: .function), range: range)
+			let funName = text.attributedSubstring(from: range).string
+			if HelpController.shared.hasTopic(funName) {
+				text.addAttribute(.link, value: "help:\(funName)", range: range)
+			} else {
+				text.addAttribute(.foregroundColor, value: theme.color(for: .function), range: range)
+			}
+		}
+	}
 	
 	/// Changes any SyntaxElement tags the appropriate style
 	/// - Parameter range: The range to change, defaults to all.
