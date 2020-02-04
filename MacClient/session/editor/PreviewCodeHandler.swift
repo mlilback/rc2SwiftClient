@@ -40,6 +40,12 @@ class PreviewCodeHandler {
 //			me.cacheCode(changedChunks: &indexes, in: theDoc)
 //		}
 	}
+	
+	/// Clears the code chache, should be called when the document has changed
+	func clearCache() {
+		chunkInfo.removeAll()
+	}
+	
 	/// caches the html for all code chunks and any markdown chunks that contain inline code
 	/// - Parameter document: the document to cache
 	func cacheAllCode(in document: RmdDocument) {

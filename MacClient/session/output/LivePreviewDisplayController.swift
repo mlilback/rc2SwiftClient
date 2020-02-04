@@ -122,6 +122,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		if  nil == codeHandler, let pcontext = parserContext {
 			codeHandler = PreviewCodeHandler(session: session, docSignal: pcontext.parsedDocument.signal)
 		}
+		codeHandler?.clearCache()
 		refreshContent()
 	}
 		
