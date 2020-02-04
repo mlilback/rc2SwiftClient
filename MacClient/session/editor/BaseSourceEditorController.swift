@@ -166,9 +166,13 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		let range = storage.string.fullNSRange
 		if isRDocument {
 			parser?.highlight(text: storage, range: range)
+		} else if context?.currentDocument.value?.isRmarkdown ?? false {
+			do {
+				try parser?.reparse()
+			} catch {
+				Log.warn("failed to parse rmd \(error)", .app)
+			}
 		}
-//		parser?.parseAndAttribute(attributedString: storage, docType: context!.docType, inRange: range, makeChunks: true)
-//		highlight(attributedString: storage, inRange: range)
 		ignoreTextStorageNotifications = false
 		if let index = context?.currentDocument.value?.topVisibleIndex, index > 0 {
 			//restore the scroll point to the saved character index
@@ -317,7 +321,7 @@ extension BaseSourceEditorController: NSTextStorageDelegate {
 	//called when text editing has ended
 	func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
 	{
-		guard isRDocument else { return }
+//		guard isRDocument else { return }
 		guard !ignoreTextStorageNotifications else { return }
 		ignoreTextStorageNotifications = true
 		defer { ignoreTextStorageNotifications = false }
@@ -334,10 +338,12 @@ extension BaseSourceEditorController: NSTextViewDelegate {
 		return nil
 	}
 	
+	// Why was this being done? Why reparse when the selection changes?
 	func textViewDidChangeSelection(_ notification: Notification) {
-		guard let editor = editor  else { fatalError("recvd selection changed with no editor") }
-		guard let parser = parser, useParser, editor.textStorage!.length > 0 else { return }
-		parser.selectionChanged(range: editor.selectedRange())
+		guard !ignoreTextStorageNotifications else { return }
+//		guard let editor = editor  else { fatalError("recvd selection changed with no editor") }
+//		guard let parser = parser, useParser, editor.textStorage!.length > 0 else { return }
+//		parser.selectionChanged(range: editor.selectedRange())
 //		currentChunkIndex = parser.indexOfChunk(inRange: editor!.selectedRange())
 	}
 	

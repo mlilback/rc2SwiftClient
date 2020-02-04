@@ -68,17 +68,22 @@ class PreviewCodeHandler {
 				for inlineChunk in chunk.children {
 					inline.append(inlineHtmlFor(chunk: inlineChunk, parent: chunk, document: document))
 				}
+				guard chunkInfo[chunkNumber]?.inlineHtml != inline else { continue }
 				chunkInfo[chunkNumber]?.inlineHtml = inline
+				if !changedChunks.contains(chunkNumber) {
+					changedChunks.append(chunkNumber)
+				}
 				continue
 			}
 			guard chunk.chunkType == .code else { continue }
 			let currentHtml = htmlForChunk(number: chunkNumber)
-			if chunkInfo[chunkNumber]?.currentHtml == currentHtml,
-				let changedIndex = changedChunks.firstIndex(where: { $0 == chunkNumber }) {
-				changedChunks.remove(at: changedIndex)
-			}
-			if !changedChunks.contains(chunkNumber) {
-				changedChunks.append(chunkNumber)
+			if chunkInfo[chunkNumber]?.currentHtml != currentHtml {
+				if let changedIndex = changedChunks.firstIndex(where: { $0 == chunkNumber }) {
+					changedChunks.remove(at: changedIndex)
+				}
+				if !changedChunks.contains(chunkNumber) {
+					changedChunks.append(chunkNumber)
+				}
 			}
 		}
 		changedChunks.sort()
