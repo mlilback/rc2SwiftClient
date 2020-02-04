@@ -16,6 +16,7 @@
 		0803F9FB22F9E7C000F26D84 /* NSString+HTMLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0803F9F822F9E7C000F26D84 /* NSString+HTMLString.swift */; };
 		0803FCBE1C84C47400F17E4A /* Mockingjay.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		08055E361FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08055E351FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift */; };
+		080770C623EA1E3100166362 /* Rc2RFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080770C523EA1E3100166362 /* Rc2RFilter.swift */; };
 		0807F1611F83DE830018EF61 /* Rc2.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0807F1601F83DE830018EF61 /* Rc2.xcassets */; };
 		080AB8DC1E92D9D7005452C7 /* MultiImageWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB8DB1E92D9D7005452C7 /* MultiImageWindowController.swift */; };
 		080AB8DE1E92DA10005452C7 /* MultiImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB8DD1E92DA10005452C7 /* MultiImageViewController.swift */; };
@@ -858,6 +859,7 @@
 		08055E2F1FBBC210007419C6 /* VariableFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableFormatter.swift; sourceTree = "<group>"; };
 		08055E311FBC810D007419C6 /* SpreadsheetDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetDataSource.swift; sourceTree = "<group>"; };
 		08055E351FBDF6AF007419C6 /* SpreadsheetVariableDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetVariableDetailController.swift; sourceTree = "<group>"; };
+		080770C523EA1E3100166362 /* Rc2RFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rc2RFilter.swift; sourceTree = "<group>"; };
 		0807F1601F83DE830018EF61 /* Rc2.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Rc2.xcassets; sourceTree = "<group>"; };
 		080AB8DB1E92D9D7005452C7 /* MultiImageWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiImageWindowController.swift; sourceTree = "<group>"; };
 		080AB8DD1E92DA10005452C7 /* MultiImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiImageViewController.swift; sourceTree = "<group>"; };
@@ -2299,6 +2301,7 @@
 				08A63EAC23AD6FFF00FD472E /* RHighlightVisitor.swift */,
 				08A63EAD23AD6FFF00FD472E /* MarkdownChunk.swift */,
 				08A63EAE23AD6FFF00FD472E /* Rc2ParserListener.swift */,
+				080770C523EA1E3100166362 /* Rc2RFilter.swift */,
 				08A63EAF23AD6FFF00FD472E /* InlineInternalEquation.swift */,
 				08A63EB023AD6FFF00FD472E /* RmdParser.swift */,
 				08A63EB123AD6FFF00FD472E /* InternalCodeChunk.swift */,
@@ -3743,6 +3746,7 @@
 				08A63EDA23AD6FFF00FD472E /* InlineInternalEquation.swift in Sources */,
 				08A63EC923AD6FFF00FD472E /* Rc2RawParserListener.swift in Sources */,
 				08A63ED423AD6FFF00FD472E /* RFilterParserATN.swift in Sources */,
+				080770C623EA1E3100166362 /* Rc2RFilter.swift in Sources */,
 				08A63EBB23AD6FFF00FD472E /* RListener.swift in Sources */,
 				08A63EB823AD6FFF00FD472E /* Rc2Lexer.swift in Sources */,
 				08A63ED923AD6FFF00FD472E /* Rc2ParserListener.swift in Sources */,
