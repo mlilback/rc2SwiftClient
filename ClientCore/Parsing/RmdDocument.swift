@@ -77,7 +77,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 			// compare if chunks are similar
 			guard let oldChunk = document.chunks[idx] as? RmdDocChunk,
 				let newChunk = newDoc.chunks[idx] as? RmdDocChunk,
-				oldChunk == newChunk
+				oldChunk != newChunk
 				else { return nil }
 			if newChunk.chunkType == .code && idx < firstCodeIndex { return nil }
 			if newDoc.string(for: newChunk) != document.string(for: oldChunk) {
