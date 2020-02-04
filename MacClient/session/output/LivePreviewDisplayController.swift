@@ -34,6 +34,7 @@ protocol LivePreviewOutputController {
 
 class LivePreviewDisplayController: AbstractSessionViewController, OutputController, LivePreviewOutputController, WKUIDelegate, WKNavigationDelegate
 {
+	
 	// required by OutputController, should use at some point
 	var contextualMenuDelegate: ContextualMenuDelegate?
 
@@ -68,6 +69,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private var emptyNavigations: Set<WKNavigation> = []
 	
 	private var documentRoot: URL?
+	private var htmlRoot: URL?
 	private var headerContents = ""
 	private var footerContents = ""
 	private var docHtmlLoaded = false
@@ -83,6 +85,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		loadRegexes()
 		// for some reason the debugger show documentRoot as nil after this, even though po documentRoot?.absoluteString returns output
 		documentRoot = Bundle.main.url(forResource: "FileTemplates", withExtension: nil)
+		htmlRoot = Bundle.main.url(forResource: "preview_support", withExtension: nil)
 		didLoadView = true
 		docHtmlLoaded = false
 		outputView?.uiDelegate = self
@@ -168,8 +171,11 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			Log.info("udpating just chunks \(changedChunkIndexes)")
 			for chunkNumber in changedChunkIndexes {
 				let chunk = curDoc.chunks[chunkNumber]
-				let html = escapeForJavascript(htmlFor(chunk: chunk, index: chunkNumber))
+				var html = htmlFor(chunk: chunk, index: chunkNumber)
+				html = escapeForJavascript(html)
+				
 				let command = "$(\"section[index='\(chunkNumber)']\").html('\(html)'); MathJax.typeset()"
+//				let command = "document.querySelector('section[index=\(chunkNumber)]').html('\(html)'); MathJax.typeset(); debugger;"
 				outputView?.evaluateJavaScript(command, completionHandler: nil)
 			}
 		} else { // no changes, so just refresh everything
@@ -187,12 +193,14 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 		var html =  ""
 		for (chunkNumber, chunk) in curDoc.chunks.enumerated() {
-			html += "<section index=\"\(chunkNumber)\">\n"
+			let descriptor = chunk.isInline ? "inline" : "section"
+			html += "<\(descriptor) index=\"\(chunkNumber)\">\n"
 			html += htmlFor(chunk: chunk, index: chunkNumber)
-			html += "\n</section>\n"
+			html += "\n</\(descriptor)>\n"
 		}
 		docHtmlLoaded = true
 		load(html: "\(headerContents)\n\(html)\n\(footerContents)")
+		outputView?.evaluateJavaScript("MathJax.typeset()", completionHandler: nil)
 	}
 	
 	private func htmlFor(chunk: RmdDocumentChunk, index: Int) -> String {
@@ -208,7 +216,19 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 	
 	private func htmlFor(markdownChunk: RmdDocumentChunk, index: Int) -> String {
-		let html = mdownParser.htmlFor(markdown: parsedDocument!.string(for: markdownChunk))
+		var chunkString = parsedDocument!.string(for: markdownChunk)
+		// replace all inline chunks with a placeholder
+		for (idx, ichunk) in markdownChunk.children.reversed().enumerated() {
+			guard let range = Range<String.Index>(ichunk.chunkRange, in: chunkString) else { fatalError("invalid range") }
+			chunkString = chunkString.replacingCharacters(in: range, with: "!IC-\(idx)!")
+		}
+		// convert markdown to html
+		let html = mdownParser.htmlFor(markdown: chunkString)
+		// restore inline chunks. reverse so don't invalidate later ranges
+		for idx in (0..<markdownChunk.children.count).reversed() {
+			let replacement = textFor(inlineChunk: markdownChunk.children[idx], parent: markdownChunk)
+			html.replaceOccurrences(of: "!IC-\(idx)!", with: replacement, options: [], range: NSRange(location: 0, length: html.length))
+		}
 		// modify source position to include chunk number
 		_ = dataSourceRegex.replaceMatches(in: html, range: NSRange(location: 0, length: html.length), withTemplate: "data-sourcepos=\"\(index).$2")
 		return html as String
@@ -218,13 +238,13 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		guard let doc = parsedDocument else { fatalError("textFor called w/o a document") }
 		let inlineText = doc.string(for: inlineChunk, type: .inner)
 		var icText = inlineText
-		switch RootChunkType(inlineChunk.chunkType) {
-		case .code:
+		switch inlineChunk.chunkType {
+		case .inlineCode:
 			icText = doc.string(for: inlineChunk, type: .outer)
-		case .equation:
+		case .inlineEquation:
 			icText = "\\(\(inlineText)\\)"
-		case .markdown:
-			preconditionFailure("inline chunk can't be markdown")
+		default:
+			preconditionFailure("chunk isn't inline")
 		}
 		return icText
 	}
@@ -261,7 +281,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	/// replaces the visible html document
 	/// - Parameter html: the new html to display
 	private func load(html: String)  {
-		let nav = outputView?.loadHTMLString(html, baseURL: documentRoot)
+		let nav = outputView?.loadHTMLString(html, baseURL: htmlRoot)
 		if let realNav = nav { emptyNavigations.insert(realNav) }
 	}
 	
