@@ -36,12 +36,23 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 		super.init()
 	}
 	
+	/// Reparses the contents and updates parsedDocument, syntax highlighting any R code
 	public func reparse() throws {
 		guard contents.length > 0 else { _parsedDocument.value = nil; lastHash = nil; return }
 		if _parsedDocument.value?.attributedString.string == contents.string { return }
 		guard let newHash = contents.string.data(using: .utf8)?.sha256(), lastHash != newHash else { return }
 		lastHash = newHash
 		_parsedDocument.value = try RmdDocument(contents: contents.string, parser: self)
+		// highlight code chunks
+		_parsedDocument.value?.chunks.forEach { chunk in
+			guard chunk.chunkType == .code else { return }
+			do {
+				try highlightR(contents: contents, range: chunk.innerRange)
+			} catch {
+				Log.error("error highlighting R code \(error.localizedDescription)", .parser)
+				Log.debug("code=\(contents.attributedSubstring(from: chunk.innerRange).string)", .parser)
+			}
+		}
 	}
 	
 	/// Highlights the R code of text in range.
