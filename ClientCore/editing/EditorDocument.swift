@@ -25,6 +25,8 @@ public class EditorDocument: NSObject {
 	/// contents with changes that haven't been saved
 	public let editedContents = MutableProperty<String?>("")
 	public private(set) var isLoaded: Bool = false
+	public var isRmarkdown: Bool { return file.fileType.fileExtension == "Rmd" }
+	public var isRDocument: Bool { return file.fileType.fileExtension == "R" }
 
 	/// only returns true for Rmd files
 	public var parsable: Bool { return file.fileType.fileExtension == "Rmd" }
