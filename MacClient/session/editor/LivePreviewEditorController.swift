@@ -72,6 +72,7 @@ class LivePreviewEditorController: BaseSourceEditorController {
 		lastTextChange = Date.timeIntervalSinceReferenceDate
 		lastChangeRange = range
 		lastChangeDelta = delta
+		colorizeHighlightAttributes()
 		
 		// FIXME: the following needs to be called for any chunks that changed and we can highlight
 //		parser?.contentsChanged(range: range, changeLength: delta)
