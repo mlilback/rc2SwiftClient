@@ -1,5 +1,9 @@
 # Rc² release notes
 
+## Build 82
+
+* preview editor highlights R code.
+
 ## Build 81
 
 * window title more descriptive
