@@ -52,22 +52,17 @@ The following packages/frameworks are used (mostly by SPM, a few require Carthag
 
 4. `touch config/Local.xcconfig`. See below for details on this file.
 
-# Help support
+# Generating help files
 
-In the help directory, indexDocs.pl is a perl script to generate a json file with the help information necessary to make an index to search. These files are checked into git. The createHelpIndex target parses these files and creates an sqllite db that is embedded in the application for searching help.
-
-The perl script requires `Cpanel::JSON::XS` and `Statistics::R`.
-
-## Generating help files ##
-
+To generate the help index and html files:
 ```
-cd R-3.3.1
-./configure --enable-prebuilt-html
-make
-tar zcf rdocs.tgz doc library/*/html/*
-# cd destination-directory
-tar xzf rdocs.tgz
+	cd tools/help
+	R --vanilla
+	> source("genHelp.R")
+	> generateHelp()
 ```
+
+This will create `helpindex.sqlite` and `helpdocs`. Move the sqllite file to `${SRC_ROOT}ClientCore/help/helpindex.db`. Update the version number in `rc2help.json`.  `Run the command zip -9r help.zip rc2help.json helpdocs`` and then move the zip file to `${SRC_ROOT}ClientCore/help/help.zip`. Update HtlpController.swift.currentHelpVersion to the same as in the json file.
 
 # xcconfig usage
 

@@ -8,6 +8,10 @@ import Rc2Common
 import Foundation
 import MJLLogger
 import GRDB
+import ZIPFoundation
+import ReactiveSwift
+
+private let currentHelpVersion = 2
 
 public class HelpController {
 	let helpUrlFuncSeperator = "/html"
@@ -21,18 +25,13 @@ public class HelpController {
 	fileprivate let topicsByName: [String: [HelpTopic]]
 	fileprivate var rootHelpUrl: URL
 	public private(set) var baseHelpUrl: URL
+	private let verified = Atomic<Bool>(false)
 
 	///loads topics from storage
 	public init() {
-		//make sure our help directory exists
-		let fileManager = FileManager()
-		guard let dbpath = Bundle(for: type(of: self)).path(forResource: "helpindex", ofType: "db") else { fatalError("helpindex rsource missing") }
+		guard let dbpath = Bundle(for: type(of: self)).path(forResource: "helpindex", ofType: "db")
+			else { fatalError("helpindex resource missing") }
 		do {
-			rootHelpUrl = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "rdocs")
-			baseHelpUrl = rootHelpUrl.appendingPathComponent("helpdocs/library", isDirectory: true)
-			if !baseHelpUrl.directoryExists() {
-				try fileManager.createDirectory(at: baseHelpUrl, withIntermediateDirectories: true, attributes: nil)
-			}
 			//load help index
 			dbQueue = try DatabaseQueue(path: dbpath)
 			var topsByPack = [String: [HelpTopic]]()
@@ -68,6 +67,11 @@ public class HelpController {
 			self.allTopics = all
 			self.allTopicNames = names
 			self.topicsByName = topsByName
+
+			// ensure help files are installed
+			rootHelpUrl = try AppInfo.subdirectory(type: .applicationSupportDirectory, named: "rdocs")
+			baseHelpUrl = rootHelpUrl.appendingPathComponent("helpdocs/library", isDirectory: true)
+			verifyDocumentationInstallation()
 		} catch {
 			Log.error("error loading help index: \(error)", .app)
 			fatalError("failed to load help index")
@@ -76,20 +80,35 @@ public class HelpController {
 	
 	/// checks to make sure help files exist and if not, extract them from tarball
 	public func verifyDocumentationInstallation() {
+		if verified.value { return }
+		defer { verified.value = true }
 		let versionUrl = rootHelpUrl.appendingPathComponent("rc2help.json")
-		if versionUrl.fileExists() { return }
-		let tar = Process()
-		tar.currentDirectoryPath = rootHelpUrl.path
-		let tarball = Bundle(for: type(of: self)).url(forResource: "rdocs", withExtension: "tgz")
-		precondition(tarball != nil && tarball!.fileExists())
-		tar.arguments = ["zxf", tarball!.path]
-		tar.launchPath = "/usr/bin/tar"
-		tar.terminationHandler = { process in
-			if process.terminationStatus != 0 {
-				Log.warn("help extraction failed: \(process.terminationReason.rawValue)", .app)
+		// check to see if correct version installed
+		if versionUrl.fileExists(),
+			let vdata = try? Data(contentsOf: versionUrl),
+			let vinfo = try? JSONDecoder().decode(HelpInfo.self, from: vdata),
+			vinfo.version <= currentHelpVersion
+		{ return }
+		// need to install
+		do {
+			let fm = FileManager()
+			if versionUrl.fileExists() {
+				// zip won't onverwrite, so nuke existing
+				try fm.removeItem(at: rootHelpUrl)
+				try fm.createDirectory(at: rootHelpUrl, withIntermediateDirectories: true, attributes: nil)
 			}
+			let archive = Bundle(for: type(of: self)).url(forResource: "help", withExtension: "zip")!
+			DispatchQueue.global().async { [rootHelpUrl] in
+				do {
+					try fm.unzipItem(at: archive, to: rootHelpUrl)
+					Log.info("help extracted", .app)
+				} catch {
+					fatalError("error unzipping help: \(error)")
+				}
+			}
+		} catch {
+			fatalError("failed to read help.zip from app bundle")
 		}
-		tar.launch()
 	}
 	
 	/// returns true if there is a help topic with the specified name
@@ -174,8 +193,12 @@ public class HelpController {
 		let str = "\(topic.packageName)\(helpUrlFuncSeperator)/\(topic.name).html"
 		let helpUrl = baseHelpUrl.appendingPathComponent(str)
 		if !helpUrl.fileExists() {
-			Log.warn("missing help file: \(str)", .app)
+			Log.info("missing help file: \(str)", .app)
 		}
 		return helpUrl
+	}
+	
+	private struct HelpInfo: Codable {
+		let version: Int
 	}
 }
