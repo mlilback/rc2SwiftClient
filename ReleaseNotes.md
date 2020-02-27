@@ -1,5 +1,9 @@
 # Rc² release notes
 
+## Build 83
+
+* help now generated in R, includes packages installed in the compute engine instead of just base R.
+
 ## Build 82
 
 * preview editor highlights R code.

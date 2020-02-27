@@ -62,7 +62,13 @@ To generate the help index and html files:
 	> generateHelp()
 ```
 
-This will create `helpindex.sqlite` and `helpdocs`. Move the sqllite file to `${SRC_ROOT}ClientCore/help/helpindex.db`. Update the version number in `rc2help.json`.  `Run the command zip -9r help.zip rc2help.json helpdocs`` and then move the zip file to `${SRC_ROOT}ClientCore/help/help.zip`. Update HtlpController.swift.currentHelpVersion to the same as in the json file.
+This will create `helpindex.sqlite` and `helpdocs`. Now:
+
+* Move the sqllite file to `${SRC_ROOT}ClientCore/help/helpindex.db`. 
+* Update the version number in `rc2help.json`. 
+* `Run the command zip -9r help.zip rc2help.json helpdocs`` 
+* move the zip file to `${SRC_ROOT}ClientCore/help/help.zip`. 
+* Update HtlpController.swift.currentHelpVersion to the same as in the json file.
 
 # xcconfig usage
 

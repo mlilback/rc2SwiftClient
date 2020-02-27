@@ -11,7 +11,7 @@ import GRDB
 import ZIPFoundation
 import ReactiveSwift
 
-private let currentHelpVersion = 2
+private let currentHelpVersion = 3
 
 public class HelpController {
 	let helpUrlFuncSeperator = "/html"
@@ -87,7 +87,7 @@ public class HelpController {
 		if versionUrl.fileExists(),
 			let vdata = try? Data(contentsOf: versionUrl),
 			let vinfo = try? JSONDecoder().decode(HelpInfo.self, from: vdata),
-			vinfo.version <= currentHelpVersion
+			vinfo.version >= currentHelpVersion
 		{ return }
 		// need to install
 		do {

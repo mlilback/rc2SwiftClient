@@ -14,7 +14,14 @@ generateHelp <- function(packages = NULL, output_dir = ".", index_only = FALSE) 
   }
   data <- setupDb(output_dir, append = length(packages) > 0)
   on.exit( { closeDb(data) }, add = TRUE )
-  genAllHelp(data, file.path(output_dir, "helpdocs", "library"))
+  output_root <- file.path(output_dir, "helpdocs")
+  genAllHelp(data, file.path(output_root, "library"))
+  root_source <- R.home("doc")
+  dir.create(file.path(output_root, "manual"), recursive=TRUE, showWarnings=FALSE)
+  file.copy(file.path(root_source, "manual"), output_root, recursive=TRUE)
+  dir.create(file.path(output_root, "html"), recursive=TRUE, showWarnings=FALSE)
+  file.copy(file.path(root_source, "html"), output_root, recursive=TRUE)
+  invisible(TRUE)
 }
 
 genHelp <- function (dbData, pkg, output_root, links = tools::findHTMLlinks(), index_only = FALSE) {
@@ -28,6 +35,7 @@ genHelp <- function (dbData, pkg, output_root, links = tools::findHTMLlinks(), i
   pmeta = list() # where package metadata will be stored, one item per function
   topics = names(rdb)
   for (curTopic in topics) {
+   suppressWarnings({
     if (index_only == FALSE) {
       outpath = file.path(outdir, paste(curTopic, "html", sep="."))
       tools::Rd2HTML(rdb[[curTopic]], outpath, package = pkg, Links = mylinks)
@@ -39,6 +47,7 @@ genHelp <- function (dbData, pkg, output_root, links = tools::findHTMLlinks(), i
     }
     pmeta[[curTopic]] <- meta
     insertFunction(dbData, meta)
+   })
   }
   invisible(pmeta)
 }
@@ -56,8 +65,7 @@ genAllHelp <- function (dbData, outdir, index_only = FALSE) {
       genHelp(dbData, tname, outdir, index_only=index_only, links = links)
     }, 
     error = function(c) { errorHandler(c, tname) },
-    warning = function(c) { errorHandler(c, tname) },
-    message = function(c) { errorHandler(c, tname) })
+    warning = function(c) { errorHandler(c, tname) })
   }
   invisible("")
 }
