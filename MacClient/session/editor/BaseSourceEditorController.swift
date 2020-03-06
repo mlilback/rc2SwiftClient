@@ -242,7 +242,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	}
 	
 	/// updates the style attributes for a fragment in an attributed string
-	func style(fragmentType: SyntaxElement, in text: NSMutableAttributedString, range: NSRange, theme: SyntaxTheme) {
+	func style(fragmentType: SyntaxElement, in text: NSMutableAttributedString, range: NSRange, theme: SyntaxTheme, skipLinks: Bool = false) {
 		switch fragmentType {
 		case .string:
 			text.addAttribute(.foregroundColor, value: theme.color(for: .quote), range: range)
@@ -255,7 +255,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		case .functonName:
 //			text.addAttribute(.foregroundColor, value: theme.color(for: .function), range: range)
 			let funName = text.attributedSubstring(from: range).string
-			if HelpController.shared.hasTopic(funName) {
+			if !skipLinks && HelpController.shared.hasTopic(funName) {
 				text.addAttribute(.link, value: "help:\(funName)", range: range)
 			} else {
 				text.addAttribute(.foregroundColor, value: theme.color(for: .function), range: range)
@@ -266,17 +266,25 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	/// Changes any SyntaxElement tags the appropriate style
 	/// - Parameter range: The range to change, defaults to all.
 	func colorizeHighlightAttributes(range: NSRange? = nil) {
+//		Log.info("colorizing preview editor", .app)
 		guard let edit = editor, let storage = edit.textStorage else { return }
 		let rng = range ?? NSRange(location: 0, length: storage.length)
-		// remove all existing colors
+		// adjust document font
+		storage.removeAttribute(.font, range: storage.string.fullNSRange)
+		storage.addAttribute(.font, value: context!.editorFont.value, range: storage.string.fullNSRange)
 
 		let theme = ThemeManager.shared.activeSyntaxTheme.value
-		storage.addAttribute(.font, value: context!.editorFont.value, range: rng)
 		storage.removeAttribute(.foregroundColor, range: rng)
 		storage.removeAttribute(.backgroundColor, range: rng)
 		storage.enumerateAttributes(in: rng, options: []) { (keyValues, attrRange, stop) in
 			if let fragmentType = keyValues[SyntaxKey] as? SyntaxElement {
-				self.style(fragmentType: fragmentType, in: storage, range: attrRange, theme: theme)
+				// skip links if it an equation
+				var skip = false
+				var effRange: NSRange = NSRange()
+				if let ctype = storage.attribute(ChunkKey, at: attrRange.location, longestEffectiveRange: &effRange, in: rng) as? ChunkType {
+					skip = ctype == .equation || ctype == .inlineEquation
+				}
+				self.style(fragmentType: fragmentType, in: storage, range: attrRange, theme: theme, skipLinks: skip)
 			}
 		}
 	}
@@ -321,6 +329,7 @@ extension BaseSourceEditorController: NSTextStorageDelegate {
 	//called when text editing has ended
 	func textStorage(_ textStorage: NSTextStorage, didProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int)
 	{
+		guard delta != 0 else { return } // only count as change if the text changed
 //		guard isRDocument else { return }
 		guard !ignoreTextStorageNotifications else { return }
 		ignoreTextStorageNotifications = true

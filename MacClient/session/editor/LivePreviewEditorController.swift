@@ -44,7 +44,7 @@ class LivePreviewEditorController: BaseSourceEditorController {
 					oc.contentsEdited(contents: editor.string, range: lastRange, delta: me.lastChangeDelta)
 				{
 					if me.ignoreContentChanges { return }
-					me.save(edits: editor.string, reload: true)
+					me.save(edits: editor.string, reload: false)
 					do {
 						try me.parser?.reparse()
 					} catch {
@@ -57,25 +57,23 @@ class LivePreviewEditorController: BaseSourceEditorController {
 		lastChangeTimer.suspend()
 	}
 	
-//	override func loaded(content: String) {
-//		do {
-//			let rendered = try content.toHTML([.normalize, .safe, .sourcePos])
-//			editor?.string = rendered
-//		} catch {
-//			Log.warn("preview editor failed to parse markdown")
-//		}
-//	}
+	override func loaded(content: String) {
+		super.loaded(content: content)
+		colorizeHighlightAttributes()
+	}
 	
 	override func contentsChanged(_ contents: NSTextStorage, range: NSRange, changeLength delta: Int) {
 		// really does nothing, but call to be safe
 		super.contentsChanged(contents, range: range, changeLength: delta)
+		do {
+			try parser?.reparse()
+		} catch {
+			Log.warn("failed to parse rmd \(error)", .app)
+		}
+		colorizeHighlightAttributes()
 		lastTextChange = Date.timeIntervalSinceReferenceDate
 		lastChangeRange = range
 		lastChangeDelta = delta
-		colorizeHighlightAttributes()
-		
-		// FIXME: the following needs to be called for any chunks that changed and we can highlight
-//		parser?.contentsChanged(range: range, changeLength: delta)
 	}
 	
 	/// subclasses should override and save contents via save(edits:). super should not be called
