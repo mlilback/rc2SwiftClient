@@ -481,6 +481,7 @@
 		08F8C184209228A600DFB269 /* InlineEquationEditorController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08F8C183209228A600DFB269 /* InlineEquationEditorController.xib */; };
 		08FAE518208111730076F90C /* NSFont+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FAE517208111730076F90C /* NSFont+MJL.swift */; };
 		08FDB19B1C5917C3006FCD1A /* graph.png in Resources */ = {isa = PBXBuildFile; fileRef = 08FDB19A1C5917C3006FCD1A /* graph.png */; };
+		08FDD8F7240DBA7700D7CB7E /* EquationHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDD8F6240DBA7700D7CB7E /* EquationHighlighter.swift */; };
 		FA2664C31FF81841003E5460 /* SyntaxThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 086A40DA1E7B4B2300AE476B /* SyntaxThemes.json */; };
 		FA2664C41FF81870003E5460 /* OutputThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 088F59231E7578B80009A0B1 /* OutputThemes.json */; };
 /* End PBXBuildFile section */
@@ -1285,6 +1286,7 @@
 		08FAE517208111730076F90C /* NSFont+MJL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "NSFont+MJL.swift"; path = "vendor/MJLCommon/Sources/MJLCommon/extensions/NSFont+MJL.swift"; sourceTree = SOURCE_ROOT; };
 		08FDB1981C591409006FCD1A /* ImageCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCacheTests.swift; sourceTree = "<group>"; };
 		08FDB19A1C5917C3006FCD1A /* graph.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graph.png; sourceTree = "<group>"; };
+		08FDD8F6240DBA7700D7CB7E /* EquationHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EquationHighlighter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2255,6 +2257,7 @@
 				08A63EAB23AD6FFF00FD472E /* RParserListener.swift */,
 				08A63EAC23AD6FFF00FD472E /* RHighlightVisitor.swift */,
 				08A63EAD23AD6FFF00FD472E /* MarkdownChunk.swift */,
+				08FDD8F6240DBA7700D7CB7E /* EquationHighlighter.swift */,
 				08A63EAE23AD6FFF00FD472E /* Rc2ParserListener.swift */,
 				080770C523EA1E3100166362 /* Rc2RFilter.swift */,
 				08A63EAF23AD6FFF00FD472E /* InlineInternalEquation.swift */,
@@ -3638,6 +3641,7 @@
 				080770C623EA1E3100166362 /* Rc2RFilter.swift in Sources */,
 				08A63EBB23AD6FFF00FD472E /* RListener.swift in Sources */,
 				08A63EB823AD6FFF00FD472E /* Rc2Lexer.swift in Sources */,
+				08FDD8F7240DBA7700D7CB7E /* EquationHighlighter.swift in Sources */,
 				08A63ED923AD6FFF00FD472E /* Rc2ParserListener.swift in Sources */,
 				08A63ECF23AD6FFF00FD472E /* RBaseVisitor.swift in Sources */,
 				08A63ECD23AD6FFF00FD472E /* RFilter.swift in Sources */,

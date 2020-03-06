@@ -45,6 +45,12 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 		_parsedDocument.value = try RmdDocument(contents: contents.string, parser: self)
 		// highlight code chunks
 		_parsedDocument.value?.chunks.forEach { chunk in
+			contents.addAttribute(ChunkKey, value: chunk.chunkType, range: chunk.innerRange)
+			chunk.children.forEach { contents.addAttribute(ChunkKey, value: $0.chunkType, range: $0.innerRange)} // mark nested chunks
+			if chunk.isEquation {
+				highlightLatex(contents: contents, range: chunk.innerRange)
+				return
+			}
 			guard chunk.chunkType == .code else { return }
 			do {
 				try highlightR(contents: contents, range: chunk.innerRange)
@@ -55,19 +61,26 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 		}
 	}
 	
-	/// Highlights the R code of text in range.
+	/// Highlights the  code/equations of text in range.
+	///  - Note: only currently called for R documents, so does not need to handle latex code
 	/// - Parameters:
 	///   - text: The mutable attributed string to update highlight of
 	///   - range: The range to update, niil updates the entire text
 	public func highlight(text: NSMutableAttributedString, range: NSRange? = nil) {
 		Log.info("highlighting", .parser)
-		// FIXME: need to figure out what chunks changed, and rehighlight any  code chunks that changed
-		
 		let rng = range ?? NSRange(location: 0, length: text.length)
-		do {
-			try super.highlightR(contents: text, range: rng)
-		} catch {
-			Log.warn("error message highlighting code", .app)
+		guard let doc = parsedDocument.value else { Log.warn("highlight called with no document"); return }
+		let changedChunks = doc.chunks(in: rng)
+		for aChunk in changedChunks {
+			do {
+				if aChunk.isExecutable {
+					try highlightR(contents: text, range: rng)
+				} else if aChunk.isEquation {
+					highlightLatex(contents: text, range: rng)
+				} // TODO: add markdown highlighting including embedded chunks
+			} catch {
+				Log.warn("error message highlighting code", .app)
+			}
 		}
 	}
 

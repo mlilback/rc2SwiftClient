@@ -164,11 +164,16 @@ public class RmdDocument: CustomDebugStringConvertible {
 			realChunk == pChunk
 			else { fatalError("invalid chunk index") }
 		let desiredString = textStorage.attributedSubstring(from: rangeType == .outer ? realChunk.chunkRange : realChunk.innerRange)
-		if chunk.isExecutable {
+		if chunk.isExecutable || chunk.isEquation {
 			let baseStr = NSMutableAttributedString(attributedString: desiredString)
 			do {
 				if let parser = parser {
-					try parser.highlightR(contents: baseStr, range: NSRange(location: 0, length: baseStr.length))
+					let rng = NSRange(location: 0, length: baseStr.length)
+					if chunk.isExecutable {
+						try parser.highlightR(contents: baseStr, range: rng)
+					} else if chunk.isEquation {
+						parser.highlightLatex(contents: baseStr, range: rng)
+					}
 				}
 			} catch {
 				parserLog.info("error highligthing R code: \(error.localizedDescription)")
