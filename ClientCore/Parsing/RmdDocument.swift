@@ -193,6 +193,8 @@ public protocol RmdDocumentChunk {
 	var isInline: Bool { get }
 	/// trrue if it is a code module that can be executed
 	var isExecutable: Bool { get }
+	/// true if an equation or inline equation
+	var isEquation: Bool { get }
 	/// the range of this chunk in the document
 	/// - Tag: parsedRange
 	var parsedRange: NSRange { get }
@@ -237,6 +239,8 @@ internal class RmdDocChunk: RmdDocumentChunk {
 	
 	/// true if this is a code or inline code chunk
 	public var isExecutable: Bool { return chunkType == .code || parserChunk.type == .inlineCode }
+	/// true if an equation or inline equation
+	public var isEquation: Bool { return chunkType == .equation || parserChunk.type == .inlineEquation }
 	/// trtue if this is an inline chunk
 	public var isInline: Bool { return parserChunk.isInline }
 	/// the range of this chunk in the entire document
