@@ -97,6 +97,9 @@ getMetaValue <- function(da, pattern, pkg, fun) {
 insertFunction <- function(globalData, listOfData) {
   #print(paste("got ", listOfData[1], ' ', listOfData[3]))
   args <- listOfData
+  while (length(args) < 5) {
+    args <- c(args, "")
+  }
   res1 <- dbSendStatement(globalData$con, "insert into helptopic values (?, ?, ?, ?, ?)", args)
   dbClearResult(res1)
   res2 <- dbSendStatement(globalData$con, "insert into helpidx values (?, ?, ?, ?, ?)", args)
