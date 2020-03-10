@@ -10,7 +10,7 @@ library(RSQLite)
 #' @param index_only If TRUE, no html files will be generated.
 generateHelp <- function(packages = NULL, output_dir = ".", index_only = FALSE) {
   if (!file.exists(output_dir)) {
-    dir.create(output_path, showWarnings = FALSE, recursive = TRUE)
+    dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
   }
   data <- setupDb(output_dir, append = length(packages) > 0)
   on.exit( { closeDb(data) }, add = TRUE )
