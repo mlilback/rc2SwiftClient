@@ -11,7 +11,7 @@ import GRDB
 import ZIPFoundation
 import ReactiveSwift
 
-private let currentHelpVersion = 3
+private let currentHelpVersion = 4
 
 public class HelpController {
 	let helpUrlFuncSeperator = "/html"
