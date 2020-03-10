@@ -15,7 +15,20 @@ generateHelp <- function(packages = NULL, output_dir = ".", index_only = FALSE) 
   data <- setupDb(output_dir, append = length(packages) > 0)
   on.exit( { closeDb(data) }, add = TRUE )
   output_root <- file.path(output_dir, "helpdocs")
-  genAllHelp(data, file.path(output_root, "library"))
+  genOutDir = file.path(output_root, "library")
+  if (length(packages) > 0) {
+    links = tools::findHTMLlinks()
+    force(links)
+    for (tname in packages) {
+       tryCatch({
+        genHelp(data, tname, genOutDir, index_only=index_only, links = links)
+      }, 
+       error = function(c) { print("outer error"); errorHandler(c, tname) },
+       warning = function(c) { errorHandler(c, tname) })
+    }
+  } else {
+	  genAllHelp(data, genOutDir)
+  }
   root_source <- R.home("doc")
   dir.create(file.path(output_root, "manual"), recursive=TRUE, showWarnings=FALSE)
   file.copy(file.path(root_source, "manual"), output_root, recursive=TRUE)
