@@ -76,8 +76,8 @@ getMetaValue <- function(da, pattern, pkg, fun) {
     return(val)
   })))
   results <- sapply(indicies, function (i) { da[i][[1]][[1]][1] })
-  value <- tryCatch ({ return(results[[1]][1]) },
-                     error=function(c) { print(paste("val error: ", c)); return("") })
+  if (length(results[[1]]) < 1) { return("") }
+  value <- results
   rtype <- typeof(value)
   if (pattern == "\\alias") {
     return(stri_paste(value, collapse=':'))
