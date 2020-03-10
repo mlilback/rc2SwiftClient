@@ -69,18 +69,10 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 	public func highlight(text: NSMutableAttributedString, range: NSRange? = nil) {
 		Log.info("highlighting", .parser)
 		let rng = range ?? NSRange(location: 0, length: text.length)
-		guard let doc = parsedDocument.value else { Log.warn("highlight called with no document"); return }
-		let changedChunks = doc.chunks(in: rng)
-		for aChunk in changedChunks {
-			do {
-				if aChunk.isExecutable {
-					try highlightR(contents: text, range: rng)
-				} else if aChunk.isEquation {
-					highlightLatex(contents: text, range: rng)
-				} // TODO: add markdown highlighting including embedded chunks
-			} catch {
-				Log.warn("error message highlighting code", .app)
-			}
+		do {
+			try highlightR(contents: text, range: rng)
+		} catch {
+			Log.warn("error message highlighting R code", .app)
 		}
 	}
 

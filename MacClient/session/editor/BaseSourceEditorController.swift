@@ -166,6 +166,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		let range = storage.string.fullNSRange
 		if isRDocument {
 			parser?.highlight(text: storage, range: range)
+			colorizeHighlightAttributes()
 		} else if context?.currentDocument.value?.isRmarkdown ?? false {
 			do {
 				try parser?.reparse()
