@@ -55,7 +55,7 @@ class PreviewCodeHandler {
 	
 	/// caches the html for all code chunks and any markdown chunks that contain inline code
 	// TODO: this needs to return a SignalHandler so the code can be executed async
-	/// - Parameter changedChunks: array of chunkNumbers that caller thinks changed.
+	/// - Parameter changedChunks: array of chunkNumbe./rs that caller thinks changed.
 	///  Any chunk where the output did not change is removed. Ones not included where the output did change are added.
 	/// - Parameter document: the document to cache
 	func cacheCode(changedChunks: inout [Int], in document: RmdDocument) {

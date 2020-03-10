@@ -68,7 +68,7 @@ This will create `helpindex.sqlite` and `helpdocs`. Now:
 * Update the version number in `rc2help.json`. 
 * `Run the command zip -9r help.zip rc2help.json helpdocs`` 
 * move the zip file to `${SRC_ROOT}ClientCore/help/help.zip`. 
-* Update HtlpController.swift.currentHelpVersion to the same as in the json file.
+* Update HelpController.swift.currentHelpVersion to the same as in the json file.
 
 # xcconfig usage
 
