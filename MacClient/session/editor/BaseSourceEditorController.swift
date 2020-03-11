@@ -253,7 +253,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 			text.addAttribute(.foregroundColor, value: theme.color(for: .symbol), range: range)
 		case .symbol:
 			text.addAttribute(.foregroundColor, value: theme.color(for: .keyword), range: range)
-		case .functonName:
+		case .functionName:
 //			text.addAttribute(.foregroundColor, value: theme.color(for: .function), range: range)
 			let funName = text.attributedSubstring(from: range).string
 			if !skipLinks && HelpController.shared.hasTopic(funName) {
