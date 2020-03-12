@@ -82,7 +82,7 @@ class PreviewCodeHandler {
 				continue
 			}
 			guard chunk.chunkType == .code else { continue }
-			let currentHtml = htmlForChunk(number: chunkNumber)
+			let currentHtml = htmlForChunk(document: document, number: chunkNumber)
 			if chunkInfo[chunkNumber]?.currentHtml != currentHtml {
 				if let changedIndex = changedChunks.firstIndex(where: { $0 == chunkNumber }) {
 					changedChunks.remove(at: changedIndex)
@@ -104,10 +104,16 @@ class PreviewCodeHandler {
 	}
 	
 	/// returns the html for the specified chunk.
-	func htmlForChunk(number: Int) -> String {
-		precondition(number < chunkInfo.count)
-		guard let chunkInfo = chunkInfo[number] else { fatalError("invalid chunk number") }
-		return chunkInfo.currentHtml
+	func htmlForChunk(document: RmdDocument, number: Int) -> String {
+		// FIXME: for now, just show source code
+		let src = document.string(for: document.chunks[number])
+		return """
+		<div class="codeChunk">
+		<div class="codeSource">
+		\(src.addingUnicodeEntities.replacingOccurrences(of: "\n", with: "<br>\n"))
+		</div>
+		</div>
+		"""
 	}
 	
 	/// returns the HTML for an inline chunk in  a markdown chunk

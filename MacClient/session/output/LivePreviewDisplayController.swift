@@ -256,7 +256,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			Log.warn("asked to generate R code w/o context");
 			return "<pre class=\"r\"><code>\(doc.string(for: chunk, type: .inner).addingUnicodeEntities)</code></pre>\n"
 		}
-		let html = rHandler.htmlForChunk(number: index)
+		let html = rHandler.htmlForChunk(document: doc, number: index)
 		return html
 	}
 	
