@@ -1,5 +1,14 @@
 # Rc² release notes
 
+## Build 85
+
+* fixed bug with missing help files when clicking on a topic
+
+## Build 84
+
+* fixed bug with syntax highlighting considering argument names as function names
+* R files now syntax highlighted
+
 ## Build 83
 
 * help now generated in R, includes packages installed in the compute engine instead of just base R.
