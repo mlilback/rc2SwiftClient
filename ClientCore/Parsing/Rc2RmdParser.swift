@@ -67,7 +67,6 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 	///   - text: The mutable attributed string to update highlight of
 	///   - range: The range to update, niil updates the entire text
 	public func highlight(text: NSMutableAttributedString, range: NSRange? = nil) {
-		Log.info("highlighting", .parser)
 		let rng = range ?? NSRange(location: 0, length: text.length)
 		do {
 			try highlightR(contents: text, range: rng)
