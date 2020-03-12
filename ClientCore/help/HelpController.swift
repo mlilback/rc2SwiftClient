@@ -39,10 +39,10 @@ public class HelpController {
 			var all = Set<HelpTopic>()
 			var names = Set<String>()
 			try dbQueue.inDatabase { db in
-				let rawRows = try Row.fetchAll(db, sql: "select rowid,package,name,title,aliases,desc from helptopic where name not like '.%' order by package, name COLLATE nocase ")
+				let rawRows = try Row.fetchAll(db, sql: "select rowid,package,name,topicname,title,aliases,desc from helptopic where name not like '.%' order by package, name COLLATE nocase")
 				for row in rawRows {
 					guard let package: String = row["package"] else { continue }
-					let topic = HelpTopic(id: row["rowid"], name: row["name"], packageName: package, title: row["title"], aliases: row["aliases"], description: row["desc"])
+					let topic = HelpTopic(id: row["rowid"], name: row["name"], packageName: package, fileName: row["topicname"], title: row["title"], aliases: row["aliases"], description: row["desc"])
 					if topsByPack[package] == nil {
 						topsByPack[package] = []
 					}
@@ -124,7 +124,7 @@ public class HelpController {
 		var topicsByPack = [String: [HelpTopic]]()
 		for row in rows {
 			guard let package: String = row["package"] else { continue }
-			let topic = HelpTopic(name: row["name"], packageName: package, title: row["title"], aliases: row["aliases"], description: row["desc"])
+			let topic = HelpTopic(name: row["name"], packageName: package, fileName: row["topicname"], title: row["title"], aliases: row["aliases"], description: row["desc"])
 			if topicsByPack[package] == nil {
 				topicsByPack[package] = []
 			}
@@ -190,7 +190,7 @@ public class HelpController {
 	}
 
 	public func urlForTopic(_ topic: HelpTopic) -> URL {
-		let str = "\(topic.packageName)\(helpUrlFuncSeperator)/\(topic.name).html"
+		let str = "\(topic.packageName)\(helpUrlFuncSeperator)/\(topic.fileName!).html"
 		let helpUrl = baseHelpUrl.appendingPathComponent(str)
 		if !helpUrl.fileExists() {
 			Log.info("missing help file: \(str)", .app)

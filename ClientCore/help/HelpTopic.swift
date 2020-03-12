@@ -14,6 +14,8 @@ public class HelpTopic: Hashable {
 	public let name: String
 	/// true if this topic represents a package that groups other topics
 	public let isPackage: Bool
+	/// the base name of the help file
+	public let fileName: String?
 	/// the title to display
 	public let title: String?
 	/// the short description of the topic
@@ -30,6 +32,7 @@ public class HelpTopic: Hashable {
 		self.isPackage = true
 		self.topicId = nil
 		self.name = name
+		self.fileName = nil
 		self.packageName = name
 		self.title = nil
 		self.desc = nil
@@ -38,10 +41,11 @@ public class HelpTopic: Hashable {
 	}
 
 	/// initializer for an actual topic
-	init(id: Int? = nil, name: String, packageName: String, title: String, aliases: String, description: String?) {
+	init(id: Int? = nil, name: String, packageName: String, fileName: String, title: String, aliases: String, description: String?) {
 		self.isPackage = false
 		self.topicId = id
 		self.name = name
+		self.fileName = fileName
 		self.packageName = packageName
 		self.title = title
 		self.desc = description

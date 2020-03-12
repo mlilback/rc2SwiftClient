@@ -53,7 +53,7 @@ genHelp <- function (dbData, pkg, output_root, links = tools::findHTMLlinks(), i
       outpath = file.path(outdir, paste(curTopic, "html", sep="."))
       tools::Rd2HTML(rdb[[curTopic]], outpath, package = pkg, Links = mylinks)
     }
-    meta <- c(pkg)
+    meta <- c(pkg, curTopic)
     for (key in c("\\name","\\title","\\alias","\\description")) {
       # substring to remove the backslash at the start
       meta <- c(meta, getMetaValue(rdb[[curTopic]], key, pkg, curTopic))
@@ -110,12 +110,12 @@ getMetaValue <- function(da, pattern, pkg, fun) {
 insertFunction <- function(globalData, listOfData) {
   #print(paste("got ", listOfData[1], ' ', listOfData[3]))
   args <- listOfData
-  while (length(args) < 5) {
+  while (length(args) < 6) {
     args <- c(args, "")
   }
-  res1 <- dbSendStatement(globalData$con, "insert into helptopic values (?, ?, ?, ?, ?)", args)
+  res1 <- dbSendStatement(globalData$con, "insert into helptopic values (?, ?, ?, ?, ?, ?)", args)
   dbClearResult(res1)
-  res2 <- dbSendStatement(globalData$con, "insert into helpidx values (?, ?, ?, ?, ?)", args)
+  res2 <- dbSendStatement(globalData$con, "insert into helpidx values (?, ?, ?, ?, ?, ?)", args)
   dbClearResult(res2)
 }
 
@@ -129,9 +129,9 @@ setupDb <- function(output_dir, append = FALSE) {
     dbClearResult(rs)
     rs <- dbSendQuery(globalData$con, "DROP TABLE IF EXISTS helptopic")
     dbClearResult(rs)
-    rs <- dbSendQuery(globalData$con, "CREATE VIRTUAL TABLE helpidx USING fts4(package,name,title,aliases,desc, tokenize=porter)")
+    rs <- dbSendQuery(globalData$con, "CREATE VIRTUAL TABLE helpidx USING fts4(package,topicname,name,title,aliases,desc, tokenize=porter)")
     dbClearResult(rs)
-    rs <- dbSendQuery(globalData$con, "CREATE TABLE helptopic (package text, name tesxt, title text, aliases text, desc text)")
+    rs <- dbSendQuery(globalData$con, "CREATE TABLE helptopic (package text, topicname text, name text, title text, aliases text, desc text)")
     dbClearResult(rs)
     rs <- dbSendQuery(globalData$con, "CREATE UNIQUE INDEX IF NOT EXISTS htopic_pkg_name ON helptopic(package, name)")
     dbClearResult(rs)
