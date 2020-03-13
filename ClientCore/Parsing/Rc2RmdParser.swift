@@ -27,7 +27,6 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 	// offers read-only version of _parsedDocument
 	public let parsedDocument: Property<RmdDocument?>
 	private let _parsedDocument = MutableProperty<RmdDocument?>(nil)
-	private var lastHash: Data?
 	
 	public init(contents: NSTextStorage, help: @escaping HelpCallback) {
 		self.contents = contents
@@ -38,10 +37,7 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 	
 	/// Reparses the contents and updates parsedDocument, syntax highlighting any R code
 	public func reparse() throws {
-		guard contents.length > 0 else { _parsedDocument.value = nil; lastHash = nil; return }
-		if _parsedDocument.value?.attributedString.string == contents.string { return }
-		guard let newHash = contents.string.data(using: .utf8)?.sha256(), lastHash != newHash else { return }
-		lastHash = newHash
+		guard contents.length > 0 else { _parsedDocument.value = nil; return }
 		_parsedDocument.value = try RmdDocument(contents: contents.string, parser: self)
 		// highlight code chunks
 		_parsedDocument.value?.chunks.forEach { chunk in

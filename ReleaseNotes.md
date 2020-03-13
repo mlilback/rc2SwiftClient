@@ -1,5 +1,10 @@
 # Rc² release notes
 
+## Build 86
+
+* preview displays R source codes
+* fixed bug where switching back to rmd from R file wasn't highlighting
+
 ## Build 85
 
 * fixed bug with missing help files when clicking on a topic

@@ -45,11 +45,6 @@ class LivePreviewEditorController: BaseSourceEditorController {
 				{
 					if me.ignoreContentChanges { return }
 					me.save(edits: editor.string, reload: false)
-					do {
-						try me.parser?.reparse()
-					} catch {
-						Log.warn("error reparsing document: \(error)", .app)
-					}
 				}
 			}
 		}
@@ -58,6 +53,10 @@ class LivePreviewEditorController: BaseSourceEditorController {
 	}
 	
 	override func loaded(content: String) {
+		guard context?.currentDocument.value?.isRmarkdown ?? false else {
+			super.loaded(content: "")
+			return
+		}
 		super.loaded(content: content)
 		colorizeHighlightAttributes()
 	}
