@@ -167,7 +167,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		if isRDocument {
 			parser?.highlight(text: storage, range: range)
 			colorizeHighlightAttributes()
-		} else if context?.currentDocument.value?.isRmarkdown ?? false {
+		} else if useParser, context?.currentDocument.value?.isRmarkdown ?? false {
 			do {
 				try parser?.reparse()
 			} catch {
