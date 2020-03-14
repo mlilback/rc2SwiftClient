@@ -34,7 +34,7 @@ class WebKitOutputController: WebViewController {
 	
 	override func sessionChanged() {
 		restoreLastFile()
-		session.workspace.fileChangeSignal.take(duringLifetimeOf: self).observeValues { [weak self] changes in
+		session.workspace.fileChangeSignal.take(duringLifetimeOf: self).observe(on: UIScheduler()).observeValues { [weak self] changes in
 			// see if it the file we're displaying
 			guard let _ = changes.first(where: { $0.type == .remove && $0.file.fileId == self?.file?.fileId  } ) else { return }
 			// it is, so clear

@@ -96,7 +96,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	
 	override func sessionChanged() {
 		fileChangeDisposable?.dispose()
-		fileChangeDisposable = session.workspace.fileChangeSignal.observe(on: UIScheduler()).take(during: session.lifetime).observeValues(filesRefreshed)
+		fileChangeDisposable = session.workspace.fileChangeSignal.observe(on: UIScheduler()).take(during: session.lifetime).observe(on: UIScheduler()).observeValues(filesRefreshed)
 		loadData()
 		tableView.reloadData()
 		if selectedFile != nil {

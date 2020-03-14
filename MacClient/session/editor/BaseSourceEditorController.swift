@@ -63,7 +63,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	// MARK: methods
 	override func setContext(context: EditorContext) {
 		super.setContext(context: context)
-		context.editorFont.signal.observeValues { [weak self] newFont in
+		context.editorFont.signal.observe(on: UIScheduler()).observeValues { [weak self] newFont in
 			self?.fontChanged(newFont)
 		}
 	}
@@ -86,7 +86,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		editor.textContainer?.replaceLayoutManager(SourceEditorLayoutManager())
 		editor.enclosingScrollView?.rulersVisible = true
 		// adjust link color when theme changes
-		ThemeManager.shared.activeSyntaxTheme.signal.take(during: editorLifetime).observeValues { [weak self] _ in self?.adjustLinkColor() }
+		ThemeManager.shared.activeSyntaxTheme.signal.take(during: editorLifetime).observe(on: UIScheduler()).observeValues { [weak self] _ in self?.adjustLinkColor() }
 		adjustLinkColor()
 		// even if not using parser, need it for syntax highlighting
 		parser = Rc2RmdParser(contents: storage, help: { (topic) -> Bool in

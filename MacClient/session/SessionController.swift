@@ -127,7 +127,7 @@ protocol SessionControllerDelegate: class {
 				break
 			}
 		}
-		fileLoadDisposable = session.workspace.fileChangeSignal.observeValues(handler)
+		fileLoadDisposable = session.workspace.fileChangeSignal.observe(on: UIScheduler()).observeValues(handler)
 	}
 }
 
@@ -224,7 +224,7 @@ extension SessionController: SessionDelegate {
 extension SessionController {
 	/// listen for the specified file to be inserted, and then call the handler
 	fileprivate func listenForInsert(fileId: Int, handler: @escaping (Int) -> Void) {
-		fileLoadDisposable = session.workspace.fileChangeSignal.observeValues { values in
+		fileLoadDisposable = session.workspace.fileChangeSignal.observe(on: UIScheduler()).observeValues { values in
 			values.forEach { change in
 				if change.type == .add && change.file.fileId == fileId {
 					self.fileLoadDisposable?.dispose()

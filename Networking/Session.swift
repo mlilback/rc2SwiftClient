@@ -143,7 +143,7 @@ public class Session {
 		self.init(connectionInfo: connectionInfo, workspace: workspace, fileCache: fc!, imageCache: ic, wsWorker: wsWorker, queue: queue ?? .main)
 		ic.workspace = workspace
 		self.delegate = delegate
-		webSocketWorker.status.signal.take(during: sessionLifetime).observeValues { [weak self] value in
+		webSocketWorker.status.signal.take(during: sessionLifetime).observe(on: UIScheduler()).observeValues { [weak self] value in
 			self?.webSocketStatusChanged(status: value)
 		}
 		webSocketWorker.messageSignal.take(during: sessionLifetime).observeResult { [weak self] result in

@@ -9,6 +9,7 @@ import Cocoa
 import Networking
 import MJLLogger
 import Model
+import ReactiveSwift
 
 enum SessionStateKey: String {
 	case History = "history"
@@ -63,7 +64,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		resultsView?.textContainerInset = NSSize(width: 4, height: 4)
 		restoreFont()
 		//try switching to Menlo instead of default monospaced font
-		ThemeManager.shared.activeOutputTheme.signal.observeValues { [weak self] _ in
+		ThemeManager.shared.activeOutputTheme.signal.observe(on: UIScheduler()).observeValues { [weak self] _ in
 			self?.themeChanged()
 		}
 	}

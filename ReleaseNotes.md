@@ -1,5 +1,9 @@
 # Rc² release notes
 
+## Build 87
+
+* all signal observers now act on main thread
+
 ## Build 86
 
 * preview displays R source codes

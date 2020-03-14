@@ -45,7 +45,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	internal var parserContext: ParserContext? { didSet {
 		curDocDisposable?.dispose()
 		loadRegexes() // viewDidLoad might not have been called yet
-		curDocDisposable = parserContext?.parsedDocument.signal.observeValues(documentChanged)
+		curDocDisposable = parserContext?.parsedDocument.signal.observe(on: UIScheduler()).observeValues(documentChanged)
 	} }
 	private var parsedDocument: RmdDocument? { return parserContext?.parsedDocument.value }
 	private let mdownParser = MarkdownParser()

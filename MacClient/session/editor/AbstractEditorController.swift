@@ -198,7 +198,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		compositeDisposable = CompositeDisposable()
 		guard let document = newDocument else { return }
 		if document.isLoaded {
-			compositeDisposable += document.editedContents.signal.observeValues { [weak self] contents in
+			compositeDisposable += document.editedContents.signal.observe(on: UIScheduler()).observeValues { [weak self] contents in
 				guard let me = self else { return }
 				me.editedContentsChanged(updatedContents: document.currentContents ?? "")
 			}
@@ -209,7 +209,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 				case .failure(let rerror):
 					self.appStatus?.presentError(rerror, session: self.session)
 				case .success(let data):
-					self.compositeDisposable += document.editedContents.signal.observeValues { [weak self] contents in
+					self.compositeDisposable += document.editedContents.signal.observe(on: UIScheduler()).observeValues { [weak self] contents in
 						self?.editedContentsChanged(updatedContents: contents ?? "")
 					}
 					self.loaded(content: String(data: data, encoding: .utf8)!)

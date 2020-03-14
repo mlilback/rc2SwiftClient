@@ -32,7 +32,7 @@ class PreviewCodeHandler {
 		self.session = session
 //		parsedDoc = MutableProperty<RmdDocument?>(nil)
 //		parsedDoc <~ docSignal
-//		parsedDoc.signal.observeValues { [weak self] (doc) in
+//		parsedDoc.signal.observe(on: UIScheduler()).observeValues { [weak self] (doc) in
 //			guard let me = self else { return }
 //			guard let theDoc = doc else { me.chunkInfo.removeAll(); return }
 //			guard !me.contentCached else { return }

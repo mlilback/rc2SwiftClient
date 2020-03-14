@@ -59,7 +59,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		outputTabController().selectedOutputTab.signal.take(during: lifetime).observeValues { value in
+		outputTabController().selectedOutputTab.signal.take(during: lifetime).observe(on: UIScheduler()).observeValues { value in
 			self.outputSegmentControl?.selectSegment(withTag: value.rawValue)
 		}
 	}

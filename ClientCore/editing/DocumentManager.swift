@@ -77,7 +77,7 @@ public class DocumentManager: EditorContext {
 			initialFont = menlo
 		}
 		editorFont = MutableProperty<PlatformFont>(initialFont)
-		fileSaver.workspace.fileChangeSignal.observeValues { [weak self] changes in
+		fileSaver.workspace.fileChangeSignal.observe(on: UIScheduler()).observeValues { [weak self] changes in
 			self?.process(changes: changes)
 		}
 	}
