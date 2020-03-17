@@ -14,6 +14,8 @@ import Networking
 import ClientCore
 import Parsing
 
+fileprivate let rParseTiemout = 4.0
+
 /// pfrotocol to allow setting the font of something without knowing anything else about it.
 protocol FontUser {
 	var font: NSFont { get set }
@@ -163,10 +165,8 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		let origCursorRange = editor.selectedRange()
 		storage.deleteCharacters(in: editor.rangeOfAllText)
 		storage.setAttributedString(NSAttributedString(string: content, attributes: self.defaultAttributes))
-		let range = storage.string.fullNSRange
 		if isRDocument {
-			parser?.highlight(text: storage, range: range)
-			colorizeHighlightAttributes()
+			highlightRCode()
 		} else if useParser, context?.currentDocument.value?.isRmarkdown ?? false {
 			do {
 				try parser?.reparse()
@@ -191,6 +191,33 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		}
 		onDocumentLoaded?(document)
 		self.updateUIForCurrentDocument()
+	}
+	
+	private func highlightRCode() {
+		guard let storage = editor?.textStorage else { return }
+		let range = NSRange(location: 0, length: storage.length)
+		let sp = parser!.highlightR(text: storage, range: range, timeout: rParseTiemout)
+		sp.startWithResult() { [weak self] result in
+			do {
+				guard let me = self else { return }
+				if try result.get() {
+					me.colorizeHighlightAttributes()
+				}
+			} catch {
+				Log.warn("got error in higlighting: \(error)", .app)
+			}
+
+			sp.startWithResult() { [weak self] result in
+				do {
+					guard let me = self else { return }
+					if try result.get() {
+						me.colorizeHighlightAttributes()
+					}
+				} catch {
+					Log.warn("got error in higlighting: \(error)", .app)
+				}
+			}
+		}
 	}
 	
 	@objc override func editsNeedSaving() {

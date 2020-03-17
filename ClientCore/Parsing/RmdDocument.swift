@@ -170,9 +170,10 @@ public class RmdDocument: CustomDebugStringConvertible {
 				if let parser = parser {
 					let rng = NSRange(location: 0, length: baseStr.length)
 					if chunk.isExecutable {
-						try parser.highlightR(contents: baseStr, range: rng)
+						let rhigh = try RHighlighter(baseStr, range: rng)
+						try rhigh.start()
 					} else if chunk.isEquation {
-						parser.highlightLatex(contents: baseStr, range: rng)
+						parser.highlightEquation(contents: baseStr, range: rng)
 					}
 				}
 			} catch {

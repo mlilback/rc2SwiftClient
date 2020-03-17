@@ -482,6 +482,8 @@
 		08FAE518208111730076F90C /* NSFont+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FAE517208111730076F90C /* NSFont+MJL.swift */; };
 		08FDB19B1C5917C3006FCD1A /* graph.png in Resources */ = {isa = PBXBuildFile; fileRef = 08FDB19A1C5917C3006FCD1A /* graph.png */; };
 		08FDD8F7240DBA7700D7CB7E /* EquationHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDD8F6240DBA7700D7CB7E /* EquationHighlighter.swift */; };
+		08FDD8FC241EE03D00D7CB7E /* RParserTimeoutListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDD8FB241EE03D00D7CB7E /* RParserTimeoutListener.swift */; };
+		08FDD8FE24203D4600D7CB7E /* RHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08FDD8FD24203D4600D7CB7E /* RHighlighter.swift */; };
 		FA2664C31FF81841003E5460 /* SyntaxThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 086A40DA1E7B4B2300AE476B /* SyntaxThemes.json */; };
 		FA2664C41FF81870003E5460 /* OutputThemes.json in Resources */ = {isa = PBXBuildFile; fileRef = 088F59231E7578B80009A0B1 /* OutputThemes.json */; };
 /* End PBXBuildFile section */
@@ -1287,6 +1289,8 @@
 		08FDB1981C591409006FCD1A /* ImageCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCacheTests.swift; sourceTree = "<group>"; };
 		08FDB19A1C5917C3006FCD1A /* graph.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graph.png; sourceTree = "<group>"; };
 		08FDD8F6240DBA7700D7CB7E /* EquationHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EquationHighlighter.swift; sourceTree = "<group>"; };
+		08FDD8FB241EE03D00D7CB7E /* RParserTimeoutListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RParserTimeoutListener.swift; sourceTree = "<group>"; };
+		08FDD8FD24203D4600D7CB7E /* RHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RHighlighter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2262,11 +2266,13 @@
 				080770C523EA1E3100166362 /* Rc2RFilter.swift */,
 				08A63EAF23AD6FFF00FD472E /* InlineInternalEquation.swift */,
 				08A63EB023AD6FFF00FD472E /* RmdParser.swift */,
+				08FDD8FB241EE03D00D7CB7E /* RParserTimeoutListener.swift */,
 				08A63EB123AD6FFF00FD472E /* InternalCodeChunk.swift */,
 				08A63EB223AD6FFF00FD472E /* Chunk.swift */,
 				08A63EB323AD6FFF00FD472E /* InternalEquationChunk.swift */,
 				08A63EB423AD6FFF00FD472E /* LexerHelpers.swift */,
 				08A63EB523AD6FFF00FD472E /* InlineInternalCodeChunk.swift */,
+				08FDD8FD24203D4600D7CB7E /* RHighlighter.swift */,
 			);
 			name = Rc2Parser;
 			path = ../Rc2Parser/Sources/Rc2Parser;
@@ -3635,6 +3641,7 @@
 				08A63EBE23AD6FFF00FD472E /* RFilterBaseListener.swift in Sources */,
 				08A63EC723AD6FFF00FD472E /* RLexerATN.swift in Sources */,
 				08A63EC823AD6FFF00FD472E /* Rc2LexerATN.swift in Sources */,
+				08FDD8FC241EE03D00D7CB7E /* RParserTimeoutListener.swift in Sources */,
 				08A63EDA23AD6FFF00FD472E /* InlineInternalEquation.swift in Sources */,
 				08A63EC923AD6FFF00FD472E /* Rc2RawParserListener.swift in Sources */,
 				08A63ED423AD6FFF00FD472E /* RFilterParserATN.swift in Sources */,
@@ -3651,6 +3658,7 @@
 				08A63EC623AD6FFF00FD472E /* Rc2RawParserVisitor.swift in Sources */,
 				08A63ED123AD6FFF00FD472E /* Rc2RawParserParserATN.swift in Sources */,
 				08A63EDE23AD6FFF00FD472E /* InternalEquationChunk.swift in Sources */,
+				08FDD8FE24203D4600D7CB7E /* RHighlighter.swift in Sources */,
 				08A63ECB23AD6FFF00FD472E /* Rc2RawParser.swift in Sources */,
 				08A63EDC23AD6FFF00FD472E /* InternalCodeChunk.swift in Sources */,
 				08A63EBF23AD6FFF00FD472E /* RBaseListener.swift in Sources */,
