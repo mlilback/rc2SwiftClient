@@ -585,6 +585,10 @@ private extension Session {
 			return nil
 		case .environmentCreated:
 			return nil
+		case .previewInitialized(_):
+			return nil
+		case .previewUpdate(let data):
+			return data.uniqueIdentifier
 		}
 	}
 	
