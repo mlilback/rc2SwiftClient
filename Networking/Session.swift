@@ -87,6 +87,9 @@ public class Session {
 	private let (sessionLifetime, sessionToken) = Lifetime.make()
 	public var lifetime: Lifetime { return sessionLifetime }
 	
+	public private(set) var previewId: Int?
+	public var previewDelegate: SessionPreviewDelegate?
+	
 	private typealias PendingTransactionHandler = (PendingTransaction, SessionResponse, Rc2Error?) -> Void
 
 	private struct PendingTransaction {
@@ -397,6 +400,29 @@ public class Session {
 			self.send(command: command)
 		}
 	}
+	
+	// MARK: - preview
+	
+	public func requestPreviewId(fileId: Int) -> SignalProducer<Void, Rc2Error> {
+		return SignalProducer<Void, Rc2Error> { [weak self] observer, _ in
+			guard let me = self else { fatalError() }
+			let transId = UUID().uuidString
+			let params = SessionCommand.InitPreviewParams(fileId: fileId, updateIdentifier: transId)
+			let command = SessionCommand.initPreview(params)
+			me.send(command: command)
+			me.previewId = nil
+		}
+	}
+	
+	public func updatePreviewChunks(chunkId: Int?, includePrevious: Bool, updateId: String) -> SignalProducer<Void, Rc2Error> {
+		return SignalProducer<Void, Rc2Error> { [weak self] observer, _ in
+			guard let me =  self else { fatalError() }
+			guard let pid = me.previewId else { fatalError("preview update called without a preview id") }
+			let params = SessionCommand.UpdatePreviewParams(previewId: pid, chunkId: chunkId, includePrevious: includePrevious, identifier: updateId)
+			let command = SessionCommand.updatePreview(params)
+			me.send(command: command)
+		}
+	}
 }
 
 // MARK: FileSaver
@@ -535,6 +561,16 @@ private extension Session {
 				imageCache.cache(images: execData.images)
 			}
 			informDelegate = true
+		case .previewInitialized(let initData):
+			guard initData.errorCode == 0 else {
+				Log.error("initPreviewId returned error \(initData.errorCode)", .network)
+				let err: SessionError = SessionError.mapping(errorCode: initData.errorCode)
+				delegate?.sessionErrorReceived(err, details: "")
+				return
+			}
+			previewId = initData.previewId
+		case .previewUpdate(let data):
+			previewDelegate?.previewUpdateReceived(response: data)
 		default:
 			informDelegate = true
 		}
@@ -585,8 +621,8 @@ private extension Session {
 			return nil
 		case .environmentCreated:
 			return nil
-		case .previewInitialized(_):
-			return nil
+		case .previewInitialized(let data):
+			return data.uniqueIdentifier
 		case .previewUpdate(let data):
 			return data.uniqueIdentifier
 		}

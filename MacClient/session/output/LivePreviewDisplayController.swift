@@ -11,6 +11,7 @@ import WebKit
 import Rc2Common
 import ClientCore
 import Networking
+import Model
 import ReactiveSwift
 import MJLLogger
 
@@ -32,7 +33,7 @@ protocol LivePreviewOutputController {
 	func contentsEdited(contents: String, range: NSRange, delta: Int) -> Bool
 }
 
-class LivePreviewDisplayController: AbstractSessionViewController, OutputController, LivePreviewOutputController, WKUIDelegate, WKNavigationDelegate
+class LivePreviewDisplayController: AbstractSessionViewController, OutputController, LivePreviewOutputController, WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler
 {
 	
 	// required by OutputController, should use at some point
@@ -41,7 +42,16 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil)
 	private var curDocDisposable: Disposable?
 	private var didLoadView = false
-
+	private var pageShellLoaded = false
+	private let opQueue: OperationQueue = {
+		let q = OperationQueue()
+		q.maxConcurrentOperationCount = 1
+		q.name = "preview display"
+		q.qualityOfService = .userInitiated
+		q.isSuspended = true
+		return q
+	}()
+	
 	internal var parserContext: ParserContext? { didSet {
 		curDocDisposable?.dispose()
 		loadRegexes() // viewDidLoad might not have been called yet
@@ -49,7 +59,6 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	} }
 	private var parsedDocument: RmdDocument? { return parserContext?.parsedDocument.value }
 	private let mdownParser = MarkdownParser()
-//	private var parseInProgress = false
 	private var codeHandler: PreviewCodeHandler?
 
 	// regular expressions
@@ -70,19 +79,22 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	
 	private var documentRoot: URL?
 	private var htmlRoot: URL?
-	private var headerContents = ""
-	private var footerContents = ""
+	//private var headerContents = ""
+	//private var footerContents = ""
 	private var docHtmlLoaded = false
 
-	var emptyContents: String { "\(headerContents) \(footerContents)" }
+	//var emptyContents: String { "\(headerContents) \(footerContents)" }
 	
 	@IBOutlet weak var outputView: WKWebView?
-	
+	private var webConfig: WKWebViewConfiguration?
+	private var initNavigation: WKNavigation?
+
 	// MARK: - standard overrides
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		loadRegexes()
+		loadWebView()
 		// for some reason the debugger show documentRoot as nil after this, even though po documentRoot?.absoluteString returns output
 		documentRoot = Bundle.main.url(forResource: "FileTemplates", withExtension: nil)
 		htmlRoot = Bundle.main.url(forResource: "preview_support", withExtension: nil)
@@ -90,6 +102,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		docHtmlLoaded = false
 		outputView?.uiDelegate = self
 		outputView?.navigationDelegate = self
+		// if have webview and wasn't loaded, suspend the queue
 		ensureResourcesLoaded()
 	}
 	
@@ -125,18 +138,26 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		codeHandler?.clearCache()
 		refreshContent()
 	}
+	
+	// MARK: - action handlers
+	func executeCunk(number: Int) {
+		
+	}
+	
+	func executeChunkAndPrevious(number: Int) {
+	}
 		
 	// MARK: - content presentation
 	
 	private func loadInitialPage() {
-		guard headerContents.count == 0 else { return }
+		guard !pageShellLoaded else { return }
 		guard let headerUrl = Bundle.main.url(forResource: "customRmdHeader", withExtension: "html"),
 			let footerUrl = Bundle.main.url(forResource: "customRmdFooter", withExtension: "html")
 			else { fatalError("failed to find preview header/footer") }
 		do {
-			headerContents = try String(contentsOf: headerUrl)
-			footerContents = try String(contentsOf: footerUrl)
-			updatePreview()
+			let headerContents = try String(contentsOf: headerUrl)
+			let footerContents = try String(contentsOf: footerUrl)
+			initNavigation = outputView?.loadHTMLString(headerContents + footerContents, baseURL: htmlRoot)
 		} catch {
 			fatalError("failed to load initial preview content: \(error)")
 		}
@@ -144,21 +165,15 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	
 	/// parses the parsed document and loads it via javascript
 	private func updatePreview(updatedContents: String? = nil) {
-//		guard !parseInProgress else { return }
 		guard didLoadView else { return }
 
 		// handle empty content
-		guard let curDoc = parsedDocument else {
-			load(html: emptyContents)
-			return
-		}
+		guard let curDoc = parsedDocument else { return; }
 		if docHtmlLoaded, updatedContents == nil, curDoc.attributedString.length > 0 { return }
 		guard let contents = updatedContents ?? parserContext?.parsedDocument.value?.rawString
 			else { Log.warn("current doc has no contents??"); return }
 		guard curDoc.attributedString.string != updatedContents else { return }
 		// update the parsed document, update the webview
-//		parseInProgress = true
-//		defer { parseInProgress = false }
 		var changedChunkIndexes = try! RmdDocument.update(document: curDoc, with: contents) ?? []
 		// TODO: cacheCode needs to be async
 		// add to changedChunkIndexes any chunks that need to udpated because of changes to R code
@@ -172,13 +187,25 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			Log.info("udpating just chunks \(changedChunkIndexes)")
 			for chunkNumber in changedChunkIndexes {
 				let chunk = curDoc.chunks[chunkNumber]
-				var html = htmlFor(chunk: chunk, index: chunkNumber)
-				html = escapeForJavascript(html)
+				 
+				var html = htmlFor(chunk: chunk, index: chunkNumber) // don't want the wrapping section ala htmlWrapper()
+				if chunk.chunkType != .equation {
+					html = escapeForJavascript(html)
+				}
 				
-				let command = "$(\"section[index='\(chunkNumber)']\").html('\(html)'); MathJax.typeset()"
-//				let command = "document.querySelector('section[index=\(chunkNumber)]').html('\(html)'); MathJax.typeset(); debugger;"
-				outputView?.evaluateJavaScript(command, completionHandler: nil)
+				var command = "$(\"section[index='\(chunkNumber)']\").html('\(html)');";
+				if chunk.chunkType == .equation {
+					command += "MathJax.typeset()"
+				}
+				runJavascript(command) { (_, err) in
+					guard err == nil else {
+						Log.warn("javascript failed", .app)
+						return
+					}
+					Log.info("javascript worked")
+				}
 			}
+			runJavascript("updateSectionToolbars()")
 		} else { // no changes, so just refresh everything
 			refreshContent()
 		}
@@ -186,7 +213,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	
 	func refreshContent() {
 		guard let curDoc = parsedDocument else {
-			load(html: emptyContents)
+			load(html: "")
 			return
 		}
 		if !codeHandler!.contentCached {
@@ -194,14 +221,29 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 		var html =  ""
 		for (chunkNumber, chunk) in curDoc.chunks.enumerated() {
-			let descriptor = chunk.isInline ? "inline" : "section"
-			html += "<\(descriptor) index=\"\(chunkNumber)\">\n"
-			html += htmlFor(chunk: chunk, index: chunkNumber)
-			html += "\n</\(descriptor)>\n"
+			let chtml = htmlWrapper(chunk: chunk, chunkNumber: chunkNumber)
+			html += chtml
 		}
 		docHtmlLoaded = true
-		load(html: "\(headerContents)\n\(html)\n\(footerContents)")
-		outputView?.evaluateJavaScript("MathJax.typeset()", completionHandler: nil)
+		load(html: html)
+		runJavascript("updateSectionToolbars(); MathJax.typeset()") { (_, error) in
+			guard error != nil else { return }
+			let msg = error.debugDescription
+			Log.info("got error refreshing content: \(msg)")
+		};
+	}
+	
+	private func htmlWrapper(chunk: RmdDocumentChunk, chunkNumber: Int) -> String {
+		var html = ""
+		let descriptor = chunk.isInline ? "inline" : "section"
+		
+		html += "<\(descriptor) index=\"\(chunkNumber)\" type=\"\(chunk.chunkType)\">\n"
+		if !chunk.isInline {
+			html += "<sectionToolbar index=\"\(chunkNumber)\" type=\"\(chunk.chunkType)\"></sectionToolbar>\n"
+		}
+		html += htmlFor(chunk: chunk, index: chunkNumber)
+		html += "\n</\(descriptor)>\n"
+		return html
 	}
 	
 	private func htmlFor(chunk: RmdDocumentChunk, index: Int) -> String {
@@ -282,11 +324,67 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	/// replaces the visible html document
 	/// - Parameter html: the new html to display
 	private func load(html: String)  {
-		let nav = outputView?.loadHTMLString(html, baseURL: htmlRoot)
-		if let realNav = nav { emptyNavigations.insert(realNav) }
+		// FIXME: need to use fifo queue for all loads and javacripts. run immediately if queue empty, otherwise next item run when didFinish called
+//		opQueue.addOperation {
+//			let nav = self.outputView?.loadHTMLString(html, baseURL: self.htmlRoot)
+//			if let realNav = nav { self.emptyNavigations.insert(realNav) }
+//		}
+		opQueue.addOperation { [weak self] in
+			guard let me = self else { return }
+			let sema = DispatchSemaphore(value: 1)
+			let encoded = html.data(using: .utf8)!.base64EncodedString()
+			let realString = "updateBody(" + "'" + encoded + "')"
+			DispatchQueue.main.async {
+				me.outputView?.evaluateJavaScript(realString) { (val, err) in
+					sema.signal()
+				}
+				sema.wait()
+			}
+		}
+	}
+	
+	private func runJavascript(_ script: String, completionHandler: ((Any?, Error?) -> Void)? = nil) {
+		opQueue.addOperation { [weak self] in
+			guard let me = self else { return }
+			let sema = DispatchSemaphore(value: 1)
+			let encoded = script.data(using: .utf8)!.base64EncodedString()
+			let realString = "executeScript(" + "'" + encoded + "')"
+			DispatchQueue.main.async {
+				me.outputView?.evaluateJavaScript(realString) { (val, err) in
+					completionHandler?(val, err)
+					sema.signal()
+				}
+				sema.wait()
+			}
+		}
 	}
 	
 	// MARK: - utility
+	
+	private func loadWebView() {
+		let prefs = WKPreferences()
+		prefs.minimumFontSize = 9.0
+		prefs.javaEnabled = false
+		prefs.javaScriptCanOpenWindowsAutomatically = false
+		let config = WKWebViewConfiguration()
+		config.preferences = prefs
+		config.applicationNameForUserAgent = "Rc2"
+		config.allowsAirPlayForMediaPlayback = true
+		webConfig = config
+		webConfig?.userContentController.add(self, name: "previewHandler")
+		let newwk = WKWebView(frame: outputView!.frame, configuration: config)
+		newwk.translatesAutoresizingMaskIntoConstraints = false
+		outputView?.superview?.addSubview(newwk)
+		outputView?.removeFromSuperview()
+		outputView = newwk
+		outputView?.uiDelegate = self
+		outputView?.navigationDelegate = self
+		outputView?.widthAnchor.constraint(equalTo: newwk.superview!.widthAnchor).isActive = true
+		outputView?.heightAnchor.constraint(equalTo: newwk.superview!.heightAnchor).isActive = true
+		outputView?.centerYAnchor.constraint(equalTo: newwk.superview!.centerYAnchor).isActive = true
+		outputView?.centerXAnchor.constraint(equalTo: newwk.superview!.centerXAnchor).isActive = true
+
+	}
 	
 	private func loadRegexes() {
 		guard lineContiuationRegex == nil else { return }
@@ -341,6 +439,11 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	// MARK: - WebKit Delegate(s) methods
 	
 	func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+		if navigation == initNavigation {
+			pageShellLoaded = true;
+//			runJavascript("updateSectionToolbars(); MathJax.typeset()")
+			opQueue.isSuspended = false
+		}
 		if emptyNavigations.contains(navigation) {
 			emptyNavigations.remove(navigation)
 			return
@@ -356,6 +459,34 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		completionHandler()
 	}
 
+	func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+		if let dict = message.body as? [String: Any], let name = dict["name"] as? String {
+			if name == "toolClicked" {
+				guard let str = dict["chunkNumber"] as? String,
+					let chunkNum = Int(str),
+					let actionName = dict["action"] as? String
+					else { return }
+				switch actionName {
+				case "execute":
+					executeCunk(number: chunkNum)
+				case "executePrevious":
+						executeChunkAndPrevious(number: chunkNum)
+				default:
+						Log.info("invalid action from preview: \(actionName)")
+				}
+			}
+			
+			return
+		}
+		if message.name == "pageLoaded" {
+			Log.info("page loaded")
+		} else if message.name == "previewHandler" {
+			//ignore
+		} else {
+			Log.info("unknown message posted from preview")
+		}
+	}
+	
 	// MARK: - embedded types
 	
 	private class MarkdownParser {
@@ -389,4 +520,9 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 }
 
-
+// MARK: - SessionPreviewDelegate
+extension LivePreviewDisplayController {
+	func previewUpdateReceived(response: SessionResponse.PreviewUpdateData) {
+		// TODO: need to update codeHandler's chunk cache, update display of that chunk
+	}
+}

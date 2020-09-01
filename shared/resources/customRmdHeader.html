@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- saved from url=(0014)about:internet -->
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -187,7 +186,7 @@ hr {
 <script src="jquery-3.4.1.min.js"></script>
 
 <script>
-	$(document).ready (function {
+	$(document).ready (function() {
 					   console.log("jquery loaded")
 					   })
 </script>
@@ -211,12 +210,67 @@ hr {
 	}
 </script>
 
+<script type="text/javascript">
+function updateSectionToolbars() {
+	$.each($("sectionToolbar"), function(index, toolbar) {
+		var chunkNumber = $(toolbar).attr("index")
+		var template = document.getElementsByTagName("template")[0]
+		var img1 = document.importNode(template.content, true)
+		$(img1).attr('id', 'timg' + chunkNumber)
+		$(toolbar).append(img1)
+		console.log("updating a chunk toolbar:" + img1)
+	})
+}
+function executeScript(rawScript) {
+	var script = window.atob(rawScript)
+	eval(script)
+}
+function updateBody(newContent) {
+	var decoded = window.atob(newContent)
+	$("#body-content").html(decoded)
+}
+function toolClicked(item, actionName) {
+	try {
+		var chunkNum = $($(item).parents("sectionToolbar")[0]).attr("index")
+		console.log("got tool click " + chunkNum)
+		window.webkit.messageHandlers.previewHandler.postMessage({name: "toolClicked", chunkNumber: chunkNum, action: actionName})
+	} catch (error) {
+		console.log("toolCicked error: " + error);
+	}
+}
+</script>
+
+<script type="text/javascript">
+window.addEventListener("load", function() {
+	window.webkit.messageHandlers.previewHandler.postMessage("pageLoaded");
+});
+</script>
+
 <link rel="stylesheet" href="preview.css">
 	
 
 </head>
 
-<body>
+<body id="body">
+<template id="toolbar-template">
+<a href="#" onclick="javascript:toolClicked(this, 'execute')" title="execute this chunk">
+<svg id="tt1" class="toolbar-button" width="32px" height="24px" viewBox="0 0 32 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<g id="Group" fill="#aaaaaa" fill-rule="nonzero">
+		<path d="M14,18 C9.735,18 5.699,16.193 2.633,12.912 C2.256,12.509 2.278,11.876 2.681,11.499 C3.085,11.122 3.717,11.144 4.095,11.547 C6.778,14.419 10.295,16 14,16 C18.763,16 23.149,13.395 25.84,9 C23.15,4.605 18.763,2 14,2 C9.062,2 4.528,4.801 1.87,9.493 C1.598,9.974 0.986,10.144 0.507,9.87 C0.026,9.598 -0.142,8.988 0.13,8.507 C3.147,3.18 8.333,0 14,0 C19.668,0 24.853,3.18 27.87,8.507 C28.043,8.813 28.043,9.187 27.87,9.492 C24.853,14.819 19.668,18 14,18 Z" id="eyeLine1"></path>
+		<path d="M14,14 C11.243,14 9,11.757 9,9 C9,6.243 11.243,4 14,4 C16.757,4 19,6.243 19,9 C19,11.757 16.757,14 14,14 Z M14,6 C12.346,6 11,7.346 11,9 C11,10.654 12.346,12 14,12 C15.654,12 17,10.654 17,9 C17,7.346 15.654,6 14,6 Z" id="Shape"></path>
+	</g>
+</svg>
+</a>
+<a href="#" onclick="javascript:toolClicked(this, 'executePrevious')" title="execute including previous chunks">
+<svg id="tt2" class="toolbar-button" width="32px" height="24px" viewBox="0 0 32 24" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	<path d="M15.99975,0 L9.58575,6.414 C8.80475,7.195 8.80475,8.461 9.58575,9.242 C10.36675,10.023 11.63275,10.023 12.41375,9.242 L13.99975,7.656 L13.99975,14.898 C13.99975,16.002 14.89475,16.898 15.99975,16.898 C17.10375,16.898 17.99975,16.002 17.99975,14.898 L17.99975,7.656 L19.58575,9.242 C19.97675,9.633 20.48775,9.828 20.99975,9.828 C21.51175,9.828 22.02275,9.633 22.41375,9.242 C23.19475,8.461 23.19475,7.195 22.41375,6.414 L15.99975,0 Z" id="Arrow" fill="#aaaaaaa"></path>
+	<g id="eye" transform="translate(2.000000, 5.000000)" fill="#aaaaaa" fill-rule="nonzero">
+		<path d="M14,18 C9.735,18 5.699,16.193 2.633,12.912 C2.256,12.509 2.278,11.876 2.681,11.499 C3.085,11.122 3.717,11.144 4.095,11.547 C6.778,14.419 10.295,16 14,16 C18.763,16 23.149,13.395 25.84,9 C23.15,4.605 18.763,2 14,2 C9.062,2 4.528,4.801 1.87,9.493 C1.598,9.974 0.986,10.144 0.507,9.87 C0.026,9.598 -0.142,8.988 0.13,8.507 C3.147,3.18 8.333,0 14,0 C19.668,0 24.853,3.18 27.87,8.507 C28.043,8.813 28.043,9.187 27.87,9.492 C24.853,14.819 19.668,18 14,18 Z" fill="#aaaaaa" id="eyeLine2"></path>
+		<path d="M14,14 C11.243,14 9,11.757 9,9 C9,6.243 11.243,4 14,4 C16.757,4 19,6.243 19,9 C19,11.757 16.757,14 14,14 Z M14,6 C12.346,6 11,7.346 11,9 C11,10.654 12.346,12 14,12 C15.654,12 17,10.654 17,9 C17,7.346 15.654,6 14,6 Z" id="eyeline3"></path>
+	</g>
+</svg>
+</a>
+</template>
 	<div class="container-fluid main-container">
 		
-		<div class="fluid-row" id="header"> </div>
+		<div class="fluid-row" id="body-content"> </div>

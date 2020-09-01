@@ -107,10 +107,18 @@ class PreviewCodeHandler {
 	func htmlForChunk(document: RmdDocument, number: Int) -> String {
 		// FIXME: for now, just show source code
 		let src = document.string(for: document.chunks[number])
+		let output: String
+		if let cache = chunkInfo[number] {
+			output = cache.currentHtml
+		} else {
+			output = "<!-- R output will go here -->"
+		}
 		return """
 		<div class="codeChunk">
 		<div class="codeSource">
 		\(src.addingUnicodeEntities.replacingOccurrences(of: "\n", with: "<br>\n"))
+		</div><div class="codeOutput">
+		\(output)
 		</div>
 		</div>
 		"""

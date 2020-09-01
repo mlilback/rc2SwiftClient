@@ -20,3 +20,7 @@ public protocol SessionDelegate: class {
 	///a script/file had a call to help with the passed in arguments
 	func respondToHelp(_ helpTopic: String)
 }
+
+public protocol SessionPreviewDelegate: class {
+	func previewUpdateReceived(response: SessionResponse.PreviewUpdateData)
+}
