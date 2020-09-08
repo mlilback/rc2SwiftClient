@@ -106,7 +106,7 @@ class PreviewCodeHandler {
 	/// returns the html for the specified chunk.
 	func htmlForChunk(document: RmdDocument, number: Int) -> String {
 		// FIXME: for now, just show source code
-		let src = document.string(for: document.chunks[number])
+		let src = document.string(for: document.chunks[number], type: .inner)
 		let output: String
 		if let cache = chunkInfo[number] {
 			output = cache.currentHtml
