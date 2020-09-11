@@ -31,11 +31,13 @@ protocol LivePreviewOutputController {
 	///   - delta: the change made
 	/// - Returns: true if the changes should be saved to the current document's editedContents causing a reparse
 	func contentsEdited(contents: String, range: NSRange, delta: Int) -> Bool
+
+	/// to be called once by editor at load
+	func setEditorContext(_ econtext: EditorContext?)
 }
 
 class LivePreviewDisplayController: AbstractSessionViewController, OutputController, LivePreviewOutputController, WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler
 {
-	
 	// required by OutputController, should use at some point
 	var contextualMenuDelegate: ContextualMenuDelegate?
 
@@ -54,12 +56,15 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	
 	internal var parserContext: ParserContext? { didSet {
 		curDocDisposable?.dispose()
-		loadRegexes() // viewDidLoad might not have been called yet
+		if lineContiuationRegex == nil {
+			loadRegexes() // viewDidLoad might not have been called yet
+		}
 		curDocDisposable = parserContext?.parsedDocument.signal.observe(on: UIScheduler()).observeValues(documentChanged)
 	} }
 	private var parsedDocument: RmdDocument? { return parserContext?.parsedDocument.value }
 	private let mdownParser = MarkdownParser()
-	private var codeHandler: PreviewCodeHandler?
+	private var previewData = [Int:PreviewIdCache]()
+	private var currentPreview: PreviewIdCache?
 
 	// regular expressions
 	private var lineContiuationRegex: NSRegularExpression!
@@ -79,12 +84,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	
 	private var documentRoot: URL?
 	private var htmlRoot: URL?
-	//private var headerContents = ""
-	//private var footerContents = ""
 	private var docHtmlLoaded = false
 
-	//var emptyContents: String { "\(headerContents) \(footerContents)" }
-	
 	@IBOutlet weak var outputView: WKWebView?
 	private var webConfig: WKWebViewConfiguration?
 	private var initNavigation: WKNavigation?
@@ -104,14 +105,13 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		outputView?.navigationDelegate = self
 		// if have webview and wasn't loaded, suspend the queue
 		ensureResourcesLoaded()
+		context.signal.observeValues { (newContext) in
+			print("got new context)")
+		}
 	}
 	
 	override func sessionChanged() {
 		super.sessionChanged()
-		guard sessionOptional != nil, let pcontext = parserContext else { codeHandler = nil; return }
-		// chicken/egg problem with parserContext didSet. this is conditionally done in both
-		codeHandler = PreviewCodeHandler(session: session, docSignal: pcontext.parsedDocument.signal)
-
 	}
 	
 	// MARK: - notification handlers
@@ -132,10 +132,18 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		if docHtmlLoaded || newDocument == parsedDocument  {
 			Log.info("document changed with possiblel duplicate", .app)
 		}
-		if  nil == codeHandler, let pcontext = parserContext {
-			codeHandler = PreviewCodeHandler(session: session, docSignal: pcontext.parsedDocument.signal)
+		guard let fileId = context.value?.currentDocument.value?.file.fileId else {
+			// no file
+			currentPreview = nil
+			return
 		}
-		codeHandler?.clearCache()
+		if  let pcontext = parserContext, var previewInfo = previewData[fileId]
+		{
+			// already have preview info
+			previewInfo.codeHandler = PreviewCodeHandler(previewId: previewInfo.previewId, docSignal: pcontext.parsedDocument.signal)
+			currentPreview = previewInfo
+			previewInfo.codeHandler.clearCache()
+		}
 		refreshContent()
 	}
 	
@@ -168,7 +176,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		guard didLoadView else { return }
 
 		// handle empty content
-		guard let curDoc = parsedDocument else { return; }
+		guard let curDoc = parsedDocument, let curPreview = currentPreview else { return; }
 		if docHtmlLoaded, updatedContents == nil, curDoc.attributedString.length > 0 { return }
 		guard let contents = updatedContents ?? parserContext?.parsedDocument.value?.rawString
 			else { Log.warn("current doc has no contents??"); return }
@@ -178,9 +186,9 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		// TODO: cacheCode needs to be async
 		// add to changedChunkIndexes any chunks that need to udpated because of changes to R code
 		if changedChunkIndexes.count > 0 {
-			codeHandler?.cacheCode(changedChunks: &changedChunkIndexes, in: curDoc)
+			curPreview.codeHandler.cacheCode(changedChunks: &changedChunkIndexes, in: curDoc)
 		} else {
-			codeHandler?.cacheAllCode(in: curDoc)
+			curPreview.codeHandler.cacheAllCode(in: curDoc)
 		}
 		// handle changes
 		if changedChunkIndexes.count > 0 {
@@ -216,8 +224,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			load(html: "")
 			return
 		}
-		if !codeHandler!.contentCached {
-			codeHandler!.cacheAllCode(in: curDoc)
+		if !(currentPreview?.codeHandler.contentCached ?? false) {
+			currentPreview?.codeHandler.cacheAllCode(in: curDoc)
 		}
 		var html =  ""
 		for (chunkNumber, chunk) in curDoc.chunks.enumerated() {
@@ -294,7 +302,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	
 	private func rHtmlFor(code chunk: RmdDocumentChunk, index: Int) -> String {
 		guard let doc = parsedDocument else { fatalError("htmlFor called w/o a document") }
-		guard let rHandler = codeHandler else {
+		guard let rHandler = currentPreview?.codeHandler else {
 			Log.warn("asked to generate R code w/o context");
 			return "<pre class=\"r\"><code>\(doc.string(for: chunk, type: .inner).addingUnicodeEntities)</code></pre>\n"
 		}
@@ -360,6 +368,18 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 	
 	// MARK: - utility
+
+	func setEditorContext(_ econtext: EditorContext?) {
+		context.value = econtext
+	}
+	
+
+	private func requestPreviewId(fileId: Int) -> SignalProducer<PreviewIdCache, Rc2Error> {
+		let handler = SignalProducer<PreviewIdCache, Rc2Error> { observer, _ in
+			// FIXME:
+		}
+		return handler
+	}
 	
 	private func loadWebView() {
 		let prefs = WKPreferences()
@@ -520,8 +540,30 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 }
 
+/// used to cache previews so old ones can be removed to free memory pressure
+private struct PreviewIdCache: Equatable {
+	init(previewId: Int, fileId: Int, codeHandler: PreviewCodeHandler) {
+		self.previewId = previewId
+		self.fileId = fileId
+		self.codeHandler = codeHandler
+	}
+	
+	static func == (lhs: PreviewIdCache, rhs: PreviewIdCache) -> Bool {
+		return lhs.fileId == rhs.fileId && lhs.previewId == rhs.previewId
+	}
+	
+	let previewId: Int
+	let fileId: Int
+	var codeHandler: PreviewCodeHandler
+	var lastAccess: TimeInterval = Date.timeIntervalSinceReferenceDate
+}
+
 // MARK: - SessionPreviewDelegate
-extension LivePreviewDisplayController {
+extension LivePreviewDisplayController: SessionPreviewDelegate {
+	func previewIdReceived(response: SessionResponse.PreviewInitedData) {
+		
+	}
+	
 	func previewUpdateReceived(response: SessionResponse.PreviewUpdateData) {
 		// TODO: need to update codeHandler's chunk cache, update display of that chunk
 	}

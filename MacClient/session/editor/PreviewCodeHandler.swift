@@ -12,8 +12,8 @@ import ClientCore
 import Networking
 import MJLLogger
 
-class PreviewCodeHandler {
-	enum Error: String, RawRepresentable, Swift.Error {
+public class PreviewCodeHandler {
+	public enum Error: String, RawRepresentable, Swift.Error {
 		case codeError
 	}
 	private struct ChunkInfo: Hashable {
@@ -23,32 +23,22 @@ class PreviewCodeHandler {
 		var inlineHtml: [String] = []
 	}
 	
-	var session: Session
-//	let parsedDoc: MutableProperty<RmdDocument?>
+	let previewId: Int
 	private var chunkInfo: [ChunkInfo?] = []
 	public var contentCached: Bool { return chunkInfo.count > 0 }
 	
-	init(session: Session, docSignal: Signal<RmdDocument?, Never>) {
-		self.session = session
-//		parsedDoc = MutableProperty<RmdDocument?>(nil)
-//		parsedDoc <~ docSignal
-//		parsedDoc.signal.observe(on: UIScheduler()).observeValues { [weak self] (doc) in
-//			guard let me = self else { return }
-//			guard let theDoc = doc else { me.chunkInfo.removeAll(); return }
-//			guard !me.contentCached else { return }
-//			var indexes = [Int](0..<theDoc.chunks.count)
-//			me.cacheCode(changedChunks: &indexes, in: theDoc)
-//		}
+	public init(previewId: Int, docSignal: Signal<RmdDocument?, Never>) {
+		self.previewId = previewId
 	}
 	
 	/// Clears the code chache, should be called when the document has changed
-	func clearCache() {
+	public func clearCache() {
 		chunkInfo.removeAll()
 	}
 	
 	/// caches the html for all code chunks and any markdown chunks that contain inline code
 	/// - Parameter document: the document to cache
-	func cacheAllCode(in document: RmdDocument) {
+	public func cacheAllCode(in document: RmdDocument) {
 		var changedChunkIndexes = [Int](0..<document.chunks.count)
 		cacheCode(changedChunks: &changedChunkIndexes, in: document)
 	}
@@ -58,7 +48,7 @@ class PreviewCodeHandler {
 	/// - Parameter changedChunks: array of chunkNumbers that caller thinks changed.
 	///  Any chunk where the output did not change is removed. Ones not included where the output did change are added.
 	/// - Parameter document: the document to cache
-	func cacheCode(changedChunks: inout [Int], in document: RmdDocument) {
+	public func cacheCode(changedChunks: inout [Int], in document: RmdDocument) {
 		// if not the same size as last time, then all code is dirty
 		if document.chunks.count != chunkInfo.count {
 			chunkInfo = [ChunkInfo?]()
@@ -104,8 +94,7 @@ class PreviewCodeHandler {
 	}
 	
 	/// returns the html for the specified chunk.
-	func htmlForChunk(document: RmdDocument, number: Int) -> String {
-		// FIXME: for now, just show source code
+	public func htmlForChunk(document: RmdDocument, number: Int) -> String {
 		let src = document.string(for: document.chunks[number], type: .inner)
 		let output: String
 		if let cache = chunkInfo[number] {

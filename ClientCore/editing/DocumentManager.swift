@@ -251,7 +251,7 @@ public class DocumentManager: EditorContext {
 	
 	private func load(document: EditorDocument) -> SignalProducer<String?, Rc2Error> {
 		precondition(openDocuments[document.file.fileId] == document)
-		if document.isLoaded {
+		if loading.value || document.isLoaded {
 			switchTo(document: document)
 			return SignalProducer<String?, Rc2Error>(value: document.currentContents)
 		}

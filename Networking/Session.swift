@@ -87,7 +87,6 @@ public class Session {
 	private let (sessionLifetime, sessionToken) = Lifetime.make()
 	public var lifetime: Lifetime { return sessionLifetime }
 	
-	public private(set) var previewId: Int?
 	public var previewDelegate: SessionPreviewDelegate?
 	
 	private typealias PendingTransactionHandler = (PendingTransaction, SessionResponse, Rc2Error?) -> Void
@@ -403,22 +402,29 @@ public class Session {
 	
 	// MARK: - preview
 	
-	public func requestPreviewId(fileId: Int) -> SignalProducer<Void, Rc2Error> {
-		return SignalProducer<Void, Rc2Error> { [weak self] observer, _ in
+	public func requestPreviewId(fileId: Int) -> SignalProducer<Int, Rc2Error> {
+		return SignalProducer<Int, Rc2Error> { [weak self] observer, _ in
 			guard let me = self else { fatalError() }
 			let transId = UUID().uuidString
 			let params = SessionCommand.InitPreviewParams(fileId: fileId, updateIdentifier: transId)
 			let command = SessionCommand.initPreview(params)
 			me.send(command: command)
-			me.previewId = nil
+			me.pendingTransactions[transId] = PendingTransaction(transId: transId, command: command){ (_, response, error) in
+				if let err = error {
+					observer.send(error: err)
+					return
+				}
+				guard case let SessionResponse.previewUpdate(initData) = response else { fatalError("invalid response data") }
+				observer.send(value: initData.previewId)
+				observer.sendCompleted()
+			}
 		}
 	}
 	
-	public func updatePreviewChunks(chunkId: Int?, includePrevious: Bool, updateId: String) -> SignalProducer<Void, Rc2Error> {
+	public func updatePreviewChunks(previewId: Int, chunkId: Int?, includePrevious: Bool, updateId: String) -> SignalProducer<Void, Rc2Error> {
 		return SignalProducer<Void, Rc2Error> { [weak self] observer, _ in
 			guard let me =  self else { fatalError() }
-			guard let pid = me.previewId else { fatalError("preview update called without a preview id") }
-			let params = SessionCommand.UpdatePreviewParams(previewId: pid, chunkId: chunkId, includePrevious: includePrevious, identifier: updateId)
+			let params = SessionCommand.UpdatePreviewParams(previewId: previewId, chunkId: chunkId, includePrevious: includePrevious, identifier: updateId)
 			let command = SessionCommand.updatePreview(params)
 			me.send(command: command)
 		}
@@ -562,13 +568,7 @@ private extension Session {
 			}
 			informDelegate = true
 		case .previewInitialized(let initData):
-			guard initData.errorCode == 0 else {
-				Log.error("initPreviewId returned error \(initData.errorCode)", .network)
-				let err: SessionError = SessionError.mapping(errorCode: initData.errorCode)
-				delegate?.sessionErrorReceived(err, details: "")
-				return
-			}
-			previewId = initData.previewId
+			previewDelegate?.previewIdReceived(response: initData)
 		case .previewUpdate(let data):
 			previewDelegate?.previewUpdateReceived(response: data)
 		default:

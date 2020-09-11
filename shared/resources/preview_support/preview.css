@@ -51,7 +51,7 @@ sectionToolbar {
 	word-wrap: break-word;
 }
 
-.codeSource {
+code {
 	font-family: monospace;
 	font-size: larger;
 	background-color: #f5f5f5;

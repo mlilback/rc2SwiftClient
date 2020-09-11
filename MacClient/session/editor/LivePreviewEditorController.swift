@@ -52,6 +52,12 @@ class LivePreviewEditorController: BaseSourceEditorController {
 		lastChangeTimer.suspend()
 	}
 	
+	override func setContext(context: EditorContext) {
+		super.setContext(context: context)
+		precondition(outputController != nil)
+		outputController?.setEditorContext(context)
+	}
+
 	override func loaded(content: String) {
 		guard context?.currentDocument.value?.isRmarkdown ?? false else {
 			super.loaded(content: "")

@@ -22,5 +22,6 @@ public protocol SessionDelegate: class {
 }
 
 public protocol SessionPreviewDelegate: class {
+	func previewIdReceived(response: SessionResponse.PreviewInitedData)
 	func previewUpdateReceived(response: SessionResponse.PreviewUpdateData)
 }
