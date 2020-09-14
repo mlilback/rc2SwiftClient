@@ -1,12 +1,15 @@
 disabled_rules:
   - opening_brace
-  - line_length
   - todo
 #  - variable_name #doesn't allow underscores
   - unused_optional_binding #doesn't allow try? binding
   - switch_case_alignment
   - fallthrough
+  - identifier_name
+  - vertical_parameter_alignment
+  - trailing_comma
 opt_in_rules:
+  - line_length
   - attributes
   - closure_spacing
   - explicit_init
@@ -17,6 +20,7 @@ opt_in_rules:
   - prohibited_super_call
   - redundant_nil_coalescing
   - object_literal
+  - trailing_comma
 #  - valid_docs
     
 excluded:
@@ -27,11 +31,14 @@ excluded:
 #    - id
 #    - db
 #    - at
+function_body_length:
+  warning: 60
 file_length:
   warning: 900
 line_length:
   warning: 300
   error: 500
+  ignores_comments: true
 trailing_whitespace:
   ignores_empty_lines: true
   ignores_comments: true
@@ -41,9 +48,13 @@ large_tuple:
 number_separator:
   minimum_length: 5
 type_body_length:
-  warning: 300
+  warning: 400
 attributes:
   always_on_same_line:
     - "@IBAction"
     - "@NSManaged"
     - "@objc"
+# following doesn't work, but should
+#identifier_name:
+#  - min_length: 2
+

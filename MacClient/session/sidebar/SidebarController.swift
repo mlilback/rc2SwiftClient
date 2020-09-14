@@ -13,7 +13,7 @@ fileprivate extension NSStoryboard.SceneIdentifier {
 class SidebarController: NSViewController {
 	@IBOutlet var contentView: NSView!
 	var tabController: SidebarTabController!
-	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		guard let sboard = storyboard else { fatalError("no storyboard?") }

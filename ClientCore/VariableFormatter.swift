@@ -40,6 +40,7 @@ public class VariableFormatter {
 	///
 	/// - Parameter primitive: the primitive value to retrieve values from
 	/// - Returns: the value array as an array of formatted strings
+	// swiftlint:disable:next cyclomatic_complexity
 	public func formatValues(for primitive: PrimitiveValue) -> [String] {
 		switch primitive {
 		case .boolean(let boolVals):
@@ -59,4 +60,3 @@ public class VariableFormatter {
 		}
 	}
 }
-

@@ -33,9 +33,9 @@ public struct SessionEvent: Codable, Hashable {
 	}
 	
 	public let type: EventType
-	public let properties: [String:String]
+	public let properties: [String: String]
 	
-	init(_ type: EventType, props: [String:String] = [:]) {
+	init(_ type: EventType, props: [String: String] = [:]) {
 		self.type = type
 		self.properties = props
 	}
@@ -69,7 +69,8 @@ public class Session {
 	
 	///regex used to catch user entered calls to help so we can hijack and display through our mechanism
 	var helpRegex: NSRegularExpression = {
-		// swiftlint:disable:next force_try (hard coded, should never fail)
+		// (hard coded, should never fail)
+		// swiftlint:disable:next force_try
 		return try! NSRegularExpression(pattern: "(help\\(\\\"?([\\w\\d]+)\\\"?\\))\\s*;?\\s?", options: [.dotMatchesLineSeparators])
 	}()
 	
@@ -87,7 +88,7 @@ public class Session {
 	private let (sessionLifetime, sessionToken) = Lifetime.make()
 	public var lifetime: Lifetime { return sessionLifetime }
 	
-	public var previewDelegate: SessionPreviewDelegate?
+	public weak var previewDelegate: SessionPreviewDelegate?
 	
 	private typealias PendingTransactionHandler = (PendingTransaction, SessionResponse, Rc2Error?) -> Void
 
@@ -391,6 +392,7 @@ public class Session {
 				// need to update AppFile to new model
 				if let file = saveData.file, let afile = self.workspace.file(withId: file.id) {
 					let fchange = SessionResponse.FileChangedData(type: .update, file: file, fileId: afile.fileId)
+					// swiftlint:disable:next force_try
 					try! self.workspace.update(change: fchange) //only throws if unsupported file type, which should not be possible
 				}
 				observer.send(value: true)
@@ -423,10 +425,11 @@ public class Session {
 	
 	public func updatePreviewChunks(previewId: Int, chunkId: Int?, includePrevious: Bool, updateId: String) -> SignalProducer<Void, Rc2Error> {
 		return SignalProducer<Void, Rc2Error> { [weak self] observer, _ in
-			guard let me =  self else { fatalError() }
+			guard let me = self else { fatalError() }
 			let params = SessionCommand.UpdatePreviewParams(previewId: previewId, chunkId: chunkId, includePrevious: includePrevious, identifier: updateId)
 			let command = SessionCommand.updatePreview(params)
 			me.send(command: command)
+			observer.sendCompleted()
 		}
 	}
 }
@@ -511,7 +514,7 @@ private extension Session {
 				return
 			}
 			fileCache.cache(file: ofile.model, withData: fileData).startWithCompleted {
-				self.queue.async {self.delegate?.sessionMessageReceived(response) }
+				self.queue.async { self.delegate?.sessionMessageReceived(response) }
 			}
 		} else {
 			Log.warn("got show output without file downloaded", .session)
@@ -528,6 +531,7 @@ private extension Session {
 	}
 	
 	/// The following will not be passed to the delegate: .fileOperation, .fileChnaged, .save, .showOutput, .info, .error, .closed
+	// swiftlint:disable:next cyclomatic_complexity
 	func handleReceivedMessage(_ messageData: SessionWebSocketWorker.MessageData) {
 		let response: SessionResponse
 		do {
@@ -587,7 +591,7 @@ private extension Session {
 	// swiftlint:disable cyclomatic_complexity
 	private func transactionId(for response: SessionResponse) -> String? {
 		switch response {
-		case .computeStatus(_):
+		case .computeStatus:
 			return nil
 		case .connected:
 			return nil

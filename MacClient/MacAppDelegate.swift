@@ -18,12 +18,10 @@ import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
 
-// swiftlint:disable file_length
-
 /// incremented when data in ~/Library needs to be cleared (such has when the format has changed)
 let currentSupportDataVersion: Int = 2
 
-fileprivate struct Actions {
+private struct Actions {
 	static let showPreferences = #selector(MacAppDelegate.showPreferencesWindow(_:))
 	static let newWorkspace = #selector(MacAppDelegate.newWorkspace(_:))
 	static let showWorkspace = #selector(MacAppDelegate.showWorkspace(_:))
@@ -78,19 +76,19 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		checkIfSupportFileResetNeeded()
 		mainStoryboard = NSStoryboard(name: .mainBoard, bundle: nil)
 		precondition(mainStoryboard != nil)
-		
+
 		DispatchQueue.global().async {
 			HelpController.shared.verifyDocumentationInstallation()
 		}
-		
+
 		let cdUrl = Bundle(for: type(of: self)).url(forResource: "CommonDefaults", withExtension: "plist")
-		// swiftlint:disable:next force_cast (swift value types don't support dictionaries from files)
-		UserDefaults.standard.register(defaults: NSDictionary(contentsOf: cdUrl!)! as! [String : AnyObject])
-		
+		// swiftlint:disable:next force_cast
+		UserDefaults.standard.register(defaults: NSDictionary(contentsOf: cdUrl!) as! [String: AnyObject])
+
 		// without cloud, we now force to be local
 		UserDefaults.standard[.currentCloudHost] = ServerHost.localHost
 		NotificationCenter.default.addObserver(self, selector: #selector(MacAppDelegate.windowWillClose(_:)), name: NSWindow.willCloseNotification, object: nil)
-		
+
 		DispatchQueue.main.async {
 			self.beginStartup()
 		}
@@ -105,7 +103,7 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		setupAppCenter()
 		#endif
 	}
-	
+
 	func applicationWillTerminate(_ aNotification: Notification) {
 		NotificationCenter.default.removeObserver(self, name: NSWindow.willCloseNotification, object: nil)
 	}
@@ -113,13 +111,13 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 	func applicationShouldOpenUntitledFile(_ sender: NSApplication) -> Bool {
 		return NSApp.modalWindow == nil
 	}
-	
+
 	func applicationOpenUntitledFile(_ sender: NSApplication) -> Bool {
 		//bookmarkWindowController?.window?.makeKeyAndOrderFront(self)
 		onboardingController?.window?.makeKeyAndOrderFront(self)
 		return true
 	}
-	
+
 	func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
 		if nil == dockMenu {
 			dockMenu = NSMenu(title: "Dock")
@@ -157,7 +155,7 @@ extension MacAppDelegate {
 			return false
 		}
 	}
-	
+
 	/// returns the session associated with window if it is a session window
 	func session(for window: NSWindow?) -> Session? {
 		guard let wc = NSApp.mainWindow?.windowController as? MainWindowController else { return nil }
@@ -168,7 +166,7 @@ extension MacAppDelegate {
 	func windowController(for workspaceIdent: WorkspaceIdentifier) -> MainWindowController? {
 		return sessionWindowControllers.first(where: { $0.session?.workspace.wspaceId == workspaceIdent.wspaceId })
 	}
-	
+
 	/// returns the window for the specified session
 	func window(for session: Session?) -> NSWindow? {
 		if let window = windowControllerForSession(session!)?.window {
@@ -176,7 +174,7 @@ extension MacAppDelegate {
 		}
 		return nil
 	}
-	
+
 	func openSessionWindow(_ session: Session) {
 		defer {
 			workspacesBeingOpened.remove(session.workspace.identifier)
@@ -186,12 +184,12 @@ extension MacAppDelegate {
 		}
 		let wc = MainWindowController.createFromNib()
 		sessionWindowControllers.insert(wc)
-		
+
 		let icontext = InjectorContext()
 		icontext.register(AbstractSessionViewController.self) { controller in
 			controller.appStatus = self.appStatus
 		}
-		
+
 		let sboard = NSStoryboard(name: "MainController", bundle: nil)
 		sboard.injectionContext = icontext
 		//a bug in storyboard loading is causing DI to fail for the rootController when loaded via the window
@@ -214,7 +212,7 @@ extension MacAppDelegate {
 			onboardingController?.window?.orderOut(self)
 		}
 	}
-	
+
 	/// opens a session for workspace. If already open, brings that session window to the front
 	func openSession(workspace: AppWorkspace) {
 		// if already open, bring to front
@@ -248,7 +246,7 @@ extension MacAppDelegate {
 				}
 		}
 	}
-	
+
 	/// convience method that looks up a workspace based on an identifier, then calls openSession(workspace:)
 	func openLocalSession(for wspaceIdentifier: WorkspaceIdentifier?) {
 		guard let ident = wspaceIdentifier else {
@@ -319,11 +317,11 @@ extension MacAppDelegate {
 	@IBAction func resetLogs(_ sender: Any?) {
 		logger.resetLogs()
 	}
-	
+
 	@IBAction func resetSupportFiles(_ sender: Any?) {
 		removeSupportFiles()
 	}
-	
+
 	@IBAction func newWorkspace(_ sender: Any?) {
 		guard let conInfo = connectionManager.currentConnection, let project = conInfo.defaultProject else { fatalError() }
 		DispatchQueue.main.async {
@@ -344,20 +342,20 @@ extension MacAppDelegate {
 			}
 		}
 	}
-	
+
 	@IBAction func showWorkspace(_ sender: Any?) {
 		guard let menuItem = sender as? NSMenuItem, let ident = menuItem.representedObject as? WorkspaceIdentifier else { return }
 		if let wc = windowController(for: ident) { wc.window?.makeKeyAndOrderFront(self); return }
 		openLocalSession(for: ident)
 	}
-	
+
 	@IBAction func showPreferencesWindow(_ sender: Any?) {
 		if nil == preferencesWindowController {
 			let icontext = InjectorContext()
 			icontext.register(TemplatesPrefsController.self) { controller in
 				controller.templateManager = self.templateManager
 			}
-			
+
 			let sboard = NSStoryboard(name: .prefs, bundle: nil)
 			sboard.injectionContext = icontext
 			preferencesWindowController = sboard.instantiateInitialController() as? NSWindowController
@@ -365,11 +363,11 @@ extension MacAppDelegate {
 		}
 		preferencesWindowController?.showWindow(self)
 	}
-	
+
 	@IBAction func showLogWindow(_ sender: Any?) {
 		logger.showLogWindow(sender)
 	}
-	
+
 	@IBAction func toggleCloudUsage(_ sender: Any?) {
 //		let currentValue = UserDefaults.standard[.connectToCloud] ?? false
 //		UserDefaults.standard[.connectToCloud] = !currentValue
@@ -380,11 +378,11 @@ extension MacAppDelegate {
 //		task.launch()
 //		NSApp.terminate(nil)
 	}
-	
+
 	@IBAction func adjustGlobalLogLevel(_ sender: Any?) {
 		logger.adjustGlobalLogLevel(sender)
 	}
-	
+
 	@objc func windowWillClose(_ note: Notification) {
 		if let window = note.object as? NSWindow,
 			let sessionWC = window.windowController as? MainWindowController
@@ -400,7 +398,7 @@ extension MacAppDelegate {
 			onboardingController?.window?.makeKeyAndOrderFront(self)
 		}
 	}
-	
+
 	func windowControllerForSession(_ session: Session) -> MainWindowController? {
 		for wc in sessionWindowControllers where wc.session === session {
 			return wc
@@ -445,7 +443,7 @@ extension MacAppDelegate {
 		MSCrashes.disableMachExceptionHandler()
 		MSAppCenter.start(key, withServices: [MSAnalytics.self, MSCrashes.self])
 	}
-	
+
 	func checkIfSupportFileResetNeeded() {
 		let defaults = UserDefaults.standard
 		let lastVersion = defaults[.supportDataVersion]
@@ -454,7 +452,7 @@ extension MacAppDelegate {
 			removeSupportFiles()
 		}
 	}
-	
+
 	/// removes files from ~/Library
 	private func removeSupportFiles() {
 		let defaults = UserDefaults.standard
@@ -480,7 +478,7 @@ extension MacAppDelegate {
 	/// load the setup window and start setup process
 	fileprivate func beginStartup() {
 		precondition(startupController == nil)
-		
+
 		// load window and setupController.
 		startupWindowController = mainStoryboard.instantiateController(withIdentifier: "StartupWindowController") as? StartupWindowController
 		guard let wc = startupWindowController else { fatalError("failed to load startup window controller") }
@@ -489,11 +487,11 @@ extension MacAppDelegate {
 		wc.window?.makeKeyAndOrderFront(self)
 		assert(wc.window!.isVisible)
 		assert(wc.contentViewController?.view.window == wc.window)
-		
+
 		//move to the next stage
 		advanceStartupStage()
 	}
-	
+
 	//advances to the next startup stage
 	fileprivate func advanceStartupStage() {
 		guard let setupWC = startupWindowController else { fatalError("advanceStartupStage() called without a setup controller") }
@@ -522,7 +520,7 @@ extension MacAppDelegate {
 			fatalError("should never reach this point")
 		}
 	}
-	
+
 	private func handleStartupError(_ error: Rc2Error) {
 		startupWindowController?.window?.orderOut(nil)
 		let alert = NSAlert()
@@ -532,7 +530,7 @@ extension MacAppDelegate {
 		alert.runModal()
 		NSApp.terminate(self)
 	}
-	
+
 	/// attempt login on host. advances to next startup stage if successful. Handles error by fatal error (if local), or re-prompting for login info if remote
 	private func performLogin(host: ServerHost, password: String) {
 		let loginFactory = LoginFactory()
@@ -569,14 +567,14 @@ extension MacAppDelegate {
 			self.advanceStartupStage()
 		}
 	}
-	
+
 	/// display UI for login info
 	private func promptToLogin(previousErrorMessage: String? = nil) {
 		if nil == loginWindowController {
 			loginWindowController = mainStoryboard.instantiateController(withIdentifier: "LoginWindowController") as? NSWindowController
 			loginController = loginWindowController?.contentViewController as? LoginViewController
 		}
-		guard let loginWindowController = loginWindowController , let loginController = loginController else { fatalError("failed to load login window") }
+		guard let loginWindowController = loginWindowController, let loginController = loginController else { fatalError("failed to load login window") }
 		loginController.initialHost = UserDefaults.standard[.currentCloudHost]
 		loginController.statusMessage = previousErrorMessage ?? ""
 		loginController.completionHandler = { host in
@@ -589,7 +587,7 @@ extension MacAppDelegate {
 		}
 		startupWindowController!.window!.beginSheet(loginWindowController.window!) { _ in }
 	}
-	
+
 	/// if dockerEnabled, starts local login. If remote and there is a password in the keychain, attempts to login. Otherise, prompts for login info.
 	private func startLoginProcess() {
 		performLogin(host: .localHost, password: "local")
@@ -602,7 +600,7 @@ extension MacAppDelegate {
 //		}
 //		promptToLogin()
 	}
-	
+
 	@IBAction func showOnboarding(_ sender: Any?) {
 		if nil == onboardingController {
 			// swiftlint:disable:next force_cast
@@ -620,7 +618,7 @@ extension MacAppDelegate {
 						switch result {
 						case .failure(let err):
 							self.appStatus?.presentError(err, session: nil)
-						case .success(_):
+						case .success:
 							Log.info("workspace \(wspace.wspaceId) removed")
 						}
 					}
@@ -629,7 +627,7 @@ extension MacAppDelegate {
 		}
 		onboardingController!.window?.makeKeyAndOrderFront(self)
 	}
-	
+
 	private func restoreSessions() {
 		guard sessionsBeingRestored.count > 0 else { advanceStartupStage(); return }
 		for ident in self.sessionsBeingRestored.keys {

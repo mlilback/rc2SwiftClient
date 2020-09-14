@@ -32,11 +32,11 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 	// toolbar mode buttons
 	var toolbarModeButtons: NSSegmentedControl?
 	var toolbarSearchButton: NSSegmentedControl?
-	
+
 	var currentEditorMode: EditorMode {
 		return currentEditor == previewEditor ? .preview : .source
 	}
-	
+
 	@objc dynamic private(set) var previewModeEnabled: Bool = false { didSet {
 		if previewModeEnabled {
 			toolbarModeButtons?.setEnabled(previewModeEnabled, forSegment: 1)
@@ -57,17 +57,17 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 		switchMode(.source)
 		setContext(context: documentManager)
 	}
-	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
+
 		guard let sboard = self.storyboard else { fatalError("no storyboard? ") }
 		// for some reason won't compile if directly setting tabController
 		let controller: NSTabViewController = embedViewController(storyboard: sboard, identifier: .editorTabController, contentView: contentView)
 		tabController = controller
 		let tabChildren = tabController.children
-		sourceEditor = tabChildren.first(where: { $0 is SourceEditorController } ) as? SourceEditorController
-		previewEditor = tabChildren.first(where: { $0 is LivePreviewEditorController } ) as? LivePreviewEditorController
+		sourceEditor = tabChildren.first(where: { $0 is SourceEditorController }) as? SourceEditorController
+		previewEditor = tabChildren.first(where: { $0 is LivePreviewEditorController }) as? LivePreviewEditorController
 		for anEditor in [sourceEditor, previewEditor] {
 			anEditor?.fileNameField = fileNameField
 			anEditor?.runButton = runButton
@@ -76,7 +76,8 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 		currentEditor = sourceEditor
 		// listen for canExecute changes of actual editors
 		for anEditor in [sourceEditor, previewEditor] {
-			observerTokens.append(anEditor?.observe(\.canExecute, options: [.initial]) { [weak self] object, change in
+			// swiftlint: disable unused_closure_parameter
+			observerTokens.append(anEditor?.observe(\.canExecute, options: [.initial]) { [weak self] object, _ in
 				guard let me = self, let current = me.currentEditor, current == object else { return }
 				me.willChangeValue(forKey: "canExecute")
 				me.didChangeValue(forKey: "canExecute")
@@ -94,7 +95,7 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 		super.viewDidAppear()
 		self.hookupToToolbarItems(self, window: view.window!)
 	}
-	
+
 	func handlesToolbarItem(_ item: NSToolbarItem) -> Bool {
 		if item.itemIdentifier.rawValue == "customEditor" {
 			guard let modeButtons = item.view?.viewWithTag(1) as? NSSegmentedControl else { fatalError() }
@@ -102,10 +103,10 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 			toolbarModeButtons = modeButtons
 			toolbarSearchButton = searchButton
 			modeButtons.setSelected(true, forSegment: 1)
-			TargetActionBlock { [weak self] sender in
+			TargetActionBlock { [weak self] _ in
 				self?.switchMode(EditorMode(rawValue: modeButtons.selectedSegment)!)
 			}.installInControl(modeButtons)
-			TargetActionBlock { [weak self] sender in
+			TargetActionBlock { [weak self] _ in
 				self?.toggleSearch()
 			}.installInControl(searchButton)
 			if let myItem = item as? ValidatingToolbarItem {
@@ -124,18 +125,18 @@ class RootEditorController: AbstractSessionViewController, ToolbarItemHandler {
 		let action: NSTextFinder.Action = editor.searchBarVisible ? .hideFindInterface : .showFindInterface
 		editor.performFind(action: action)
 	}
-	
+
 	func switchMode(_ mode: EditorMode) {
 		currentEditor = (mode == .source ? sourceEditor : previewEditor)
 		tabController.selectedTabViewItemIndex = mode.rawValue
 		toolbarModeButtons?.selectedSegment = mode.rawValue
 		toolbarModeButtons?.setEnabled(previewModeEnabled, forSegment: 1)
 	}
-	
+
 	@IBAction func runQuery(_ sender: Any?) {
 		executeSource(type: .run)
 	}
-	
+
 	@IBAction func sourceQuery(_ sender: Any?) {
 		executeSource(type: .source)
 	}
@@ -155,11 +156,11 @@ extension RootEditorController: EditorManager {
 	func switchTo(mode: EditorMode) {
 		switchMode(mode)
 	}
-	
+
 	func executeSource(type: ExecuteType) {
 		currentEditor?.executeSource(type: type)
 	}
-	
+
 	func save(state: inout SessionState.EditorState) {
 		let fontDesc = documentManager.editorFont.value.fontDescriptor
 		do {
@@ -168,7 +169,7 @@ extension RootEditorController: EditorManager {
 			Log.warn("failed to save font descriptor", .app)
 		}
 	}
-	
+
 	func restore(state: SessionState.EditorState) {
 		do {
 			if let fontData = state.editorFontDescriptor,
@@ -181,12 +182,12 @@ extension RootEditorController: EditorManager {
 			Log.warn("error restoring font \(error)", .app)
 		}
 	}
-	
+
 	func setContext(context: EditorContext) {
 		sourceEditor.setContext(context: context)
 		previewEditor.setContext(context: context)
 	}
-	
+
 	/// Informs the editor controller that the selected file has changed, and it should load the new one. Becausing loading is asynchronous, the callback allows the caller to to perform acdtions once loaded
 	/// - Parameter file: The file that should be displayed in the edtior
 	/// - Parameter onComplete: called when the file has loaded
@@ -196,7 +197,7 @@ extension RootEditorController: EditorManager {
 			switch result {
 			case .failure(let rerror):
 				self.appStatus?.presentError(rerror, session: self.session)
-			case .success(_):
+			case .success:
 				success = true
 			}
 			self.willChangeValue(forKey: "canExecute")
@@ -218,7 +219,7 @@ extension RootEditorController: UsesAdjustableFont {
 	func fontsEnabled() -> Bool {
 		return true
 	}
-	
+
 	func fontChanged(_ menuItem: NSMenuItem) {
 		Log.info("font changed: \((menuItem.representedObject as? NSObject)!)", .app)
 		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }

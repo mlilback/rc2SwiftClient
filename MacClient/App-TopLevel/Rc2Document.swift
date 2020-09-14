@@ -28,23 +28,23 @@ class Rc2Document: NSDocument {
 	let myDocumentType = "io.rc2.rc2d"
 	private static let encoder = JSONEncoder()
 	private static let decoder = JSONDecoder()
-	
+
 	var workspace: Workspace!
 	var host: ServerHost?
 	var session: Session?
 	var docData: DocumentData?
-	
+
 	override init() {
 		super.init()
 	}
-	
+
 	init(with session: Session) {
 		self.session = session
 		self.workspace = session.workspace.model
 		self.host = session.conInfo.host
 		super.init()
 	}
-	
+
 	override func write(to url: URL, ofType typeName: String, for saveOperation: NSDocument.SaveOperationType, originalContentsURL absoluteOriginalContentsURL: URL?) throws
 	{
 		guard typeName == myDocumentType else { throw cocoaError(code: NSFileReadUnknownError, description: "unuspported save format") }

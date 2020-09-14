@@ -9,6 +9,8 @@ import XCTest
 @testable import MacClient
 import Mockingjay
 
+// swiftlint:disable all
+
 class RestServerTest: XCTestCase {
 	var server : RestServer?
 	

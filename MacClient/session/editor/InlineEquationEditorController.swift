@@ -12,15 +12,15 @@ class InlineEquationEditorController: NSViewController {
 	@IBOutlet private var equationView: MTMathUILabel!
 	@IBOutlet private var editor: NSTextView!
 	@IBOutlet private var cancelButton: NSButton!
-	
+
 	var document: RmdDocument?
 	var chunk: RmdDocumentChunk?
 	var font: NSFont?
-	
+
 	var saveAction: ((InlineEquationEditorController, Bool) -> Void)?
-	
+
 	private var canceled = false
-	
+
 	@IBAction func cancelEdit(_ sender: Any?) {
 		canceled = true
 		saveAction?(self, false)
@@ -31,7 +31,7 @@ class InlineEquationEditorController: NSViewController {
 		equationView.labelMode = .text
 		equationView.textAlignment = .center
 	}
-	
+
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		precondition(chunk != nil)
@@ -43,7 +43,7 @@ class InlineEquationEditorController: NSViewController {
 			editor.font = editorFont
 		}
 	}
-	
+
 	override func viewWillDisappear() {
 		super.viewWillDisappear()
 		if !canceled {

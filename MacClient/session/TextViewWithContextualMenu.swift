@@ -72,7 +72,7 @@ class TextViewWithContextualMenu: NSTextView {
 		}
 		return menu
 	}
-	
+
 	// only need to force_cast it once
 	private func copyMenuItem(_ item: NSMenuItem) -> NSMenuItem {
 		return item.copy() as! NSMenuItem // swiftlint:disable:this force_cast

@@ -9,6 +9,8 @@ import XCTest
 @testable import MacClient
 import Networking
 
+// swiftlint:disable all
+
 class BaseTest: XCTestCase {
 
 //	var sessionData:LoginSession!

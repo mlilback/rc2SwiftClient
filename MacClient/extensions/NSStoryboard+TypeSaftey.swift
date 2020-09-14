@@ -21,28 +21,28 @@ extension NSStoryboard {
 		case Main
 		case MainWindow
 	}
-	
+
 	convenience init(storyboard: Storyboard, bundle: Bundle? = nil) {
-		self.init(name: storyboard.rawValue, bundle:bundle)
+		self.init(name: storyboard.rawValue, bundle: bundle)
 	}
 
 	func instantiateViewController<T: NSViewController>() -> T {
 		let optionalViewController = self.instantiateController(withIdentifier: T.storyboardIdentifier)
-		
+
 		guard let viewController = optionalViewController as? T  else {
 			fatalError("Couldn’t instantiate view controller with identifier \(T.storyboardIdentifier)")
 		}
-		
+
 		return viewController
 	}
 
 	func instantiateWindowController<T: NSWindowController & StoryboardIdentifiable>() -> T {
 		let optionalController = self.instantiateController(withIdentifier: T.storyboardIdentifier)
-		
+
 		guard let controller = optionalController as? T  else {
 			fatalError("Couldn’t instantiate window controller with identifier \(T.storyboardIdentifier)")
 		}
-		
+
 		return controller
 	}
 }

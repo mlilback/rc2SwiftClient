@@ -444,7 +444,7 @@ extension DefaultFileCache {
 		guard fileUrl.fileExists() && fileUrl.fileSize() > 0 else {
 			self.recache(file: file).startWithResult { result in
 				switch result {
-				case .success(_):
+				case .success:
 					self.readDataFromFile(file: file, observer: observer)
 				case .failure(let rerr):
 					observer.send(error: rerr)

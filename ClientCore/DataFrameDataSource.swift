@@ -27,7 +27,7 @@ public class DataFrameDataSource: SpreadsheetDataSource {
 			let strVals = formatter.formatValues(for: matrixData.value)
 			for colIdx in 0..<matrixData.colCount {
 				let start = colIdx * matrixData.rowCount
-				let end   = start + matrixData.rowCount
+				let end = start + matrixData.rowCount
 				vals.append(Array(strVals[start..<end]))
 			}
 			self.values = vals

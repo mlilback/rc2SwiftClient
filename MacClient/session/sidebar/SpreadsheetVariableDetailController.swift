@@ -21,7 +21,7 @@ class SpreadsheetVariableDetailController: NSViewController {
 	private var ssheetSource: SpreadsheetDataSource?
 	private var columnIndexes = [NSTableColumn: Int]()
 	private var colOffset = 1
-	
+
 	func set(variable: Variable, source: SpreadsheetDataSource) -> NSSize {
 		self.variable = variable
 		self.ssheetSource = source
@@ -50,11 +50,11 @@ class SpreadsheetVariableDetailController: NSViewController {
 			//	colWidth = max(colWidth, (colName as NSString).size(withAttributes: fontAttrs).width)
 				headerWidth = Double((colName as NSString).size(withAttributes: fontAttrs).width)
 			}
-			
+
 			let avgWidth = Sigma.average(widths) ?? 20 // if average return nil (which it will if there are no widths) use 20
 			let maxWidth = max(headerWidth, Sigma.max(widths)!)
 			let stdDev = Sigma.standardDeviationPopulation(widths) ?? 0 // if stdDev returns nil, use 0 as the value
-			let desiredWidth = min(maxWidth,  avgWidth + (2.0 * stdDev))
+			let desiredWidth = min(maxWidth, avgWidth + (2.0 * stdDev))
 			aColumn.width = CGFloat(min(desiredWidth.rounded(), 40)) + 16 //16 is std offset (8) for each side of label
 			ssheetTable.addTableColumn(aColumn)
 			columnIndexes[aColumn] = colIdx + colOffset

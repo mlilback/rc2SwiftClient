@@ -28,7 +28,7 @@ protocol OutputController: Searchable {
 class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandler {
 	// MARK: properties
 	@IBOutlet var additionContextMenuItems: NSMenu?
-	
+
 	var currentOutputController: OutputController!
 	weak var consoleController: ConsoleOutputController?
 	weak var previewController: LivePreviewDisplayController?
@@ -56,7 +56,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			self?.switchTo(tab: tab)
 		}
 	}
-	
+
 	override func viewWillAppear() {
 		super.viewWillAppear()
 		guard consoleController == nil else { return }
@@ -77,14 +77,14 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		helpController?.contextualMenuDelegate = self
 		currentOutputController = consoleController
 	}
-	
+
 	private func sessionControllerUpdated() {
 		imageController?.imageCache = imageCache
 		DispatchQueue.main.async {
 			self.loadSavedState()
 		}
 	}
-	
+
 	override func viewDidAppear() {
 		super.viewDidAppear()
 		if let myView = tabView as? OutputTopView {
@@ -93,7 +93,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			}
 		}
 	}
-	
+
 	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action {
@@ -103,11 +103,11 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		default: return false
 		}
 	}
-	
+
 	func initialFirstResponder() -> NSResponder {
 		return (self.consoleController?.consoleTextField)!
 	}
-	
+
 	func handlesToolbarItem(_ item: NSToolbarItem) -> Bool {
 		if item.itemIdentifier.rawValue == "clear" {
 			item.target = self
@@ -115,12 +115,12 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			if let myItem = item as? ClearConsoleToolbarItem {
 				myItem.textView = consoleController?.resultsView
 				myItem.tabController = self
-				
+
 			}
 			return true
 		} else if item.itemIdentifier.rawValue == "search" {
 			searchButton = item.view as? NSSegmentedControl
-			TargetActionBlock { [weak self] sender in
+			TargetActionBlock { [weak self] _ in
 				self?.toggleSearchBar()
 				}.installInControl(searchButton!)
 			if let myItem = item as? ValidatingToolbarItem {
@@ -147,7 +147,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		//TODO: handle prompt for selecting a topic out of topics
 		showHelpTopic(topics[0])
 	}
-	
+
 	@objc func handleDisplayHelp(_ note: Notification) {
 		if let topic: HelpTopic = note.object as? HelpTopic {
 			showHelpTopic(topic)
@@ -162,7 +162,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		let action: NSTextFinder.Action = currentOutputController.searchBarVisible ? .hideFindInterface : .showFindInterface
 		currentOutputController.performFind(action: action)
 	}
-	
+
 	@IBAction func clearConsole(_ sender: Any?) {
 		consoleController?.clearConsole(sender)
 		imageCache?.clearCache()
@@ -173,7 +173,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		guard let mItem = sender as? NSMenuItem, let tab = OutputTab(rawValue: mItem.tag) else { return }
 		selectedOutputTab.value = tab
 	}
-	
+
 	func displayAttachment(_ fileWrapper: FileWrapper) {
 		Log.info("told to display file \(fileWrapper.filename!)", .app)
 		guard let attachment = try? MacConsoleAttachment.from(data: fileWrapper.regularFileContents!) else {
@@ -199,7 +199,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			}
 		}
 	}
-	
+
 	func show(file: AppFile?) {
 		//strip optional
 		guard let file = file else {
@@ -234,7 +234,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 			break
 		}
 	}
-	
+
 	/// This is called when the current file in the editor has changed.
 	/// It should decide if the output view should be changed to match the editor document.
 	///
@@ -251,7 +251,7 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 	func handleSearch(action: NSTextFinder.Action) {
 		currentOutputController.performFind(action: action)
 	}
-	
+
 	func save(state: inout SessionState.OutputControllerState) {
 		state.selectedTabId = selectedOutputTab.value.rawValue
 		state.selectedImageId = imageController?.selectedImageId ?? 0
@@ -259,11 +259,11 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		webController?.save(state: &state.webViewState)
 		helpController?.save(state: &state.helpViewState)
 	}
-	
+
 	func restore(state: SessionState.OutputControllerState) {
 		restoredState = state
 	}
-	
+
 	/// actually loads the state from instance variable
 	func loadSavedState() {
 		guard let savedState = restoredState else { return }
@@ -310,7 +310,7 @@ private extension OutputTabController {
 			view.window?.makeFirstResponder(currentOutputController as? NSResponder)
 		}
 	}
-	
+
 	///actually shows the help page for the specified topic
 	func showHelpTopic(_ topic: HelpTopic) {
 		selectedOutputTab.value = .help

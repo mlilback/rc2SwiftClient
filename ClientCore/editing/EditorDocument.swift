@@ -10,7 +10,7 @@ import ReactiveSwift
 import Networking
 import Rc2Common
 
-fileprivate let minTimeBetweenAutoSaves: TimeInterval = 2
+private let minTimeBetweenAutoSaves: TimeInterval = 2
 
 /// An EditorDocument wraps a AppFile, UndoManager, and contents as a String
 public class EditorDocument: NSObject {

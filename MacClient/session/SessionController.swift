@@ -38,9 +38,9 @@ protocol SessionControllerDelegate: class {
 	fileprivate var fileLoadDisposable: Disposable?
 	private var computeStatus: SessionResponse.ComputeStatus?
 	private var computeStatusObserver: Signal<Bool, Rc2Error>.Observer?
-	
+
 	// MARK: methods
-	
+
 	init(session: Session, delegate: SessionControllerDelegate, editor: EditorManager, outputHandler output: OutputHandler, variableHandler: VariableHandler)
 	{
 		self.delegate = delegate
@@ -54,7 +54,7 @@ protocol SessionControllerDelegate: class {
 //		self.responseHandler = ServerResponseHandler(delegate: self)
 		let nc = NotificationCenter.default
 		nc.addObserver(self, selector: #selector(SessionController.appWillTerminate), name: NSApplication.willTerminateNotification, object: nil)
-		nc.addObserver(self, selector:  #selector(SessionController.saveSessionState), name: NSWorkspace.willSleepNotification, object:nil)
+		nc.addObserver(self, selector: #selector(SessionController.saveSessionState), name: NSWorkspace.willSleepNotification, object: nil)
 		// need to finish the init process we are a part of
 		DispatchQueue.main.async {
 			self.restoreSessionState()
@@ -67,7 +67,7 @@ protocol SessionControllerDelegate: class {
 			close()
 		}
 	}
-	
+
 	func close() {
 		fileLoadDisposable?.dispose()
 		fileLoadDisposable = nil
@@ -75,30 +75,30 @@ protocol SessionControllerDelegate: class {
 		session.close()
 		properlyClosed = true
 	}
-	
+
 	@objc func appWillTerminate(_ note: Notification) {
 		saveSessionState()
 	}
-	
+
 	func clearFileCache() {
 		session.fileCache.flushCache(files: session.workspace.files).start()
 	}
-	
+
 	func clearImageCache() {
 		session.imageCache.clearCache()
 	}
-	
+
 	func format(errorString: String) -> ResponseString? {
 		return responseFormatter.formatError(string: errorString)
 	}
 
 	// MARK: - ServerResponseHandlerDelegate
-	
+
 	func handleFileUpdate(fileId: Int, file: AppFile?, change: FileChangeType) {
 //		os_log("got file update %d v%d", log: .app, type:.info, file.fileId, file.version)
 //		handleFileUpdate(file, change: change)
 	}
-	
+
 //	func handleVariableMessage(_ single: Bool, variables: [Variable]) {
 //		varHandler.handleVariableMessage(single, variables: variables)
 //	}
@@ -139,7 +139,7 @@ extension SessionController {
 		let furl = dataDirUrl.appendingPathComponent(fname)
 		return furl
 	}
-	
+
 	@objc func saveSessionState() {
 		var state = SessionState()
 		outputHandler.save(state: &state.outputState)
@@ -156,7 +156,7 @@ extension SessionController {
 			Log.error("failed to save sesison state: \(error)", .session)
 		}
 	}
-	
+
 	private func restoreSessionState() {
 		do {
 			let furl = try stateFileUrl()
@@ -179,21 +179,21 @@ extension SessionController {
 // MARK: - SessionDelegate
 extension SessionController: SessionDelegate {
 	func sessionOpened() {
-		
+
 	}
-	
+
 	func sessionClosed(reason: String?) {
 		delegate?.sessionClosed(details: reason)
 	}
-	
+
 	func sessionFilesLoaded(_ session: Session) {
 		delegate?.filesRefreshed()
 	}
-	
+
 	func respondToHelp(_ helpTopic: String) {
 		outputHandler.showHelp(HelpController.shared.topicsWithName(helpTopic))
 	}
-	
+
 	func sessionMessageReceived(_ response: SessionResponse) {
 		guard Thread.isMainThread else {
 			DispatchQueue.main.async { self.sessionMessageReceived(response) }
@@ -201,7 +201,7 @@ extension SessionController: SessionDelegate {
 		}
 		handle(response: response)
 	}
-	
+
 	func sessionErrorReceived(_ error: SessionError, details: String?) {
 		let defaults = UserDefaults.standard
 		switch error {
@@ -213,7 +213,6 @@ extension SessionController: SessionDelegate {
 			let fstr = NSAttributedString(string: errorDetails, attributes: attrs)
 			let rstring = ResponseString(string: fstr, type: .error)
 			output(responseString: rstring)
-			break
 		default:
 			output(responseString: responseFormatter.formatError(string: error.localizedDescription))
 		}
@@ -233,7 +232,7 @@ extension SessionController {
 			}
 		}
 	}
-	
+
 	private func updateCompute(status: SessionResponse.ComputeStatus) {
 		if nil == computeStatus {
 			Log.debug("session.updadateCompute with nil status", .session)
@@ -254,7 +253,7 @@ extension SessionController {
 			computeStatusObserver?.sendCompleted()
 		}
 	}
-	
+
 	/// actually handle the response by formatting it and sending it to the output handler
 	fileprivate func handle(response: SessionResponse) {
 		switch response {
@@ -276,7 +275,7 @@ extension SessionController {
 			output(responseString: astr)
 		}
 	}
-	
+
 	private func output(responseString: ResponseString) {
 		DispatchQueue.main.async {
 			self.outputHandler.append(responseString: responseString)
@@ -288,11 +287,11 @@ extension SessionController: SessionResponseFormatterDelegate {
 	func consoleAttachment(forImage image: SessionImage) -> ConsoleAttachment {
 		return MacConsoleAttachment(image: image)
 	}
-	
+
 	func consoleAttachment(forFile file: File) -> ConsoleAttachment {
 		return MacConsoleAttachment(file: file)
 	}
-	
+
 	func attributedStringForInputFile(_ fileId: Int) -> NSAttributedString {
 		let file = session.workspace.file(withId: fileId)!
 		let str = "[\(file.name)]"

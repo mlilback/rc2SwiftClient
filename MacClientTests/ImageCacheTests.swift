@@ -8,6 +8,8 @@
 import XCTest
 @testable import MacClient
 
+// swiftlint:disable all
+
 class ImageCacheTests: BaseTest {
 
 	func testExistingImageForId() {

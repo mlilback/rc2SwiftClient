@@ -11,14 +11,14 @@ import Rc2Common
 
 class SystemExtensionsTests: XCTestCase {
 	func testPlatformColor() {
-		guard let red = PlatformColor(hexString:"FF0000") else {
-			XCTFail(); return
+		guard let red = PlatformColor(hexString: "FF0000") else {
+			XCTFail("failed to create color"); return
 		}
 		XCTAssertEqual(Int(red.redComponent * 255.0), 255)
 		XCTAssertEqual(Int(red.greenComponent * 255.0), 0)
 		XCTAssertEqual(Int(red.blueComponent * 255.0), 0)
-		guard let gray = PlatformColor(hexString:"999999") else {
-			XCTFail(); return
+		guard let gray = PlatformColor(hexString: "999999") else {
+			XCTFail("failed to crreate color")
 		}
 		XCTAssertEqual(Int(gray.redComponent * 255.0), 153)
 		XCTAssertEqual(Int(gray.greenComponent * 255.0), 153)

@@ -8,7 +8,7 @@ import Cocoa
 import SwiftyUserDefaults
 
 class GeneralPrefsController: NSViewController {
-	
+
 	@IBAction func resetWarnings(_ sender: Any?) {
 		DefaultsKeys.suppressKeys.forEach { UserDefaults.standard.remove($0) }
 	}

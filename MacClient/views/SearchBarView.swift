@@ -27,26 +27,26 @@ public class SearchBarView: NSView {
 	@IBOutlet var backForwardButtons: NSSegmentedControl?
 	@IBInspectable var bgColor: NSColor?
 	public weak var delegate: SearchBarViewDelegate?
-	
+
 	var searchString: String {
 		get { return searchField?.stringValue ?? "" }
 		set { searchField?.stringValue = newValue }
 	}
 	var wholeWordsOption: Bool = true
 	var caseSensitiveOption: Bool = false
-	
+
 	/// setting the matchCount resets the search currentMatchIndex to 0 and updates the UI
 	public var matchCount: Int = 0 { didSet { currentMatchIndex = 0; adjustInterface() } }
 	public private(set) var currentMatchIndex: Int = 0
-	
+
 	public override init(frame frameRect: NSRect) {
 		super.init(frame: frameRect)
 	}
-	
+
 	required public init?(coder: NSCoder) {
 		super.init(coder: coder)
 	}
-	
+
 	public override func awakeAfter(using aDecoder: NSCoder) -> Any? {
 		var topObjects: NSArray? = NSArray()
 		self.translatesAutoresizingMaskIntoConstraints = false
@@ -60,11 +60,11 @@ public class SearchBarView: NSView {
 		self.addConstraint(bottomAnchor.constraint(equalTo: topLevelView!.bottomAnchor))
 		return self
 	}
-	
+
 	override public func awakeFromNib() {
 		super.awakeFromNib()
 	}
-	
+
 	/// action for the search button
 	@IBAction func doSearch(_ sender: Any?) {
 		delegate?.performSearch(searchBar: self, string: self.searchString)
@@ -83,7 +83,7 @@ public class SearchBarView: NSView {
 	@IBAction func doDone(_ sender: Any?) {
 		delegate?.dismiss(searchBar: self)
 	}
-	
+
 	/// menu action for whole word search option
 	@IBAction func toggleWholeWords(_ sender: Any) {
 		guard let menuItem = sender as? NSMenuItem else { return }
@@ -95,7 +95,7 @@ public class SearchBarView: NSView {
 		guard let menuItem = sender as? NSMenuItem else { return }
 		caseSensitiveOption = menuItem.state == .on
 	}
-	
+
 	/// updates controls to match current result state
 	func adjustInterface() {
 		let navEnabled = matchCount > 0

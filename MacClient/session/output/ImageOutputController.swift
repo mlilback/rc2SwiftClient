@@ -16,15 +16,15 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 {
 	// MARK: properties
 	let emptyIdentifier = NSPageController.ObjectIdentifier("empty")
-	
+
 	@IBOutlet var containerView: NSView?
 	@IBOutlet var imagePopup: NSPopUpButton?
 	@IBOutlet var shareButton: NSSegmentedControl?
 	@IBOutlet var navigateButton: NSSegmentedControl?
 	@IBOutlet var contextualMenu: NSMenu?
-	
+
 	weak var contextualMenuDelegate: ContextualMenuDelegate?
-	
+
 	var pageController: NSPageController!
 	var allImages: MutableProperty< [SessionImage] >?
 	var imageCache: ImageCache? { didSet { imageCacheChanged() } }
@@ -33,7 +33,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 	fileprivate let emptyObject: Any = 1 as Any
 	var selectedImageId: Int { return selectedImage?.id ?? 0 }
 	var itemsAddedToContextMenu: Int = 0
-	
+
 	// MARK: - methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -63,7 +63,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 		adjustImagePopup()
 		imagePopup?.selectItem(withTag: selectedImage?.id ?? 0)
 	}
-	
+
 	override func viewDidAppear() {
 		super.viewDidAppear()
 		pageController.view.needsLayout = true
@@ -77,7 +77,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 		let newFrame = NSRect(origin: .zero, size: pc.view.frame.size)
 		pc.selectedViewController?.view.frame = newFrame
 	}
-	
+
 	func imageCacheChanged() {
 		guard let icache = imageCache else { return }
 		if allImages == nil {
@@ -89,7 +89,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 			}
 		}
 	}
-	
+
 	func imageArrayChanged() {
 		//if there are no images, we don't have a selection and should show empty view
 		guard let all = allImages?.value, all.count > 0 else {
@@ -107,19 +107,19 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 		}
 		loadSelectedImage()
 	}
-	
+
 	func display(image: SessionImage) {
 		selectedImage = image
 		guard isViewLoaded else { return }
 		loadSelectedImage()
 	}
-	
+
 	func display(imageId: Int) {
 		if let img = allImages?.value.first(where: { $0.id == imageId }) {
 			display(image: img)
 		}
 	}
-	
+
 	fileprivate func loadSelectedImage() {
 		guard let allImages = allImages else { fatalError("invalid call to loadSelectedImages") }
 		guard let image = selectedImage, let index = allImages.value.index(of: image) else {
@@ -134,7 +134,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 		imagePopup?.isEnabled = true
 		imagePopup?.selectItem(withTag: image.id)
 	}
-	
+
 	fileprivate func displayEmptyView() {
 		guard isViewLoaded else { return }
 		pageController.arrangedObjects = [emptyObject]
@@ -143,7 +143,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 		navigateButton?.setEnabled(false, forSegment: 1)
 		imagePopup?.isEnabled = false
 	}
-	
+
 	// load the images into the popup
 	func adjustImagePopup() {
 		imagePopup?.removeAllItems()
@@ -162,9 +162,9 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 			imagePopup?.menu?.addItem(item)
 		}
 	}
-	
+
 	// MARK: - menu delegate
-	
+
 	// need to add contextualMenuDelegate items to the menu being shown
 	func menuWillOpen(_ menu: NSMenu) {
 		if menu == contextualMenu {
@@ -175,7 +175,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 			itemsAddedToContextMenu = parentItems.count
 		}
 	}
-	
+
 	// remove any items added in menuWillOpen(_)
 	func menuDidClose(_ menu: NSMenu) {
 		if menu == contextualMenu {
@@ -185,7 +185,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 			itemsAddedToContextMenu = 0
 		}
 	}
-	
+
 	// MARK: - actions
 	@IBAction func navigateClicked(_ sender: Any?) {
 		switch (navigateButton?.selectedSegment)! {
@@ -197,7 +197,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 			break
 		}
 	}
-	
+
 	@IBAction func shareImage(_ sender: Any?) {
 		guard let img = selectedImage else { fatalError("shouldn't be able to share w/o an image") }
 		let imgUrl = imageCache?.urlForCachedImage(img.id)
@@ -224,7 +224,7 @@ class ImageOutputController: NSViewController, OutputController, NSSharingServic
 			picker.show(relativeTo: (self.shareButton?.bounds)!, of: self.shareButton!, preferredEdge: .maxY)
 		}
 	}
-	
+
 	@IBAction func selectImage(_ sender: Any?) {
 		guard let menuItem = sender as? NSMenuItem, let image = menuItem.representedObject as? SessionImage else { return }
 		display(image: image)
@@ -237,7 +237,7 @@ extension ImageOutputController: NSPageControllerDelegate {
 	{
 		return myShareServices + proposedServices
 	}
-	
+
 	func pageController(_ pageController: NSPageController, didTransitionTo object: Any) {
 		guard let img = object as? SessionImage, let allImages = allImages else {
 			Log.warn("page controller switched to non-existant image", .app)
@@ -250,13 +250,13 @@ extension ImageOutputController: NSPageControllerDelegate {
 		navigateButton?.setEnabled(index > 0, forSegment: 0)
 		navigateButton?.setEnabled(index < allImages.value.count - 1, forSegment: 1)
 	}
-	
+
 	func pageController(_ pageController: NSPageController, identifierFor object: Any) -> NSPageController.ObjectIdentifier
 	{
 		guard let image = object as? SessionImage else { return emptyIdentifier }
 		return "\(image.id)"
 	}
-	
+
 	func pageController(_ pageController: NSPageController, viewControllerForIdentifier identifier: NSPageController.ObjectIdentifier) -> NSViewController
 	{
 		let vc = ImageViewController()
@@ -271,11 +271,11 @@ extension ImageOutputController: NSPageControllerDelegate {
 		vc.view = iv
 		return vc
 	}
-	
+
 	func pageController(_ pageController: NSPageController, frameFor object: Any?) -> NSRect {
 		return NSRect(origin: NSPoint.zero, size: pageController.view.frame.size)
 	}
-	
+
 	func pageController(_ pageController: NSPageController, prepare viewController: NSViewController, with object: Any?)
 	{
 		guard let myViewController = viewController as? ImageViewController else { return }
@@ -285,7 +285,7 @@ extension ImageOutputController: NSPageControllerDelegate {
 		}
 		myViewController.setImage(producer: imageCache!.image(withId: img.id))
 	}
-	
+
 	func pageControllerDidEndLiveTransition(_ pageController: NSPageController) {
 		pageController.completeTransition()
 	}
@@ -296,19 +296,19 @@ extension ImageOutputController: NSPageControllerDelegate {
 class ImageViewController: NSViewController {
 	var didAddConstraints = false
 	var imageLoadDisposable: Disposable?
-	
+
 	var imageView: NSImageView? { return view as? NSImageView }
-	
+
 	//starting with sierra, all viewcontrollers must have a view after this call. We setup a dummy one that will be replaced by our parent controller
 	override func loadView() {
 		self.view = NSView(frame: NSRect(x: 0, y: 0, width: 100, height: 100))
 	}
-	
+
 	func setImage(image: NSImage?) {
 		imageLoadDisposable = nil
 		imageView?.image = image
 	}
-	
+
 	func setImage(producer: SignalProducer<PlatformImage, ImageCacheError>) {
 		imageLoadDisposable?.dispose() //dispose of any currently loading image
 		producer.startWithResult { result in

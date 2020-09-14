@@ -12,8 +12,6 @@ import Rc2Common
 import Networking
 import Model
 
-// swiftlint:disable file_length type_body_length
-
 class FileRowData: Equatable {
 	var sectionName: String?
 	var file: AppFile?
@@ -37,6 +35,7 @@ let FileDragTypes = [NSPasteboard.PasteboardType(kUTTypeFileURL as String)]
 let addFileSegmentIndex: Int = 0
 let removeFileSegmentIndex: Int = 1
 
+// swiftlint:disable type_body_length
 class SidebarFileController: AbstractSessionViewController, NSTableViewDataSource, NSTableViewDelegate, NSOpenSavePanelDelegate, NSMenuDelegate
 {
 	// MARK: properties
@@ -47,10 +46,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	@IBOutlet var messageView: NSView?
 	@IBOutlet var messageLabel: NSTextField?
 	@IBOutlet var messageButtons: NSStackView?
-	
+
 	private var getInfoPopover: NSPopover?
 	private var fileInfoController: FileInfoController?
-	
+
 	var rowData: [FileRowData] = [FileRowData]()
 	weak var delegate: FileViewControllerDelegate?
 	lazy var importPrompter: MacFileImportSetup? = { MacFileImportSetup() }()
@@ -60,13 +59,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	private var busyDisposable: Disposable?
 	fileprivate var selectionChangeInProgress = false
 	fileprivate var formatMenu: NSMenu?
-	
+
 	var selectedFile: AppFile? { didSet { fileSelectionChanged() } }
 
-	deinit {
-		NotificationCenter.default.removeObserver(self)
-	}
-	
 	// MARK: - lifecycle
 	override func awakeFromNib() {
 		super.awakeFromNib()
@@ -93,7 +88,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 		adjustForFileSelectionChange()
 	}
-	
+
 	override func sessionChanged() {
 		fileChangeDisposable?.dispose()
 		fileChangeDisposable = session.workspace.fileChangeSignal.observe(on: UIScheduler()).take(during: session.lifetime).observe(on: UIScheduler()).observeValues(filesRefreshed)
@@ -108,7 +103,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			messageView?.isHidden = true
 		}
 	}
-	
+
 	override func appStatusChanged() {
 		// don't observe if session not set yet
 		guard let session = sessionOptional else { return }
@@ -121,7 +116,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			}
 		}
 	}
-	
+
 	func loadData() {
 		guard let session = sessionOptional else { Log.warn("loadData called without a session", .app); return }
 		var sectionedFiles = [[AppFile](), [AppFile](), [AppFile]()]
@@ -137,14 +132,14 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		rowData.removeAll()
 		for i in 0..<sectionNames.count where sectionedFiles[i].count > 0 {
 			rowData.append(FileRowData(name: sectionNames[i], file: nil))
-			rowData.append(contentsOf: sectionedFiles[i].map({ return FileRowData(name:nil, file:$0) }))
+			rowData.append(contentsOf: sectionedFiles[i].map({ return FileRowData(name: nil, file: $0) }))
 		}
 	}
-	
+
 	fileprivate func adjustForFileSelectionChange() {
 		addRemoveButtons?.setEnabled(selectedFile != nil, forSegment: removeFileSegmentIndex)
 	}
-	
+
 	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else {
 			return false
@@ -165,7 +160,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				return false
 		}
 	}
-	
+
 	//as the delegate for the action menu, need to enable/disable items
 	func menuNeedsUpdate(_ menu: NSMenu) {
 		menu.items.forEach { item in
@@ -180,14 +175,14 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			}
 		}
 	}
-	
+
 	func fileDataIndex(fileId: Int) -> Int? {
 		for (idx, data) in rowData.enumerated() where data.file?.fileId == fileId {
 			return idx
 		}
 		return nil
 	}
-	
+
 	// NSMenu calls this method before an item's action is called. we listen to it from the add button's menu
 	@objc func addFileMenuAction(_ note: Notification) {
 		guard let menuItem = note.userInfo?["MenuItem"] as? NSMenuItem,
@@ -212,7 +207,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			}
 		}
 	}
-	
+
 	// MARK: - actions
 	@IBAction func createFirstFile(_ sender: Any?) {
 		guard let button = sender as? NSButton else { return }
@@ -230,7 +225,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 		//        messageView?.isHidden = true
 	}
-	
+
 	@IBAction func deleteFile(_ sender: Any?) {
 		guard let file = selectedFile else {
 			Log.error("deleteFile should never be called without selected file", .app)
@@ -251,7 +246,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			self.actuallyPerformDelete(file: file)
 		}
 	}
-	
+
 	@IBAction func duplicateFile(_ sender: Any?) {
 		guard let file = selectedFile else {
 			Log.error("duplicateFile should never be called without selected file", .app)
@@ -302,7 +297,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				.updateProgress(status: self.appStatus!, actionName: "Rename \(file.name)")
 				.startWithResult { result in
 					if case .failure(let error) = result {
-						Log.error("error duplicating file: \(error)",.app)
+						Log.error("error duplicating file: \(error)", .app)
 						self.appStatus?.presentError(error, session: self.session)
 						return
 					}
@@ -310,11 +305,11 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				}
 		}
 	}
-	
+
 	@IBAction func editFile(_ sender: Any) {
 		delegate?.fileSelectionChanged(selectedFile, forEditing: true)
 	}
-	
+
 	/// called to display info about a specific file
 	@IBAction func inforForFile(_ sender: Any) {
 		if getInfoPopover == nil {
@@ -336,11 +331,11 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		fileInfoController?.file = rowData[rowIdx].file
 		self.getInfoPopover?.show(relativeTo: tableView.rect(ofRow: rowIdx), of: tableView, preferredEdge: .maxX)
 	}
-	
+
 	// never gets called, but file type menu items must have an action or addFileMenuAction never gets called
 	@IBAction func addDocumentOfType(_ menuItem: NSMenuItem) {
 	}
-	
+
 	@IBAction func segButtonClicked(_ sender: Any?) {
 		switch addRemoveButtons!.selectedSegment {
 			case addFileSegmentIndex:
@@ -353,7 +348,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		}
 	}
 
-	@IBAction func promptToImportFiles(_ sender:Any?) {
+	@IBAction func promptToImportFiles(_ sender: Any?) {
 		if nil == importPrompter {
 			importPrompter = MacFileImportSetup()
 		}
@@ -385,10 +380,10 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			savePanel.close()
 			if result == .OK && savePanel.url != nil {
 				do {
-					try Foundation.FileManager.default.copyItem(at: self.session.fileCache.cachedUrl(file:self.selectedFile!), to: savePanel.url!)
+					try Foundation.FileManager.default.copyItem(at: self.session.fileCache.cachedUrl(file: self.selectedFile!), to: savePanel.url!)
 				} catch let error as NSError {
 					Log.error("failed to copy file for export: \(error)", .app)
-					let alert = NSAlert(error:error)
+					let alert = NSAlert(error: error)
 					alert.beginSheetModal(for: self.view.window!, completionHandler: { (_) -> Void in
 						//do nothing
 					})
@@ -396,7 +391,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			}
 		}
 	}
-	
+
 	@IBAction func exportZippedFiles(_ sender: Any?) {
 		let defaults = UserDefaults.standard
 		let panel = NSSavePanel()
@@ -421,7 +416,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			self.exportAll(to: destination)
 		}
 	}
-	
+
 	@IBAction func exportAllFiles(_ sender: Any?) {
 		let defaults = UserDefaults.standard
 		let panel = NSOpenPanel()
@@ -433,8 +428,8 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		if let bmarkData = defaults[.lastExportDirectory] {
 			panel.directoryURL = try? (NSURL(resolvingBookmarkData: bmarkData, options: [], relativeTo: nil, bookmarkDataIsStale: nil) as URL)
 		}
-		panel.prompt = NSLocalizedString("Export All Files", comment:"")
-		panel.message = NSLocalizedString("Select File Destination", comment:"")
+		panel.prompt = NSLocalizedString("Export All Files", comment: "")
+		panel.message = NSLocalizedString("Select File Destination", comment: "")
 		panel.beginSheetModal(for: view.window!) { response in
 			do {
 				let urlbmark = try (panel.directoryURL as NSURL?)?.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
@@ -447,9 +442,9 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			self.exportAll(to: destination)
 		}
 	}
-	
+
 	// MARK: - private methods
-	
+
 	private func exportAll(to destination: URL) {
 		let fm = FileManager()
 		let zip = destination.pathExtension == "zip"
@@ -507,7 +502,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				.start()
 		}
 	}
-	
+
 	fileprivate func select(fileId: Int) {
 		// the id of the file that was created
 		guard let fidx = self.fileDataIndex(fileId: fileId) else {
@@ -525,13 +520,13 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 					switch result {
 					case .failure(let error):
 						self.appStatus?.presentError(error, session: self.session)
-					case .success(_):
+					case .success:
 						self.delegate?.fileSelectionChanged(nil, forEditing: false)
 					}
 				}
 			}
 	}
-	
+
 	/// prompts for a filename
 	///
 	/// - Parameters:
@@ -556,7 +551,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			handler(value)
 		}
 	}
-	
+
 	private func validateRename(file: AppFile, newName: String?) -> Bool {
 		guard var name = newName else { return true } //empty is allowable
 		if !name.hasSuffix(".\(file.fileType.fileExtension)") {
@@ -570,7 +565,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		guard fileNames.filter({ $0.caseInsensitiveCompare(name) == .orderedSame }).count == 0 else { return false }
 		return true
 	}
-	
+
 	private func importFiles(_ files: [FileImporter.FileToImport]) {
 		let converter = { (iprogress: FileImporter.ImportProgress) -> ProgressUpdate? in
 			return ProgressUpdate(.value, message: iprogress.status, value: iprogress.percentComplete)
@@ -604,7 +599,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 				}
 			}
 	}
-	
+
 	/// returns URL to template for the passed in file type
 	func fileTemplate(forType fileType: FileType) -> URL? {
 		do {
@@ -623,7 +618,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 	func numberOfRows(in tableView: NSTableView) -> Int {
 		return rowData.count
 	}
-	
+
 	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 		let data = rowData[row]
 		if data.sectionName != nil {
@@ -640,11 +635,11 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 			return fview
 		}
 	}
-	
+
 	func tableView(_ tableView: NSTableView, isGroupRow row: Int) -> Bool {
 		return rowData[row].sectionName != nil
 	}
-	
+
 	func tableViewSelectionDidChange(_ notification: Notification) {
 		if tableView.selectedRow >= 0 {
 			selectedFile = rowData[tableView.selectedRow].file
@@ -654,11 +649,11 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		adjustForFileSelectionChange()
 		delegate?.fileSelectionChanged(selectedFile, forEditing: false)
 	}
-	
+
 	func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
 		return rowData[row].file != nil
 	}
-	
+
 	func tableView(_ tableView: NSTableView, writeRowsWith rowIndexes: IndexSet, to pboard: NSPasteboard) -> Bool {
 		guard let row = rowIndexes.last, let file = rowData[row].file else { return false }
 		let url = session.fileCache.cachedUrl(file: file) as NSURL
@@ -666,7 +661,7 @@ class SidebarFileController: AbstractSessionViewController, NSTableViewDataSourc
 		url.write(to: pboard)
 		return true
 	}
-	
+
 	func tableView(_ tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation dropOperation: NSTableView.DropOperation) -> NSDragOperation
 	{
 		return importPrompter!.validateTableViewDrop(info)
@@ -693,7 +688,7 @@ extension SidebarFileController: FileHandler {
 			tableView.selectRowIndexes(IndexSet(integer: idx), byExtendingSelection: false)
 		}
 	}
-	
+
 	func fileSelectionChanged() {
 		guard !selectionChangeInProgress else { return }
 		selectionChangeInProgress = true

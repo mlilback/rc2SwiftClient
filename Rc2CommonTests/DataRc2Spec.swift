@@ -18,7 +18,7 @@ class DataRc2Spec: QuickSpec {
 		describe("enumerateComponentsSeparated") {
 			it("handles empty data") {
 				var count = 0
-				Data().enumerateComponentsSeparated(by: newline) { subdata in
+				Data().enumerateComponentsSeparated(by: newline) { _ in
 					count += 1
 				}
 				expect(count).to(equal(0))
@@ -26,7 +26,7 @@ class DataRc2Spec: QuickSpec {
 
 			it("handles data without the separator") {
 				var count = 0
-				data1.enumerateComponentsSeparated(by: newline) { subdata in
+				data1.enumerateComponentsSeparated(by: newline) { _ in
 					count += 1
 				}
 				expect(count).to(equal(1))
@@ -37,7 +37,7 @@ class DataRc2Spec: QuickSpec {
 				var data = data1
 				data.append(newline)
 				data.append(data1)
-				data.enumerateComponentsSeparated(by: newline) { subdata in
+				data.enumerateComponentsSeparated(by: newline) { _ in
 					count += 1
 				}
 				expect(count).to(equal(2))
@@ -47,7 +47,7 @@ class DataRc2Spec: QuickSpec {
 				var count = 0
 				var data = data1
 				data.append(newline)
-				data.enumerateComponentsSeparated(by: newline) { subdata in
+				data.enumerateComponentsSeparated(by: newline) { _ in
 					count += 1
 				}
 				expect(count).to(equal(1))
@@ -60,7 +60,7 @@ class DataRc2Spec: QuickSpec {
 				data.append(data1)
 				data.append(newline)
 				data.append(data1)
-				data.enumerateComponentsSeparated(by: newline) { subdata in
+				data.enumerateComponentsSeparated(by: newline) { _ in
 					count += 1
 				}
 				expect(count).to(equal(3))
@@ -72,7 +72,7 @@ class DataRc2Spec: QuickSpec {
 				data.append(newline)
 				data.append(newline)
 				data.append(data1)
-				data.enumerateComponentsSeparated(by: newline) { subdata in
+				data.enumerateComponentsSeparated(by: newline) { _ in
 					count += 1
 				}
 				expect(count).to(equal(3))

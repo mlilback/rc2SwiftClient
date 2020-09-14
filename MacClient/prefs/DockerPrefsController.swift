@@ -7,8 +7,8 @@
 import Cocoa
 
 class DockerPrefsController: NSViewController {
-	
+
 	@IBAction func resetDataVolume(_ sender: Any?) {
-		
+
 	}
 }

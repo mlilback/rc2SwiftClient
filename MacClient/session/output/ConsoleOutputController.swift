@@ -26,7 +26,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	@IBOutlet var contextualMenuAdditions: NSMenu?
 
 	weak var contextualMenuDelegate: ContextualMenuDelegate?
-	
+
 	var outputFont: NSFont = NSFont(name: "Menlo", size: 14)!
 	let cmdHistory: CommandHistory
 	@objc dynamic var consoleInputText = "" { didSet { canExecute = consoleInputText.count > 0 } }
@@ -42,14 +42,14 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 	}
 	var supportsSearchBar: Bool { return true }
 	var searchBarVisible: Bool { return resultsView?.enclosingScrollView?.isFindBarVisible ?? false }
-	
+
 	required init?(coder: NSCoder) {
-		cmdHistory = CommandHistory(target:nil, selector:#selector(ConsoleOutputController.displayHistoryItem(_:)))
+		cmdHistory = CommandHistory(target: nil, selector: #selector(ConsoleOutputController.displayHistoryItem(_:)))
 		// set a default font since required at init. will be changed in viewDidLoad() and restoreSessionState()
 		currentFontDescriptor = NSFont.userFixedPitchFont(ofSize: 14.0)!.fontDescriptor
 		super.init(coder: coder)
 	}
-	
+
 	// MARK: - overrides
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -68,7 +68,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 			self?.themeChanged()
 		}
 	}
-	
+
 	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action  {
@@ -82,7 +82,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 			return false
 		}
 	}
-	
+
 	// MARK: - internal
 	private func restoreFont() {
 		var fdesc: FontDescriptor? = UserDefaults.standard[.consoleOutputFont]
@@ -107,11 +107,11 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		theme.update(attributedString: resultsView!.textStorage!)
 		resultsView?.backgroundColor = theme.color(for: .background)
 	}
-	
+
 	fileprivate func actuallyClearConsole() {
 		resultsView?.textStorage?.deleteCharacters(in: NSRange(location: 0, length: (resultsView?.textStorage?.length)!))
 	}
-	
+
 	// MARK: - actions
 	@IBAction func executeQuery(_ sender: Any?) {
 		guard consoleInputText.count > 0 else { return }
@@ -119,7 +119,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		cmdHistory.addToCommandHistory(consoleInputText)
 		consoleTextField?.stringValue = ""
 	}
-	
+
 	// MARK: - SessionOutputHandler
 	func append(responseString: ResponseString) {
 		// swiftlint:disable:next force_cast
@@ -128,7 +128,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		resultsView!.textStorage?.append(mutStr)
 		resultsView!.scrollToEndOfDocument(nil)
 	}
-	
+
 	func save(state: inout SessionState.OutputControllerState) {
 		state.commandHistory = cmdHistory.commands
 		let fullRange = resultsView!.textStorage!.string.fullNSRange
@@ -176,7 +176,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		//scroll to bottom
 		resultsView.moveToEndOfDocument(self)
 	}
-	
+
 	func attachmentCellForAttachment(_ attachment: NSTextAttachment) -> NSTextAttachmentCell? {
 		guard let attach = try? MacConsoleAttachment.from(data: attachment.fileWrapper!.regularFileContents!) else { return nil }
 		assert(attach.type == .file)
@@ -185,7 +185,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		img?.size = consoleAttachmentImageSize
 		return NSTextAttachmentCell(imageCell: img)
 	}
-	
+
 	// MARK: - command history
 	@IBAction func historyClicked(_ sender: Any?) {
 		cmdHistory.adjustCommandHistoryMenu()
@@ -205,7 +205,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		consoleTextField?.stringValue = consoleInputText
 		view.window?.makeFirstResponder(consoleTextField)
 	}
-	
+
 	@IBAction func clearConsole(_ sender: Any?) {
 		let defaults = UserDefaults.standard
 		guard !defaults[.suppressClearImagesWithConsole] else {
@@ -225,7 +225,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 			if clearImages { self.session.imageCache.clearCache() }
 		}
 	}
-	
+
 	// MARK: - textfield delegate
 	func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
 		if commandSelector == #selector(NSResponder.insertNewline(_:)) {
@@ -234,7 +234,7 @@ class ConsoleOutputController: AbstractSessionViewController, OutputController, 
 		}
 		return false
 	}
-	
+
 	// MARK: - textview delegate
 	func textView(_ textView: NSTextView, clickedOn cell: NSTextAttachmentCellProtocol, in cellFrame: NSRect, at charIndex: Int)
 	{
@@ -270,11 +270,11 @@ extension ConsoleOutputController: Searchable {
 
 // MARK: - UsesAdjustableFont
 extension ConsoleOutputController: UsesAdjustableFont {
-	
+
 	func fontsEnabled() -> Bool {
 		return true
 	}
-	
+
 	func fontChanged(_ menuItem: NSMenuItem) {
 		guard let newNameDesc = menuItem.representedObject as? NSFontDescriptor else { return }
 		let newDesc = newNameDesc.withSize(currentFontDescriptor.pointSize)
@@ -282,4 +282,3 @@ extension ConsoleOutputController: UsesAdjustableFont {
 		resultsView?.font = NSFont(descriptor: newDesc, size: newDesc.pointSize)
 	}
 }
-

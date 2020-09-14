@@ -17,12 +17,12 @@ class TestingWebSocket: WebSocket {
 		onConnect?()
 	}
 
-	override func write(string: String, completion: (() -> ())?) {
+	override func write(string: String, completion: (() -> Void)?) {
 		stringsWritten.append(string)
 		completion?()
 	}
 
-	override func write(data: Data, completion: (() -> ())?) {
+	override func write(data: Data, completion: (() -> Void)?) {
 		completion?()
 	}
 	

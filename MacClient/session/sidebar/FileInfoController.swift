@@ -21,7 +21,7 @@ class FileInfoController: NSViewController {
 			fileIcon?.size = NSSize(width: 48, height: 48)
 		}
 	} }
-	
+
 	@objc dynamic var fileName: String?
 	@objc dynamic var fileSize: NSNumber?
 	@objc dynamic var dateCreated: Date?

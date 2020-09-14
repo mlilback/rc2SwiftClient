@@ -19,19 +19,21 @@ public class TimedEvent {
 		case monthly
 		
 		/// parses a dictionary created by serialize() into a Frequency
-		static func deserialize(_ data: Dictionary<String, Any>) -> Frequency? {
+		// swiftlint:disable:next cyclomatic_complexity
+		static func deserialize(_ data: [String: Any]) -> Frequency? {
 			guard let name = data["case"] as? String else { return nil }
+			// swiftlint:disable: next cyclomatic_complexity
 			switch name {
 			case "oneTime":
 				return .oneTime
 			case "minutes":
-				guard let mval = data["value"] as? Int else { return nil}
+				guard let mval = data["value"] as? Int else { return nil }
 				return .minutes(mval)
 			case "hours":
-				guard let hval = data["value"] as? Int else { return nil}
+				guard let hval = data["value"] as? Int else { return nil }
 				return .hours(hval)
 			case "days":
-				guard let dval = data["value"] as? Int else { return nil}
+				guard let dval = data["value"] as? Int else { return nil }
 				return .days(dval)
 			case "weekly":
 				return .weekly
@@ -43,7 +45,7 @@ public class TimedEvent {
 		}
 		
 		// returns self as a dictionary that can be serialized as json/property list
-		func serialize() -> Dictionary<String, Any> {
+		func serialize() -> [String: Any] {
 			if let associated = Mirror(reflecting: self).children.first {
 				return ["case": associated.label!, "value": associated.value]
 			}
@@ -74,6 +76,7 @@ public class TimedEvent {
 	}
 	
 	struct EventError: Error {
+		// swiftlint:disable:next nesting
 		enum ErrorType {
 			case serialization
 		}
@@ -119,16 +122,16 @@ public class TimedEvent {
 		self.coalescedCount = coalescedCount
 	}
 	
-	fileprivate init(_ dict: Dictionary<String, Any>) throws {
+	fileprivate init(_ dict: [String: Any]) throws {
 		guard let aStr = dict["id"] as? String, let anId = UUID(uuidString: aStr) else { throw EventError(.serialization, "id") }
 		self.id = anId
 		guard let aDomain = dict["domain"] as? String else { throw EventError(.serialization, "domain") }
 		self.domain = aDomain
 		guard let aType = dict["type"] as? String else { throw EventError(.serialization, "type") }
 		self.type = aType
-		guard let pdict = dict["priority"] as? Dictionary<String, Any>, let aQos = DispatchQoS(dictionary: pdict) else { throw EventError(.serialization, "priority") }
+		guard let pdict = dict["priority"] as? [String: Any], let aQos = DispatchQoS(dictionary: pdict) else { throw EventError(.serialization, "priority") }
 		self.priority = aQos
-		guard let fdict = dict["frequency"] as? Dictionary<String, Any>, let aFreq = Frequency.deserialize(fdict) else { throw EventError(.serialization, "frequency") }
+		guard let fdict = dict["frequency"] as? [String: Any], let aFreq = Frequency.deserialize(fdict) else { throw EventError(.serialization, "frequency") }
 		self.frequency = aFreq
 		if let lastExecTime = dict["lastExecuted"] as? TimeInterval {
 			self.lastExecuted = Date(timeIntervalSinceReferenceDate: lastExecTime)
@@ -144,7 +147,7 @@ public class TimedEvent {
 		return date.timeIntervalSinceReferenceDate
 	}
 	
-	func serialize() -> Dictionary<String, Any> {
+	func serialize() -> [String: Any] {
 		return ["id": id.uuidString, "domain": domain, "type": type, "priority": priority.serialize(), "frequency": frequency.serialize(), "lastExecuted": serialize(date: lastExecuted), "scheduledTime": serialize(date: scheduledTime)]
 	}
 }
@@ -162,7 +165,7 @@ extension TimedEvent: Hashable {
 public typealias TimedEventHandler = (TimedEvent) -> Void
 
 /// Delegate that handles application-specific activites for the TimedEventManager
-public protocol TimedEventDelegate {
+public protocol TimedEventDelegate: class {
 	/// Retrieves the previously saved serialized event data
 	///
 	/// - Returns: the serialized event data
@@ -261,7 +264,7 @@ public class TimedEventManager
 
 // extension to add serialization
 fileprivate extension DispatchQoS {
-	init?(dictionary: Dictionary<String, Any>) {
+	init?(dictionary: [String: Any]) {
 		guard let class_t = dictionary["class_t"] as? UInt32,
 			let priority = dictionary["priority"] as? Int,
 			let qos_class = DispatchQoS.QoSClass(rawValue: qos_class_t(class_t))
@@ -269,8 +272,7 @@ fileprivate extension DispatchQoS {
 		self.init(qosClass: qos_class, relativePriority: priority)
 	}
 	
-	func serialize() -> Dictionary<String, Any> {
+	func serialize() -> [String: Any] {
 		return ["class_t": qosClass.rawValue.rawValue, "priority": relativePriority]
 	}
 }
-

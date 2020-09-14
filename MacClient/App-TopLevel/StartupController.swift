@@ -27,7 +27,7 @@ public class StartupController: NSViewController {
 		get { return statusText.stringValue }
 		set { statusText.stringValue = newValue }
 	}
-	
+
 	public func updateStatus(message: String) {
 		guard Thread.isMainThread else {
 			DispatchQueue.main.async { self.stateChanged() }
@@ -35,14 +35,14 @@ public class StartupController: NSViewController {
 		}
 		statusText.stringValue = message
 	}
-	
+
 	override public func viewDidLoad() {
 		super.viewDidLoad()
 		progressBar.usesThreadedAnimation = true
 		//setup initial state
 		stateChanged()
 	}
-	
+
 	private var lastPercent: Double = 0
 
 //	private func updatePullProgress() {
@@ -56,7 +56,7 @@ public class StartupController: NSViewController {
 //			statusText.stringValue = "Downloading \(pullProgress!.name)…"
 //		}
 //	}
-	
+
 	private func stateChanged() {
 		guard Thread.isMainThread else {
 			DispatchQueue.main.async { self.stateChanged() }

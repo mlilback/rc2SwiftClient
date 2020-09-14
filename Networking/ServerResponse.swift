@@ -33,12 +33,11 @@ public enum ServerResponse: Hashable {
 	case fileOperationResponse(transId: String, operation: FileOperation, result: Result<AppFile?, Rc2Error>)
 	
 	public func isEcho() -> Bool {
-		if case .echoQuery(_, _, _) = self { return true }
+		if case .echoQuery = self { return true }
 		return false
 	}
 	
 	// swiftlint:disable cyclomatic_complexity
-	// swiftlint:disable:next function_body_length
 	static func parseResponse(_ jsonObj: JSON) -> ServerResponse? {
 		guard let msg = try? jsonObj.getString(at: "msg") else {
 			Log.warn("failed to parse 'msg' from server response", .session)
@@ -104,7 +103,8 @@ public enum ServerResponse: Hashable {
 		}
 		var result: Result<AppFile?, Rc2Error>?
 		if success {
-			// swiftlint:disable:next force_try (should be impossible since nil is acceptable)
+			// (should be impossible since nil is acceptable)
+			// swiftlint:disable:next force_try
 			result = Result<AppFile?, Rc2Error>(value: try! jsonObj.decode(at: "file", alongPath: [.missingKeyBecomesNil, .nullBecomesNil], type: AppFile.self))
 		} else {
 			result = Result<AppFile?, Rc2Error>(error: parseRemoteError(jsonObj: try? jsonObj.getDictionary(at: "error")))

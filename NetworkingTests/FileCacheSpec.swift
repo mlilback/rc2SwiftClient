@@ -32,7 +32,7 @@
 //		let conInfo = try! ConnectionInfo(host: ServerHost.localHost, bulkInfoData: self.loadFileData("bulkInfo", fileExtension: "json")!, authToken: "dsfrsfsdfsdfsf", config: sessionConfig)
 //		let rawData = Data(bytes: Array<UInt8>(repeating: 1, count: 2048))
 //		let builder: (URLRequest) -> Response = { request in
-////			return http(download: .streamContent(data: rawData, inChunksOf: 1024))(request)
+// //			return http(download: .streamContent(data: rawData, inChunksOf: 1024))(request)
 //			return http(download: .content(rawData))(request)
 //		}
 //		let fileTemplate = URITemplate(template: "\(baseUrlString)/file/{fileId}")

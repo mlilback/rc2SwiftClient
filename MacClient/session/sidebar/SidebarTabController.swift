@@ -8,7 +8,7 @@ import Cocoa
 
 class SidebarTabController: NSTabViewController {
 	let LastSelectionKey = "LastSelectionKey"
-	
+
 	var selectedTabIndex: Int {
 		return tabView.indexOfTabViewItem((tabView.selectedTabViewItem)!)
 	}

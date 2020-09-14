@@ -10,6 +10,8 @@ import Foundation
 import os
 import Rc2Common
 
+// swiftlint:disable all
+
 public class DefaultFileManager: Rc2FileManager {
 	public func Url(for directory: FileManager.SearchPathDirectory, domain: FileManager.SearchPathDomainMask, appropriateFor url: URL?, create shouldCreate: Bool) throws -> URL
 	{

@@ -16,16 +16,16 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 	@IBOutlet var titleLabel: NSTextField?
 	@IBOutlet var searchBar: SearchBarView?
 	@IBOutlet var searchBarHeightConstraint: NSLayoutConstraint?
-	
+
 	weak var contextualMenuDelegate: ContextualMenuDelegate?
-	
+
 	var webConfig: WKWebViewConfiguration?
 	fileprivate var searchBarHeight: CGFloat = 0
 	var supportsSearchBar: Bool { return true }
 	var searchBarVisible: Bool { return (searchBarHeightConstraint?.constant ?? 0 > 0) }
-	
+
 	open var pageTitle: String { return webView?.title ?? "" }
-	
+
 	// MARK: - methods
 	override open func viewDidLoad() {
 		super.viewDidLoad()
@@ -47,7 +47,7 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 		loadScript(filename: "jquery.mark.min", fileExtension: "js")
 		loadScript(filename: "rc2search", fileExtension: "js")
 	}
-	
+
 	func setupWebView() {
 		webView?.removeFromSuperview()
 		webView = Rc2WebView(frame: view.frame.insetBy(dx: 4, dy: 4), configuration: webConfig!)
@@ -60,18 +60,18 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 		webView!.trailingAnchor.constraint(equalTo: (containerView?.trailingAnchor)!).isActive = true
 		webView!.contextualMenuDelegate = self
 	}
-	
+
 	func loadScript(filename: String, fileExtension: String) {
 		let url = Bundle.main.url(forResource: filename, withExtension: fileExtension, subdirectory: "static_html")!
 		guard let srcStr = try? String(contentsOf: url) else { return }
 		let script = WKUserScript(source: srcStr, injectionTime: .atDocumentStart, forMainFrameOnly: true)
 		webConfig?.userContentController.addUserScript(script)
 	}
-	
+
 	func currentPageSearchable() -> Bool {
 		return webView?.url != nil
 	}
-	
+
 	@IBAction func navigateWebView(_ sender: AnyObject) {
 		switch (navButtons?.selectedSegment)! {
 		case 0:
@@ -82,7 +82,7 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 			break
 		}
 	}
-	
+
 	@IBAction func showShareSheet(_ sender: AnyObject) {
 		let sharepicker = NSSharingServicePicker(items: [webView!.url!])
 		sharepicker.show(relativeTo: (shareButton?.frame)!, of: (shareButton?.superview)!, preferredEdge: .maxY)
@@ -98,23 +98,23 @@ class WebViewController: AbstractSessionViewController, OutputController, WKNavi
 		let jsString = "var style = document.createElement('style'); style.innerHTML='\(css)'; document.head.appendChild(style);"
 		webView.evaluateJavaScript(jsString, completionHandler: nil)
 	}
-	
-	//MARK -- WKNavigationDelegate
-	
+
+	// MARK: - WKNavigationDelegate
+
 	open func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!)
 	{
 		navButtons?.setEnabled(webView.canGoBack, forSegment: 0)
 		navButtons?.setEnabled(webView.canGoForward, forSegment: 1)
 		titleLabel?.stringValue = pageTitle
 	}
-	
+
 	open func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
 		Log.error("failed to navigate: \(error)", .app)
 	}
-	
+
 	open func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
 	}
-	
+
 	open func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error)
 	{
 		Log.error("failed to provisionally navigate: \(error)", .app)
@@ -129,22 +129,22 @@ extension WebViewController: SearchBarViewDelegate {
 	public func goBackward(searchBar: SearchBarView) {
 		webView?.evaluateJavaScript("cycleMatch(-1)")
 	}
-	
+
 	public func dismiss(searchBar: SearchBarView) {
 		hideSearchBar()
 	}
-	
+
 	//internal choke point for hiding searchbar
 	fileprivate func hideSearchBar() {
 		searchBarHeightConstraint?.constant = 0
 		webView?.evaluateJavaScript("clearSearch()")
 	}
-	
+
 	private struct SearchParams: Codable {
 		let term: String
-		let options: [String:String] = [:]
+		let options: [String: String] = [:]
 	}
-	
+
 	public func performSearch(searchBar: SearchBarView, string: String) {
 		let encoder = JSONEncoder()
 		let params = SearchParams(term: string)
@@ -163,7 +163,7 @@ extension WebViewController: SearchBarViewDelegate {
 			Log.warn("error encoding java script search: \(error)", .app)
 		}
 	}
-	
+
 	func contextMenuItems(for controller: OutputController) -> [NSMenuItem] {
 		return contextualMenuDelegate?.contextMenuItems(for: controller) ?? []
 	}
@@ -189,7 +189,7 @@ extension WebViewController: Searchable {
 class Rc2WebView: WKWebView, OutputController {
 	private var menuItemsAdded: Int = 0
 	weak var contextualMenuDelegate: ContextualMenuDelegate?
-	
+
 	override func willOpenMenu(_ menu: NSMenu, with event: NSEvent) {
 		let items = contextualMenuDelegate!.contextMenuItems(for: self)
 		for (index, item) in items.enumerated() {
@@ -201,7 +201,7 @@ class Rc2WebView: WKWebView, OutputController {
 			menu.insertItem(NSMenuItem.separator(), at: items.count)
 		}
 	}
-	
+
 	override func didCloseMenu(_ menu: NSMenu, with event: NSEvent?) {
 		for _ in 0..<menuItemsAdded {
 			menu.removeItem(at: 0)

@@ -132,7 +132,7 @@ public extension AppFile {
 		if let versionData = dataForXAttributeNamed(FileAttrVersion, atURL: url).data,
 			let readString = String(data: versionData, encoding: .utf8),
 			let readVersion = Int(readString),
-			let shaData = dataForXAttributeNamed (FileAttrChecksum, atURL: url).data,
+			let shaData = dataForXAttributeNamed(FileAttrChecksum, atURL: url).data,
 			let readShaData = dataForXAttributeNamed(FileAttrChecksum, atURL: url).data
 		{
 			return readVersion == version && shaData == readShaData

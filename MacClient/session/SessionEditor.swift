@@ -23,9 +23,9 @@ extension NSTextView {
 
 class SessionEditor: TextViewWithContextualMenu {
 	var wordWrapEnabled: Bool { return textContainer!.widthTracksTextView }
-	
+
 	private var didSetup = false
-		
+
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		guard !didSetup else { return }
@@ -42,11 +42,11 @@ class SessionEditor: TextViewWithContextualMenu {
 			self.appearance = NSAppearance(named: .aqua)
 		}
 	}
-	
+
 	var rangeOfAllText: NSRange {
 		return NSRange(location: 0, length: textStorage!.length)
 	}
-	
+
 	func moveCursorToNextNonBlankLine() {
 		let contents = string
 		var lastLocation: String.Index = contents.endIndex
@@ -64,7 +64,7 @@ class SessionEditor: TextViewWithContextualMenu {
 			}
 		}
 	}
-	
+
 	//with this version, if the close paren was at the end of the line, the blank space at the end of the line was colored, too. this did not happen in the old version of the client with similar code in objective-c. so we don't flash the close paren they just typed
 	override func insertText(_ aString: Any, replacementRange: NSRange) {
 		super.insertText(aString, replacementRange: replacementRange)
@@ -81,7 +81,7 @@ class SessionEditor: TextViewWithContextualMenu {
 			self.layoutManager?.removeTemporaryAttribute(.backgroundColor, forCharacterRange: openRange)
 		}
 	}
-	
+
 	//can't figure out an easy was to compare with a character constant '(', so use ascii code for comparison
 	func findMatchingParenthesis(_ closeLocation: Int, str: NSString) -> Int {
 		var stackCount = 0
@@ -116,14 +116,14 @@ class SessionEditor: TextViewWithContextualMenu {
 		}
 		return NSNotFound
 	}
-	
+
 	@IBAction func toggleWordWrap(_ sender: Any?) {
 		let wordWrap = !wordWrapEnabled
 		let defaults = UserDefaults.standard
 		defaults[.wordWrapEnabled] = wordWrap
 		adjustWordWrap(wordWrap)
 	}
-	
+
 	func adjustWordWrap(_ wrap: Bool) {
 		let container = textContainer!
 		if wrap {

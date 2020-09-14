@@ -15,7 +15,7 @@ import Rc2Common
 		let tarea = NSTrackingArea(rect: bounds, options: [.cursorUpdate, .inVisibleRect, .activeInKeyWindow], owner: self, userInfo: nil)
 		addTrackingArea(tarea)
 	}
-	
+
 	override open func draw(_ dirtyRect: NSRect) {
 		var rect = bounds
 		rect.size.width = 1
@@ -24,7 +24,7 @@ import Rc2Common
 		color.set()
 		rect.fill()
 	}
-	
+
 	override open func cursorUpdate(with event: NSEvent) {
 		NSCursor.resizeLeftRight.set()
 	}

@@ -113,7 +113,7 @@ public class BaseTheme: NSObject, Theme {
 	}
 	
 	public var name: String {
-		willSet { guard !isBuiltin else { fatalError("can't edit name of builtin theme")} }
+		willSet { guard !isBuiltin else { fatalError("can't edit name of builtin theme") } }
 		didSet { if fileUrl != nil { saveIngoringError() } }
 	}
 	public internal(set) var isBuiltin: Bool = false
@@ -164,10 +164,12 @@ public class BaseTheme: NSObject, Theme {
 		}
 		if builtin {
 			/// at some point in Mojhave Budle.url(forResource) started percent encoding the superscript in the app title. This fixes that
-			guard let rawPath =  Bundle(for: ThemeManager.self).url(forResource: dirName, withExtension: "json"), let path = rawPath.path.removingPercentEncoding
+			guard let rawPath = Bundle(for: ThemeManager.self).url(forResource: dirName, withExtension: "json"),
+				let path = rawPath.path.removingPercentEncoding
 			else { fatalError("failed to find themes") }
 			return URL(fileURLWithPath: path)
 		}
+		// swiftlint:disable:next force_try
 		return try! AppInfo.subdirectory(type: .applicationSupportDirectory, named: dirName)
 	}
 	

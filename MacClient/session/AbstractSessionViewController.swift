@@ -21,23 +21,19 @@ class AbstractSessionViewController: NSViewController {
 	weak var appStatus: MacAppStatus? { didSet {
 		appStatusChanged()
 	} }
-	
-	deinit {
-		NotificationCenter.default.removeObserver(self)
-	}
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 	}
-	
+
 	/// allows subclasses to take action when the session has been set
 	func sessionChanged() {
 	}
-	
+
 	/// allows subclasses to take action when the MacAppStatus has been set
 	func appStatusChanged() {
 	}
-	
+
 }
 
 func firstChildViewController<T>(_ rootController: NSViewController) -> T? {

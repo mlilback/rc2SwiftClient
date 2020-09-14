@@ -268,14 +268,14 @@ public class DocumentManager: EditorContext {
 		if fileCache.isFileCached(document.file) {
 			return fileCache.contents(of: document.file)
 				.on(value: { _ in self.switchTo(document: document) })
-				.map( { String(data: $0, encoding: .utf8) } )
+				.map( { String(data: $0, encoding: .utf8) })
 		}
 		// load from network
 		return fileCache.validUrl(for: document.file)
 			.map({ _ in return document.file })
 			.flatMap(.concat, fileCache.contents)
 			.on(value: { _ in self.switchTo(document: document) })
-			.map( { String(data: $0, encoding: .utf8) } )
+			.map( { String(data: $0, encoding: .utf8) })
 	}
 }
 

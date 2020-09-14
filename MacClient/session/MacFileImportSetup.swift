@@ -14,7 +14,7 @@ import Model
 
 /** Handles importing via a save panel or drag and drop. */
 class MacFileImportSetup: NSObject {
-	
+
 	var pboardReadOptions: [NSPasteboard.ReadingOptionKey: Any] {
 		return [NSPasteboard.ReadingOptionKey.urlReadingFileURLsOnly: true as AnyObject,
 		        NSPasteboard.ReadingOptionKey.urlReadingContentsConformToTypes: [kUTTypePlainText, kUTTypePDF]]
@@ -26,7 +26,7 @@ class MacFileImportSetup: NSObject {
 		parameter completionHandler: a closure called with an array of files to import, or nil if the user canceled the import
 	*/
 	func performFileImport(_ window: NSWindow, workspace: AppWorkspace, completionHandler:@escaping ([FileImporter.FileToImport]?) -> Void) {
-		
+
 		let defaults = UserDefaults.standard
 		let panel = NSOpenPanel()
 		if let bmarkData = defaults[.lastImportDirectory] {
@@ -39,8 +39,8 @@ class MacFileImportSetup: NSObject {
 		panel.canChooseDirectories = false
 		panel.resolvesAliases = true
 		panel.allowsMultipleSelection = true
-		panel.prompt = NSLocalizedString("Import", comment:"")
-		panel.message = NSLocalizedString("Select Files to Import", comment:"")
+		panel.prompt = NSLocalizedString("Import", comment: "")
+		panel.message = NSLocalizedString("Select Files to Import", comment: "")
 		panel.delegate = self
 		panel.treatsFilePackagesAsDirectories = true
 		panel.allowedFileTypes = FileType.importableFileTypes.map { $0.fileExtension }
@@ -70,14 +70,13 @@ class MacFileImportSetup: NSObject {
 			}
 		}
 	}
-	
+
 	/** If importing via drop, call this to to see if the file is acceptable
 		parameter info: the drag info
 		returns: the drag operation to perform
 	*/
 	func validateTableViewDrop(_ info: NSDraggingInfo) -> NSDragOperation {
 		guard info.draggingSource == nil else  { return NSDragOperation() } //don't allow local drags
-		// swiftlint:disable:next force_cast
 		guard let urls = info.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: pboardReadOptions) as? [URL],
 			urls.count > 0
 			else { return NSDragOperation() } //must have a url
@@ -104,10 +103,10 @@ class MacFileImportSetup: NSObject {
 		if urls.first(where: { aUrl in existingNames.contains(aUrl.lastPathComponent) }) != nil {
 			let alert = NSAlert()
 			alert.messageText = NSLocalizedString("Replace existing file(s)?", comment: "")
-			alert.informativeText = NSLocalizedString("One or more files already exist with the same name as a dropped file", comment:"")
-			alert.addButton(withTitle: NSLocalizedString("Replace", comment:""))
-			alert.addButton(withTitle: NSLocalizedString("Cancel", comment:""))
-			let uniqButton = alert.addButton(withTitle: NSLocalizedString("Create Unique Names", comment:""))
+			alert.informativeText = NSLocalizedString("One or more files already exist with the same name as a dropped file", comment: "")
+			alert.addButton(withTitle: NSLocalizedString("Replace", comment: ""))
+			alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+			let uniqButton = alert.addButton(withTitle: NSLocalizedString("Create Unique Names", comment: ""))
 			uniqButton.keyEquivalent = "u"
 			uniqButton.keyEquivalentModifierMask = .command
 			alert.beginSheetModal(for: window, completionHandler: { response in
@@ -122,11 +121,11 @@ class MacFileImportSetup: NSObject {
 			handler(urls.map { url in FileImporter.FileToImport(url: url, uniqueName: nil) })
 		}
 	}
-	
+
 	/** generates a unique file name (by adding a number to the end) for a file in a workspace */
 	func uniqueFileName(_ desiredName: String, inWorkspace workspace: AppWorkspace) -> String {
 		var i = 1
-		let nsname = NSString(string:desiredName)
+		let nsname = NSString(string: desiredName)
 		let baseName = nsname.deletingPathExtension
 		let pathExtension = nsname.pathExtension
 		var useableName = desiredName

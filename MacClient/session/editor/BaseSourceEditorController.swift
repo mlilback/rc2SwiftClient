@@ -14,7 +14,7 @@ import Networking
 import ClientCore
 import Parsing
 
-fileprivate let rParseTiemout = 4.0
+private let rParseTiemout = 4.0
 
 /// pfrotocol to allow setting the font of something without knowing anything else about it.
 protocol FontUser {
@@ -29,39 +29,39 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	@IBOutlet var sourceButton: NSButton?
 	@IBOutlet var fileNameField: NSTextField?
 	@IBOutlet var contextualMenuAdditions: NSMenu?
-	
+
 	// used so observations are removed when deallocated
 	private let (_editorLifetime, _editorToken) = Lifetime.make()
 	var editorLifetime: Lifetime { return _editorLifetime }
-	
+
 	var parser: Rc2RmdParser?
 	var useParser = false
-	
+
 	var defaultAttributes: [NSAttributedString.Key: Any] = [:]
 //	var currentChunkIndex: Int = 0
 	var fontUser: FontUser?
 
 	var searchableTextView: NSTextView? { return editor }
-	
+
 	/// true when we should ignore text storage delegate callbacks, such as when deleting the text prior to switching documents
 	var ignoreTextStorageNotifications = false
-	
+
 //	var currentChunk: RmdDocumentChunk? {
 //		guard let parser = self.parser, parser.children.count > 0 else { return nil }
 //		return parser.chunks[currentChunkIndex]
 //	}
-	
+
 	override var documentDirty: Bool {
 		guard let edited = editor?.string, let original = context?.currentDocument.value?.savedContents else { return false }
 		return edited != original
 	}
-	
+
 	// MARK: - init/deinit
 	deinit {
 		context?.workspaceNotificationCenter.removeObserver(self)
 		context?.notificationCenter.removeObserver(self)
 	}
-	
+
 	// MARK: methods
 	override func setContext(context: EditorContext) {
 		super.setContext(context: context)
@@ -69,12 +69,12 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 			self?.fontChanged(newFont)
 		}
 	}
-	
+
 	func fontChanged(_ newFont: NSFont) {
 		editor?.font = newFont
 		fontUser?.font = newFont
 	}
-	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		guard let editor = editor, let storage = editor.textStorage else { return }
@@ -101,7 +101,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 			}
 		}
 	}
-	
+
 	@objc override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action  {
@@ -119,7 +119,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 			return super.validateMenuItem(menuItem)
 		}
 	}
-	
+
 	func validateUserInterfaceItem(_ anItem: NSValidatedUserInterfaceItem) -> Bool {
 		switch anItem.action! as Selector {
 		case #selector(ManageFontMenu.adjustFontSize(_:)):
@@ -132,7 +132,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 			return false
 		}
 	}
-	
+
 	//returns relevant items from our contextual menu
 	func additionalContextMenuItems() -> [NSMenuItem]? {
 		var items = [NSMenuItem]()
@@ -145,9 +145,9 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		}
 		return items
 	}
-	
+
 	// MARK: - private methods
-	
+
 	override func documentChanged(newDocument: EditorDocument?) {
 		guard let editor = self.editor else { Log.error("can't adjust document without editor", .app); return }
 		super.documentChanged(newDocument: newDocument)
@@ -157,7 +157,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		}
 		updateUIForCurrentDocument()
 	}
-	
+
 	override func loaded(content: String) {
 		guard let editor = self.editor, let lm = editor.layoutManager, let storage = editor.textStorage, let txtContainer = editor.textContainer, let document = context!.currentDocument.value
 			else { fatalError("editor missing required pieces") }
@@ -192,12 +192,12 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		onDocumentLoaded?(document)
 		self.updateUIForCurrentDocument()
 	}
-	
+
 	private func highlightRCode() {
 		guard let storage = editor?.textStorage else { return }
 		let range = NSRange(location: 0, length: storage.length)
 		let sp = parser!.highlightR(text: storage, range: range, timeout: rParseTiemout)
-		sp.startWithResult() { [weak self] result in
+		sp.startWithResult { [weak self] result in
 			do {
 				guard let me = self else { return }
 				if try result.get() {
@@ -207,7 +207,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 				Log.warn("got error in higlighting: \(error)", .app)
 			}
 
-			sp.startWithResult() { [weak self] result in
+			sp.startWithResult { [weak self] result in
 				do {
 					guard let me = self else { return }
 					if try result.get() {
@@ -219,9 +219,9 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 			}
 		}
 	}
-	
+
 	@objc override func editsNeedSaving() {
-		guard let document = context?.currentDocument.value, let editor = editor, let lm = editor.layoutManager else { fatalError()}
+		guard let document = context?.currentDocument.value, let editor = editor, let lm = editor.layoutManager else { fatalError() }
 		guard view.window != nil else { return }
 		//save the index of the character at the top left of the text container
 		let bnds = editor.enclosingScrollView!.contentView.bounds
@@ -232,7 +232,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 			save(edits: editor.string)
 		}
 	}
-	
+
 	func updateUIForCurrentDocument() {
 		let currentDocument = context?.currentDocument.value
 		let selected = currentDocument?.file != nil
@@ -246,12 +246,11 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		menuItem.tag = Int(NSTextFinder.Action.hideFindInterface.rawValue)
 		editor?.performTextFinderAction(menuItem)
 		editor?.textFinder.cancelFindIndicator()
-		
+
 		willChangeValue(forKey: "canExecute")
 		didChangeValue(forKey: "canExecute")
 	}
-	
-	
+
 	/// Called when the contents of the editor have changed due to user action. Should be orverriden to parse and highlight the changed contents
 	///
 	/// - Parameters:
@@ -260,15 +259,14 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 	///   - delta: the length delta for the edited change
 	func contentsChanged(_ contents: NSTextStorage, range: NSRange, changeLength delta: Int) {
 	}
-	
-	
+
 	func adjustLinkColor() {
 //		let theme = ThemeManager.shared.activeSyntaxTheme.value
 //		var dict = [NSAttributedString.Key: Any]()
 //		dict[.foregroundColor] = theme.color(for: .keyword)
 //		editor?.linkTextAttributes = dict
 	}
-	
+
 	/// updates the style attributes for a fragment in an attributed string
 	func style(fragmentType: SyntaxElement, in text: NSMutableAttributedString, range: NSRange, theme: SyntaxTheme, skipLinks: Bool = false) {
 		switch fragmentType {
@@ -290,7 +288,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 			}
 		}
 	}
-	
+
 	/// Changes any SyntaxElement tags the appropriate style
 	/// - Parameter range: The range to change, defaults to all.
 	func colorizeHighlightAttributes(range: NSRange? = nil) {
@@ -304,7 +302,7 @@ class BaseSourceEditorController: AbstractEditorController, TextViewMenuDelegate
 		let theme = ThemeManager.shared.activeSyntaxTheme.value
 		storage.removeAttribute(.foregroundColor, range: rng)
 		storage.removeAttribute(.backgroundColor, range: rng)
-		storage.enumerateAttributes(in: rng, options: []) { (keyValues, attrRange, stop) in
+		storage.enumerateAttributes(in: rng, options: []) { (keyValues, attrRange, _) in
 			if let fragmentType = keyValues[SyntaxKey] as? SyntaxElement {
 				// skip links if it an equation
 				var skip = false
@@ -325,13 +323,13 @@ extension BaseSourceEditorController {
 		menuItem.tag = Int(NSFindPanelAction.showFindPanel.rawValue)
 		editor?.performFindPanelAction(menuItem)
 	}
-	
+
 	@IBAction override func performTextFinderAction(_ sender: Any?) {
 		let menuItem = NSMenuItem(title: "foo", action: .findPanelAction, keyEquivalent: "")
 		menuItem.tag = Int(NSFindPanelAction.showFindPanel.rawValue)
 		editor?.performFindPanelAction(menuItem)
 	}
-	
+
 	/// if there is a selection, executes the selection. Otherwise, executes the current line.
 	@IBAction func executeCurrentLine(_ sender: Any?) {
 		guard let editor = self.editor else { fatalError() }
@@ -374,7 +372,7 @@ extension BaseSourceEditorController: NSTextViewDelegate {
 		}
 		return nil
 	}
-	
+
 	// Why was this being done? Why reparse when the selection changes?
 	func textViewDidChangeSelection(_ notification: Notification) {
 		guard !ignoreTextStorageNotifications else { return }
@@ -383,15 +381,15 @@ extension BaseSourceEditorController: NSTextViewDelegate {
 //		parser.selectionChanged(range: editor.selectedRange())
 //		currentChunkIndex = parser.indexOfChunk(inRange: editor!.selectedRange())
 	}
-	
+
 	func textView(_ textView: NSTextView, clickedOnLink link: Any, at charIndex: Int) -> Bool {
 		if let str = link as? String, let pieces = Optional(str.components(separatedBy: ":")), pieces.count == 2 {
-			NotificationCenter.default.post(name: .displayHelpTopic, object:pieces[1], userInfo: nil)
+			NotificationCenter.default.post(name: .displayHelpTopic, object: pieces[1], userInfo: nil)
 			return true
 		}
 		return false
 	}
-	
+
 	func textShouldEndEditing(_ textObject: NSText) -> Bool {
 		// called when resigning first responder. update the document's contents
 		save(edits: editor!.string)

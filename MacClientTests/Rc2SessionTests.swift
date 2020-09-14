@@ -9,6 +9,8 @@ import XCTest
 @testable import MacClient
 import SwiftWebSocket
 
+// swiftlint:disable all
+
 class Rc2SessionTests: XCTestCase {
 	static let wspaceJson = "[{\"id\":1, \"userId\":1, \"version\":1, \"name\":\"foofy\", \"files\":[]}]"
 	static let jsonData = wspaceJson.dataUsingEncoding(NSUTF8StringEncoding)

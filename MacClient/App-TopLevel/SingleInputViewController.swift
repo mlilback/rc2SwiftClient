@@ -14,12 +14,12 @@ class SingleInputViewController: NSViewController {
 	var enableSaveButton: ((Any) -> Bool)?
 	/// Closure to execute when user selects save
 	var saveAction: ((SingleInputViewController) -> Void)?
-	
+
 	@IBAction func save(_ sender: Any?) {
 		presentingViewController!.dismiss(self)
 		saveAction?(self)
 	}
-	
+
 	@IBAction func cancel(_ sender: Any?) {
 		presentingViewController!.dismiss(self)
 	}

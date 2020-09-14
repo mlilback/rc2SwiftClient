@@ -10,7 +10,7 @@ import Rc2Common
 import Starscream
 import ReactiveSwift
 
-fileprivate let pingInterval: Double = 30.0
+private let pingInterval: Double = 30.0
 
 public class SessionWebSocketWorker {
 	/// the status will never revert to uninitialized, connecting, or connected after the first time. Closed and failed are final states.
@@ -29,7 +29,7 @@ public class SessionWebSocketWorker {
 			case (.connecting, .connecting): return true
 			case (.connected, .connected): return true
 			case (.closed, .closed): return true
-			case (.failed(_), .failed(_)): return true
+			case (.failed, .failed): return true
 			default: return false
 			}
 		}
@@ -88,7 +88,7 @@ public class SessionWebSocketWorker {
 	
 	func webSocketOpened() {
 		_status.value = .connected
-		pingRepeater = Repeater.every(.seconds(pingInterval)) { [weak self] timer in
+		pingRepeater = Repeater.every(.seconds(pingInterval)) { [weak self] _ in
 			self?.socket.write(ping: Data())
 		}
 		pingRepeater?.start()

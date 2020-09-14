@@ -16,10 +16,10 @@ class RootViewController: AbstractSessionViewController
 {
 	// MARK: - properties
 	var sessionController: SessionController?
-	
+
 	var statusTimer: Timer?
 	var sessionClosedHandler: (() -> Void)?
-	
+
 	fileprivate var progressDisposable: Disposable?
 	fileprivate var dimmingView: DimmingView?
 	weak var splitController: SessionSplitController?
@@ -27,21 +27,21 @@ class RootViewController: AbstractSessionViewController
 	weak var fileHandler: SidebarFileController?
 	weak var editorController: RootEditorController?
 	var formerFirstResponder: NSResponder? //used to restore first responder when dimmingview goes away
-	
+
 	deinit {
 		sessionController?.close()
 	}
-	
+
 	override func sessionChanged() {
 		let variableHandler: VariableHandler = firstChildViewController(self)!
 		editorController = firstChildViewController(self)!
-		sessionController = SessionController(session: session, delegate: self, editor: editorController!, outputHandler: outputHandler!, variableHandler:variableHandler)
+		sessionController = SessionController(session: session, delegate: self, editor: editorController!, outputHandler: outputHandler!, variableHandler: variableHandler)
 		outputHandler?.sessionController = sessionController
 		sessionController?.appStatus = appStatus
 		// link up the preview editor/output controllers
 		editorController?.previewEditor.outputController = outputHandler?.previewOutputController
 	}
-	
+
 	// MARK: - Lifecycle
 	override func viewWillAppear() {
 		super.viewWillAppear()
@@ -51,10 +51,10 @@ class RootViewController: AbstractSessionViewController
 		fileHandler = firstChildViewController(self)
 		fileHandler?.delegate = self
 	}
-	
+
 	override func viewDidAppear() {
 		super.viewDidAppear()
-		NotificationCenter.default.addObserver(self, selector: #selector(windowWillClose(_:)), name: NSWindow.willCloseNotification, object:view.window!)
+		NotificationCenter.default.addObserver(self, selector: #selector(windowWillClose(_:)), name: NSWindow.willCloseNotification, object: view.window!)
 		NotificationCenter.default.addObserver(self, selector: #selector(receivedImportNotification(_:)), name: .filesImported, object: nil)
 		//create dimming view
 		dimmingView = DimmingView(frame: view.bounds)
@@ -63,7 +63,7 @@ class RootViewController: AbstractSessionViewController
 		//we have to wait until next time through event loop to set first responder
 		self.performSelector(onMainThread: #selector(setupResponder), with: nil, waitUntilDone: false)
 	}
-	
+
 	@objc func windowWillClose(_ note: Notification) {
 		if sessionOptional?.connectionOpen ?? false && (note.object as? NSWindow == view.window) {
 			sessionController?.close()
@@ -84,14 +84,14 @@ class RootViewController: AbstractSessionViewController
 		case Selector.showFonts:
 			if let fontHandler = currentFontUser(view.window?.firstResponder) {
 				guard fontHandler.fontsEnabled() else { return false }
-				updateFontFaceMenu(menuItem.submenu!, fontUser:fontHandler)
+				updateFontFaceMenu(menuItem.submenu!, fontUser: fontHandler)
 				return true
 			}
 			return false
 		case Selector.showFontSizes:
 			if let fontHandler = currentFontUser(view.window?.firstResponder) {
 				guard fontHandler.fontsEnabled() else { return false }
-				updateFontSizeMenu(menuItem.submenu!, fontUser:fontHandler)
+				updateFontSizeMenu(menuItem.submenu!, fontUser: fontHandler)
 				return true
 			}
 			return false
@@ -113,7 +113,7 @@ class RootViewController: AbstractSessionViewController
 	@objc func setupResponder() {
 		view.window?.makeFirstResponder(outputHandler?.initialFirstResponder())
 	}
-		
+
 	/// selects the first file imported if it is a source file
 	@objc func receivedImportNotification(_ note: Notification) {
 		guard let importer = note.object as? FileImporter else { return }
@@ -125,7 +125,7 @@ class RootViewController: AbstractSessionViewController
 			self.fileHandler?.selectedFile = file
 		}
 	}
-	
+
 	private func adjustDimmingView(hide: Bool) {
 		Log.info("adjustDimmingView: \(hide)", .app)
 		precondition(appStatus != nil)
@@ -138,7 +138,7 @@ class RootViewController: AbstractSessionViewController
 			self.view.window?.makeFirstResponder(self.formerFirstResponder)
 		}
 	}
-	
+
 	// when the status changes, we show/hide the dimming view to disable interaction
 	override func appStatusChanged() {
 		progressDisposable = appStatus?.progressSignal.observe(on: UIScheduler()).observeValues
@@ -162,43 +162,43 @@ extension RootViewController {
 	@IBAction func clearFileCache(_ sender: Any?) {
 		sessionController?.clearFileCache()
 	}
-	
+
 	@IBAction func clearImageCache(_ sender: Any?) {
 		sessionController?.clearImageCache()
 	}
-	
+
 	@IBAction func clearConsole(_ sender: Any?) {
 		outputHandler?.clearConsole(sender)
 	}
-	
+
 	@IBAction func promptToImportFiles(_ sender: Any?) {
 		fileHandler?.promptToImportFiles(sender)
 	}
-	
+
 	@IBAction func exportSelectedFile(_ sender: Any?) {
 		fileHandler?.exportSelectedFile(sender)
 	}
-	
+
 	@IBAction func exportZippedFiles(_ sender: Any?) {
 		fileHandler?.exportZippedFiles(sender)
 	}
-	
+
 	@IBAction func exportAllFiles(_ sender: Any?) {
 		fileHandler?.exportAllFiles(sender)
 	}
-	
+
 	@IBAction func editFile(_ sender: Any) {
 		fileHandler?.editFile(sender)
 	}
-	
+
 	@IBAction func runQuery(_ sender: Any?) {
 		sessionController?.codeEditor.executeSource(type: .run)
 	}
-	
+
 	@IBAction func sourceQuery(_ sender: Any?) {
 		sessionController?.codeEditor.executeSource(type: .source)
 	}
-	
+
 	@IBAction func switchSidebarTab(_ sender: NSMenuItem?) {
 		splitController?.switchSidebarTab(sender)
 	}
@@ -206,11 +206,11 @@ extension RootViewController {
 	@IBAction func switchOutputTab(_ sender: NSMenuItem?) {
 		splitController?.switchOutputTab(sender)
 	}
-	
+
 	@IBAction func switchToPreviewMode(_ sender: Any?) {
 		sessionController?.codeEditor.switchTo(mode: .preview)
 	}
-	
+
 	@IBAction func switchToSourceMode(_ sender: Any?) {
 		sessionController?.codeEditor.switchTo(mode: .source)
 	}
@@ -221,11 +221,11 @@ extension RootViewController: ManageFontMenu {
 	@IBAction func showFonts(_ sender: Any?) {
 		//do nothing, just a place holder for menu validation
 	}
-	
+
 	@IBAction func showFontSizes(_ sender: Any?) {
 		//do nothing. just placeholder for menu validation
 	}
-	
+
 	@IBAction func adjustFontSize(_ sender: NSMenuItem) {
 		var fsize = sender.tag
 		if fsize >= 9 {
@@ -234,7 +234,7 @@ extension RootViewController: ManageFontMenu {
 			return
 		}
 		//prompt for size to use
-		let sboard = NSStoryboard.init(name: .mainBoard, bundle: nil)
+		let sboard = NSStoryboard(name: .mainBoard, bundle: nil)
 		guard let wc = sboard.instantiateController(withIdentifier: "FontSizeWindowController") as? NSWindowController, let vc = wc.contentViewController as? SingleInputViewController else
 		{
 			fatalError()
@@ -254,7 +254,7 @@ extension RootViewController: ManageFontMenu {
 		vc.textField!.objectValue = currentFontUser(view.window!.firstResponder)?.currentFontDescriptor.pointSize
 		presentAsSheet(vc)
 	}
-	
+
 	func updateFontFaceMenu(_ menu: NSMenu, fontUser: UsesAdjustableFont) {
 		menu.removeAllItems()
 		//we want regular weight monospaced fonts
@@ -311,7 +311,7 @@ extension RootViewController: SessionControllerDelegate {
 			self.sessionClosedHandler?()
 		}
 	}
-	
+
 	func filesRefreshed() {
 		fileHandler?.filesRefreshed([])
 	}
@@ -320,7 +320,7 @@ extension RootViewController: SessionControllerDelegate {
 		state.editorState.lastSelectedFileId = fileHandler?.selectedFile?.fileId ?? -1
 		editorController?.save(state: &state.editorState)
 	}
-	
+
 	func restore(state: SessionState) {
 		editorController?.restore(state: state.editorState)
 		if state.editorState.lastSelectedFileId > 0,

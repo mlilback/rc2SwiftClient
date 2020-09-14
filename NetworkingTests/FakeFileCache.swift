@@ -54,7 +54,7 @@ class FakeFileCache: FileCache {
 		self.fileCacheUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString)
 	}
 	
-	func isFileCached(_ file:AppFile) -> Bool {
+	func isFileCached(_ file: AppFile) -> Bool {
 		guard let iscached = fileInfo[file.fileId]?.cached else { return false }
 		return iscached
 	}
@@ -77,10 +77,8 @@ class FakeFileCache: FileCache {
 	
 	func flushCache(files: [AppFile]) -> SignalProducer<Double, Rc2Error> {
 		return SignalProducer<Double, Rc2Error> { observer, _ in
-			for aFile in files {
-				if self.fileInfo[aFile.fileId] != nil {
-					self.fileInfo[aFile.fileId]!.cached = false
-				}
+			for aFile in files where self.fileInfo[aFile.fileId] != nil {
+				self.fileInfo[aFile.fileId]!.cached = false
 			}
 			observer.send(value: 1.0)
 			observer.sendCompleted()

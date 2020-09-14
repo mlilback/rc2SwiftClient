@@ -13,13 +13,13 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 	@IBOutlet private var tabView: NSTabView!
 	@IBOutlet private var syntaxButton: NSButton!
 	@IBOutlet private var outputButton: NSButton!
-	
+
 	private var outputEditor: ThemeEditorController<OutputTheme>?
 	private var syntaxEditor: ThemeEditorController<SyntaxTheme>?
-	
+
 	override func viewWillAppear() {
 		super.viewWillAppear()
-		
+
 		// FIXME: why are these using hardcoded paths instead of pulling from Theme/ThemeManager?
 		if outputEditor == nil {
 			let bundle = Bundle(for: OutputTheme.self)
@@ -39,7 +39,7 @@ class ThemePrefsController: NSViewController, NSTableViewDataSource, NSTableView
 			switchEditor(syntaxButton)
 		}
 	}
-	
+
 	@IBAction func switchEditor(_ sender: Any?) {
 		guard let button = sender as? NSButton else { return }
 		let syntaxClicked = button == syntaxButton

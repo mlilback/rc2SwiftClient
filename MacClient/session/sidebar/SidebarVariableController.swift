@@ -24,7 +24,7 @@ class SidebarVariableController: AbstractSessionViewController {
 	@IBOutlet var contextMenu: NSMenu!
 	var detailsPopup: NSPopover?
 	var detailsController: VariableDetailsViewController?
-	
+
 	// MARK: methods
 	override func viewWillAppear() {
 		super.viewWillAppear()
@@ -33,7 +33,7 @@ class SidebarVariableController: AbstractSessionViewController {
 		}
 		isVisible = true
 	}
-	
+
 	override func viewWillDisappear() {
 		super.viewWillDisappear()
 		if sessionOptional != nil {
@@ -41,23 +41,23 @@ class SidebarVariableController: AbstractSessionViewController {
 		}
 		isVisible = false
 	}
-	
+
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		varTableView?.setDraggingSourceOperationMask(.copy, forLocal: false)
 		varTableView?.doubleAction = #selector(SidebarVariableController.doubleClick(_:))
 	}
-	
+
 	override func sessionChanged() {
 		if isVisible {
 			session.startWatchingVariables()
 		}
 	}
-	
+
 	func variableNamed(_ name: String?) -> Variable? {
 		return rootVariables.first(where: { $0.name == name })
 	}
-	
+
 	@IBAction func delete(_ sender: Any?) {
 		guard let selRow = varTableView?.selectedRow,
 			selRow >= 0,
@@ -68,21 +68,20 @@ class SidebarVariableController: AbstractSessionViewController {
 		}
 		session.deleteVariable(name: rootVariables[selRow].name)
 	}
-	
+
 	@IBAction func copy(_ sender: Any?) {
 		guard let row = varTableView?.selectedRow, row >= 0 else { return }
 		let pasteboard = NSPasteboard.general
 		pasteboard.clearContents()
 		do {
 			let jsonStr = String(data: try session.conInfo.encode(rootVariables[row]), encoding: .utf8)
-			// swiftlint:disable:next force_try
 			pasteboard.setString(jsonStr!, forType: .variable)
 			pasteboard.setString(rootVariables[row].description, forType: .string)
 		} catch {
 			Log.error("error copying varable to window: \(error)", .app)
 		}
 	}
-	
+
 	@IBAction func clearWorkspace(_ sender: Any?) {
 		confirmAction(message: NSLocalizedString(LocalStrings.clearWorkspaceWarning, comment: ""),
 		              infoText: NSLocalizedString(LocalStrings.clearWorkspaceWarningInfo, comment: ""),
@@ -93,7 +92,7 @@ class SidebarVariableController: AbstractSessionViewController {
 			self.session.clearVariables()
 		}
 	}
-	
+
 	@IBAction func showDetails(_ sender: Any?) {
 		if variablePopover == nil {
 			// setup the popup and view controller
@@ -113,12 +112,12 @@ class SidebarVariableController: AbstractSessionViewController {
 			self.variablePopover?.show(relativeTo: self.varTableView.rect(ofRow: selRow), of: self.varTableView, preferredEdge: .maxX)
 		}
 	}
-	
+
 	@IBAction func doubleClick(_ sender: Any?) {
 		guard varTableView.clickedColumn == 1 && varTableView.clickedRow != -1 else { return }
 		showDetails(sender)
 	}
-	
+
 	func variablesChanged() {
 		varTableView?.reloadData()
 		clearButton.isEnabled = rootVariables.count > 0
@@ -153,7 +152,7 @@ extension SidebarVariableController: VariableHandler {
 		}
 		variablesChanged()
 	}
-	
+
 	func variablesUpdated(_ update: SessionResponse.ListVariablesData) {
 		defer { variablesChanged() }
 		guard update.delta else {
@@ -180,7 +179,7 @@ extension SidebarVariableController: NSTableViewDataSource {
 	func numberOfRows(in tableView: NSTableView) -> Int {
 		return rootVariables.count
 	}
-	
+
 	func tableView(_ tableView: NSTableView, writeRowsWith rowIndexes: IndexSet, to pboard: NSPasteboard) -> Bool
 	{
 		guard let row = rowIndexes.first else { return false }
@@ -188,7 +187,6 @@ extension SidebarVariableController: NSTableViewDataSource {
 		pboard.declareTypes([.variable, .string], owner: nil)
 		do {
 			let jsonStr = String(data: try session.conInfo.encode(rootVariables[row]), encoding: .utf8)
-			// swiftlint:disable:next force_try
 			pboard.setString(jsonStr!, forType: .variable)
 			pboard.setString(rootVariables[row].description, forType: .string)
 		} catch {
@@ -228,7 +226,7 @@ extension SidebarVariableController: NSTableViewDelegate {
 //		if variable.count <= 1 && variable.primitiveType != .na { return tableView.selectedRowIndexes }
 		return proposedSelectionIndexes
 	}
-	
+
 	func tableViewSelectionDidChange(_ notification: Notification)
 	{
 		//if no selection, dismiss popover if visible
@@ -238,4 +236,3 @@ extension SidebarVariableController: NSTableViewDelegate {
 		}
 	}
 }
-

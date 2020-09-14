@@ -13,14 +13,14 @@ class TopicWrapper: NSObject {
 	var children: [TopicWrapper]?
 	init(topic: HelpTopic) {
 		self.topic = topic
-		self.children = topic.subtopics?.map { (t) -> TopicWrapper in TopicWrapper(topic:t) }
+		self.children = topic.subtopics?.map { (t) -> TopicWrapper in TopicWrapper(topic: t) }
 		super.init()
 	}
 }
 
 class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSource, NSOutlineViewDelegate, NSMenuDelegate, NSSearchFieldDelegate
 {
-	
+
 	@IBOutlet var outline: NSOutlineView?
 	@IBOutlet var searchField: NSSearchField?
 	@IBOutlet var searchMenu: NSMenu?
@@ -28,7 +28,7 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 	fileprivate var fullContentSearch: Bool = false
 	fileprivate var helpPackages: [TopicWrapper] = []
 	fileprivate var expandedBeforeSearch: [TopicWrapper]?
-	
+
 	// MARK: lifecycle
 	override func  viewDidLoad() {
 		super.viewDidLoad()
@@ -51,7 +51,7 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 		}
 		return true
 	}
-	
+
 	func resetHelpTopics() {
 		helpPackages = help.packages.map { TopicWrapper(topic: $0) }
 		outline?.reloadData()
@@ -60,7 +60,7 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 		}
 		expandedBeforeSearch = nil
 	}
-	
+
 	// MARK: actions
 	@IBAction func search(_ sender: AnyObject) {
 		guard let searchString = searchField?.stringValue, searchString.count > 0 else { resetHelpTopics(); return }
@@ -69,7 +69,7 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 		outline?.reloadData()
 		outline!.expandItem(nil, expandChildren: true)
 	}
-	
+
 	@IBAction func adjustSearchOption(_ menuItem: NSMenuItem) {
 		fullContentSearch = menuItem.tag == 2
 		UserDefaults.standard[.helpTopicSearchSummaries] = fullContentSearch
@@ -77,7 +77,7 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 			search(menuItem)
 		}
 	}
-	
+
 	// MARK: search field delegate
 	func searchFieldDidStartSearching(_ sender: NSSearchField) {
 		if nil == expandedBeforeSearch {
@@ -85,11 +85,11 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 			expandedBeforeSearch = exp
 		}
 	}
-	
+
 	func searchFieldDidEndSearching(_ sender: NSSearchField) {
 		resetHelpTopics()
 	}
-	
+
 	// MARK: OutlineView Support
 	func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
 		if let topic = item as? TopicWrapper {
@@ -97,31 +97,31 @@ class SidebarHelpController: AbstractSessionViewController, NSOutlineViewDataSou
 		}
 		return helpPackages.count
 	}
-	
+
 	func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
 		if nil == item { return helpPackages[index] }
 		return (item as! TopicWrapper).children![index] // swiftlint:disable:this force_cast
 	}
-	
+
 	func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
 		return ((item as! TopicWrapper).children?.count ?? 0) > 0 // swiftlint:disable:this force_cast
 	}
-	
+
 	func outlineView(_ outlineView: NSOutlineView, shouldSelectItem item: Any) -> Bool {
 		return !(item as! TopicWrapper).topic.isPackage // swiftlint:disable:this force_cast
 	}
-	
+
 	func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
 		let cell = outline?.makeView(withIdentifier: NSUserInterfaceItemIdentifier("string"), owner: self) as? NSTableCellView
 		cell?.textField?.stringValue = (item as! TopicWrapper).topic.name // swiftlint:disable:this force_cast
 		return cell
 	}
-	
+
 	func outlineViewSelectionDidChange(_ notification: Notification) {
-		var obj: AnyObject? = nil
+		var obj: AnyObject?
 		if let topic = outline!.item(atRow: outline!.selectedRow) as? TopicWrapper {
 			obj = topic.topic
 		}
-		NotificationCenter.default.post(name: .displayHelpTopic, object:obj, userInfo:nil)
+		NotificationCenter.default.post(name: .displayHelpTopic, object: obj, userInfo: nil)
 	}
 }

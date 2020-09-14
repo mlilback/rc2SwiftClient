@@ -17,11 +17,11 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 	let fileVersion: Int
 	let fileName: String?
 	let fileExtension: String?
-	
+
 	public class func from(data: Data) throws -> MacConsoleAttachment {
 		return try JSONDecoder().decode(MacConsoleAttachment.self, from: data)
 	}
-	
+
 	public init(file inFile: File) {
 		type = .file
 		image = nil
@@ -30,7 +30,7 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 		fileName = inFile.name
 		fileExtension = FileType.fileType(forFileName: inFile.name)?.fileExtension
 	}
-	
+
 	public init(image inImage: SessionImage) {
 		type = .image
 		image = inImage
@@ -67,7 +67,7 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 //		}
 //		return .dictionary(props)
 //	}
-	
+
 	fileprivate func attachmentData(name: String, image: NSImage?) -> (FileWrapper, NSImage?)? {
 		guard let data = try? JSONEncoder().encode(self) else {
 			Log.warn("invalid json data in file attachment", .app)
@@ -78,18 +78,18 @@ public final class MacConsoleAttachment: ConsoleAttachment {
 		file.preferredFilename = name
 		return (file, image)
 	}
-	
+
 	fileprivate func fileAttachmentData() -> (FileWrapper, NSImage?)? {
 		let ftype = FileType.fileType(withExtension: fileExtension ?? "bin")
 		let imgName = NSImage.Name(ftype?.iconName ?? "plaindoc")
 		let image = NSImage(named: imgName)
 		return attachmentData(name: fileName ?? "untitled", image: image)
 	}
-	
+
 	fileprivate func imageAttachmentData() -> (FileWrapper, NSImage?)? {
 		return attachmentData(name: image?.name ?? "unnamed", image: #imageLiteral(resourceName: "graph"))
 	}
-	
+
 	public func asAttributedString() -> NSAttributedString {
 		var results: (FileWrapper, NSImage?)?
 		switch type {

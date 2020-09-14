@@ -49,6 +49,7 @@ class NetworkingBaseSpec: QuickSpec {
 	/// - Returns: ConnectionInfo for use
 	func genericConnectionInfo() -> ConnectionInfo {
 		let bulkData = self.loadFileData("bulkInfo", fileExtension: "json")!
+		// swiftlint:disable:next force_try
 		return try! ConnectionInfo(host: ServerHost.localHost, bulkInfoData: bulkData, authToken: "dsfrsfsdfsdfsf")
 	}
 
@@ -86,7 +87,7 @@ class NetworkingBaseSpec: QuickSpec {
 				case .failed(let err):
 					result = Result<Bool, Rc2Error>(error: err)
 					group.leave()
-				case .value(_):
+				case .value:
 					break
 				case .completed:
 					result = Result<Bool, Rc2Error>(true)

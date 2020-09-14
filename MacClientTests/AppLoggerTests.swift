@@ -9,6 +9,8 @@ import XCTest
 @testable import MacClient
 @testable import MJLLogger
 
+// swiftlint:disable all
+
 class AppLoggerTests: XCTestCase {
 	func testLastJsonEntry() throws {
 		let fm = FileManager()

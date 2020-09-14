@@ -15,7 +15,7 @@ import ClientCore
 public protocol VariableHandler {
 	/// a variable value has been received
 	func variableUpdated(_ update: SessionResponse.VariableValueData)
-	
+
 	/// the server has returned a variable update
 	func variablesUpdated(_ update: SessionResponse.ListVariablesData)
 }
@@ -63,7 +63,7 @@ protocol FileHandler: class {
 	///
 	/// - Parameter sender: the sender of the action. unused
 	func editFile(_ sender: Any)
-	
+
 	/// called to validate any menu items the FileHandler uses
 	///
 	/// - Parameter menuItem: the menu item to validate

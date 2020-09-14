@@ -26,7 +26,7 @@ struct ProgressUpdate {
 	let error: Rc2Error?
 	/// for a .start stage, determines if user interaction should be disabled
 	let disableInput: Bool
-	
+
 	init(_ stage: Stage, message: String? = nil, value: Double = -1, error: Rc2Error? = nil, disableInput: Bool = true) {
 		self.stage = stage
 		self.message = message
@@ -63,19 +63,19 @@ class MacAppStatus {
 	private let progressObserver: Signal<ProgressUpdate, Never>.Observer
 	/// observer for sending busy events
 	private let busyObserver: Signal<Bool, Never>.Observer
-	
+
 	@objc dynamic var busy: Bool {
 		var result = false
 		_statusQueue.sync { result = _currentDisposable != nil }
 		return result
 	}
-	
+
 	init(windowAccessor: @escaping (Session?) -> NSWindow?) {
 		getWindow = windowAccessor
 		(progressSignal, progressObserver) = Signal<ProgressUpdate, Never>.pipe()
 		(busySignal, busyObserver) = Signal<Bool, Never>.pipe()
 	}
-	
+
 	/// called when a signal producer to display progress is started
 	///
 	/// - Parameters:
@@ -92,7 +92,7 @@ class MacAppStatus {
 			busyObserver.send(value: true)
 		}
 	}
-	
+
 	/// Handles an progress update for the current action
 	///
 	/// - Parameter event: the progress update event passed on via the progressSignal
@@ -117,7 +117,7 @@ class MacAppStatus {
 			_statusQueue.sync { _currentDisposable = nil }
 		}
 	}
-	
+
 	/// Displays information about error to the user document-modal if session has an associated window, app-modal otherwise
 	///
 	/// - Parameters:
@@ -129,12 +129,12 @@ class MacAppStatus {
 		alert.informativeText = error.nestedError?.localizedDescription ?? ""
 		alert.addButton(withTitle: NSLocalizedString("Ok", comment: ""))
 		if let parentWindow = getWindow(session) {
-			alert.beginSheetModal(for: parentWindow, completionHandler:nil)
+			alert.beginSheetModal(for: parentWindow, completionHandler: nil)
 		} else {
 			alert.runModal()
 		}
 	}
-	
+
 	/// Displays an alert to the user document-modal if session has an associated window, app-modal otherwise
 	///
 	/// - Parameters:

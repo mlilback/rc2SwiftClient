@@ -32,7 +32,7 @@ extension NSUserInterfaceItemIdentifier {
 // MARK: - main controller
 class TemplatesPrefsController: NSViewController {
 	let templatePasteboardType = NSPasteboard.PasteboardType(rawValue: "io.rc2.client.codeTemplate")
-	
+
 	// MARK: properties
 	@IBOutlet private var splitterView: NSSplitView!
 	@IBOutlet private var markdownButton: NSButton!
@@ -51,14 +51,15 @@ class TemplatesPrefsController: NSViewController {
 	private var currentType: TemplateType = .markdown
 	private var currentTemplate: CodeTemplate?
 	private let _undoManager = UndoManager()
+	// swiftlint:disable:next force_try
 	private let selectionMarkerRegex = try! NSRegularExpression(pattern: CodeTemplate.selectionTemplateKey, options: [.caseInsensitive, .ignoreMetacharacters])
-	private let selectionMarkerColor =  NSColor(calibratedRed: 0.884, green: 0.974, blue: 0.323, alpha: 1.0)
+	private let selectionMarkerColor = NSColor(calibratedRed: 0.884, green: 0.974, blue: 0.323, alpha: 1.0)
 	private var lastSelectionMarkerRange: NSRange?
 	private var manuallyExpanding: Bool = false
-	
+
 	override var undoManager: UndoManager? { return _undoManager }
 	override var acceptsFirstResponder: Bool { return true }
-	
+
 	// MARK: - methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -76,12 +77,12 @@ class TemplatesPrefsController: NSViewController {
 		codeOutlineView.registerForDraggedTypes([templatePasteboardType])
 		codeOutlineView.setDraggingSourceOperationMask([.move, .copy], forLocal: true)
 	}
-	
+
 	override func viewDidDisappear() {
 		super.viewDidDisappear()
 		_ = try? templateManager.saveAll()
 	}
-	
+
 	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action {
@@ -95,7 +96,7 @@ class TemplatesPrefsController: NSViewController {
 			return false
 		}
 	}
-	
+
 	func switchTo(type: TemplateType) {
 		switch type {
 		case .markdown:
@@ -119,7 +120,7 @@ class TemplatesPrefsController: NSViewController {
 		currentType = type
 		codeOutlineView.reloadData()
 	}
-	
+
 	// MARK: - actions
 	@IBAction func switchType(_ sender: Any?) {
 		guard let button = sender as? NSButton else { return }
@@ -134,14 +135,15 @@ class TemplatesPrefsController: NSViewController {
 			fatalError("invalid action sender")
 		}
 	}
-	
+
 	@IBAction func duplicateSelection(_ sender: Any?) {
-		
+
 	}
-	
+
 	@IBAction override func deleteBackward(_ sender: Any?) {
 		guard let selItem = selectedItem else { fatalError("how was delete called with no selection?") }
 		guard let cat = selItem as? CodeTemplateCategory else {
+			// swiftlint:disable:next force_cast
 			delete(template: selItem as! CodeTemplate)
 			return
 		}
@@ -155,9 +157,11 @@ class TemplatesPrefsController: NSViewController {
 		var newIndex: Int
 		if selection is CodeTemplate {
 			// add after this one
+			// swiftlint:disable:next force_cast
 			parent = codeOutlineView.parent(forItem: selection) as! CodeTemplateCategory
 			newIndex = codeOutlineView.childIndex(forItem: selection) + 1
 		} else { // is a category
+			// swiftlint:disable:next force_cast
 			parent = selection as! CodeTemplateCategory
 			newIndex = 0
 		}
@@ -201,23 +205,23 @@ class TemplatesPrefsController: NSViewController {
 
 // MARK: - NSOutlineViewDataSource
 extension TemplatesPrefsController: NSOutlineViewDataSource {
-	
+
 	func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
 		if item == nil { return currentCategories.count }
 		guard let category = item as? CodeTemplateCategory else { return 0 }
 		return category.templates.value.count
 	}
-	
+
 	func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
 		if item == nil { return currentCategories[index] }
 		guard let category = item as? CodeTemplateCategory else { fatalError() }
 		return category.templates.value[index]
 	}
-	
+
 	func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
 		return item is CodeTemplateCategory
 	}
-	
+
 	func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
 		return item
 	}
@@ -226,7 +230,7 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 //	func outlineView(_ outlineView: NSOutlineView, persistentObjectForItem item: Any?) -> Any? {
 //
 //	}
-	
+
 	func outlineView(_ outlineView: NSOutlineView, writeItems items: [Any], to pasteboard: NSPasteboard) -> Bool
 	{
 		guard items.count == 1, let item = items[0] as? CodeTemplateObject else { return false }
@@ -234,7 +238,8 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 		pasteboard.setData(wrapper.encode(), forType: templatePasteboardType)
 		return true
 	}
-	
+
+	// swiftlint:disable:next cyclomatic_complexity
 	func outlineView(_ outlineView: NSOutlineView, validateDrop info: NSDraggingInfo, proposedItem parentItem: Any?, proposedChildIndex index: Int) -> NSDragOperation
 	{
 		guard let wrapperData = info.draggingPasteboard.data(forType: templatePasteboardType),
@@ -283,7 +288,7 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 
 		return dropOperation
 	}
-	
+
 	func outlineView(_ outlineView: NSOutlineView, acceptDrop info: NSDraggingInfo, item parentItem: Any?, childIndex index: Int) -> Bool
 	{
 		// wrapper is not identical object
@@ -294,11 +299,11 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 //		let targetObj = parentItem as? CodeTemplateCategory
 		let fromPath = wrapper.indexPath
 		let isCopy = info.draggingSourceOperationMask == .copy
-		
+
 		let op = isCopy ? "copy" : "move"
 		let out = op + " from \(fromPath), to \(index), parent: " + String(describing: parentItem)
 		Log.debug(out, .app)
-		
+
 		// If we're dragging a Category:
 		if wrapper.isCategory {
 			let fromIndex = fromPath[0]
@@ -349,11 +354,12 @@ extension TemplatesPrefsController: NSOutlineViewDataSource {
 extension TemplatesPrefsController: NSOutlineViewDelegate {
 	func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
 		guard let templateItem = item as? CodeTemplateObject else { fatalError("invalid item") }
+		// swiftlint:disable:next force_cast
 		let view = outlineView.makeView(withIdentifier: .templateName, owner: nil) as! TemplateCellView
 		view.templateItem = templateItem
 		return view
 	}
-	
+
 	func outlineView(_ outlineView: NSOutlineView, shouldExpandItem item: Any) -> Bool {
 		let result = item is CodeTemplateCategory
 		if !manuallyExpanding, NSApp.currentEvent?.modifierFlags.contains(.option) ?? false {
@@ -366,7 +372,7 @@ extension TemplatesPrefsController: NSOutlineViewDelegate {
 		}
 		return result
 	}
-	
+
 	func outlineView(_ outlineView: NSOutlineView, shouldCollapseItem item: Any) -> Bool {
 		let result = item is CodeTemplateCategory
 		if !manuallyExpanding, NSApp.currentEvent?.modifierFlags.contains(.option) ?? false {
@@ -379,7 +385,7 @@ extension TemplatesPrefsController: NSOutlineViewDelegate {
 		}
 		return result
 	}
-	
+
 	func outlineViewSelectionDidChange(_ notification: Notification) {
 		editingDisposables.dispose()
 		editingDisposables = CompositeDisposable()
@@ -420,7 +426,7 @@ extension TemplatesPrefsController: NSSplitViewDelegate {
 	{
 		return 120
 	}
-	
+
 	func splitView(_ splitView: NSSplitView, constrainMaxCoordinate proposedMaximumPosition: CGFloat, ofSubviewAt dividerIndex: Int) -> CGFloat
 	{
 		return splitView.frame.size.height - 120
@@ -452,7 +458,7 @@ extension TemplatesPrefsController {
 		if index == -1 { return nil }
 		return codeOutlineView.item(atRow: index)
 	}
-	
+
 	private func indexPath(for item: Any) -> IndexPath {
 		if let cat = item as? CodeTemplateCategory {
 			return IndexPath(index: codeOutlineView.childIndex(forItem: cat))
@@ -460,7 +466,7 @@ extension TemplatesPrefsController {
 		guard let template = item as? CodeTemplate, let parent = codeOutlineView.parent(forItem: template) as? CodeTemplateCategory else { fatalError("invalid item") }
 		return IndexPath(indexes: [codeOutlineView.childIndex(forItem: parent), codeOutlineView.childIndex(forItem: template)])
 	}
-	
+
 	private func colorizeSelectionMarker() {
 		guard let selMatch = selectionMarkerRegex.firstMatch(in: codeEditView.string, options: [], range: codeEditView.string.fullNSRange)
 			else { removeSelectionMarker(); return }
@@ -470,7 +476,7 @@ extension TemplatesPrefsController {
 		codeEditView.layoutManager?.addTemporaryAttribute(.backgroundColor, value: selectionMarkerColor, forCharacterRange: selMatch.range)
 		lastSelectionMarkerRange = selMatch.range
 	}
-	
+
 	private func removeSelectionMarker() {
 		if lastSelectionMarkerRange != nil {
 			// the range might have changed, and we won't know unless we switch to using NSTextStorageDelegate instead of NSTextViewDelegate. so we'll just remove the background color from everywhere
@@ -478,7 +484,7 @@ extension TemplatesPrefsController {
 			lastSelectionMarkerRange = nil
 		}
 	}
-	
+
 	/// inserts a new category. separate function for undo
 	private func insert(category: CodeTemplateCategory, at index: Int) {
 		currentCategories.insert(category, at: index)
@@ -494,7 +500,7 @@ extension TemplatesPrefsController {
 		templateManager.set(categories: currentCategories, for: currentType)
 		codeOutlineView.removeItems(at: IndexSet(integer: index), inParent: nil, withAnimation: .slideUp)
 	}
-	
+
 	/// deletes category with undo
 	private func delete(category: CodeTemplateCategory) {
 		let index = codeOutlineView.childIndex(forItem: category)
@@ -515,14 +521,14 @@ extension TemplatesPrefsController {
 			self.remove(category: category)
 		}
 	}
-	
+
 	/// insert a new template. separate function for undo purposes
 	private func insert(template: CodeTemplate, in parent: CodeTemplateCategory, at index: Int) {
 		parent.templates.value.insert(template, at: index)
 		codeOutlineView.insertItems(at: IndexSet(integer: index), inParent: parent, withAnimation: [])
 		codeOutlineView.selectRowIndexes(IndexSet(integer: codeOutlineView.row(forItem: template)), byExtendingSelection: false)
 	}
-	
+
 	/// actually removes the template visually and from storage
 	private func remove(template: CodeTemplate) {
 		guard let parent = codeOutlineView.parent(forItem: template) as? CodeTemplateCategory,
@@ -537,6 +543,7 @@ extension TemplatesPrefsController {
 	private func delete(template: CodeTemplate) {
 		let defaults = UserDefaults.standard
 		// create local variables to enforce capture of current values
+		// swiftlint:disable:next force_cast
 		let parent = codeOutlineView.parent(forItem: template) as! CodeTemplateCategory
 		let index = codeOutlineView.childIndex(forItem: template)
 		// create closure that will do the reverse
@@ -575,26 +582,26 @@ extension Reactive where Base: NSTextView {
 
 // MARK: - helper types
 
-fileprivate struct DragData: Codable, CustomStringConvertible {
+private struct DragData: Codable, CustomStringConvertible {
 	let category: CodeTemplateCategory?
 	let template: CodeTemplate?
 	var isCategory: Bool { return category != nil }
 	var description: String { return isCategory ? category!.description : template!.description }
 	var item: CodeTemplateObject { return isCategory ? category! : template! }
 	var indexPath: IndexPath
-	
+
 	init(category: CodeTemplateCategory, path: IndexPath) {
 		self.category = category
 		self.template = nil
 		self.indexPath = path
 	}
-	
+
 	init(template: CodeTemplate, path: IndexPath) {
 		self.template = template
 		self.category = nil
 		self.indexPath = path
 	}
-	
+
 	init(_ item: Any, path: IndexPath) {
 		if let titem = item as? CodeTemplate {
 			self.template = titem
@@ -607,8 +614,9 @@ fileprivate struct DragData: Codable, CustomStringConvertible {
 		}
 		self.indexPath = path
 	}
-	
+
 	func encode() -> Data {
+		// swiftlint:disable:next force_try
 		return try! JSONEncoder().encode(self)
 	}
 }
@@ -616,7 +624,7 @@ fileprivate struct DragData: Codable, CustomStringConvertible {
 class TemplateCellView: NSTableCellView {
 	var templateItem: CodeTemplateObject? { didSet { templateItemWasSet() } }
 	private var disposable: Disposable?
-	
+
 	private func templateItemWasSet() {
 		disposable?.dispose()
 		assert(textField != nil)

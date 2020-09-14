@@ -10,16 +10,16 @@ import Networking
 class MultiImageViewController: NSViewController {
 	var session: Session! { didSet { print("got session") } }
 	@IBOutlet var collection: NSCollectionView!
-	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		print("view loaded")
 	}
-	
+
 	@IBAction func shareImages(_ sender: Any?) {
 		print("share")
 	}
-	
+
 	@IBAction func changeLayout(_ sender: Any?) {
 		print("change layout")
 	}

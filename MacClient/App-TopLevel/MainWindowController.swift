@@ -12,30 +12,30 @@ import MJLLogger
 class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegatingOwner, NSToolbarDelegate {
 	///Object that lets us monitor the status of the application. Nededed to pass on to the statusView once setup is finished
 	weak var appStatus: MacAppStatus?
-	
+
 	//TODO: window title needs to eventually include  host and project name
 	weak var session: Session? { didSet {
 		guard let wsname = session?.workspace.name else { window?.title = "remote connection"; return }
 		window?.title = "\(NSLocalizedString("Workspace", comment: "")): \(wsname)"
-		
+
 	} }
-	
+
 	///Custom view that shows the status of the application: progress, message, cancel button
 	var statusView: AppStatusView?
-	
+
 	/// Need to schedule setting up toolbar handlers, but don't want to do it more than once
 	fileprivate var toolbarSetupScheduled = false
-	
+
 	class func createFromNib() -> Self {
 		let winc = self.init(windowNibName: "MainWindow")
 		return winc
 	}
-	
+
 	override func windowDidLoad() {
 		super.windowDidLoad()
 //		window!.titleVisibility = .hidden
 	}
-	
+
 	func windowWillClose(_ notification: Notification) {
 		statusView?.appStatus = nil
 		statusView = nil
@@ -68,7 +68,7 @@ class MainWindowController: NSWindowController, NSWindowDelegate, ToolbarDelegat
 			Log.info("error encoding bookmark in window: \(error)", .app)
 		}
 	}
-	
+
 	//When the first toolbar item is loaded, queue a closure to call assignHandlers from the ToolbarDelegatingOwner protocol(default implementation) that assigns each toolbar item to the appropriate ToolbarItemHandler (normally a view controller)
 	func toolbarWillAddItem(_ notification: Notification) {
 		//schedule assigning handlers after toolbar items are loaded

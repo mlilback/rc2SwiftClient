@@ -15,7 +15,7 @@ class DoubleClickEditableTextField: NSTextField {
 			ncenter.addObserver(self, selector: #selector(stopEditing(_:)), name: NSControl.textDidEndEditingNotification, object: self)
 		}
 	}
-	
+
 	override func mouseDown(with event: NSEvent) {
 		if event.clickCount == 2 && !self.isEditable {
 			beginEditing()
@@ -23,7 +23,7 @@ class DoubleClickEditableTextField: NSTextField {
 			super.mouseDown(with: event)
 		}
 	}
-	
+
 	func beginEditing() {
 		isEditable = true
 		backgroundColor = NSColor.white
@@ -31,7 +31,7 @@ class DoubleClickEditableTextField: NSTextField {
 		selectText(self)
 		needsDisplay = true
 	}
-	
+
 	@objc func stopEditing(_ note: Notification) {
 		isEditable = false
 		backgroundColor = NSColor.clear

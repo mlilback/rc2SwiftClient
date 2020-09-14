@@ -8,6 +8,7 @@
 import XCTest
 @testable import Networking
 
+// swiftlint:disable:next type_name
 class xattrTests: XCTestCase {
 	var fileUrl: URL!
 	let contentString = "foo\nbar\nbaz"
@@ -29,7 +30,7 @@ class xattrTests: XCTestCase {
 
 	func testXAttrs() {
 		let attrValue = "foo".data(using: String.Encoding.utf8)!
-		var getRsp = dataForXAttributeNamed(testAttr1Name, atURL:fileUrl)
+		var getRsp = dataForXAttributeNamed(testAttr1Name, atURL: fileUrl)
 		XCTAssertNil(getRsp.data)
 		try? attrValue.write(to: fileUrl, options: [])
 		let setRsp = setXAttributeWithName(testAttr1Name, data: attrValue, atURL: fileUrl)

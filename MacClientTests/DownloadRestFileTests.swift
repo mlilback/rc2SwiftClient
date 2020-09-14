@@ -8,6 +8,8 @@ import XCTest
 @testable import MacClient
 import Mockingjay
 
+// swiftlint:disable all
+
 class DownloadRestFileTests: XCTestCase {
 	var cacheDir: NSURL!
 	let server: RestServer = RestServer()
@@ -47,7 +49,7 @@ class DownloadRestFileTests: XCTestCase {
 	
 	func testDownloadFile() {
 		let wspace = workspace1()
-		let fpath = NSBundle(forClass: self.dynamicType).pathForResource("graph", ofType: "png")!
+		let fpath = NSBundle(forClass: type(of: self)).pathForResource("graph", ofType: "png")!
 		let fdata = NSData(contentsOfFile: fpath)!
 		let destUri = "/workspaces/\(wspace.wspaceId)/files/\(wspace.files[0].fileId)"
 		stub(uri(destUri), builder: http(200, headers:["Content-Type":"img/png"], data:fdata))

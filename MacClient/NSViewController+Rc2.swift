@@ -16,7 +16,7 @@ extension NSViewController {
 		}
 		return false
 	}
-	
+
 	/// Loads a view controller from a storyboard, adds it as a child view controller, and embeds it's view in contentView
 	///
 	/// - Parameters:

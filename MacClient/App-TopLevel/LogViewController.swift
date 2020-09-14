@@ -8,5 +8,5 @@ import Cocoa
 
 class LogViewController: NSViewController {
 	@IBOutlet var logTextView: NSTextView!
-	
+
 }

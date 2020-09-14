@@ -11,12 +11,17 @@ import ReactiveSwift
 import Model
 @testable import Networking
 
+// swiftlint:disable force_try
+
 class ConnectionInfoSpec: NetworkingBaseSpec {
 	let fakeHost = ServerHost(name: "faketest", host: "festus.rc2.io", user: "testuser")
 	
+	// swiftlint:disable function_body_length
 	override func spec() {
 		let bulkData = self.loadFileData("bulkInfo", fileExtension: "json")!
+		// swiftlint: disable force_try
 		let conInfo = try! ConnectionInfo(host: fakeHost, bulkInfoData: bulkData, authToken: "xcgvdsfsfsF")
+		// swiftlint: disable force_try
 		let project100 = try! conInfo.project(withId: 100)
 		let wspace100 = project100.workspace(withId: 100)!
 			
@@ -106,6 +111,7 @@ class ConnectionInfoSpec: NetworkingBaseSpec {
 				files[newWspace.id] = [newFile1, newFile2]
 				let updatedBulk = BulkUserInfo(user: conInfo.bulkInfo.user, projects: conInfo.bulkInfo.projects + [newProject], workspaces: wspaces, files: files)
 				conInfo.update(bulkInfo: updatedBulk)
+				// swiftlint:disable:next force_try
 				let addedProj = try! conInfo.project(withId: newProject.id)
 				expect(addedProj.model).to(equal(newProject))
 				let addedWspace = addedProj.workspaces.value.first!
@@ -115,6 +121,7 @@ class ConnectionInfoSpec: NetworkingBaseSpec {
 				expect(addedWspace.file(withId: newFile2.id)?.model).to(equal(newFile2))
 				
 				//remove the project
+				// swiftlint:disable:next force_try
 				let originalBulk: BulkUserInfo = try! conInfo.decode(data: bulkData)
 				conInfo.update(bulkInfo: originalBulk)
 				expect { try conInfo.project(withId: newProject.id) }.to(throwError())

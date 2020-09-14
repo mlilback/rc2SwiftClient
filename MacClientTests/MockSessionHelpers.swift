@@ -12,6 +12,8 @@ import XCTest
 import os
 import Networking
 
+// swiftlint:disable all
+
 struct MockFileEntry {
 	let file: AppFile
 	let url: URL

@@ -85,7 +85,7 @@ public class CodeTemplateManager {
 	
 	/// save data for the particular type
 	public func save(type: TemplateType) throws {
-		guard let cats = categories[type] else { fatalError("no category \(type)")}
+		guard let cats = categories[type] else { fatalError("no category \(type)") }
 		let encoder = JSONEncoder()
 		let destUrl = dataFolderUrl.appendingPathComponent("\(type.rawValue).json")
 		do {

@@ -25,7 +25,7 @@ class VariableDetailsViewController: NSViewController {
 	var ssheetController: SpreadsheetVariableDetailController?
 	var identifiers = [NSUserInterfaceItemIdentifier: NSTabViewItem]()
 	var formatter: VariableFormatter?
-	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		nameField.stringValue = ""
@@ -38,7 +38,7 @@ class VariableDetailsViewController: NSViewController {
 		dateFmt.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
 		formatter = VariableFormatter(doubleFormatter: doubleFmt, dateFormatter: dateFmt)
 	}
-	
+
 	/// loads the appropriate viewcontroller and displays the variable
 	///
 	/// - Parameter variable: The variable to display
@@ -64,7 +64,7 @@ class VariableDetailsViewController: NSViewController {
 		}
 		return NSSize(width: 300, height: 200)
 	}
-	
+
 	override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
 		guard let tabController = segue.destinationController as? NSTabViewController else { return }
 		self.tabController = tabController as? VariableDetailsTabViewController
@@ -90,7 +90,5 @@ class VariableDetailsViewController: NSViewController {
 	}
 }
 
-
 class VariableDetailsTabViewController: NSTabViewController {
 }
-

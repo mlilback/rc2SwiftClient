@@ -17,24 +17,24 @@ enum AppErrorType: String {
 struct AppError: LocalizedError, Rc2DomainError {
 	let type: AppErrorType
 	let nestedError: Error?
-	
+
 	init(_ error: AppErrorType, nestedError: Error? = nil) {
 		self.type = error
 		self.nestedError = nestedError
 	}
-	
+
 	/// returns an Rc2Error wrapping this error
 	var rc2Error: Rc2Error {
 		return Rc2Error(type: .application, nested: self, explanation: userExplanation)
 	}
-	
+
 	var errorDescription: String? {
 		switch self {
 		default:
 			return "application error (\(type))"
 		}
 	}
-	
+
 	// passed to Rc2Error's explanation, will possibly be shown to user
 	var userExplanation: String? {
 		let errorKey = "\(self.type)ErrorExplanation"

@@ -16,7 +16,7 @@ class WebKitOutputController: WebViewController {
 	private var loadDisposable: Disposable?
 	private var file: AppFile?
 	private var restoredFileId: Int?
-	
+
 	override var pageTitle: String { return file?.name ?? "" }
 	public var onClear: (() -> Void)?
 
@@ -25,18 +25,18 @@ class WebKitOutputController: WebViewController {
 			state.contentsId = file.fileId
 		}
 	}
-	
+
 	func restore(state: SessionState.WebViewState) {
 		guard let fileId = state.contentsId else { return }
 		restoredFileId = fileId
 		restoreLastFile()
 	}
-	
+
 	override func sessionChanged() {
 		restoreLastFile()
 		session.workspace.fileChangeSignal.take(duringLifetimeOf: self).observe(on: UIScheduler()).observeValues { [weak self] changes in
 			// see if it the file we're displaying
-			guard let _ = changes.first(where: { $0.type == .remove && $0.file.fileId == self?.file?.fileId  } ) else { return }
+			guard let _ = changes.first(where: { $0.type == .remove && $0.file.fileId == self?.file?.fileId }) else { return }
 			// it is, so clear
 			self?.clearContents()
 		}
@@ -50,7 +50,7 @@ class WebKitOutputController: WebViewController {
 			self.load(file: file)
 		}
 	}
-	
+
 	///removes displayed contents
 	func clearContents() {
 		loadDisposable?.dispose()
@@ -60,7 +60,7 @@ class WebKitOutputController: WebViewController {
 		titleLabel?.stringValue = ""
 		onClear?()
 	}
-	
+
 	/// Loads the specified file, downloading if not cached
 	///
 	/// - Parameter file: file to display
@@ -70,7 +70,7 @@ class WebKitOutputController: WebViewController {
 		restoredFileId = nil
 		titleLabel?.stringValue = file.name
 	}
-	
+
 	/// loads the URL returned via the producer. Will dispose of any load currently in process when called
 	private func loadLocalFile(_ producer: SignalProducer<URL, Rc2Error>) {
 		loadDisposable?.dispose()

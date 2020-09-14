@@ -22,13 +22,13 @@ class OnboardingViewController: NSViewController {
 		case add
 		case remove(AppWorkspace)
 	}
-	
+
 	@IBOutlet var textView: NSTextView!
 	@IBOutlet var closeButton: NSButton!
 	@IBOutlet var addButton: NSButton!
 	@IBOutlet var removeButton: NSButton!
 	@IBOutlet var wspaceTableView: NSTableView!
-	
+
 	var conInfo: ConnectionInfo? { didSet {
 		workspaceToken?.dispose()
 		project = conInfo?.defaultProject
@@ -40,7 +40,7 @@ class OnboardingViewController: NSViewController {
 	private var project: AppProject?
 	private var didFirstInit: Bool = false
 	var actionHandler: ((UserAction) -> Void)?
-	
+
 	// MARK: - methods
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -57,7 +57,7 @@ class OnboardingViewController: NSViewController {
 		super.viewWillAppear()
 		wspaceTableView.reloadData()
 	}
-	
+
 	func updateWorkspaces() {
 		DispatchQueue.main.async {
 			self.wspaceTableView.reloadData()
@@ -65,11 +65,11 @@ class OnboardingViewController: NSViewController {
 //		guard
 //			let workspaces = project?.workspaces.value.map( { $0.model }).sorted(by: { (lhs, rhs) -> Bool in return lhs.name < rhs.name }),
 	}
-	
+
 	@IBAction func closeWindow(_ sender: Any?) {
 		view.window?.orderOut(sender)
 	}
-	
+
 	@IBAction func addWorkspace(_ sender: Any?) {
 		actionHandler?(.add)
 	}
@@ -81,7 +81,7 @@ class OnboardingViewController: NSViewController {
 		}
 		actionHandler?(.remove(wspace))
 	}
-	
+
 	@IBAction func openWorkspace(_ sender: Any?) {
 		guard wspaceTableView.clickedRow >= 0 else { return } //they clicked where there is no row
 		guard let wspace = project?.workspaces.value[wspaceTableView.clickedRow] else { return } //should never happend
@@ -99,10 +99,10 @@ extension OnboardingViewController: NSTableViewDelegate {
 	func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 		let cell = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "wspaceEntry"), owner: self) as? OnboardingCell
 		cell?.textField?.stringValue = project?.workspaces.value[row].name ?? "error"
-		cell?.lastAccessField?.objectValue = project?.workspaces.value[row].model.lastAccess ?? nil
+		cell?.lastAccessField?.objectValue = project?.workspaces.value[row].model.lastAccess
 		return cell
 	}
-	
+
 	func tableViewSelectionDidChange(_ notification: Notification) {
 		removeButton.isEnabled = wspaceTableView.selectedRow >= 0 && (project?.workspaces.value.count ?? 0) > 1
 	}

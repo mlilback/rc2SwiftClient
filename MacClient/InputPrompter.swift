@@ -18,14 +18,14 @@ class InputPrompter: NSObject {
 	var validator: Validator?
 	/// optional required suffix such as a file extension
 	let requiredSuffix: String?
-	
+
 	fileprivate var parentWindow: NSWindow?
 	@IBOutlet var window: NSWindow!
 	@IBOutlet var textField: NSTextField!
 	@IBOutlet var promptLabel: NSTextField!
 	@IBOutlet var okButton: NSButton!
 	fileprivate var validValue: Bool = false
-	
+
 	/// creats a controller to prompt the user for input
 	///
 	/// - Parameters:
@@ -47,7 +47,7 @@ class InputPrompter: NSObject {
 		formatter.requiredSuffix = requiredSuffix
 		textField.formatter = formatter
 	}
-	
+
 	/// displays the prompt
 	///
 	/// - Parameters:
@@ -67,7 +67,7 @@ class InputPrompter: NSObject {
 			handler(response == .OK, self.stringValue)
 		}
 	}
-	
+
 	@IBAction func saveValue(_ sender: AnyObject) {
 		stringValue = textField.stringValue
 		guard let parent = parentWindow else {
@@ -77,7 +77,7 @@ class InputPrompter: NSObject {
 		}
 		parent.endSheet(window, returnCode: .OK)
 	}
-	
+
 	@IBAction func cancel(_ sender: AnyObject) {
 		guard let parent = parentWindow else {
 			NSApp.abortModal()
@@ -86,7 +86,7 @@ class InputPrompter: NSObject {
 		}
 		parent.endSheet(window, returnCode: .cancel)
 	}
-	
+
 	func observe(change: String) {
 		let isValid = validate(change: change, ignoreSuffix: false)
 		okButton.isEnabled = isValid
@@ -122,19 +122,20 @@ class PrompterFormatter: Formatter {
 	var validator: Validator?
 	var observer: ((String) -> Void)?
 	var requiredSuffix: String?
-	
+
 	override func string(for obj: Any?) -> String?
 	{
 		guard let strversion = obj as? String else { return nil }
 		return strversion
 	}
-	
+
 	override func getObjectValue(_ obj: AutoreleasingUnsafeMutablePointer<AnyObject?>?, for string: String, errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?) -> Bool
 	{
 		obj?.pointee = string as AnyObject?
 		return true
 	}
-	
+
+	// swiftlint:disable:next line_length
 	override func isPartialStringValid(_ partialStringPtr: AutoreleasingUnsafeMutablePointer<NSString>, proposedSelectedRange proposedSelRangePtr: NSRangePointer?, originalString origString: String, originalSelectedRange origSelRange: NSRange, errorDescription error: AutoreleasingUnsafeMutablePointer<NSString?>?) -> Bool
 	{
 		defer {

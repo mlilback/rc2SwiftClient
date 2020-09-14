@@ -33,7 +33,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 		splitItem.maximumThickness = SidebarFixedWidth
 		splitItem.isSpringLoaded = false
 	}
-	
+
 	func handlesToolbarItem(_ item: NSToolbarItem) -> Bool {
 		if item.itemIdentifier.rawValue == "leftView" {
 			sidebarSegmentControl = item.view as! NSSegmentedControl? // swiftlint:disable:this force_cast
@@ -63,7 +63,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 			self.outputSegmentControl?.selectSegment(withTag: value.rawValue)
 		}
 	}
-	
+
 	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action {
@@ -85,7 +85,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 //			return super.validateMenuItem(menuItem)
 		}
 	}
-	
+
 	@objc func outputSwitcherClicked(_ sender: NSSegmentedControl) {
 		guard let tab = OutputTab(rawValue: sender.selectedSegment) else { fatalError() }
 		outputTabController().selectedOutputTab.value = tab
@@ -95,25 +95,25 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 		guard !sidebarSplitItem().isCollapsed else { return nil }
 		return SidebarTab(rawValue: sidebarTabController().selectedTabViewItemIndex)
 	}
-	
+
 	@IBAction func switchOutputTab(_ sender: NSMenuItem?) {
 		guard let tab = OutputTab(rawValue: sender?.tag ?? -1) else { fatalError() }
 		outputTabController().selectedOutputTab.value = tab
 		outputSegmentControl?.selectSegment(withTag: tab.rawValue)
 	}
-	
+
 	//action for sidebar segmented control
 	@objc func sidebarSwitcherClicked(_ sender: NSSegmentedControl) {
 		guard let tab = SidebarTab(rawValue: sender.selectedSegment) else { fatalError() }
 		switchSidebarTo(tab: tab)
 	}
-	
+
 	//action for menu items
 	@IBAction func switchSidebarTab(_ sender: NSMenuItem?) {
 		guard let tab = SidebarTab(rawValue: sender?.tag ?? -1) else { fatalError() }
 		switchSidebarTo(tab: tab)
 	}
-	
+
 	@IBAction func toggleLeftView(_ sender: Any?) {
 		let splitItem = sidebarSplitItem()
 		splitItem.isCollapsed = !splitItem.isCollapsed
@@ -122,7 +122,7 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 			sidebar.animator().setSelected(!splitItem.isCollapsed, forSegment: sidebar.selectedSegment)
 		}
 	}
-	
+
 	func adjustToolbarItemWidth() {
 		guard let spacerItem = spacerToolbarItem, let spacerView = spacerItem.view  else { return }
 		var size = spacerView.frame.size
@@ -158,19 +158,18 @@ class SessionSplitController: NSSplitViewController, ToolbarItemHandler {
 	func sidebarSplitItem() -> NSSplitViewItem {
 		return self.splitViewItems.first(where: { $0.viewController.identifier == .sidebarController })!
 	}
-	
+
 	func sidebarTabController() -> NSTabViewController {
 		// swiftlint:disable:next force_cast
 		let scontroller = self.children.first(where: { $0.identifier == .sidebarController }) as! SidebarController
-		let _ = scontroller.view
 		return scontroller.tabController
 	}
-	
+
 	func outputTabController() -> OutputTabController {
 		// swiftlint:disable:next force_cast
 		return self.children.first(where: { $0.identifier?.rawValue == "outputTabController" }) as! OutputTabController
 	}
-	
+
 	override func splitView(_ splitView: NSSplitView, shouldHideDividerAt dividerIndex: Int) -> Bool
 	{
 		return false

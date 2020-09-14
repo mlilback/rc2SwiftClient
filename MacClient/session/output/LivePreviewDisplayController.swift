@@ -20,9 +20,9 @@ import MJLLogger
 protocol LivePreviewOutputController {
 	/// allows preview editor to tell display controller what the current context is so it can monitor the current document
 //	var editorContext: EditorContext? { get set }
-	
+
 	var parserContext: ParserContext? { get set }
-	
+
 	/// allows editor that the user has made a change to the contents of the current document
 	///
 	/// - Parameters:
@@ -39,7 +39,7 @@ protocol LivePreviewOutputController {
 class LivePreviewDisplayController: AbstractSessionViewController, OutputController, LivePreviewOutputController, WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler
 {
 	// required by OutputController, should use at some point
-	var contextualMenuDelegate: ContextualMenuDelegate?
+	weak var contextualMenuDelegate: ContextualMenuDelegate?
 
 	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil)
 	private var curDocDisposable: Disposable?
@@ -53,7 +53,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		q.isSuspended = true
 		return q
 	}()
-	
+
 	internal var parserContext: ParserContext? { didSet {
 		curDocDisposable?.dispose()
 		if lineContiuationRegex == nil {
@@ -63,7 +63,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	} }
 	private var parsedDocument: RmdDocument? { return parserContext?.parsedDocument.value }
 	private let mdownParser = MarkdownParser()
-	private var previewData = [Int:PreviewIdCache]()
+	private var previewData = [Int: PreviewIdCache]()
 	private var currentPreview: PreviewIdCache?
 
 	// regular expressions
@@ -74,6 +74,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		let posPattern = #"""
 		(?xi)data-sourcepos="(\d+):
 		"""#
+		// swiftlint:disable:next force_try
 		return try! NSRegularExpression(pattern: posPattern, options: .caseInsensitive)
 	}()
 
@@ -81,7 +82,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private var resourcesExtracted = false
 	/// stores navigation items that shouldn't have any effect
 	private var emptyNavigations: Set<WKNavigation> = []
-	
+
 	private var documentRoot: URL?
 	private var htmlRoot: URL?
 	private var docHtmlLoaded = false
@@ -91,7 +92,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private var initNavigation: WKNavigation?
 
 	// MARK: - standard overrides
-	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		loadRegexes()
@@ -105,17 +106,17 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		outputView?.navigationDelegate = self
 		// if have webview and wasn't loaded, suspend the queue
 		ensureResourcesLoaded()
-		context.signal.observeValues { (newContext) in
+		context.signal.observeValues { (_) in
 			print("got new context)")
 		}
 	}
-	
+
 	override func sessionChanged() {
 		super.sessionChanged()
 	}
-	
+
 	// MARK: - notification handlers
-	
+
 	/// called by the editor when the user has made an edit, resulting in a change of what is displayed
 	///
 	/// - Parameters:
@@ -125,7 +126,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		updatePreview(updatedContents: contents)
 		return true
 	}
-	
+
 	/// called when the currentDocument of the EditorContext has changed
 	private func documentChanged(newDocument: RmdDocument?) {
 		guard didLoadView else { return } //don't parse if view not loaded
@@ -137,26 +138,26 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			currentPreview = nil
 			return
 		}
-		if  let pcontext = parserContext, var previewInfo = previewData[fileId]
+		if  var previewInfo = previewData[fileId]
 		{
 			// already have preview info
-			previewInfo.codeHandler = PreviewCodeHandler(previewId: previewInfo.previewId, docSignal: pcontext.parsedDocument.signal)
+			previewInfo.codeHandler = PreviewCodeHandler(previewId: previewInfo.previewId)
 			currentPreview = previewInfo
 			previewInfo.codeHandler.clearCache()
 		}
 		refreshContent()
 	}
-	
+
 	// MARK: - action handlers
 	func executeCunk(number: Int) {
-		
+
 	}
-	
+
 	func executeChunkAndPrevious(number: Int) {
 	}
-		
+
 	// MARK: - content presentation
-	
+
 	private func loadInitialPage() {
 		guard !pageShellLoaded else { return }
 		guard let headerUrl = Bundle.main.url(forResource: "customRmdHeader", withExtension: "html"),
@@ -170,8 +171,9 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			fatalError("failed to load initial preview content: \(error)")
 		}
 	}
-	
+
 	/// parses the parsed document and loads it via javascript
+	// swiftlint:disable:next cyclomatic_complexity
 	private func updatePreview(updatedContents: String? = nil) {
 		guard didLoadView else { return }
 
@@ -182,6 +184,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			else { Log.warn("current doc has no contents??"); return }
 		guard curDoc.attributedString.string != updatedContents else { return }
 		// update the parsed document, update the webview
+		// swiftlint:disable:next force_try
 		var changedChunkIndexes = try! RmdDocument.update(document: curDoc, with: contents) ?? []
 		// TODO: cacheCode needs to be async
 		// add to changedChunkIndexes any chunks that need to udpated because of changes to R code
@@ -195,13 +198,13 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			Log.info("udpating just chunks \(changedChunkIndexes)")
 			for chunkNumber in changedChunkIndexes {
 				let chunk = curDoc.chunks[chunkNumber]
-				 
+
 				var html = htmlFor(chunk: chunk, index: chunkNumber) // don't want the wrapping section ala htmlWrapper()
 				if chunk.chunkType != .equation {
 					html = escapeForJavascript(html)
 				}
-				
-				var command = "$(\"section[index='\(chunkNumber)']\").html('\(html)');";
+
+				var command = "$(\"section[index='\(chunkNumber)']\").html('\(html)');"
 				if chunk.chunkType == .equation {
 					command += "MathJax.typeset()"
 				}
@@ -218,7 +221,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			refreshContent()
 		}
 	}
-	
+
 	func refreshContent() {
 		guard let curDoc = parsedDocument else {
 			load(html: "")
@@ -238,13 +241,13 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			guard error != nil else { return }
 			let msg = error.debugDescription
 			Log.info("got error refreshing content: \(msg)")
-		};
+		}
 	}
-	
+
 	private func htmlWrapper(chunk: RmdDocumentChunk, chunkNumber: Int) -> String {
 		var html = ""
 		let descriptor = chunk.isInline ? "inline" : "section"
-		
+
 		html += "<\(descriptor) index=\"\(chunkNumber)\" type=\"\(chunk.chunkType)\">\n"
 		if !chunk.isInline {
 			html += "<sectionToolbar index=\"\(chunkNumber)\" type=\"\(chunk.chunkType)\"></sectionToolbar>\n"
@@ -253,7 +256,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		html += "\n</\(descriptor)>\n"
 		return html
 	}
-	
+
 	private func htmlFor(chunk: RmdDocumentChunk, index: Int) -> String {
 		switch RootChunkType(chunk.chunkType) {
 		case .code:
@@ -265,7 +268,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			return htmlForEquation(chunk: chunk)
 		}
 	}
-	
+
 	private func htmlFor(markdownChunk: RmdDocumentChunk, index: Int) -> String {
 		var chunkString = parsedDocument!.string(for: markdownChunk)
 		// replace all inline chunks with a placeholder
@@ -284,7 +287,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		_ = dataSourceRegex.replaceMatches(in: html, range: NSRange(location: 0, length: html.length), withTemplate: "data-sourcepos=\"\(index).$2")
 		return html as String
 	}
-	
+
 	private func textFor(inlineChunk: RmdDocumentChunk, parent: RmdDocumentChunk) -> String {
 		guard let doc = parsedDocument else { fatalError("textFor called w/o a document") }
 		let inlineText = doc.string(for: inlineChunk, type: .inner)
@@ -299,17 +302,17 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 		return icText
 	}
-	
+
 	private func rHtmlFor(code chunk: RmdDocumentChunk, index: Int) -> String {
 		guard let doc = parsedDocument else { fatalError("htmlFor called w/o a document") }
 		guard let rHandler = currentPreview?.codeHandler else {
-			Log.warn("asked to generate R code w/o context");
+			Log.warn("asked to generate R code w/o context")
 			return "<pre class=\"r\"><code>\(doc.string(for: chunk, type: .inner).addingUnicodeEntities)</code></pre>\n"
 		}
 		let html = rHandler.htmlForChunk(document: doc, number: index)
 		return html
 	}
-	
+
 	private func htmlForEquation(chunk: RmdDocumentChunk) -> String {
 		guard let doc = parsedDocument else { fatalError("htmlForEquationi called w/o a document") }
 		var equationText = doc.string(for: chunk)
@@ -320,7 +323,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		return "\n<div class=\"equation\">\(equationText)</div>\n"
 
 	}
-	
+
 	private func markdownFor(inlineEquation: RmdDocumentChunk) -> String {
 		guard let doc = parsedDocument else { fatalError("textFor called w/o a document") }
 		var code = doc.string(for: inlineEquation, type: .inner)
@@ -328,7 +331,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		code = code.replacingOccurrences(of: "\\$$\\s", with: "\\) ", options: .regularExpression)
 		return "<span class\"math inline\">\n\(code)</span>"
 	}
-	
+
 	/// replaces the visible html document
 	/// - Parameter html: the new html to display
 	private func load(html: String)  {
@@ -343,14 +346,14 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			let encoded = html.data(using: .utf8)!.base64EncodedString()
 			let realString = "updateBody(" + "'" + encoded + "')"
 			DispatchQueue.main.async {
-				me.outputView?.evaluateJavaScript(realString) { (val, err) in
+				me.outputView?.evaluateJavaScript(realString) { (_, _) in
 					sema.signal()
 				}
 				sema.wait()
 			}
 		}
 	}
-	
+
 	private func runJavascript(_ script: String, completionHandler: ((Any?, Error?) -> Void)? = nil) {
 		opQueue.addOperation { [weak self] in
 			guard let me = self else { return }
@@ -366,21 +369,32 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			}
 		}
 	}
-	
+
 	// MARK: - utility
 
 	func setEditorContext(_ econtext: EditorContext?) {
+		precondition(context.value == nil)
 		context.value = econtext
 	}
-	
 
 	private func requestPreviewId(fileId: Int) -> SignalProducer<PreviewIdCache, Rc2Error> {
 		let handler = SignalProducer<PreviewIdCache, Rc2Error> { observer, _ in
-			// FIXME:
+			return self.session.requestPreviewId(fileId: fileId).startWithResult { (result) in
+				switch result {
+				case .success(let previewId):
+					Log.info("got previewId \(previewId)")
+					let codeHandler = PreviewCodeHandler(previewId: previewId)
+					let cacheEntry = PreviewIdCache(previewId: previewId, fileId: fileId, codeHandler: codeHandler)
+					observer.send(value: cacheEntry)
+				case .failure(let err):
+					Log.warn("requestPreviewId got error \(err)")
+					observer.send(error: err)
+				}
+			}
 		}
 		return handler
 	}
-	
+
 	private func loadWebView() {
 		let prefs = WKPreferences()
 		prefs.minimumFontSize = 9.0
@@ -405,18 +419,18 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		outputView?.centerXAnchor.constraint(equalTo: newwk.superview!.centerXAnchor).isActive = true
 
 	}
-	
+
 	private func loadRegexes() {
 		guard lineContiuationRegex == nil else { return }
 		guard let regex = try? NSRegularExpression(pattern: "\\s+\\\\$", options: [.anchorsMatchLines]),
 			let openRegex = try? NSRegularExpression(pattern: "^\\$\\$", options: []),
 			let closeRegex = try? NSRegularExpression(pattern: "\\$\\$(\\s*)$", options: [])
-			else { fatalError("regex failed to compile")}
+			else { fatalError("regex failed to compile") }
 		lineContiuationRegex = regex
 		openDoubleDollarRegex = openRegex
 		closeDoubleDollarRegex = closeRegex
 	}
-	
+
 	private func escapeForJavascript(_ source: String) -> String {
 		var string = source
 		string = string.replacingOccurrences(of: "\\", with: "\\\\")
@@ -428,7 +442,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		// string = string.replacingOccurrences(of: "\f", with: "\\f")
 		return string
 	}
-	
+
 	/// verifies that all necessary steps have been taken before loading the initial page. Also extracts compressed resources into application support
 	private func ensureResourcesLoaded() {
 		guard didLoadView else { return }
@@ -457,10 +471,10 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 
 	// MARK: - WebKit Delegate(s) methods
-	
+
 	func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
 		if navigation == initNavigation {
-			pageShellLoaded = true;
+			pageShellLoaded = true
 //			runJavascript("updateSectionToolbars(); MathJax.typeset()")
 			opQueue.isSuspended = false
 		}
@@ -472,7 +486,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		guard let _ = parsedDocument else { return }
 		updatePreview()
 	}
-	
+
 	func webView(_ webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: @escaping () -> Void)
 	{
 		Log.info("An error from web view: \(message)", .app)
@@ -495,7 +509,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 						Log.info("invalid action from preview: \(actionName)")
 				}
 			}
-			
+
 			return
 		}
 		if message.name == "pageLoaded" {
@@ -506,9 +520,9 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			Log.info("unknown message posted from preview")
 		}
 	}
-	
+
 	// MARK: - embedded types
-	
+
 	private class MarkdownParser {
 		let allocator: UnsafeMutablePointer<cmark_mem>
 		let cmarkOptions = CMARK_OPT_SOURCEPOS | CMARK_OPT_FOOTNOTES
@@ -523,7 +537,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			cmark_llist_append(allocator, extensions, tableExtension)
 			cmark_llist_append(allocator, extensions, strikeExtension)
 		}
-		
+
 		func htmlFor(markdown: String) -> NSMutableString {
 			markdown.withCString( { chars in
 				cmark_parser_feed(parser, chars, strlen(chars))
@@ -532,7 +546,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			let html = NSMutableString(cString: cmark_render_html_with_mem(htmlDoc, cmarkOptions, extensions, allocator), encoding: String.Encoding.utf8.rawValue)!
 			return html
 		}
-		
+
 		deinit {
 			cmark_llist_free(allocator, extensions)
 			cmark_parser_free(parser)
@@ -547,11 +561,11 @@ private struct PreviewIdCache: Equatable {
 		self.fileId = fileId
 		self.codeHandler = codeHandler
 	}
-	
+
 	static func == (lhs: PreviewIdCache, rhs: PreviewIdCache) -> Bool {
 		return lhs.fileId == rhs.fileId && lhs.previewId == rhs.previewId
 	}
-	
+
 	let previewId: Int
 	let fileId: Int
 	var codeHandler: PreviewCodeHandler
@@ -561,9 +575,9 @@ private struct PreviewIdCache: Equatable {
 // MARK: - SessionPreviewDelegate
 extension LivePreviewDisplayController: SessionPreviewDelegate {
 	func previewIdReceived(response: SessionResponse.PreviewInitedData) {
-		
+
 	}
-	
+
 	func previewUpdateReceived(response: SessionResponse.PreviewUpdateData) {
 		// TODO: need to update codeHandler's chunk cache, update display of that chunk
 	}

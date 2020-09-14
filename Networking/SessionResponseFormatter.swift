@@ -67,7 +67,8 @@ extension SessionResponseFormatter {
 	
 	public func formatOutput(data: SessionResponse.ShowOutputData) -> ResponseString? {
 		let str = formatterDelegate?.consoleAttachment(forFile: data.file).asAttributedString() ?? NSAttributedString()
-		// swiftlint:disable:next force_cast (should never fail)
+		// (should never fail)
+		// swiftlint:disable:next force_cast
 		let mstr = str.mutableCopy() as! NSMutableAttributedString
 		mstr.append(NSAttributedString(string: "\n"))
 		return ResponseString(string: mstr, type: .attachment)

@@ -125,8 +125,8 @@ public final class SyntaxTheme: BaseTheme, DefaultsSerializable {
 	public static let defaultTheme: Theme = {
 		var theme = SyntaxTheme(name: "builtin")
 		// system was giving values from greyspace, not rgb. force rgb.
-		let white = PlatformColor.init(hexString: "FFFFFF")
-		let black = PlatformColor.init(hexString: "000000")
+		let white = PlatformColor(hexString: "FFFFFF")
+		let black = PlatformColor(hexString: "000000")
 		theme.colors[.text] = black
 		for prop in SyntaxThemeProperty.backgroundProperties {
 			theme.colors[prop] = white

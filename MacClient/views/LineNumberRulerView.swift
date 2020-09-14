@@ -22,23 +22,23 @@ class LineNumberRulerView: NSRulerView, FontUser {
 	}
 	private var isLineInfoValid = false
 	private var textAttributes = [NSAttributedString.Key: Any]()
-	
+
 	override init(scrollView: NSScrollView?, orientation: NSRulerView.Orientation) {
 		font = NSFont.labelFont(ofSize: NSFont.systemFontSize(for: .mini))
 		textAttributes[.foregroundColor] = NSColor.labelColor
 		super.init(scrollView: scrollView, orientation: orientation)
 	}
-	
+
 	required init(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
-	
-	var currentStorage: NSTextStorage? { return (self.clientView as? NSTextView)?.textStorage ?? nil }
-	
+
+	var currentStorage: NSTextStorage? { return (self.clientView as? NSTextView)?.textStorage }
+
 	var lineRanges = [Range<String.Index>]()
-	
+
 	override var isFlipped: Bool { return true }
-	
+
 	override var clientView: NSView? {
 		didSet {
 			// need to be notified when the text changes
@@ -50,13 +50,13 @@ class LineNumberRulerView: NSRulerView, FontUser {
 			isLineInfoValid = false
 		}
 	}
-	
+
 	@objc func didProcessEdit(_ note: Notification) {
 		if shouldIgnoreNotifications?() ?? false { return }
 		self.needsDisplay = true
 		isLineInfoValid = false
 	}
-	
+
 	func updateLineInformation() {
 		var ranges = [Range<String.Index>]()
 		let contents = currentStorage?.string ?? ""
@@ -66,20 +66,20 @@ class LineNumberRulerView: NSRulerView, FontUser {
 		}
 		lineRanges = ranges
 		isLineInfoValid = true
-	
+
 		// update thickness
 		let numDigits = CGFloat(ranges.count > 0 ? ceil(log10(Double(ranges.count))) : 1)
 		let digitSize = NSString("0").size(withAttributes: textAttributes)
-		self.ruleThickness =  max(ceil(digitSize.width * numDigits + 8.0), 10.0)
+		self.ruleThickness = max(ceil(digitSize.width * numDigits + 8.0), 10.0)
 	}
-	
+
 	override func viewWillDraw() {
 		super.viewWillDraw()
 		if !isLineInfoValid {
 			updateLineInformation()
 		}
 	}
-	
+
 	/// calls fatalError() if invalid index
 	func lineIndexFor(characterIndex cidx: String.Index) throws -> Int {
 		for (idx, range) in lineRanges.enumerated() {
@@ -88,17 +88,17 @@ class LineNumberRulerView: NSRulerView, FontUser {
 		}
 		throw Errors.badRange
 	}
-	
+
 	override func drawHashMarksAndLabels(in dirtyRect: NSRect) {
 		// draw background
 		NSColor.controlBackgroundColor.set()
 		dirtyRect.fill(using: .copy)
-		
+
 		// draw border line
 		let borderRect: NSRect
 		switch orientation {
 		case .verticalRuler:
-			borderRect = NSRect(x: NSMaxX(bounds) - 1.0, y: 0, width: 1, height: bounds.height)
+			borderRect = NSRect(x: bounds.maxX - 1.0, y: 0, width: 1, height: bounds.height)
 		case .horizontalRuler:
 			borderRect = NSRect(x: 0, y: 0, width: bounds.width, height: 1.0)
 		}
@@ -106,10 +106,10 @@ class LineNumberRulerView: NSRulerView, FontUser {
 			NSColor.controlBackgroundColor.shadow(withLevel: 0.4)?.set()
 			borderRect.fill(using: .copy)
 		}
-		
+
 		// no more drawing unless we have a text view
 		guard let client = clientView as? NSTextView else { return }
-		
+
 		// draw the line numbers
 		guard let storage = client.textStorage, let container = client.textContainer,
 			let lm = client.layoutManager, let scroll = scrollView
@@ -121,14 +121,14 @@ class LineNumberRulerView: NSRulerView, FontUser {
 		let visibleRect = scroll.contentView.bounds
 		let inset = client.textContainerInset
 		let rightMostDrawableLocation = borderRect.minX
-		
+
 		let visGlyphNSRange = lm.glyphRange(forBoundingRect: visibleRect, in: container)
 		let visCharNSRange = lm.characterRange(forGlyphRange: visGlyphNSRange, actualGlyphRange: nil)
 		guard let visibleCharRange = Range(visCharNSRange, in: contents) else { return }
 		var lastLinePositionY = CGFloat(-1.0)
 		// for some reason, visibleCHar arange does not implement Stridable, and can't be used in a for..in loop. But substrings are just slices, so there is no real overhead to using one for this
 		let substr = contents[visibleCharRange]
-		
+
 		var charIdx = substr.startIndex
 		while charIdx < substr.endIndex {
 			// if there is no line for the character, something is seriously wrong
@@ -138,13 +138,13 @@ class LineNumberRulerView: NSRulerView, FontUser {
 				charIdx = substr.endIndex
 				break
 			}
-			let docVisibleRect = scrollView!.documentVisibleRect;
+			let docVisibleRect = scrollView!.documentVisibleRect
 			let grange = lm.glyphRange(forCharacterRange: NSRange(lineRanges[lineNumber], in: contents), actualCharacterRange: nil)
 			let brect = lm.boundingRect(forGlyphRange: grange, in: container)
 			let lineStr = String(lineNumber + 1) as NSString
 			let lineStrSize = lineStr.size(withAttributes: textAttributes)
 			let lineStrRect = NSRect(x: rightMostDrawableLocation - lineStrSize.width - 2.0,
-									 y: brect.minY + inset.height  - docVisibleRect.origin.y,
+									 y: brect.minY + inset.height - docVisibleRect.origin.y,
 									 width: lineStrSize.width,
 									 height: lineStrSize.height)
 			if needsToDraw(lineStrRect.insetBy(dx: -4.0, dy: -4.0)) && lineStrRect.minY != lastLinePositionY {
@@ -166,6 +166,6 @@ extension StringProtocol {
 		return distance(from: startIndex, to: from)
 	}
 	func rangeDetails(_ range: Range<String.Index>) -> String? {
-		return "\(indexDistance(from: range.lowerBound))...\(indexDistance(from: range.upperBound))";
+		return "\(indexDistance(from: range.lowerBound))...\(indexDistance(from: range.upperBound))"
 	}
 }

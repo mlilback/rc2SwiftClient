@@ -1150,7 +1150,7 @@
 		08E55B57219222AD00F63A20 /* Down.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Down.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08E55B612194A59300F63A20 /* BaseSourceEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSourceEditorController.swift; sourceTree = "<group>"; };
 		08E55B632194A86700F63A20 /* SourceEditorLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceEditorLayoutManager.swift; sourceTree = "<group>"; };
-		08E5D2081EAA58FD00374055 /* TimedEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimedEvent.swift; path = TimedEvents/TimedEvent.swift; sourceTree = SOURCE_ROOT; };
+		08E5D2081EAA58FD00374055 /* TimedEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimedEvent.swift; path = Rc2Common/TimedEvent.swift; sourceTree = SOURCE_ROOT; };
 		08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyUserDefaults.framework; path = Carthage/Build/Mac/SwiftyUserDefaults.framework; sourceTree = "<group>"; };
 		08E8366A1D94436D00E26EFE /* UserDefaults+Rc2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Rc2.swift"; sourceTree = "<group>"; };
 		08E8F1A520698F8500F0FF5A /* CodeTemplateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeTemplateManager.swift; sourceTree = "<group>"; };

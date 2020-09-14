@@ -8,7 +8,6 @@ import Cocoa
 import Rc2Common
 import Networking
 import ReactiveSwift
-import Rc2Common
 
 /// object passed to UI controllers that take part in editing a document. Any values that might need to be observed for changes are declared as ReactiveSwift Properties.
 public protocol EditorContext: class {

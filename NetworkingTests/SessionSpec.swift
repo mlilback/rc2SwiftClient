@@ -90,28 +90,28 @@
 //			}
 //			// TODO: this test fails because the workspace waits for a filechange notfiication that the created fileid was added/saved
 //
-////			it("success") {
-////				let updateJson = String(data: self.loadFileData("createdUpdate", fileExtension: "json")!, encoding: .utf8)!
-////				self.stub(uri(uri: "/file/create/100"), builder: { request in
-////					DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
-////						fakeSocket.serverSent(updateJson)
-////					}
-////					return jsonData(self.loadFileData("createfile", fileExtension: "json")!, status: 201)(request)
-////				})
-////				fakeCache.fileInfo[212] = FakeFileInfo(fileId: 212, data: nil, url: tmpDirectory.appendingPathComponent("212.R"), cached: false)
-////				let createExpectation = self.expectation(description: "create file")
-////				var createdResult: Result<Int, Rc2Error>?
-////				session.create(fileName: "created.R") { result in
-////					createdResult = result
-////					createExpectation.fulfill()
-////				}
-////				let createdFile = File(id: 212, wspaceId: 100, name: "created.R", version: 1, dateCreated: Date(), lastModified: Date(), fileSize: 1121)
-////				let noteResponse = SessionResponse.fileChanged(SessionResponse.FileChangedData(type: .insert, file: createdFile, fileId: 212))
-////				fakeSocket.write(data: try! conInfo.encode(noteResponse))
-////				self.waitForExpectations(timeout: 2.0, handler: nil)
-////				expect(createdResult?.error).to(beNil())
-////				expect(createdResult?.value).to(equal(212))
-////			}
+// //			it("success") {
+// //				let updateJson = String(data: self.loadFileData("createdUpdate", fileExtension: "json")!, encoding: .utf8)!
+// //				self.stub(uri(uri: "/file/create/100"), builder: { request in
+// //					DispatchQueue.global().asyncAfter(deadline: .now() + .milliseconds(100)) {
+// //						fakeSocket.serverSent(updateJson)
+// //					}
+// //					return jsonData(self.loadFileData("createfile", fileExtension: "json")!, status: 201)(request)
+// //				})
+// //				fakeCache.fileInfo[212] = FakeFileInfo(fileId: 212, data: nil, url: tmpDirectory.appendingPathComponent("212.R"), cached: false)
+// //				let createExpectation = self.expectation(description: "create file")
+// //				var createdResult: Result<Int, Rc2Error>?
+// //				session.create(fileName: "created.R") { result in
+// //					createdResult = result
+// //					createExpectation.fulfill()
+// //				}
+// //				let createdFile = File(id: 212, wspaceId: 100, name: "created.R", version: 1, dateCreated: Date(), lastModified: Date(), fileSize: 1121)
+// //				let noteResponse = SessionResponse.fileChanged(SessionResponse.FileChangedData(type: .insert, file: createdFile, fileId: 212))
+// //				fakeSocket.write(data: try! conInfo.encode(noteResponse))
+// //				self.waitForExpectations(timeout: 2.0, handler: nil)
+// //				expect(createdResult?.error).to(beNil())
+// //				expect(createdResult?.value).to(equal(212))
+// //			}
 //
 //			it("server error") {
 //				self.stub(uri(uri: "/file/create/100"), builder: http(500))

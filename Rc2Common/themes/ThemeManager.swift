@@ -18,7 +18,6 @@ enum ThemeError: Error {
 	case notEditable
 }
 
-
 /// wraps the information about a type of theme to allow it to be used generically
 public class ThemeWrapper<T: Theme> {
 	public var themes: [T] { return getThemes() }
@@ -143,7 +142,7 @@ public class ThemeManager {
 	}
 	
 	private static func findDefaultOutputTheme(in array: [OutputTheme]) -> OutputTheme {
-		if let theme:OutputTheme = Defaults[.activeOutputTheme] {
+		if let theme: OutputTheme = Defaults[.activeOutputTheme] {
 			return theme
 		}
 		//look for one named default
@@ -154,7 +153,7 @@ public class ThemeManager {
 	}
 
 	private static func findDefaultSyntaxTheme(in array: [SyntaxTheme]) -> SyntaxTheme {
-		if let theme:SyntaxTheme = Defaults[.activeSyntaxTheme] {
+		if let theme: SyntaxTheme = Defaults[.activeSyntaxTheme] {
 			return theme
 		}
 		//look for one named default

@@ -15,7 +15,7 @@ class ValuesVariableDetailController: NSViewController {
 	@IBOutlet var valuesTableView: NSTableView!
 	private(set) var variable: Variable?
 	private(set) var valueContent: [String] = []
-	
+
 	func set(variable: Variable, values: [String]) {
 		self.variable = variable
 		self.valueContent = values

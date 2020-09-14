@@ -13,6 +13,8 @@ import Rc2Common
 @testable import MacClient
 @testable import Networking
 
+// swiftlint:disable all
+
 class DocumentManagerTests: QuickSpec {
 	private let (defaultLifetime, defaultToken) = Lifetime.make()
 	

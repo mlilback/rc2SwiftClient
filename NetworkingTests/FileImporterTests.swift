@@ -14,7 +14,7 @@
 //import Mockingjay
 //import Rc2Common
 //
-////TODO: implement FileImporterTests
+// //TODO: implement FileImporterTests
 //
 //class FileImporterTests: NetworkingBaseSpec, URLSessionDataDelegate {
 //	private static let foo: Int = {
@@ -29,8 +29,8 @@
 //
 //	override func setUp() {
 //		super.setUp()
-////		testWorkspace.files = [testWorkspace.files.first!]
-////		filesToImport = [filesToImport.first!]
+// //		testWorkspace.files = [testWorkspace.files.first!]
+// //		filesToImport = [filesToImport.first!]
 //	}
 //
 //	override func spec() {
@@ -74,24 +74,24 @@
 //	}
 //}
 //
-////	func testSessionMock() {
-//////		let destUri = "/workspaces/1/file/upload"
-//////		stub(uri(destUri), builder:json(expectedFiles.first!, status: 201))
-////		stub(everything, builder:jsonData(expectedFiles.first!.dataUsingEncoding(NSUTF8StringEncoding)!, status: 201))
-////
-////		self.expect = self.expectationWithDescription("upload")
-////		importer = FileImporter(filesToImport, workspace: testWorkspace, baseUrl:NSURL(string: "http://www.google.com/"), configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-////		{_ in
-////			self.expect?.fulfill()
-////		}
-////		importer?.progress.addObserver(self, forKeyPath: "completedUnitCount", options: .New, context: &kvoContext)
-////		try! importer?.startImport()
-////		self.waitForExpectationsWithTimeout(20) { _ in }
-////		XCTAssertNil(importer?.progress.rc2_error)
-////		XCTAssertEqual(testWorkspace.files.count, filesToImport.count)
-////	}
+// //	func testSessionMock() {
+// // //		let destUri = "/workspaces/1/file/upload"
+// // //		stub(uri(destUri), builder:json(expectedFiles.first!, status: 201))
+// //		stub(everything, builder:jsonData(expectedFiles.first!.dataUsingEncoding(NSUTF8StringEncoding)!, status: 201))
+// //
+// //		self.expect = self.expectationWithDescription("upload")
+// //		importer = FileImporter(filesToImport, workspace: testWorkspace, baseUrl:NSURL(string: "http://www.google.com/"), configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+// //		{_ in
+// //			self.expect?.fulfill()
+// //		}
+// //		importer?.progress.addObserver(self, forKeyPath: "completedUnitCount", options: .New, context: &kvoContext)
+// //		try! importer?.startImport()
+// //		self.waitForExpectationsWithTimeout(20) { _ in }
+// //		XCTAssertNil(importer?.progress.rc2_error)
+// //		XCTAssertEqual(testWorkspace.files.count, filesToImport.count)
+// //	}
 //
-////protocol of functions we want to test
+// //protocol of functions we want to test
 //protocol URLSessionProtocol {
 //	func uploadTaskForFileURL(_ file:URL) -> URLSessionUploadTask
 //}

@@ -12,10 +12,10 @@ public class EditableTableCellView: NSTableCellView {
 	/// callback to call when editing is complete
 	fileprivate var currentCallback: ((String?) -> Void)?
 	fileprivate var canceled: Bool = false
-	
+
 	public override var textField: NSTextField? { didSet { textField?.delegate = self } }
 	@IBOutlet var infoButton: NSButton?
-	
+
 	/// Starts an edit on the textField, calling closure when finished
 	///
 	/// - Parameters:
@@ -37,11 +37,11 @@ extension EditableTableCellView: NSTextFieldDelegate {
 		currentCallback?(text)
 		currentCallback = nil
 	}
-	
+
 	public func control(_ control: NSControl, isValidObject obj: Any?) -> Bool {
 		return validator?(obj as? String) ?? true
 	}
-	
+
 	public func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool
 	{
 		switch commandSelector {

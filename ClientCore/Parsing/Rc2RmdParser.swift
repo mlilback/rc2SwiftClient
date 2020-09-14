@@ -43,7 +43,7 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 		// highlight code chunks
 		_parsedDocument.value?.chunks.forEach { chunk in
 			contents.addAttribute(ChunkKey, value: chunk.chunkType, range: chunk.innerRange)
-			chunk.children.forEach { contents.addAttribute(ChunkKey, value: $0.chunkType, range: $0.innerRange)} // mark nested chunks
+			chunk.children.forEach { contents.addAttribute(ChunkKey, value: $0.chunkType, range: $0.innerRange) } // mark nested chunks
 			if chunk.isEquation {
 				equationHighLigther.highlight(string: contents, range: chunk.innerRange)
 				return
@@ -81,7 +81,7 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 
 	public func highlightR(text: NSMutableAttributedString, range: NSRange? = nil, timeout: TimeInterval) -> SignalProducer<Bool, RParserError> {
 		let rng = range ?? NSRange(location: 0, length: text.length)
-		let producer = SignalProducer<Bool, RParserError> { (observer, compositeDisposable) in
+		let producer = SignalProducer<Bool, RParserError> { (observer, _) in
 			do {
 				let hlighter = try RHighlighter(text, range: rng, timeout: timeout)
 				try hlighter.start()
@@ -101,8 +101,8 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 		return producer
 	}
 	
-	
 	public func selectionChanged(range: NSRange) {
+		// swiftlint:disable:next force_try
 		try! reparse()
 	}
 	

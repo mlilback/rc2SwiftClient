@@ -7,14 +7,13 @@
 import Cocoa
 import SwiftyUserDefaults
 
-
 private extension DefaultsKeys {
 	static let selectedTabIndex = DefaultsKey<Int>("prefsSelectedTabIndex", defaultValue: 0)
 }
 
 class PreferencesViewController: NSTabViewController {
 	lazy var tabSizes = [String: NSSize]()
-	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		var image = NSImage(named: NSImage.preferencesGeneralName)
@@ -26,7 +25,7 @@ class PreferencesViewController: NSTabViewController {
 		dockerItem?.image = image
 		self.selectedTabViewItemIndex = UserDefaults.standard[.selectedTabIndex]
 	}
-	
+
 	override func tabView(_ tabView: NSTabView, willSelect tabViewItem: NSTabViewItem?)
 	{
 		_ = tabView.selectedTabViewItem
@@ -36,7 +35,7 @@ class PreferencesViewController: NSTabViewController {
 			tabSizes[tabViewItem!.label] = tabViewItem!.view!.frame.size
 		}
 	}
-	
+
 	override func tabView(_ tabView: NSTabView, didSelect tabViewItem: NSTabViewItem?)
 	{
 		defer { super.tabView(tabView, didSelect: tabViewItem) }

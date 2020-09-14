@@ -7,5 +7,5 @@
 import Cocoa
 
 class MultiImageWindowController: NSWindowController {
-	
+
 }

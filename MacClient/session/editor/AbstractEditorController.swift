@@ -29,28 +29,28 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 	private(set) var compositeDisposable = CompositeDisposable()
 	/// used internally to prevent responding to a change made by self
 	private(set) var ignoreContentChanges = false
-	
+
 	/// checks if document is loaded and is not empty
 	@objc dynamic var canExecute: Bool {
 		guard context?.currentDocument.value?.isLoaded ?? false else { return false }
 		return context?.currentDocument.value?.currentContents?.count ?? 0 > 0
 	}
-	
+
 	// block a parent can set to be called when a document has been loaded
 	var onDocumentLoaded: ((EditorDocument) -> Void)?
-	
+
 	/// for subclasses to override
 	var documentDirty: Bool { return false }
-	
+
 	/// subclasses should override if necessary. defaults to false
 	var isRDocument: Bool { return false }
-	
+
 	// MARK: - standard
 	override func viewWillDisappear() {
 		super.viewWillDisappear()
 		autosaveCurrentDocument()
 	}
-	
+
 	@objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
 		guard let action = menuItem.action else { return false }
 		switch action {
@@ -62,7 +62,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			return false
 		}
 	}
-	
+
 	// MARK: - actions
 	@IBAction func save(_ sender: Any?) {
 		saveWithProgress().startWithResult { result in
@@ -74,7 +74,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			}
 		}
 	}
-	
+
 	@IBAction func revert(_ sender: Any?) {
 		guard let doc = context?.currentDocument.value else { return }
 		// Do you want to revert the document “AbstractEditorController.swift” to the last saved version?
@@ -83,22 +83,22 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			self.context?.revertCurrentDocument()
 		}
 	}
-	
+
 	@IBAction func runQuery(_ sender: Any?) {
 		executeSource(type: .run)
 	}
-	
+
 	@IBAction func sourceQuery(_ sender: Any?) {
 		executeSource(type: .source)
 	}
-	
+
 	// MARK: - internal
 	/// called when document's editedContents is changed by something besides this object
 	private func editedContentsChanged(updatedContents: String) {
 		guard !ignoreContentChanges else { return }
 		loaded(content: updatedContents)
 	}
-	
+
 	/// for subclasses to call to save edits. loaded will not be called, which would happen if a subclass set the document's editedContents directly
 	func save(edits: String, reload: Bool = false) {
 		// prevent recursion
@@ -110,7 +110,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			loaded(content: edits)
 		}
 	}
-	
+
 	/// called after view loaded with injected data
 	func setContext(context: EditorContext) {
 		precondition(self.context == nil)
@@ -128,7 +128,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 			self?.documentChanged(newDocument: newDoc)
 		}
 	}
-	
+
 	///actually implements running a query, saving first if document is dirty
 	func executeSource(type: ExecuteType) {
 		guard let currentDocument = context?.currentDocument.value else {
@@ -147,13 +147,13 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 				Log.info("save for execute returned an error: \(innerError)", .app)
 				self.appStatus?.presentError(appError.rc2Error, session: self.session)
 				return
-			case .success(_):
+			case .success:
 				Log.info("executeQuery saved file, now executing", .app)
 				self.session.execute(file: file, type: type)
 			}
 		}
 	}
-	
+
 	// called by notifications when sleeping/backgrounding
 	@objc func autosaveCurrentDocument() {
 		// return if autosave in progress or no document
@@ -174,12 +174,12 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 				self?.autoSaveDisposable.value = nil
 		}
 	}
-	
+
 	/// called before document is about to be saved
 	@objc private func documentWillSave(_ notification: Notification) {
 		editsNeedSaving()
 	}
-	
+
 	//should be the only place an actual save is performed
 	func saveWithProgress(isAutoSave: Bool = false) -> SignalProducer<Bool, Rc2Error> {
 		guard let context = context else { fatalError() }
@@ -198,7 +198,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 		compositeDisposable = CompositeDisposable()
 		guard let document = newDocument else { return }
 		if document.isLoaded {
-			compositeDisposable += document.editedContents.signal.observe(on: UIScheduler()).observeValues { [weak self] contents in
+			compositeDisposable += document.editedContents.signal.observe(on: UIScheduler()).observeValues { [weak self] _ in
 				guard let me = self else { return }
 				me.editedContentsChanged(updatedContents: document.currentContents ?? "")
 			}
@@ -242,7 +242,7 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 //		}
 //	}
 //
-	
+
 	/// called after the current document has changed. called by documentChanged() after the contents have been loaded from disk/network. Subclasses must override.
 	func loaded(content: String) {
 		fatalError("subclass must implement, not call super")
@@ -252,5 +252,5 @@ class AbstractEditorController: AbstractSessionViewController, MacCodeEditor {
 	func editsNeedSaving() {
 		fatalError("subclasses must implement, not call super")
 	}
-	
+
 }

@@ -13,20 +13,20 @@ import WebKit
 import SwiftyUserDefaults
 
 class LivePreviewEditorController: BaseSourceEditorController {
-	var outputController: LivePreviewOutputController? { didSet { outputController?.parserContext = parser }}
-	
+	var outputController: LivePreviewOutputController? { didSet { outputController?.parserContext = parser } }
+
 	private var webView: WKWebView?
-	
+
 	// used to prevent recursion (due to didSet) in outputControllerChanged()
 	private var inOutputChange = false
 
 	// used to wrap lastChange with a queue, but that was causing recursive errors. Instead, this values should only be used on the main thread
 	private var lastTextChange: TimeInterval = 0
 	private var lastChangeTimer: DispatchSourceTimer!
-	private var lastChangeRange : NSRange?
+	private var lastChangeRange: NSRange?
 	private var lastChangeDelta: Int = 0
 	private var timerRunning = false
-	
+
 	override func viewDidLoad() {
 		useParser = true
 		super.viewDidLoad()
@@ -51,7 +51,7 @@ class LivePreviewEditorController: BaseSourceEditorController {
 		lastChangeTimer.activate()
 		lastChangeTimer.suspend()
 	}
-	
+
 	override func setContext(context: EditorContext) {
 		super.setContext(context: context)
 		precondition(outputController != nil)
@@ -66,7 +66,7 @@ class LivePreviewEditorController: BaseSourceEditorController {
 		super.loaded(content: content)
 		colorizeHighlightAttributes()
 	}
-	
+
 	override func contentsChanged(_ contents: NSTextStorage, range: NSRange, changeLength delta: Int) {
 		// really does nothing, but call to be safe
 		super.contentsChanged(contents, range: range, changeLength: delta)
@@ -80,17 +80,17 @@ class LivePreviewEditorController: BaseSourceEditorController {
 		lastChangeRange = range
 		lastChangeDelta = delta
 	}
-	
+
 	/// subclasses should override and save contents via save(edits:). super should not be called
 	override func editsNeedSaving() {
-		
+
 	}
-	
+
 	func textDidBeginEditing(_ notification: Notification) {
 		guard !timerRunning else { return }
 		lastChangeTimer.resume()
 	}
-	
+
 	func textDidEndEditing(_ notification: Notification) {
 		lastChangeTimer.suspend()
 		timerRunning = false

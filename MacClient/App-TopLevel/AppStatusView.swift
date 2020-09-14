@@ -11,7 +11,7 @@ import MJLLogger
 let messageTimeout: DispatchTimeInterval = .seconds(3)
 let messageLeeway: DispatchTimeInterval = .milliseconds(10)
 
-fileprivate struct TimerAction {
+private struct TimerAction {
 	let timer: DispatchSourceTimer
 	init(interval: DispatchTimeInterval, queue: DispatchQueue, action: @escaping () -> Void) {
 		timer = DispatchSource.makeTimerSource(queue: queue)
@@ -35,14 +35,14 @@ class AppStatusView: NSView {
 		clearStatus()
 		appStatus?.progressSignal.take(during: progressLifetime).observe(on: UIScheduler()).observeValues(observe)
 	} }
-	
-	override var intrinsicContentSize: NSSize { return NSSize(width:220, height:22) }
-	
+
+	override var intrinsicContentSize: NSSize { return NSSize(width: 220, height: 22) }
+
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		clearStatus()
 	}
-	
+
 	private func clearStatus() {
 		DispatchQueue.main.async {
 			self.clearTimer = nil
@@ -53,7 +53,7 @@ class AppStatusView: NSView {
 			self.determinateProgress?.isHidden = true
 		}
 	}
-	
+
 	/// called when a progress update received
 	private func observe(update: ProgressUpdate) {
 		switch update.stage {
@@ -65,7 +65,7 @@ class AppStatusView: NSView {
 			handleValue(update)
 		}
 	}
-	
+
 	private func handleStart(_ update: ProgressUpdate) {
 		Log.debug("starting progress", .app)
 		_statusQueue.sync {
@@ -81,7 +81,7 @@ class AppStatusView: NSView {
 			textField?.stringValue = update.message ?? "Starting action…"
 		}
 	}
-	
+
 	private func handleCompleted(_ update: ProgressUpdate) {
 		Log.debug("ending progress", .app)
 		_statusQueue.sync {
@@ -103,9 +103,9 @@ class AppStatusView: NSView {
 			}
 		}
 	}
-	
+
 	@IBAction func cancel(_ sender: Any?) {
-		
+
 	}
 
 	override func draw(_ dirtyRect: NSRect) {

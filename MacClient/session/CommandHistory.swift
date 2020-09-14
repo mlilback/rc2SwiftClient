@@ -21,7 +21,7 @@ class CommandHistory {
 		self.target = target
 		self.action = selector
 	}
-	
+
 	func addToCommandHistory(_ origQuery: String) {
 		var maxLen = UserDefaults.standard[.maxCommandHistory]
 		if maxLen < MinHistoryLength { maxLen = DefaultHistoryLength }
@@ -37,7 +37,7 @@ class CommandHistory {
 			commands.insert(query, at: 0)
 		}
 	}
-	
+
 	func adjustCommandHistoryMenu() {
 		historyMenu.removeAllItems()
 		for aCommand in commands {

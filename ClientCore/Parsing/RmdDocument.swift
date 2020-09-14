@@ -72,7 +72,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 		guard newDoc.chunks.count == document.chunks.count else { return nil }
 		
 		var changed = [Int]()
-		let firstCodeIndex = document.chunks.firstIndex(where: {$0.chunkType == .code}) ?? -1
+		let firstCodeIndex = document.chunks.firstIndex(where: { $0.chunkType == .code }) ?? -1
 		for idx in 0..<newDoc.chunks.count {
 			// compare if chunks are similar
 			guard let oldChunk = document.chunks[idx] as? RmdDocChunk,
@@ -87,7 +87,6 @@ public class RmdDocument: CustomDebugStringConvertible {
 		}
 		return changed
 	}
-	
 	
 	private var textStorage = NSTextStorage()
 	private weak var parser: Rc2RmdParser?

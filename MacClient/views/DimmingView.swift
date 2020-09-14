@@ -10,11 +10,11 @@ class DimmingView: NSView {
 	override required init(frame frameRect: NSRect) {
 		super.init(frame: frameRect)
 	}
-	
+
 	required init?(coder: NSCoder) {
 		fatalError("DimmingView does not support NSCoding")
 	}
-	
+
 	override func viewDidMoveToSuperview() {
 		guard let view = superview else { return }
 		translatesAutoresizingMaskIntoConstraints = false
@@ -26,7 +26,7 @@ class DimmingView: NSView {
 		view.addConstraint(bottomAnchor.constraint(equalTo: view.bottomAnchor))
 		isHidden = true
 	}
-	
+
 	override func hitTest(_ aPoint: NSPoint) -> NSView? {
 		if !isHidden {
 			return self
@@ -34,4 +34,3 @@ class DimmingView: NSView {
 		return super.hitTest(aPoint)
 	}
 }
-

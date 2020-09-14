@@ -42,4 +42,3 @@ let notebookBorderColor = PlatformColor.black.withAlphaComponent(0.4)
 let notebookSelectionColor = PlatformColor.systemBlue.withAlphaComponent(0.6)
 let notebookItemBorderWidth = CGFloat(0.5)
 let notebookSelectionBorderWidth = CGFloat(3.0)
-
