@@ -22,8 +22,6 @@
 		080AB8DE1E92DA10005452C7 /* MultiImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB8DD1E92DA10005452C7 /* MultiImageViewController.swift */; };
 		080AB8E21E92DAE9005452C7 /* MultiImageWindowController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 080AB8E11E92DAE9005452C7 /* MultiImageWindowController.storyboard */; };
 		080AB90D1E991ED4005452C7 /* URLRequest+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080AB90C1E991ED4005452C7 /* URLRequest+Rc2.swift */; };
-		080C79AE229B536D00178D0E /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080C79AC229B536D00178D0E /* PEGKit.framework */; };
-		080C79AF229B536D00178D0E /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080C79AC229B536D00178D0E /* PEGKit.framework */; };
 		080C79B5229B8D5500178D0E /* PEGKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080C79AC229B536D00178D0E /* PEGKit.framework */; };
 		080C79B6229B8D5500178D0E /* PEGKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 080C79AC229B536D00178D0E /* PEGKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		080E82CA1DCBE31D0048F36C /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; };
@@ -43,7 +41,6 @@
 		081000452184FC7F006856D3 /* HelpOutputController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 081000442184FC7F006856D3 /* HelpOutputController.storyboard */; };
 		08100049218791D5006856D3 /* LivePreviewDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08100048218791D5006856D3 /* LivePreviewDisplayController.swift */; };
 		0810004B21879239006856D3 /* LivePreviewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0810004A21879239006856D3 /* LivePreviewController.storyboard */; };
-		0812178E2058805000ED328C /* PEGKitUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0812178D2058805000ED328C /* PEGKitUtilities.swift */; };
 		08127CC61DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		08127CC71DA81192002E0D01 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; };
 		08127CC91DA811AA002E0D01 /* ReactiveSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -64,23 +61,6 @@
 		0816FD1D1E5226010006FF26 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0816FD1C1E5226010006FF26 /* SearchBarView.swift */; };
 		0816FD1F1E5226760006FF26 /* SearchBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0816FD1E1E5226760006FF26 /* SearchBarView.xib */; };
 		081996701E36A78A0000AA0E /* EditableTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0819966F1E36A78A0000AA0E /* EditableTableCellView.swift */; };
-		081A58A72352875E001B8AFC /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 08635598235258030005E477 /* config.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58A82352875E001B8AFC /* syntax_extension.h in Headers */ = {isa = PBXBuildFile; fileRef = 08635596235257910005E477 /* syntax_extension.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58A92352875E001B8AFC /* parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58A423528647001B8AFC /* parser.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58AA2352875E001B8AFC /* cmark-gfm-core-extensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 08635586235257200005E477 /* cmark-gfm-core-extensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58AB2352875E001B8AFC /* plugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 08635587235257200005E477 /* plugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58AC2352875E001B8AFC /* cmark-gfm-extension_api.h in Headers */ = {isa = PBXBuildFile; fileRef = 08635588235257200005E477 /* cmark-gfm-extension_api.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58AD2352875E001B8AFC /* cmark-gfm_version.h in Headers */ = {isa = PBXBuildFile; fileRef = 08635589235257200005E477 /* cmark-gfm_version.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58AE2352875E001B8AFC /* cmark-gfm-extensions_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 0863558A235257200005E477 /* cmark-gfm-extensions_export.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58AF2352875E001B8AFC /* registry.h in Headers */ = {isa = PBXBuildFile; fileRef = 0863558B235257200005E477 /* registry.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58B02352875E001B8AFC /* cmark-gfm_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 0863558C235257200005E477 /* cmark-gfm_export.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58B12352875E001B8AFC /* cmark-gfm.h in Headers */ = {isa = PBXBuildFile; fileRef = 0863558D235257200005E477 /* cmark-gfm.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58B4235287C9001B8AFC /* node.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58B2235287C8001B8AFC /* node.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58B5235287C9001B8AFC /* references.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58B3235287C9001B8AFC /* references.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58B7235287F7001B8AFC /* map.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58B6235287F7001B8AFC /* map.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58B92352881A001B8AFC /* chunk.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58B82352881A001B8AFC /* chunk.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58BB23528843001B8AFC /* buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58BA23528842001B8AFC /* buffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		081A58BD23528869001B8AFC /* cmark_ctype.h in Headers */ = {isa = PBXBuildFile; fileRef = 081A58BC23528869001B8AFC /* cmark_ctype.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		081A58BE23528BC3001B8AFC /* AppCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80B233BF8F100946F34 /* AppCenter.framework */; };
 		081A58BF23528BC3001B8AFC /* AppCenterAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80C233BF8F100946F34 /* AppCenterAnalytics.framework */; };
 		081A58C023528BC3001B8AFC /* AppCenterCrashes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80D233BF8F100946F34 /* AppCenterCrashes.framework */; };
@@ -96,15 +76,6 @@
 		0829E6082118A8EB001883ED /* Repeater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0829E6052118A8EB001883ED /* Repeater.swift */; };
 		0829E6092118A8EB001883ED /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0829E6062118A8EB001883ED /* Debouncer.swift */; };
 		0829E60B2118F7B8001883ED /* SessionWebSocketWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0829E60A2118F7B8001883ED /* SessionWebSocketWorker.swift */; };
-		082BE0921F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */; };
-		082BE09B1F59D549006CE0B7 /* SyntaxParsing.h in Headers */ = {isa = PBXBuildFile; fileRef = 082BE08B1F59D549006CE0B7 /* SyntaxParsing.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		082BE0AF1F59D5BB006CE0B7 /* SyntaxParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0A81F59D5BB006CE0B7 /* SyntaxParser.swift */; };
-		082BE0B01F59D5BB006CE0B7 /* DocumentChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */; };
-		082BE0B81F59D766006CE0B7 /* Rc2Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; };
-		082BE0B91F59D779006CE0B7 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; };
-		082BE0BC1F59DCC5006CE0B7 /* RKeywords.txt in Resources */ = {isa = PBXBuildFile; fileRef = 082BE0A61F59D5BB006CE0B7 /* RKeywords.txt */; };
-		082BE0BF1F59E3C8006CE0B7 /* syntax2.Rmd in Resources */ = {isa = PBXBuildFile; fileRef = 082BE0BD1F59E3C7006CE0B7 /* syntax2.Rmd */; };
-		082BE0C01F59E3C8006CE0B7 /* syntax1.Rnw in Resources */ = {isa = PBXBuildFile; fileRef = 082BE0BE1F59E3C8006CE0B7 /* syntax1.Rnw */; };
 		082BE15A1F5B3682006CE0B7 /* Model.h in Headers */ = {isa = PBXBuildFile; fileRef = 082BE1581F5B3682006CE0B7 /* Model.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		082BE15D1F5B3682006CE0B7 /* Model.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; };
 		082BE15E1F5B3682006CE0B7 /* Model.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 082BE1561F5B3682006CE0B7 /* Model.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -171,7 +142,6 @@
 		08525E501E204672008A332E /* URLStaleChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E4F1E204672008A332E /* URLStaleChecker.swift */; };
 		08525E781E3143C3008A332E /* InputPrompter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08525E771E3143C3008A332E /* InputPrompter.swift */; };
 		08525E7A1E314558008A332E /* InputPrompter.xib in Resources */ = {isa = PBXBuildFile; fileRef = 08525E791E314558008A332E /* InputPrompter.xib */; };
-		0859A28C2060082A00103924 /* RmdDocumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0859A28B2060082A00103924 /* RmdDocumentTests.swift */; };
 		0859A313206270C500103924 /* latinmodern-math.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0859A30D206270C500103924 /* latinmodern-math.otf */; };
 		0859A314206270C500103924 /* latinmodern-math.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0859A30E206270C500103924 /* latinmodern-math.plist */; };
 		0859A315206270C500103924 /* texgyretermes-math.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0859A30F206270C500103924 /* texgyretermes-math.plist */; };
@@ -216,15 +186,7 @@
 		0859A3AB2062729B00103924 /* MTMathUILabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 0859A3882062729B00103924 /* MTMathUILabel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0859A3AC2062729B00103924 /* UIColor+HexString.m in Sources */ = {isa = PBXBuildFile; fileRef = 0859A3892062729B00103924 /* UIColor+HexString.m */; };
 		0859A3AD2062729B00103924 /* MTFontManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 0859A38A2062729B00103924 /* MTFontManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		085A196A204977AE00B7EC5F /* Highlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1969204977AD00B7EC5F /* Highlighter.swift */; };
-		085A196F2049E19C00B7EC5F /* Rc2Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; };
-		085A19702049E1B000B7EC5F /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; };
-		085A19742049E1F400B7EC5F /* ReactiveSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08127CC51DA81192002E0D01 /* ReactiveSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		085A19792049E2A000B7EC5F /* Networking.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 080E82C11DCBE31D0048F36C /* Networking.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		085A197A2049E2A800B7EC5F /* Rc2Common.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0897941A1D7B68F0003339EE /* Rc2Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		085A19842049E3C000B7EC5F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 085A19832049E3C000B7EC5F /* Cocoa.framework */; };
 		085A1A2B205ACA4600B7EC5F /* AbstractEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A2A205ACA4600B7EC5F /* AbstractEditorController.swift */; };
-		085A1A30205C73FC00B7EC5F /* RmdDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085A1A2F205C73FC00B7EC5F /* RmdDocument.swift */; };
 		08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08604A4D1D9C0C0500DE2A79 /* Named.swift */; };
 		086355A7235270130005E477 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 086355A5235270130005E477 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib */; };
 		086355A8235270130005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 086355A6235270130005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib */; };
@@ -262,7 +224,6 @@
 		0873F6001F795AE700265934 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559921DDC889D0047B3CE /* ImageCache.swift */; };
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
 		08790773215AC8CF00978ECD /* Rc2Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08790772215AC8CF00978ECD /* Rc2Document.swift */; };
-		08817B51233838A000194228 /* PEGKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 080C79AC229B536D00178D0E /* PEGKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08817B56233918F100194228 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 08817B55233918F100194228 /* GRDB */; };
 		08817B6A233AA32700194228 /* Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08817B69233AA32700194228 /* Init.swift */; };
 		08817B7E233AB2B800194228 /* Logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 08817B7C233AB2B800194228 /* Logging.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -273,7 +234,6 @@
 		08817B8A233AB2F500194228 /* Logging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08817B7A233AB2B800194228 /* Logging.framework */; };
 		08817B8F233AB30700194228 /* Logging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08817B7A233AB2B800194228 /* Logging.framework */; };
 		08817B94233AB47300194228 /* Logging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08817B7A233AB2B800194228 /* Logging.framework */; };
-		08817B99233AB4E400194228 /* Logging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08817B7A233AB2B800194228 /* Logging.framework */; };
 		08817B9E233AB4FB00194228 /* Logging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08817B7A233AB2B800194228 /* Logging.framework */; };
 		0881B50B1DCF856B00679DB3 /* ConnectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0881B50A1DCF856B00679DB3 /* ConnectionInfo.swift */; };
 		0881B50C1DCF85B500679DB3 /* ServerHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F189B01D19B0D500866A05 /* ServerHost.swift */; };
@@ -308,7 +268,6 @@
 		08A2A29F2009602700D9807B /* HTMLStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A29E2009602700D9807B /* HTMLStringTests.swift */; };
 		08A2A2A2200A9B0E00D9807B /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A2A2A1200A9B0E00D9807B /* LogViewController.swift */; };
 		08A3042723478BEA0051EC0D /* LineNumberRulerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A3042623478BEA0051EC0D /* LineNumberRulerView.swift */; };
-		08A3042B234BE3BC0051EC0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 088CE6701C4B0AF400153414 /* Assets.xcassets */; };
 		08A63E4F23A956CB00FD472E /* Rc2RmdParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A63E4E23A956CB00FD472E /* Rc2RmdParser.swift */; };
 		08A63E6223A9783200FD472E /* cmark-gfm-core-extensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 08A63E5123A96D7D00FD472E /* cmark-gfm-core-extensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		08A63E6323A9783200FD472E /* plugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 08A63E5223A96D7D00FD472E /* plugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -517,27 +476,6 @@
 			remoteGlobalIDString = 089794191D7B68F0003339EE;
 			remoteInfo = Rc2Common;
 		};
-		082BE0931F59D549006CE0B7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 082BE0881F59D549006CE0B7;
-			remoteInfo = SyntaxParsing;
-		};
-		082BE0B61F59D75F006CE0B7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 089794191D7B68F0003339EE;
-			remoteInfo = Rc2Common;
-		};
-		082BE0BA1F59D787006CE0B7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 080E82C01DCBE31D0048F36C;
-			remoteInfo = Networking;
-		};
 		082BE15B1F5B3682006CE0B7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
@@ -623,13 +561,6 @@
 			remoteInfo = Logging;
 		};
 		08817B96233AB47300194228 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 08817B79233AB2B800194228;
-			remoteInfo = Logging;
-		};
-		08817B9B233AB4E400194228 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 088CE6611C4B0AF400153414 /* Project object */;
 			proxyType = 1;
@@ -810,19 +741,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		085A19722049E1DD00B7EC5F /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				08817B51233838A000194228 /* PEGKit.framework in CopyFiles */,
-				085A197A2049E2A800B7EC5F /* Rc2Common.framework in CopyFiles */,
-				085A19792049E2A000B7EC5F /* Networking.framework in CopyFiles */,
-				085A19742049E1F400B7EC5F /* ReactiveSwift.framework in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -906,10 +824,8 @@
 		0829E6052118A8EB001883ED /* Repeater.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repeater.swift; sourceTree = "<group>"; };
 		0829E6062118A8EB001883ED /* Debouncer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		0829E60A2118F7B8001883ED /* SessionWebSocketWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionWebSocketWorker.swift; sourceTree = "<group>"; };
-		082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SyntaxParsing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		082BE08B1F59D549006CE0B7 /* SyntaxParsing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SyntaxParsing.h; sourceTree = "<group>"; };
 		082BE08C1F59D549006CE0B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		082BE0911F59D549006CE0B7 /* SyntaxParsingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyntaxParsingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		082BE0981F59D549006CE0B7 /* SyntaxParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxParsingTests.swift; sourceTree = "<group>"; };
 		082BE09A1F59D549006CE0B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		082BE0A61F59D5BB006CE0B7 /* RKeywords.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = RKeywords.txt; sourceTree = "<group>"; };
@@ -1320,29 +1236,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				08127CD71DAD2434002E0D01 /* Rc2Common.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		082BE0851F59D549006CE0B7 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				080C79AE229B536D00178D0E /* PEGKit.framework in Frameworks */,
-				085A19842049E3C000B7EC5F /* Cocoa.framework in Frameworks */,
-				082BE0B91F59D779006CE0B7 /* Networking.framework in Frameworks */,
-				08817B99233AB4E400194228 /* Logging.framework in Frameworks */,
-				082BE0B81F59D766006CE0B7 /* Rc2Common.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		082BE08E1F59D549006CE0B7 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				080C79AF229B536D00178D0E /* PEGKit.framework in Frameworks */,
-				085A19702049E1B000B7EC5F /* Networking.framework in Frameworks */,
-				085A196F2049E19C00B7EC5F /* Rc2Common.framework in Frameworks */,
-				082BE0921F59D549006CE0B7 /* SyntaxParsing.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2035,8 +1928,6 @@
 				08127CD21DAD2434002E0D01 /* Rc2CommonIntegrationTests.xctest */,
 				080E82C11DCBE31D0048F36C /* Networking.framework */,
 				080E82C91DCBE31D0048F36C /* NetworkingTests.xctest */,
-				082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */,
-				082BE0911F59D549006CE0B7 /* SyntaxParsingTests.xctest */,
 				082BE1561F5B3682006CE0B7 /* Model.framework */,
 				084E93B2201E874900FF50EA /* ModelTests.xctest */,
 				0859A3072062701900103924 /* mathFonts.bundle */,
@@ -2421,31 +2312,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		082BE0861F59D549006CE0B7 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				081A58B4235287C9001B8AFC /* node.h in Headers */,
-				081A58AA2352875E001B8AFC /* cmark-gfm-core-extensions.h in Headers */,
-				081A58AB2352875E001B8AFC /* plugin.h in Headers */,
-				081A58A72352875E001B8AFC /* config.h in Headers */,
-				081A58B5235287C9001B8AFC /* references.h in Headers */,
-				081A58AD2352875E001B8AFC /* cmark-gfm_version.h in Headers */,
-				081A58B92352881A001B8AFC /* chunk.h in Headers */,
-				081A58AC2352875E001B8AFC /* cmark-gfm-extension_api.h in Headers */,
-				081A58AE2352875E001B8AFC /* cmark-gfm-extensions_export.h in Headers */,
-				081A58B12352875E001B8AFC /* cmark-gfm.h in Headers */,
-				081A58B02352875E001B8AFC /* cmark-gfm_export.h in Headers */,
-				082BE09B1F59D549006CE0B7 /* SyntaxParsing.h in Headers */,
-				081A58A82352875E001B8AFC /* syntax_extension.h in Headers */,
-				081A58B7235287F7001B8AFC /* map.h in Headers */,
-				081A58BB23528843001B8AFC /* buffer.h in Headers */,
-				081A58BD23528869001B8AFC /* cmark_ctype.h in Headers */,
-				081A58A92352875E001B8AFC /* parser.h in Headers */,
-				081A58AF2352875E001B8AFC /* registry.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		082BE1531F5B3682006CE0B7 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -2594,46 +2460,6 @@
 			name = Rc2CommonIntegrationTests;
 			productName = Rc2CommonIntegrationTests;
 			productReference = 08127CD21DAD2434002E0D01 /* Rc2CommonIntegrationTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		082BE0881F59D549006CE0B7 /* SyntaxParsing */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 082BE0A41F59D549006CE0B7 /* Build configuration list for PBXNativeTarget "SyntaxParsing" */;
-			buildPhases = (
-				082BE0841F59D549006CE0B7 /* Sources */,
-				082BE0851F59D549006CE0B7 /* Frameworks */,
-				082BE0861F59D549006CE0B7 /* Headers */,
-				082BE0871F59D549006CE0B7 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				082BE0BB1F59D787006CE0B7 /* PBXTargetDependency */,
-				082BE0B71F59D75F006CE0B7 /* PBXTargetDependency */,
-				08817B9C233AB4E400194228 /* PBXTargetDependency */,
-			);
-			name = SyntaxParsing;
-			productName = SyntaxParsing;
-			productReference = 082BE0891F59D549006CE0B7 /* SyntaxParsing.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		082BE0901F59D549006CE0B7 /* SyntaxParsingTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 082BE0A51F59D549006CE0B7 /* Build configuration list for PBXNativeTarget "SyntaxParsingTests" */;
-			buildPhases = (
-				082BE08D1F59D549006CE0B7 /* Sources */,
-				082BE08E1F59D549006CE0B7 /* Frameworks */,
-				082BE08F1F59D549006CE0B7 /* Resources */,
-				085A19722049E1DD00B7EC5F /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				082BE0941F59D549006CE0B7 /* PBXTargetDependency */,
-			);
-			name = SyntaxParsingTests;
-			productName = SyntaxParsingTests;
-			productReference = 082BE0911F59D549006CE0B7 /* SyntaxParsingTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		082BE1551F5B3682006CE0B7 /* Model */ = {
@@ -2922,18 +2748,6 @@
 						CreatedOnToolsVersion = 8.0;
 						ProvisioningStyle = Automatic;
 					};
-					082BE0881F59D549006CE0B7 = {
-						CreatedOnToolsVersion = 9.0;
-						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1100;
-						ProvisioningStyle = Automatic;
-					};
-					082BE0901F59D549006CE0B7 = {
-						CreatedOnToolsVersion = 9.0;
-						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1100;
-						ProvisioningStyle = Automatic;
-					};
 					082BE1551F5B3682006CE0B7 = {
 						CreatedOnToolsVersion = 9.0;
 						DevelopmentTeam = V97NV337TR;
@@ -3048,8 +2862,6 @@
 				080E82C01DCBE31D0048F36C /* Networking */,
 				080E82C81DCBE31D0048F36C /* NetworkingTests */,
 				08A63E7823AD6E1D00FD472E /* Parsing */,
-				082BE0881F59D549006CE0B7 /* SyntaxParsing */,
-				082BE0901F59D549006CE0B7 /* SyntaxParsingTests */,
 				0859A3062062701900103924 /* mathFonts */,
 				0859A3582062726700103924 /* iosMath */,
 				08817B79233AB2B800194228 /* Logging */,
@@ -3079,24 +2891,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		082BE0871F59D549006CE0B7 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				082BE0BC1F59DCC5006CE0B7 /* RKeywords.txt in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		082BE08F1F59D549006CE0B7 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				082BE0C01F59E3C8006CE0B7 /* syntax1.Rnw in Resources */,
-				08A3042B234BE3BC0051EC0D /* Assets.xcassets in Resources */,
-				082BE0BF1F59E3C8006CE0B7 /* syntax2.Rmd in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3346,26 +3140,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				08127CD51DAD2434002E0D01 /* Rc2CommonIntegrationTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		082BE0841F59D549006CE0B7 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				0812178E2058805000ED328C /* PEGKitUtilities.swift in Sources */,
-				085A1A30205C73FC00B7EC5F /* RmdDocument.swift in Sources */,
-				085A196A204977AE00B7EC5F /* Highlighter.swift in Sources */,
-				082BE0AF1F59D5BB006CE0B7 /* SyntaxParser.swift in Sources */,
-				082BE0B01F59D5BB006CE0B7 /* DocumentChunk.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		082BE08D1F59D549006CE0B7 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				0859A28C2060082A00103924 /* RmdDocumentTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3695,21 +3469,6 @@
 			target = 089794191D7B68F0003339EE /* Rc2Common */;
 			targetProxy = 081559711DDA7BEF0047B3CE /* PBXContainerItemProxy */;
 		};
-		082BE0941F59D549006CE0B7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 082BE0881F59D549006CE0B7 /* SyntaxParsing */;
-			targetProxy = 082BE0931F59D549006CE0B7 /* PBXContainerItemProxy */;
-		};
-		082BE0B71F59D75F006CE0B7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 089794191D7B68F0003339EE /* Rc2Common */;
-			targetProxy = 082BE0B61F59D75F006CE0B7 /* PBXContainerItemProxy */;
-		};
-		082BE0BB1F59D787006CE0B7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 080E82C01DCBE31D0048F36C /* Networking */;
-			targetProxy = 082BE0BA1F59D787006CE0B7 /* PBXContainerItemProxy */;
-		};
 		082BE15C1F5B3682006CE0B7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 082BE1551F5B3682006CE0B7 /* Model */;
@@ -3774,11 +3533,6 @@
 			isa = PBXTargetDependency;
 			target = 08817B79233AB2B800194228 /* Logging */;
 			targetProxy = 08817B96233AB47300194228 /* PBXContainerItemProxy */;
-		};
-		08817B9C233AB4E400194228 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 08817B79233AB2B800194228 /* Logging */;
-			targetProxy = 08817B9B233AB4E400194228 /* PBXContainerItemProxy */;
 		};
 		08817BA1233AB4FB00194228 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4085,154 +3839,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 3.0;
-			};
-			name = Release;
-		};
-		082BE0A01F59D549006CE0B7 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 08037C201D7B73BB00006E9E /* EmbeddedFrameworkDebug.xcconfig */;
-			buildSettings = {
-				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/Carthage/Build/Mac",
-					"$(PROJECT_DIR)/vendor",
-					"$(PROJECT_DIR)/Carthage/Build/Mac/Static",
-				);
-				FRAMEWORK_VERSION = A;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/vendor/cmark-gfm/build/installed/cmark-gfm";
-				INFOPLIST_FILE = SyntaxParsing/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/vendor/cmark-gfm/build/installed/lib",
-				);
-				OTHER_LDFLAGS = "-all_load";
-				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.SyntaxParsing;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		082BE0A11F59D549006CE0B7 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/Carthage/Build/Mac",
-					"$(PROJECT_DIR)/vendor",
-					"$(PROJECT_DIR)/Carthage/Build/Mac/Static",
-				);
-				FRAMEWORK_VERSION = A;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/vendor/cmark-gfm/build/installed/cmark-gfm";
-				INFOPLIST_FILE = SyntaxParsing/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/vendor/cmark-gfm/build/installed/lib",
-				);
-				OTHER_LDFLAGS = "-all_load";
-				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.SyntaxParsing;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		082BE0A21F59D549006CE0B7 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/Mac",
-				);
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = SyntaxParsingTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks/Swift",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.SyntaxParsingTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 4.0;
-			};
-			name = Debug;
-		};
-		082BE0A31F59D549006CE0B7 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = SyntaxParsingTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks/Swift",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.SyntaxParsingTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -5215,24 +4821,6 @@
 			buildConfigurations = (
 				08127CDB1DAD2434002E0D01 /* Debug */,
 				08127CDC1DAD2434002E0D01 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		082BE0A41F59D549006CE0B7 /* Build configuration list for PBXNativeTarget "SyntaxParsing" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				082BE0A01F59D549006CE0B7 /* Debug */,
-				082BE0A11F59D549006CE0B7 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		082BE0A51F59D549006CE0B7 /* Build configuration list for PBXNativeTarget "SyntaxParsingTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				082BE0A21F59D549006CE0B7 /* Debug */,
-				082BE0A31F59D549006CE0B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
