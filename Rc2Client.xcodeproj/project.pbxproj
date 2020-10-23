@@ -778,7 +778,6 @@
 		081000442184FC7F006856D3 /* HelpOutputController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HelpOutputController.storyboard; sourceTree = "<group>"; };
 		08100048218791D5006856D3 /* LivePreviewDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePreviewDisplayController.swift; sourceTree = "<group>"; };
 		0810004A21879239006856D3 /* LivePreviewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LivePreviewController.storyboard; sourceTree = "<group>"; };
-		0812178D2058805000ED328C /* PEGKitUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PEGKitUtilities.swift; sourceTree = "<group>"; };
 		081263151C85D2E0003E37A5 /* NoodleLineNumberMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoodleLineNumberMarker.h; sourceTree = "<group>"; };
 		081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoodleLineNumberMarker.m; sourceTree = "<group>"; };
 		081263171C85D2E0003E37A5 /* NoodleLineNumberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoodleLineNumberView.h; sourceTree = "<group>"; };
@@ -805,13 +804,6 @@
 		0816FD1C1E5226010006FF26 /* SearchBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		0816FD1E1E5226760006FF26 /* SearchBarView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchBarView.xib; sourceTree = "<group>"; };
 		0819966F1E36A78A0000AA0E /* EditableTableCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableTableCellView.swift; sourceTree = "<group>"; };
-		081A58A423528647001B8AFC /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parser.h; sourceTree = "<group>"; };
-		081A58B2235287C8001B8AFC /* node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = node.h; sourceTree = "<group>"; };
-		081A58B3235287C9001B8AFC /* references.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = references.h; sourceTree = "<group>"; };
-		081A58B6235287F7001B8AFC /* map.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = map.h; sourceTree = "<group>"; };
-		081A58B82352881A001B8AFC /* chunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunk.h; sourceTree = "<group>"; };
-		081A58BA23528842001B8AFC /* buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = buffer.h; sourceTree = "<group>"; };
-		081A58BC23528869001B8AFC /* cmark_ctype.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmark_ctype.h; sourceTree = "<group>"; };
 		081A58C1235355A1001B8AFC /* PreviewCodeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCodeHandler.swift; sourceTree = "<group>"; };
 		0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SigmaSwiftStatistics.framework; path = Carthage/Build/Mac/SigmaSwiftStatistics.framework; sourceTree = "<group>"; };
 		0823F2321EE742B100A8F8C6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
@@ -824,15 +816,6 @@
 		0829E6052118A8EB001883ED /* Repeater.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repeater.swift; sourceTree = "<group>"; };
 		0829E6062118A8EB001883ED /* Debouncer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		0829E60A2118F7B8001883ED /* SessionWebSocketWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionWebSocketWorker.swift; sourceTree = "<group>"; };
-		082BE08B1F59D549006CE0B7 /* SyntaxParsing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SyntaxParsing.h; sourceTree = "<group>"; };
-		082BE08C1F59D549006CE0B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		082BE0981F59D549006CE0B7 /* SyntaxParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxParsingTests.swift; sourceTree = "<group>"; };
-		082BE09A1F59D549006CE0B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		082BE0A61F59D5BB006CE0B7 /* RKeywords.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = RKeywords.txt; sourceTree = "<group>"; };
-		082BE0A81F59D5BB006CE0B7 /* SyntaxParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxParser.swift; sourceTree = "<group>"; };
-		082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentChunk.swift; sourceTree = "<group>"; };
-		082BE0BD1F59E3C7006CE0B7 /* syntax2.Rmd */ = {isa = PBXFileReference; lastKnownFileType = text; path = syntax2.Rmd; sourceTree = "<group>"; };
-		082BE0BE1F59E3C8006CE0B7 /* syntax1.Rnw */ = {isa = PBXFileReference; lastKnownFileType = text; path = syntax1.Rnw; sourceTree = "<group>"; };
 		082BE1561F5B3682006CE0B7 /* Model.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Model.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		082BE1581F5B3682006CE0B7 /* Model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		082BE1591F5B3682006CE0B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -910,7 +893,6 @@
 		08525E751E300185008A332E /* help.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = help.zip; path = ClientCore/help/help.zip; sourceTree = SOURCE_ROOT; };
 		08525E771E3143C3008A332E /* InputPrompter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputPrompter.swift; path = MacClient/InputPrompter.swift; sourceTree = SOURCE_ROOT; };
 		08525E791E314558008A332E /* InputPrompter.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputPrompter.xib; sourceTree = "<group>"; };
-		0859A28B2060082A00103924 /* RmdDocumentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RmdDocumentTests.swift; sourceTree = "<group>"; };
 		0859A3072062701900103924 /* mathFonts.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = mathFonts.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		0859A3092062701900103924 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0859A30D206270C500103924 /* latinmodern-math.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "latinmodern-math.otf"; path = "vendor/iosMath/fonts/latinmodern-math.otf"; sourceTree = SOURCE_ROOT; };
@@ -957,23 +939,11 @@
 		0859A3882062729B00103924 /* MTMathUILabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTMathUILabel.h; sourceTree = "<group>"; };
 		0859A3892062729B00103924 /* UIColor+HexString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HexString.m"; sourceTree = "<group>"; };
 		0859A38A2062729B00103924 /* MTFontManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTFontManager.h; sourceTree = "<group>"; };
-		085A1969204977AD00B7EC5F /* Highlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Highlighter.swift; sourceTree = "<group>"; };
 		085A197F2049E2E700B7EC5F /* libswiftCoreLocation.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftCoreLocation.tbd; path = System/Library/PrivateFrameworks/Swift/libswiftCoreLocation.tbd; sourceTree = SDKROOT; };
 		085A19812049E2FA00B7EC5F /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		085A19832049E3C000B7EC5F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		085A1A2A205ACA4600B7EC5F /* AbstractEditorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractEditorController.swift; sourceTree = "<group>"; };
-		085A1A2F205C73FC00B7EC5F /* RmdDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RmdDocument.swift; sourceTree = "<group>"; };
 		08604A4D1D9C0C0500DE2A79 /* Named.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Named.swift; sourceTree = "<group>"; };
-		08635586235257200005E477 /* cmark-gfm-core-extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm-core-extensions.h"; sourceTree = "<group>"; };
-		08635587235257200005E477 /* plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = plugin.h; sourceTree = "<group>"; };
-		08635588235257200005E477 /* cmark-gfm-extension_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm-extension_api.h"; sourceTree = "<group>"; };
-		08635589235257200005E477 /* cmark-gfm_version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm_version.h"; sourceTree = "<group>"; };
-		0863558A235257200005E477 /* cmark-gfm-extensions_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm-extensions_export.h"; sourceTree = "<group>"; };
-		0863558B235257200005E477 /* registry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = registry.h; sourceTree = "<group>"; };
-		0863558C235257200005E477 /* cmark-gfm_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm_export.h"; sourceTree = "<group>"; };
-		0863558D235257200005E477 /* cmark-gfm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "cmark-gfm.h"; sourceTree = "<group>"; };
-		08635596235257910005E477 /* syntax_extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = syntax_extension.h; sourceTree = "<group>"; };
-		08635598235258030005E477 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		086355A5235270130005E477 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcmark-gfm-extensions.0.29.0.gfm.0.dylib"; path = "vendor/cmark-gfm/build/installed/lib/libcmark-gfm-extensions.0.29.0.gfm.0.dylib"; sourceTree = "<group>"; };
 		086355A6235270130005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcmark-gfm.0.29.0.gfm.0.dylib"; path = "vendor/cmark-gfm/build/installed/lib/libcmark-gfm.0.29.0.gfm.0.dylib"; sourceTree = "<group>"; };
 		086413C620135E1C00116153 /* AppLoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggerTests.swift; sourceTree = "<group>"; };
@@ -1517,34 +1487,6 @@
 			path = vendor/Repeat/Sources/Repeat;
 			sourceTree = SOURCE_ROOT;
 		};
-		082BE08A1F59D549006CE0B7 /* SyntaxParsing */ = {
-			isa = PBXGroup;
-			children = (
-				08635585235257200005E477 /* cmark-gfm */,
-				085A1A2F205C73FC00B7EC5F /* RmdDocument.swift */,
-				082BE0A91F59D5BB006CE0B7 /* DocumentChunk.swift */,
-				0812178D2058805000ED328C /* PEGKitUtilities.swift */,
-				082BE0A81F59D5BB006CE0B7 /* SyntaxParser.swift */,
-				085A1969204977AD00B7EC5F /* Highlighter.swift */,
-				082BE0A61F59D5BB006CE0B7 /* RKeywords.txt */,
-				082BE08B1F59D549006CE0B7 /* SyntaxParsing.h */,
-				082BE08C1F59D549006CE0B7 /* Info.plist */,
-			);
-			path = SyntaxParsing;
-			sourceTree = "<group>";
-		};
-		082BE0971F59D549006CE0B7 /* SyntaxParsingTests */ = {
-			isa = PBXGroup;
-			children = (
-				082BE0981F59D549006CE0B7 /* SyntaxParsingTests.swift */,
-				082BE0BE1F59E3C8006CE0B7 /* syntax1.Rnw */,
-				082BE0BD1F59E3C7006CE0B7 /* syntax2.Rmd */,
-				082BE09A1F59D549006CE0B7 /* Info.plist */,
-				0859A28B2060082A00103924 /* RmdDocumentTests.swift */,
-			);
-			path = SyntaxParsingTests;
-			sourceTree = "<group>";
-		};
 		082BE1571F5B3682006CE0B7 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -1578,7 +1520,7 @@
 				082BE1711F5B36B3006CE0B7 /* Workspace.swift */,
 			);
 			name = Rc2Model;
-			path = ../../appmodel2/Sources/Rc2Model;
+			path = ../../appmodelSwift/Sources/Rc2Model;
 			sourceTree = "<group>";
 		};
 		083305D11C4FC76C00E27F66 /* extensions */ = {
@@ -1780,31 +1722,6 @@
 			path = internal;
 			sourceTree = "<group>";
 		};
-		08635585235257200005E477 /* cmark-gfm */ = {
-			isa = PBXGroup;
-			children = (
-				08635598235258030005E477 /* config.h */,
-				081A58BC23528869001B8AFC /* cmark_ctype.h */,
-				081A58BA23528842001B8AFC /* buffer.h */,
-				08635596235257910005E477 /* syntax_extension.h */,
-				081A58A423528647001B8AFC /* parser.h */,
-				08635586235257200005E477 /* cmark-gfm-core-extensions.h */,
-				08635587235257200005E477 /* plugin.h */,
-				08635588235257200005E477 /* cmark-gfm-extension_api.h */,
-				08635589235257200005E477 /* cmark-gfm_version.h */,
-				0863558A235257200005E477 /* cmark-gfm-extensions_export.h */,
-				0863558B235257200005E477 /* registry.h */,
-				081A58B82352881A001B8AFC /* chunk.h */,
-				081A58B2235287C8001B8AFC /* node.h */,
-				081A58B6235287F7001B8AFC /* map.h */,
-				081A58B3235287C9001B8AFC /* references.h */,
-				0863558C235257200005E477 /* cmark-gfm_export.h */,
-				0863558D235257200005E477 /* cmark-gfm.h */,
-			);
-			name = "cmark-gfm";
-			path = "vendor/cmark-gfm/build/installed/cmark-gfm";
-			sourceTree = SOURCE_ROOT;
-		};
 		08680675200D892000C986A9 /* MJLCommon */ = {
 			isa = PBXGroup;
 			children = (
@@ -1907,8 +1824,6 @@
 				080E82C21DCBE31D0048F36C /* Networking */,
 				080E82CF1DCBE31D0048F36C /* NetworkingTests */,
 				08A63E7A23AD6E1D00FD472E /* Parsing */,
-				082BE08A1F59D549006CE0B7 /* SyntaxParsing */,
-				082BE0971F59D549006CE0B7 /* SyntaxParsingTests */,
 				0859A3082062701900103924 /* mathFonts */,
 				0859A35A2062726700103924 /* iosMath */,
 				08817B7B233AB2B800194228 /* Logging */,
@@ -2735,13 +2650,13 @@
 					080E82C01DCBE31D0048F36C = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1100;
+						LastSwiftMigration = "";
 						ProvisioningStyle = Automatic;
 					};
 					080E82C81DCBE31D0048F36C = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1100;
+						LastSwiftMigration = "";
 						ProvisioningStyle = Automatic;
 					};
 					08127CD11DAD2434002E0D01 = {
@@ -2751,13 +2666,13 @@
 					082BE1551F5B3682006CE0B7 = {
 						CreatedOnToolsVersion = 9.0;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1100;
+						LastSwiftMigration = "";
 						ProvisioningStyle = Automatic;
 					};
 					084D32E6206D03DD00246CBD = {
 						CreatedOnToolsVersion = 9.2;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1100;
+						LastSwiftMigration = "";
 						ProvisioningStyle = Automatic;
 					};
 					084D32EE206D03DD00246CBD = {
@@ -2786,7 +2701,7 @@
 					088CE6681C4B0AF400153414 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1100;
+						LastSwiftMigration = "";
 						SystemCapabilities = {
 							com.apple.Sandbox = {
 								enabled = 1;
@@ -2799,20 +2714,20 @@
 					088CE6791C4B0AF500153414 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1100;
+						LastSwiftMigration = "";
 						ProvisioningStyle = Automatic;
 						TestTargetID = 088CE6681C4B0AF400153414;
 					};
 					089794191D7B68F0003339EE = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1100;
+						LastSwiftMigration = "";
 						ProvisioningStyle = Automatic;
 					};
 					089794211D7B68F0003339EE = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = 1100;
+						LastSwiftMigration = "";
 						ProvisioningStyle = Automatic;
 					};
 					08A63E7823AD6E1D00FD472E = {
@@ -4966,7 +4881,7 @@
 			repositoryURL = "https://github.com/apple/swift-log.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.1;
+				minimumVersion = 1.4.0;
 			};
 		};
 		08817B64233AA18800194228 /* XCRemoteSwiftPackageReference "MJLLogger" */ = {
@@ -4974,7 +4889,7 @@
 			repositoryURL = "https://github.com/mlilback/MJLLogger";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.4.1;
+				minimumVersion = 0.4.3;
 			};
 		};
 		08A63E8623AD6F9000FD472E /* XCRemoteSwiftPackageReference "SwiftAntlr4Runtime" */ = {
