@@ -142,12 +142,12 @@ extension WebViewController: SearchBarViewDelegate {
 
 	private struct SearchParams: Codable {
 		let term: String
-		let options: [String: String] = [:]
+		let options: [String: String]
 	}
 
 	public func performSearch(searchBar: SearchBarView, string: String) {
 		let encoder = JSONEncoder()
-		let params = SearchParams(term: string)
+		let params = SearchParams(term: string, options: [:])
 		do {
 			let data = try encoder.encode(params)
 			let encoded = data.base64EncodedString()

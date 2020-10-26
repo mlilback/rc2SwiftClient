@@ -63,7 +63,13 @@ class Rc2Document: NSDocument {
 }
 
 struct DocumentData: Equatable, Codable {
-	let version = 1
+	let version: Int
 	let wspace: Workspace
 	let host: ServerHost
+	
+	init(wspace: Workspace, host: ServerHost, version: Int = 1) {
+		self.version = version
+		self.wspace = wspace
+		self.host = host
+	}
 }
