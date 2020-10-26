@@ -12,6 +12,7 @@ enum AppErrorType: String {
 	case invalidLogin
 	case failedToLoadDocument
 	case fileNoLongerExists
+	case selfInvalid
 }
 
 struct AppError: LocalizedError, Rc2DomainError {
@@ -40,4 +41,9 @@ struct AppError: LocalizedError, Rc2DomainError {
 		let errorKey = "\(self.type)ErrorExplanation"
 		return NSLocalizedString(errorKey, comment: "Error description")
 	}
+}
+
+enum PrecviewError: Rc2DomainError {
+	case failedToUpdate
+	case failedWithoutSelf
 }
