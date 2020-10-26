@@ -416,7 +416,7 @@ public class Session {
 					observer.send(error: err)
 					return
 				}
-				guard case let SessionResponse.previewUpdate(initData) = response else { fatalError("invalid response data") }
+				guard case let SessionResponse.previewInitialized(initData) = response else { fatalError("wrong response type") }
 				observer.send(value: initData.previewId)
 				observer.sendCompleted()
 			}
@@ -573,7 +573,7 @@ private extension Session {
 			informDelegate = true
 		case .previewInitialized(let initData):
 			previewDelegate?.previewIdReceived(response: initData)
-		case .previewUpdate(let data):
+		case .previewUpdated(let data):
 			previewDelegate?.previewUpdateReceived(response: data)
 		default:
 			informDelegate = true
@@ -626,9 +626,9 @@ private extension Session {
 		case .environmentCreated:
 			return nil
 		case .previewInitialized(let data):
-			return data.uniqueIdentifier
-		case .previewUpdate(let data):
-			return data.uniqueIdentifier
+			return data.updateIdentifier
+		case .previewUpdated(let data):
+			return data.updateIdentifier
 		}
 	}
 	
@@ -636,6 +636,7 @@ private extension Session {
 	func send(command: SessionCommand) -> Bool {
 		do {
 			let data = try conInfo.encode(command)
+			Log.info("ssending \(String(data: data, encoding:.utf8) ?? "foo")")
 			self.webSocketWorker.send(data: data)
 		} catch let err as NSError {
 			Log.error("error sending message on websocket: \(err)", .session)
