@@ -382,8 +382,6 @@
 		08E55B622194A59300F63A20 /* BaseSourceEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B612194A59300F63A20 /* BaseSourceEditorController.swift */; };
 		08E55B642194A86700F63A20 /* SourceEditorLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E55B632194A86700F63A20 /* SourceEditorLayoutManager.swift */; };
 		08E5D2091EAA58FD00374055 /* TimedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08E5D2081EAA58FD00374055 /* TimedEvent.swift */; };
-		08E836691D94242A00E26EFE /* SwiftyUserDefaults.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; };
-		08E8366C1D94500900E26EFE /* SwiftyUserDefaults.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08E836641D9423E900E26EFE /* SwiftyUserDefaults.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		08EB36CE1FBB7CF90078229A /* VariableDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36CD1FBB7CF90078229A /* VariableDetailsViewController.swift */; };
 		08EB36D01FBB9E480078229A /* ValuesVariableDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36CF1FBB9E480078229A /* ValuesVariableDetailController.swift */; };
 		08EB36D21FBBA1640078229A /* TextVariableDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08EB36D11FBBA1640078229A /* TextVariableDetailController.swift */; };
@@ -647,7 +645,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				08127CDF1DAD5BA9002E0D01 /* ReactiveSwift.framework in CopyFiles */,
-				08E8366C1D94500900E26EFE /* SwiftyUserDefaults.framework in CopyFiles */,
 				0826108F1DB02FC300C03422 /* Nimble.framework in CopyFiles */,
 				082610901DB02FC300C03422 /* Quick.framework in CopyFiles */,
 			);
@@ -1324,7 +1321,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				089794231D7B68F0003339EE /* Rc2Common.framework in Frameworks */,
-				08E836691D94242A00E26EFE /* SwiftyUserDefaults.framework in Frameworks */,
 				082610911DB02FEE00C03422 /* Nimble.framework in Frameworks */,
 				082610951DB13CC100C03422 /* ReactiveSwift.framework in Frameworks */,
 				082610921DB02FEE00C03422 /* Quick.framework in Frameworks */,
@@ -2610,6 +2606,8 @@
 				089794251D7B68F0003339EE /* PBXTargetDependency */,
 			);
 			name = Rc2CommonTests;
+			packageProductDependencies = (
+			);
 			productName = Rc2CommonTests;
 			productReference = 089794221D7B68F0003339EE /* Rc2CommonTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -3874,6 +3872,7 @@
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -3912,6 +3911,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -4523,6 +4523,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -4563,6 +4564,7 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
