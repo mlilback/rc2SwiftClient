@@ -65,6 +65,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private let mdownParser = MarkdownParser()
 	private var previewData = [Int: PreviewIdCache]()
 	private var currentPreview: PreviewIdCache?
+	private var initialCodeLoaded = false
+	private var previewRequestInProgress: Bool = false
 
 	// regular expressions
 	private var lineContiuationRegex: NSRegularExpression!
@@ -113,6 +115,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 
 	override func sessionChanged() {
 		super.sessionChanged()
+		loadPreviewIfNecessary()
 	}
 
 	// MARK: - notification handlers
@@ -138,6 +141,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			currentPreview = nil
 			return
 		}
+		loadPreviewIfNecessary()
 		if  var previewInfo = previewData[fileId]
 		{
 			// already have preview info
@@ -251,8 +255,12 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		html += "<\(descriptor) index=\"\(chunkNumber)\" type=\"\(chunk.chunkType)\">\n"
 		if !chunk.isInline {
 			html += "<sectionToolbar index=\"\(chunkNumber)\" type=\"\(chunk.chunkType)\"></sectionToolbar>\n"
+			html += "<sectionContent index=\"\(chunkNumber)\">\n"
 		}
 		html += htmlFor(chunk: chunk, index: chunkNumber)
+		if !chunk.isInline {
+			html += "\n</sectionContent>\n"
+		}
 		html += "\n</\(descriptor)>\n"
 		return html
 	}
@@ -370,22 +378,49 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 	}
 
-	// MARK: - utility
-
-	func setEditorContext(_ econtext: EditorContext?) {
-		precondition(context.value == nil)
-		context.value = econtext
+	// MARK: - Preview
+	
+	@discardableResult
+	private func loadPreviewIfNecessary() -> Bool {
+		guard !initialCodeLoaded, let fileId = context.value?.currentDocument.value?.file.fileId else { return false }
+		// TODO: update this to use appStatus
+		guard !initialCodeLoaded else { return true }
+		initialCodeLoaded = true
+		requestPreviewId(fileId: fileId).startWithResult { [weak self] (result) in
+			guard let me = self else { Log.error("previewId received without self", .app); return }
+			switch result {
+			case .failure(let error):
+				Log.error("failed to get previewId: \(error)", .app)
+			case .success(let value):
+				me.requestUpdate(previewId: value, chunkId: -1, includePrevious: true).startWithCompleted {
+					Log.info("got initial code update")
+					me.initialCodeLoaded = false
+					me.refreshContent()
+				}
+			}
+		}
+		return true
 	}
-
-	private func requestPreviewId(fileId: Int) -> SignalProducer<PreviewIdCache, Rc2Error> {
-		let handler = SignalProducer<PreviewIdCache, Rc2Error> { observer, _ in
-			return self.session.requestPreviewId(fileId: fileId).startWithResult { (result) in
+	
+	private func requestPreviewId(fileId: Int) -> SignalProducer<Int, Rc2Error> {
+		let handler = SignalProducer<Int, Rc2Error> { observer, _ in
+				self.session.requestPreviewId(fileId: fileId).startWithResult { [weak self] (result) in
+				guard let me = self else {
+					let err = Rc2Error(type: .network, nested: AppError(.selfInvalid), severity: .error, explanation: "failed to update preview")
+					observer.send(error: err)
+					return
+				}
 				switch result {
 				case .success(let previewId):
 					Log.info("got previewId \(previewId)")
 					let codeHandler = PreviewCodeHandler(previewId: previewId)
 					let cacheEntry = PreviewIdCache(previewId: previewId, fileId: fileId, codeHandler: codeHandler)
-					observer.send(value: cacheEntry)
+					me.previewData[previewId] = cacheEntry
+					observer.send(value: previewId)
+					observer.sendCompleted()
+					DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) {
+						self?.refreshContent()
+					}
 				case .failure(let err):
 					Log.warn("requestPreviewId got error \(err)")
 					observer.send(error: err)
@@ -395,6 +430,32 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		return handler
 	}
 
+	private func requestUpdate(previewId: Int, chunkId: Int, includePrevious: Bool = false) -> SignalProducer<Void, Rc2Error> {
+		guard var preview = previewData[previewId] else {
+			let rerr = Rc2Error(type: .application, nested: PrecviewError.failedToUpdate, severity: .warning)
+			Log.info("Failed to find preview \(previewId)", .app)
+			return SignalProducer<Void, Rc2Error>(error: rerr)
+		}
+		let handler = SignalProducer<Void, Rc2Error> { [weak self] observer, _ in
+			guard let me = self else { return }
+			preview.updateObserver = observer
+			// chunkIds will include previous
+			let producer = me.session.updatePreviewChunks(previewId: previewId, chunkId: chunkId, includePrevious: includePrevious, updateId: "preview \(previewId)")
+			producer.startWithCompleted {
+				preview.updateObserver = nil
+			}
+			
+		}
+		return handler
+	}
+	
+	// MARK: - utility
+	
+	func setEditorContext(_ econtext: EditorContext?) {
+		precondition(context.value == nil)
+		context.value = econtext
+	}
+	
 	private func loadWebView() {
 		let prefs = WKPreferences()
 		prefs.minimumFontSize = 9.0
@@ -482,7 +543,6 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			emptyNavigations.remove(navigation)
 			return
 		}
-		Log.info("did finish webView load")
 		guard let _ = parsedDocument else { return }
 		updatePreview()
 	}
@@ -560,6 +620,7 @@ private struct PreviewIdCache: Equatable {
 		self.previewId = previewId
 		self.fileId = fileId
 		self.codeHandler = codeHandler
+		self.updateObserver = nil
 	}
 
 	static func == (lhs: PreviewIdCache, rhs: PreviewIdCache) -> Bool {
@@ -570,15 +631,29 @@ private struct PreviewIdCache: Equatable {
 	let fileId: Int
 	var codeHandler: PreviewCodeHandler
 	var lastAccess: TimeInterval = Date.timeIntervalSinceReferenceDate
+	var updateObserver: Signal<Void, Rc2Error>.Observer?
 }
 
 // MARK: - SessionPreviewDelegate
 extension LivePreviewDisplayController: SessionPreviewDelegate {
 	func previewIdReceived(response: SessionResponse.PreviewInitedData) {
-
+		// do nothing because signal value triggers setting it
+		Log.info("got preview Id \(response.previewId)")
 	}
 
 	func previewUpdateReceived(response: SessionResponse.PreviewUpdateData) {
-		// TODO: need to update codeHandler's chunk cache, update display of that chunk
+		guard let doc = parsedDocument else {
+			Log.warn("preview update witout a document", .app)
+			return
+		}
+		guard var preview = previewData[response.previewId] else { return }
+		var toCache = [response.chunkId]
+		preview.codeHandler.cacheCode(changedChunks: &toCache, in: doc)
+		let html = preview.codeHandler.htmlForChunk(document: doc, number: response.chunkId)
+		preview.lastAccess = Date.timeIntervalSinceReferenceDate
+		let script = """
+		$("sectionContent[index=\(response.chunkId)]").innerHtml = \(html)")
+		"""
+		runJavascript(script)
 	}
 }
