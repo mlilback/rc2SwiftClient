@@ -2648,13 +2648,13 @@
 					080E82C01DCBE31D0048F36C = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = "";
+						LastSwiftMigration = 1210;
 						ProvisioningStyle = Automatic;
 					};
 					080E82C81DCBE31D0048F36C = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = "";
+						LastSwiftMigration = 1210;
 						ProvisioningStyle = Automatic;
 					};
 					08127CD11DAD2434002E0D01 = {
@@ -2664,7 +2664,7 @@
 					082BE1551F5B3682006CE0B7 = {
 						CreatedOnToolsVersion = 9.0;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = "";
+						LastSwiftMigration = 1210;
 						ProvisioningStyle = Automatic;
 					};
 					084D32E6206D03DD00246CBD = {
@@ -2699,7 +2699,7 @@
 					088CE6681C4B0AF400153414 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = "";
+						LastSwiftMigration = 1210;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
 								enabled = 1;
@@ -2712,7 +2712,7 @@
 					088CE6791C4B0AF500153414 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = "";
+						LastSwiftMigration = 1210;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 088CE6681C4B0AF400153414;
 					};
@@ -2725,7 +2725,7 @@
 					089794211D7B68F0003339EE = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = V97NV337TR;
-						LastSwiftMigration = "";
+						LastSwiftMigration = 1210;
 						ProvisioningStyle = Automatic;
 					};
 					08A63E7823AD6E1D00FD472E = {
