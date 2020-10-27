@@ -87,8 +87,8 @@
         "repositoryURL": "https://github.com/mlilback/SwiftAntlr4Runtime.git",
         "state": {
           "branch": null,
-          "revision": "e677d5a5a9609127c548bc2d5c1b15303d2cda93",
-          "version": "0.1.0"
+          "revision": "5d27b257ae861debc5ecd59f3c866ae79417ce5c",
+          "version": "0.1.1"
         }
       },
       {

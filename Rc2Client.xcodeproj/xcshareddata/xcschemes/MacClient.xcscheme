@@ -118,6 +118,20 @@
                ReferencedContainer = "container:Rc2Client.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "NO"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "089794211D7B68F0003339EE"
+               BuildableName = "Rc2CommonTests.xctest"
+               BlueprintName = "Rc2CommonTests"
+               ReferencedContainer = "container:Rc2Client.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -135,16 +149,6 @@
          </BuildableReference>
       </MacroExpansion>
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "089794211D7B68F0003339EE"
-               BuildableName = "Rc2CommonTests.xctest"
-               BlueprintName = "Rc2CommonTests"
-               ReferencedContainer = "container:Rc2Client.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
