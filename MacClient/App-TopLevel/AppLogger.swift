@@ -17,14 +17,12 @@ fileprivate extension DefaultsKeys {
 
 // MARK: -
 /// internal enum mapped to LogLevel for the limited set of options we offer in UI. Also allows default value.
-private enum OtherLogLevel: Int {
+private enum OtherLogLevel: Int, CaseIterable {
 	case `default` = 0
 	case error = 2
 	case warn = 3
 	case info = 5
 	case debug = 6
-
-	static let allCases: [OtherLogLevel] = [.default, .error, .warn, .info, .debug]
 
 	/// return appropriate OtherLogLevel for a LogLevel
 	static func from(_ level: MJLLogLevel) -> OtherLogLevel {
