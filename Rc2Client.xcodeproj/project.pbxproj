@@ -817,7 +817,6 @@
 		082BE1581F5B3682006CE0B7 /* Model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		082BE1591F5B3682006CE0B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		082BE1631F5B36B3006CE0B7 /* BulkUserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkUserInfo.swift; sourceTree = "<group>"; };
-		082BE1641F5B36B3006CE0B7 /* CountableClosedRange+Codable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CountableClosedRange+Codable.swift"; sourceTree = "<group>"; };
 		082BE1651F5B36B3006CE0B7 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		082BE1661F5B36B3006CE0B7 /* FileOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOperation.swift; sourceTree = "<group>"; };
 		082BE1671F5B36B3006CE0B7 /* FileType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileType.swift; sourceTree = "<group>"; };
@@ -1498,7 +1497,6 @@
 			children = (
 				082BE1631F5B36B3006CE0B7 /* BulkUserInfo.swift */,
 				08F5CDD21FCAE257009665AD /* ComparisonHelpers.swift */,
-				082BE1641F5B36B3006CE0B7 /* CountableClosedRange+Codable.swift */,
 				082BE1651F5B36B3006CE0B7 /* File.swift */,
 				08817B69233AA32700194228 /* Init.swift */,
 				082BE1661F5B36B3006CE0B7 /* FileOperation.swift */,
