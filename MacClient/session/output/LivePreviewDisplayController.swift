@@ -157,7 +157,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 
 	// MARK: - action handlers
-	func executeCunk(number: Int) {
+	func executeChunk(number: Int) {
 
 	}
 
@@ -567,7 +567,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 					else { return }
 				switch actionName {
 				case "execute":
-					executeCunk(number: chunkNum)
+					executeChunk(number: chunkNum)
 				case "executePrevious":
 						executeChunkAndPrevious(number: chunkNum)
 				default:
