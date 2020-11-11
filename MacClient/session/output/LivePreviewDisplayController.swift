@@ -125,12 +125,28 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	// MARK: - notification handlers
 
 	/// called by the editor when the user has made an edit, resulting in a change of what is displayed
+	/// this likely means there are changes to consier reparsing
 	///
 	/// - Parameters:
 	///   - range: the range of the text in the original string
 	///   - delta: the change made
 	func contentsEdited(contents: String, range: NSRange, delta: Int) -> Bool {
-		updatePreview(updatedContents: contents)
+
+		// TODO: if change is to markdown or equation, we can manually update without saving and reparse.
+		// never execute code chunks (happens on button click)
+		// if paste with a chunk in it, we need to reparse. BUt we don't know that without a reparse.
+		//
+		
+		// does nstext_ let un know when a paste or drag&drop happens vs typing.
+		// if change was that, definately need to reparse
+//		do {
+//			try parser?.reparse()
+//		} catch {
+//			Log.warn("failed to parse rmd \(error)", .app)
+//		}
+//		colorizeHighlightAttributes()
+		Log.info("contentsEdited called", .app)
+//		updatePreview(updatedContents: contents)
 		return true
 	}
 

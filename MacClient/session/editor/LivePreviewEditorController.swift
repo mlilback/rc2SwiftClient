@@ -70,12 +70,6 @@ class LivePreviewEditorController: BaseSourceEditorController {
 	override func contentsChanged(_ contents: NSTextStorage, range: NSRange, changeLength delta: Int) {
 		// really does nothing, but call to be safe
 		super.contentsChanged(contents, range: range, changeLength: delta)
-		do {
-			try parser?.reparse()
-		} catch {
-			Log.warn("failed to parse rmd \(error)", .app)
-		}
-		colorizeHighlightAttributes()
 		lastTextChange = Date.timeIntervalSinceReferenceDate
 		lastChangeRange = range
 		lastChangeDelta = delta
