@@ -63,11 +63,12 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 		equationHighLigther.highlight(string: contents, range: range)
 	}
 	
-	/// Highlights the  code/equations of text in range.
+	/// Highlights the  code/equations of text in range synchronously
 	///  - Note: only currently called for R documents, so does not need to handle latex code
 	/// - Parameters:
 	///   - text: The mutable attributed string to update highlight of
 	///   - range: The range to update, niil updates the entire text
+	///   - timeout: How long until the parser should abort
 	// TODO: implement as a signal handler that cancels oldest highlight job
 	public func highlight(text: NSMutableAttributedString, range: NSRange? = nil, timeout: TimeInterval) {
 		let rng = range ?? NSRange(location: 0, length: text.length)
@@ -79,6 +80,13 @@ public class Rc2RmdParser: RmdParser, ParserContext {
 		}
 	}
 
+	/// Highlights the  code/equations of text in range synchronously
+	/// - Note: only currently called for R documents, so does not need to handle latex code
+	/// - Parameters:
+	///   - text: The mutable attributed string to update highlight of
+	///   - range: The range to update, niil updates the entire text
+	///   - timeout: How long until the parser should abort
+	/// - Returns: a signal producer to highlight asynchronously
 	public func highlightR(text: NSMutableAttributedString, range: NSRange? = nil, timeout: TimeInterval) -> SignalProducer<Bool, RParserError> {
 		let rng = range ?? NSRange(location: 0, length: text.length)
 		let producer = SignalProducer<Bool, RParserError> { (observer, _) in
