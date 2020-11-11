@@ -536,13 +536,14 @@ private extension Session {
 		let response: SessionResponse
 		do {
 			// TODO: handle .binary message differently
-			if Log.isLogging(.debug, category: .session), messageData.format == .text {
+			guard messageData.format == .binary else { fatalError("received unsupported binary data") }
+			if Log.isLogging(.debug, category: .session) {
 				let dmsg = "incoming: " + String(data: messageData.data, encoding: .utf8)!
 				Log.debug(dmsg, .session)
 			}
 			response = try conInfo.decode(data: messageData.data)
 		} catch {
-			Log.info("failed to parse received json: \(String(data: messageData.data, encoding: .utf8) ?? "<invalid>")", .session)
+			Log.info("failed to parse received json: \(String(data: messageData.data, encoding: .utf8) ?? "<invalid>"): \(error)", .session)
 			return
 		}
 		Log.info("got message update:  \(response)", .session)
@@ -636,7 +637,8 @@ private extension Session {
 	func send(command: SessionCommand) -> Bool {
 		do {
 			let data = try conInfo.encode(command)
-			Log.info("ssending \(String(data: data, encoding:.utf8) ?? "foo")")
+			let cmdStr = String(data: data, encoding:.utf8) ?? "foo"
+			Log.info("ssending:\n \(cmdStr)")
 			self.webSocketWorker.send(data: data)
 		} catch let err as NSError {
 			Log.error("error sending message on websocket: \(err)", .session)
@@ -650,7 +652,7 @@ private extension Session {
 		case .uninitialized:
 			fatalError("status should never change to uninitialized")
 		case .connecting:
-			Log.debug("connecdtiong", .session)
+			Log.debug("connecting", .session)
 		case .connected:
 			completePostOpenSetup()
 		case .closed:
