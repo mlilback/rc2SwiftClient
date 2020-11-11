@@ -56,11 +56,15 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 
 	internal var parserContext: ParserContext? { didSet {
 		curDocDisposable?.dispose()
+		if let pc = parserContext, let ppc = previousContext, ObjectIdentifier(pc) == ObjectIdentifier(ppc) {
+			return
+		}
 		if lineContiuationRegex == nil {
 			loadRegexes() // viewDidLoad might not have been called yet
 		}
 		curDocDisposable = parserContext?.parsedDocument.signal.observe(on: UIScheduler()).observeValues(documentChanged)
 	} }
+	private var previousContext: ParserContext?
 	private var parsedDocument: RmdDocument? { return parserContext?.parsedDocument.value }
 	private let mdownParser = MarkdownParser()
 	private var previewData = [Int: PreviewIdCache]()
@@ -134,7 +138,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	private func documentChanged(newDocument: RmdDocument?) {
 		guard didLoadView else { return } //don't parse if view not loaded
 		if docHtmlLoaded || newDocument == parsedDocument  {
-			Log.info("document changed with possiblel duplicate", .app)
+			Log.info("document changed with possible duplicate", .app)
 		}
 		guard let fileId = context.value?.currentDocument.value?.file.fileId else {
 			// no file
@@ -227,7 +231,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 
 	func refreshContent() {
-		guard let curDoc = parsedDocument else {
+		guard let curDoc = parsedDocument, currentPreview != nil else {
 			load(html: "")
 			return
 		}
@@ -416,6 +420,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 					let codeHandler = PreviewCodeHandler(previewId: previewId)
 					let cacheEntry = PreviewIdCache(previewId: previewId, fileId: fileId, codeHandler: codeHandler)
 					me.previewData[previewId] = cacheEntry
+					me.currentPreview = cacheEntry
 					observer.send(value: previewId)
 					observer.sendCompleted()
 					DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) {

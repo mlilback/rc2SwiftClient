@@ -16,7 +16,7 @@ import MJLLogger
 public typealias HelpCallback = (String) -> Bool
 
 /// for  instances where write access is not needed
-public protocol ParserContext {
+public protocol ParserContext: class {
 	var parsedDocument: Property<RmdDocument?> { get }
 }
 
