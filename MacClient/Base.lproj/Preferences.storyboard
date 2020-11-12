@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="fQV-eD-eaQ">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="fQV-eD-eaQ">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17156"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -136,6 +136,45 @@
                                     <binding destination="FrG-VX-lzT" name="value" keyPath="values.WordWrapEnabled" id="1zV-h4-Tcd"/>
                                 </connections>
                             </button>
+                            <slider toolTip="The delay between last key press and the preview being updated" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tct-pZ-Ee5">
+                                <rect key="frame" x="30" y="196" width="290" height="24"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <sliderCell key="cell" state="on" alignment="left" maxValue="1" doubleValue="0.5" tickMarkPosition="below" numberOfTickMarks="5" sliderType="linear" id="cG1-kT-e7i"/>
+                                <connections>
+                                    <binding destination="FrG-VX-lzT" name="value" keyPath="values.PreviewUpdateDelay" id="pDh-Qj-w6L">
+                                        <dictionary key="options">
+                                            <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                        </dictionary>
+                                    </binding>
+                                </connections>
+                            </slider>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jlr-92-hIo">
+                                <rect key="frame" x="18" y="226" width="137" height="16"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Preview Update Delay" id="4lA-iJ-uKQ">
+                                    <font key="font" metaFont="titleBar"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vil-ky-Fqm">
+                                <rect key="frame" x="30" y="174" width="25" height="15"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Min" id="ppD-pS-t9N">
+                                    <font key="font" metaFont="controlContent"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ses-QZ-LCx">
+                                <rect key="frame" x="292" y="174" width="28" height="15"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Max" id="yJS-yh-W6x">
+                                    <font key="font" metaFont="controlContent"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                     </view>
                 </viewController>
@@ -250,7 +289,7 @@
                                 <rect key="frame" x="20" y="137" width="195" height="21"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jrh-9r-3Cy">
-                                        <rect key="frame" x="-2" y="3" width="124" height="18"/>
+                                        <rect key="frame" x="-2" y="4" width="124" height="17"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Backup data every" id="pBZ-W1-Bc2">
                                             <font key="font" metaFont="system" size="14"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -335,14 +374,13 @@
                                                     <subviews>
                                                         <outlineView toolTip="code templates organized by category" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" autosaveName="codeTemplateEditor" rowSizeStyle="automatic" viewBased="YES" floatsGroupRows="NO" indentationPerLevel="16" outlineTableColumn="PIF-Ed-ZIL" id="dqb-UH-UaX" customClass="TemplatesOutlineView" customModule="MacClient" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="408" height="186"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                             <tableColumns>
                                                                 <tableColumn identifier="name" width="405" minWidth="40" maxWidth="1000" id="PIF-Ed-ZIL">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
-                                                                        <font key="font" metaFont="smallSystem"/>
                                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                     </tableHeaderCell>
@@ -358,7 +396,7 @@
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
                                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="oJ8-09-Gx8">
-                                                                                    <rect key="frame" x="0.0" y="0.0" width="405" height="17"/>
+                                                                                    <rect key="frame" x="0.0" y="1" width="405" height="16"/>
                                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="qAm-ac-P2n">
                                                                                         <font key="font" metaFont="system"/>
                                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -466,7 +504,7 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <textField toolTip="name of the selected template or category" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iKx-oX-xHR">
-                                                <rect key="frame" x="20" y="199" width="410" height="22"/>
+                                                <rect key="frame" x="20" y="200" width="410" height="21"/>
                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" enabled="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="x3g-9e-3dr">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -474,17 +512,17 @@
                                                 </textFieldCell>
                                             </textField>
                                             <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dNM-Y3-NHX">
-                                                <rect key="frame" x="20" y="20" width="410" height="171"/>
+                                                <rect key="frame" x="20" y="20" width="410" height="172"/>
                                                 <clipView key="contentView" drawsBackground="NO" id="cuS-jk-LdS">
-                                                    <rect key="frame" x="1" y="1" width="408" height="169"/>
+                                                    <rect key="frame" x="1" y="1" width="408" height="170"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textView toolTip="contents of the selected template" editable="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="qvc-NY-HNF">
-                                                            <rect key="frame" x="0.0" y="0.0" width="408" height="169"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="408" height="170"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                            <size key="minSize" width="408" height="169"/>
+                                                            <size key="minSize" width="408" height="170"/>
                                                             <size key="maxSize" width="463" height="10000000"/>
                                                             <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                         </textView>
@@ -495,7 +533,7 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                                 <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="O59-OR-gPM">
-                                                    <rect key="frame" x="393" y="1" width="16" height="169"/>
+                                                    <rect key="frame" x="393" y="1" width="16" height="170"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                             </scrollView>
