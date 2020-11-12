@@ -64,7 +64,7 @@
 		081A58BE23528BC3001B8AFC /* AppCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80B233BF8F100946F34 /* AppCenter.framework */; };
 		081A58BF23528BC3001B8AFC /* AppCenterAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80C233BF8F100946F34 /* AppCenterAnalytics.framework */; };
 		081A58C023528BC3001B8AFC /* AppCenterCrashes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08A7E80D233BF8F100946F34 /* AppCenterCrashes.framework */; };
-		081A58C2235355A1001B8AFC /* PreviewCodeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081A58C1235355A1001B8AFC /* PreviewCodeHandler.swift */; };
+		081A58C2235355A1001B8AFC /* PreviewChunkCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081A58C1235355A1001B8AFC /* PreviewChunkCache.swift */; };
 		082564F320150B4000526957 /* MacAppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 082564F220150B4000526957 /* MacAppConstants.swift */; };
 		0825658C2016BB9200526957 /* OnboardingContent.rtfd in Resources */ = {isa = PBXBuildFile; fileRef = 0825658A2016BB9200526957 /* OnboardingContent.rtfd */; };
 		0826108F1DB02FC300C03422 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -801,7 +801,7 @@
 		0816FD1C1E5226010006FF26 /* SearchBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		0816FD1E1E5226760006FF26 /* SearchBarView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchBarView.xib; sourceTree = "<group>"; };
 		0819966F1E36A78A0000AA0E /* EditableTableCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableTableCellView.swift; sourceTree = "<group>"; };
-		081A58C1235355A1001B8AFC /* PreviewCodeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCodeHandler.swift; sourceTree = "<group>"; };
+		081A58C1235355A1001B8AFC /* PreviewChunkCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewChunkCache.swift; sourceTree = "<group>"; };
 		0821BDC91FCB83B5008DCFC5 /* SigmaSwiftStatistics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SigmaSwiftStatistics.framework; path = Carthage/Build/Mac/SigmaSwiftStatistics.framework; sourceTree = "<group>"; };
 		0823F2321EE742B100A8F8C6 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		082564F220150B4000526957 /* MacAppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppConstants.swift; sourceTree = "<group>"; };
@@ -1945,7 +1945,7 @@
 				08E55B612194A59300F63A20 /* BaseSourceEditorController.swift */,
 				08E55B632194A86700F63A20 /* SourceEditorLayoutManager.swift */,
 				08E55B552188E33A00F63A20 /* LivePreviewEditorController.swift */,
-				081A58C1235355A1001B8AFC /* PreviewCodeHandler.swift */,
+				081A58C1235355A1001B8AFC /* PreviewChunkCache.swift */,
 				08F8C1812092272E00DFB269 /* InlineEquationEditorController.swift */,
 				08F8C183209228A600DFB269 /* InlineEquationEditorController.xib */,
 			);
@@ -3225,7 +3225,7 @@
 				086A40D51E7B04F400AE476B /* ThemeEditorController.swift in Sources */,
 				08E55B562188E33A00F63A20 /* LivePreviewEditorController.swift in Sources */,
 				083174101C57B2E200071408 /* CommandHistory.swift in Sources */,
-				081A58C2235355A1001B8AFC /* PreviewCodeHandler.swift in Sources */,
+				081A58C2235355A1001B8AFC /* PreviewChunkCache.swift in Sources */,
 				08EB36D21FBBA1640078229A /* TextVariableDetailController.swift in Sources */,
 				089FF3281C58E771002A3227 /* NSStoryboard+TypeSaftey.swift in Sources */,
 				085A1A2B205ACA4600B7EC5F /* AbstractEditorController.swift in Sources */,

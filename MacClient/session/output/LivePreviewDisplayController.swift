@@ -165,7 +165,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		if  var previewInfo = previewData[fileId]
 		{
 			// already have preview info
-			previewInfo.codeHandler = PreviewCodeHandler(previewId: previewInfo.previewId)
+			previewInfo.codeHandler = PreviewChunkCache(previewId: previewInfo.previewId)
 			currentPreview = previewInfo
 			previewInfo.codeHandler.clearCache()
 		}
@@ -416,7 +416,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 				switch result {
 				case .success(let previewId):
 					Log.info("got previewId \(previewId)")
-					let codeHandler = PreviewCodeHandler(previewId: previewId)
+					let codeHandler = PreviewChunkCache(previewId: previewId)
 					let cacheEntry = PreviewIdCache(previewId: previewId, fileId: fileId, codeHandler: codeHandler)
 					me.previewData[previewId] = cacheEntry
 					me.currentPreview = cacheEntry
@@ -643,7 +643,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 
 /// used to cache previews so old ones can be removed to free memory pressure
 private struct PreviewIdCache: Equatable {
-	init(previewId: Int, fileId: Int, codeHandler: PreviewCodeHandler) {
+	init(previewId: Int, fileId: Int, codeHandler: PreviewChunkCache) {
 		self.previewId = previewId
 		self.fileId = fileId
 		self.codeHandler = codeHandler
@@ -656,7 +656,7 @@ private struct PreviewIdCache: Equatable {
 
 	let previewId: Int
 	let fileId: Int
-	var codeHandler: PreviewCodeHandler
+	var codeHandler: PreviewChunkCache
 	var lastAccess: TimeInterval = Date.timeIntervalSinceReferenceDate
 	var updateObserver: Signal<Void, Rc2Error>.Observer?
 }

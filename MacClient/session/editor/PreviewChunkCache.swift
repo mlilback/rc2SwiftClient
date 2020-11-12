@@ -14,7 +14,7 @@ import MJLLogger
 
 // siftlint:disable cyclomatic_complexity
 
-public class PreviewCodeHandler {
+public class PreviewChunkCache {
 	public enum Error: String, RawRepresentable, Swift.Error {
 		case codeError
 	}
