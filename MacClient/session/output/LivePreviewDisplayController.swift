@@ -677,4 +677,13 @@ extension LivePreviewDisplayController: SessionPreviewDelegate {
 		"""
 		runJavascript(script)
 	}
+	
+	func previewUpdateStarted(response: SessionResponse.PreviewUpdateStartedData) {
+		guard let doc = parsedDocument else {
+			Log.warn("preview update witout a document", .app)
+			return
+		}
+		guard var preview = previewData[response.previewId] else { return }
+		
+	}
 }

@@ -576,6 +576,8 @@ private extension Session {
 			previewDelegate?.previewIdReceived(response: initData)
 		case .previewUpdated(let data):
 			previewDelegate?.previewUpdateReceived(response: data)
+		case .previewUpdateStarted(let data):
+			previewDelegate?.previewUpdateStarted(response: data)
 		default:
 			informDelegate = true
 		}
@@ -629,6 +631,8 @@ private extension Session {
 		case .previewInitialized(let data):
 			return data.updateIdentifier
 		case .previewUpdated(let data):
+			return data.updateIdentifier
+		case .previewUpdateStarted(let data):
 			return data.updateIdentifier
 		}
 	}
