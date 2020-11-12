@@ -196,7 +196,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 	}
 
-	/// parses the parsed document and loads it via javascript
+	/// parses the document and loads each chunk individually via javascript
 	// swiftlint:disable:next cyclomatic_complexity
 	private func updatePreview(updatedContents: String? = nil) {
 		guard didLoadView else { return }
@@ -221,24 +221,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		if changedChunkIndexes.count > 0 {
 			Log.info("udpating just chunks \(changedChunkIndexes)")
 			for chunkNumber in changedChunkIndexes {
-				let chunk = curDoc.chunks[chunkNumber]
-
-				var html = htmlFor(chunk: chunk, index: chunkNumber) // don't want the wrapping section ala htmlWrapper()
-				if chunk.chunkType != .equation {
-					html = escapeForJavascript(html)
-				}
-
-				var command = "$(\"section[index='\(chunkNumber)']\").html('\(html)');"
-				if chunk.chunkType == .equation {
-					command += "MathJax.typeset()"
-				}
-				runJavascript(command) { (_, err) in
-					guard err == nil else {
-						Log.warn("javascript failed", .app)
-						return
-					}
-					Log.info("javascript worked")
-				}
+				updaeteChunkByJS(chunkNumber: chunkNumber, document: curDoc)
 			}
 			runJavascript("updateSectionToolbars()")
 		} else { // no changes, so just refresh everything
@@ -471,6 +454,29 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 	
 	// MARK: - utility
+
+	/// actually gets the updated html for chunkId and inserts via javascript
+	private func updaeteChunkByJS(chunkNumber: Int, document: RmdDocument) {
+		let chunk = document.chunks[chunkNumber]
+		
+		var html = htmlFor(chunk: chunk, index: chunkNumber) // don't want the wrapping section ala htmlWrapper()
+		if chunk.chunkType != .equation {
+			html = escapeForJavascript(html)
+		}
+		
+		var command = "$(\"section[index='\(chunkNumber)']\").html('\(html)');"
+		if chunk.chunkType == .equation {
+			command += "MathJax.typeset()"
+		}
+		// TODO: catch javascript error to supply details
+		runJavascript(command) { (_, err) in
+			guard err == nil else {
+				Log.warn("javascript failed", .app)
+				return
+			}
+			Log.info("javascript worked")
+		}
+	}
 	
 	func setEditorContext(_ econtext: EditorContext?) {
 		precondition(context.value == nil)

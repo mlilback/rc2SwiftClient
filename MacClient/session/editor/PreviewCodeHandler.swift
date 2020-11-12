@@ -103,6 +103,7 @@ public class PreviewCodeHandler {
 		if let cache = chunkInfo[number] {
 			output = cache.currentHtml
 		} else {
+			// TODO: this should give user notice that chunk needs to be executed
 			output = "<!-- R output will go here -->"
 		}
 		return """
