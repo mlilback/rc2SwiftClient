@@ -15,7 +15,7 @@ import MJLLogger
 /// a callback that recieves a parsed keyword. returns true if a help URL should be included for it
 public typealias HelpCallback = (String) -> Bool
 
-/// for  instances where write access is not needed
+/// allows subscribing to the parsedDocument without knowing anything about the parser
 public protocol ParserContext: class {
 	var parsedDocument: Property<RmdDocument?> { get }
 }

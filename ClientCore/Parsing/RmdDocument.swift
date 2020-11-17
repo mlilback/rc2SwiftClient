@@ -24,6 +24,8 @@ fileprivate extension Array {
 	}
 }
 
+/// The parser uses a ChunkType, which inlcudes inline chunks. This type is for the types of chunks
+/// that appear at the top level of a document (e.g. no inline)
 public enum RootChunkType: String {
 	case markdown, code, equation
 	
@@ -46,8 +48,16 @@ public enum ParserError: Error {
 	case invalidParser
 }
 
+extension Notification.Name {
+	/// the object is the document that was updated. userInfo contains the the array of changed indexes with the key RmdDocument.changedIndexesKey
+	public static let rmdDocumentUpdated = NSNotification.Name("rmdDocumentUpdated")
+}
+
 /// A parsed representation of an .Rmd file
 public class RmdDocument: CustomDebugStringConvertible {
+	/// used with the userInfo dictionary of a rmdDocumentUpdated notification
+	public static let changedIndexesKey = "changedIndexes"
+	
 	/// Updates document with contents.
 	/// If a code chunks changes and there are code chunks after it, the document will be completely refreshed.
 	///
@@ -85,6 +95,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 				document.chunks[idx] = newChunk
 			}
 		}
+		NotificationCenter.default.post(name: .rmdDocumentUpdated, object: document, userInfo: [RmdDocument.changedIndexesKey: changed])
 		return changed
 	}
 	
@@ -192,7 +203,7 @@ extension RmdDocument: Equatable {
 
 /// A chunk in a document
 public protocol RmdDocumentChunk {
-	/// tye type of the chunk (.markdown, .code, .equation)
+	/// the type of the chunk (.markdown, .code, .equation, including inline)
 	var chunkType: ChunkType { get }
 	/// true if a n inline code or equation chunk
 	var isInline: Bool { get }

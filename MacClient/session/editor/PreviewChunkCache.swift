@@ -1,5 +1,5 @@
 //
-//  PreviewCodeHandler.swift
+//  PreviewChunkCache.swift
 //  MacClient
 //
 //  Created by Mark Lilback on 10/13/19.
