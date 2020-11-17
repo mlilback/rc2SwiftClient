@@ -67,8 +67,6 @@ class MacAppDelegate: NSObject, NSApplicationDelegate {
 		}
 	}()
 
-	fileprivate let _statusQueue = DispatchQueue(label: "io.rc2.statusQueue", qos: .userInitiated)
-
 	// MARK: - NSApplicationDelegate
 	func applicationWillFinishLaunching(_ notification: Notification) {
 		logger.start()
