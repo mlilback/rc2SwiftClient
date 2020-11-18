@@ -558,7 +558,7 @@ extension MacAppDelegate {
 			}
 			self.connectionManager.currentConnection = conInfo
 			do {
-				try Keychain().setString(host.keychainKey, value: password)
+				try Keychain(service: Bundle.main.bundleIdentifier!).setString(key: host.keychainKey, value: password)
 			} catch {
 				Log.error("error saving password to keychain: \(error)", .app)
 			}
