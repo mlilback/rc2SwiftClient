@@ -13,13 +13,23 @@ public func delay(_ delay: Double, _ closure:@escaping () -> Void) {
 }
 
 public extension NotificationCenter {
-	func postNotificationNameOnMainThread(_ name: NSNotification.Name, object: AnyObject, userInfo: [AnyHashable: Any]?=nil) {
+	/// Posts a notification on the deffault center on the main thread with the specified paramters
+	/// - Parameters:
+	///   - name: the name of the notification to post
+	///   - object: the object related to the notification
+	///   - userInfo: Dictionary of parameters
+	func postNotificationNameOnMainThread(_ name: NSNotification.Name, object: AnyObject, userInfo: [AnyHashable: Any]? = nil) {
 		if !Thread.isMainThread {
 			postAsyncNotificationNameOnMainThread(name, object: object, userInfo: userInfo)
 		} else {
 			post(name: name, object: object, userInfo: userInfo)
 		}
 	}
+	/// Posts a notification on the deffault center aysnchronously on the main thread with the specified paramters
+	/// - Parameters:
+	///   - name: the name of the notification to post
+	///   - object: the object related to the notification
+	///   - userInfo: Dictionary of parameters
 	func postAsyncNotificationNameOnMainThread(_ name: Notification.Name, object: AnyObject, userInfo: [AnyHashable: Any]?=nil) {
 		DispatchQueue.main.async(execute: {
 			self.post(name: name, object: object, userInfo: userInfo)
@@ -28,6 +38,9 @@ public extension NotificationCenter {
 }
 
 public extension NSRange {
+	/// Converts to a Swift String range
+	/// - Parameter str: the string this range applies to
+	/// - Returns: a swift range that matdches self in passed in string
 	func toStringRange(_ str: String) -> Range<String.Index>? {
 		guard str.count >= length - location && location < str.count else { return nil }
 		let fromIdx = str.index(str.startIndex, offsetBy: self.location)
