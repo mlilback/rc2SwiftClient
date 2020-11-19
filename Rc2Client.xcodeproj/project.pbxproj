@@ -224,6 +224,7 @@
 		0873F6001F795AE700265934 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081559921DDC889D0047B3CE /* ImageCache.swift */; };
 		08765C821DC58AB300F75D8E /* DispatchReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08765C811DC58AB300F75D8E /* DispatchReader.swift */; };
 		08790773215AC8CF00978ECD /* Rc2Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08790772215AC8CF00978ECD /* Rc2Document.swift */; };
+		0880772C2566E189003AB7E0 /* Collection+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0880772B2566E189003AB7E0 /* Collection+MJL.swift */; };
 		08817B56233918F100194228 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 08817B55233918F100194228 /* GRDB */; };
 		08817B6A233AA32700194228 /* Init.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08817B69233AA32700194228 /* Init.swift */; };
 		08817B7E233AB2B800194228 /* Logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 08817B7C233AB2B800194228 /* Logging.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -976,6 +977,7 @@
 		08790772215AC8CF00978ECD /* Rc2Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rc2Document.swift; sourceTree = "<group>"; };
 		087AE5B11C75F20500076F7A /* MacClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MacClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		087DC36A200F5140001F9560 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		0880772B2566E189003AB7E0 /* Collection+MJL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+MJL.swift"; sourceTree = "<group>"; };
 		08817B69233AA32700194228 /* Init.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Init.swift; sourceTree = "<group>"; };
 		08817B7A233AB2B800194228 /* Logging.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Logging.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		08817B7C233AB2B800194228 /* Logging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
@@ -1743,6 +1745,7 @@
 				08EDB9CF2019527D000663EF /* Set+MJL+update.swift */,
 				08F867B82086876E00108044 /* Array+MJL.swift */,
 				08BE3E112090A3D000EA4DDD /* NSAttributedString+MJL.swift */,
+				0880772B2566E189003AB7E0 /* Collection+MJL.swift */,
 			);
 			path = extensions;
 			sourceTree = "<group>";
@@ -3300,6 +3303,7 @@
 				08B4BE5D1D831682006861E3 /* HTMLString.swift in Sources */,
 				086A40DD1E7B578400AE476B /* ThemeManager.swift in Sources */,
 				08680684200D892000C986A9 /* Data+MJL.swift in Sources */,
+				0880772C2566E189003AB7E0 /* Collection+MJL.swift in Sources */,
 				0868068A200D892000C986A9 /* Keychain.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
