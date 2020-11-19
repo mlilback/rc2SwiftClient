@@ -25,14 +25,40 @@ public class PreviewChunkCache {
 		var inlineHtml: [String] = []
 	}
 
+	private struct SavedCache: Codable {
+		let fileId: Int
+		let fileVersion: Int
+		let chunks: [ChunkInfo]
+	}
+		
 	let previewId: Int
-	private var chunkInfo: [ChunkInfo?] = []
+	let fileId: Int
+	let workspace: AppWorkspace
+	private var chunkInfo: [ChunkInfo] = []
 	public var contentCached: Bool { return chunkInfo.count > 0 }
-
-	public init(previewId: Int) {
-		self.previewId = previewId
+	public let _document: Property<RmdDocument?>
+	private var document: RmdDocument {
+		guard let doc = _document.value else { fatalError("previewChunk asked to use nil document") }
+		return doc
 	}
 
+	public init(previewId: Int, fileId: Int, workspace: AppWorkspace, documentProperty: Property<RmdDocument?>) {
+		self.previewId = previewId
+		self.fileId = fileId
+		self.workspace = workspace
+		self._document = Property<RmdDocument?>(documentProperty)
+		NotificationCenter.default.addObserver(self, selector: #selector(documentUpdated), name: .rmdDocumentUpdated, object: self.document)
+	}
+
+	/// called when the document's content was updated
+	@objc func documentUpdated(note: Notification) {
+		guard var changedIndexes = note.userInfo?[RmdDocument.changedIndexesKey] as? [Int] else {
+			Log.warn("received documentUpdated notification without changedIndexes", .app)
+			return
+		}
+		cacheCode(changedChunks: &changedIndexes)
+	}
+	
 	/// Clears the code chache, should be called when the document has changed
 	public func clearCache() {
 		chunkInfo.removeAll()
@@ -40,9 +66,9 @@ public class PreviewChunkCache {
 
 	/// caches the html for all code chunks and any markdown chunks that contain inline code
 	/// - Parameter document: the document to cache
-	public func cacheAllCode(in document: RmdDocument) {
+	public func cacheAllCode() {
 		var changedChunkIndexes = [Int](0..<document.chunks.count)
-		cacheCode(changedChunks: &changedChunkIndexes, in: document)
+		cacheCode(changedChunks: &changedChunkIndexes)
 	}
 
 	/// caches the html for all code chunks and any markdown chunks that contain inline code
@@ -51,10 +77,10 @@ public class PreviewChunkCache {
 	///  Any chunk where the output did not change is removed. Ones not included where the output did change are added.
 	/// - Parameter document: the document to cache
 	// swiftlint:disable:next cyclomatic_complexity
-	public func cacheCode(changedChunks: inout [Int], in document: RmdDocument) {
+	public func cacheCode(changedChunks: inout [Int]) {
 		// if not the same size as last time, then all code is dirty
 		if document.chunks.count != chunkInfo.count {
-			chunkInfo = [ChunkInfo?]()
+			chunkInfo = [ChunkInfo]()
 			for i in 0..<document.chunks.count {
 				chunkInfo.append(ChunkInfo(chunkNumber: i, type: RootChunkType(document.chunks[i].chunkType)))
 			}
@@ -67,8 +93,8 @@ public class PreviewChunkCache {
 				for inlineChunk in chunk.children {
 					inline.append(inlineHtmlFor(chunk: inlineChunk, parent: chunk, document: document))
 				}
-				guard chunkInfo[chunkNumber]?.inlineHtml != inline else { continue }
-				chunkInfo[chunkNumber]?.inlineHtml = inline
+				guard chunkInfo[chunkNumber].inlineHtml != inline else { continue }
+				chunkInfo[chunkNumber].inlineHtml = inline
 				if !changedChunks.contains(chunkNumber) {
 					changedChunks.append(chunkNumber)
 				}
@@ -76,7 +102,7 @@ public class PreviewChunkCache {
 			}
 			guard chunk.chunkType == .code else { continue }
 			let currentHtml = htmlForChunk(document: document, number: chunkNumber)
-			if chunkInfo[chunkNumber]?.currentHtml != currentHtml {
+			if chunkInfo[chunkNumber].currentHtml != currentHtml {
 				if let changedIndex = changedChunks.firstIndex(where: { $0 == chunkNumber }) {
 					changedChunks.remove(at: changedIndex)
 				}
@@ -100,8 +126,8 @@ public class PreviewChunkCache {
 	public func htmlForChunk(document: RmdDocument, number: Int) -> String {
 		let src = document.string(for: document.chunks[number], type: .inner)
 		let output: String
-		if let cache = chunkInfo[number] {
-			output = cache.currentHtml
+		if chunkInfo[number].currentHtml.count > 0 {
+			output = chunkInfo[number].currentHtml
 		} else {
 			// TODO: this should give user notice that chunk needs to be executed
 			output = "<!-- R output will go here -->"
@@ -119,20 +145,24 @@ public class PreviewChunkCache {
 
 	/// returns the HTML for an inline chunk in  a markdown chunk
 	func inlineEquationHtml(chunkNumber: Int, inlineIndex: Int) -> String {
-		precondition(chunkNumber < chunkInfo.count)
-		guard let chunkInfo = chunkInfo[chunkNumber] else { fatalError("invalid chunk number") }
+		guard let chunkInfo = chunkInfo[safe: inlineIndex] else { fatalError("invalid chunk number") }
 		let chunkChildren = chunkInfo.inlineHtml
 		precondition(inlineIndex < chunkInfo.inlineHtml.count, "invalid inline index")
 		return chunkChildren[inlineIndex]
 	}
 
 	private func htmlFor(chunkNumber: Int, inlineIndex: Int) -> String {
-		guard let chunkInfo = chunkInfo[chunkNumber], chunkInfo.inlineHtml.count > inlineIndex
+		guard let chunkInfo = chunkInfo[safe: chunkNumber], chunkInfo.inlineHtml.count > inlineIndex
 		else {
 			Log.error("invalid chunk indexes")
 			assertionFailure("invalid indexes")
 			return ""
 		}
 		return chunkInfo.inlineHtml[inlineIndex]
+	}
+}
+
+extension PreviewChunkCache {
+	func saveCache() {
 	}
 }

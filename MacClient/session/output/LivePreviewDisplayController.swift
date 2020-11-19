@@ -173,7 +173,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		if  var previewInfo = previewData[fileId]
 		{
 			// already have preview info
-			previewInfo.codeHandler = PreviewChunkCache(previewId: previewInfo.previewId)
+			previewInfo.codeHandler = PreviewChunkCache(previewId: previewInfo.previewId, fileId: previewInfo.fileId, workspace: session.workspace, documentProperty: parserContext!.parsedDocument)
 			currentPreview = previewInfo
 			previewInfo.codeHandler.clearCache()
 		}
@@ -221,9 +221,9 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		// TODO: cacheCode needs to be async
 		// add to changedChunkIndexes any chunks that need to udpated because of changes to R code
 		if changedChunkIndexes.count > 0 {
-			curPreview.codeHandler.cacheCode(changedChunks: &changedChunkIndexes, in: curDoc)
+			curPreview.codeHandler.cacheCode(changedChunks: &changedChunkIndexes)
 		} else {
-			curPreview.codeHandler.cacheAllCode(in: curDoc)
+			curPreview.codeHandler.cacheAllCode()
 		}
 		// handle changes
 		if changedChunkIndexes.count > 0 {
@@ -243,7 +243,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			return
 		}
 		if !(currentPreview?.codeHandler.contentCached ?? false) {
-			currentPreview?.codeHandler.cacheAllCode(in: curDoc)
+			currentPreview?.codeHandler.cacheAllCode()
 		}
 		var html =  ""
 		for (chunkNumber, chunk) in curDoc.chunks.enumerated() {
@@ -424,7 +424,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 				switch result {
 				case .success(let previewId):
 					Log.info("got previewId \(previewId)")
-					let codeHandler = PreviewChunkCache(previewId: previewId)
+					let codeHandler = PreviewChunkCache(previewId: previewId,  fileId: fileId, workspace: session.workspace, documentProperty: me.parserContext!.parsedDocument)
 					let cacheEntry = PreviewIdCache(previewId: previewId, fileId: fileId, codeHandler: codeHandler)
 					me.previewData[previewId] = cacheEntry
 					me.currentPreview = cacheEntry
@@ -655,7 +655,7 @@ private struct PreviewIdCache: Equatable {
 		self.previewId = previewId
 		self.fileId = fileId
 		self.codeHandler = codeHandler
-		self.updateObserver = nil
+//		self.updateObserver = nil
 	}
 
 	static func == (lhs: PreviewIdCache, rhs: PreviewIdCache) -> Bool {
@@ -666,7 +666,7 @@ private struct PreviewIdCache: Equatable {
 	let fileId: Int
 	var codeHandler: PreviewChunkCache
 	var lastAccess: TimeInterval = Date.timeIntervalSinceReferenceDate
-	var updateObserver: Signal<Void, Rc2Error>.Observer?
+//	var updateObserver: Signal<Void, Rc2Error>.Observer?
 }
 
 // MARK: - SessionPreviewDelegate
@@ -690,7 +690,7 @@ extension LivePreviewDisplayController: SessionPreviewDelegate {
 		}
 		guard var preview = previewData[response.previewId] else { return }
 		var toCache = [response.chunkId]
-		preview.codeHandler.cacheCode(changedChunks: &toCache, in: doc)
+		preview.codeHandler.cacheCode(changedChunks: &toCache)
 		let html = preview.codeHandler.htmlForChunk(document: doc, number: response.chunkId)
 		preview.lastAccess = Date.timeIntervalSinceReferenceDate
 		let script = """
