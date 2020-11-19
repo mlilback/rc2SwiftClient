@@ -15,14 +15,22 @@ import Model
 import ReactiveSwift
 import MJLLogger
 
+// TODO: migrate all code about generate html of any kind to PreviewCodeCache
+// needs to tell cache to update code chunks when user has asked
+
 // code to extract a zip file with preview_support locally is commented out because of a bug where WKWebView tries to load with %20 in app support url, which fails
 
+extension NSNotification.Name {
+	/// Sent when a preview update has started and the editor should be disabled. The object is the session.
+	/// The userInfo dictilonary contains the `fileId` as an Int.
+	static let previewUpdateStarted = NSNotification.Name("previewUpdateStarted")
+	/// sent when a preview update has finished and the editor can be enabled
+	static let previewUpdateEnded = NSNotification.Name("previewUpdateEnded")
+}
+
 protocol LivePreviewOutputController {
-	/// allows preview editor to tell display controller what the current context is so it can monitor the current document
-//	var editorContext: EditorContext? { get set }
-
 	var parserContext: ParserContext? { get set }
-
+	
 	/// allows editor that the user has made a change to the contents of the current document
 	///
 	/// - Parameters:
@@ -41,7 +49,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	// required by OutputController, should use at some point
 	weak var contextualMenuDelegate: ContextualMenuDelegate?
 
-	private var context: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil)
+	private var editorContext: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil)
 	private var curDocDisposable: Disposable?
 	private var didLoadView = false
 	private var pageShellLoaded = false
@@ -112,7 +120,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		outputView?.navigationDelegate = self
 		// if have webview and wasn't loaded, suspend the queue
 		ensureResourcesLoaded()
-		context.signal.observeValues { (_) in
+		editorContext.signal.observeValues { (_) in
 			print("got new context)")
 		}
 	}
@@ -156,7 +164,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		if docHtmlLoaded || newDocument == parsedDocument  {
 			Log.info("document changed with possible duplicate", .app)
 		}
-		guard let fileId = context.value?.currentDocument.value?.file.fileId else {
+		guard let fileId = editorContext.value?.currentDocument.value?.file.fileId else {
 			// no file
 			currentPreview = nil
 			return
@@ -385,7 +393,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	
 	@discardableResult
 	private func loadPreviewIfNecessary() -> Bool {
-		guard !initialCodeLoaded, let fileId = context.value?.currentDocument.value?.file.fileId else { return false }
+		guard !initialCodeLoaded, let fileId = editorContext.value?.currentDocument.value?.file.fileId else { return false }
 		// TODO: update this to use appStatus
 		guard !initialCodeLoaded else { return true }
 		initialCodeLoaded = true
@@ -435,18 +443,18 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 
 	private func requestUpdate(previewId: Int, chunkId: Int, includePrevious: Bool = false) -> SignalProducer<Void, Rc2Error> {
-		guard var preview = previewData[previewId] else {
+		guard var _ = previewData[previewId] else {
 			let rerr = Rc2Error(type: .application, nested: PrecviewError.failedToUpdate, severity: .warning)
 			Log.info("Failed to find preview \(previewId)", .app)
 			return SignalProducer<Void, Rc2Error>(error: rerr)
 		}
 		let handler = SignalProducer<Void, Rc2Error> { [weak self] observer, _ in
 			guard let me = self else { return }
-			preview.updateObserver = observer
+//			preview.updateObserver = observer
 			// chunkIds will include previous
 			let producer = me.session.updatePreviewChunks(previewId: previewId, chunkId: chunkId, includePrevious: includePrevious, updateId: "preview \(previewId)")
 			producer.startWithCompleted {
-				preview.updateObserver = nil
+//				preview.updateObserver = nil
 			}
 			
 		}
@@ -479,8 +487,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 	
 	func setEditorContext(_ econtext: EditorContext?) {
-		precondition(context.value == nil)
-		context.value = econtext
+		precondition(editorContext.value == nil)
+		editorContext.value = econtext
 	}
 	
 	private func loadWebView() {
@@ -673,6 +681,13 @@ extension LivePreviewDisplayController: SessionPreviewDelegate {
 			Log.warn("preview update witout a document", .app)
 			return
 		}
+		defer {
+			if response.updateComplete {
+				guard let fileId = editorContext.value?.currentDocument.value?.file.fileId
+				else { fatalError("update complete with no current file") }
+				NotificationCenter.default.postNotificationNameOnMainThread(.previewUpdateEnded, object: session, userInfo: ["fileId": fileId])
+			}
+		}
 		guard var preview = previewData[response.previewId] else { return }
 		var toCache = [response.chunkId]
 		preview.codeHandler.cacheCode(changedChunks: &toCache, in: doc)
@@ -685,11 +700,13 @@ extension LivePreviewDisplayController: SessionPreviewDelegate {
 	}
 	
 	func previewUpdateStarted(response: SessionResponse.PreviewUpdateStartedData) {
-		guard let doc = parsedDocument else {
-			Log.warn("preview update witout a document", .app)
-			return
-		}
-		guard var preview = previewData[response.previewId] else { return }
-		
+//		guard let doc = parsedDocument else {
+//			Log.warn("preview update witout a document", .app)
+//			return
+//		}
+//		guard var preview = previewData[response.previewId] else { return }
+		guard let fileId = editorContext.value?.currentDocument.value?.file.fileId
+		else { fatalError("preview started with no editor context") }
+		NotificationCenter.default.postNotificationNameOnMainThread(.previewUpdateStarted, object: session, userInfo: ["fileId": fileId])
 	}
 }
