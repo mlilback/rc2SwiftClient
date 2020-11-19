@@ -11,6 +11,7 @@ import ReactiveSwift
 import ClientCore
 import Networking
 import MJLLogger
+import GRDB
 
 // siftlint:disable cyclomatic_complexity
 
@@ -25,7 +26,7 @@ public class PreviewChunkCache {
 		var inlineHtml: [String] = []
 	}
 
-	private struct SavedCache: Codable {
+	private struct SavedCacheEntry: Codable, FetchableRecord, TableRecord, PersistableRecord {
 		let fileId: Int
 		let fileVersion: Int
 		let chunks: [ChunkInfo]
@@ -34,6 +35,7 @@ public class PreviewChunkCache {
 	let previewId: Int
 	let fileId: Int
 	let workspace: AppWorkspace
+	private var dbQueue: DatabaseQueue?
 	private var chunkInfo: [ChunkInfo] = []
 	public var contentCached: Bool { return chunkInfo.count > 0 }
 	public let _document: Property<RmdDocument?>
@@ -48,8 +50,13 @@ public class PreviewChunkCache {
 		self.workspace = workspace
 		self._document = Property<RmdDocument?>(documentProperty)
 		NotificationCenter.default.addObserver(self, selector: #selector(documentUpdated), name: .rmdDocumentUpdated, object: self.document)
+		readCache()
 	}
-
+	
+	deinit {
+		saveCache()
+	}
+	
 	/// called when the document's content was updated
 	@objc func documentUpdated(note: Notification) {
 		guard var changedIndexes = note.userInfo?[RmdDocument.changedIndexesKey] as? [Int] else {
@@ -163,6 +170,67 @@ public class PreviewChunkCache {
 }
 
 extension PreviewChunkCache {
+	var cacheTableName: String { "cacheEntry" }
+	private func cacheURL() -> URL {
+		let fm = FileManager()
+		do {
+			let appSupport = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+			return appSupport.appendingPathComponent(Bundle.main.bundleIdentifier!, isDirectory: true).appendingPathComponent("previewCache.sqlite")
+		} catch {
+			fatalError("error looking for app support directory: \(error)")
+		}
+	}
+	
+	func readCache() {
+		if dbQueue == nil { initializeCache() }
+		do {
+			try dbQueue!.read { db in
+				do {
+					if let oldRec = try SavedCacheEntry.fetchOne(db, sql: "select * FROM \(cacheTableName) where fileID = \(fileId)")
+					{
+						self.chunkInfo = oldRec.chunks
+					}
+				} catch {
+					Log.warn("error reading cache: \(error)", .app)
+					throw error
+				}
+			}
+		} catch {
+				Log.warn("error reading cache: \(error)", .app)
+		}
+	}
+	
 	func saveCache() {
+		if dbQueue == nil { initializeCache() }
+		let toSave = SavedCacheEntry(fileId: fileId, fileVersion: workspace.file(withId: fileId)!.version, chunks: chunkInfo)
+		do {
+			try dbQueue!.write { db in
+				try db.execute(sql: "delete from \(cacheTableName) where fileId = \(fileId)")
+				if try SavedCacheEntry.fetchOne(db, key: fileId) == nil  {
+					try  toSave.insert(db)
+				} else {
+					try toSave.update(db)
+				}
+			}
+		} catch {
+			Log.warn("failed to save cache: \(error)", .app)
+		}
+	}
+	
+	private func initializeCache() {
+		do {
+			dbQueue = try DatabaseQueue(path: cacheURL().path)
+			try dbQueue?.read { db in
+				//create table if it doesn't exist
+				try db.create(table: cacheTableName, ifNotExists: true) { t in
+					t.column("fileId", .integer).primaryKey()
+					t.column("fileVersion", .integer)
+					t.column("entries", .blob)
+				}
+			}
+		} catch {
+			Log.warn("error creating preview cache \(error)", .app)
+			return
+		}
 	}
 }
