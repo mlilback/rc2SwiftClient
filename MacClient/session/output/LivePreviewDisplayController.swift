@@ -424,7 +424,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 				switch result {
 				case .success(let previewId):
 					Log.info("got previewId \(previewId)")
-					let codeHandler = PreviewChunkCache(previewId: previewId,  fileId: fileId, workspace: session.workspace, documentProperty: me.parserContext!.parsedDocument)
+					let codeHandler = PreviewChunkCache(previewId: previewId,  fileId: fileId, workspace: me.session.workspace, documentProperty: me.parserContext!.parsedDocument)
 					let cacheEntry = PreviewIdCache(previewId: previewId, fileId: fileId, codeHandler: codeHandler)
 					me.previewData[previewId] = cacheEntry
 					me.currentPreview = cacheEntry
