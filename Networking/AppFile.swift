@@ -6,6 +6,7 @@
 
 import Foundation
 import Model
+import ReactiveSwift
 
 public final class AppFile: CustomStringConvertible, Hashable
 {

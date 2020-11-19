@@ -18,7 +18,7 @@ public class PreviewChunkCache {
 	public enum Error: String, RawRepresentable, Swift.Error {
 		case codeError
 	}
-	private struct ChunkInfo: Hashable {
+	private struct ChunkInfo: Hashable, Codable {
 		let chunkNumber: Int
 		let type: RootChunkType
 		var currentHtml: String = ""

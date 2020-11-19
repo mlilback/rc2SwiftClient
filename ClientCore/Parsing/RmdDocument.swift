@@ -26,7 +26,7 @@ fileprivate extension Array {
 
 /// The parser uses a ChunkType, which inlcudes inline chunks. This type is for the types of chunks
 /// that appear at the top level of a document (e.g. no inline)
-public enum RootChunkType: String {
+public enum RootChunkType: String, Codable {
 	case markdown, code, equation
 	
 	public init(_ pctype: ChunkType) {
