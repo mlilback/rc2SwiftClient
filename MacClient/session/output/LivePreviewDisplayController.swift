@@ -127,6 +127,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 
 	override func sessionChanged() {
 		super.sessionChanged()
+		session.previewDelegate = self
 		loadPreviewIfNecessary()
 	}
 
