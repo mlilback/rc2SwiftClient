@@ -328,7 +328,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			Log.warn("asked to generate R code w/o context")
 			return "<pre class=\"r\"><code>\(doc.string(for: chunk, type: .inner).addingUnicodeEntities)</code></pre>\n"
 		}
-		let html = rHandler.htmlForChunk(document: doc, number: index)
+		let html = rHandler.htmlForChunk(chunkNumber: index)
 		return html
 	}
 
@@ -618,35 +618,6 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 
 	// MARK: - embedded types
 
-	private class MarkdownParser {
-		let allocator: UnsafeMutablePointer<cmark_mem>
-		let cmarkOptions = CMARK_OPT_SOURCEPOS | CMARK_OPT_FOOTNOTES
-		let parser: UnsafeMutablePointer<cmark_parser>?
-		let extensions: UnsafeMutablePointer<cmark_llist>? = nil
-
-		init() {
-			allocator = cmark_get_default_mem_allocator()
-			parser = cmark_parser_new(cmarkOptions)
-			let tableExtension = cmark_find_syntax_extension("table")
-			let strikeExtension = cmark_find_syntax_extension("strikethrough")
-			cmark_llist_append(allocator, extensions, tableExtension)
-			cmark_llist_append(allocator, extensions, strikeExtension)
-		}
-
-		func htmlFor(markdown: String) -> NSMutableString {
-			markdown.withCString( { chars in
-				cmark_parser_feed(parser, chars, strlen(chars))
-			})
-			let htmlDoc = cmark_parser_finish(parser)
-			let html = NSMutableString(cString: cmark_render_html_with_mem(htmlDoc, cmarkOptions, extensions, allocator), encoding: String.Encoding.utf8.rawValue)!
-			return html
-		}
-
-		deinit {
-			cmark_llist_free(allocator, extensions)
-			cmark_parser_free(parser)
-		}
-	}
 }
 
 /// used to cache previews so old ones can be removed to free memory pressure
@@ -677,10 +648,6 @@ extension LivePreviewDisplayController: SessionPreviewDelegate {
 	}
 
 	func previewUpdateReceived(response: SessionResponse.PreviewUpdateData) {
-		guard let doc = parsedDocument else {
-			Log.warn("preview update witout a document", .app)
-			return
-		}
 		defer {
 			if response.updateComplete {
 				guard let fileId = editorContext.value?.currentDocument.value?.file.fileId
@@ -688,10 +655,13 @@ extension LivePreviewDisplayController: SessionPreviewDelegate {
 				NotificationCenter.default.postNotificationNameOnMainThread(.previewUpdateEnded, object: session, userInfo: ["fileId": fileId])
 			}
 		}
+		//ignore updates that are just to mark completed
+		guard response.chunkId >= 0 else { return }
 		guard var preview = previewData[response.previewId] else { return }
-		var toCache = [response.chunkId]
-		preview.codeHandler.cacheCode(changedChunks: &toCache)
-		let html = preview.codeHandler.htmlForChunk(document: doc, number: response.chunkId)
+		// update the code results
+		preview.codeHandler.updateCodeOutput(chunkNumber: response.chunkId, outputContent: response.results)
+		// rebuild the entire output for the chunk
+		let html = preview.codeHandler.htmlForChunk(chunkNumber: response.chunkId)
 		preview.lastAccess = Date.timeIntervalSinceReferenceDate
 		let script = """
 		$("sectionContent[index=\(response.chunkId)]").innerHtml = \(html)")

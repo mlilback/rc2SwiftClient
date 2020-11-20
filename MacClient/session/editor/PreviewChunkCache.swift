@@ -24,6 +24,7 @@ public class PreviewChunkCache {
 		let type: RootChunkType
 		var currentHtml: String = ""
 		var inlineHtml: [String] = []
+		var output: String = ""
 	}
 
 	private struct SavedCacheEntry: Codable, FetchableRecord, TableRecord, PersistableRecord {
@@ -66,6 +67,21 @@ public class PreviewChunkCache {
 		cacheCode(changedChunks: &changedIndexes)
 	}
 	
+	/// if specified chunk is a code chunk, stores the code output for that chunk. recaches the code so no need to do that affter this call
+	public func updateCodeOutput(chunkNumber: Int, outputContent: String) {
+		guard var chunk = chunkInfo[safe: chunkNumber], chunk.type == .code else {
+			Log.warn("invali chunk index", .app)
+			return
+		}
+		Log.info("updating output for chunk \(chunkNumber)")
+		chunkInfo[chunkNumber].output = outputContent
+		// make sure the struct in the array actually got updated, not a copy we made
+		assert(outputContent == chunkInfo[chunkNumber].output)
+		// recache output
+		var changed = [chunkNumber]
+		cacheCode(changedChunks: &changed)
+	}
+	
 	/// Clears the code chache, should be called when the document has changed
 	public func clearCache() {
 		chunkInfo.removeAll()
@@ -98,7 +114,7 @@ public class PreviewChunkCache {
 				// need to generate inline html
 				var inline = [String]()
 				for inlineChunk in chunk.children {
-					inline.append(inlineHtmlFor(chunk: inlineChunk, parent: chunk, document: document))
+					inline.append(inlineHtmlFor(chunk: inlineChunk, parent: chunk))
 				}
 				guard chunkInfo[chunkNumber].inlineHtml != inline else { continue }
 				chunkInfo[chunkNumber].inlineHtml = inline
@@ -108,7 +124,7 @@ public class PreviewChunkCache {
 				continue
 			}
 			guard chunk.chunkType == .code else { continue }
-			let currentHtml = htmlForChunk(document: document, number: chunkNumber)
+			let currentHtml = htmlForChunk(chunkNumber: chunkNumber)
 			if chunkInfo[chunkNumber].currentHtml != currentHtml {
 				if let changedIndex = changedChunks.firstIndex(where: { $0 == chunkNumber }) {
 					changedChunks.remove(at: changedIndex)
@@ -121,7 +137,7 @@ public class PreviewChunkCache {
 		changedChunks.sort()
 	}
 
-	private func inlineHtmlFor(chunk: RmdDocumentChunk, parent: RmdDocumentChunk, document: RmdDocument) -> String {
+	private func inlineHtmlFor(chunk: RmdDocumentChunk, parent: RmdDocumentChunk) -> String {
 		// just return nothing if not code
 		guard chunk.isInline else { return "" }
 		// TODO: generate actual code
@@ -130,11 +146,11 @@ public class PreviewChunkCache {
 	}
 
 	/// returns the html for the specified chunk.
-	public func htmlForChunk(document: RmdDocument, number: Int) -> String {
-		let src = document.string(for: document.chunks[number], type: .inner)
+	public func htmlForChunk(chunkNumber: Int) -> String {
+		let src = document.string(for: document.chunks[chunkNumber], type: .inner)
 		let output: String
-		if chunkInfo[number].currentHtml.count > 0 {
-			output = chunkInfo[number].currentHtml
+		if chunkInfo[chunkNumber].output.count > 0 {
+			output = chunkInfo[chunkNumber].output
 		} else {
 			// TODO: this should give user notice that chunk needs to be executed
 			output = "<!-- R output will go here -->"
@@ -142,7 +158,7 @@ public class PreviewChunkCache {
 		return """
 		<div class="codeChunk">
 		<div class="codeSource">
-		\(src.addingUnicodeEntities.replacingOccurrences(of: "\n", with: "<br>\n"))
+		\(src.trimmingCharacters(in: .whitespacesAndNewlines).addingUnicodeEntities.replacingOccurrences(of: "\n", with: "<br>\n"))
 		</div><div class="codeOutput">
 		\(output)
 		</div>
