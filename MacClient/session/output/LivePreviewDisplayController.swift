@@ -379,9 +379,12 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			guard let me = self else { return }
 			let sema = DispatchSemaphore(value: 1)
 			let encoded = script.data(using: .utf8)!.base64EncodedString()
-			let realString = "executeScript(" + "'" + encoded + "')"
+			let realString = "executeScript(" + "`" + encoded + "`)"
 			DispatchQueue.main.async {
 				me.outputView?.evaluateJavaScript(realString) { (val, err) in
+					if let error = err {
+						Log.info("js returned error: \(error) ")
+					}
 					completionHandler?(val, err)
 					sema.signal()
 				}
@@ -503,6 +506,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		config.allowsAirPlayForMediaPlayback = true
 		webConfig = config
 		webConfig?.userContentController.add(self, name: "previewHandler")
+		webConfig?.userContentController.add(self, name: "error")
 		let newwk = WKWebView(frame: outputView!.frame, configuration: config)
 		newwk.translatesAutoresizingMaskIntoConstraints = false
 		outputView?.superview?.addSubview(newwk)
@@ -612,6 +616,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			Log.info("page loaded")
 		} else if message.name == "previewHandler" {
 			//ignore
+			Log.warn("skipping previewHandler message")
 		} else {
 			Log.info("unknown message posted from preview")
 		}
@@ -665,7 +670,7 @@ extension LivePreviewDisplayController: SessionPreviewDelegate {
 		let html = preview.codeHandler.htmlForChunk(chunkNumber: response.chunkId)
 		preview.lastAccess = Date.timeIntervalSinceReferenceDate
 		let script = """
-		$("sectionContent[index=\(response.chunkId)]").innerHtml = \(html)")
+		$("sectionContent[index=\(response.chunkId)] > .codeChunk").replaceWith(`\(html)`)
 		"""
 		runJavascript(script)
 	}

@@ -195,8 +195,17 @@ hr {
 </script>
 
 <script type="text/javascript">
-	window.onerror = function(error) {
-		alert(error); // Fire when errors occur. Just a test, not always do this.
+	window.onerror = function(msg, url, line, column, error) {
+		const message = {
+			message: msg,
+			url: url,
+			line: line,
+			column: column,
+			error: JSON.stringify(error)
+		}
+		if (window.webkit) {
+			window.webkit.messsagesHandlers.error.postMessage(message);
+		}
 	};
 </script>
 
@@ -211,6 +220,7 @@ hr {
 </script>
 
 <script type="text/javascript">
+var lastScript = ""
 function updateSectionToolbars() {
 	$.each($("sectionToolbar"), function(index, toolbar) {
 		var chunkNumber = $(toolbar).attr("index")
@@ -223,6 +233,7 @@ function updateSectionToolbars() {
 }
 function executeScript(rawScript) {
 	var script = window.atob(rawScript)
+	lastScript = script
 	eval(script)
 }
 function updateBody(newContent) {
@@ -241,9 +252,9 @@ function toolClicked(item, actionName) {
 </script>
 
 <script type="text/javascript">
-window.addEventListener("load", function() {
-	window.webkit.messageHandlers.previewHandler.postMessage("pageLoaded");
-});
+//window.addEventListener("load", function() {
+//	window.webkit.messageHandlers.previewHandler.postMessage("pageLoaded");
+//});
 </script>
 
 <link rel="stylesheet" href="preview.css">
