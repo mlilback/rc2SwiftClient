@@ -28,6 +28,7 @@ public class PreviewChunkCache {
 	}
 
 	private struct SavedCacheEntry: Codable, FetchableRecord, TableRecord, PersistableRecord {
+		static var databaseTableName: String = "cacheEntry"
 		let fileId: Int
 		let fileVersion: Int
 		let chunks: [ChunkInfo]
@@ -51,11 +52,18 @@ public class PreviewChunkCache {
 		self.workspace = workspace
 		self._document = Property<RmdDocument?>(documentProperty)
 		NotificationCenter.default.addObserver(self, selector: #selector(documentUpdated), name: .rmdDocumentUpdated, object: self.document)
+		NotificationCenter.default.addObserver(self, selector: #selector(appTerminating(note:)), name: NSApplication.willTerminateNotification, object: nil)
 		readCache()
 	}
 	
 	deinit {
 		saveCache()
+	}
+	
+	/// notification handler for app termination. Saves database before exiting
+	@objc func appTerminating(note: Notification?) {
+		saveCache()
+		dbQueue = nil
 	}
 	
 	/// called when the document's content was updated
@@ -69,7 +77,7 @@ public class PreviewChunkCache {
 	
 	/// if specified chunk is a code chunk, stores the code output for that chunk. recaches the code so no need to do that affter this call
 	public func updateCodeOutput(chunkNumber: Int, outputContent: String) {
-		guard var chunk = chunkInfo[safe: chunkNumber], chunk.type == .code else {
+		guard let chunk = chunkInfo[safe: chunkNumber], chunk.type == .code else {
 			Log.warn("invali chunk index", .app)
 			return
 		}
@@ -216,7 +224,7 @@ extension PreviewChunkCache {
 		}
 	}
 	
-	func saveCache() {
+	@objc func saveCache() {
 		if dbQueue == nil { initializeCache() }
 		let toSave = SavedCacheEntry(fileId: fileId, fileVersion: workspace.file(withId: fileId)!.version, chunks: chunkInfo)
 		do {
@@ -235,13 +243,16 @@ extension PreviewChunkCache {
 	
 	private func initializeCache() {
 		do {
+			var config = Configuration()
+			config.foreignKeysEnabled = true
+			config.readonly = false
 			dbQueue = try DatabaseQueue(path: cacheURL().path)
-			try dbQueue?.read { db in
+			try dbQueue?.write { db in
 				//create table if it doesn't exist
 				try db.create(table: cacheTableName, ifNotExists: true) { t in
 					t.column("fileId", .integer).primaryKey()
 					t.column("fileVersion", .integer)
-					t.column("entries", .blob)
+					t.column("chunks", .blob)
 				}
 			}
 		} catch {
