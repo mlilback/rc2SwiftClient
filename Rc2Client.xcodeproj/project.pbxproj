@@ -788,10 +788,6 @@
 		08125B332567328D00C5751E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		08125B662567334300C5751E /* libcmark-gfm-extensions.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcmark-gfm-extensions.dylib"; path = "vendor/cmark-gfm/build/installed/lib/libcmark-gfm-extensions.dylib"; sourceTree = "<group>"; };
 		08125B672567334300C5751E /* libcmark-gfm.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcmark-gfm.dylib"; path = "vendor/cmark-gfm/build/installed/lib/libcmark-gfm.dylib"; sourceTree = "<group>"; };
-		081263151C85D2E0003E37A5 /* NoodleLineNumberMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoodleLineNumberMarker.h; sourceTree = "<group>"; };
-		081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoodleLineNumberMarker.m; sourceTree = "<group>"; };
-		081263171C85D2E0003E37A5 /* NoodleLineNumberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoodleLineNumberView.h; sourceTree = "<group>"; };
-		081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoodleLineNumberView.m; sourceTree = "<group>"; };
 		0812631E1C862F4B003E37A5 /* EditorDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorDocument.swift; sourceTree = "<group>"; };
 		081263201C87A9E8003E37A5 /* DocumentManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentManagerTests.swift; sourceTree = "<group>"; };
 		08127CC51DA81192002E0D01 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/Mac/ReactiveSwift.framework; sourceTree = "<group>"; };
@@ -1438,10 +1434,6 @@
 			children = (
 				0816FD1C1E5226010006FF26 /* SearchBarView.swift */,
 				0816FD1E1E5226760006FF26 /* SearchBarView.xib */,
-				081263151C85D2E0003E37A5 /* NoodleLineNumberMarker.h */,
-				081263161C85D2E0003E37A5 /* NoodleLineNumberMarker.m */,
-				081263171C85D2E0003E37A5 /* NoodleLineNumberView.h */,
-				081263181C85D2E0003E37A5 /* NoodleLineNumberView.m */,
 				08AA5F061E5350AA00389089 /* SearchBarField.h */,
 				08AA5F071E5350AA00389089 /* SearchBarField.m */,
 				08EE26F8202FA4A5008E008F /* DimmingView.swift */,
