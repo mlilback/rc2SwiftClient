@@ -25,6 +25,7 @@ public class PreviewChunkCache {
 		var currentHtml: String = ""
 		var inlineHtml: [String] = []
 		var output: String = ""
+		var outputIsValid: Bool = false
 	}
 
 	private struct SavedCacheEntry: Codable, FetchableRecord, TableRecord, PersistableRecord {
@@ -83,8 +84,7 @@ public class PreviewChunkCache {
 		}
 		Log.info("updating output for chunk \(chunkNumber)")
 		chunkInfo[chunkNumber].output = outputContent
-		// make sure the struct in the array actually got updated, not a copy we made
-		assert(outputContent == chunkInfo[chunkNumber].output)
+		chunkInfo[chunkNumber].outputIsValid = true
 		// recache output
 		var changed = [chunkNumber]
 		cacheCode(changedChunks: &changed)
@@ -131,7 +131,11 @@ public class PreviewChunkCache {
 				}
 				continue
 			}
-			guard chunk.chunkType == .code else { continue }
+			guard chunk.chunkType == .code else {
+				// TODO: need to track inline code chunks, or markdown chunks with inline code
+				chunkInfo[chunkNumber].outputIsValid = true
+				continue
+			}
 			let currentHtml = htmlForChunk(chunkNumber: chunkNumber)
 			if chunkInfo[chunkNumber].currentHtml != currentHtml {
 				if let changedIndex = changedChunks.firstIndex(where: { $0 == chunkNumber }) {
@@ -144,11 +148,33 @@ public class PreviewChunkCache {
 		}
 		changedChunks.sort()
 	}
+	
+	/// Called to notify a chunk will be execute. Invalidates the output of all code chunks that foillow
+	/// - Parameter chunkIndex: the chunkIndex
+	public func willExecuteChunk(chunkIndex: Int) {
+		precondition(chunkInfo.indices.contains(chunkIndex))
+		// invalidate all future code chunks
+		for idx in chunkIndex...chunkInfo.count where chunkInfo[idx].type == .code {
+			chunkInfo[idx].outputIsValid = false
+		}
 
+	}
+	
+	/// Reports if the specified's output is valid and doesn't need updating
+	/// - Parameter number: the chunk number
+	/// - Returns: true if the otuput is known to be valid
+	public func isChunkOutputValid(chunkIndex: Int) -> Bool {
+		chunkInfo[chunkIndex].outputIsValid
+	}
+	
 	private func inlineHtmlFor(chunk: RmdDocumentChunk, parent: RmdDocumentChunk) -> String {
 		// just return nothing if not code
 		guard chunk.isInline else { return "" }
-		// TODO: generate actual code
+		guard chunk.chunkType == .inlineCode else {
+			// for inline equations, just return the source
+			return document.string(for: chunk)
+		}
+		// TODO: generate actual code. need to be able to tell what context to use
 		let parHTML = document.string(for: chunk, type: .outer)
 		return parHTML
 	}
