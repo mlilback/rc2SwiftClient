@@ -21,8 +21,17 @@ extension NSTextView {
 	}
 }
 
+@objc protocol SessionEditorDelegate: NSTextViewDelegate {
+	/// called when data has been inserted from a pasteboard (paste,d&d)
+	/// - Parameters:
+	///   - editor: the SessionEditor/TextView
+	///   - previousRange: the range that was replaced
+	@objc optional func didInsertFromPasteboard(_ editor: SessionEditor, previousRange: NSRange)
+}
+
 class SessionEditor: TextViewWithContextualMenu {
 	var wordWrapEnabled: Bool { return textContainer!.widthTracksTextView }
+	var sessionEditorDelegate: SessionEditorDelegate? { return delegate as? SessionEditorDelegate }
 
 	private var didSetup = false
 
@@ -47,6 +56,15 @@ class SessionEditor: TextViewWithContextualMenu {
 		return NSRange(location: 0, length: textStorage!.length)
 	}
 
+	// overriden so delegate can know when text is pasted/dropped
+	override func readSelection(from pboard: NSPasteboard, type: NSPasteboard.PasteboardType) -> Bool {
+		let prevRange = rangeForUserTextChange
+		let result = super.readSelection(from: pboard, type: type)
+		sessionEditorDelegate?.didInsertFromPasteboard?(self, previousRange: prevRange)
+		return result
+	}
+	
+	
 	func moveCursorToNextNonBlankLine() {
 		let contents = string
 		var lastLocation: String.Index = contents.endIndex

@@ -364,8 +364,8 @@ extension BaseSourceEditorController: NSTextStorageDelegate {
 	}
 }
 
-// MARK: - NSTextViewDelegate methods
-extension BaseSourceEditorController: NSTextViewDelegate {
+// MARK: - SesssionEditorDelegate/NSTextViewDelegate methods
+extension BaseSourceEditorController: SessionEditorDelegate {
 	func undoManager(for view: NSTextView) -> UndoManager? {
 		if let currentDocument = context?.currentDocument.value {
 			return currentDocument.undoManager
