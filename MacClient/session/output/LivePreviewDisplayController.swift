@@ -134,7 +134,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	// MARK: - notification handlers
 
 	/// called by the editor when the user has made an edit, resulting in a change of what is displayed
-	/// this likely means there are changes to consier reparsing
+	/// this likely means there are changes to consider reparsing
 	///
 	/// - Parameters:
 	///   - range: the range of the text in the original string
@@ -145,6 +145,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		// never execute code chunks (happens on button click)
 		// if paste with a chunk in it, we need to reparse. BUt we don't know that without a reparse.
 		//
+
+		// we need to know when contents edited was called because of a paste so we can not require a reparse if only a single markdown chunk was affected. Is the knowledeable without the new delegate method added to sessioneditordelegate (which the editor conforms to). What happens on delete? maybe for now always reparts on anything bigger than a few words? Or any paste with $$ or ``` ?
 		
 		// does nstext_ let un know when a paste or drag&drop happens vs typing.
 		// if change was that, definately need to reparse
