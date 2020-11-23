@@ -26,6 +26,8 @@ class LivePreviewEditorController: BaseSourceEditorController {
 	private var lastChangeRange: NSRange?
 	private var lastChangeDelta: Int = 0
 	private var timerRunning = false
+	private var lastChangeMaxDelta: Int = 0
+	private var changedLocation: Int = 0
 
 	override func viewDidLoad() {
 		useParser = true
@@ -34,14 +36,14 @@ class LivePreviewEditorController: BaseSourceEditorController {
 		lastChangeTimer = DispatchSource.makeTimerSource(queue: .main)
 		lastChangeTimer.schedule(deadline: .now() + .milliseconds(500), repeating: .milliseconds(500), leeway: .milliseconds(100))
 		lastChangeTimer.setEventHandler { [weak self] in
-			guard let me = self else { return }
-			guard let lastRange = me.lastChangeRange, let editor = me.editor else { return }
+			guard let me = self, let editor = me.editor else { return }
 			let curTime = Date.timeIntervalSinceReferenceDate
 			if (curTime - me.lastTextChange) > Defaults[.previewUpdateDelay] {
 				me.lastTextChange = curTime
-				defer { me.lastChangeRange = nil }
+				defer { me.lastChangeRange = nil; me.lastChangeDelta = 0 }
+				let changeRange = NSRange(location: me.changedLocation, length: me.lastChangeDelta)
 				if let oc = me.outputController,
-					oc.contentsEdited(contents: editor.string, range: lastRange, delta: me.lastChangeDelta)
+				   oc.contentsEdited(contents: editor.string, range: changeRange, delta: me.lastChangeMaxDelta)
 				{
 					if me.ignoreContentChanges { return }
 					me.save(edits: editor.string, reload: false)
@@ -71,8 +73,14 @@ class LivePreviewEditorController: BaseSourceEditorController {
 		// really does nothing, but call to be safe
 		super.contentsChanged(contents, range: range, changeLength: delta)
 		lastTextChange = Date.timeIntervalSinceReferenceDate
-		lastChangeRange = range
-		lastChangeDelta = delta
+		if lastChangeRange == nil {
+			lastChangeRange = range
+			changedLocation = range.location
+		}
+		if delta < 0 {
+			changedLocation += delta
+		}
+		lastChangeDelta += abs(delta)
 	}
 
 	/// subclasses should override and save contents via save(edits:). super should not be called
