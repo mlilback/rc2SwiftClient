@@ -149,12 +149,30 @@ public class PreviewChunkCache {
 		changedChunks.sort()
 	}
 	
+	/// calls supplied closure for every chunk whose output is invalid
+	/// - Parameter body: closure to call
+	public func forInvalidChunks(body: (Int) -> Void) {
+		chunkInfo.filter({ !$0.outputIsValid }).forEach({ body($0.chunkNumber) })
+	}
+	
+	/// Figures out the state for every chunk
+	/// - Returns: Tuple of  ( [chunkNumber], [Bool]) where second array is true if it should be enabled
+	public func chunksValidity() -> ([Int], [Bool]) {
+		var indexes = [Int]()
+		var enable = [Bool]()
+			chunkInfo.forEach {
+				indexes.append($0.chunkNumber)
+				enable.append(!$0.outputIsValid)
+		}
+		return (indexes, enable)
+	}
+	
 	/// Called to notify a chunk will be execute. Invalidates the output of all code chunks that foillow
 	/// - Parameter chunkIndex: the chunkIndex
 	public func willExecuteChunk(chunkIndex: Int) {
 		precondition(chunkInfo.indices.contains(chunkIndex))
 		// invalidate all future code chunks
-		for idx in chunkIndex...chunkInfo.count where chunkInfo[idx].type == .code {
+		for idx in chunkIndex..<chunkInfo.count where chunkInfo[idx].type == .code {
 			chunkInfo[idx].outputIsValid = false
 		}
 
