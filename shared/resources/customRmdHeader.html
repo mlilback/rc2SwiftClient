@@ -236,6 +236,15 @@ function executeScript(rawScript) {
 	lastScript = script
 	eval(script)
 }
+function adjustToolbarButton(chunkId, enable) {
+var tname = "timg" + chunkId
+	$("toolbar-button[tname] > a").prop('disabled', !enable)
+}
+function adjustToolbarButtons(chunkIds, enable) {
+	chunkIds.forEach(function(chunkId) {
+		adjustToolbarButton(chunkId, enable)
+	})
+}
 function updateBody(newContent) {
 	var decoded = window.atob(newContent)
 	$("#body-content").html(decoded)
