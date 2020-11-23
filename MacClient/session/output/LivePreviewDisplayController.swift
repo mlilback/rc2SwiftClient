@@ -185,7 +185,23 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 
 	// MARK: - action handlers
 	func executeChunk(number: Int) {
-
+		guard let curPreview = currentPreview else { return }
+		// invalidate future code chunks
+		curPreview.codeHandler.willExecuteChunk(chunkIndex: number)
+		requestUpdate(previewId: curPreview.previewId, chunkId: number, includePrevious: false)
+			.startWithResult { result in
+				switch result {
+				case .failure(let error):
+					Log.warn("preview update reuest failed: \(error)")
+				case .success(_):
+					// refresh tool
+					let (indexes, enable) = curPreview.codeHandler.chunksValidity()
+					let idxArray = indexes.map({ String($0) }).joined(separator: ", ")
+					let enArray = enable.map({ String($0) }).joined(separator: ", ")
+					self.runJavascript("adjustToolbarButtons([\(idxArray)], [\(enArray)]")
+				}
+				
+			}
 	}
 
 	func executeChunkAndPrevious(number: Int) {
@@ -310,18 +326,10 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		return html as String
 	}
 
-	private func textFor(inlineChunk: RmdDocumentChunk, parent: RmdDocumentChunk) -> String {
-		guard let doc = parsedDocument else { fatalError("textFor called w/o a document") }
-		let inlineText = doc.string(for: inlineChunk, type: .inner)
-		var icText = inlineText
-		switch inlineChunk.chunkType {
-		case .inlineCode:
-			icText = doc.string(for: inlineChunk, type: .outer)
-		case .inlineEquation:
-			icText = "\\(\(inlineText)\\)"
-		default:
-			preconditionFailure("chunk isn't inline")
-		}
+	public func textFor(inlineChunk: RmdDocumentChunk, parent: RmdDocumentChunk) -> String {
+		guard let curPreview = currentPreview else { fatalError("textFor called w/o a preview") }
+		guard inlineChunk.isInline else { fatalError("text for inline chunk called with non-inline chunk") }
+		let icText = curPreview.codeHandler.inlineHtmlFor(chunk: inlineChunk, parent: parent)
 		return icText
 	}
 
@@ -386,6 +394,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 				me.outputView?.evaluateJavaScript(realString) { (val, err) in
 					if let error = err {
 						Log.info("js returned error: \(error) ")
+						Log.info("from \(realString)")
 					}
 					completionHandler?(val, err)
 					sema.signal()

@@ -185,12 +185,12 @@ public class PreviewChunkCache {
 		chunkInfo[chunkIndex].outputIsValid
 	}
 	
-	private func inlineHtmlFor(chunk: RmdDocumentChunk, parent: RmdDocumentChunk) -> String {
+	public func inlineHtmlFor(chunk: RmdDocumentChunk, parent: RmdDocumentChunk) -> String {
 		// just return nothing if not code
 		guard chunk.isInline else { return "" }
 		guard chunk.chunkType == .inlineCode else {
 			// for inline equations, just return the source
-			return document.string(for: chunk)
+			return "\\(\(document.string(for: chunk))\\)"
 		}
 		// TODO: generate actual code. need to be able to tell what context to use
 		let parHTML = document.string(for: chunk, type: .outer)
