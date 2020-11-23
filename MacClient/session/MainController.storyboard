@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="dEf-uW-xcq">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17156"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -501,14 +501,13 @@
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="18" rowSizeStyle="automatic" viewBased="YES" id="wvl-Kg-cyW" customClass="FileTableView" customModule="MacClient" customModuleProvider="target">
                                                     <rect key="frame" x="0.0" y="0.0" width="207" height="638"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <size key="intercellSpacing" width="3" height="6"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                     <tableColumns>
                                                         <tableColumn identifier="name" editable="NO" width="200" minWidth="40" maxWidth="1000" id="Lqk-jJ-n2C">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
-                                                                <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                                             </tableHeaderCell>
@@ -626,8 +625,8 @@
                                                     <action selector="segButtonClicked:" target="XJm-U6-51C" id="kih-D7-brA"/>
                                                 </connections>
                                             </segmentedControl>
-                                            <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wkm-KO-9pg" userLabel="action menu">
-                                                <rect key="frame" x="158" y="-1" width="35" height="23"/>
+                                            <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="wkm-KO-9pg" userLabel="action menu">
+                                                <rect key="frame" x="158" y="0.0" width="35" height="22"/>
                                                 <popUpButtonCell key="cell" type="smallSquare" bezelStyle="smallSquare" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" pullsDown="YES" autoenablesItems="NO" selectedItem="tg4-ie-6Et" id="zUd-0F-7El">
                                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                     <font key="font" metaFont="menu"/>
@@ -754,26 +753,25 @@
         <scene sceneID="AJm-u8-LUo">
             <objects>
                 <viewController id="1Ce-Bb-cCN" userLabel="variables view controller" customClass="SidebarVariableController" customModule="MacClient" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="ePu-VH-UTN">
-                        <rect key="frame" x="0.0" y="0.0" width="209" height="513"/>
+                    <view key="view" misplaced="YES" id="ePu-VH-UTN">
+                        <rect key="frame" x="0.0" y="0.0" width="209" height="489"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="20" horizontalPageScroll="10" verticalLineScroll="20" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lcj-AZ-fvh">
-                                <rect key="frame" x="0.0" y="38" width="209" height="475"/>
+                                <rect key="frame" x="0.0" y="38" width="209" height="427"/>
                                 <clipView key="contentView" drawsBackground="NO" id="gnO-zr-QuJ">
-                                    <rect key="frame" x="1" y="0.0" width="207" height="474"/>
+                                    <rect key="frame" x="1" y="0.0" width="207" height="426"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" typeSelect="NO" autosaveName="sessionVariablesTable" rowSizeStyle="automatic" headerView="Jjn-3C-Hze" viewBased="YES" id="6xa-i9-qGY">
-                                            <rect key="frame" x="0.0" y="0.0" width="207" height="451"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="207" height="403"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="3"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
                                                 <tableColumn identifier="name" editable="NO" width="80" minWidth="40" maxWidth="1000" id="v4F-t8-uMd">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Name">
-                                                        <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                                     </tableHeaderCell>
@@ -809,7 +807,6 @@
                                                 </tableColumn>
                                                 <tableColumn identifier="value" editable="NO" width="121" minWidth="10" maxWidth="3.4028234663852886e+38" id="86D-Ip-haw">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Value">
-                                                        <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                     </tableHeaderCell>
@@ -933,14 +930,13 @@
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="8" autosaveExpandedItems="YES" autoresizesOutlineColumn="YES" outlineTableColumn="EEe-Mq-QDL" id="r0I-de-3Iv">
                                             <rect key="frame" x="0.0" y="0.0" width="207" height="473"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
                                                 <tableColumn width="200" minWidth="180" maxWidth="200" id="EEe-Mq-QDL">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
-                                                        <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                     </tableHeaderCell>
@@ -1376,7 +1372,7 @@
                                                     </connections>
                                                 </segmentedControl>
                                                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wi0-ZF-Par">
-                                                    <rect key="frame" x="73" y="4" width="367" height="17"/>
+                                                    <rect key="frame" x="73" y="3" width="367" height="17"/>
                                                     <textFieldCell key="cell" lineBreakMode="truncatingHead" sendsActionOnEndEditing="YES" alignment="center" title="Loading…" id="G82-68-MnS">
                                                         <font key="font" metaFont="system" size="14"/>
                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1493,11 +1489,11 @@
                             <scrollView appearanceType="aqua" fixedFrame="YES" borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MaL-tv-jEs">
                                 <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <clipView key="contentView" ambiguous="YES" drawsBackground="NO" copiesOnScroll="NO" id="QYn-L8-hs4">
+                                <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="QYn-L8-hs4">
                                     <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <textView ambiguous="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" allowsDocumentBackgroundColorChange="YES" allowsUndo="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="BTo-kx-sgU" customClass="SessionEditor" customModule="MacClient" customModuleProvider="target">
+                                        <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" allowsDocumentBackgroundColorChange="YES" allowsUndo="YES" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="BTo-kx-sgU" customClass="SessionEditor" customModule="MacClient" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
