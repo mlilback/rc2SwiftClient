@@ -21,37 +21,13 @@ class LivePreviewEditorController: BaseSourceEditorController {
 	private var inOutputChange = false
 
 	// used to wrap lastChange with a queue, but that was causing recursive errors. Instead, this values should only be used on the main thread
-	private var lastTextChange: TimeInterval = 0
-	private var lastChangeTimer: DispatchSourceTimer!
-	private var lastChangeRange: NSRange?
-	private var lastChangeDelta: Int = 0
-	private var timerRunning = false
-	private var lastChangeMaxDelta: Int = 0
-	private var changedLocation: Int = 0
+	var textMonitor: TextChangeMonitor?
 
 	override func viewDidLoad() {
 		useParser = true
 		super.viewDidLoad()
 		editor?.isEditable = true
-		lastChangeTimer = DispatchSource.makeTimerSource(queue: .main)
-		lastChangeTimer.schedule(deadline: .now() + .milliseconds(500), repeating: .milliseconds(500), leeway: .milliseconds(100))
-		lastChangeTimer.setEventHandler { [weak self] in
-			guard let me = self, let editor = me.editor else { return }
-			let curTime = Date.timeIntervalSinceReferenceDate
-			if (curTime - me.lastTextChange) > Defaults[.previewUpdateDelay] {
-				me.lastTextChange = curTime
-				defer { me.lastChangeRange = nil; me.lastChangeDelta = 0 }
-				let changeRange = NSRange(location: me.changedLocation, length: me.lastChangeDelta)
-				if let oc = me.outputController,
-				   oc.contentsEdited(contents: editor.string, range: changeRange, delta: me.lastChangeMaxDelta)
-				{
-					if me.ignoreContentChanges { return }
-					me.save(edits: editor.string, reload: false)
-				}
-			}
-		}
-		lastChangeTimer.activate()
-		lastChangeTimer.suspend()
+		textMonitor = TextChangeMonitor(delegate: self)
 	}
 
 	override func setContext(context: EditorContext) {
@@ -72,15 +48,7 @@ class LivePreviewEditorController: BaseSourceEditorController {
 	override func contentsChanged(_ contents: NSTextStorage, range: NSRange, changeLength delta: Int) {
 		// really does nothing, but call to be safe
 		super.contentsChanged(contents, range: range, changeLength: delta)
-		lastTextChange = Date.timeIntervalSinceReferenceDate
-		if lastChangeRange == nil {
-			lastChangeRange = range
-			changedLocation = range.location
-		}
-		if delta < 0 {
-			changedLocation += delta
-		}
-		lastChangeDelta += abs(delta)
+		textMonitor?.textChanged(range: range, delta: delta)
 	}
 
 	/// subclasses should override and save contents via save(edits:). super should not be called
@@ -89,12 +57,22 @@ class LivePreviewEditorController: BaseSourceEditorController {
 	}
 
 	func textDidBeginEditing(_ notification: Notification) {
-		guard !timerRunning else { return }
-		lastChangeTimer.resume()
+		textMonitor?.didBeginEditing()
 	}
 
 	func textDidEndEditing(_ notification: Notification) {
-		lastChangeTimer.suspend()
-		timerRunning = false
+		textMonitor?.didEndEditing()
 	}
+}
+
+extension LivePreviewEditorController: TextChangeMonitorDelegate {
+	func contentsEdited(_ monitor: TextChangeMonitor, range: NSRange, delta: Int) {
+		if let oc = outputController,
+		   oc.contentsEdited(contents: editor!.string, range: range, delta: delta)
+		{
+			if ignoreContentChanges { return }
+			save(edits: editor!.string, reload: false)
+		}
+	}
+	
 }

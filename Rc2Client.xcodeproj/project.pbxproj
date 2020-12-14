@@ -405,6 +405,7 @@
 		08F413C72567432500DAC233 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086355A5235270130005E477 /* libcmark-gfm-extensions.0.29.0.gfm.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		08F413C82567432500DAC233 /* libcmark-gfm.0.29.0.gfm.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 086355A6235270130005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib */; };
 		08F413C92567432600DAC233 /* libcmark-gfm.0.29.0.gfm.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086355A6235270130005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		08F41443256C5AB400DAC233 /* TextChangeMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F41442256C5AB400DAC233 /* TextChangeMonitor.swift */; };
 		08F448FA1C4E244500C64706 /* SourceEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* SourceEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* SidebarTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* SidebarTabController.swift */; };
 		08F448FC1C4E244500C64706 /* ConsoleOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F71C4E244500C64706 /* ConsoleOutputController.swift */; };
@@ -1156,6 +1157,7 @@
 		08F189B01D19B0D500866A05 /* ServerHost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ServerHost.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F189B81D216E5400866A05 /* Bookmark.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Bookmark.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F1FD8823F354BF00CB7522 /* helpindex.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = helpindex.db; sourceTree = "<group>"; };
+		08F41442256C5AB400DAC233 /* TextChangeMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextChangeMonitor.swift; sourceTree = "<group>"; };
 		08F42FA11D33F47000A1EE8D /* MockSessionHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockSessionHelpers.swift; sourceTree = "<group>"; };
 		08F448F51C4E244500C64706 /* SourceEditorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SourceEditorController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		08F448F61C4E244500C64706 /* SidebarTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidebarTabController.swift; sourceTree = "<group>"; };
@@ -1624,6 +1626,7 @@
 				08F6ADA81DD643C900AF0722 /* Copyable.swift */,
 				084D32E9206D03DD00246CBD /* ClientCore.h */,
 				084D32EA206D03DD00246CBD /* Info.plist */,
+				08F41442256C5AB400DAC233 /* TextChangeMonitor.swift */,
 			);
 			path = ClientCore;
 			sourceTree = "<group>";
@@ -2673,7 +2676,7 @@
 			isa = PBXProject;
 			attributes = {
 				DefaultBuildSystemTypeForWorkspace = Latest;
-				LastSwiftUpdateCheck = 0920;
+				LastSwiftUpdateCheck = 1210;
 				LastUpgradeCheck = 1210;
 				ORGANIZATIONNAME = Rc2;
 				TargetAttributes = {
@@ -3128,6 +3131,7 @@
 				084D330A206D053700246CBD /* VariableFormatter.swift in Sources */,
 				08B73E8F208A134F00DB7339 /* EditorContext.swift in Sources */,
 				083E3D3123A01527007DFCB8 /* RmdDocument.swift in Sources */,
+				08F41443256C5AB400DAC233 /* TextChangeMonitor.swift in Sources */,
 				084D332D20752C7D00246CBD /* CodeTemplate.swift in Sources */,
 				084D3307206D042500246CBD /* HelpTopic.swift in Sources */,
 				08B73E92208A14E800DB7339 /* PreferenceKeys.swift in Sources */,
@@ -3982,7 +3986,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.ClientCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -4012,7 +4016,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = io.rc2.client.ClientCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
