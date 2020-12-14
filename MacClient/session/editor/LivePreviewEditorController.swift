@@ -66,9 +66,9 @@ class LivePreviewEditorController: BaseSourceEditorController {
 }
 
 extension LivePreviewEditorController: TextChangeMonitorDelegate {
-	func contentsEdited(_ monitor: TextChangeMonitor, range: NSRange, delta: Int) {
+	func contentsEdited(_ monitor: TextChangeMonitor, range: NSRange)  {
 		if let oc = outputController,
-		   oc.contentsEdited(contents: editor!.string, range: range, delta: delta)
+		   oc.contentsEdited(contents: editor!.string, range: range, delta: 0)
 		{
 			if ignoreContentChanges { return }
 			save(edits: editor!.string, reload: false)
