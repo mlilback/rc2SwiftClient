@@ -101,7 +101,6 @@
 		0833A8261D2D87120033654B /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; };
 		0833A8271D2D87270033654B /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0833A8251D2D87120033654B /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0835A07E1E57823500123820 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0835A07D1E57823500123820 /* OnboardingViewController.swift */; };
-		083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 082FF1BE1C7F321B00CCC27F /* Mockingjay.framework */; };
 		083AC0FE2062D6270054023F /* mathFonts.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0859A3072062701900103924 /* mathFonts.bundle */; };
 		083AC1042062EDFB0054023F /* NSImage+Rc2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083AC1032062EDFB0054023F /* NSImage+Rc2.swift */; };
 		083B500B237A38D600A3C8E6 /* NSResponder+MJL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 083B500A237A38D600A3C8E6 /* NSResponder+MJL.swift */; };
@@ -193,7 +192,6 @@
 		08604A4E1D9C0C0500DE2A79 /* Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08604A4D1D9C0C0500DE2A79 /* Named.swift */; };
 		086413C82013614500116153 /* AppLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086413C620135E1C00116153 /* AppLoggerTests.swift */; };
 		086413CA201392C600116153 /* sampleLog.json in Resources */ = {isa = PBXBuildFile; fileRef = 086413C9201392C600116153 /* sampleLog.json */; };
-		086413CB201394B100116153 /* MJLLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08ACDA371FD1F5B90017770B /* MJLLogger.framework */; };
 		086508771E43F27C0067C8CA /* SingleInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086508761E43F27C0067C8CA /* SingleInputViewController.swift */; };
 		0865087D1E49360A0067C8CA /* Starscream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0865087F1E4940E20067C8CA /* xattrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0865087E1E4940E20067C8CA /* xattrTests.swift */; };
@@ -351,7 +349,6 @@
 		08B73E90208A135400DB7339 /* CodeEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084D32DD206C30B500246CBD /* CodeEditor.swift */; };
 		08B73E92208A14E800DB7339 /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086526281E6E1B0100D75B25 /* PreferenceKeys.swift */; };
 		08BCEA2F20388B51004A5F47 /* SessionSubProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BCEA2E20388B51004A5F47 /* SessionSubProtocols.swift */; };
-		08BCEA33203B0BD9004A5F47 /* DocumentManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081263201C87A9E8003E37A5 /* DocumentManagerTests.swift */; };
 		08BCEA35203B1114004A5F47 /* FakeFileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 088935871E00AA5700C94B19 /* FakeFileCache.swift */; };
 		08BCEA38203B1997004A5F47 /* Starscream.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 08367BD21E3FCEA800FAFC8A /* Starscream.framework */; };
 		08BCEA39203B19D0004A5F47 /* Nimble.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0826108D1DB02FC300C03422 /* Nimble.framework */; };
@@ -406,6 +403,8 @@
 		08F413C82567432500DAC233 /* libcmark-gfm.0.29.0.gfm.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 086355A6235270130005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib */; };
 		08F413C92567432600DAC233 /* libcmark-gfm.0.29.0.gfm.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 086355A6235270130005E477 /* libcmark-gfm.0.29.0.gfm.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		08F41443256C5AB400DAC233 /* TextChangeMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F41442256C5AB400DAC233 /* TextChangeMonitor.swift */; };
+		08F4151F256D9A8400DAC233 /* DocumentManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 081263201C87A9E8003E37A5 /* DocumentManagerTests.swift */; };
+		08F41536256D9AB600DAC233 /* Logging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08817B7A233AB2B800194228 /* Logging.framework */; };
 		08F448FA1C4E244500C64706 /* SourceEditorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F51C4E244500C64706 /* SourceEditorController.swift */; };
 		08F448FB1C4E244500C64706 /* SidebarTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F61C4E244500C64706 /* SidebarTabController.swift */; };
 		08F448FC1C4E244500C64706 /* ConsoleOutputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F448F71C4E244500C64706 /* ConsoleOutputController.swift */; };
@@ -1313,8 +1312,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				086413CB201394B100116153 /* MJLLogger.framework in Frameworks */,
-				083A4B031C7F347E0007AC46 /* Mockingjay.framework in Frameworks */,
+				08F41536256D9AB600DAC233 /* Logging.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3147,6 +3145,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08F4151F256D9A8400DAC233 /* DocumentManagerTests.swift in Sources */,
 				084D32F7206D03DD00246CBD /* ClientCoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3290,7 +3289,6 @@
 			files = (
 				08A01FD81CC965F8001EDFAA /* HelpControllerTests.swift in Sources */,
 				08CB55401C5A6E71002CB7EE /* MonoFontManagerTests.swift in Sources */,
-				08BCEA33203B0BD9004A5F47 /* DocumentManagerTests.swift in Sources */,
 				08BCEA35203B1114004A5F47 /* FakeFileCache.swift in Sources */,
 				086413C82013614500116153 /* AppLoggerTests.swift in Sources */,
 			);
