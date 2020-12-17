@@ -22,6 +22,14 @@ extension NSTextView {
 }
 
 @objc protocol SessionEditorDelegate: NSTextViewDelegate {
+	/// Called before an insert from a pasteboard (paste, drop)
+	/// - Parameters:
+	///   - editor: the editor receiving the pasteboard
+	///   - pasteboard: the pastedboard with the contents to be inserted
+	///   - range: the range in the contents that will be replaced
+	/// - Returns: true if the pasteboard should be inserted, false to abort
+	@objc optional func shouldInsertFromPasteboard(_ editor: SessionEditor, pasteboard: NSPasteboard, range: NSRange) -> Bool
+	
 	/// called when data has been inserted from a pasteboard (paste,d&d)
 	/// - Parameters:
 	///   - editor: the SessionEditor/TextView
@@ -59,6 +67,7 @@ class SessionEditor: TextViewWithContextualMenu {
 	// overriden so delegate can know when text is pasted/dropped
 	override func readSelection(from pboard: NSPasteboard, type: NSPasteboard.PasteboardType) -> Bool {
 		let prevRange = rangeForUserTextChange
+		guard sessionEditorDelegate?.shouldInsertFromPasteboard?(self, pasteboard: pboard, range: prevRange) ??  true else { return false }
 		let result = super.readSelection(from: pboard, type: type)
 		sessionEditorDelegate?.didInsertFromPasteboard?(self, previousRange: prevRange)
 		return result
