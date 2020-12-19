@@ -47,11 +47,33 @@ public class PreviewChunkCache {
 		return doc
 	}
 
+	private let mdownParser = MarkdownParser()
+	// regular expressions
+	private var lineContiuationRegex: NSRegularExpression
+	private var openDoubleDollarRegex: NSRegularExpression
+	private var closeDoubleDollarRegex: NSRegularExpression
+	private let dataSourceRegex: NSRegularExpression = {
+		let posPattern = #"""
+		(?xi)data-sourcepos="(\d+):
+		"""#
+		// swiftlint:disable:next force_try
+		return try! NSRegularExpression(pattern: posPattern, options: .caseInsensitive)
+	}()
+
 	public init(previewId: Int, fileId: Int, workspace: AppWorkspace, documentProperty: Property<RmdDocument?>) {
 		self.previewId = previewId
 		self.fileId = fileId
 		self.workspace = workspace
 		self._document = Property<RmdDocument?>(documentProperty)
+
+		guard let regex = try? NSRegularExpression(pattern: "\\s+\\\\$", options: [.anchorsMatchLines]),
+			  let openRegex = try? NSRegularExpression(pattern: "^\\$\\$", options: []),
+			  let closeRegex = try? NSRegularExpression(pattern: "\\$\\$(\\s*)$", options: [])
+		else { fatalError("regex failed to compile") }
+		lineContiuationRegex = regex
+		openDoubleDollarRegex = openRegex
+		closeDoubleDollarRegex = closeRegex
+
 		NotificationCenter.default.addObserver(self, selector: #selector(documentUpdated), name: .rmdDocumentUpdated, object: self.document)
 		NotificationCenter.default.addObserver(self, selector: #selector(appTerminating(note:)), name: NSApplication.willTerminateNotification, object: nil)
 		readCache()
@@ -136,7 +158,7 @@ public class PreviewChunkCache {
 				chunkInfo[chunkNumber].outputIsValid = true
 				continue
 			}
-			let currentHtml = htmlForChunk(chunkNumber: chunkNumber)
+			let currentHtml = htmlForCodeChunk(chunkNumber: chunkNumber)
 			if chunkInfo[chunkNumber].currentHtml != currentHtml {
 				if let changedIndex = changedChunks.firstIndex(where: { $0 == chunkNumber }) {
 					changedChunks.remove(at: changedIndex)
@@ -185,12 +207,22 @@ public class PreviewChunkCache {
 		chunkInfo[chunkIndex].outputIsValid
 	}
 	
+	public func htmlFor(chunk: RmdDocumentChunk, index: Int) -> String {
+		switch RootChunkType(chunk.chunkType) {
+		case .code:
+			return htmlForCodeChunk(chunkNumber: index)
+		case .markdown:
+			return htmlFor(markdownChunk: chunk, index: index)
+		case .equation:
+			return htmlForEquation(chunk: chunk)
+		}
+	}
+	
 	public func inlineHtmlFor(chunk: RmdDocumentChunk, parent: RmdDocumentChunk) -> String {
 		// just return nothing if not code
 		guard chunk.isInline else { return "" }
 		guard chunk.chunkType == .inlineCode else {
-			// for inline equations, just return the source
-			return "\\(\(document.string(for: chunk))\\)"
+			return markdownFor(inlineEquation: chunk)
 		}
 		// TODO: generate actual code. need to be able to tell what context to use
 		let parHTML = document.string(for: chunk, type: .outer)
@@ -198,7 +230,7 @@ public class PreviewChunkCache {
 	}
 
 	/// returns the html for the specified chunk.
-	public func htmlForChunk(chunkNumber: Int) -> String {
+	public func htmlForCodeChunk(chunkNumber: Int) -> String {
 		let src = document.string(for: document.chunks[chunkNumber], type: .inner)
 		let output: String
 		if chunkInfo[chunkNumber].output.count > 0 {
@@ -218,23 +250,42 @@ public class PreviewChunkCache {
 		"""
 	}
 
-	/// returns the HTML for an inline chunk in  a markdown chunk
-	func inlineEquationHtml(chunkNumber: Int, inlineIndex: Int) -> String {
-		guard let chunkInfo = chunkInfo[safe: inlineIndex] else { fatalError("invalid chunk number") }
-		let chunkChildren = chunkInfo.inlineHtml
-		precondition(inlineIndex < chunkInfo.inlineHtml.count, "invalid inline index")
-		return chunkChildren[inlineIndex]
+	func htmlForEquation(chunk: RmdDocumentChunk) -> String {
+		var equationText = document.string(for: chunk)
+		equationText = lineContiuationRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "")
+		equationText = openDoubleDollarRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "\\\\[")
+		equationText = closeDoubleDollarRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "\\\\]")
+		equationText = equationText.addingUnicodeEntities
+		return "\n<div class=\"equation\">\(equationText)</div>\n"
+		
+	}
+	
+	private func markdownFor(inlineEquation: RmdDocumentChunk) -> String {
+		var code = document.string(for: inlineEquation, type: .inner)
+		code = code.replacingOccurrences(of: "^\\$", with: "\\(", options: .regularExpression)
+		code = code.replacingOccurrences(of: "\\$$\\s", with: "\\) ", options: .regularExpression)
+		return "<span class\"math inline\">\n\(code)</span>"
+	}
+	
+	func htmlFor(markdownChunk: RmdDocumentChunk, index: Int) -> String {
+		var chunkString = document.string(for: markdownChunk)
+		// replace all inline chunks with a placeholder
+		for (idx, ichunk) in markdownChunk.children.reversed().enumerated() {
+			guard let range = Range<String.Index>(ichunk.chunkRange, in: chunkString) else { fatalError("invalid range") }
+			chunkString = chunkString.replacingCharacters(in: range, with: "!IC-\(idx)!")
+		}
+		// convert markdown to html
+		let html = mdownParser.htmlFor(markdown: chunkString)
+		// restore inline chunks. reverse so don't invalidate later ranges
+		for idx in (0..<markdownChunk.children.count).reversed() {
+			let replacement = markdownFor(inlineEquation: markdownChunk.children[idx])
+			html.replaceOccurrences(of: "!IC-\(idx)!", with: replacement, options: [], range: NSRange(location: 0, length: html.length))
+		}
+		// modify source position to include chunk number
+		_ = dataSourceRegex.replaceMatches(in: html, range: NSRange(location: 0, length: html.length), withTemplate: "data-sourcepos=\"\(index).$2")
+		return html as String
 	}
 
-	private func htmlFor(chunkNumber: Int, inlineIndex: Int) -> String {
-		guard let chunkInfo = chunkInfo[safe: chunkNumber], chunkInfo.inlineHtml.count > inlineIndex
-		else {
-			Log.error("invalid chunk indexes")
-			assertionFailure("invalid indexes")
-			return ""
-		}
-		return chunkInfo.inlineHtml[inlineIndex]
-	}
 }
 
 extension PreviewChunkCache {

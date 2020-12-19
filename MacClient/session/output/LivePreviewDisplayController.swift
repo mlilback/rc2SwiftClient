@@ -70,30 +70,14 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		if let pc = parserContext, let ppc = previousContext, ObjectIdentifier(pc) == ObjectIdentifier(ppc) {
 			return
 		}
-		if lineContiuationRegex == nil {
-			loadRegexes() // viewDidLoad might not have been called yet
-		}
 		curDocDisposable = parserContext?.parsedDocument.signal.observe(on: UIScheduler()).observeValues(documentChanged)
 	} }
 	private var previousContext: ParserContext?
 	private var parsedDocument: RmdDocument? { return parserContext?.parsedDocument.value }
-	private let mdownParser = MarkdownParser()
 	private var previewData = [Int: PreviewIdCache]()
 	private var currentPreview: PreviewIdCache?
 	private var initialCodeLoaded = false
 	private var previewRequestInProgress: Bool = false
-
-	// regular expressions
-	private var lineContiuationRegex: NSRegularExpression!
-	private var openDoubleDollarRegex: NSRegularExpression!
-	private var closeDoubleDollarRegex: NSRegularExpression!
-	private let dataSourceRegex: NSRegularExpression = {
-		let posPattern = #"""
-		(?xi)data-sourcepos="(\d+):
-		"""#
-		// swiftlint:disable:next force_try
-		return try! NSRegularExpression(pattern: posPattern, options: .caseInsensitive)
-	}()
 
 	/// true if packaged resources have been extracted into the app support folder
 	private var resourcesExtracted = false
@@ -112,7 +96,6 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		loadRegexes()
 		loadWebView()
 		// for some reason the debugger show documentRoot as nil after this, even though po documentRoot?.absoluteString returns output
 		documentRoot = Bundle.main.url(forResource: "FileTemplates", withExtension: nil)
@@ -296,79 +279,13 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			html += "<sectionToolbar index=\"\(chunkNumber)\" type=\"\(chunk.chunkType)\"></sectionToolbar>\n"
 			html += "<sectionContent index=\"\(chunkNumber)\">\n"
 		}
-		html += htmlFor(chunk: chunk, index: chunkNumber)
+		guard let codeHandler = currentPreview?.codeHandler else { fatalError("hgmlWrapper() called without a current preview") }
+		html += codeHandler.htmlFor(chunk: chunk, index: chunkNumber)
 		if !chunk.isInline {
 			html += "\n</sectionContent>\n"
 		}
 		html += "\n</\(descriptor)>\n"
 		return html
-	}
-
-	private func htmlFor(chunk: RmdDocumentChunk, index: Int) -> String {
-		switch RootChunkType(chunk.chunkType) {
-		case .code:
-			let code = rHtmlFor(code: chunk, index: index)
-			return code
-		case .markdown:
-			return htmlFor(markdownChunk: chunk, index: index)
-		case .equation:
-			return htmlForEquation(chunk: chunk)
-		}
-	}
-
-	private func htmlFor(markdownChunk: RmdDocumentChunk, index: Int) -> String {
-		var chunkString = parsedDocument!.string(for: markdownChunk)
-		// replace all inline chunks with a placeholder
-		for (idx, ichunk) in markdownChunk.children.reversed().enumerated() {
-			guard let range = Range<String.Index>(ichunk.chunkRange, in: chunkString) else { fatalError("invalid range") }
-			chunkString = chunkString.replacingCharacters(in: range, with: "!IC-\(idx)!")
-		}
-		// convert markdown to html
-		let html = mdownParser.htmlFor(markdown: chunkString)
-		// restore inline chunks. reverse so don't invalidate later ranges
-		for idx in (0..<markdownChunk.children.count).reversed() {
-			let replacement = textFor(inlineChunk: markdownChunk.children[idx], parent: markdownChunk)
-			html.replaceOccurrences(of: "!IC-\(idx)!", with: replacement, options: [], range: NSRange(location: 0, length: html.length))
-		}
-		// modify source position to include chunk number
-		_ = dataSourceRegex.replaceMatches(in: html, range: NSRange(location: 0, length: html.length), withTemplate: "data-sourcepos=\"\(index).$2")
-		return html as String
-	}
-
-	public func textFor(inlineChunk: RmdDocumentChunk, parent: RmdDocumentChunk) -> String {
-		guard let curPreview = currentPreview else { fatalError("textFor called w/o a preview") }
-		guard inlineChunk.isInline else { fatalError("text for inline chunk called with non-inline chunk") }
-		let icText = curPreview.codeHandler.inlineHtmlFor(chunk: inlineChunk, parent: parent)
-		return icText
-	}
-
-	private func rHtmlFor(code chunk: RmdDocumentChunk, index: Int) -> String {
-		guard let doc = parsedDocument else { fatalError("htmlFor called w/o a document") }
-		guard let rHandler = currentPreview?.codeHandler else {
-			Log.warn("asked to generate R code w/o context")
-			return "<pre class=\"r\"><code>\(doc.string(for: chunk, type: .inner).addingUnicodeEntities)</code></pre>\n"
-		}
-		let html = rHandler.htmlForChunk(chunkNumber: index)
-		return html
-	}
-
-	private func htmlForEquation(chunk: RmdDocumentChunk) -> String {
-		guard let doc = parsedDocument else { fatalError("htmlForEquationi called w/o a document") }
-		var equationText = doc.string(for: chunk)
-		equationText = lineContiuationRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "")
-		equationText = openDoubleDollarRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "\\\\[")
-		equationText = closeDoubleDollarRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "\\\\]")
-		equationText = equationText.addingUnicodeEntities
-		return "\n<div class=\"equation\">\(equationText)</div>\n"
-
-	}
-
-	private func markdownFor(inlineEquation: RmdDocumentChunk) -> String {
-		guard let doc = parsedDocument else { fatalError("textFor called w/o a document") }
-		var code = doc.string(for: inlineEquation, type: .inner)
-		code = code.replacingOccurrences(of: "^\\$", with: "\\(", options: .regularExpression)
-		code = code.replacingOccurrences(of: "\\$$\\s", with: "\\) ", options: .regularExpression)
-		return "<span class\"math inline\">\n\(code)</span>"
 	}
 
 	/// replaces the visible html document
@@ -494,9 +411,10 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 
 	/// actually gets the updated html for chunkId and inserts via javascript
 	private func updaeteChunkByJS(chunkNumber: Int, document: RmdDocument) {
+		guard let codeHandler = currentPreview?.codeHandler else { fatalError("htmlFor(chunk:index:) called without a current preview") }
 		let chunk = document.chunks[chunkNumber]
 		
-		var html = htmlFor(chunk: chunk, index: chunkNumber) // don't want the wrapping section ala htmlWrapper()
+		var html = codeHandler.htmlFor(chunk: chunk, index: chunkNumber) // don't want the wrapping section ala htmlWrapper()
 		if chunk.chunkType != .equation {
 			html = escapeForJavascript(html)
 		}
@@ -544,17 +462,6 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		outputView?.centerYAnchor.constraint(equalTo: newwk.superview!.centerYAnchor).isActive = true
 		outputView?.centerXAnchor.constraint(equalTo: newwk.superview!.centerXAnchor).isActive = true
 
-	}
-
-	private func loadRegexes() {
-		guard lineContiuationRegex == nil else { return }
-		guard let regex = try? NSRegularExpression(pattern: "\\s+\\\\$", options: [.anchorsMatchLines]),
-			let openRegex = try? NSRegularExpression(pattern: "^\\$\\$", options: []),
-			let closeRegex = try? NSRegularExpression(pattern: "\\$\\$(\\s*)$", options: [])
-			else { fatalError("regex failed to compile") }
-		lineContiuationRegex = regex
-		openDoubleDollarRegex = openRegex
-		closeDoubleDollarRegex = closeRegex
 	}
 
 	private func escapeForJavascript(_ source: String) -> String {
@@ -692,7 +599,7 @@ extension LivePreviewDisplayController: SessionPreviewDelegate {
 		// update the code results
 		preview.codeHandler.updateCodeOutput(chunkNumber: response.chunkId, outputContent: response.results)
 		// rebuild the entire output for the chunk
-		let html = preview.codeHandler.htmlForChunk(chunkNumber: response.chunkId)
+		let html = preview.codeHandler.htmlForCodeChunk(chunkNumber: response.chunkId)
 		preview.lastAccess = Date.timeIntervalSinceReferenceDate
 		let script = """
 		$("sectionContent[index=\(response.chunkId)] > .codeChunk").replaceWith(`\(html)`)
