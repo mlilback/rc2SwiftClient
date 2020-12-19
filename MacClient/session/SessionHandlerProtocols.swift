@@ -43,6 +43,7 @@ protocol OutputHandler: SearchResponder {
 	//action event forwarding
 	func clearConsole(_ sender: Any?)
 	func toggleSearchBar()
+	func switchToPreview()
 }
 
 /// Implemented by objects that need to response to changes related to files

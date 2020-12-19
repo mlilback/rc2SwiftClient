@@ -132,6 +132,11 @@ class OutputTabController: NSTabViewController, OutputHandler, ToolbarItemHandle
 		}
 		return false
 	}
+	
+	func switchToPreview() {
+		guard selectedOutputTab.value != .preview else { return }
+		selectedOutputTab.value = .preview
+	}
 
 	func showHelp(_ topics: [HelpTopic]) {
 		guard topics.count > 0 else {
