@@ -227,6 +227,7 @@ function updateSectionToolbars() {
 		var template = document.getElementsByTagName("template")[0]
 		var img1 = document.importNode(template.content, true)
 		$(img1).attr('id', 'timg' + chunkNumber)
+		$(toolbar).empty()
 		$(toolbar).append(img1)
 		console.log("updating a chunk toolbar:" + img1)
 	})

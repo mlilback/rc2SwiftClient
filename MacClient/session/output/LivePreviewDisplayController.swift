@@ -487,7 +487,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			html = escapeForJavascript(html)
 		}
 		
-		var command = "$(\"section[index='\(chunkNumber)']\").html('\(html)');"
+		var command = "$(\"sectioncontent[index='\(chunkNumber)']\").html('\(html)');"
 		if chunk.chunkType == .equation {
 			command += "MathJax.typeset()"
 		}
