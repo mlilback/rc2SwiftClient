@@ -26,8 +26,6 @@ The following packages/frameworks are used (mostly by SPM, a few require Carthag
 
 * [MJLLogger](https://github.com/mlilback/MJLLogger.git) a logging framework that works cross-framework, allows only the application to enable logging, and allows enabling logging per LogCategory. Usable as a Logging implementation.
 
-* [PEGKit](https://github.com/itod/pegkit.git) a parsing expression grammar used for syntax highlighting
-
 * [ReactiveCocoa](https://github.com/ReactiveCocoa/ReactiveCocoa) reactive programming is awesome for handling of async callbacks (like making 14 network calls in a row with a single block of error handling code)
 
 * [SBInjector](https://github.com/mlilback/SBInjector.git) very simple dependency injection

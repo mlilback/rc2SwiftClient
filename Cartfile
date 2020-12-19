@@ -1,4 +1,4 @@
-github "mlilback/pegkit" ~> 0.4.4
+#github "mlilback/pegkit" ~> 0.4.4
 github "ReactiveCocoa/ReactiveCocoa" ~> 11.0.0
 github "microsoft/appcenter-sdk-apple" ~> 3.3.4
 
