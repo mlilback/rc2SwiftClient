@@ -152,9 +152,11 @@ public class DocumentManager: EditorContext {
 			.map { _ in (document.file, contents) }
 			.flatMap(.concat, fileCache.save)
 			.on(completed: {
-				document.contentsSaved()
-			},
-				terminated: { self.saving.value = false })
+					document.contentsSaved()
+				},
+				terminated: {
+					self.saving.value = false
+				})
 	}
 	
 	/// Generates an image to use for the passed in latex, size based on the editor font's size
