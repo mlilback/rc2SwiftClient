@@ -99,6 +99,8 @@ class RootViewController: AbstractSessionViewController
 			return true
 		case Selector.runQuery, Selector.sourceQuery:
 			return sessionController?.codeEditor.canExecute ?? false
+		case #selector(updatePreview(_:)):
+			return editorController!.currentEditorMode == .preview
 		case #selector(switchOutputTab(_:)), #selector(switchSidebarTab(_:)):
 			return splitController?.validateMenuItem(menuItem) ?? false
 		case #selector(clearConsole(_:)), #selector(clearImageCache(_:)), #selector(exportAllFiles(_:)):
@@ -213,6 +215,11 @@ extension RootViewController {
 
 	@IBAction func switchToSourceMode(_ sender: Any?) {
 		sessionController?.codeEditor.switchTo(mode: .source)
+	}
+	
+	@IBAction func updatePreview(_ sender: Any?) {
+		outputHandler?.switchToPreview()
+		outputHandler?.previewOutputController?.updatePreview()
 	}
 }
 

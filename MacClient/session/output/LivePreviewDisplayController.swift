@@ -42,6 +42,9 @@ protocol LivePreviewOutputController {
 
 	/// to be called once by editor at load
 	func setEditorContext(_ econtext: EditorContext?)
+	
+	/// Updates the entire preview with the contents of the editor
+	func updatePreview()
 }
 
 class LivePreviewDisplayController: AbstractSessionViewController, OutputController, LivePreviewOutputController, WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler
@@ -157,7 +160,9 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 //		}
 //		colorizeHighlightAttributes()
 		Log.info("contentsEdited called", .app)
-//		updatePreview(updatedContents: contents)
+		
+		// TODO: first try always reparsing. then skip reparse if no ` or $
+		updatePreview(updatedContents: contents)
 		return true
 	}
 
@@ -225,19 +230,23 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 
 	/// parses the document and loads each chunk individually via javascript
 	// swiftlint:disable:next cyclomatic_complexity
-	private func updatePreview(updatedContents: String? = nil) {
+	private func updatePreview(updatedContents: String? = nil, forceParse: Bool = false) {
 		guard didLoadView else { return }
 
 		// handle empty content
 		guard let curDoc = parsedDocument, let curPreview = currentPreview else { return; }
-		if docHtmlLoaded, updatedContents == nil, curDoc.attributedString.length > 0 { return }
+		if docHtmlLoaded, updatedContents == nil, !forceParse, curDoc.attributedString.length > 0 { return }
 		guard let contents = updatedContents ?? parserContext?.parsedDocument.value?.rawString
 			else { Log.warn("current doc has no contents??"); return }
-		guard curDoc.attributedString.string != updatedContents else { return }
+		guard forceParse || curDoc.attributedString.string != updatedContents else { return }
 		// update the parsed document, update the webview
-		// swiftlint:disable:next force_try
-		var changedChunkIndexes = try! RmdDocument.update(document: curDoc, with: contents) ?? []
-		// TODO: cacheCode needs to be async
+		var changedChunkIndexes = [Int]()
+		do {
+			changedChunkIndexes = try RmdDocument.update(document: curDoc, with: contents) ?? []
+		} catch {
+			Log.warn("error parsing document: \(error)", .app)
+			return
+		}
 		// add to changedChunkIndexes any chunks that need to udpated because of changes to R code
 		if changedChunkIndexes.count > 0 {
 			curPreview.codeHandler.cacheCode(changedChunks: &changedChunkIndexes)
@@ -245,7 +254,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			curPreview.codeHandler.cacheAllCode()
 		}
 		// handle changes
-		if changedChunkIndexes.count > 0 {
+		if !forceParse, changedChunkIndexes.count > 0 {
 			Log.info("udpating just chunks \(changedChunkIndexes)")
 			for chunkNumber in changedChunkIndexes {
 				updaeteChunkByJS(chunkNumber: chunkNumber, document: curDoc)
@@ -405,6 +414,11 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 
 	// MARK: - Preview
+	
+	func updatePreview() {
+		 // called when the entire preview should be updated
+		updatePreview(updatedContents: nil, forceParse: true)
+	}
 	
 	@discardableResult
 	private func loadPreviewIfNecessary() -> Bool {
