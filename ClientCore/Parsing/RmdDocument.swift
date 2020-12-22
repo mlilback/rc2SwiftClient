@@ -168,10 +168,7 @@ public class RmdDocument: CustomDebugStringConvertible {
 	
 	/// internal method to reduce code duplication of bounds checking
 	private func attrString(for chunk: RmdDocumentChunk, rangeType: RangeType) -> NSAttributedString {
-		guard let realChunk = chunk as? RmdDocChunk,
-			let tmpChunk = chunks.element(at: realChunk.chunkNumber),
-			let pChunk = tmpChunk as? RmdDocChunk,
-			realChunk == pChunk
+		guard let realChunk = chunk as? RmdDocChunk
 			else { fatalError("invalid chunk index") }
 		let desiredString = textStorage.attributedSubstring(from: rangeType == .outer ? realChunk.chunkRange : realChunk.innerRange)
 		if chunk.isExecutable || chunk.isEquation {
