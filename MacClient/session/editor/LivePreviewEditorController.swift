@@ -10,10 +10,19 @@ import Cocoa
 import MJLLogger
 import ClientCore
 import WebKit
+import ReactiveSwift
+import Rc2Common
 import SwiftyUserDefaults
 
 class LivePreviewEditorController: BaseSourceEditorController {
-	var outputController: LivePreviewOutputController? { didSet { outputController?.parserContext = parser } }
+	var outputController: LivePreviewOutputController? { didSet {
+		outputController?.parserContext = parser
+		outputController?.saveProducer = { [weak self] () -> SignalProducer<(), Rc2Error> in
+			guard let me = self else { fatalError() }
+			return me.saveWithProgress()
+				.map { _ in () }
+		}
+	} }
 
 	private var webView: WKWebView?
 

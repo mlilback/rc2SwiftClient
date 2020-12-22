@@ -29,8 +29,11 @@ extension NSNotification.Name {
 }
 
 protocol LivePreviewOutputController {
+	typealias SaveFactory = () -> SignalProducer<(), Rc2Error>
 	var parserContext: ParserContext? { get set }
 	
+	var saveProducer: SaveFactory? { get set }
+ 
 	/// allows editor that the user has made a change to the contents of the current document
 	///
 	/// - Parameters:
@@ -65,6 +68,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		return q
 	}()
 
+	internal var saveProducer: SaveFactory?
 	internal var parserContext: ParserContext? { didSet {
 		curDocDisposable?.dispose()
 		if let pc = parserContext, let ppc = previousContext, ObjectIdentifier(pc) == ObjectIdentifier(ppc) {
@@ -172,11 +176,12 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 
 	// MARK: - action handlers
-	func executeChunk(number: Int) {
+	func executeChunk(number: Int, includePrevious: Bool) {
 		guard let curPreview = currentPreview else { return }
 		// invalidate future code chunks
 		curPreview.codeHandler.willExecuteChunk(chunkIndex: number)
-		requestUpdate(previewId: curPreview.previewId, chunkId: number, includePrevious: false)
+		_ = saveProducer?()
+			.flatMap (.concat, {self.requestUpdate(previewId: curPreview.previewId, chunkId: number, includePrevious: includePrevious )})
 			.startWithResult { result in
 				switch result {
 				case .failure(let error):
@@ -188,11 +193,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 					let enArray = enable.map({ String($0) }).joined(separator: ", ")
 					self.runJavascript("adjustToolbarButtons([\(idxArray)], [\(enArray)]")
 				}
-				
 			}
-	}
-
-	func executeChunkAndPrevious(number: Int) {
 	}
 
 	// MARK: - content presentation
@@ -534,9 +535,9 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 					else { return }
 				switch actionName {
 				case "execute":
-					executeChunk(number: chunkNum)
+					executeChunk(number: chunkNum, includePrevious: false)
 				case "executePrevious":
-						executeChunkAndPrevious(number: chunkNum)
+						executeChunk(number: chunkNum, includePrevious: true)
 				default:
 						Log.info("invalid action from preview: \(actionName)")
 				}
@@ -582,7 +583,6 @@ private struct PreviewIdCache: Equatable {
 extension LivePreviewDisplayController: SessionPreviewDelegate {
 	func previewIdReceived(response: SessionResponse.PreviewInitedData) {
 		// do nothing because signal value triggers setting it
-		Log.info("got preview Id \(response.previewId)")
 	}
 
 	func previewUpdateReceived(response: SessionResponse.PreviewUpdateData) {
