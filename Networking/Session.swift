@@ -82,9 +82,11 @@ public class Session {
 	private let eventObserver: Signal<SessionEvent, Never>.Observer
 
 	///if we are getting variable updates from the server
-	fileprivate var watchingVariables: Bool = false
+	private var watchingVariables: Bool = false
 	///queue used for delegate calls
-	fileprivate let queue: DispatchQueue
+	private let delegateQueue: DispatchQueue
+	/// queue used for app server messages
+	private let appIncomingQueue: DispatchQueue
 	private let (sessionLifetime, sessionToken) = Lifetime.make()
 	public var lifetime: Lifetime { return sessionLifetime }
 	
@@ -92,6 +94,8 @@ public class Session {
 	
 	private typealias PendingTransactionHandler = (PendingTransaction, SessionResponse, Rc2Error?) -> Void
 
+	let debugJsonOutputRegex = try! NSRegularExpression(pattern: "<img src=\\\\\\\"data:image.*\\\\\\\"", options: [.anchorsMatchLines])
+	
 	private struct PendingTransaction {
 		let transId: String
 		let command: SessionCommand
@@ -116,7 +120,8 @@ public class Session {
 		self.conInfo = connectionInfo
 		self.fileCache = fileCache
 		self.imageCache = imageCache
-		self.queue = queue
+		self.delegateQueue = queue
+		self.appIncomingQueue = DispatchQueue(label: "session.appserver.incoming", qos: .userInitiated, target: .global(qos: .userInitiated))
 		var ws = wsWorker
 		if nil == ws {
 			ws = SessionWebSocketWorker(conInfo: connectionInfo, wspaceId: workspace.wspaceId)
@@ -187,7 +192,7 @@ public class Session {
 		if helpCheck?.numberOfRanges == 3 {
 			let topic = String(script[(helpCheck?.range(at: 2).toStringRange(script))!])
 			let adjScript = script.replacingCharacters(in: (helpCheck?.range.toStringRange(script))!, with: "")
-			queue.async { self.delegate?.respondToHelp(topic) }
+			delegateQueue.async { self.delegate?.respondToHelp(topic) }
 			guard !adjScript.isEmpty else { return }
 			script = adjScript
 		}
@@ -384,7 +389,7 @@ public class Session {
 				guard case let SessionResponse.save(saveData) = response else { return }
 				if let err = error {
 					if let sessionError = err.nestedError as? SessionError {
-						self.queue.async { self.delegate?.sessionErrorReceived(sessionError, details: nil) }
+						self.delegateQueue.async { self.delegate?.sessionErrorReceived(sessionError, details: nil) }
 					}
 					observer.send(error: err)
 					return
@@ -509,23 +514,23 @@ private extension Session {
 			guard let fileData = data.fileData else {
 				// the file was too large to send via websocket. need to recache and then call delegate
 				fileCache.recache(file: ofile).startWithCompleted {
-					self.queue.async { self.delegate?.sessionMessageReceived(response) }
+					self.delegateQueue.async { self.delegate?.sessionMessageReceived(response) }
 				}
 				return
 			}
 			fileCache.cache(file: ofile.model, withData: fileData).startWithCompleted {
-				self.queue.async { self.delegate?.sessionMessageReceived(response) }
+				self.delegateQueue.async { self.delegate?.sessionMessageReceived(response) }
 			}
 		} else {
 			Log.warn("got show output without file downloaded", .session)
-			queue.async { self.delegate?.sessionMessageReceived(response) }
+			delegateQueue.async { self.delegate?.sessionMessageReceived(response) }
 		}
 	}
 	
 	func handleClosed(source: CloseSource, data: SessionResponse.CloseData? = nil, error: Error? = nil) {
 		Log.info("got closed message from \(source)", .session)
 		connectionOpen = false
-		queue.async {
+		delegateQueue.async {
 			self.delegate?.sessionClosed(reason: (source == .error ? error?.localizedDescription : data?.details) ?? "unknown reason")
 		}
 	}
@@ -538,7 +543,8 @@ private extension Session {
 			// TODO: handle .binary message differently
 			guard messageData.format == .binary else { fatalError("received unsupported binary data") }
 			if Log.isLogging(.debug, category: .session) {
-				let dmsg = "incoming: " + String(data: messageData.data, encoding: .utf8)!
+				var dmsg = "incoming: " + String(data: messageData.data, encoding: .utf8)!
+				dmsg = debugJsonOutputRegex.stringByReplacingMatches(in: dmsg, options: [], range: NSRange(dmsg.startIndex..<dmsg.endIndex, in: dmsg), withTemplate: "<B>IMG HERE</B>")
 				Log.debug(dmsg, .session)
 			}
 			response = try conInfo.decode(data: messageData.data)
@@ -563,7 +569,7 @@ private extension Session {
 			handleClosed(source: .server, data: closeData)
 		case .error(let errorData):
 			eventObserver.send(value: SessionEvent(.sessionError, props: ["error": errorData.error.localizedDescription]))
-			queue.async { self.delegate?.sessionErrorReceived(errorData.error, details: nil) }
+			delegateQueue.async { self.delegate?.sessionErrorReceived(errorData.error, details: nil) }
 		case .computeStatus(let status):
 			computeStatus = status
 			informDelegate = true
@@ -582,7 +588,7 @@ private extension Session {
 			informDelegate = true
 		}
 		if informDelegate {
-			queue.async { self.delegate?.sessionMessageReceived(response) }
+			delegateQueue.async { self.delegate?.sessionMessageReceived(response) }
 		}
 		if let transId = transactionId(for: response), let trans = pendingTransactions[transId] {
 			trans.handler(trans, response, nil)
@@ -642,7 +648,7 @@ private extension Session {
 		do {
 			let data = try conInfo.encode(command)
 			let cmdStr = String(data: data, encoding:.utf8) ?? "foo"
-			Log.info("ssending:\n \(cmdStr)")
+			Log.info("sending:\n \(cmdStr)")
 			self.webSocketWorker.send(data: data)
 		} catch let err as NSError {
 			Log.error("error sending message on websocket: \(err)", .session)
@@ -667,7 +673,7 @@ private extension Session {
 	}
 	
 	func handleWebSocket(data: SessionWebSocketWorker.MessageData) {
-		DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+		appIncomingQueue.async { [weak self] in
 			self?.handleReceivedMessage(data)
 		}
 	}
