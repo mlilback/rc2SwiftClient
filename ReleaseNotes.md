@@ -3,6 +3,8 @@
 ## Build 87
 
 * all signal observers now act on main thread
+* all appserver messages on serial queue
+* preview support rewritten, basics work
 
 ## Build 86
 
