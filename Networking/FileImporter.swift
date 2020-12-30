@@ -68,11 +68,13 @@ public class FileImporter: NSObject {
 		for (index, aFileToImport) in files.enumerated() {
 			let srcUrl = tmpDir.appendingPathComponent(aFileToImport.actualFileName)
 			do {
+				// hard link to ignore user changes or deletion
 				try fileManager.linkItem(at: aFileToImport.fileUrl, to: srcUrl)
 			} catch {
 				Log.error("failed to create link for upload: \(error)", .network)
 				return ProgressSignalProducer(error: Rc2Error(type: .file, nested: error, explanation: ""))
 			}
+			// should url creation be done here? might be better elsewhere for reuse
 			let destUrl = URL(string: "\(conInfo.host.urlPrefix)/file/\(workspace.wspaceId)", relativeTo: baseUrl)!
 			var request = URLRequest(url: destUrl)
 			request.httpMethod = "POST"
@@ -93,7 +95,7 @@ public class FileImporter: NSObject {
 	}
 
 	fileprivate func calculateAndSendProgress() {
-		let progress = tasks.reduce(0) { (result, tuple) in return result + tuple.value.bytesDownloaded }
+		let progress = tasks.reduce(0) { (result, tuple) in return result + tuple.value.bytesUploaded }
 		var val = Double(progress) / Double(totalSize)
 		if !val.isFinite { val = 1.0 }
 		progressObserver?.send(value: ImportProgress(val, status: ""))
@@ -116,7 +118,7 @@ public class FileImporter: NSObject {
 	struct ImportData {
 		var task: URLSessionUploadTask
 		var srcFile: URL
-		var bytesDownloaded: Int = 0
+		var bytesUploaded: Int = 0
 		var data: Data
 		
 		init(task: URLSessionUploadTask, srcFile: URL) {
@@ -153,8 +155,7 @@ extension FileImporter: URLSessionDataDelegate {
 			fatalError("failed to find task info for import file")
 		}
 		defer { tasks.removeValue(forKey: index) }
-		// swiftlint:disable:next force_cast
-		let httpResponse = task.response as! HTTPURLResponse
+		guard let httpResponse = task.response?.httpResponse else { fatalError("impossible") }
 		Log.info("upload status=\(httpResponse.statusCode)", .network)
 		guard httpResponse.statusCode == 201 else {
 			progressObserver?.send(error: Rc2Error(type: .network, nested: NetworkingError.invalidHttpStatusCode(httpResponse)))
@@ -165,6 +166,7 @@ extension FileImporter: URLSessionDataDelegate {
 			defer {
 				importedFileIds.insert(rawFile.id)
 			}
+			// store the original file in the cache so it isn't immediately downloaded
 			let fileData = try Data(contentsOf: importData.srcFile)
 			//is this really the best way to handle this error? oberver might have been set to nil
 			fileCache.cache(file: rawFile, withData: fileData).startWithFailed { updateError in
@@ -191,7 +193,7 @@ extension FileImporter: URLSessionDataDelegate {
 		guard let index = tasks.filter({ $0.value.task == task }).map({ $0.key }).first, tasks[index] != nil else {
 			fatalError("failed to find progress for task of \(task.taskIdentifier)")
 		}
-		tasks[index]!.bytesDownloaded = Int(totalBytesSent)
+		tasks[index]!.bytesUploaded = Int(totalBytesSent)
 		calculateAndSendProgress()
 	}
 	
