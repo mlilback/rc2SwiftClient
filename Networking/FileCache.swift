@@ -238,8 +238,8 @@ public final class DefaultFileCache: NSObject, FileCache {
 			//create task and add observer to it
 			let task = self.makeTask(file: file)
 			self.tasks[task.task.taskIdentifier] = task
-			//start task next time through event loop
-			self.mainQueue.async {
+			// want to return to caller before task is started
+			self.mainQueue.asyncAfter(deadline: .now() + .milliseconds(1)) {
 				task.task.resume()
 			}
 			producer = self.producer(signal: task.signal)
@@ -278,6 +278,7 @@ public final class DefaultFileCache: NSObject, FileCache {
 			return producer(signal: self.downloadAll!.signal)
 		}
 		return SignalProducer<Double, Rc2Error> { observer, _ in
+			var createdTasks = [DownloadTask]()
 			self.taskLockQueue.sync {
 				//if no files, completed
 				if self.workspace.files.count < 1 {
@@ -298,7 +299,6 @@ public final class DefaultFileCache: NSObject, FileCache {
 					}
 				}
 				//create tasks that don't already exist
-				var createdTasks = [DownloadTask]()
 				for aFile in self.workspace.files {
 					var theTask = self.downloadTaskWithFileId(aFile.fileId)
 					if nil == theTask {
@@ -308,13 +308,9 @@ public final class DefaultFileCache: NSObject, FileCache {
 					}
 					theTask?.partOfDownloadAll = true
 				}
-				//start new tasks after all are created
-				self.mainQueue.async {
-					self.taskLockQueue.sync {
-						createdTasks.forEach { $0.task.resume() }
-					}
-				}
 			}
+			// start new tasks after all are created
+			createdTasks.forEach { $0.task.resume() }
 		}
 	}
 	
@@ -416,20 +412,21 @@ extension DefaultFileCache {
 	/// - Returns: a signal producer that returns the file data or an error
 	public func contents(of file: AppFile) -> SignalProducer<Data, Rc2Error> {
 		return SignalProducer<Data, Rc2Error> { observer, _ in
+			var finisher: (() -> Void)?
 			self.taskLockQueue.sync {
 				if let dinfo = self.downloadAll {
 					//download is in progress. wait until completed
-					dinfo.signal.observeCompleted {
-						self.loadContents(file: file, observer: observer)
+					finisher = {
+						dinfo.signal.observeCompleted {
+							self.loadContents(file: file, observer: observer)
+						}
 					}
 				} else {
 					//want to release lock before loading the contents
-					self.mainQueue.async {
-						self.loadContents(file: file, observer: observer)
-					}
-					return
+					finisher = { self.loadContents(file: file, observer: observer) }
 				}
 			}
+			finisher?()
 		}
 	}
 	
