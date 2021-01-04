@@ -88,9 +88,7 @@ public class FileImporter: NSObject {
 		return ProgressSignalProducer { observer, lifetime in
 			self.progressObserver = observer
 			self.progressLifetime = lifetime
-			self.queue.async {
-				self.tasks.values.forEach { $0.task.resume() }
-			}
+			self.tasks.values.forEach { $0.task.resume() }
 		}
 	}
 
