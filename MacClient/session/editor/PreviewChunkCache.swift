@@ -34,18 +34,15 @@ public class PreviewChunkCache {
 		let fileVersion: Int
 		let chunks: [ChunkInfo]
 	}
-		
+	
 	let previewId: Int
 	let fileId: Int
 	let workspace: AppWorkspace
 	private var dbQueue: DatabaseQueue?
 	private var chunkInfo: [ChunkInfo] = []
 	public var contentCached: Bool { return chunkInfo.count > 0 }
-	public let _document: Property<RmdDocument?>
-	private var document: RmdDocument {
-		guard let doc = _document.value else { fatalError("previewChunk asked to use nil document") }
-		return doc
-	}
+	/// owner is responsible for updating this anytime the document is updated.
+	var document: RmdDocument?
 
 	private let mdownParser = MarkdownParser()
 	// regular expressions
@@ -60,11 +57,11 @@ public class PreviewChunkCache {
 		return try! NSRegularExpression(pattern: posPattern, options: .caseInsensitive)
 	}()
 
-	public init(previewId: Int, fileId: Int, workspace: AppWorkspace, documentProperty: Property<RmdDocument?>) {
+	public init(previewId: Int, fileId: Int, workspace: AppWorkspace, document: RmdDocument?) {
 		self.previewId = previewId
 		self.fileId = fileId
 		self.workspace = workspace
-		self._document = Property<RmdDocument?>(documentProperty)
+		self.document = document
 
 		guard let regex = try? NSRegularExpression(pattern: "\\s+\\\\$", options: [.anchorsMatchLines]),
 			  let openRegex = try? NSRegularExpression(pattern: "^\\$\\$", options: []),
@@ -74,7 +71,6 @@ public class PreviewChunkCache {
 		openDoubleDollarRegex = openRegex
 		closeDoubleDollarRegex = closeRegex
 
-		NotificationCenter.default.addObserver(self, selector: #selector(documentUpdated), name: .rmdDocumentUpdated, object: self.document)
 		NotificationCenter.default.addObserver(self, selector: #selector(appTerminating(note:)), name: NSApplication.willTerminateNotification, object: nil)
 		readCache()
 	}
@@ -88,16 +84,7 @@ public class PreviewChunkCache {
 		saveCache()
 		dbQueue = nil
 	}
-	
-	/// called when the document's content was updated
-	@objc func documentUpdated(note: Notification) {
-		guard var changedIndexes = note.userInfo?[RmdDocument.changedIndexesKey] as? [Int] else {
-			Log.warn("received documentUpdated notification without changedIndexes", .app)
-			return
-		}
-		cacheCode(changedChunks: &changedIndexes)
-	}
-	
+		
 	/// if specified chunk is a code chunk, stores the code output for that chunk. recaches the code so no need to do that affter this call
 	public func updateCodeOutput(chunkNumber: Int, outputContent: String) {
 		guard let chunk = chunkInfo[safe: chunkNumber], chunk.type == .code else {
@@ -120,7 +107,8 @@ public class PreviewChunkCache {
 	/// caches the html for all code chunks and any markdown chunks that contain inline code
 	/// - Parameter document: the document to cache
 	public func cacheAllCode() {
-		var changedChunkIndexes = [Int](0..<document.chunks.count)
+		guard let curDoc = document else { return }
+		var changedChunkIndexes = [Int](0..<curDoc.chunks.count)
 		cacheCode(changedChunks: &changedChunkIndexes)
 	}
 
@@ -131,15 +119,16 @@ public class PreviewChunkCache {
 	/// - Parameter document: the document to cache
 	// swiftlint:disable:next cyclomatic_complexity
 	public func cacheCode(changedChunks: inout [Int]) {
+		guard let curDoc = document else { Log.warn("asked to cache without a document"); return }
 		// if not the same size as last time, then all code is dirty
-		if document.chunks.count != chunkInfo.count {
+		if curDoc.chunks.count != chunkInfo.count {
 			chunkInfo = [ChunkInfo]()
-			for i in 0..<document.chunks.count {
-				chunkInfo.append(ChunkInfo(chunkNumber: i, type: RootChunkType(document.chunks[i].chunkType)))
+			for i in 0..<curDoc.chunks.count {
+				chunkInfo.append(ChunkInfo(chunkNumber: i, type: RootChunkType(curDoc.chunks[i].chunkType)))
 			}
 		}
 		// generate html for each chunk.
-		for (chunkNumber, chunk) in document.chunks.enumerated() {
+		for (chunkNumber, chunk) in curDoc.chunks.enumerated() {
 			if chunk.chunkType == .markdown, chunk.children.count > 0 {
 				// need to generate inline html
 				var inline = [String]()
@@ -208,30 +197,33 @@ public class PreviewChunkCache {
 	}
 	
 	public func htmlFor(chunk: RmdDocumentChunk, index: Int) -> String {
+		guard let curDoc = document else { fatalError("code handler called w/o a document") }
 		switch RootChunkType(chunk.chunkType) {
 		case .code:
 			return htmlForCodeChunk(chunkNumber: index)
 		case .markdown:
 			return htmlFor(markdownChunk: chunk, index: index)
 		case .equation:
-			return htmlForEquation(chunk: chunk)
+			return htmlForEquation(chunk: chunk, curDoc: curDoc)
 		}
 	}
 	
 	public func inlineHtmlFor(chunk: RmdDocumentChunk, parent: RmdDocumentChunk) -> String {
+		guard let curDoc = document else { fatalError("code handler called w/o a document") }
 		// just return nothing if not code
 		guard chunk.isInline else { return "" }
 		guard chunk.chunkType == .inlineCode else {
-			return markdownFor(inlineEquation: chunk)
+			return markdownFor(inlineEquation: chunk, curDoc: curDoc)
 		}
 		// TODO: generate actual code. need to be able to tell what context to use
-		let parHTML = document.string(for: chunk, type: .outer)
+		let parHTML = curDoc.string(for: chunk, type: .outer)
 		return parHTML
 	}
 
 	/// returns the html for the specified chunk.
 	public func htmlForCodeChunk(chunkNumber: Int) -> String {
-		let src = document.string(for: document.chunks[chunkNumber], type: .inner)
+		guard let curDoc = document else { fatalError("code handler called w/o a document") }
+		let src = curDoc.string(for: curDoc.chunks[chunkNumber], type: .inner)
 		let output: String
 		if chunkInfo[chunkNumber].output.count > 0 {
 			output = chunkInfo[chunkNumber].output
@@ -250,8 +242,8 @@ public class PreviewChunkCache {
 		"""
 	}
 
-	func htmlForEquation(chunk: RmdDocumentChunk) -> String {
-		var equationText = document.string(for: chunk)
+	func htmlForEquation(chunk: RmdDocumentChunk, curDoc: RmdDocument) -> String {
+		var equationText = curDoc.string(for: chunk)
 		equationText = lineContiuationRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "")
 		equationText = openDoubleDollarRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "\\\\[")
 		equationText = closeDoubleDollarRegex.stringByReplacingMatches(in: equationText, range: equationText.fullNSRange, withTemplate: "\\\\]")
@@ -260,26 +252,32 @@ public class PreviewChunkCache {
 		
 	}
 	
-	private func markdownFor(inlineEquation: RmdDocumentChunk) -> String {
-		var code = document.string(for: inlineEquation, type: .inner)
+	private func markdownFor(inlineEquation: RmdDocumentChunk, curDoc: RmdDocument) -> String {
+		var code = curDoc.string(for: inlineEquation, type: .inner)
 		code = code.replacingOccurrences(of: "^\\$", with: "\\(", options: .regularExpression)
 		code = code.replacingOccurrences(of: "\\$$\\s", with: "\\) ", options: .regularExpression)
 		return "<span class\"math inline\">\n\(code)</span>"
 	}
 	
 	func htmlFor(markdownChunk: RmdDocumentChunk, index: Int) -> String {
-		var chunkString = document.string(for: markdownChunk)
-		// replace all inline chunks with a placeholder
-		for (idx, ichunk) in markdownChunk.children.reversed().enumerated() {
-			guard let range = Range<String.Index>(ichunk.chunkRange, in: chunkString) else { fatalError("invalid range") }
-			chunkString = chunkString.replacingCharacters(in: range, with: "!IC-\(idx)!")
-		}
-		// convert markdown to html
-		let html = mdownParser.htmlFor(markdown: chunkString)
-		// restore inline chunks. reverse so don't invalidate later ranges
-		for idx in (0..<markdownChunk.children.count).reversed() {
-			let replacement = markdownFor(inlineEquation: markdownChunk.children[idx])
-			html.replaceOccurrences(of: "!IC-\(idx)!", with: replacement, options: [], range: NSRange(location: 0, length: html.length))
+		guard let curDoc = document else { fatalError("code handler called w/o a document") }
+		var chunkString = curDoc.string(for: markdownChunk)
+		let html: NSMutableString
+		if markdownChunk.children.count > 0 {
+			// replace all inline chunks with a placeholder
+			for idx in (0..<markdownChunk.children.count).reversed() {
+				guard let range = Range<String.Index>(markdownChunk.children[idx].chunkRange, in: chunkString) else { fatalError("invalid range") }
+				chunkString = chunkString.replacingCharacters(in: range, with: "!IC-\(idx)!")
+			}
+			// convert markdown to html
+			html = mdownParser.htmlFor(markdown: chunkString)
+			// restore inline chunks. reverse so don't invalidate later ranges
+			for idx in (0..<markdownChunk.children.count) {
+				let replacement = markdownFor(inlineEquation: markdownChunk.children[idx], curDoc: curDoc)
+				html.replaceOccurrences(of: "!IC-\(idx)!", with: replacement, options: [], range: NSRange(location: 0, length: html.length))
+			}
+		} else {
+			html = mdownParser.htmlFor(markdown: chunkString)
 		}
 		// modify source position to include chunk number
 		_ = dataSourceRegex.replaceMatches(in: html, range: NSRange(location: 0, length: html.length), withTemplate: "data-sourcepos=\"\(index).$2")

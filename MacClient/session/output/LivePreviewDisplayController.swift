@@ -56,7 +56,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	weak var contextualMenuDelegate: ContextualMenuDelegate?
 
 	private var editorContext: MutableProperty<EditorContext?> = MutableProperty<EditorContext?>(nil)
-	private var curDocDisposable: Disposable?
+	private var curParsedDocDisposable: Disposable?
+	private var curEditorDocDisposable: Disposable?
 	private var didLoadView = false
 	private var pageShellLoaded = false
 	private let opQueue: OperationQueue = {
@@ -70,11 +71,11 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 
 	internal var saveProducer: SaveFactory?
 	internal var parserContext: ParserContext? { didSet {
-		curDocDisposable?.dispose()
+		curParsedDocDisposable?.dispose()
 		if let pc = parserContext, let ppc = previousContext, ObjectIdentifier(pc) == ObjectIdentifier(ppc) {
 			return
 		}
-		curDocDisposable = parserContext?.parsedDocument.signal.observe(on: UIScheduler()).observeValues(documentChanged)
+		curParsedDocDisposable = parserContext?.parsedDocument.signal.observe(on: UIScheduler()).observeValues(documentChanged)
 	} }
 	private var previousContext: ParserContext?
 	private var parsedDocument: RmdDocument? { return parserContext?.parsedDocument.value }
@@ -164,14 +165,17 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			currentPreview = nil
 			return
 		}
+		// FIXME: following will not load the new editorDocument because initialCodeLoaded is true if this is not the first document.
 		loadPreviewIfNecessary()
-		if  var previewInfo = previewData[fileId]
-		{
-			// already have preview info
-			previewInfo.codeHandler = PreviewChunkCache(previewId: previewInfo.previewId, fileId: previewInfo.fileId, workspace: session.workspace, documentProperty: parserContext!.parsedDocument)
-			currentPreview = previewInfo
-			previewInfo.codeHandler.clearCache()
+		// if there isn't previewData created by the above call, it is being created in the background. refreshContent() will be called when completed
+		guard var previewInfo = previewData[fileId] else {
+			Log.info("skipping refresh of unloaded preview", .app)
+			return
 		}
+		// create code handler for this preview
+		previewInfo.codeHandler = PreviewChunkCache(previewId: previewInfo.previewId, fileId: previewInfo.fileId, workspace: session.workspace, document: parserContext!.parsedDocument.value)
+		currentPreview = previewInfo
+		previewInfo.codeHandler.clearCache()
 		refreshContent()
 	}
 
@@ -353,7 +357,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 			case .success(let value):
 				me.requestUpdate(previewId: value, chunkId: -1, includePrevious: true).startWithCompleted {
 					Log.info("got initial code update")
-					me.initialCodeLoaded = false
+//					me.initialCodeLoaded = false
 					me.refreshContent()
 				}
 			}
@@ -373,15 +377,12 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 				switch result {
 				case .success(let previewId):
 					Log.info("got previewId \(previewId)")
-					let codeHandler = PreviewChunkCache(previewId: previewId,  fileId: fileId, workspace: me.session.workspace, documentProperty: me.parserContext!.parsedDocument)
+					let codeHandler = PreviewChunkCache(previewId: previewId,  fileId: fileId, workspace: me.session.workspace, document: me.parserContext!.parsedDocument.value)
 					let cacheEntry = PreviewIdCache(previewId: previewId, fileId: fileId, codeHandler: codeHandler)
 					me.previewData[previewId] = cacheEntry
 					me.currentPreview = cacheEntry
 					observer.send(value: previewId)
 					observer.sendCompleted()
-					DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) {
-						self?.refreshContent()
-					}
 				case .failure(let err):
 					Log.warn("requestPreviewId got error \(err)")
 					observer.send(error: err)
@@ -439,6 +440,10 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	func setEditorContext(_ econtext: EditorContext?) {
 		precondition(editorContext.value == nil)
 		editorContext.value = econtext
+		// if the editor doc changed, we need to note that
+		curEditorDocDisposable = econtext?.currentDocument.signal.observeValues({ (newDoc) in
+			self.initialCodeLoaded = false
+		})
 	}
 	
 	private func loadWebView() {
