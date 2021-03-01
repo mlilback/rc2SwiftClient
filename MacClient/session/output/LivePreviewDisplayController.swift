@@ -249,7 +249,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 	}
 
-	func refreshContent() {
+	/// actually cache code, generate html, insert via javascript
+	private func refreshContent() {
 		guard let curDoc = parsedDocument, currentPreview != nil else {
 			load(html: "")
 			return
@@ -341,7 +342,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	@discardableResult
 	private func loadPreviewIfNecessary() -> Bool {
 		guard !initialCodeLoaded, let fileId = editorContext.value?.currentDocument.value?.file.fileId else { return false }
-		// TODO: update this to use appStatus
+		// TODO: needs to update appStatus
 		guard !initialCodeLoaded else { return true }
 		initialCodeLoaded = true
 		requestPreviewId(fileId: fileId).startWithResult { [weak self] (result) in
@@ -359,7 +360,8 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 		return true
 	}
-	
+
+	/// caller is responsible for refreshing the content when a previewId is returned
 	private func requestPreviewId(fileId: Int) -> SignalProducer<Int, Rc2Error> {
 		let handler = SignalProducer<Int, Rc2Error> { observer, _ in
 				self.session.requestPreviewId(fileId: fileId).startWithResult { [weak self] (result) in
