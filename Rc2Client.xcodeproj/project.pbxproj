@@ -4381,6 +4381,7 @@
 				PRODUCT_MODULE_NAME = MacClient;
 				PRODUCT_NAME = "Rc²";
 				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "MacClient/MacClient-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 			};
@@ -4415,6 +4416,7 @@
 				PRODUCT_MODULE_NAME = MacClient;
 				PRODUCT_NAME = "Rc²";
 				PROVISIONING_PROFILE = "";
+				SDKROOT = macosx;
 				SWIFT_OBJC_BRIDGING_HEADER = "MacClient/MacClient-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 			};
