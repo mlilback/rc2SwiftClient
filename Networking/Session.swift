@@ -63,6 +63,8 @@ public class Session {
 	public weak var delegate: SessionDelegate?
 	/// status of compute engine
 	public private(set) var computeStatus: SessionResponse.ComputeStatus = .initializing
+	public var computeIsRunning: Bool { return computeStatus == .running }
+	
 	
 	// swiftlint:disable:next force_try
 	public var project: AppProject { return try! conInfo.project(withId: workspace.projectId) }
@@ -85,8 +87,13 @@ public class Session {
 	private var watchingVariables: Bool = false
 	///queue used for delegate calls
 	private let delegateQueue: DispatchQueue
-	/// queue used for app server messages
+	/// queue used for serializing app server incoming messages
 	private let appIncomingQueue: DispatchQueue
+	/// queue used for serializing app server outgoing messages
+	private let appOutgoingQueue: DispatchQueue
+	/// outgoing messages to send once status is running
+	private var preRunningRequests: [SessionCommand]? = []
+	
 	private let (sessionLifetime, sessionToken) = Lifetime.make()
 	public var lifetime: Lifetime { return sessionLifetime }
 	
@@ -122,6 +129,7 @@ public class Session {
 		self.imageCache = imageCache
 		self.delegateQueue = queue
 		self.appIncomingQueue = DispatchQueue(label: "session.appserver.incoming", qos: .userInitiated, target: .global(qos: .userInitiated))
+		self.appOutgoingQueue = DispatchQueue(label: "session.appserver.outgoing", qos: .userInteractive, target: .global(qos: .userInteractive))
 		var ws = wsWorker
 		if nil == ws {
 			ws = SessionWebSocketWorker(conInfo: connectionInfo, wspaceId: workspace.wspaceId)
@@ -571,8 +579,15 @@ private extension Session {
 			eventObserver.send(value: SessionEvent(.sessionError, props: ["error": errorData.error.localizedDescription]))
 			delegateQueue.async { self.delegate?.sessionErrorReceived(errorData.error, details: nil) }
 		case .computeStatus(let status):
+			let sendPreCommands = !computeIsRunning && status == .running
 			computeStatus = status
 			informDelegate = true
+			if sendPreCommands {
+				preRunningRequests?.forEach {
+					send(command: $0)
+				}
+				preRunningRequests = nil
+			}
 		case .execComplete(let execData):
 			if !execData.images.isEmpty {
 				imageCache.cache(images: execData.images)
@@ -647,14 +662,21 @@ private extension Session {
 	func send(command: SessionCommand) -> Bool {
 		do {
 			let data = try conInfo.encode(command)
-			let cmdStr = String(data: data, encoding:.utf8) ?? "foo"
-			Log.info("sending:\n \(cmdStr)")
-			self.webSocketWorker.send(data: data)
+			let cmdStr = String(data: data, encoding:.utf8)!
+			appOutgoingQueue.sync {
+				guard computeIsRunning else {
+					Log.info("queueing command until compute is running")
+					preRunningRequests?.append(command)
+					return
+				}
+				Log.info("sending:\n \(cmdStr)")
+				self.webSocketWorker.send(data: data)
+			}
+			return true
 		} catch let err as NSError {
 			Log.error("error sending message on websocket: \(err)", .session)
 			return false
 		}
-		return true
 	}
 	
 	private func webSocketStatusChanged(status: SessionWebSocketWorker.SocketStatus) {
