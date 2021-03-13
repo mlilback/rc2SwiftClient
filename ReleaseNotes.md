@@ -1,5 +1,10 @@
 # Rc² release notes
 
+## Build 88
+
+* Preview improved
+
+
 ## Build 87
 
 * all signal observers now act on main thread
