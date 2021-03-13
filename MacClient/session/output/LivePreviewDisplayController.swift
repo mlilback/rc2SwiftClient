@@ -245,7 +245,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		if !forceParse, changedChunkIndexes.count > 0 {
 			Log.info("udpating just chunks \(changedChunkIndexes)")
 			for chunkNumber in changedChunkIndexes {
-				updaeteChunkByJS(chunkNumber: chunkNumber, document: curDoc)
+				updateChunkByJS(chunkNumber: chunkNumber, document: curDoc)
 			}
 			runJavascript("updateSectionToolbars()")
 		} else { // no changes, so just refresh everything
@@ -317,6 +317,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	}
 
 	private func runJavascript(_ script: String, completionHandler: ((Any?, Error?) -> Void)? = nil) {
+		Log.info("adding js to opQueue")
 		opQueue.addOperation { [weak self] in
 			guard let me = self else { return }
 			let sema = DispatchSemaphore(value: 1)
@@ -414,7 +415,7 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 	// MARK: - utility
 
 	/// actually gets the updated html for chunkId and inserts via javascript
-	private func updaeteChunkByJS(chunkNumber: Int, document: RmdDocument) {
+	private func updateChunkByJS(chunkNumber: Int, document: RmdDocument) {
 		guard let codeHandler = currentPreview?.codeHandler else { fatalError("htmlFor(chunk:index:) called without a current preview") }
 		let chunk = document.chunks[chunkNumber]
 		
