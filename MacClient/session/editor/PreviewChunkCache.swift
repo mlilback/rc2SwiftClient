@@ -254,9 +254,9 @@ public class PreviewChunkCache {
 	}
 	
 	private func markdownFor(inlineEquation: RmdDocumentChunk, curDoc: RmdDocument) -> String {
-		var code = curDoc.string(for: inlineEquation, type: .inner)
-		code = code.replacingOccurrences(of: "^\\$", with: "\\(", options: .regularExpression)
-		code = code.replacingOccurrences(of: "\\$$\\s", with: "\\) ", options: .regularExpression)
+		var code = curDoc.string(for: inlineEquation, type: .outer)
+		code = code.replacingOccurrences(of: "^\\$", with: "\\\\(", options: .regularExpression)
+		code = code.replacingOccurrences(of: "\\$\\s?$", with: "\\\\) ", options: .regularExpression)
 		return "<span class\"math inline\">\n\(code)</span>"
 	}
 	
