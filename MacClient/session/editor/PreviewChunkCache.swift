@@ -300,21 +300,21 @@ extension PreviewChunkCache {
 	
 	func readCache() {
 		if dbQueue == nil { initializeCache() }
-		do {
-			try dbQueue!.read { db in
-				do {
-					if let oldRec = try SavedCacheEntry.fetchOne(db, sql: "select * FROM \(cacheTableName) where fileID = \(fileId)")
-					{
-						self.chunkInfo = oldRec.chunks
-					}
-				} catch {
-					Log.warn("error reading cache: \(error)", .app)
-					throw error
-				}
-			}
-		} catch {
-				Log.warn("error reading cache: \(error)", .app)
-		}
+//		do {
+//			try dbQueue!.read { db in
+//				do {
+//					if let oldRec = try SavedCacheEntry.fetchOne(db, sql: "select * FROM \(cacheTableName) where fileID = \(fileId)")
+//					{
+//						self.chunkInfo = oldRec.chunks
+//					}
+//				} catch {
+//					Log.warn("error reading cache: \(error)", .app)
+//					throw error
+//				}
+//			}
+//		} catch {
+//				Log.warn("error reading cache: \(error)", .app)
+//		}
 	}
 	
 	@objc func saveCache() {
