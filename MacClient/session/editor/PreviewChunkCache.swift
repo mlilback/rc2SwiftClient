@@ -149,6 +149,7 @@ public class PreviewChunkCache {
 			}
 			let currentHtml = htmlForCodeChunk(chunkNumber: chunkNumber)
 			if chunkInfo[chunkNumber].currentHtml != currentHtml {
+				chunkInfo[chunkNumber].currentHtml = currentHtml
 				if let changedIndex = changedChunks.firstIndex(where: { $0 == chunkNumber }) {
 					changedChunks.remove(at: changedIndex)
 				}
