@@ -28,6 +28,8 @@ clear undo cache on file change notification from server
 
 ## Preview CSS
 
+* uses mathjax 3
+
 ### classes
 
  * internalError
