@@ -225,7 +225,7 @@ public class PreviewChunkCache {
 		guard let curDoc = document else { fatalError("code handler called w/o a document") }
 		let src = curDoc.string(for: curDoc.chunks[chunkNumber], type: .inner)
 		let output: String
-		if chunkInfo[chunkNumber].output.count > 0 {
+		if chunkInfo.count > 0, chunkInfo[chunkNumber].output.count > 0 {
 			output = chunkInfo[chunkNumber].output
 		} else {
 			// TODO: this should give user notice that chunk needs to be executed
