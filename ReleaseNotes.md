@@ -1,9 +1,12 @@
 # Rc² release notes
 
+## Build 89
+
+* fixed crasher on import
+
 ## Build 88
 
 * Preview improved
-
 
 ## Build 87
 
