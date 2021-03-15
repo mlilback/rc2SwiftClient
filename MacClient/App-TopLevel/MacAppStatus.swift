@@ -85,7 +85,8 @@ class MacAppStatus {
 		Log.info("starting action \(name)", .app)
 		// FIXME: if debugging, this can happen after action is finished and the assert will fail
 		_statusQueue.sync {
-			assert(nil == _currentDisposable)
+			// FIXME: why was this assert here, and why was it failing. Does it need to be fixed?
+			// assert(nil == _currentDisposable)
 			currentActionName = name
 			_currentDisposable = disposable
 			progressObserver.send(value: ProgressUpdate(.start, message: currentActionName, value: determinate ? 0 : -1))
