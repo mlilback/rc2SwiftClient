@@ -87,8 +87,6 @@ public class Session {
 	private var watchingVariables: Bool = false
 	///queue used for delegate calls
 	private let delegateQueue: DispatchQueue
-	/// queue used for serializing app server incoming messages
-	private let appIncomingQueue: DispatchQueue
 	/// queue used for serializing app server outgoing messages
 	private let appOutgoingQueue: DispatchQueue
 	/// outgoing messages to send once status is running
@@ -128,7 +126,6 @@ public class Session {
 		self.fileCache = fileCache
 		self.imageCache = imageCache
 		self.delegateQueue = queue
-		self.appIncomingQueue = DispatchQueue(label: "session.appserver.incoming", qos: .userInitiated, target: .global(qos: .userInitiated))
 		self.appOutgoingQueue = DispatchQueue(label: "session.appserver.outgoing", qos: .userInteractive, target: .global(qos: .userInteractive))
 		var ws = wsWorker
 		if nil == ws {
@@ -593,8 +590,9 @@ private extension Session {
 				imageCache.cache(images: execData.images)
 			}
 			informDelegate = true
-		case .previewInitialized(let initData):
-			previewDelegate?.previewIdReceived(response: initData)
+		case .previewInitialized:
+			// no need to do anything, request callback deals with it
+			break
 		case .previewUpdated(let data):
 			previewDelegate?.previewUpdateReceived(response: data)
 		case .previewUpdateStarted(let data):
@@ -695,9 +693,7 @@ private extension Session {
 	}
 	
 	func handleWebSocket(data: SessionWebSocketWorker.MessageData) {
-		appIncomingQueue.async { [weak self] in
-			self?.handleReceivedMessage(data)
-		}
+		handleReceivedMessage(data)
 	}
 	
 	/// starts file caching and forwards responses to observer from open() call

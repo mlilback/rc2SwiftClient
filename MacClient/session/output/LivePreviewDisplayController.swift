@@ -401,7 +401,6 @@ class LivePreviewDisplayController: AbstractSessionViewController, OutputControl
 		}
 		let handler = SignalProducer<Void, Rc2Error> { [weak self] observer, _ in
 			guard let me = self else { return }
-//			preview.updateObserver = observer
 			// chunkIds will include previous
 			let producer = me.session.updatePreviewChunks(previewId: previewId, chunkId: chunkId, includePrevious: includePrevious, updateId: "preview \(previewId)")
 			producer.startWithCompleted {
@@ -589,10 +588,6 @@ private struct PreviewIdCache: Equatable {
 
 // MARK: - SessionPreviewDelegate
 extension LivePreviewDisplayController: SessionPreviewDelegate {
-	func previewIdReceived(response: SessionResponse.PreviewInitedData) {
-		// do nothing because signal value triggers setting it
-	}
-
 	func previewUpdateReceived(response: SessionResponse.PreviewUpdateData) {
 		defer {
 			if response.updateComplete {
@@ -602,7 +597,15 @@ extension LivePreviewDisplayController: SessionPreviewDelegate {
 			}
 		}
 		//ignore updates that are just to mark completed
-		guard response.chunkId >= 0 else { return }
+		guard response.chunkId >= 0 else {
+			// last chunk, queue up display update after all chunks are updated
+			opQueue.addOperation { [weak self] in
+				DispatchQueue.main.async {
+					self?.updatePreview()
+				}
+			}
+			return
+		}
 		guard var preview = previewData[response.previewId] else { return }
 		// update the code results
 		preview.codeHandler.updateCodeOutput(chunkNumber: response.chunkId, outputContent: response.results)
@@ -616,11 +619,8 @@ extension LivePreviewDisplayController: SessionPreviewDelegate {
 	}
 	
 	func previewUpdateStarted(response: SessionResponse.PreviewUpdateStartedData) {
-//		guard let doc = parsedDocument else {
-//			Log.warn("preview update witout a document", .app)
-//			return
-//		}
-//		guard var preview = previewData[response.previewId] else { return }
+		guard let preview = previewData[response.previewId] else { return }
+		preview.codeHandler.cacheAllCode()
 		guard let fileId = editorContext.value?.currentDocument.value?.file.fileId
 		else { fatalError("preview started with no editor context") }
 		NotificationCenter.default.postNotificationNameOnMainThread(.previewUpdateStarted, object: session, userInfo: ["fileId": fileId])
