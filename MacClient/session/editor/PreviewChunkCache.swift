@@ -320,7 +320,8 @@ extension PreviewChunkCache {
 	
 	@objc func saveCache() {
 		if dbQueue == nil { initializeCache() }
-		let toSave = SavedCacheEntry(fileId: fileId, fileVersion: workspace.file(withId: fileId)!.version, chunks: chunkInfo)
+		guard let wsfile = workspace.file(withId: fileId) else { return }
+		let toSave = SavedCacheEntry(fileId: fileId, fileVersion: wsfile.version, chunks: chunkInfo)
 		do {
 			try dbQueue!.write { db in
 				try db.execute(sql: "delete from \(cacheTableName) where fileId = \(fileId)")
