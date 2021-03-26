@@ -47,9 +47,6 @@ class InlineEquationEditorController: NSViewController {
 	override func viewWillDisappear() {
 		super.viewWillDisappear()
 		if !canceled {
-			print("saving latex: \(editor.string)")
-			// FIXME: how do we do this now?
-//			chunk?.contents = NSAttributedString(string: editor.string)
 			saveAction?(self, true)
 		}
 	}
