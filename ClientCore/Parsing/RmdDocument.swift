@@ -223,6 +223,15 @@ public protocol RmdDocumentChunk {
 	var children: [RmdDocumentChunk] { get }
 }
 
+public extension RmdDocumentChunk {
+	/// Find the child range at location
+	/// - Parameter location: A valid index in the document string
+	/// - Returns: The inline chunk that encompasses that location, or nil if it is not part of an inline chunk
+	func childContaining(location: Int) -> RmdDocumentChunk? {
+		return children.first(where: {$0.innerRange.contains(location) } )
+	}
+}
+
 internal class RmdDocChunk: RmdDocumentChunk {
 	let chunkType: ChunkType
 	let parserChunk: AnyChunk
